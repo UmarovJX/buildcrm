@@ -1,11 +1,11 @@
 <template>
     <div>
-        Hi! iam Dashboard
+<!--        <header-block></header-block>-->
     </div>
 </template>
 
 <script>
     export default {
-        name: "Hello"
+
     }
 </script>

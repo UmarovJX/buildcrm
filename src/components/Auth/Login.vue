@@ -25,23 +25,70 @@
 </template>
 
 <script>
+
+    import { mapActions } from 'vuex';
+
     export default {
         data: () => ({
             user: {
                 email: null,
                 password: null
-            }
+            },
+
+            info: null
         }),
 
         mounted() {
-
+            this.CheckLogin();
         },
 
         methods: {
+
+            ...mapActions(['setToken', 'fetchAuth', 'fetchMenu']),
+
+
             Login() {
-                this.axios.post('http://127.0.0.1:8000/api/auth/login', this.user);
+                let vm = this;
+
+                this.axios.post(process.env.VUE_APP_URL + '/api/auth/login', this.user)
+                    .then((response) => {
+                        const token = response.data.access_token;
+                        localStorage.token = token;
+                        this.setToken(token);
+
+                        this.fetchAuth(this);
+                        this.fetchMenu(this);
+
+                        vm.toasted(response.data.message, 'success');
+                        vm.$router.push('/dashboard')
+                    }).catch(function (error) {
+                        if (! error.response) {
+                            vm.toasted('Error: Network Error', 'error');
+                        } else {
+                            vm.toasted(error.response.data.message, 'error');
+                        }
+                    });
+            },
+
+            CheckLogin() {
+                let header = {
+                    headers: {
+                        Authorization: 'Bearer ' + localStorage.token
+                    }
+                };
+
+                let vm = this;
+
+                this.axios.get(process.env.VUE_APP_URL + '/api/auth/check', header).then(() => {
+                    //this.items = response.data;
+                    vm.$router.push({ path: 'dashboard' });
+                }).catch(() => {
+                    localStorage.clear();
+                });
             }
-        }
+        },
+
+
     }
 </script>
 
