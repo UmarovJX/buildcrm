@@ -90,12 +90,19 @@
                                             {{ $t('objects.create.apartments') }}: {{ block.apartment }} <br>
                                             {{ $t('objects.create.floors') }}: {{ block.floor }}
                                         </p>
+
+
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <a href="#"><i class="fa fa-edit"></i> {{ $t('edit') }}</a><br>
+                                        <a href="#" @click="deleteBlock(index, indexx)"><i class="fa fa-trash"></i> {{ $t('delete') }}</a>
                                     </div>
                                 </div>
                             </div>
                             <!-- Blocks -->
 
-                            <div class="col-md-3" @click="createBlock()">
+                            <div class="col-md-3" @click="createBlock(index)">
                                 <div class="card  text-center">
                                     <div class="card-body">
                                         <h1 class="card-title">
@@ -126,7 +133,6 @@
 
                     <div class="col-md-12 mt-3" v-if="disabled.block_create">
                         <hr>
-
                         <div class="row">
                             <form @submit.prevent="saveBlock" class="w-100">
                                 <div class="col-md-12">
@@ -154,7 +160,7 @@
                                                 <i class="fa fa-home"></i>
                                             </span>
                                                 </div>
-                                                <input type="text" class="form-control" v-model="block_preview.name" :placeholder="$t('objects.placeholder.block_name')">
+                                                <input type="text" class="form-control" v-model="block_preview.name" required :placeholder="$t('objects.placeholder.block_name')">
                                             </div>
                                         </div>
 
@@ -163,14 +169,14 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="count_floor">{{ $t('objects.create.count_floors') }}</label>
-                                                        <input type="number" v-model="block_preview.floor" min="0" class="form-control" id="count_floor">
+                                                        <input type="number" v-model="block_preview.floor" min="1" required class="form-control" id="count_floor">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="count_apartments">{{ $t('objects.create.count_apartments') }}</label>
-                                                        <input type="number" v-model="block_preview.apartment" v-bind:disabled="disabled.apartments" min="0" class="form-control" id="count_apartments">
+                                                        <input type="number" v-model="block_preview.apartment" v-bind:disabled="disabled.apartments" required min="1" class="form-control" id="count_apartments">
                                                     </div>
                                                 </div>
 
@@ -196,7 +202,7 @@
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="price_area">{{ $t('objects.create.price_area') }}</label>
-                                                                <input type="number" min="0" v-model="price.price" class="form-control" id="price_area">
+                                                                <input type="number" min="1" v-model="price.price" class="form-control" id="price_area" required>
                                                             </div>
                                                         </div>
 
@@ -264,7 +270,7 @@
                                                                         <div class="form-group row">
                                                                             <label class="col-sm-7 col-form-label">{{ $t('objects.create.plan') }}</label>
                                                                             <div class="col-sm-5">
-                                                                                <select class="custom-select" v-model="apartment.type_plan">
+                                                                                <select class="custom-select" v-model="apartment.type_plan" required>
                                                                                     <option v-for="(plan, index) in object.type_plan" :value="index" :key="index">
                                                                                         {{ plan.name }}
                                                                                     </option>
@@ -277,7 +283,7 @@
                                                                         <div class="form-group row">
                                                                             <label class="col-sm-8 col-form-label">{{ $t('objects.create.rooms') }}</label>
                                                                             <div class="col-sm-4">
-                                                                                <input type="number" min="1" class="form-control" v-model="apartment.rooms">
+                                                                                <input type="number" min="1" required class="form-control" v-model="apartment.rooms">
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -286,7 +292,7 @@
                                                                         <div class="form-group row">
                                                                             <label class="col-sm-8 col-form-label">{{ $t('objects.create.area') }}</label>
                                                                             <div class="col-sm-4">
-                                                                                <input type="number" min="1" class="form-control" v-model="apartment.area">
+                                                                                <input type="number" min="1" required class="form-control" v-model="apartment.area">
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -359,24 +365,18 @@
                 new_type_plan: null,
             },
 
-            //block_building_index: 0,
+            block_building_index: 0,
 
-            block_preview: {
-                name: null,
-                floor: 1,
-                apartment: 1,
+            // block_preview: {
+            //     name: null,
+            //     floor: 1,
+            //     apartment: 1,
+            //     apartments: [],
+            //     floors: [],
+            //     prices: []
+            // },
 
-
-                apartments: [],
-
-                floors: [],
-
-                prices: []
-            },
-
-            buildings: [
-
-            ],
+            buildings: [],
 
             settings: {
                 available_floors: [],
@@ -424,32 +424,47 @@
                 }
             },
 
-            createBlock() {
+            createBlock(index) {
                 if (! this.disabled.block_create) {
                     this.disabled.block_create = true;
-                    //this.block_building_index = index;
+                    this.block_building_index = index;
                 }
             },
 
             saveBlock() {
                 if (this.disabled.block_create) {
-                    console.log(this.block_preview);
+                    let index = this.block_building_index;
+                    this.buildings[index].blocks.push({...this.block_preview});
                     this.clearPreviewBlock();
                 }
             },
 
+            deleteBlock(building, index) {
+                this.$swal({
+                    title: this.$t('sweetAlert.title'),
+                    text: this.$t('sweetAlert.text'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: this.$t('sweetAlert.yes')
+                }).then((result) => {
+                    if (result.value) {
+                        this.buildings[building].blocks.splice(index, 1);
+                    }
+                });
+            },
+
             removeBlock() {
-                // this.$swal({
-                //     title: this.$t('sweetAlert.title'),
-                //     text: this.$t('sweetAlert.text'),
-                //     icon: 'warning',
-                //     showCancelButton: true,
-                //     confirmButtonText: this.$t('sweetAlert.yes')
-                // }).then((result) => {
-                //     if (result.value) {
-                //         this.clearPreviewBlock();
-                //     }
-                // });
+                this.$swal({
+                    title: this.$t('sweetAlert.title'),
+                    text: this.$t('sweetAlert.text'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: this.$t('sweetAlert.yes')
+                }).then((result) => {
+                    if (result.value) {
+                        this.clearPreviewBlock();
+                    }
+                });
             },
 
             clearPreviewBlock() {
@@ -461,7 +476,7 @@
                 this.block_preview.prices = [];
 
                 this.disabled.block_create = false;
-                this.disabled.btn_save = false;
+                this.disabled.btn_save = true;
                 this.disabled.settings = false;
                 this.disabled.apartments = false;
             },
@@ -480,6 +495,7 @@
                 }).then((result) => {
                     if (result.value) {
                         this.buildings.splice(index, 1)
+                        this.clearPreviewBlock();
                     }
                 });
             },
