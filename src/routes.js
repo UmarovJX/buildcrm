@@ -10,8 +10,8 @@ import Objects from './components/Dashboard/Objects/Index';
 import ObjStore from './components/Dashboard/Objects/Store';
 
 import Managers from './components/Dashboard/Managers/Index';
-
 import Accountants from './components/Dashboard/Accountants/Index';
+import Cashiers from './components/Dashboard/Cashiers/Index';
 
 const routes = [
     {
@@ -47,13 +47,13 @@ const routes = [
         name: 'accountants',
         path: '/dashboard/accountants',
         component: Accountants
+    },
+
+    {
+        name: 'cashier',
+        path: '/dashboard/cashiers',
+        component: Cashiers
     }
-
-
-
-
-
-
 
 ];
 

@@ -21,7 +21,7 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td colspan="6" v-if="getAccountants.length == 0">
+                            <td colspan="5" v-if="getAccountants.length == 0">
                                 <center>
                                     {{ $t('no_data') }}
                                 </center>

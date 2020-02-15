@@ -13,23 +13,23 @@
 
             <form ref="form" @submit.stop.prevent="handleSubmit">
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.first_name')" label-for="first_name">
-                    <b-form-input id="first_name" v-model="accountant.first_name"></b-form-input>
+                    <b-form-input id="first_name" v-model="cashier.first_name"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.last_name')" label-for="last_name">
-                    <b-form-input id="last_name" v-model="accountant.last_name"></b-form-input>
+                    <b-form-input id="last_name" v-model="cashier.last_name"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.phone')" label-for="phone">
-                    <b-form-input id="phone" v-model="accountant.phone"></b-form-input>
+                    <b-form-input id="phone" v-model="cashier.phone"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.email')" label-for="email">
-                    <b-form-input type="email" v-model="accountant.email" id="email"></b-form-input>
+                    <b-form-input type="email" v-model="cashier.email" id="email"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.password')" label-for="password">
-                    <b-form-input type="password" min="5" v-model="accountant.password" id="password"></b-form-input>
+                    <b-form-input type="password" min="5" v-model="cashier.password" id="password"></b-form-input>
                 </b-form-group>
 
 
@@ -51,7 +51,7 @@
 
     export default {
         data: () => ({
-            accountant: {
+            cashier: {
                 first_name: null,
                 last_name: null,
                 phone: null,
@@ -69,26 +69,18 @@
             }
         }),
 
-
-        mounted() {
-            this.fetchObjects(this);
-        },
-
         methods: {
-
             resetModal() {
-                this.accountant.first_name = null;
-                this.accountant.last_name = null;
-                this.accountant.phone = null;
-                this.accountant.password = null;
-                this.accountant.email = null;
+                this.cashier.first_name = null;
+                this.cashier.last_name = null;
+                this.cashier.phone = null;
+                this.cashier.password = null;
+                this.cashier.email = null;
 
                 this.$bvModal.hide('modal-create');
 
                 this.error = false;
                 this.errors = [];
-
-                //this.objects = [];
             },
 
             handleOk(bvModalEvt) {
@@ -98,7 +90,7 @@
 
             async handleSubmit() {
                 try {
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/accountants/store', this.accountant, this.header);
+                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/cashiers/store', this.cashier, this.header);
 
                     this.toasted(response.data.message, 'success');
 
@@ -106,7 +98,7 @@
                         this.$bvModal.hide('modal-create')
                     });
 
-                    this.$emit('CreateAccountant', this.accountant);
+                    this.$emit('CreateCashier', this.cashier);
 
                 } catch (error) {
                     if (! error.response) {

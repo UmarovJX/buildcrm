@@ -9,6 +9,7 @@ import i18n from './lang';
 import toasted from './util/toasted';
 import getAuth from './util/getAuth';
 import store from './store';
+import { mapActions, mapGetters} from 'vuex';
 
 import './components';
 
@@ -43,40 +44,47 @@ Vue.use(Toasted, {
 Vue.config.productionTip = false;
 
 new Vue({
-  el: "#app",
-  i18n,
-  store,
-  router,
-  render: h => h(App),
+    el: "#app",
+    i18n,
+    store,
+    router,
+    render: h => h(App),
 
-  created() {
-    let path = this.$router.currentRoute;
+    computed: mapGetters(['getMe']),
 
-    if (localStorage.token) {
-      let vm = this;
+    created() {
+        let path = this.$router.currentRoute;
 
-      //this.toasted('test', 'error');
-      this.axios.get(process.env.VUE_APP_URL + '/api/auth/me', {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.token
+        if (localStorage.token) {
+          let vm = this;
+
+          this.axios.get(process.env.VUE_APP_URL + '/api/auth/me', {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.token
+            }
+          }).then((response) => {
+
+              this.setMe(response.data);
+
+              if (path.path == '/') {
+                vm.$router.push('dashboard');
+              }
+          }).catch((error) => {
+              if (! error.response) {
+                vm.toasted('Error: Network Error', 'error');
+              } else {
+                  vm.toasted(error.response.data.message, 'error');
+                  localStorage.clear();
+                  this.$router.push('/');
+              }
+          });
+        } else {
+           if (path.path != '/') {
+             this.$router.push('/');
+           }
         }
-      }).then(() => {
-          if (path.path == '/') {
-            vm.$router.push('dashboard');
-          }
-      }).catch((error) => {
-          if (! error.response) {
-            vm.toasted('Error: Network Error', 'error');
-          } else {
-              vm.toasted(error.response.data.message, 'error');
-              localStorage.clear();
-              this.$router.push('/');
-          }
-      });
-    } else {
-       if (path.path != '/') {
-         this.$router.push('/');
-       }
-    }
-  }
+    },
+
+    methods: mapActions(['setMe'])
+
 });

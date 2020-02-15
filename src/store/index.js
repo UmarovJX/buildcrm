@@ -13,7 +13,7 @@ import accountants_info from './modules/Admin/Accountants/info';
 import cashiers from './modules/Admin/Cashiers';
 import cashiers_info from './modules/Admin/Cashiers/info';
 
-
+import me from './modules/Auth/me';
 import auth from './modules/Auth';
 import getAuth from './modules/Auth/check';
 
@@ -33,6 +33,7 @@ export default new Vuex.Store({
         cashiers_info,
 
         auth,
+        me,
         getAuth,
 
         menus,

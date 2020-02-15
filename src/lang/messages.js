@@ -6,6 +6,7 @@ export default {
         'delete': 'Удалить',
         'action': 'Действия',
         'save': 'Сохранить',
+        'create': 'Создать',
         'cancel': 'Отменить',
         'no_data': 'Нет данных',
 
@@ -17,7 +18,45 @@ export default {
 
         'objects': {
             'title': 'Объекты',
-            'apartments': 'Квартиры'
+            'apartments': 'Квартиры',
+            'create': {
+                'new': 'Создать новый объект',
+                'type_plan': 'Типы планировок',
+                'no_type_plan': 'нет планировок',
+
+                'apartments': 'Квартиры',
+                'floors': 'Этажи',
+
+                'blocks': 'Блоки',
+                'new_block': 'Новый блок',
+                'count_floors': 'Количество этажей',
+                'count_apartments': 'Количество квартиры',
+
+                'price_area': 'Цена за м2',
+                'new_price': 'Новая цена',
+                'prices': 'Цены',
+
+                'apartment': 'Квартира',
+                'floor': 'Этаж',
+                'type_plan_apartment': 'Тип планировоки',
+                'rooms': 'Кол-во комнат',
+                'area': 'Площадь',
+                'price': 'Цена',
+                'plan': 'Планировка'
+
+
+
+            },
+
+            'placeholder': {
+                'name': 'Названия объекта',
+                'address': 'Адрес',
+                'type_plan': 'Названия планировку',
+
+                'block_name': 'Названия блока',
+
+                'building_name': 'Названия корпуса'
+            }
         },
 
         'sweetAlert': {

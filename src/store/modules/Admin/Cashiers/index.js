@@ -5,7 +5,7 @@ export default {
                 const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/cashiers', vm.header);
                 const cashiers = response.data;
 
-                ctx.commit('updateAccountants', cashiers);
+                ctx.commit('updateCashiers', cashiers);
 
             } catch (error) {
                 if (! error.response) {

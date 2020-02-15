@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-modal id="modal-create" ref="modal" :title="$t('add')" hide-footer @show="resetModal">
+        <b-modal id="modal-edit" ref="modal" :title="$t('edit')" hide-footer @show="resetModal">
             <b-alert show variant="danger" v-if="error">
                 <ul>
                     <li v-for="(error, index) in errors" :key="index">
@@ -13,25 +13,24 @@
 
             <form ref="form" @submit.stop.prevent="handleSubmit">
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.first_name')" label-for="first_name">
-                    <b-form-input id="first_name" v-model="accountant.first_name"></b-form-input>
+                    <b-form-input id="first_name" v-model="getCashier.first_name"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.last_name')" label-for="last_name">
-                    <b-form-input id="last_name" v-model="accountant.last_name"></b-form-input>
+                    <b-form-input id="last_name" v-model="getCashier.last_name" ></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.phone')" label-for="phone">
-                    <b-form-input id="phone" v-model="accountant.phone"></b-form-input>
+                    <b-form-input id="phone" v-model="getCashier.phone" ></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.email')" label-for="email">
-                    <b-form-input type="email" v-model="accountant.email" id="email"></b-form-input>
+                    <b-form-input type="email" v-model="getCashier.email"  id="email"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.password')" label-for="password">
-                    <b-form-input type="password" min="5" v-model="accountant.password" id="password"></b-form-input>
+                    <b-form-input type="password" min="5" v-model="getCashier.password"   id="password"></b-form-input>
                 </b-form-group>
-
 
                 <div class="float-right">
                     <b-button @click="resetModal">
@@ -48,19 +47,16 @@
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex';
 
     export default {
-        data: () => ({
-            accountant: {
-                first_name: null,
-                last_name: null,
-                phone: null,
-                password: null,
-                email: null
-            },
+        props: ['cashierId'],
 
+        data: () => ({
             error: false,
             errors: [],
+
+            cashier: {},
 
             header: {
                 headers: {
@@ -69,26 +65,21 @@
             }
         }),
 
+        mounted () {},
 
-        mounted() {
-            this.fetchObjects(this);
-        },
+        computed: mapGetters(['getCashier']),
 
         methods: {
+            ...mapActions(['nullCashier']),
+
 
             resetModal() {
-                this.accountant.first_name = null;
-                this.accountant.last_name = null;
-                this.accountant.phone = null;
-                this.accountant.password = null;
-                this.accountant.email = null;
+                this.$bvModal.hide('modal-edit');
 
-                this.$bvModal.hide('modal-create');
+                this.nullCashier();
 
                 this.error = false;
                 this.errors = [];
-
-                //this.objects = [];
             },
 
             handleOk(bvModalEvt) {
@@ -97,16 +88,18 @@
             },
 
             async handleSubmit() {
+                this.cashier = this.getCashier;
+
                 try {
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/accountants/store', this.accountant, this.header);
+                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/cashiers/update/' + this.cashierId, this.cashier, this.header);
 
                     this.toasted(response.data.message, 'success');
 
                     this.$nextTick(() => {
-                        this.$bvModal.hide('modal-create')
+                        this.$bvModal.hide('modal-edit')
                     });
 
-                    this.$emit('CreateAccountant', this.accountant);
+                    this.$emit('EditCashier', this.cashier);
 
                 } catch (error) {
                     if (! error.response) {
@@ -118,6 +111,7 @@
                 }
             }
         }
+
     }
 </script>
 
