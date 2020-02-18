@@ -42,7 +42,21 @@ export default {
                 'rooms': 'Кол-во комнат',
                 'area': 'Площадь',
                 'price': 'Цена',
-                'plan': 'Планировка'
+                'plan': 'Планировка',
+
+                'pre_pay': 'Предоплата',
+                'discount': 'Сумма скидки',
+
+                'new_rules_discount': 'Новые условия скидки',
+
+                'prepay_from': 'от',
+                'prepay_to': 'до',
+
+                'create_build': 'Добавить здание',
+                'create_discount': 'Добавить скидку',
+
+
+
 
 
 

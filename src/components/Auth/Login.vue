@@ -44,7 +44,7 @@
 
         methods: {
 
-            ...mapActions(['setToken', 'fetchAuth', 'fetchMenu']),
+            ...mapActions(['fetchAuth', 'fetchMenu']),
 
 
             Login() {
@@ -54,7 +54,7 @@
                     .then((response) => {
                         const token = response.data.access_token;
                         localStorage.token = token;
-                        this.setToken(token);
+                        //this.setToken(token);
 
                         this.fetchAuth(this);
                         this.fetchMenu(this);

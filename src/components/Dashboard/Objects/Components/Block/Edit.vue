@@ -10,8 +10,8 @@
                     </div>
 
                     <div class="col-md-6">
-                        <button type="button" @click="removeBlock" class="btn btn-danger float-right">
-                            <i class="fa fa-trash"></i> {{ $t('delete') }}
+                        <button type="button" @click="cancelBlock" class="btn btn-info float-right">
+                            <i class="fa fa-mail-reply"></i> {{ $t('cancel') }}
                         </button>
                     </div>
                 </div>
@@ -116,7 +116,6 @@
                                             <div class="card-body">
                                                 <p class="card-text">
                                                     {{ $t('objects.create.apartment') }} {{ index + 1 }} <br>
-
                                                 </p>
 
                                                 <div class="card-text">
@@ -212,18 +211,10 @@
 
 <script>
     export default {
-        props: ['dataObject'],
+        props: ['dataObject', 'block_preview'],
 
         data: () => ({
-
-            block_preview: {
-                name: null,
-                floor: 1,
-                apartment: 1,
-                apartments: [],
-                floors: [],
-                prices: []
-            },
+            //block_preview: dataBlock,
 
             settings: {
                 available_floors: [],
@@ -231,12 +222,11 @@
             },
 
             disabled: {
-                apartments: false,
-                block_create: false,
-                settings: false,
-                btn_save: true,
+                apartments: true,
+                block_create: true,
+                settings: true,
+                btn_save: false,
             }
-
         }),
 
         watch: {
@@ -255,34 +245,17 @@
 
         methods: {
             saveBlock() {
-                    this.$emit('InsertBlock', {...this.block_preview});
-                    this.$emit('RemoveBlock');
-                    this.clearPreviewBlock();
+                // this.$emit('InsertBlock', {...this.block_preview});
+                this.$emit('SaveEditBlock');
+                this.clearPreviewBlock();
             },
 
-            removeBlock() {
-                this.$swal({
-                    title: this.$t('sweetAlert.title'),
-                    text: this.$t('sweetAlert.text'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: this.$t('sweetAlert.yes')
-                }).then((result) => {
-                    if (result.value) {
-                        this.$emit('RemoveBlock');
-                        this.clearPreviewBlock();
-                    }
-                });
+            cancelBlock() {
+                this.$emit('CancelEditBlock');
+                this.clearPreviewBlock();
             },
 
             clearPreviewBlock() {
-                this.block_preview.apartment = 1;
-                this.block_preview.apartments = [];
-                this.block_preview.floor = 1;
-                this.block_preview.floors = [];
-                this.block_preview.name = '';
-                this.block_preview.prices = [];
-
                 this.disabled.block_create = false;
                 this.disabled.btn_save = true;
                 this.disabled.settings = false;
