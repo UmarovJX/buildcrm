@@ -164,7 +164,7 @@
                                                 </div>
 
                                                 <p class="card-text">
-                                                    {{ $t('objects.create.price') }}: {{ calcApartmentPrice(apartment.area, apartment.floor) }} сум
+                                                    {{ $t('objects.create.price') }}: {{ calcApartmentPrice(index, apartment.area, apartment.floor) }} сум
                                                 </p>
 
 
@@ -298,6 +298,7 @@
                             rooms: 0,
                             area: 0,
                             price: 0,
+                            price_id: 0
                         })
                     }
                     this.disabled.apartments = true;
@@ -359,12 +360,13 @@
                 this.sortAvailableFloors()
             },
 
-            calcApartmentPrice(area, floor) {
+            calcApartmentPrice(index, area, floor) {
                 var price = 0;
 
                 for (var prices = 0; prices < this.block_preview.prices.length; prices++) {
                     for (var floors = 0; floors < this.block_preview.prices[prices].floors.length; floors++) {
                         if (this.block_preview.prices[prices].floors[floors] === floor) {
+                            this.block_preview.apartments[index].price_id = prices;
                             price = this.block_preview.prices[prices].price;
                         }
                     }

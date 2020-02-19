@@ -1,6 +1,16 @@
 <template>
     <div>
         <div class="container">
+           <div class="alert alert-danger mt-3" v-if="error">
+                <ul>
+                    <li v-for="(error, index) in errors" :key="index">
+                        <span v-for="msg in error" :key="msg">
+                            {{ msg }}
+                        </span>
+                    </li>
+                </ul>
+           </div>
+
             <form @submit.prevent="submitObject">
                 <div class="col-md-12 mt-3">
                     <div class="row">
@@ -229,27 +239,31 @@
                 type_plan: [],
                 new_type_plan: null,
             },
+            buildings: [],
+            discounts: [],
 
             block_building_index: 0,
-
             edit: {
                 block: {},
                 discount: {}
             },
-
-            buildings: [],
-
-            discounts: [],
-
             disabled: {
                 block: {
                     create: false,
                     edit: false
                 },
-
                 discount: {
                     create: false,
                     edit: false
+                }
+            },
+
+            error: false,
+            errors: [],
+
+            header: {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.token
                 }
             }
         }),
@@ -376,7 +390,28 @@
             submitObject () {
                 let data = {
                     object: this.object,
+                    buildings: this.buildings,
+                    discounts: this.discounts
                 };
+
+                let vm = this;
+
+                this.axios.post(process.env.VUE_APP_URL + '/api/objects/store', data, this.header).then((response) => {
+                    if (response.data.status) {
+                        vm.toasted(response.data.message, 'success');
+                        vm.$router.push({name: 'objects'});
+                    }
+                }).catch((error) => {
+                    if (! error.response) {
+                        vm.toasted('Error: Network Error', 'error');
+                    } else {
+                        var errors = error.response.data.errors;
+                        vm.error = true;
+                        vm.errors = errors;
+                    }
+
+                });
+
             }
         },
     }
