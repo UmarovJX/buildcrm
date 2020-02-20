@@ -19,6 +19,8 @@ export default {
         'objects': {
             'title': 'Объекты',
             'apartments': 'Квартиры',
+            'address': 'Адрес',
+
             'create': {
                 'new': 'Создать новый объект',
                 'type_plan': 'Типы планировок',

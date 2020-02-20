@@ -15,7 +15,11 @@
                                 </p>
                                 <p class="card-text">
                                     <small class="text-muted">
-                                        {{ $t('objects.apartments') }}: 0
+                                        {{ $t('objects.apartments') }}: {{ object.apartment_count }}
+                                    </small>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ $t('objects.address') }}: {{ object.address }}
                                     </small>
                                 </p>
                             </div>

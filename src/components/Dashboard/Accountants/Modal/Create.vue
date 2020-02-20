@@ -109,6 +109,8 @@
                     this.$emit('CreateAccountant', this.accountant);
 
                 } catch (error) {
+                    console.log(error.response);
+
                     if (! error.response) {
                         this.toasted('Error: Network Error', 'error');
                     } else {

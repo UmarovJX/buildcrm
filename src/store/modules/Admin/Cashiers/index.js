@@ -11,7 +11,7 @@ export default {
                 if (! error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
-                    vm.toasted(error.response.data.error, 'error');
+                    vm.toasted(error.response.data.message, 'error');
                 }
             }
         },
