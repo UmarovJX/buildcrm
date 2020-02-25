@@ -1,12 +1,20 @@
 <template>
     <div v-if="getAuth">
-        <nav class="navbar navbar-light bg-light">
+        <nav class="navbar navbar-dark bg-primary">
             <div class="container">
                 <a class="navbar-brand" href="#">Xon-Saroy</a>
+
+                <div class="form-inline">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" @click="Logout" href="#">{{ $t('logout') }}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
                 <a class="navbar-brand" href="#">{{ $t('home') }}</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +50,16 @@
         },
 
 
-        methods: mapActions(['fetchAuth', 'fetchMenu']),
+        methods: {
+            ...mapActions(['fetchAuth', 'fetchMenu', 'nullableAuth', 'nullMe']),
+
+            Logout () {
+                localStorage.clear();
+                this.nullableAuth();
+                this.nullMe();
+                this.$router.push({name: 'login'});
+            }
+        },
         computed: mapGetters(['getAuth', 'getMenus']),
 
     }

@@ -3,7 +3,7 @@
         <div class="container">
             <div class="col-md-12 mt-3">
                 <div class="row">
-                    <b-button class="float-right mb-2" variant="success" v-b-modal.modal-create>
+                    <b-button v-if="getPermission.cashiers.create"  class="float-right mb-2" variant="success" v-b-modal.modal-create>
                         <i class="fa fa-plus"></i>
                         {{ $t('add') }}
                     </b-button>
@@ -41,11 +41,11 @@
                             </td>
 
                             <td class="text-right">
-                                <b-button class="btn-sm mr-1" @click="clickCashier(cashier.id)" variant="primary" v-b-modal.modal-edit>
+                                <b-button class="btn-sm mr-1" v-if="getPermission.cashiers.update"  @click="clickCashier(cashier.id)" variant="primary" v-b-modal.modal-edit>
                                     <i class="fa fa fa-edit"></i>
                                 </b-button>
 
-                                <a href="#" @click="Delete(cashier.id)" class="btn btn-sm btn-danger">
+                                <a href="#" v-if="getPermission.cashiers.delete"  @click="Delete(cashier.id)" class="btn btn-sm btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>
@@ -57,8 +57,8 @@
             </div>
         </div>
 
-        <create-modal @CreateCashier="CreateCashier"></create-modal>
-        <edit-modal :cashier-id="cashier_id" @EditCashier="EditCashier"></edit-modal>
+        <create-modal v-if="getPermission.cashiers.create" @CreateCashier="CreateCashier"></create-modal>
+        <edit-modal v-if="getPermission.cashiers.update" :cashier-id="cashier_id" @EditCashier="EditCashier"></edit-modal>
 
     </div>
 </template>
@@ -86,7 +86,7 @@
             }
         }),
 
-        computed: mapGetters(['getCashiers']),
+        computed: mapGetters(['getCashiers', 'getPermission']),
 
         mounted() {
             this.fetchCashiers(this);

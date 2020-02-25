@@ -9,11 +9,49 @@ export default {
         'create': 'Создать',
         'cancel': 'Отменить',
         'no_data': 'Нет данных',
+        'logout': 'Выйти',
 
         'auth': {
             'email': 'E-mail',
             'password': 'Пароль',
             'login': 'Войти'
+        },
+
+        'clients': {
+            'title': 'База клиентов'
+        },
+
+        'apartments': {
+            'list': {
+                'number': '№Дом',
+                'object': 'Объект',
+                'rooms': 'Комнат',
+                'floor': 'Этаж',
+                'area': 'Площад',
+                'status': 'Статус',
+                'price': 'Цена',
+                'building': 'Здания',
+                'block': 'Корпус',
+                'book': 'Забронировать',
+                'confirm': 'Оформить',
+                'filter': 'Фильтр',
+                'apartments': 'Квартиры',
+
+                'period_date': 'Период брони'
+
+            },
+
+            'filter': {
+                'apartments': 'Количество комнат',
+                'floor': 'Этаж',
+                'ot': 'от',
+                'do': 'до',
+                'price': 'Цена',
+                'area': 'Площадь',
+                'object': 'Объект',
+                'status': 'Статус',
+                'free': 'Только свободные'
+            }
         },
 
         'objects': {
@@ -56,12 +94,6 @@ export default {
 
                 'create_build': 'Добавить здание',
                 'create_discount': 'Добавить скидку',
-
-
-
-
-
-
             },
 
             'placeholder': {

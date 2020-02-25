@@ -4,7 +4,7 @@
             <div class="col-md-12 mt-3">
                 <div class="row">
 
-                    <b-button class="float-right mb-2" variant="success" v-b-modal.modal-create>
+                    <b-button v-if="getPermission.accountants.create" class="float-right mb-2" variant="success" v-b-modal.modal-create>
                         <i class="fa fa-plus"></i>
                         {{ $t('add') }}
                     </b-button>
@@ -42,11 +42,11 @@
                             </td>
 
                             <td class="text-right">
-                                <b-button class="btn-sm mr-1" @click="clickAccountant(accountant.id)" variant="primary" v-b-modal.modal-edit>
+                                <b-button class="btn-sm mr-1" v-if="getPermission.accountants.update" @click="clickAccountant(accountant.id)" variant="primary" v-b-modal.modal-edit>
                                     <i class="fa fa fa-edit"></i>
                                 </b-button>
 
-                                <a href="#" @click="Delete(accountant.id)" class="btn btn-sm btn-danger">
+                                <a href="#" v-if="getPermission.accountants.delete" @click="Delete(accountant.id)" class="btn btn-sm btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>
@@ -58,8 +58,8 @@
             </div>
         </div>
 
-        <create-modal @CreateAccountant="CreateAccountant"></create-modal>
-        <edit-modal :accountant-id="accountant_id" @EditAccountant="EditAccountant"></edit-modal>
+        <create-modal v-if="getPermission.accountants.create" @CreateAccountant="CreateAccountant"></create-modal>
+        <edit-modal v-if="getPermission.accountants.update" :accountant-id="accountant_id" @EditAccountant="EditAccountant"></edit-modal>
 
     </div>
 </template>
@@ -87,7 +87,7 @@
             }
         }),
 
-        computed: mapGetters(['getAccountants']),
+        computed: mapGetters(['getAccountants', 'getPermission']),
 
         mounted() {
             this.fetchAccountants(this);

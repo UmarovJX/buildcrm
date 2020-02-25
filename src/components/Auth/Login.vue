@@ -44,11 +44,12 @@
 
         methods: {
 
-            ...mapActions(['fetchAuth', 'fetchMenu']),
+            ...mapActions(['fetchAuth', 'fetchMenu', 'setMe']),
 
 
             Login() {
                 let vm = this;
+                let path = this.$router.currentRoute;
 
                 this.axios.post(process.env.VUE_APP_URL + '/api/auth/login', this.user)
                     .then((response) => {
@@ -58,6 +59,7 @@
 
                         this.fetchAuth(this);
                         this.fetchMenu(this);
+                        this.setMe(this, path);
 
                         vm.toasted(response.data.message, 'success');
                         vm.$router.push('/dashboard')

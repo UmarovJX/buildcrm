@@ -19,13 +19,18 @@ export default {
                     }
                 }
             }
+        },
+
+
+        nullableAuth(ctx) {
+            ctx.commit('updateAuth', false);
         }
     },
 
     mutations: {
         updateAuth(state, status) {
             state.auth = status;
-        }
+        },
     },
 
     state: {

@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import objects from './modules/objects';
+import objects_filter from './modules/objects/filter';
 import menus from './modules/Menu';
 
 import managers from './modules/Admin/Managers';
@@ -16,6 +17,8 @@ import cashiers_info from './modules/Admin/Cashiers/info';
 import me from './modules/Auth/me';
 import auth from './modules/Auth';
 import getAuth from './modules/Auth/check';
+
+import apartments from './modules/Manager/apartments';
 
 
 
@@ -37,6 +40,8 @@ export default new Vuex.Store({
         getAuth,
 
         menus,
-        objects
+        objects,
+        objects_filter,
+        apartments
     }
 })

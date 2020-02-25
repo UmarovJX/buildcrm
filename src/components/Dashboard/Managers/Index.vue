@@ -4,7 +4,7 @@
             <div class="col-md-12 mt-3">
                 <div class="row">
 
-                    <b-button class="float-right mb-2" variant="success" v-b-modal.modal-create>
+                    <b-button v-if="getPermission.managers.create" class="float-right mb-2" variant="success" v-b-modal.modal-create>
                         <i class="fa fa-plus"></i>
                         {{ $t('add') }}
                     </b-button>
@@ -49,11 +49,11 @@
                                 </td>
 
                                 <td class="text-right">
-                                    <b-button class="btn-sm mr-1" @click="clickManager(manager.id)" variant="primary" v-b-modal.modal-edit>
+                                    <b-button  v-if="getPermission.managers.update"  class="btn-sm mr-1" @click="clickManager(manager.id)" variant="primary" v-b-modal.modal-edit>
                                         <i class="fa fa fa-edit"></i>
                                     </b-button>
 
-                                    <a href="#" @click="Delete(manager.id)" class="btn btn-sm btn-danger">
+                                    <a href="#"  v-if="getPermission.managers.delete"  @click="Delete(manager.id)" class="btn btn-sm btn-danger">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -65,8 +65,8 @@
             </div>
         </div>
 
-        <create-modal @CreateManager="CreateManager"></create-modal>
-        <edit-modal :manager-id="manager_id" @EditManager="EditManager"></edit-modal>
+        <create-modal v-if="getPermission.managers.create" @CreateManager="CreateManager"></create-modal>
+        <edit-modal v-if="getPermission.managers.update" :manager-id="manager_id" @EditManager="EditManager"></edit-modal>
 
     </div>
 </template>
@@ -94,7 +94,7 @@
             }
         }),
 
-        computed: mapGetters(['getManagers', 'getManager']),
+        computed: mapGetters(['getManagers', 'getManager', 'getPermission']),
 
         mounted() {
             this.fetchManagers(this);

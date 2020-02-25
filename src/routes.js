@@ -8,6 +8,8 @@ import Dashboard from './components/Dashboard/Home';
 
 import Objects from './components/Dashboard/Objects/Index';
 import ObjStore from './components/Dashboard/Objects/Store';
+import ObjFilter from './components/Dashboard/Objects/Filter';
+import ObjApartment from './components/Dashboard/Objects/Manager/Apartments';
 
 import Managers from './components/Dashboard/Managers/Index';
 import Accountants from './components/Dashboard/Accountants/Index';
@@ -15,6 +17,7 @@ import Cashiers from './components/Dashboard/Cashiers/Index';
 
 const routes = [
     {
+        name: 'login',
         path: '',
         component: Auth
     },
@@ -34,6 +37,18 @@ const routes = [
         name: 'objectsStore',
         path: '/dashboard/objects/add',
         component: ObjStore
+    },
+
+    {
+        name: 'objects-filter',
+        path: '/dashboard/objects/filter',
+        component: ObjFilter
+    },
+
+    {
+        name: 'apartments',
+        path: '/dashboard/objects/:id/apartments',
+        component: ObjApartment
     },
 
 
