@@ -1,24 +1,52 @@
 <template>
-    <div>
-        <div class="container">
-            <div class="col-md-12 mt-3">
-                <div class="row">
-                    <b-button v-if="getPermission.cashiers.create"  class="float-right mb-2" variant="success" v-b-modal.modal-create>
-                        <i class="fa fa-plus"></i>
-                        {{ $t('add') }}
-                    </b-button>
+    <main>
+        <div class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3">
+            <div class="d-flex w-100 align-items-center flex-md-row flex-column mb-md-0 mb-3">
 
-                    <table class="table">
-                        <thead class="thead-dark">
+                <h1 class="title__big my-0 order-md-0 order-1">
+                    {{ $t('cashier.title') }}
+                </h1>
+
+                <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
+                    <li class="breadcrumb-item">
+                        <router-link :to="{ name: 'home' }">
+                            <i class="far fa-home"></i>
+                        </router-link>
+                    </li>
+
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            {{ $t('cashier.title') }}
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item active">
+                        {{ $t('list') }}
+                    </li>
+
+                </ul>
+            </div>
+
+            <b-link v-if="getPermission.cashiers.create" class="my-btn my-btn__blue d-flex align-items-center" v-b-modal.modal-create>
+                <i class="fal fa-plus mr-2"></i>
+                {{ $t('add') }}
+            </b-link>
+
+        </div>
+
+        <div class="my-container px-0 mx-0">
+            <div class="table-responsive">
+                <table class="table table-borderless my-table">
+                    <thead>
                         <tr>
-                            <th scope="col" width="50">#</th>
-                            <th scope="col">{{ $t('managers.name') }}</th>
-                            <th scope="col">{{ $t('managers.phone') }}</th>
-                            <th scope="col">{{ $t('managers.login') }}</th>
-                            <th scope="col" class="text-right">{{ $t('action') }}</th>
+                            <th><i class="fas fa-hashtag"></i></th>
+                            <th>{{ $t('managers.name') }}</th>
+                            <th>{{ $t('managers.phone') }}</th>
+                            <th>{{ $t('managers.login') }}</th>
+                            <th></th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr>
                             <td colspan="5" v-if="getCashiers.length == 0">
                                 <center>
@@ -26,8 +54,9 @@
                                 </center>
                             </td>
                         </tr>
-                        <tr v-for="cashier in getCashiers" v-bind:key="cashier.id">
-                            <th scope="row">{{ cashier.id }}</th>
+
+                        <tr v-for="(cashier, index) in getCashiers" :key="index">
+                            <td >{{ cashier.id }}</td>
                             <td>
                                 {{ cashier.first_name }} {{ cashier.last_name}}
                             </td>
@@ -40,27 +69,66 @@
                                 {{ cashier.email }}
                             </td>
 
-                            <td class="text-right">
-                                <b-button class="btn-sm mr-1" v-if="getPermission.cashiers.update"  @click="clickCashier(cashier.id)" variant="primary" v-b-modal.modal-edit>
-                                    <i class="fa fa fa-edit"></i>
-                                </b-button>
+                            <td>
+                                <div class="dropdown my-dropdown dropleft">
+                                    <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="far fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <b-link v-if="getPermission.cashiers.update" @click="clickCashier(cashier.id)" class="dropdown-item dropdown-item--inside" href="#" v-b-modal.modal-edit>
+                                            <i class="fas fa-pen"></i> {{ $t('edit') }}
+                                        </b-link>
 
-                                <a href="#" v-if="getPermission.cashiers.delete"  @click="Delete(cashier.id)" class="btn btn-sm btn-danger">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+                                        <a href="#" class="dropdown-item dropdown-item--inside" v-if="getPermission.cashiers.delete"  @click="Delete(cashier.id)">
+                                            <i class="far fa-trash"></i> {{ $t('delete') }}
+                                        </a>
+                                    </div>
+                                </div>
                             </td>
-
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
 
         <create-modal v-if="getPermission.cashiers.create" @CreateCashier="CreateCashier"></create-modal>
         <edit-modal v-if="getPermission.cashiers.update" :cashier-id="cashier_id" @EditCashier="EditCashier"></edit-modal>
+    </main>
 
-    </div>
+<!--    <div>-->
+<!--        <div class="container">-->
+<!--            <div class="col-md-12 mt-3">-->
+<!--                <div class="row">-->
+<!--                    <b-button v-if="getPermission.cashiers.create"  class="float-right mb-2" variant="success" v-b-modal.modal-create>-->
+<!--                        <i class="fa fa-plus"></i>-->
+<!--                        {{ $t('add') }}-->
+<!--                    </b-button>-->
+
+<!--                    <table class="table">-->
+<!--                        <thead class="thead-dark">-->
+<!--                        <tr>-->
+<!--                            <th scope="col" width="50">#</th>-->
+<!--                            <th scope="col">{{ $t('managers.name') }}</th>-->
+<!--                            <th scope="col">{{ $t('managers.phone') }}</th>-->
+<!--                            <th scope="col">{{ $t('managers.login') }}</th>-->
+<!--                            <th scope="col" class="text-right">{{ $t('action') }}</th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        <tr>-->
+<!--                            <td colspan="5" v-if="getCashiers.length == 0">-->
+<!--                                <center>-->
+<!--                                    {{ $t('no_data') }}-->
+<!--                                </center>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+<!--    </div>-->
 </template>
 
 <script>

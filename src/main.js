@@ -62,6 +62,11 @@ new Vue({
     created() {
         this.setMe(this, path);
 
+        if (!localStorage.locale) {
+            localStorage.locale = 'ru';
+            this.$i18n.locale = 'ru';
+        }
+
         let path = this.$router.currentRoute;
 
         if (localStorage.token) {

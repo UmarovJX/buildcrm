@@ -10,11 +10,19 @@ export default {
         'cancel': 'Отменить',
         'no_data': 'Нет данных',
         'logout': 'Выйти',
+        'list': 'Список',
+        'ye': 'сум',
 
         'auth': {
             'email': 'E-mail',
             'password': 'Пароль',
             'login': 'Войти'
+        },
+
+        'roles': {
+            'admin': 'Администратор',
+            'manager': 'Менеджер',
+            'accountant': 'Бухалтер'
         },
 
         'clients': {
@@ -60,6 +68,10 @@ export default {
             'address': 'Адрес',
 
             'create': {
+                'name': 'Название',
+                'blocks_apartment': 'КВАРТИРНЫЕ БЛОКИ',
+
+
                 'new': 'Создать новый объект',
                 'type_plan': 'Типы планировок',
                 'no_type_plan': 'нет планировок',
@@ -69,6 +81,7 @@ export default {
 
                 'blocks': 'Блоки',
                 'new_block': 'Новый блок',
+                'edit_block': 'Редактировать блок',
                 'count_floors': 'Количество этажей',
                 'count_apartments': 'Количество квартиры',
 
@@ -94,11 +107,13 @@ export default {
 
                 'create_build': 'Добавить здание',
                 'create_discount': 'Добавить скидку',
+
+                'choose_plan': 'Выберите планировку'
             },
 
             'placeholder': {
                 'name': 'Названия объекта',
-                'address': 'Адрес',
+                'address': 'Адрес объекта',
                 'type_plan': 'Названия планировку',
 
                 'block_name': 'Названия блока',
@@ -141,6 +156,12 @@ export default {
         }
     },
     'uz': {
-        'home': 'Bosh sahifa'
+        'home': 'Bosh sahifa',
+
+        'roles': {
+            'admin': 'Rais buva',
+            'manager': 'Менеджер',
+            'accountant': 'Бухалтер'
+        },
     }
 }

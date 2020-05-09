@@ -4,7 +4,9 @@ import Message from './messages';
 
 Vue.use(VueLang);
 
-const language = document.documentElement.lang;
+// const language = document.documentElement.lang;
+// const language = store.state.me.locale;
+const language = localStorage.locale;
 
 const i18n = new VueLang({
     locale: language,

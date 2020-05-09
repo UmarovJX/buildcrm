@@ -28,7 +28,6 @@
                     <b-form-datepicker v-model="client.period_date" locale="ru"></b-form-datepicker>
                 </b-form-group>
 
-
                 <div class="float-right">
                     <b-button @click="resetModal">
                         <b-icon-backspace-fill></b-icon-backspace-fill> {{ $t('cancel') }}
@@ -55,6 +54,7 @@
                 last_name: null,
                 phone: null,
                 period_date: null,
+                apartment_id: null
             },
 
             error: false,
@@ -71,6 +71,7 @@
             resetModal() {
                 this.client.first_name = null;
                 this.client.last_name = null;
+                this.client.phone = null;
                 this.client.period_date = null;
 
                 this.$bvModal.hide('modal-create');
@@ -86,7 +87,9 @@
 
             async handleSubmit() {
                 try {
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/', this.client, this.header);
+                    this.client.apartment_id = this.apartment;
+
+                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/clients/reserve', this.client, this.header);
 
                     this.toasted(response.data.message, 'success');
 
@@ -94,7 +97,7 @@
                         this.$bvModal.hide('modal-create')
                     });
 
-                    this.$emit('CreateManager', this.manager);
+                    this.$emit('CreateReserve', this.client);
 
                 } catch (error) {
                     if (! error.response) {

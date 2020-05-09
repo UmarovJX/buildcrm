@@ -1,75 +1,46 @@
 <template>
-    <div class="w-100">
-        <div class="col-md-12 mb-2">
-            <div class="row">
-
-                <div class="col-md-6">
+    <div>
+        <b-modal id="modal-create-discount" class="py-4" ref="modal" :title="$t('objects.create.new_rules_discount')" hide-footer no-close-on-backdrop>
+            <form class="my-form" @submit.prevent="SaveDiscount">
+                <div class="container px-0 mx-0 mt-4">
                     <div class="row">
-                        <h3>
-                            {{ $t('objects.create.new_rules_discount') }}
-                        </h3>
-                    </div>
-                </div>
-
-
-                <div class="col-md-6 text-right">
-                    <div class=" float-right">
-                        <button class="btn btn-danger" @click="discountTrash">
-                            <i class="fa fa-trash"></i> {{ $t('delete') }}
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <form @submit.prevent="SaveDiscount">
-            <div class="col-md-4 float-left">
-                <div class="row">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">{{ $t('objects.create.prepay_from') }}</span>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="d-block">{{ $t('objects.create.pre_pay') }}</label>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="">
+                                        <input  class="my-form__input" type="number" min="0" v-model="discount.prepay_from">
+                                    </div>
+                                    <div class="mx-2 long-horizontal-line">
+                                        &#8213;
+                                    </div>
+                                    <div class="">
+                                        <input class="my-form__input" type="number" min="0" v-model="discount.prepay_to">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <input type="number" min="0" v-model="discount.prepay_from" class="form-control">
-                        <div class="input-group-append">
-                            <span class="input-group-text">%</span>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="d-block" for="new_block_discount">{{ $t('objects.create.discount') }}</label>
+                                <div class="flex-grow-1">
+                                    <input id="new_block_discount" class="my-form__input" type="number" min="0" v-model="discount.discount">
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
-            </div>
+                <div class="mt-4 d-flex justify-content-md-start justify-content-center float-right">
+                    <button type="button" class="btn btn-default mr-2" @click="discountTrash">
+                        {{ $t('cancel') }}
+                    </button>
 
-            <div class="col-md-4 float-left">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">{{ $t('objects.create.prepay_to') }}</span>
-                    </div>
-                    <input type="number" min="0" class="form-control" v-model="discount.prepay_to">
-                    <div class="input-group-append">
-                        <span class="input-group-text">%</span>
-                    </div>
+                    <button type="submit" class=" my-btn my-btn__blue">
+                        {{ $t('save') }}
+                    </button>
                 </div>
-            </div>
-
-            <div class="col-md-4 float-left">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">{{ $t('objects.create.discount') }}</span>
-                    </div>
-                    <input type="number" min="0" class="form-control" v-model="discount.discount">
-                    <div class="input-group-append">
-                        <span class="input-group-text">%</span>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-4 offset-8 text-right float-left">
-                <button class="btn btn-success">
-                    <i class="fa fa-save"></i> {{ $t('save') }}
-                </button>
-            </div>
-        </form>
-
+            </form>
+        </b-modal>
     </div>
 </template>
 
@@ -85,19 +56,8 @@
 
         methods: {
             discountTrash () {
-                this.$swal({
-                    title: this.$t('sweetAlert.title'),
-                    text: this.$t('sweetAlert.text'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: this.$t('sweetAlert.yes')
-                }).then((result) => {
-                    if (result.value) {
-                        this.$emit('RemoveDiscount');
-                        this.clearDiscount();
-
-                    }
-                });
+                this.$emit('RemoveDiscount');
+                this.clearDiscount();
             },
 
             clearDiscount () {

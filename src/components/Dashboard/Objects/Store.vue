@@ -1,224 +1,247 @@
 <template>
-    <div>
-        <div class="container">
-           <div class="alert alert-danger mt-3" v-if="error">
-                <ul>
-                    <li v-for="(error, index) in errors" :key="index">
+    <main>
+        <div class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3">
+            <h1 class="title__big mb-md-0 mb-3">{{ $t('objects.create.new') }}</h1>
+        </div>
+
+        <div class="alert alert-danger mt-3" v-if="error">
+            <ul>
+                <li v-for="(error, index) in errors" :key="index">
                         <span v-for="msg in error" :key="msg">
                             {{ msg }}
                         </span>
-                    </li>
-                </ul>
-           </div>
+                </li>
+            </ul>
+        </div>
 
+        <div class="new-object px-3 px-sm-4 py-4">
+            <!-- <div class="my-form"> -->
             <form @submit.prevent="submitObject">
-                <div class="col-md-12 mt-3">
+                <div class="container px-0 mx-0">
                     <div class="row">
-                        <div class="col-md-6 mt-3">
-                            <h3>
-                                {{ $t('objects.create.new') }}
-                            </h3>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1">
-                                        <i class="fa fa-home"></i>
-                                    </span>
-                                </div>
-                                <input type="text" class="form-control" v-model="object.name" :placeholder="$t('objects.placeholder.name')" required>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="d-block text-uppercase" for="title">
+                                    {{ $t('objects.create.name') }}
+                                </label>
+                                <input class="my-form__input" v-model="object.name" id="title" type="text" required :placeholder="$t('objects.placeholder.name')">
                             </div>
 
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <i class="fa fa-map-marker"></i>
-                                    </span>
-                                </div>
-                                <input type="text" class="form-control" v-model="object.address" :placeholder="$t('objects.placeholder.address')" required>
+                            <div class="mb-3">
+                                <label class="d-block text-uppercase" for="address">
+                                    {{ $t('objects.address') }}
+                                </label>
+                                <input class="my-form__input" id="address" type="text" v-model="object.address" :placeholder="$t('objects.placeholder.address')" required >
                             </div>
                         </div>
 
-                        <div class="col-md-6 mt-3">
-                            <h3>
-                                {{ $t('objects.create.type_plan') }}
-                            </h3>
-                            <p>
-                                <span v-if="object.type_plan.length == 0" class="text-danger">
-                                    {{ $t('objects.create.no_type_plan') }}
-                                </span>
-                                <span v-for="(plan, index) in object.type_plan" :key="index">
-                                    {{ plan.name }} |
-                                </span>
-                            </p>
-                            <div class="input-group mb-3">
-                                <input type="text"  v-model="object.new_type_plan" class="form-control" :placeholder="$t('objects.placeholder.type_plan')">
+                        <div class="col-lg-6">
+                            <div>
+                                <label class="d-block text-uppercase" for="type_plan">
+                                    {{ $t('objects.create.type_plan') }}
+                                </label>
+
+                                <div class="d-flex my-btn__group">
+                                    <input type="text" id="type_plan" v-model="object.new_type_plan" :placeholder="$t('objects.placeholder.type_plan')">
+                                    <button type="button" class="border-left-0 my-btn my-btn__blue d-flex align-items-center" @click="addTypePlan">
+                                        <i class="fal fa-plus mr-2"></i> {{ $t('add') }}
+                                    </button>
+                                </div>
+
+                                <div class="type-plane mt-1">
+                                    <span v-if="object.type_plan.length == 0" class="text-danger">
+                                        {{ $t('objects.create.no_type_plan') }}
+                                    </span>
+                                    <span v-for="(plan, index) in object.type_plan" :key="index">
+                                        {{ plan.name }},
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
+
+                <hr>
+
+                <!-- ЗДАНИЕ 1 -->
+                <div v-for="(building, index) in buildings" :key="index">
+                    <div v-if="!building.edit">
+                        <h3 class="title__middle my-3">
+                            {{ building.name }}
+                        </h3>
+                    </div>
+
+                    <div class="col-md-4" v-else>
+                        <div class="row">
+                            <div class="input-group">
+                                <input type="text" :placeholder="$t('objects.placeholder.building_name')" class="form-control"  v-model="building.name">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" @click="addTypePlan" type="button" id="button-addon2">
-                                        {{ $t('add') }}
+                                    <button class="btn btn-success" @click="saveBuildingName(index)" type="button">
+                                        <i class="fa fa-save"></i> {{ $t('save') }}
                                     </button>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-md-12" v-for="(building, index) in buildings" :key="index">
-                            <h3 v-if="!building.edit">
-                                {{ building.name }}
-                                <button type="button" @click="editBuildingName(index)" class="btn btn-info btn-sm">
-                                    <i class="fa fa-edit"></i> {{ $t('edit') }}
+                    <div class="new-object__inside px-3 px-sm-4 py-4 my-4">
+                    <!-- Квартирные блоки -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="title__middle mb-0">{{ $t('objects.create.blocks_apartment') }}</h3>
+                        <div>
+                            <div class="dropdown my-dropdown dropleft">
+                                <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="far fa-ellipsis-h"></i>
                                 </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item dropdown-item--inside" href="#" @click="editBuildingName(index)" >
+                                        <i class="fas fa-pen"></i> {{ $t('edit') }}
+                                    </a>
+                                    <a v-if="buildings.length > 1" class="dropdown-item dropdown-item--inside" href="#" @click="deleteBuilding(index)">
+                                        <i class="far fa-trash"></i> {{ $t('delete') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="object "><!--mb-5-->
+                        <div class="object__item object__item--inside" v-for="(block, indexx) in building.blocks" :key="indexx">
+                            <div class="object__more-info">
+                                <div class="dropdown my-dropdown dropleft">
+                                    <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="far fa-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <b-link class="dropdown-item dropdown-item--inside" href="#" @click="editBlock(index, indexx)" v-b-modal.modal-edit-object>
+                                            <i class="fas fa-pen"></i>{{ $t('edit') }}
+                                        </b-link>
 
-                                <button v-if="buildings.length > 1" type="button" @click="deleteBuilding(index)" class="btn btn-danger btn-sm ml-1">
-                                    <i class="fa fa-trash"></i> {{ $t('delete') }}
-                                </button>
-                            </h3>
+                                        <a class="dropdown-item dropdown-item--inside" @click="deleteBlock(index, indexx)">
+                                            <i class="far fa-trash"></i> {{ $t('delete') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="object__link">
+                                <div class="object__img object__img--inside" style="background-image: url('/vendor/dashboard/img/object__img2.png');"></div>
+                                <div class="object__name object__name--inside">
+                                    {{ block.name }}
+                                </div>
+                                <div class="object__info object__info--inside">
+                                    {{ $t('objects.create.apartments') }}: {{ block.apartment }},
+                                    {{ $t('objects.create.floors') }}: {{ block.floor }}
+                                </div>
+                            </a>
+                        </div>
 
-                            <div class="col-md-4" v-else>
-                                <div class="row">
-                                    <div class="input-group mb-3 ">
-                                        <input type="text" :placeholder="$t('objects.placeholder.building_name')" class="form-control"  v-model="building.name">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-success" @click="saveBuildingName(index)" type="button">
-                                                <i class="fa fa-save"></i> {{ $t('save') }}
-                                            </button>
+                        <div class="object__item object__item--inside object__item-last">
+                            <b-link @click="createBlock(index)" class="object__link" v-b-modal.modal-create-object>
+                                <div class="object__add object__add--inside"><i class="fal fa-plus"></i></div>
+                                <div class="object__name object__name--inside">
+                                    {{ $t('objects.create.new_block') }}
+                                </div>
+                            </b-link>
+                        </div>
+                    </div>
+
+                    <!-- Parking lot -->
+                </div>
+                </div>
+
+                <div class="d-flex justify-content-center justify-content-md-start">
+                    <a href="#" class="my-btn my-btn__blue d-flex align-items-center" @click="createBuilding">
+                        <i class="fal fa-plus mr-2"></i> {{ $t('objects.create.create_build') }}
+                    </a>
+                </div>
+
+                <hr class="mt-4 mb-3">
+
+                <div class="container px-0 mx-0">
+                    <div class="row">
+                        <div class="col-md-6" v-if="discounts.length > 0">
+                            <div class="discount mt-4 mb-4" v-for="(discount, index) in discounts" :key="index">
+                                <div class="container px-0 mx-0">
+                                    <div class="row">
+                                        <div >
+                                            <div class="col-lg-5 float-left">
+                                                <div class="mb-3">
+                                                    <label class="d-block" for="new_block_prepay">
+                                                        {{ $t('objects.create.pre_pay') }}
+                                                    </label>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="">
+                                                            <input id="new_block_prepay" class="my-form__input" disabled type="text" :value="discount.prepay_from +'%'">
+                                                        </div>
+                                                        <div class="mx-2 long-horizontal-line">
+                                                            &#8213;
+                                                        </div>
+                                                        <div class="">
+                                                            <input id="new_block_prepay_to" class="my-form__input" disabled type="text" :value="discount.prepay_to +'%'">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-7 float-left">
+                                                <div class="mb-3">
+                                                    <div>
+                                                        <label class="d-block" for="new_block_discount">
+                                                               {{ $t('objects.create.discount') }}
+                                                        </label>
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="flex-grow-1">
+                                                            <input id="new_block_discount" class="my-form__input" disabled type="text"  :value="discount.discount +'%'">
+                                                        </div>
+                                                        <div>
+                                                            <button type="button" class="my-btn my-btn__blue my-btn__blue--small ml-2" @click="editDiscount(index)" v-b-modal.modal-edit-discount>
+                                                                <i class="far fa-pen"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div>
+                                                            <button type="button" class="my-btn my-btn__blue my-btn__blue--small ml-2" @click="DeleteDiscount(index)">
+                                                                <i class="far fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-
-                            <div class="row">
-                                <div class="col-md-3" v-for="(block, indexx) in building.blocks" :key="indexx">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h1 class="card-title text-center">
-                                                <i class="fa fa-home"></i>
-                                            </h1>
-                                            <p class="card-text text-center">
-                                                {{ block.name }}
-                                            </p>
-
-                                            <p class="card-text text-left">
-                                                {{ $t('objects.create.apartments') }}: {{ block.apartment }} <br>
-                                                {{ $t('objects.create.floors') }}: {{ block.floor }}
-                                            </p>
-                                        </div>
-
-                                        <div class="card-footer">
-                                            <a href="#" @click="editBlock(index, indexx)"><i class="fa fa-edit"></i> {{ $t('edit') }}</a><br>
-                                            <a href="#" @click="deleteBlock(index, indexx)"><i class="fa fa-trash"></i> {{ $t('delete') }}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Blocks -->
-
-                                <div class="col-md-3" @click="createBlock(index)">
-                                    <div class="card  text-center">
-                                        <div class="card-body">
-                                            <h1 class="card-title">
-                                                <i class="fa fa-plus"></i>
-                                            </h1>
-
-                                            <div class="cart-text">
-                                                {{ $t('add') }}
-                                            </div>
-
-                                            <div class="card-text">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <hr>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <button type="button" @click="createBuilding" class="btn btn-success">
-                                <i class="fa fa-plus"></i> {{ $t('objects.create.create_build') }}
-                            </button>
-                        </div>
-
-                        <div class="col-md-12 mt-3" v-if="disabled.block.create">
-                            <hr>
-                            <div class="row">
-                                <create-block :data-object="object" @InsertBlock="InsertBlock" @RemoveBlock="disabledBlock"></create-block>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 mt-3" v-if="disabled.block.edit">
-                            <hr>
-                            <div class="row">
-                                <edit-block :data-object="object" :block_preview="edit.block" @CancelEditBlock="CancelEditBlock" @SaveEditBlock="saveEditBlock"></edit-block>
-                            </div>
-                        </div>
-
-
-                        <table class="table mt-3">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">{{ $t('objects.create.pre_pay') }}</th>
-                                <th scope="col" class="text-center">{{ $t('objects.create.discount') }}</th>
-                                <th scope="col" class="text-right">{{ $t('action') }}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(discount, index) in discounts" :key="index">
-                                    <td scope="row">
-                                        {{ discount.prepay_from }}% - {{discount.prepay_to}}%
-                                    </td>
-                                    <td class="text-center">
-                                        {{ discount.discount }}%
-                                    </td>
-                                    <td class="text-right">
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa fa-ellipsis-v"></i>
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <a class="dropdown-item" href="#" @click="editDiscount(index)"><i class="fa fa-edit"></i> {{ $t('edit') }}</a>
-                                                <a class="dropdown-item" href="#" @click="DeleteDiscount(index)"><i class="fa fa-trash"></i> {{ $t('delete') }}</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <button type="button" @click="disabled.discount.create = true" class="btn btn-success">
-                            <i class="fa fa-plus"></i> {{ $t('objects.create.create_discount') }}
-                        </button>
-
-                        <div class="col-md-12 mt-3" v-if="disabled.discount.create">
-                            <hr>
-                            <div class="row">
-                                <create-discount @RemoveDiscount="disabled.discount.create = false" @SaveDiscount="SaveDiscount"></create-discount>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 mt-3" v-if="disabled.discount.edit">
-                            <hr>
-                            <div class="row">
-                                <edit-discount @cancelDiscount="disabled.discount.edit = false" @SaveDiscount="disabled.discount.edit = false" :data-discount="edit.discount"></edit-discount>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 mt-3">
-                            <div class="row">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-save"></i> {{ $t('save') }}
+                            <div class="d-flex justify-content-md-start justify-content-center">
+                                <button type="button" class="my-btn my-btn__blue" @click="disabled.discount.create = true" v-b-modal.modal-create-discount>
+                                    <i class="fal fa-plus mr-2"></i> {{ $t('objects.create.create_discount') }}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <hr>
+
+                <div class="mt-4 d-flex justify-content-md-end justify-content-center">
+                    <button type="submit" class=" my-btn my-btn__blue">
+                        <i class="fa fa-save"></i> {{ $t('save') }}
+                    </button>
+                </div>
+
             </form>
-        </div>
-
-        <div style="margin-top: 300px">
 
         </div>
-    </div>
+
+
+        <create-block v-if="disabled.block.create" :data-object="object" @InsertBlock="InsertBlock" @RemoveBlock="disabledBlock"></create-block>
+
+        <edit-block v-if="disabled.block.edit" :data-object="object" :block_preview="edit.block" @CancelEditBlock="CancelEditBlock" @SaveEditBlock="saveEditBlock"></edit-block>
+
+        <create-discount v-if="disabled.discount.create" @RemoveDiscount="disabled.discount.create = false" @SaveDiscount="SaveDiscount" ></create-discount>
+
+        <edit-discount v-if="disabled.discount.edit" @cancelDiscount="disabled.discount.edit = false" @SaveDiscount="disabled.discount.edit = false" :data-discount="edit.discount"></edit-discount>
+
+    </main>
 </template>
 
 <script>

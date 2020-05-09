@@ -24,12 +24,16 @@ export default {
         nullMe(ctx) {
             ctx.commit('updateMe', {});
             ctx.commit('nullPermissions');
-        }
+        },
     },
 
     mutations: {
         updateMe(state, me) {
             state.me = me;
+        },
+
+        updateLocale(state, locale) {
+            state.locale = locale
         },
 
         updatePermissions(state, me) {
@@ -43,8 +47,7 @@ export default {
 
     state: {
         me: {},
-        permission: {}
-
+        permission: {},
     },
 
     getters: {
@@ -54,6 +57,6 @@ export default {
 
         getPermission(state) {
             return state.permission;
-        }
+        },
     }
 }

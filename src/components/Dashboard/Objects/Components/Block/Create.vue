@@ -1,81 +1,65 @@
 <template>
-    <div class="w-100">
-        <form @submit.prevent="saveBlock" class="w-100">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h3>
-                            {{ $t('objects.create.new_block') }}
-                        </h3>
-                    </div>
-
-                    <div class="col-md-6">
-                        <button type="button" @click="removeBlock" class="btn btn-danger float-right">
-                            <i class="fa fa-trash"></i> {{ $t('delete') }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6 mt-3">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <i class="fa fa-home"></i>
-                                </span>
+    <div>
+        <b-modal id="modal-create-object" class="py-4" ref="modal" :title="$t('objects.create.new_block')" size="lg" hide-footer hide-header-close no-close-on-backdrop>
+            <form class="my-form" @submit.prevent="saveBlock">
+                <div class="container px-0 mx-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="d-block" for="new_block_title">
+                                    {{ $t('objects.create.name') }}
+                                </label>
+                                <input v-model="block_preview.name" required :placeholder="$t('objects.placeholder.block_name')" id="new_block_title" class="my-form__input" type="text" >
                             </div>
-                            <input type="text" class="form-control" v-model="block_preview.name" required :placeholder="$t('objects.placeholder.block_name')">
                         </div>
-                    </div>
-
-                    <div class="col-md-12 mt-3">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="count_floor">{{ $t('objects.create.count_floors') }}</label>
-                                    <input type="number" v-model="block_preview.floor" min="1" required class="form-control" id="count_floor">
+                        <div class="col-lg-9">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="d-block" for="new_block_floor-count">
+                                            {{ $t('objects.create.count_floors') }}
+                                        </label>
+                                        <input v-model="block_preview.floor" required class="my-form__input" type="number" value="15" id="new_block_floor-count" min="1" max="100">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="d-block" for="new_block_room-count">
+                                            {{ $t('objects.create.count_apartments') }}
+                                        </label>
+                                        <input class="my-form__input" v-model="block_preview.apartment" v-bind:disabled="disabled.apartments" required min="1" type="number" id="new_block_room-count">
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="count_apartments">{{ $t('objects.create.count_apartments') }}</label>
-                                    <input type="number" v-model="block_preview.apartment" v-bind:disabled="disabled.apartments" required min="1" class="form-control" id="count_apartments">
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 pt-3" v-if="disabled.btn_save">
-                                <p></p>
-                                <button type="button" @click="createApartments" class="btn btn-primary btn-block">
+                        </div>
+                        <div class="col-lg-3 d-flex flex-column justify-content-end align-items-end">
+                            <div class="mb-3" v-if="disabled.btn_save">
+                                <button type="button" @click="createApartments" class=" my-btn my-btn__blue">
                                     {{ $t('create') }}
                                 </button>
                             </div>
-
-                            <div class="col-md-12">
-                                <hr>
-                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-12" v-if="disabled.settings">
-                        <h3>{{ $t('objects.create.prices') }}</h3>
-                        <div class="row">
-                            <!-- prices -->
-                            <div class="col-md-12" v-for="(price, index) in block_preview.prices" :key="index">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="price_area">{{ $t('objects.create.price_area') }}</label>
-                                            <input type="number" min="1" v-model="price.price" class="form-control" id="price_area" required>
-                                        </div>
+                    <div v-if="disabled.settings">
+                        <div class="row" v-for="(price, index) in block_preview.prices" :key="index" >
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="d-block" for="new_block_price">
+                                        {{ $t('objects.create.price_area') }}
+                                    </label>
+                                    <input id="new_block_price" class="my-form__input" type="number" v-model="price.price" required min="1">
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="mb-3">
+                                    <div>
+                                        <label class="d-block">
+                                            {{ $t('objects.create.floors') }}
+                                        </label>
                                     </div>
-
-                                    <div class="col-md-4 float-left">
-                                        <div class="form-group">
-                                            <label>{{ $t('objects.create.floors') }}</label>
-
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
                                             <multiselect
                                                     v-model="price.floors"
                                                     :multiple="true"
@@ -84,129 +68,109 @@
                                                     @remove="removeFloor"
                                             >
                                             </multiselect>
-
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-danger ml-2" v-if="block_preview.prices.length != 1" @click="removePrice(index)">
+                                                <i class="far fa-trash"></i>
+                                            </button>
                                         </div>
                                     </div>
-
-                                    <div class="col-1 pt-3">
-                                        <p></p>
-                                        <button type="button" v-if="block_preview.prices.length != 1" @click="removePrice(index)" class="btn btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-8 ">
-                                <button  class="btn btn-primary float-right" type="button" @click="addPrice">
-                                    <i class="fa fa-plus"></i> {{ $t('objects.create.new_price') }}
-                                </button>
-                            </div>
-                            <!-- prices -->
-
-                            <!--apartments-->
-                            <div class="col-md-12">
-                                <hr>
-                                <h3>{{ $t('objects.create.apartments') }}</h3>
-
-                                <div class="row">
-                                    <div class="col-md-3 mt-3" v-for="(apartment, index) in block_preview.apartments" :key="index">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p class="card-text">
-                                                    {{ $t('objects.create.apartment') }} {{ index + 1 }} <br>
-
-                                                </p>
-
-                                                <div class="card-text">
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-4 col-form-label">{{ $t('objects.create.floor') }}</label>
-                                                        <div class="col-sm-8">
-                                                            <select class="custom-select" v-model="apartment.floor">
-                                                                <option v-for="floor in block_preview.floors" :value="floor" :key="floor">
-                                                                    {{ floor }}
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card-text">
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-7 col-form-label">{{ $t('objects.create.plan') }}</label>
-                                                        <div class="col-sm-5">
-                                                            <select class="custom-select" v-model="apartment.type_plan" required>
-                                                                <option v-for="(plan, index) in dataObject.type_plan" :value="index" :key="index">
-                                                                    {{ plan.name }}
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card-text">
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-8 col-form-label">{{ $t('objects.create.rooms') }}</label>
-                                                        <div class="col-sm-4">
-                                                            <input type="number" min="1" required class="form-control" v-model="apartment.rooms">
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card-text">
-                                                    <div class="form-group row">
-                                                        <label class="col-sm-8 col-form-label">{{ $t('objects.create.area') }}</label>
-                                                        <div class="col-sm-4">
-                                                            <input type="number" min="1" required class="form-control" v-model="apartment.area">
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <p class="card-text">
-                                                    {{ $t('objects.create.price') }}: {{ calcApartmentPrice(index, apartment.area, apartment.floor) }} сум
-                                                </p>
-
-
-                                            </div>
-                                        </div>
-                                    </div><!--apartment for-->
-
-                                    <div class="col-md-3 mt-3" @click="createApartment">
-                                        <div class="card  text-center">
-                                            <div class="card-body">
-                                                <h1 class="card-title">
-                                                    <i class="fa fa-plus"></i>
-                                                </h1>
-
-                                                <div class="cart-text">
-                                                    {{ $t('add') }}
-                                                </div>
-
-                                                <div class="card-text">
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!--apartments-->
-
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="fa fa-save"></i> {{ $t('save') }}
-                                    </button>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-            </div>
-        </form>
+
+
+                <div class="mt-4 d-flex justify-content-md-start justify-content-center" v-if="disabled.settings">
+                    <button type="button" class="my-btn my-btn__blue" @click="addPrice">
+                        <i class="fal fa-plus mr-2"></i> {{ $t('objects.create.new_price') }}
+                    </button>
+                </div>
+
+
+                <hr class="mt-4 mb-3" v-if="disabled.settings">
+
+                <div class="container px-0 mx-0" v-if="disabled.settings">
+                    <div class="row">
+                        <div class="col-lg-4 my-2" v-for="(apartment, index) in block_preview.apartments" :key="index">
+                            <div class="apartment">
+                                <button type="button" class="apartment__close" @click="removeApartment(index)">
+                                    <i class="fal fa-times"></i>
+                                </button>
+
+                                <div class="apartment__info">
+                                    {{ $t('objects.create.apartment') }} <span>{{ index + 1 }}</span>
+                                </div>
+
+                                <div class="apartment__info">
+                                    {{ $t('objects.create.floor') }}:
+
+                                    <select class="custom-select" v-model="apartment.floor">
+                                        <option v-for="floor in block_preview.floors" :value="floor" :key="floor">
+                                            {{ floor }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="apartment__info">
+                                    <div class="dropdown my-dropdown__two">
+                                        <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                            {{ $t('objects.create.plan') }}
+                                        </button>
+                                        <select class="custom-select" v-model="apartment.type_plan" required>
+                                            <option disabled selected value="null">
+                                                {{ $t('objects.create.choose_plan') }}
+                                            </option>
+
+                                            <option v-for="(plan, index) in dataObject.type_plan" :value="index" :key="index">
+                                                {{ plan.name }}
+                                            </option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="apartment__info">
+                                    {{ $t('objects.create.rooms') }}:
+                                    <input type="number" min="1" required class="form-control" v-model="apartment.rooms">
+                                </div>
+
+                                <div class="apartment__info">
+                                    {{ $t('objects.create.area') }}:
+                                    <input type="number" min="1" required class="form-control" v-model="apartment.area">
+                                </div>
+                                <div class="apartment__info">
+                                    {{ $t('objects.create.price') }}:
+                                    <span>{{ calcApartmentPrice(index, apartment.area, apartment.floor) }} {{ $t('ye') }}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 my-2">
+                            <div class="apartment apartment-last">
+                                <a href="#" @click="createApartment" class="object__link position-relative top-0 left-0">
+                                    <div class="object__add object__add--inside"><i class="fal fa-plus"></i></div>
+                                    <div class="object__name object__name--inside">
+                                        {{ $t('objects.create.apartment') }}
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="mt-4 mb-3">
+
+                <div class="mt-4 d-flex justify-content-md-start justify-content-center float-right">
+                    <button type="button" class="btn btn-default mr-2" @click="removeBlock">
+                        {{ $t('cancel') }}
+                    </button>
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-save"></i> {{ $t('save') }}
+                    </button>
+                </div>
+            </form>
+        </b-modal>
     </div>
 </template>
 
@@ -420,6 +384,11 @@
                 });
                 this.block_preview.prices.splice(index, 1);
             },
+
+            removeApartment(index) {
+                this.block_preview.apartment -= 1;
+                this.block_preview.apartments.splice(index, 1)
+            }
         }
     }
 </script>

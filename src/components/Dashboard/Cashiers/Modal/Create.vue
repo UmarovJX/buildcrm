@@ -35,11 +35,11 @@
 
                 <div class="float-right">
                     <b-button @click="resetModal">
-                        <b-icon-backspace-fill></b-icon-backspace-fill> {{ $t('cancel') }}
+                        <i class="fas fa-window-close"></i> {{ $t('cancel') }}
                     </b-button>
 
                     <b-button type="submit" class="ml-1" variant="success">
-                        <b-icon-box-arrow-up-right></b-icon-box-arrow-up-right> {{ $t('save') }}
+                        <i class="fas fa-save"></i> {{ $t('save') }}
                     </b-button>
                 </div>
             </form>

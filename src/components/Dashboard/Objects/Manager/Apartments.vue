@@ -169,16 +169,19 @@
                                 <td>
                                     {{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}
                                 </td>
+
                                 <td class="text-right">
-                                    <div class="dropdown">
+                                    <div class="dropdown" v-if="!apartment.client_id || apartment.status == 0">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-ellipsis-v"></i>
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <b-dropdown-item v-b-modal.modal-create @click="CreateReserve(apartment.id)">
-                                                <i class="fa fa-unlock-alt"></i> {{ $t('apartments.list.book') }}
-                                            </b-dropdown-item>
-                                            <a class="dropdown-item" href="#" ><i class="fa fa-database"></i> {{ $t('apartments.list.confirm') }}</a>
+                                            <div v-if="getPermission.apartments.reserve">
+                                                <b-dropdown-item v-b-modal.modal-create @click="CreateReserve(apartment.id)" >
+                                                    <i class="fa fa-unlock-alt"></i> {{ $t('apartments.list.book') }}
+                                                </b-dropdown-item>
+                                            </div>
+                                            <a class="dropdown-item" href="#" v-if="getPermission.apartments.confirm" ><i class="fa fa-database"></i> {{ $t('apartments.list.confirm') }}</a>
                                         </div>
                                     </div>
                                 </td>
@@ -189,7 +192,7 @@
             </div>
         </div>
 
-        <reserve-add v-if="reserve" :apartment="apartment_id"></reserve-add>
+        <reserve-add v-if="reserve | getPermission.apartments.reserve" :apartment="apartment_id" @CreateReserve="CreateReserveSuccess"></reserve-add>
 
     </div>
 </template>
@@ -256,7 +259,7 @@
             },
         },
 
-        computed: mapGetters(['getApartments', 'getFilterRooms', 'getFilterFloors']),
+        computed: mapGetters(['getApartments', 'getFilterRooms', 'getFilterFloors', 'getPermission']),
 
         methods: {
             ...mapActions(['fetchApartments', 'fetchApartmentsFilter', 'fetchApartmentsFloors', 'fetchApartmentsRooms']),
@@ -268,6 +271,10 @@
             CreateReserve (id) {
                 this.reserve = true;
                 this.apartment_id = id;
+            },
+
+            CreateReserveSuccess() {
+                this.fetchApartmentsFilter(this);
             },
 
             moment: function () {

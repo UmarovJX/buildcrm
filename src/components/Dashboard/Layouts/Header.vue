@@ -1,39 +1,50 @@
 <template>
     <div v-if="getAuth">
-        <nav class="navbar navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="#">Xon-Saroy</a>
 
-                <div class="form-inline">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" @click="Logout" href="#">{{ $t('logout') }}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <nav class="navbar navbar-expand-sm d-flex justify-content-between align-items-center fixed-top px-lg-4 px-md-3 px-auto">
+            <router-link :to="{ name: 'dashboard'}" class="navbar-brand">
+                ХON SAROY
+            </router-link>
 
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="#">{{ $t('home') }}</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+            <div class="dropdown my-dropdown dropdown-user dropleft">
+                <button type="button" class="dropdown-toggle dropdown-user__button" data-toggle="dropdown">
+                    <div class="user d-flex align-items-center">
+                        <div class="user__img" style="background-image: url('/vendor/dashboard/img/user.png')"></div>
+                        <div class="ml-2 d-none d-sm-block">
+                            <div class="user__name">{{ getMe.first_name}} {{ getMe.last_name }}</div>
+                            <div class="user__permission">
+                                {{ $t('roles.' + getMe.role.slug)}}
+                            </div>
+                        </div>
+                    </div>
                 </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-
-                        <li v-for="(item, index) in getMenus" :key="index" class="nav-item active" >
-                            <router-link :class="'nav-link'" :to="{ name: item.action }">
-                                {{ $t(item.action + '.title')}}
-                            </router-link>
-                        </li>
-
-                    </ul>
+                <div class="dropdown-menu dropdown-menu__user">
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <label class="switch">
+                            <input type="checkbox" @click="changeLocale" v-model="locale">
+                            <div class="slider round">
+                                <span>Ру</span>
+                                <span>Uz</span>
+                            </div>
+                        </label>
+                    </a>
+                    <a class="dropdown-item" @click="Logout" href="#">
+                        <i class="fas fa-sign-out"></i> {{ $t('logout') }}
+                    </a>
                 </div>
             </div>
         </nav>
+
+        <div class="fixed-menu">
+            <div class="menu">
+                <router-link :to="{ name: item.action }" :class="'menu__item'" v-for="(item, index) in getMenus" :key="index">
+                    <div class="menu__img"></div>
+                    <div class="menu__name">
+                        {{ $t(item.action + '.title')}}
+                    </div>
+                </router-link>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -41,12 +52,14 @@
     import { mapActions, mapGetters } from 'vuex';
     export default {
         data: () => ({
-
+            locale: null
         }),
 
         async mounted() {
             this.fetchAuth(this);
-            this.fetchMenu(this)
+            this.fetchMenu(this);
+
+            this.locale = localStorage.locale == 'uz' ? false : true;
         },
 
 
@@ -58,9 +71,20 @@
                 this.nullableAuth();
                 this.nullMe();
                 this.$router.push({name: 'login'});
+            },
+
+            changeLocale() {
+                if (this.locale == false) {
+                    localStorage.locale = 'ru';
+                    this.$i18n.locale = 'ru';
+                } else {
+                    localStorage.locale = 'uz';
+                    this.$i18n.locale = 'uz';
+                }
             }
         },
-        computed: mapGetters(['getAuth', 'getMenus']),
+
+        computed: mapGetters(['getAuth', 'getMenus', 'getMe']),
 
     }
 </script>
