@@ -159,7 +159,7 @@
 
                 <div class="container px-0 mx-0">
                     <div class="row">
-                        <div class="col-md-6" v-if="discounts.length > 0">
+                        <div class="col-md-6">
                             <div class="discount mt-4 mb-4" v-for="(discount, index) in discounts" :key="index">
                                 <div class="container px-0 mx-0">
                                     <div class="row">

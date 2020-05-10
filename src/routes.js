@@ -69,6 +69,12 @@ const routes = [
         name: 'cashier',
         path: '/dashboard/cashiers',
         component: Cashiers
+    },
+
+    {
+        name: 'clients',
+        path: '/dashboard/clients',
+        component: Cashiers
     }
 
 ];
@@ -76,6 +82,7 @@ const routes = [
 const router = new VueRouter({
     routes: routes,
     mode: 'history',
+    linkActiveClass: "active"
 });
 
 

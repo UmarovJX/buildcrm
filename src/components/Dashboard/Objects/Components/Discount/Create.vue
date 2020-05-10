@@ -15,7 +15,7 @@
                                         &#8213;
                                     </div>
                                     <div class="">
-                                        <input class="my-form__input" type="number" min="0" v-model="discount.prepay_to">
+                                        <input class="my-form__input" type="number" min="1" v-model="discount.prepay_to">
                                     </div>
                                 </div>
                             </div>
@@ -24,7 +24,7 @@
                             <div class="mb-3">
                                 <label class="d-block" for="new_block_discount">{{ $t('objects.create.discount') }}</label>
                                 <div class="flex-grow-1">
-                                    <input id="new_block_discount" class="my-form__input" type="number" min="0" v-model="discount.discount">
+                                    <input id="new_block_discount" class="my-form__input" type="number" min="1" v-model="discount.discount">
                                 </div>
                             </div>
                         </div>

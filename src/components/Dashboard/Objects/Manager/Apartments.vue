@@ -1,209 +1,121 @@
 <template>
-    <div>
-        <div class="container">
-            <div class="col-md-12 mt-3">
-                <div class="row">
-                    <div class="col-md-12 mb-3">
-                        <div class="row">
-                            <div class="col-md-6">
-                                {{ $t('apartments.list.apartments') }}: {{ getApartments.length }}
-                            </div>
-                            <div class="col-md-6">
-                                <button type="button" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter" class="btn btn-primary">
-                                    <i class="fa fa-filter"></i> {{ $t('apartments.list.filter') }}
+    <main>
+        <div class="mt-4">
+            <div class="title__default my-2">
+                {{ $t('apartments.list.apartments') }}: {{ getApartments.length }}
+            </div>
+        </div>
+        <div class="my-container px-0 mx-0">
+            <div class="table-responsive">
+                <table class="table table-borderless my-table my-table-second">
+                    <thead>
+                    <tr>
+                        <th scope="col" width="50">{{ $t('apartments.list.number') }}</th>
+                        <th scope="col">{{ $t('apartments.list.object') }}</th>
+                        <th scope="col">{{ $t('apartments.list.building') }}</th>
+                        <th scope="col">{{ $t('apartments.list.block') }}</th>
+                        <th scope="col" class="text-center">{{ $t('apartments.list.rooms') }}</th>
+                        <th scope="col" class="text-center">{{ $t('apartments.list.floor') }}</th>
+                        <th scope="col" class="text-center">{{ $t('apartments.list.area') }}</th>
+                        <th scope="col">{{ $t('apartments.list.price') }}</th>
+                        <th scope="col">{{ $t('apartments.list.status') }}</th>
+                        <th scope="col" class="text-right">
+
+                        </th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr v-if="getApartments.length == 0">
+                        <td colspan="10">
+                            <center>
+                                {{ $t('no_data') }}
+                            </center>
+                        </td>
+                    </tr>
+                    <tr v-for="(apartment, index) in getApartments" :key="index">
+                        <td scope="row">
+                            {{ apartment.block.name }}-{{ apartment.id }}
+                        </td>
+
+                        <td>
+                            {{ apartment.block.building.object.name }}
+                        </td>
+
+                        <td>
+                            {{ apartment.block.building.name }}
+                        </td>
+
+                        <td>
+                            {{ apartment.block.name }}
+                        </td>
+
+                        <td class="text-center">
+                            {{ apartment.rooms }}
+                        </td>
+
+                        <td class="text-center">
+                            {{ apartment.floor }}
+                        </td>
+
+                        <td class="text-center">
+                            {{ apartment.area }}
+                        </td>
+
+                        <td>
+                            {{ getPrice(apartment.area, apartment.price.price) | number('0,0', { thousandsSeparator: ' ' }) }} сум
+                        </td>
+                        <td>
+                            <small>{{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}</small>
+                        </td>
+                        <td>
+                            <div class="dropdown my-dropdown dropleft">
+                                <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="far fa-ellipsis-h"></i>
                                 </button>
-                            </div>
 
-                            <div class="col-md-12">
-                                <div class="collapse mt-3" id="collapseFilter">
-                                    <div class="card card-body">
-                                        <div class="form-group">
-                                            <label>{{ $t('apartments.filter.apartments') }}</label><br>
+                                <div class="dropdown-menu">
+                                    <b-link v-if="getPermission.apartments.reserve" @click="CreateReserve(apartment.id)" v-b-modal.modal-create class="dropdown-item dropdown-item--inside">
+                                        <i class="far fa-calendar-check"></i> {{ $t('apartments.list.book') }}
+                                    </b-link>
 
-                                            <div class="form-check form-check-inline" v-for="(room, index) in getFilterRooms" :key="index">
-                                                <input class="form-check-input" v-model="filter.rooms" type="checkbox" :id="'rooms' + index" :value="room">
-                                                <label class="form-check-label" :for="'rooms' + index">{{ room }}</label>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>{{ $t('apartments.filter.floor') }}</label><br>
-
-                                            <div class="form-check form-check-inline" v-for="(floor, index) in getFilterFloors" :key="index">
-                                                <input class="form-check-input" v-model="filter.floors" type="checkbox" :id="'floor' + index" :value="floor">
-                                                <label class="form-check-label" :for="'floor' + index">{{ floor }}</label>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="row">
-                                                        <label>{{ $t('apartments.filter.price') }}</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                   <div class="row">
-                                                       <div class="input-group mb-3">
-                                                           <div class="input-group-prepend">
-                                                               <span class="input-group-text" >{{ $t('apartments.filter.ot') }}</span>
-                                                           </div>
-                                                           <input type="number" v-model="filter.price_from" class="form-control"  >
-                                                       </div>
-                                                   </div>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" >{{ $t('apartments.filter.do') }}</span>
-                                                        </div>
-                                                        <input type="number" v-model="filter.price_to" class="form-control" >
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="row">
-                                                        <label>{{ $t('apartments.filter.area') }}</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <div class="row">
-                                                        <div class="input-group mb-3">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" >{{ $t('apartments.filter.ot') }}</span>
-                                                            </div>
-                                                            <input type="number" v-model="filter.area_from" class="form-control"  >
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" >{{ $t('apartments.filter.do') }}</span>
-                                                        </div>
-                                                        <input type="number" v-model="filter.area_to" class="form-control" >
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>{{ $t('apartments.filter.status') }}</label><br>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" v-model="filter.status" id="status" value="1">
-                                                <label class="form-check-label" for="status">{{ $t('apartments.filter.free') }}</label>
-                                            </div>
-
-                                        </div>
-
-
-
-                                        <button type="submit" class="btn btn-success">
-                                            <i class="fa fa-filter"></i> {{ $t('apartments.list.filter') }}
-                                        </button>
-                                    </div>
+                                    <a class="dropdown-item dropdown-item--inside" href="product-item.html">
+                                        <i class="far fa-ballot-check"></i> {{ $t('apartments.list.confirm') }}
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <table class="table">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th scope="col" width="50">{{ $t('apartments.list.number') }}</th>
-                            <th scope="col">{{ $t('apartments.list.object') }}</th>
-                            <th scope="col">{{ $t('apartments.list.building') }}</th>
-                            <th scope="col">{{ $t('apartments.list.block') }}</th>
-                            <th scope="col" class="text-center">{{ $t('apartments.list.rooms') }}</th>
-                            <th scope="col" class="text-center">{{ $t('apartments.list.floor') }}</th>
-                            <th scope="col" class="text-center">{{ $t('apartments.list.area') }}</th>
-                            <th scope="col">{{ $t('apartments.list.price') }}</th>
-                            <th scope="col">{{ $t('apartments.list.status') }}</th>
-                            <th scope="col" class="text-right">
-                                {{ $t('action') }}
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(apartment, index) in getApartments" :key="index">
-                                <th scope="row">
-                                    {{ apartment.block.name }}-{{ apartment.id }}
-                                </th>
+                        </td>
+                    </tr>
 
-                                <td>
-                                    {{ apartment.block.building.object.name }}
-                                </td>
 
-                                <td>
-                                    {{ apartment.block.building.name }}
-                                </td>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                                <td>
-                                    {{ apartment.block.name }}
-                                </td>
-
-                                <td class="text-center">
-                                    {{ apartment.rooms }}
-                                </td>
-
-                                <td class="text-center">
-                                    {{ apartment.floor }}
-                                </td>
-
-                                <td class="text-center">
-                                    {{ apartment.area }}
-                                </td>
-
-                                <td>
-                                    {{ getPrice(apartment.area, apartment.price.price) | number('0,0', { thousandsSeparator: ' ' }) }} сум
-                                </td>
-                                <td>
-                                    {{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}
-                                </td>
-
-                                <td class="text-right">
-                                    <div class="dropdown" v-if="!apartment.client_id || apartment.status == 0">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-ellipsis-v"></i>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <div v-if="getPermission.apartments.reserve">
-                                                <b-dropdown-item v-b-modal.modal-create @click="CreateReserve(apartment.id)" >
-                                                    <i class="fa fa-unlock-alt"></i> {{ $t('apartments.list.book') }}
-                                                </b-dropdown-item>
-                                            </div>
-                                            <a class="dropdown-item" href="#" v-if="getPermission.apartments.confirm" ><i class="fa fa-database"></i> {{ $t('apartments.list.confirm') }}</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">
+            <div class="d-flex justify-content-md-end justify-content-center">
+                <b-link class="my-btn my-btn__blue d-flex align-items-center justify-content-center" v-b-modal.modal-filter-all>
+                    <i class="far fa-sliders-h mr-2"></i> {{ $t('apartments.list.filter') }}
+                </b-link>
             </div>
         </div>
 
         <reserve-add v-if="reserve | getPermission.apartments.reserve" :apartment="apartment_id" @CreateReserve="CreateReserveSuccess"></reserve-add>
 
-    </div>
+        <filter-form v-if="getPermission.apartments.filter" @Filtered="Filtered"></filter-form>
+    </main>
 </template>
 
 <script>
     import { mapActions, mapGetters } from 'vuex';
-
+    import Filter from '../Components/Filter/Apartment';
     import ReserveAdd from '../Components/Apartment/Reserve'
 
     export default {
         components: {
+            'filter-form': Filter,
             'reserve-add': ReserveAdd
         },
 
@@ -225,47 +137,23 @@
 
         mounted() {
             this.fetchApartments(this);
-            this.fetchApartmentsFloors(this);
-            this.fetchApartmentsRooms(this);
         },
 
-        watch: {
-            'filter.rooms': function () {
-                this.fetchApartmentsFilter(this);
-            },
-
-            'filter.floors': function () {
-                this.fetchApartmentsFilter(this);
-            },
-
-            'filter.price_from': function () {
-                this.fetchApartmentsFilter(this);
-            },
-
-            'filter.price_to': function () {
-                this.fetchApartmentsFilter(this);
-            },
-
-            'filter.area_from': function () {
-                this.fetchApartmentsFilter(this);
-            },
-
-            'filter.area_to': function () {
-                this.fetchApartmentsFilter(this);
-            },
-
-            'filter.status': function () {
-                this.fetchApartmentsFilter(this);
-            },
-        },
-
-        computed: mapGetters(['getApartments', 'getFilterRooms', 'getFilterFloors', 'getPermission']),
+        computed: mapGetters(['getApartments', 'getPermission']),
 
         methods: {
-            ...mapActions(['fetchApartments', 'fetchApartmentsFilter', 'fetchApartmentsFloors', 'fetchApartmentsRooms']),
+            ...mapActions(['fetchApartmentsFilter', 'fetchApartments', 'fetchApartmentsFilter', 'fetchApartmentsFloors', 'fetchApartmentsRooms']),
 
             getPrice(area, price) {
                 return price * area;
+            },
+
+            moment: function () {
+                return this.$moment();
+            },
+
+            Filtered(event) {
+                this.filter = event;
             },
 
             CreateReserve (id) {
@@ -276,10 +164,6 @@
             CreateReserveSuccess() {
                 this.fetchApartmentsFilter(this);
             },
-
-            moment: function () {
-                return this.$moment();
-            }
         },
 
         filters: {

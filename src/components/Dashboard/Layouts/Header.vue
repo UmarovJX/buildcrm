@@ -9,7 +9,7 @@
             <div class="dropdown my-dropdown dropdown-user dropleft">
                 <button type="button" class="dropdown-toggle dropdown-user__button" data-toggle="dropdown">
                     <div class="user d-flex align-items-center">
-                        <div class="user__img" style="background-image: url('/vendor/dashboard/img/user.png')"></div>
+                        <div class="user__img" style="background-image: url('/vendor/dashboard/img/noavatar.png'); border-radius: 50%"></div>
                         <div class="ml-2 d-none d-sm-block">
                             <div class="user__name">{{ getMe.first_name}} {{ getMe.last_name }}</div>
                             <div class="user__permission">
@@ -37,7 +37,7 @@
 
         <div class="fixed-menu">
             <div class="menu">
-                <router-link :to="{ name: item.action }" :class="'menu__item'" v-for="(item, index) in getMenus" :key="index">
+                <router-link :to="{ name: item.action }" :class="'menu__item ' + item.icon" v-for="(item, index) in getMenus" :key="index">
                     <div class="menu__img"></div>
                     <div class="menu__name">
                         {{ $t(item.action + '.title')}}

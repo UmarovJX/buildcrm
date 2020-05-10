@@ -29,8 +29,8 @@
                 </b-form-group>
 
                 <div class="float-right">
-                    <b-button @click="resetModal">
-                        <b-icon-backspace-fill></b-icon-backspace-fill> {{ $t('cancel') }}
+                    <b-button variant="light" @click="resetModal">
+                        {{ $t('cancel') }}
                     </b-button>
 
                     <b-button type="submit" class="ml-1" variant="success">
