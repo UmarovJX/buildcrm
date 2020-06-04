@@ -21,6 +21,10 @@ import getAuth from './modules/Auth/check';
 import apartments from './modules/Manager/apartments';
 
 
+import typePlan from './modules/TypePlan/index';
+
+
+
 
 Vue.use(Vuex);
 
@@ -42,6 +46,8 @@ export default new Vuex.Store({
         menus,
         objects,
         objects_filter,
-        apartments
+        apartments,
+
+        typePlan
     }
 })

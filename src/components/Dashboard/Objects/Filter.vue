@@ -35,9 +35,9 @@
                                 </center>
                             </td>
                         </tr>
-                        <tr v-for="(apartment, index) in getFilteredApartments" :key="index">
+                        <tr v-for="(apartment, index) in getFilteredApartments" :key="index" :class="[apartment.status === 2 ? 'table-warning' : '', apartment.status === 1 ? 'table-danger' : '']">
                             <td scope="row">
-                                {{ apartment.block.name }}-{{ apartment.id }}
+                                {{ apartment.number }}
                             </td>
 
                             <td>
@@ -71,17 +71,25 @@
                                 <small>{{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}</small>
                             </td>
                             <td>
-                                <div class="dropdown my-dropdown dropleft">
+                                <div class="dropdown my-dropdown dropleft" v-if="!apartment.status || apartment.manager_id === getMe.id || getMe.role.id === 1">
                                     <button type="button" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="far fa-ellipsis-h"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <b-link v-if="getPermission.apartments.reserve" @click="CreateReserve(apartment.id)" v-b-modal.modal-create class="dropdown-item dropdown-item--inside">
+                                        <b-link v-if="getPermission.apartments.reserve && !apartment.status" @click="[reserve = true, apartment_id = apartment.id]" v-b-modal.modal-create class="dropdown-item dropdown-item--inside">
                                             <i class="far fa-calendar-check"></i> {{ $t('apartments.list.book') }}
                                         </b-link>
 
-                                        <a class="dropdown-item dropdown-item--inside" href="product-item.html">
+                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.id || getMe.role.id === 1 && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
+                                            <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
+                                        </b-link>
+
+                                        <a class="dropdown-item dropdown-item--inside" href="product-item.html" v-if="apartment.status != 1">
                                             <i class="far fa-ballot-check"></i> {{ $t('apartments.list.confirm') }}
+                                        </a>
+
+                                        <a class="dropdown-item dropdown-item--inside" href="product-item.html" v-if="apartment.status === 1">
+                                            <i class="far fa-eye"></i> {{ $t('apartments.list.more') }}
                                         </a>
                                     </div>
                                 </div>
@@ -105,6 +113,8 @@
         <reserve-add v-if="reserve | getPermission.apartments.reserve" :apartment="apartment_id" @CreateReserve="CreateReserveSuccess"></reserve-add>
 
         <filter-form v-if="getPermission.apartments.filter" @Filtered="Filtered"></filter-form>
+
+        <view-client v-if="info_reserve" @CancelReserve="CloseReserveInfo" :apartment-data="apartment_preview"  :client-id="client_id"></view-client>
     </main>
 </template>
 
@@ -112,11 +122,13 @@
     import { mapActions, mapGetters } from 'vuex';
     import Filter from './Components/Filter/All';
     import ReserveAdd from './Components/Apartment/Reserve'
+    import ViewClient from './Manager/ViewClient'
 
     export default {
         components: {
             'filter-form': Filter,
-            'reserve-add': ReserveAdd
+            'reserve-add': ReserveAdd,
+            'view-client': ViewClient,
         },
 
         data: () => ({
@@ -133,17 +145,22 @@
             },
 
             reserve: false,
+            info_reserve: false,
+            apartment_preview: {},
+            client_id: 0,
+
             apartment_id: 0
         }),
 
         mounted() {
             this.fetchObjects(this);
+            this.fetchFilterApartments(this);
         },
 
-        computed: mapGetters(['getObjects', 'getFilteredApartments', 'getPermission']),
+        computed: mapGetters(['getObjects', 'getFilteredApartments', 'getPermission', 'getMe']),
 
         methods: {
-            ...mapActions(['fetchFilterApartments', 'fetchObjects']),
+            ...mapActions(['fetchFilterApartments', 'fetchObjects', 'fetchReserveClient']),
 
             getPrice(area, price) {
                 return price * area;
@@ -164,6 +181,20 @@
 
             CreateReserveSuccess() {
                 this.fetchFilterApartments(this);
+            },
+
+            ReserveInfo(apartment) {
+                this.info_reserve = true;
+                this.apartment_preview = apartment;
+                this.client_id = apartment.client_id;
+                this.fetchReserveClient(this);
+                // this.$bvModal.show('modal-view-client');
+            },
+
+            CloseReserveInfo() {
+                this.info_reserve = false;
+                this.apartment_preview = {};
+                this.fetchApartmentsFilter(this);
             },
 
         },

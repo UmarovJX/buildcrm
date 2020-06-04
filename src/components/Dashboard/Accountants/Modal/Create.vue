@@ -34,8 +34,8 @@
 
 
                 <div class="float-right">
-                    <b-button @click="resetModal">
-                        <i class="fas fa-window-close"></i> {{ $t('cancel') }}
+                    <b-button variant="light" @click="resetModal">
+                       {{ $t('cancel') }}
                     </b-button>
 
                     <b-button type="submit" class="ml-1" variant="success">

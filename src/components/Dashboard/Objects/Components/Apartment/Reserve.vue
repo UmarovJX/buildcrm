@@ -103,8 +103,12 @@
                     if (! error.response) {
                         this.toasted('Error: Network Error', 'error');
                     } else {
-                        this.error = true;
-                        this.errors = error.response.data.errors;
+                        if (error.response.status === 403) {
+                            this.toasted(error.response.data.message, 'error');
+                        } else {
+                            this.error = true;
+                            this.errors = error.response.data.errors;
+                        }
                     }
                 }
             }

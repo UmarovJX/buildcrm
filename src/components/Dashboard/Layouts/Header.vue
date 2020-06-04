@@ -28,6 +28,10 @@
                             </div>
                         </label>
                     </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-cog"></i> {{ $t('settings') }}
+                    </a>
+
                     <a class="dropdown-item" @click="Logout" href="#">
                         <i class="fas fa-sign-out"></i> {{ $t('logout') }}
                     </a>
@@ -41,6 +45,10 @@
                     <div class="menu__img"></div>
                     <div class="menu__name">
                         {{ $t(item.action + '.title')}}
+                    </div>
+
+                    <div class="menu__count" v-if="item.count > 0">
+                        {{ item.count }}
                     </div>
                 </router-link>
             </div>

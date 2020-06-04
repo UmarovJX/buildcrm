@@ -9,7 +9,7 @@ import Vue2Filters from 'vue2-filters';
 import router from './routes';
 import i18n from './lang';
 import toasted from './util/toasted';
-import getAuth from './util/getAuth';
+// import getAuth from './util/getAuth';
 import store from './store';
 import moment from 'moment';
 
@@ -26,6 +26,8 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+Vue.config.devtools = true;
+
 const sweetOptions = {
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
@@ -37,7 +39,7 @@ Vue.use(IconsPlugin);
 Vue.use(Vue2Filters);
 
 Vue.mixin(toasted);
-Vue.mixin(getAuth);
+// Vue.mixin(getAuth);
 
 Vue.use(VueAxios, axios);
 

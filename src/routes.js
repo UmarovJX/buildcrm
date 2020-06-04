@@ -15,6 +15,11 @@ import Managers from './components/Dashboard/Managers/Index';
 import Accountants from './components/Dashboard/Accountants/Index';
 import Cashiers from './components/Dashboard/Cashiers/Index';
 
+
+import TypePlan from './components/Dashboard/TypePlan/Index';
+import TypePlanList from './components/Dashboard/TypePlan/List';
+import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
+
 const routes = [
     {
         name: 'login',
@@ -75,7 +80,27 @@ const routes = [
         name: 'clients',
         path: '/dashboard/clients',
         component: Cashiers
+    },
+
+    {
+        name: 'type_plan',
+        path: '/dashboard/type/layouts',
+        component: TypePlan,
+    },
+
+    {
+        name: 'type-plan-view',
+        path: '/dashboard/type/layouts/view/:id',
+        component: TypePlanList,
+    },
+
+    {
+        name: 'type-plan-edit',
+        path: '/dashboard/type/layouts/:object/edit/:id',
+        component: TypePlanEdit,
     }
+
+
 
 ];
 
