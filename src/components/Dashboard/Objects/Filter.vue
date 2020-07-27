@@ -28,13 +28,27 @@
                     </thead>
                     <tbody>
 
-                        <tr v-if="getFilteredApartments.length == 0">
+                        <tr v-if="getLoading">
+                            <td colspan="10" style="">
+                                <div class="d-flex justify-content-center w-100">
+                                    <div class="lds-ellipsis">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr v-if="getFilteredApartments.length === 0 && !getLoading">
                             <td colspan="10">
                                 <center>
                                     {{ $t('no_data') }}
                                 </center>
                             </td>
                         </tr>
+
                         <tr v-for="(apartment, index) in getFilteredApartments" :key="index" :class="[apartment.status === 2 ? 'table-warning' : '', apartment.status === 1 ? 'table-danger' : '']">
                             <td scope="row">
                                 {{ apartment.number }}
@@ -84,9 +98,9 @@
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
                                         </b-link>
 
-                                        <a class="dropdown-item dropdown-item--inside" href="product-item.html" v-if="apartment.status != 1">
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="apartment.status != 1">
                                             <i class="far fa-ballot-check"></i> {{ $t('apartments.list.confirm') }}
-                                        </a>
+                                        </router-link>
 
                                         <a class="dropdown-item dropdown-item--inside" href="product-item.html" v-if="apartment.status === 1">
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.more') }}
@@ -157,7 +171,7 @@
             this.fetchFilterApartments(this);
         },
 
-        computed: mapGetters(['getObjects', 'getFilteredApartments', 'getPermission', 'getMe']),
+        computed: mapGetters(['getObjects', 'getFilteredApartments', 'getPermission', 'getMe', 'getLoading']),
 
         methods: {
             ...mapActions(['fetchFilterApartments', 'fetchObjects', 'fetchReserveClient']),

@@ -16,7 +16,7 @@
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="4" :label="$t('apartments.list.period_date')" label-for="period_date">
-                    <b-form-datepicker locale="ru" v-model="ApartmentData.booking_date"></b-form-datepicker>
+                    <b-form-datepicker disabled locale="ru" v-model="ApartmentData.booking_date"></b-form-datepicker>
                 </b-form-group>
 
                 <div class="float-right">
@@ -24,7 +24,7 @@
                         {{ $t('close') }}
                     </b-button>
 
-                    <b-button type="submit" class="ml-1" variant="danger">
+                    <b-button v-if="getPermission.apartments.reserve_cancel || getPermission.apartments.root_contract" type="submit" class="ml-1" variant="danger">
                         <i class="fas fa-eraser"></i> {{ $t('apartments.list.cancel_reserve') }}
                     </b-button>
                 </div>
@@ -58,37 +58,56 @@
         },
 
 
-        computed: mapGetters(['getReserveClient']),
+        computed: mapGetters(['getReserveClient', 'getPermission']),
 
         methods: {
 
             async handleSubmit() {
-                try {
+                this.$swal({
+                    title: this.$t('sweetAlert.title'),
+                    text: this.$t('sweetAlert.text_cancel_reserve'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: this.$t('sweetAlert.yes_cancel_reserve')
+                }).then((result) => {
+                    if (result.value) {
 
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/clients/reserve/cancel/' + this.ClientId, {},  this.header);
+                        this.axios.post(process.env.VUE_APP_URL + '/api/clients/reserve/cancel/' + this.ClientId, {}, this.header).then((response) => {
 
-                    this.toasted(response.data.message, 'success');
+                            this.toasted(response.data.message, 'success');
 
-                    this.$nextTick(() => {
-                        this.$bvModal.hide('modal-view-client')
-                    });
+                            this.$nextTick(() => {
+                                this.$bvModal.hide('modal-view-client')
+                            });
 
-                    this.$emit('CancelReserve', this.client);
+                            this.$emit('CancelReserve', this.client);
 
-                } catch (error) {
-                    if (! error.response) {
-                        this.toasted('Error: Network Error', 'error');
-                    } else {
-                        if (error.response.status === 403) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status == 401) {
-                            this.toasted(error.response.data.message, 'error');
-                        }  else {
-                            this.error = true;
-                            this.errors = error.response.data.errors;
-                        }
+                            this.$swal(
+                                this.$t('sweetAlert.canceled_reserve'),
+                                '',
+                                'success'
+                            );
+
+                        }).catch((error) => {
+                            if (! error.response) {
+                                this.toasted('Error: Network Error', 'error');
+                            } else {
+                                if (error.response.status === 403) {
+                                    this.toasted(error.response.data.message, 'error');
+                                } else if (error.response.status === 401) {
+                                    this.toasted(error.response.data.message, 'error');
+                                } else if (error.response.status === 500) {
+                                    this.toasted(error.response.data.message, 'error');
+                                } else {
+                                    this.error = true;
+                                    this.errors = error.response.data.errors;
+                                }
+                            }
+                        });
                     }
-                }
+                });
+
+
             },
 
             resetModal() {

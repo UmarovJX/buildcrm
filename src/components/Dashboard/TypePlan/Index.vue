@@ -33,8 +33,22 @@
                     </tr>
                     </thead>
                     <tbody>
+
+                        <tr v-if="getLoading">
+                            <td colspan="3" style="">
+                                <div class="d-flex justify-content-center w-100">
+                                    <div class="lds-ellipsis">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
                         <tr>
-                            <td colspan="3" v-if="getObjects.length == 0">
+                            <td colspan="3" v-if="getObjects.length === 0 && !getLoading">
                                 <center>
                                     {{ $t('no_data') }}
                                 </center>
@@ -91,7 +105,7 @@
             }
         }),
 
-        computed: mapGetters(['getPermission', 'getObjects']),
+        computed: mapGetters(['getPermission', 'getObjects', 'getLoading']),
 
         mounted() {
             this.fetchObjects(this)

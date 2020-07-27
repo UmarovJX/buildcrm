@@ -41,41 +41,54 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td colspan="4" v-if="getPlans.length == 0">
-                            <center>
-                                {{ $t('no_data') }}
-                            </center>
-                        </td>
-                    </tr>
-
-                    <tr v-for="(plan, index) in getPlans" :key="index">
-                        <td>
-                            {{ plan.id }}
-                        </td>
-
-                        <td>
-                            <img :src="plan.plan" width="100%">
-                        </td>
-
-                        <td>
-                            {{ plan.name }}
-                        </td>
-                        <td class="float-right">
-                            <div class="dropdown my-dropdown dropleft">
-                                <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="far fa-ellipsis-h"></i>
-                                </button>
-
-                                <div class="dropdown-menu">
-                                    <button class="dropdown-item dropdown-item--inside" @click="edit(plan.id)">
-                                        <i class="fas fa-pen"></i>
-                                        {{ $t('edit') }}
-                                    </button>
+                        <tr v-if="getLoading">
+                            <td colspan="4" style="">
+                                <div class="d-flex justify-content-center w-100">
+                                    <div class="lds-ellipsis">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" v-if="getPlans.length === 0 && !getLoading">
+                                <center>
+                                    {{ $t('no_data') }}
+                                </center>
+                            </td>
+                        </tr>
+
+                        <tr v-for="(plan, index) in getPlans" :key="index">
+                            <td>
+                                {{ plan.id }}
+                            </td>
+
+                            <td>
+                                <img :src="plan.plan" width="100%">
+                            </td>
+
+                            <td>
+                                {{ plan.name }}
+                            </td>
+                            <td class="float-right">
+                                <div class="dropdown my-dropdown dropleft">
+                                    <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="far fa-ellipsis-h"></i>
+                                    </button>
+
+                                    <div class="dropdown-menu">
+                                        <button class="dropdown-item dropdown-item--inside" @click="edit(plan.id)">
+                                            <i class="fas fa-pen"></i>
+                                            {{ $t('edit') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -103,7 +116,7 @@
             }
         }),
 
-        computed: mapGetters(['getPermission', 'getPlanObject', 'getPlans']),
+        computed: mapGetters(['getPermission', 'getPlanObject', 'getPlans', 'getLoading']),
 
         mounted() {
             this.fetchPlans(this);

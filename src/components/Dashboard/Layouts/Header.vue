@@ -3,17 +3,17 @@
 
         <nav class="navbar navbar-expand-sm d-flex justify-content-between align-items-center fixed-top px-lg-4 px-md-3 px-auto">
             <router-link :to="{ name: 'dashboard'}" class="navbar-brand">
-                ХON SAROY
+                {{ app_name }}
             </router-link>
 
             <div class="dropdown my-dropdown dropdown-user dropleft">
                 <button type="button" class="dropdown-toggle dropdown-user__button" data-toggle="dropdown">
                     <div class="user d-flex align-items-center">
-                        <div class="user__img" style="background-image: url('/vendor/dashboard/img/noavatar.png'); border-radius: 50%"></div>
+                        <div class="user__img" style="background-image: url('/vendor/dashboard/img/no_avatar.jpg'); border-radius: 50%"></div>
                         <div class="ml-2 d-none d-sm-block">
                             <div class="user__name">{{ getMe.first_name}} {{ getMe.last_name }}</div>
                             <div class="user__permission">
-                                {{ $t('roles.' + getMe.role.slug)}}
+                                {{ getName(getMe.role.name) }}
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,8 @@
     import { mapActions, mapGetters } from 'vuex';
     export default {
         data: () => ({
-            locale: null
+            locale: null,
+            app_name: process.env.VUE_APP_NAME
         }),
 
         async mounted() {
@@ -79,6 +80,26 @@
                 this.nullableAuth();
                 this.nullMe();
                 this.$router.push({name: 'login'});
+            },
+
+            getName(name) {
+                let locale = localStorage.locale;
+                let value = '';
+
+                if (locale) {
+                    switch(locale){
+                        case "ru":
+                            value = name.ru;
+                            break;
+                        case "uz":
+                            value = name.uz;
+                            break;
+                    }
+                } else {
+                    value = name.ru;
+                }
+
+                return value;
             },
 
             changeLocale() {

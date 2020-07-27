@@ -14,7 +14,7 @@
             <form ref="form" @submit.stop.prevent="handleSubmit">
 
                 <div class="apartment__info mb-3">
-                    {{ $t('objects.create.apartment') }}:
+                    {{ $t('objects.create.apartment') }}:<br>
                     <input type="text" required class="form-control" v-model="apartment_info.number">
                 </div>
 

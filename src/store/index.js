@@ -19,9 +19,14 @@ import auth from './modules/Auth';
 import getAuth from './modules/Auth/check';
 
 import apartments from './modules/Manager/apartments';
-
+import clients from './modules/Clients/index';
 
 import typePlan from './modules/TypePlan/index';
+
+import ApartmentView from './modules/Apartment/index';
+
+import Loading from './modules/Loading/index';
+import Role from './modules/Role/index';
 
 
 
@@ -30,6 +35,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
+        Loading,
+
         managers,
         managers_info,
 
@@ -48,6 +55,10 @@ export default new Vuex.Store({
         objects_filter,
         apartments,
 
-        typePlan
+        typePlan,
+        clients,
+
+        ApartmentView,
+        Role
     }
 })

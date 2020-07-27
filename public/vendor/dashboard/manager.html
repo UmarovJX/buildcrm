@@ -64,25 +64,25 @@
 
     <div class="fixed-menu">
         <div class="menu">
-            <a href="index.html" class="menu__item active">
+            <a href="index.html" class="menu__item menu__item-1 active">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Объекты
                 </div>
             </a>
-            <a href="manager.html" class="menu__item">
+            <a href="manager.html" class="menu__item menu__item-2">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Менеджеры
                 </div>
             </a>
-            <a href="accountant.html" class="menu__item">
+            <a href="accountant.html" class="menu__item menu__item-3">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Бухгалтеры
                 </div>
             </a>
-            <a href="cashier.html" class="menu__item">
+            <a href="cashier.html" class="menu__item menu__item-4">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Кассиры
@@ -94,7 +94,9 @@
     <main>
         <div class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3">
             <div class="d-flex w-100 align-items-center flex-md-row flex-column mb-md-0 mb-3">
-                <h1 class="title__big my-0 order-md-0 order-1">Менеджеры</h1>
+                <h1 class="title__big my-0 order-md-0 order-1">
+                    <a href="manager.html" class="active">Менеджеры</a>
+                </h1>
                 <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
                     <li class="breadcrumb-item"><a href="index.html"><i class="far fa-home"></i></a></li>
                     <li class="breadcrumb-item"><a href="#">User</a></li>
@@ -120,6 +122,18 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td colspan="10" style="">
+                                <div class="d-flex justify-content-center w-100">
+                                    <div class="lds-ellipsis">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                         <tr>
                             <td>1</td>
                             <td>Аббос Кудратов Мошейников</td>
@@ -494,31 +508,35 @@
                                 <div class="col-12">
                                     <div class="mb-3">
                                         <label class="d-block text-capitalize" for="new_manager-name">Имя</label>
-                                        <input id="new_manager-name" class="my-form__input" type="text" value="" required>
+                                        <input id="new_manager-name" class="my-form__input" type="text" value=""
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-3">
                                         <label class="d-block text-capitalize" for="new_manager-nomer">Номер</label>
-                                        <input class="my-form__input" type="number" value="" id="new_manager-nomer" min="1" max="300" required>
+                                        <input class="my-form__input" type="number" value="" id="new_manager-nomer"
+                                            min="1" max="300" required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-3">
                                         <label class="d-block text-capitalize" for="new_manager-login">Логин</label>
-                                        <input class="my-form__input" type="text" value="" id="new_manager-login" required>
+                                        <input class="my-form__input" type="text" value="" id="new_manager-login"
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="mb-3">
                                         <label class="d-block text-capitalize" for="new_manager-password">Пароль</label>
-                                        <input class="my-form__input" type="password" value="" id="new_manager-password" required>
+                                        <input class="my-form__input" type="password" value="" id="new_manager-password"
+                                            required>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-center">
-                            <button type="submit" class="border-left-0 my-btn my-btn__blue">
+                            <button type="submit" class="my-btn my-btn__blue">
                                 Сохранить
                             </button>
                         </div>
@@ -563,6 +581,7 @@
     </div>
     
     <script src="js/main.min.js"></script>
+    <script src="libs/pace.min.js"></script>
 
 </body>
 

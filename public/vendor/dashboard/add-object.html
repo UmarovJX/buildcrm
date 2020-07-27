@@ -63,25 +63,25 @@
 
     <div class="fixed-menu">
         <div class="menu">
-            <a href="index.html" class="menu__item active">
+            <a href="index.html" class="menu__item menu__item-1 active">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Объекты
                 </div>
             </a>
-            <a href="manager.html" class="menu__item">
+            <a href="manager.html" class="menu__item menu__item-2">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Менеджеры
                 </div>
             </a>
-            <a href="accountant.html" class="menu__item">
+            <a href="accountant.html" class="menu__item menu__item-3">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Бухгалтеры
                 </div>
             </a>
-            <a href="cashier.html" class="menu__item">
+            <a href="cashier.html" class="menu__item menu__item-4">
                 <div class="menu__img"></div>
                 <div class="menu__name">
                     Кассиры
@@ -93,8 +93,6 @@
     <main>
         <div class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3">
             <h1 class="title__big mb-md-0 mb-3">Создать новый объект</h1>
-            <a href="#" class="my-btn my-btn__blue d-flex align-items-center"><i class="fal fa-plus mr-2"></i> Добавить
-                здание</a>
         </div>
 
         <div class="new-object px-3 px-sm-4 py-4">
@@ -131,6 +129,10 @@
             </div>
             <!-- </div> -->
 
+            <hr>
+
+            <!-- ЗДАНИЕ 1 -->
+            <h3 class="title__middle my-3">ЗДАНИЕ 1</h3>
             <div class="new-object__inside px-3 px-sm-4 py-4 my-4">
                 <!-- Квартирные блоки -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -375,6 +377,8 @@
                 </div>
             </div>
 
+             <!-- ЗДАНИЕ 2 -->
+             <h3 class="title__middle my-3">ЗДАНИЕ 2</h3>
             <div class="new-object__inside px-3 px-sm-4 py-4 my-4">
                 <!-- Квартирные блоки -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -480,6 +484,78 @@
                     </div>
                 </div>
             </div>
+
+            <div class="d-flex justify-content-center justify-content-md-start">
+                <a href="#" class="my-btn my-btn__blue d-flex align-items-center"><i class="fal fa-plus mr-2"></i> Добавить здание</a>
+            </div>
+
+            <hr class="mt-4 mb-3">
+
+            <div class="container px-0 mx-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="discount mt-4">
+                            <div class="container px-0 mx-0">
+                                <div class="row">
+                                    <div class="col-lg-5">
+                                        <div class="mb-3">
+                                            <label class="d-block" for="new_block_prepay">Предоплата</label>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="">
+                                                    <input id="new_block_prepay" class="my-form__input" type="text" value="10%">
+                                                </div>
+                                                <div class="mx-2 long-horizontal-line">
+                                                    &#8213;
+                                                </div>
+                                                <div class="">
+                                                    <input id="new_block_prepay" class="my-form__input" type="text" value="20%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-7">
+                                        <div class="mb-3">
+                                            <div>
+                                                <label class="d-block" for="new_block_discount">Сумма скидки</label>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-grow-1">
+                                                    <input id="new_block_discount" class="my-form__input" type="text"
+                                                        value="1 350 000 сум">
+                                                </div>
+                                                <div>
+                                                    <button type="submit" class="my-btn my-btn__blue my-btn__blue--small ml-2"><i
+                                                            class="far fa-pen"></i></button>
+                                                </div>
+                                                <div>
+                                                    <button type="submit" class="my-btn my-btn__blue my-btn__blue--small ml-2"><i
+                                                            class="far fa-trash"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="mt-4 d-flex justify-content-md-start justify-content-center">
+                            <button class=" my-btn my-btn__blue" data-target="#new_discount" data-toggle="modal">
+                                <i class="fal fa-plus mr-2"></i> Добавить скидку
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr>
+
+            <div class="mt-4 d-flex justify-content-md-end justify-content-center">
+                <button class=" my-btn my-btn__blue">
+                    Сохранить
+                </button>
+            </div>
+
+
         </div>
     </main>
 
@@ -516,7 +592,7 @@
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-md-start justify-content-center">
-                            <button type="submit" class="border-left-0 my-btn my-btn__blue"
+                            <button type="submit" class=" my-btn my-btn__blue"
                                 data-target="#new_block-second" data-toggle="modal" data-dismiss="modal">
                                 Создать
                             </button>
@@ -599,7 +675,7 @@
                         </div>
                     </div>
                     <div class="mt-4 d-flex justify-content-md-start justify-content-center">
-                        <button class="border-left-0 my-btn my-btn__blue" data-target="#new_block-third"
+                        <button class=" my-btn my-btn__blue" data-target="#new_block-third"
                             data-toggle="modal" data-dismiss="modal">
                             <i class="fal fa-plus mr-2"></i> Новая цена
                         </button>
@@ -627,18 +703,29 @@
                                         value="'Xon Saroy' turar joy majmuasi">
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label class="d-block" for="new_block_floor-count">Количество этажей</label>
-                                    <input class="my-form__input" type="number" value="15" id="new_block_floor-count"
-                                        min="1" max="24">
+                            <div class="col-lg-9">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="d-block" for="new_block_floor-count">Количество этажей</label>
+                                            <input class="my-form__input" type="number" value="15" id="new_block_floor-count"
+                                                min="1" max="24">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="d-block" for="new_block_room-count">Количество квартир</label>
+                                            <input class="my-form__input" type="number" value="235" id="new_block_room-count"
+                                                min="1" max="300">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-3 d-flex flex-column justify-content-end align-items-end">
                                 <div class="mb-3">
-                                    <label class="d-block" for="new_block_room-count">Количество квартир</label>
-                                    <input class="my-form__input" type="number" value="235" id="new_block_room-count"
-                                        min="1" max="300">
+                                    <button type="submit" class=" my-btn my-btn__blue">
+                                        Создать
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -657,7 +744,7 @@
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <div class="flex-grow-1">
-                                            <select name="" id="new_block_floors" class="my-form__input" multiple>
+                                            <select name="" id="new_block_floors" class="my-form__input">
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
                                                 <option value="3">3</option>
@@ -682,7 +769,7 @@
                         </div>
                     </div>
                     <div class="mt-4 d-flex justify-content-md-start justify-content-center">
-                        <button class="border-left-0 my-btn my-btn__blue">
+                        <button class=" my-btn my-btn__blue">
                             <i class="fal fa-plus mr-2"></i> Новая цена
                         </button>
                     </div>
@@ -695,19 +782,16 @@
                                 <div class="apartment">
                                     <button class="apartment__close"><i class="fal fa-times"></i></button>
                                     <div class="apartment__info">Квартира: <span>A3-1</span></div>
-                                    <div class="apartment__info">Этаж: <span>1</span></div>
+                                    <div class="apartment__info">Этаж: <input type="text" value="1"></div>
                                     <div class="apartment__info">
-                                        <div class="dropdown my-dropdown__two">
-                                            <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                                Тип планировки
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <div class="dropdown-item">Цокольный этаж</div>
-                                            </div>
-                                        </div>
+                                        <select name="" id="">
+                                            <option value="1" selected disabled>Тип планировки</option>
+                                            <option value="2">Цокольный этаж</option>
+                                            <option value="3">Цокольный этаж 2</option>
+                                        </select>
                                     </div>
-                                    <div class="apartment__info">Кол-во комнат: <span>4</span></div>
-                                    <div class="apartment__info">Площадь: <span>80</span></div>
+                                    <div class="apartment__info">Кол-во комнат: <input type="text" value="4"></div>
+                                    <div class="apartment__info">Площадь: <input type="text" value="80"></div>
                                     <div class="apartment__info">Цена: <span>4 000 000 сум</span></div>
                                 </div>
                             </div>
@@ -722,73 +806,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 d-flex justify-content-md-start justify-content-center">
-                        <button class="border-left-0 my-btn my-btn__blue">
-                            Сохранить
-                        </button>
-                    </div>
-
-                    <hr class="mt-4 mb-3">
-
-                    <div class="discount mt-4">
-                        <div class="container px-0 mx-0">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <div class="mb-3">
-                                        <label class="d-block" for="new_block_prepay">Предоплата</label>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="">
-                                                <input id="new_block_prepay" class="my-form__input" type="text"
-                                                    value="10%">
-                                            </div>
-                                            <div class="mx-2 long-horizontal-line">
-                                                &#8213;
-                                            </div>
-                                            <div class="">
-                                                <input id="new_block_prepay" class="my-form__input" type="text"
-                                                    value="20%">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-7">
-                                    <div class="mb-3">
-                                        <div>
-                                            <label class="d-block" for="new_block_discount">Сумма скидки</label>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-grow-1">
-                                                <input id="new_block_discount" class="my-form__input" type="text"
-                                                    value="1 350 000 сум">
-                                            </div>
-                                            <div>
-                                                <button type="submit"
-                                                    class="my-btn my-btn__blue my-btn__blue--small ml-2"><i
-                                                        class="far fa-pen"></i></button>
-                                            </div>
-                                            <div>
-                                                <button type="submit"
-                                                    class="my-btn my-btn__blue my-btn__blue--small ml-2"><i
-                                                        class="far fa-trash"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 d-flex justify-content-md-start justify-content-center">
-                        <button class="border-left-0 my-btn my-btn__blue" data-target="#new_discount"
-                            data-toggle="modal">
-                            <i class="fal fa-plus mr-2"></i> Добавить скидку
-                        </button>
-                    </div>
-
                     <hr class="mt-4 mb-3">
 
                     <div class="mt-4 d-flex justify-content-md-start justify-content-center">
-                        <button class="border-left-0 my-btn my-btn__blue">
+                        <button class=" my-btn my-btn__blue">
                             Сохранить
                         </button>
                     </div>
@@ -838,7 +859,7 @@
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-md-start justify-content-center">
-                            <button type="submit" class="border-left-0 my-btn my-btn__blue" data-target="#new_block"
+                            <button type="submit" class=" my-btn my-btn__blue" data-target="#new_block"
                                 data-toggle="modal" data-dismiss="modal">
                                 Добавить
                             </button>
@@ -875,7 +896,7 @@
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-center">
-                            <button type="submit" class="border-left-0 my-btn my-btn__blue" data-target="#new_block"
+                            <button type="submit" class=" my-btn my-btn__blue" data-target="#new_block"
                                 data-toggle="modal" data-dismiss="modal">
                                 Создать
                             </button>
@@ -912,7 +933,7 @@
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-center">
-                            <button type="submit" class="border-left-0 my-btn my-btn__blue">
+                            <button type="submit" class=" my-btn my-btn__blue">
                                 Сохранить
                             </button>
                         </div>
@@ -957,6 +978,7 @@
     </div>
     
     <script src="js/main.min.js"></script>
+    <script src="libs/pace.min.js"></script>
 
 </body>
 

@@ -28,13 +28,28 @@
                     </thead>
                     <tbody>
 
-                        <tr v-if="getApartments.length == 0">
+                        <tr v-if="getLoading">
+                            <td colspan="10" style="">
+                                <div class="d-flex justify-content-center w-100">
+                                    <div class="lds-ellipsis">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr v-if="getApartments.length === 0 && !getLoading">
                             <td colspan="10">
                                 <center>
                                     {{ $t('no_data') }}
                                 </center>
                             </td>
                         </tr>
+
+
 
                         <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.status === 2 ? 'table-warning' : '', apartment.status === 1 ? 'table-danger' : '']">
                             <td scope="row">
@@ -72,13 +87,12 @@
                                 <small>{{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}</small>
                             </td>
                             <td>
-                                <div class="dropdown my-dropdown dropleft" v-if="!apartment.status || apartment.manager_id === getMe.id || getMe.role.id === 1">
+                                <div class="dropdown my-dropdown dropleft" >
                                     <button type="button" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="far fa-ellipsis-h"></i>
                                     </button>
 
                                     <div class="dropdown-menu" >
-
                                         <b-link class="dropdown-item dropdown-item--inside" @click="[edit = true, apartment_id = apartment.id]" v-if="getPermission.apartments.edit" v-b-modal.modal-edit>
                                             <i class="far fa-pencil"></i> {{ $t('edit') }}
                                         </b-link>
@@ -87,17 +101,21 @@
                                             <i class="far fa-calendar-check"></i> {{ $t('apartments.list.book') }}
                                         </b-link>
 
-                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.id || getMe.role.id === 1 && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
+                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.id || getMe.role.id === 1 && apartment.status === 2 || getPermission.apartments.root_contract && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
                                         </b-link>
 
-                                        <a class="dropdown-item dropdown-item--inside" href="product-item.html" v-if="apartment.status != 1">
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="apartment.status === 2 && apartment.manager_id === getMe.id && getPermission.apartments.contract || apartment.status != 1 && getPermission.apartments.root_contract || apartment.status === 0 && getPermission.apartments.contract">
                                             <i class="far fa-ballot-check"></i> {{ $t('apartments.list.confirm') }}
-                                        </a>
+                                        </router-link>
 
-                                        <a class="dropdown-item dropdown-item--inside" href="product-item.html" v-if="apartment.status === 1">
+                                        <b-link v-if="apartment.status == 2 && apartment.manager_id != getMe.id" @click="getInfoReserve(apartment)" v-b-modal.modal-view-info-manager class="dropdown-item dropdown-item--inside" >
+                                            <i class="far fa-info-circle"></i> {{ $t('apartments.list.view_manager') }}
+                                        </b-link>
+
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.status === 1 || !getPermission.apartments.contract && getPermission.apartments.view">
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.more') }}
-                                        </a>
+                                        </router-link>
                                     </div>
                                 </div>
                             </td>
@@ -122,6 +140,8 @@
         <view-client v-if="info_reserve" @CancelReserve="CloseReserveInfo" :apartment-data="apartment_preview"  :client-id="client_id"></view-client>
 
         <edit-modal v-if="getPermission.apartments.edit || edit" :apartment="apartment_id" @EditApartment="EditApartment"></edit-modal>
+
+        <info-manager-modal :manager-data="this.manager_apartment" @ManagerInfo="ManagerInfo"></info-manager-modal>
     </main>
 </template>
 
@@ -132,13 +152,15 @@
     import ReserveAdd from '../Components/Apartment/Reserve'
     import EditApartment from '../Components/Apartment/Edit'
     import ViewClient from './ViewClient'
+    import InfoManager from './InfoManager'
 
     export default {
         components: {
             'filter-form': Filter,
             'reserve-add': ReserveAdd,
             'view-client': ViewClient,
-            'edit-modal': EditApartment
+            'edit-modal': EditApartment,
+            'info-manager-modal': InfoManager
         },
 
         data: () => ({
@@ -159,14 +181,18 @@
             edit: false,
 
             info_reserve: false,
-            apartment_preview: {}
+            apartment_preview: {},
+
+
+            info_manager: false,
+            manager_apartment: {}
         }),
 
         mounted() {
             this.fetchApartments(this);
         },
 
-        computed: mapGetters(['getApartments', 'getPermission', 'getMe']),
+        computed: mapGetters(['getApartments', 'getPermission', 'getMe', 'getLoading']),
 
         methods: {
             ...mapActions(['fetchApartments', 'fetchApartmentsFilter', 'fetchApartmentsFloors', 'fetchApartmentsRooms', 'fetchReserveClient']),
@@ -198,6 +224,16 @@
                 this.client_id = apartment.client_id;
                 this.fetchReserveClient(this);
                 // this.$bvModal.show('modal-view-client');
+            },
+
+            getInfoReserve(apartment) {
+                this.info_manager = true;
+                this.manager_apartment = apartment.manager;
+            },
+
+            ManagerInfo () {
+                this.info_manager = false;
+                this.manager_apartment = {};
             },
 
             CloseReserveInfo() {

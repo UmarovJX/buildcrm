@@ -49,7 +49,7 @@
                                 </div>
 
                                 <div class="type-plane mt-1">
-                                    <span v-if="object.type_plan.length == 0" class="text-danger">
+                                    <span v-if="object.type_plan.length === 0" class="text-danger">
                                         {{ $t('objects.create.no_type_plan') }}
                                     </span>
                                     <span v-for="(plan, index) in object.type_plan" :key="index">
