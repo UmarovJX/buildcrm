@@ -232,15 +232,6 @@
                                 </td>
                             </tr>
 
-                            <tr>
-                                <td width="50%">
-                                    {{ $t('roles.permissions.roles.delete') }}
-                                </td>
-                                <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.roles.delete" size="lg"></b-form-checkbox>
-                                </td>
-                            </tr>
-
                             </tbody>
                         </table>
                     </b-tab><!--roles-->

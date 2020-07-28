@@ -31,6 +31,7 @@ export default {
         },
 
         async fetchRoles(ctx, vm) {
+            ctx.commit('updateLoading', true, { root: true });
             try {
                 let header = {
                     headers: {
@@ -41,6 +42,7 @@ export default {
                 const response = await vm.axios.post(process.env.VUE_APP_URL + '/api/roles', {}, header);
                 const roles = response.data;
                 ctx.commit('updateRoles', roles);
+                ctx.commit('updateLoading', false, { root: true });
             } catch (error) {
                 if (! error.response) {
                     vm.toasted('Error: Network Error', 'error');

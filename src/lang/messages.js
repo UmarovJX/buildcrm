@@ -239,6 +239,7 @@ export default {
             'canceled_reserve': 'Бронь отменена',
             'success_create_role': 'Роль успешно создано',
             'success_update_role': 'Роль успешно редактировано',
+            'are_you_sure_delete_role': 'Если удалите роль вы должны назначить новый ролей пользователем'
             // 'text_cancel_contract': 'Вы действительно хотите расторгнуть контракт',
 
 

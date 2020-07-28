@@ -73,7 +73,6 @@
                                 </span>
                             </td>
                             <td>
-
                                 <small v-if="client.status == 'cancelled'">{{ client.status | getStatus('', '')  }}</small>
                                 <small v-else>{{ client.status | getStatus($moment(client.buyed_date).format('DD.MM.YYYY'), $moment(client.apartment.booking_date).format('DD.MM.YYYY'))  }}</small>
                             </td>
@@ -103,7 +102,6 @@
                                         <b-button class="dropdown-item dropdown-item--inside" @click="CancelContract(client.id)" v-if="client.status === 'buy' && getPermission.clients.cancel_contract || client.status === 'buy' && getMe.role.id === 1">
                                             <i class="fas fa-eraser"></i> {{ $t('apartments.list.cancel_contract') }}
                                         </b-button>
-
 
     <!--                                    <a class="dropdown-item dropdown-item&#45;&#45;inside" href="javascript:void(0)"-->
     <!--                                       data-target="#client_edit" data-toggle="modal"><i class="fas fa-pen"></i>-->

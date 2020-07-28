@@ -78,7 +78,7 @@
                                             {{ $t('edit') }}
                                         </router-link>
 
-                                        <a class="dropdown-item dropdown-item--inside" v-if="getPermission.roles.delete && role.id != 1" href="#">
+                                        <a class="dropdown-item dropdown-item--inside" v-if="getPermission.roles.delete && role.id != 1" @click="Delete(role.id)" href="#">
                                             <i class="far fa-trash"></i>  {{ $t('delete') }}
                                         </a>
                                     </div>
@@ -134,6 +134,50 @@
                 }
 
                 return value;
+            },
+
+            Delete(id) {
+                this.$swal({
+                    title: this.$t('sweetAlert.title'),
+                    text: this.$t('sweetAlert.are_you_sure_delete_role'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: this.$t('sweetAlert.yes')
+                }).then((result) => {
+                    if (result.value) {
+                        this.axios.delete(process.env.VUE_APP_URL + '/api/roles/destroy/' + id, this.header).then((response) => {
+
+                            this.toasted(response.data.message, 'success');
+
+                            this.fetchRoles(this);
+
+                            this.$swal(
+                                this.$t('sweetAlert.deleted'),
+                                '',
+                                'success'
+                            );
+                        }).catch((error) => {
+                            if (! error.response) {
+                                this.toasted('Error: Network Error', 'error');
+                            } else {
+                                if (error.response.status === 403) {
+                                    this.toasted(error.response.data.message, 'error');
+                                } else if (error.response.status === 401) {
+                                    this.toasted(error.response.data.message, 'error');
+                                } else if (error.response.status === 500) {
+                                    this.toasted(error.response.data.message, 'error');
+                                } else if (error.response.status === 404) {
+                                    this.toasted(error.response.data.exception, 'error');
+                                } else {
+                                    this.error = true;
+                                    this.errors = error.response.data.errors;
+                                }
+                            }
+                        });
+                    }
+                });
+
+
             }
         }
     }

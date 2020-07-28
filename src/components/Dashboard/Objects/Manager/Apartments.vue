@@ -101,7 +101,7 @@
                                             <i class="far fa-calendar-check"></i> {{ $t('apartments.list.book') }}
                                         </b-link>
 
-                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.id || getMe.role.id === 1 && apartment.status === 2 || getPermission.apartments.root_contract && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
+                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.id || getPermission.apartments.root_contract && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
                                         </b-link>
 
@@ -109,11 +109,11 @@
                                             <i class="far fa-ballot-check"></i> {{ $t('apartments.list.confirm') }}
                                         </router-link>
 
-                                        <b-link v-if="apartment.status == 2 && apartment.manager_id != getMe.id" @click="getInfoReserve(apartment)" v-b-modal.modal-view-info-manager class="dropdown-item dropdown-item--inside" >
+                                        <b-link v-if="apartment.status === 2 && apartment.manager_id != getMe.id" @click="getInfoReserve(apartment)" v-b-modal.modal-view-info-manager class="dropdown-item dropdown-item--inside" >
                                             <i class="far fa-info-circle"></i> {{ $t('apartments.list.view_manager') }}
                                         </b-link>
 
-                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.status === 1 || !getPermission.apartments.contract && getPermission.apartments.view">
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.status === 1 || !getPermission.apartments.contract && getPermission.apartments.view || apartment.status === 2 && apartment.manager_id != getMe.id">
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.more') }}
                                         </router-link>
                                     </div>
