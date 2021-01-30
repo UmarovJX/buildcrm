@@ -436,7 +436,7 @@
             ...mapActions(['fetchRole']),
 
             UpdateRoles () {
-                this.axios.post(process.env.VUE_APP_URL + '/api/roles/update/' + this.$route.params.id, this.getRole, this.header).then((response) => {
+                this.axios.put(process.env.VUE_APP_URL + '/roles/update/' + this.$route.params.id, this.getRole, this.header).then((response) => {
 
                     this.toasted(response.data.message, 'success');
 

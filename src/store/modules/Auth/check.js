@@ -4,13 +4,13 @@ export default {
             //let res = false;
             if (localStorage.token) {
                 try {
-                    const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/auth/check', {
+                    await vm.axios.get(process.env.VUE_APP_URL + '/oauth/me', {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.token,
                         },
                     });
 
-                    ctx.commit('updateAuth', response.data.status);
+                    ctx.commit('updateAuth', true);
                 } catch (error) {
                     if (! error.response) {
                         vm.toasted('Error: Network Error', 'error');

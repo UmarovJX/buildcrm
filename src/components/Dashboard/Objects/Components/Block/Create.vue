@@ -361,7 +361,9 @@
                     price: 0,
                 });
 
-                this.block_preview.apartment += 1;
+                let apartment_count = this.block_preview.apartment + 1;
+
+                this.block_preview.apartment = apartment_count;
             },
 
             addPrice() {

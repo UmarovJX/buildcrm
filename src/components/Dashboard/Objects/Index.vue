@@ -22,7 +22,7 @@
                 <router-link v-if="getPermission.objects.apartments" :class="'object__link'" :to="{ name: 'apartments', params: { id: object.id } }">
                     <div class="object__img" style="background-image: url('/vendor/dashboard/img/object__img1.png');"></div>
                     <div class="object__name">{{ object.name }}</div>
-                    <div class="object__info">{{ $t('objects.apartments') }}: {{ object.apartment_count }}</div>
+                    <div class="object__info">{{ $t('objects.apartments') }}: {{ object.apartments_count }}</div>
                     <div class="object__address my-2">{{ object.address }}</div>
                 </router-link>
 
@@ -48,9 +48,10 @@
 
         <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">
             <div class="d-flex justify-content-md-end justify-content-center">
-                <b-link class="my-btn my-btn__blue d-flex align-items-center justify-content-center" v-b-modal.modal-filter-index>
+
+                <router-link :to="{'name': 'objects-filter'}" class="my-btn my-btn__blue d-flex align-items-center justify-content-center" >
                     <i class="far fa-sliders-h mr-2"></i> {{ $t('apartments.list.filter') }}
-                </b-link>
+                </router-link>
             </div>
         </div>
 

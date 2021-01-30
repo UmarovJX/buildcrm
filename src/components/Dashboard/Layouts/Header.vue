@@ -2,16 +2,18 @@
     <div v-if="getAuth">
 
         <nav class="navbar navbar-expand-sm d-flex justify-content-between align-items-center fixed-top px-lg-4 px-md-3 px-auto">
-            <router-link :to="{ name: 'dashboard'}" class="navbar-brand">
+            <router-link :to="{ name: 'home'}" class="navbar-brand">
                 {{ app_name }}
             </router-link>
 
             <div class="dropdown my-dropdown dropdown-user dropleft">
                 <button type="button" class="dropdown-toggle dropdown-user__button" data-toggle="dropdown">
                     <div class="user d-flex align-items-center">
-                        <div class="user__img" style="background-image: url('/vendor/dashboard/img/no_avatar.jpg'); border-radius: 50%"></div>
+                        <div class="user__img" v-if="getMe.user.avatar" :style="'background-image: url(' + getMe.user.avatar +'); border-radius: 50%'"></div>
+                        <div class="user__img" v-else style="background-image: url('/vendor/dashboard/img/no_avatar.jpg'); border-radius: 50%"></div>
+
                         <div class="ml-2 d-none d-sm-block">
-                            <div class="user__name">{{ getMe.first_name}} {{ getMe.last_name }}</div>
+                            <div class="user__name">{{ getMe.user.firstName}} {{ getMe.user.lastName }}</div>
                             <div class="user__permission">
                                 {{ getName(getMe.role.name) }}
                             </div>
@@ -29,7 +31,7 @@
                         </label>
                     </a>
                     <a class="dropdown-item" href="#">
-                        <i class="fas fa-cog"></i> {{ $t('settings') }}
+                        <i class="fas fa-cog"></i> {{ $t('settings.title') }}
                     </a>
 
                     <a class="dropdown-item" @click="Logout" href="#">
@@ -41,8 +43,10 @@
 
         <div class="fixed-menu">
             <div class="menu">
-                <router-link :to="{ name: item.action }" :class="'menu__item ' + item.icon" v-for="(item, index) in getMenus" :key="index">
-                    <div class="menu__img"></div>
+                <router-link :to="{ name: item.action }" class="menu__item" v-for="(item, index) in getMenus" :key="index">
+<!--                    <div class="menu__img"></div>-->
+                    <i :class="item.icon"></i>
+
                     <div class="menu__name">
                         {{ $t(item.action + '.title')}}
                     </div>
@@ -119,5 +123,11 @@
 </script>
 
 <style scoped>
+    .menu__item i {
+        font-size: 29px;
+    }
 
+    .fixed-menu {
+        overflow-x: scroll;
+    }
 </style>

@@ -49,7 +49,7 @@
                             </td>
                         </tr>
 
-                        <tr v-for="(apartment, index) in getFilteredApartments" :key="index" :class="[apartment.status === 2 ? 'table-warning' : '', apartment.status === 1 ? 'table-danger' : '']">
+                        <tr v-for="(apartment, index) in getFilteredApartments" :key="index" :class="[apartment.status === 'booked' ? 'table-warning' : '', apartment.status === 'sold' ? 'table-danger' : '']">
                             <td scope="row">
                                 {{ apartment.number }}
                             </td>
@@ -217,10 +217,10 @@
             getStatus (status, booking_date) {
                 let msg;
                 switch (status) {
-                    case 1:
+                    case 'sold':
                         msg = 'Продано';
                         break;
-                    case 2:
+                    case 'booked':
                         msg = 'Забронировано до ' + booking_date;
                         break;
                     default:

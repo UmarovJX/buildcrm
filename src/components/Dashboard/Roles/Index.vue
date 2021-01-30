@@ -145,7 +145,7 @@
                     confirmButtonText: this.$t('sweetAlert.yes')
                 }).then((result) => {
                     if (result.value) {
-                        this.axios.delete(process.env.VUE_APP_URL + '/api/roles/destroy/' + id, this.header).then((response) => {
+                        this.axios.delete(process.env.VUE_APP_URL + '/roles/delete/' + id, this.header).then((response) => {
 
                             this.toasted(response.data.message, 'success');
 

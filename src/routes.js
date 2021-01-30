@@ -38,90 +38,95 @@ const routes = [
     },
 
     {
-        path: '/dashboard',
+        path: '/home',
         name: 'home',
         component: Dashboard
     },
 
     {
         name: 'objects',
-        path: '/dashboard/objects',
+        path: '/objects',
         component: Objects
     },
 
     {
         name: 'objectsStore',
-        path: '/dashboard/objects/add',
+        path: '/objects/add',
         component: ObjStore
     },
 
     {
         name: 'objects-filter',
-        path: '/dashboard/objects/filter',
+        path: '/objects/filter',
         component: ObjFilter
     },
 
     {
         name: 'apartments',
-        path: '/dashboard/objects/:id/apartments',
+        path: '/objects/:id/apartments',
         component: ObjApartment
     },
 
     {
         name: 'apartments-view',
-        path: '/dashboard/apartments/view/:id',
+        path: '/apartments/view/:id',
         component: ApartmentView
     },
 
     {
         name: 'users',
-        path: '/dashboard/users',
+        path: '/users',
         component: Users
     },
 
     {
         name: 'roles',
-        path: '/dashboard/roles',
+        path: '/roles',
         component: Roles
     },
 
     {
         name: 'roles-update',
-        path: '/dashboard/roles/update/:id',
+        path: '/roles/update/:id',
         component: RolesUpdate
     },
 
     {
         name: 'roles-store',
-        path: '/dashboard/roles/store',
+        path: '/roles/store',
         component: RolesStore
     },
 
 
     {
         name: 'clients',
-        path: '/dashboard/clients',
+        path: '/clients',
         component: Clients
     },
 
     {
         name: 'type_plan',
-        path: '/dashboard/type/layouts',
+        path: '/type/layouts',
         component: TypePlan,
     },
 
     {
         name: 'type-plan-view',
-        path: '/dashboard/type/layouts/view/:id',
+        path: '/type/layouts/view/:id',
         component: TypePlanList,
     },
 
     {
         name: 'type-plan-edit',
-        path: '/dashboard/type/layouts/:object/edit/:id',
+        path: '/type/layouts/:object/edit/:id',
         component: TypePlanEdit,
-    }
+    },
 
+    {
+        name: 'settings',
+        path: '/settings',
+        component: Clients
+    },
 
 
 ];

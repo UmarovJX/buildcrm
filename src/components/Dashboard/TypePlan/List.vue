@@ -75,7 +75,7 @@
                                 {{ plan.name }}
                             </td>
                             <td class="float-right">
-                                <div class="dropdown my-dropdown dropleft">
+                                <div class="dropdown my-dropdown dropleft" v-if="getPermission.type_plan.update">
                                     <button type="button" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="far fa-ellipsis-h"></i>
                                     </button>

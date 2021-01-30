@@ -2,7 +2,7 @@ export default {
     actions: {
         async setMe(ctx, vm, path) {
             try {
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/auth/me', {
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/oauth/me', {
                     headers: {
                         Authorization: 'Bearer ' + localStorage.token,
                     },

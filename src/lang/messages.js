@@ -1,6 +1,8 @@
 export default {
     'ru': {
-        'home': 'Главная',
+        'home': {
+            'title': 'Главная'
+        },
         'edit': 'Редактировать',
         'add': 'Добавить',
         'delete': 'Удалить',
@@ -9,7 +11,7 @@ export default {
         'create': 'Создать',
         'view': 'Посмотреть',
         'cancel': 'Отменить',
-        'settings': 'Настройки',
+        // 'settings': 'Настройки',
         'no_data': 'Нет данных',
         'logout': 'Выйти',
         'list': 'Список',
@@ -163,6 +165,14 @@ export default {
             'list': 'Список планировки'
         },
 
+        'debtors': {
+            'title': 'Задолжники'
+        },
+
+        'backup': {
+            'title': 'Резерв'
+        },
+
         'objects': {
             'title': 'Объекты',
             'apartments': 'Квартиры',
@@ -254,7 +264,6 @@ export default {
             'role': 'Роль'
         },
 
-
         'users': {
             'title': 'Пользователи',
             'name': 'Имя',
@@ -265,12 +274,16 @@ export default {
         },
 
         'accountants': {
-            'title': 'Бухгалтеры',
+            'title': 'Бухгалтерия',
             'role_title': 'Бухгалтерия'
         },
 
         'cashier': {
             'title': 'Кассиры'
+        },
+
+        'settings': {
+            'title': 'Настройки'
         }
     },
     'uz': {

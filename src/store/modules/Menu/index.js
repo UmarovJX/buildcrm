@@ -8,7 +8,7 @@ export default {
                 }
             };
 
-            vm.axios.get(process.env.VUE_APP_URL + '/api/menu/', header).then((response) => {
+            vm.axios.get(process.env.VUE_APP_URL + '/menus', header).then((response) => {
                 ctx.commit('updateMenus', response.data);
             }).catch(() => {
                 localStorage.clear();

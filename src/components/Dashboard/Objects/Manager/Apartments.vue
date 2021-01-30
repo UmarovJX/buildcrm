@@ -51,7 +51,7 @@
 
 
 
-                        <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.status === 2 ? 'table-warning' : '', apartment.status === 1 ? 'table-danger' : '']">
+                        <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.status === 'booked' ? 'table-warning' : '', apartment.status === 'sold' ? 'table-danger' : '']">
                             <td scope="row">
                                 {{ apartment.number }}
                             </td>
@@ -113,7 +113,7 @@
                                             <i class="far fa-info-circle"></i> {{ $t('apartments.list.view_manager') }}
                                         </b-link>
 
-                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.status === 1 || !getPermission.apartments.contract && getPermission.apartments.view || apartment.status === 2 && apartment.manager_id != getMe.id">
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.status === 1 || !getPermission.apartments.contract && getPermission.apartments.view  || apartment.status === 2 && apartment.manager_id != getMe.id ">
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.more') }}
                                         </router-link>
                                     </div>
@@ -253,10 +253,10 @@
             getStatus (status, booking_date) {
                 let msg;
                 switch (status) {
-                    case 1:
+                    case 'sold':
                         msg = 'Продано';
                         break;
-                    case 2:
+                    case 'booked':
                         msg = 'Забронировано до ' + booking_date;
                         break;
                     default:

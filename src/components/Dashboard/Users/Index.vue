@@ -62,32 +62,33 @@
                                 </center>
                             </td>
                         </tr>
-                        <tr v-for="(manager, index) in getManagers" :key="index">
-                            <td>{{ manager.id }}</td>
-                            <td> {{ manager.first_name }} {{ manager.last_name}}</td>
+                        <tr v-for="(user, index) in getManagers" :key="index">
+                            <td>{{ user.id }}</td>
+                            <td> {{ user.first_name }} {{ user.last_name}}</td>
 
                             <td>
-                                    <span v-for="object in manager.objects" :key="object.id">
-                                        {{ object.name }},
-                                    </span>
+                                <span v-for="object in user.objects" :key="object.id">
+                                    {{ object.name }},
+                                </span>
                             </td>
 
-                            <td>+{{ manager.phone }}</td>
-                            <td>{{ getName(manager.role.name) }}</td>
-                            <td>{{ manager.email }}</td>
+                            <td>+{{ user.phone }}</td>
+                            <td>{{ getName(user.role.name) }}</td>
+                            <td>{{ user.email }}</td>
 
                             <td>
-                                <div class="dropdown my-dropdown dropleft" v-if="manager.id != getMe.id">
+                                <div class="dropdown my-dropdown dropleft" v-if="user.role.id != 1 && user.id != getMe.id">
                                     <button type="button" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="far fa-ellipsis-h"></i>
                                     </button>
+
                                     <div class="dropdown-menu" v-if="getPermission.users.update || getPermission.users.delete">
-                                        <b-button v-if="getPermission.users.update" @click="clickManager(manager.id)" class="dropdown-item dropdown-item--inside" href="#" v-b-modal.modal-edit>
+                                        <b-button v-if="getPermission.users.update" @click="clickManager(user.id)" class="dropdown-item dropdown-item--inside" href="#" v-b-modal.modal-edit>
                                             <i class="fas fa-pen"></i>
                                             {{ $t('edit') }}
                                         </b-button>
 
-                                        <a class="dropdown-item dropdown-item--inside" v-if="getPermission.users.delete"  @click="Delete(manager.id)" href="#">
+                                        <a class="dropdown-item dropdown-item--inside" v-if="getPermission.users.delete"  @click="Delete(user.id)" href="#">
                                             <i class="far fa-trash"></i>  {{ $t('delete') }}
                                         </a>
                                     </div>

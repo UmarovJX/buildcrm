@@ -39,7 +39,7 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.post(process.env.VUE_APP_URL + '/api/roles', {}, header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/roles', header);
                 const roles = response.data;
                 ctx.commit('updateRoles', roles);
                 ctx.commit('updateLoading', false, { root: true });

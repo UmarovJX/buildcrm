@@ -46,23 +46,22 @@
 
             ...mapActions(['fetchAuth', 'fetchMenu', 'setMe']),
 
-
             Login() {
                 let vm = this;
                 let path = this.$router.currentRoute;
 
-                this.axios.post(process.env.VUE_APP_URL + '/api/auth/login', this.user)
+                this.axios.post(process.env.VUE_APP_URL + '/oauth', this.user)
                     .then((response) => {
                         const token = response.data.access_token;
                         localStorage.token = token;
-                        //this.setToken(token);
+                        // this.setToken(token);
 
                         this.fetchAuth(this);
                         this.fetchMenu(this);
                         this.setMe(this, path);
 
                         vm.toasted(response.data.message, 'success');
-                        vm.$router.push('/dashboard')
+                        vm.$router.push('/home')
                     }).catch(function (error) {
                         if (! error.response) {
                             vm.toasted('Error: Network Error', 'error');
@@ -70,7 +69,7 @@
                             if (error.response.status === 403) {
                                 vm.toasted(error.response.data.message, 'error');
                             } else if (error.response.status === 401) {
-                                vm.toasted(error.response.data.message, 'error');
+                                vm.toasted(error.response.data, 'error');
                             } else if (error.response.status === 500) {
                                 vm.toasted(error.response.data.message, 'error');
                             } else {
@@ -89,7 +88,7 @@
 
                 let vm = this;
 
-                this.axios.get(process.env.VUE_APP_URL + '/api/auth/check', header).then(() => {
+                this.axios.get(process.env.VUE_APP_URL + '/oauth/me', header).then(() => {
                     //this.items = response.data;
                     vm.$router.push({ path: 'dashboard' });
                 }).catch(() => {

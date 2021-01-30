@@ -8,7 +8,7 @@ export default {
                     }
                 };
 
-                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/api/roles/update/' + vm.$route.params.id, header);
+                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/roles/update/' + vm.$route.params.id, header);
 
                 ctx.commit('updateRole', data);
 
