@@ -13,23 +13,23 @@
 
             <form ref="form" @submit.stop.prevent="handleSubmit">
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.first_name')" label-for="first_name">
-                    <b-form-input id="first_name" v-model="getManager.first_name"></b-form-input>
+                    <b-form-input id="first_name" v-model="getUser.first_name"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.last_name')" label-for="last_name">
-                    <b-form-input id="last_name" v-model="getManager.last_name" ></b-form-input>
+                    <b-form-input id="last_name" v-model="getUser.last_name" ></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.phone')" label-for="phone">
-                    <b-form-input id="phone" v-model="getManager.phone" ></b-form-input>
+                    <b-form-input id="phone" v-model="getUser.phone" ></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.email')" label-for="email">
-                    <b-form-input type="email" v-model="getManager.email"  id="email"></b-form-input>
+                    <b-form-input type="email" v-model="getUser.email"  id="email"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.role')" label-for="roles">
-                    <b-form-select v-model="getManager.role_id" id="roles" class="mb-3">
+                    <b-form-select v-model="getUser.role_id" id="roles" class="mb-3">
                         <b-form-select-option v-for="(role, index) in getRoles" :key="index" :value="role.id">
                             {{ getName(role.name) }}
                         </b-form-select-option>
@@ -37,11 +37,11 @@
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.password')" label-for="password">
-                    <b-form-input type="password" min="5" v-model="getManager.password"   id="password"></b-form-input>
+                    <b-form-input type="password" min="5" v-model="getUser.password"   id="password"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('objects.title')" label-for="objects">
-                    <b-form-checkbox-group id="checkbox-group-2" v-model="getManager.object_ids" name="flavour-2" switches>
+                    <b-form-checkbox-group id="checkbox-group-2" v-model="getUser.object_ids" name="flavour-2" switches>
                         <b-form-checkbox v-for="object in getObjects" :key="object.id" :value="object.id" >
                             {{ object.name }}
                         </b-form-checkbox>
@@ -84,7 +84,7 @@
 
         mounted () {},
 
-        computed: mapGetters(['getObjects', 'getManager', 'getRoles']),
+        computed: mapGetters(['getObjects', 'getUser', 'getRoles']),
 
         methods: {
             ...mapActions(['nullManager']),
@@ -106,10 +106,10 @@
             },
 
             async handleSubmit() {
-                this.manager = this.getManager;
+                this.manager = this.getUser;
 
                 try {
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/managers/update/' + this.managerId, this.manager, this.header);
+                    const response = await this.axios.put(process.env.VUE_APP_URL + '/users/' + this.managerId, this.manager, this.header);
 
                     this.toasted(response.data.message, 'success');
 
@@ -123,8 +123,18 @@
                     if (! error.response) {
                         this.toasted('Error: Network Error', 'error');
                     } else {
-                        this.error = true;
-                        this.errors = error.response.data.errors;
+                        if (error.response.status === 403) {
+                            this.toasted(error.response.data.message, 'error');
+                        } else if (error.response.status === 401) {
+                            this.toasted(error.response.data, 'error');
+                        } else if (error.response.status === 500) {
+                            this.toasted(error.response.data.message, 'error');
+                        } else if (error.response.status === 422) {
+                            this.error = true;
+                            this.errors = error.response.data;
+                        } else {
+                            this.toasted(error.response.data.message, 'error');
+                        }
                     }
                 }
             },

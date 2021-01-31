@@ -29,7 +29,7 @@
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.role')" label-for="roles">
-                    <b-form-select v-model="manager.role" id="roles" class="mb-3">
+                    <b-form-select v-model="manager.role_id" id="roles" class="mb-3">
                         <b-form-select-option v-for="(role, index) in getRoles" :key="index" :value="role.id">
                             {{ getName(role.name) }}
                         </b-form-select-option>
@@ -70,7 +70,7 @@
                 password: null,
                 email: null,
                 objects: [],
-                role: null
+                role_id: null
             },
 
             error: false,
@@ -116,7 +116,7 @@
 
             async handleSubmit() {
                 try {
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/managers/store', this.manager, this.header);
+                    const response = await this.axios.post(process.env.VUE_APP_URL + '/users', this.manager, this.header);
 
                     this.toasted(response.data.message, 'success');
 
@@ -130,8 +130,20 @@
                     if (! error.response) {
                         this.toasted('Error: Network Error', 'error');
                     } else {
-                        this.error = true;
-                        this.errors = error.response.data.errors;
+                        if (error.response.status === 403) {
+                            this.toasted(error.response.data.message, 'error');
+                        } else if (error.response.status === 401) {
+                            this.toasted(error.response.data, 'error');
+                        } else if (error.response.status === 500) {
+                            this.toasted(error.response.data.message, 'error');
+                        } else if (error.response.status === 422) {
+                            this.error = true;
+                            this.errors = error.response.data;
+                        } else {
+                            this.toasted(error.response.data.message, 'error');
+                        }
+
+
                     }
                 }
             },

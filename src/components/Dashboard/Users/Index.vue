@@ -56,13 +56,13 @@
                         </tr>
 
                         <tr>
-                            <td colspan="7" v-if="getManagers.length === 0">
+                            <td colspan="7" v-if="getUsers.length === 0">
                                 <center>
                                     {{ $t('no_data') }}
                                 </center>
                             </td>
                         </tr>
-                        <tr v-for="(user, index) in getManagers" :key="index">
+                        <tr v-for="(user, index) in getUsers" :key="index">
                             <td>{{ user.id }}</td>
                             <td> {{ user.first_name }} {{ user.last_name}}</td>
 
@@ -77,7 +77,7 @@
                             <td>{{ user.email }}</td>
 
                             <td>
-                                <div class="dropdown my-dropdown dropleft" v-if="user.role.id != 1 && user.id != getMe.id">
+                                <div class="dropdown my-dropdown dropleft" v-if="user.id != getMe.user.id"> <!--user.role.id != 1 &&-->
                                     <button type="button" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="far fa-ellipsis-h"></i>
                                     </button>
@@ -127,27 +127,27 @@
             }
         }),
 
-        computed: mapGetters(['getManagers', 'getManager', 'getPermission', 'getLoading', 'getMe']),
+        computed: mapGetters(['getUsers', 'getUser', 'getPermission', 'getLoading', 'getMe']),
 
         mounted() {
-            this.fetchManagers(this);
+            this.fetchUsers(this);
         },
 
         methods: {
 
-            ...mapActions(['fetchManagers', 'fetchManager']),
+            ...mapActions(['fetchUsers', 'fetchUser', 'fetchMenu']),
 
             CreateManager () {
-                this.fetchManagers(this);
+                this.fetchUsers(this);
             },
 
             EditManager () {
-                this.fetchManagers(this);
+                this.fetchUsers(this);
             },
 
             clickManager(id) {
                 this.manager_id = id;
-                this.fetchManager(this);
+                this.fetchUser(this);
             },
 
             getName(name) {
@@ -170,7 +170,7 @@
                 return value;
             },
 
-            Delete (manager) {
+            Delete (user) {
                 this.$swal({
                     title: this.$t('sweetAlert.title'),
                     text: this.$t('sweetAlert.text'),
@@ -179,10 +179,11 @@
                     confirmButtonText: this.$t('sweetAlert.yes')
                 }).then((result) => {
                     if (result.value) {
-                        this.axios.get(process.env.VUE_APP_URL + '/api/managers/destroy/' + manager, this.header).then((response) => {
+                        this.axios.delete(process.env.VUE_APP_URL + '/users/' + user, this.header).then((response) => {
 
                             this.toasted(response.data.message, 'success');
-                            this.fetchManagers(this);
+                            this.fetchUsers(this);
+                            this.fetchMenu(this);
 
                             this.$swal(
                                 this.$t('sweetAlert.deleted'),

@@ -1,12 +1,12 @@
 export default {
     actions: {
-        async fetchManagers(ctx, vm) {
+        async fetchUsers(ctx, vm) {
             ctx.commit('updateLoading', true, { root: true });
             try {
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/managers', vm.header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/users', vm.header);
                 const managers = response.data;
 
-                ctx.commit('updateManagers', managers);
+                ctx.commit('updateUsers', managers);
                 ctx.commit('updateLoading', false, { root: true });
 
             } catch (error) {
@@ -29,18 +29,18 @@ export default {
     },
 
     mutations: {
-          updateManagers(state, managers) {
-              state.managers = managers;
+          updateUsers(state, managers) {
+              state.users = managers;
           }
     },
 
     state: {
-        managers: []
+        users: []
     },
 
     getters: {
-        getManagers(state) {
-            return state.managers;
+        getUsers(state) {
+            return state.users;
         }
     }
 }

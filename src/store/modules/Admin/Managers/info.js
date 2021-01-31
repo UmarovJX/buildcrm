@@ -1,9 +1,9 @@
 export default {
     actions: {
-        async fetchManager(ctx, vm) {
+        async fetchUser(ctx, vm) {
             try {
-                 const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/managers/update/' + vm.manager_id, vm.header );
-                 ctx.commit('updateManager', response.data);
+                 const response = await vm.axios.get(process.env.VUE_APP_URL + '/users/' + vm.manager_id, vm.header );
+                 ctx.commit('updateUser', response.data);
             } catch (error) {
                 if (! error.response) {
                     vm.toasted('Error: Network Error', 'error');
@@ -22,28 +22,28 @@ export default {
         },
 
         nullManager(ctx) {
-            ctx.commit('nullManager');
+            ctx.commit('nullUser');
         },
 
     },
 
     mutations: {
-        updateManager(state, manager) {
-            state.manager = manager;
+        updateUser(state, manager) {
+            state.user = manager;
         },
 
-        nullManager (state) {
-            state.manager = {}
+        nullUser (state) {
+            state.user = {}
         },
     },
 
     state: {
-        manager: {},
+        user: {},
     },
 
     getters: {
-        getManager(state) {
-            return state.manager;
+        getUser(state) {
+            return state.user;
         }
     }
 }

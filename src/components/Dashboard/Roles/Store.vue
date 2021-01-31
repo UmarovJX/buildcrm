@@ -475,7 +475,7 @@
                     permissions: this.role.permissions
                 };
 
-                this.axios.post(process.env.VUE_APP_URL + '/roles/store', data, this.header).then((response) => {
+                this.axios.post(process.env.VUE_APP_URL + '/roles', data, this.header).then((response) => {
 
                     this.toasted(response.data.message, 'success');
 

@@ -419,7 +419,7 @@
 
                 let vm = this;
 
-                this.axios.post(process.env.VUE_APP_URL + '/api/objects/store', data, this.header).then((response) => {
+                this.axios.post(process.env.VUE_APP_URL + '/objects', data, this.header).then((response) => {
                     if (response.data.status) {
                         vm.toasted(response.data.message, 'success');
                         vm.$router.push({name: 'objects'});

@@ -9,7 +9,7 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/objects', header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/objects', header);
                 const objects = response.data;
                 ctx.commit('updateLoading', false, { root: true });
                 ctx.commit('updateObjects', objects);
