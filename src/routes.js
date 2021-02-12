@@ -8,14 +8,14 @@ import Dashboard from './components/Dashboard/Home';
 
 import Objects from './components/Dashboard/Objects/Index';
 import ObjStore from './components/Dashboard/Objects/Store';
-import ObjFilter from './components/Dashboard/Objects/Filter';
-import ObjApartment from './components/Dashboard/Objects/Manager/Apartments';
+// import ObjFilter from './components/Dashboard/Objects/Filter';
+import ApartmentList from './components/Dashboard/Apartment/ApartmentsList';
 
 // import Managers from './components/Dashboard/Managers/Index';
 // import Accountants from './components/Dashboard/Accountants/Index';
 // import Cashiers from './components/Dashboard/Cashiers/Index';
 
-import Clients from './components/Dashboard/Clients/Index';
+// import Clients from './components/Dashboard/Clients/Index';
 
 import Users from './components/Dashboard/Users/Index';
 
@@ -23,12 +23,12 @@ import Roles from './components/Dashboard/Roles/Index';
 import RolesUpdate from './components/Dashboard/Roles/Update';
 import RolesStore from './components/Dashboard/Roles/Store';
 
-import TypePlan from './components/Dashboard/TypePlan/Index';
-import TypePlanList from './components/Dashboard/TypePlan/List';
-import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
-
-
-import ApartmentView from './components/Dashboard/Apartment/View';
+// import TypePlan from './components/Dashboard/TypePlan/Index';
+// import TypePlanList from './components/Dashboard/TypePlan/List';
+// import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
+//
+//
+// import ApartmentView from './components/Dashboard/Apartment/View';
 
 const routes = [
     {
@@ -55,23 +55,23 @@ const routes = [
         component: ObjStore
     },
 
-    {
-        name: 'objects-filter',
-        path: '/objects/filter',
-        component: ObjFilter
-    },
+    // {
+    //     name: 'objects-filter',
+    //     path: '/objects/filter',
+    //     component: ObjFilter
+    // },
 
     {
         name: 'apartments',
         path: '/objects/:id/apartments',
-        component: ObjApartment
+        component: ApartmentList
     },
 
-    {
-        name: 'apartments-view',
-        path: '/apartments/view/:id',
-        component: ApartmentView
-    },
+    // {
+    //     name: 'apartments-view',
+    //     path: '/apartments/view/:id',
+    //     component: ApartmentView
+    // },
 
     {
         name: 'users',
@@ -98,35 +98,35 @@ const routes = [
     },
 
 
-    {
-        name: 'clients',
-        path: '/clients',
-        component: Clients
-    },
+    // {
+    //     name: 'clients',
+    //     path: '/clients',
+    //     component: Clients
+    // },
 
-    {
-        name: 'type_plan',
-        path: '/type/layouts',
-        component: TypePlan,
-    },
-
-    {
-        name: 'type-plan-view',
-        path: '/type/layouts/view/:id',
-        component: TypePlanList,
-    },
-
-    {
-        name: 'type-plan-edit',
-        path: '/type/layouts/:object/edit/:id',
-        component: TypePlanEdit,
-    },
-
-    {
-        name: 'settings',
-        path: '/settings',
-        component: Clients
-    },
+    // {
+    //     name: 'type_plan',
+    //     path: '/type/layouts',
+    //     component: TypePlan,
+    // },
+    //
+    // {
+    //     name: 'type-plan-view',
+    //     path: '/type/layouts/view/:id',
+    //     component: TypePlanList,
+    // },
+    //
+    // {
+    //     name: 'type-plan-edit',
+    //     path: '/type/layouts/:object/edit/:id',
+    //     component: TypePlanEdit,
+    // },
+    //
+    // {
+    //     name: 'settings',
+    //     path: '/settings',
+    //     component: Clients
+    // },
 
 
 ];

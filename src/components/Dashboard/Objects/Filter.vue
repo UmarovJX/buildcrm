@@ -135,8 +135,8 @@
 <script>
     import { mapActions, mapGetters } from 'vuex';
     import Filter from './Components/Filter/All';
-    import ReserveAdd from './Components/Apartment/Reserve'
-    import ViewClient from './Manager/ViewClient'
+    import ReserveAdd from '../Apartment/Components/Reserve'
+    import ViewClient from '../Apartment/ViewClient'
 
     export default {
         components: {

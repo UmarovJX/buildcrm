@@ -28,6 +28,7 @@ import ApartmentView from './modules/Apartment/index';
 import Loading from './modules/Loading/index';
 import Role from './modules/Role/index';
 import HomeCount from './modules/Home/index';
+import Currencies from './modules/currency';
 
 
 
@@ -62,6 +63,8 @@ export default new Vuex.Store({
         ApartmentView,
         Role,
 
-        HomeCount
+        HomeCount,
+        Currencies
+
     }
 })

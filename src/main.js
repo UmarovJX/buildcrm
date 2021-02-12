@@ -39,6 +39,8 @@ Vue.use(IconsPlugin);
 Vue.use(Vue2Filters);
 
 Vue.mixin(toasted);
+
+
 // Vue.mixin(getAuth);
 
 Vue.use(VueAxios, axios);

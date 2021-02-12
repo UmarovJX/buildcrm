@@ -10,7 +10,7 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/apartments/list/' + vm.$route.params.id, header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id + '/apartments', header);
                 const apartments = response.data;
                 ctx.commit('updateApartment', apartments);
                 ctx.commit('updateLoading', false, { root: true });

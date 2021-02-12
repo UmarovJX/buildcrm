@@ -4,6 +4,7 @@ export default {
             'title': 'Главная'
         },
         'edit': 'Редактировать',
+        'upload_logo': 'Загрузить лого',
         'add': 'Добавить',
         'delete': 'Удалить',
         'action': 'Действия',
@@ -11,18 +12,30 @@ export default {
         'create': 'Создать',
         'view': 'Посмотреть',
         'cancel': 'Отменить',
+        'yes': 'Есть',
+        'no': 'Нет',
+        'image': 'Изображения',
         // 'settings': 'Настройки',
         'no_data': 'Нет данных',
         'logout': 'Выйти',
         'list': 'Список',
         'close': 'Закрыть',
         'ye': 'сум',
+        'usd': '$',
         'general': 'Общие',
 
         'auth': {
             'email': 'E-mail',
             'password': 'Пароль',
             'login': 'Войти'
+        },
+
+        'messages': {
+            'created': 'Успешно создано',
+        },
+
+        'notifications': {
+            'title': 'Уведомления',
         },
 
         'roles': {
@@ -119,6 +132,9 @@ export default {
                 'filter': 'Фильтр',
                 'apartments': 'Квартиры',
 
+                'entrance': 'Подъезд',
+                'balcony': 'Балкон',
+
                 'period_date': 'Период брони',
                 'more': 'Подробная информация',
                 'cancel_contract': 'Отменить контракт',
@@ -181,11 +197,22 @@ export default {
             'create': {
                 'name': 'Название',
                 'blocks_apartment': 'КВАРТИРНЫЕ БЛОКИ',
-
+                'copy_block': 'Клонировать блок',
+                'copy_building': 'Клонировать здание',
 
                 'new': 'Создать новый объект',
                 'type_plan': 'Типы планировок',
                 'no_type_plan': 'нет планировок',
+                'new_type_plan': 'Создать планировка',
+                'entrance': 'Подъезд',
+
+                'plan': {
+                    'name': 'Планировка',
+                    'area': 'Площадь',
+                    'balcony': 'Имеется балкон?',
+                    'balcony_area': 'Площадь балкона',
+                    'balcony_paid': 'Платный балкон?'
+                },
 
                 'apartments': 'Квартиры',
                 'floors': 'Этажи',
@@ -206,7 +233,6 @@ export default {
                 'rooms': 'Кол-во комнат',
                 'area': 'Площадь',
                 'price': 'Цена',
-                'plan': 'Планировка',
 
                 'pre_pay': 'Предоплата',
                 'discount': 'Сумма скидки',

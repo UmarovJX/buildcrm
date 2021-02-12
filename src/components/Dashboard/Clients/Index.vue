@@ -141,7 +141,7 @@
 
 <script>
     import { mapActions, mapGetters} from 'vuex';
-    import ViewClient from '../Objects/Manager/ViewClient';
+    import ViewClient from '../Apartment/ViewClient';
 
     export default {
         components: {

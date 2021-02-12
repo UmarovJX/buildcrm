@@ -1,6 +1,6 @@
 export default {
     actions: {
-        async fetchCounts(ctx, vm) {
+        async fetchCurrency(ctx, vm) {
             try {
                 let header = {
                     headers: {
@@ -8,9 +8,10 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/home', header);
-                const counts = response.data;
-                ctx.commit('getUpdateCounts', counts);
+                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/currency/', header);
+
+                ctx.commit('updateCurrency', data);
+
             } catch (error) {
                 if (! error.response) {
                     vm.toasted('Error: Network Error', 'error');
@@ -30,18 +31,18 @@ export default {
     },
 
     mutations: {
-        getUpdateCounts(state, counts) {
-            state.counts = counts
+        updateCurrency(state, currency) {
+            state.currency = currency;
         }
     },
 
     state: {
-        counts: {}
+        currency: {}
     },
 
     getters: {
-        getHomeCounts(state) {
-            return state.counts;
+        getCurrency(state) {
+            return state.currency;
         }
     }
 }

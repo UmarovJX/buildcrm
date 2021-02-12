@@ -16,14 +16,15 @@
                         <th scope="col">{{ $t('apartments.list.block') }}</th>
                         <th scope="col" class="text-center">{{ $t('apartments.list.rooms') }}</th>
                         <th scope="col" class="text-center">{{ $t('apartments.list.floor') }}</th>
+                        <th scope="col" class="text-center">{{ $t('apartments.list.entrance') }}</th>
                         <th scope="col" class="text-center">{{ $t('apartments.list.area') }}</th>
+                        <th scope="col" class="text-center">{{ $t('apartments.list.balcony') }}</th>
                         <th scope="col">{{ $t('apartments.list.price') }}</th>
                         <th scope="col">{{ $t('apartments.list.status') }}</th>
 
                         <th scope="col" class="text-right">
 
                         </th>
-
                     </tr>
                     </thead>
                     <tbody>
@@ -57,11 +58,11 @@
                             </td>
 
                             <td>
-                                {{ apartment.block.building.object.name }}
+                                {{ apartment.object.name }}
                             </td>
 
                             <td>
-                                {{ apartment.block.building.name }}
+                                {{ apartment.building.name }}
                             </td>
 
                             <td>
@@ -77,11 +78,26 @@
                             </td>
 
                             <td class="text-center">
-                                {{ apartment.area }}
+                                {{ apartment.entrance }}
+                            </td>
+
+                            <td class="text-center">
+                                {{ apartment.plan.area }} м²
+                            </td>
+
+                            <td class="text-center">
+                                <span v-if="apartment.plan.balcony">
+                                     {{ apartment.plan.balcony_area }} м²
+                                </span>
+
+                                <span v-else>
+                                    {{ $t('no') }}
+                                </span>
+
                             </td>
 
                             <td>
-                                {{ getPrice(apartment.area, apartment.price.price) | number('0,0', { thousandsSeparator: ' ' }) }} сум
+                                {{ apartment.price | number('0,0', { thousandsSeparator: ' ' }) }} сум
                             </td>
                             <td>
                                 <small>{{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}</small>
@@ -97,11 +113,12 @@
                                             <i class="far fa-pencil"></i> {{ $t('edit') }}
                                         </b-link>
 
-                                        <b-link v-if="getPermission.apartments.reserve && !apartment.status" @click="[reserve = true, apartment_id = apartment.id]" v-b-modal.modal-create class="dropdown-item dropdown-item--inside">
+                                        <b-link v-if="getPermission.apartments.reserve && apartment.status === 'available'" @click="[reserve = true, apartment_id = apartment.id]" v-b-modal.modal-create class="dropdown-item dropdown-item--inside">
                                             <i class="far fa-calendar-check"></i> {{ $t('apartments.list.book') }}
                                         </b-link>
 
-                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.id || getPermission.apartments.root_contract && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
+                                        <b-link v-if="apartment.status === 'booked' || getPermission.apartments.root_contract" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
+                                            <!--apartment.status === 'booked' && apartment.manager_id === getMe.id || getPermission.apartments.root_contract && apartment.status === 2-->
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
                                         </b-link>
 
@@ -109,11 +126,13 @@
                                             <i class="far fa-ballot-check"></i> {{ $t('apartments.list.confirm') }}
                                         </router-link>
 
-                                        <b-link v-if="apartment.status === 2 && apartment.manager_id != getMe.id" @click="getInfoReserve(apartment)" v-b-modal.modal-view-info-manager class="dropdown-item dropdown-item--inside" >
+                                        <b-link v-if="apartment.status === 'booked'" @click="getInfoReserve(apartment)" v-b-modal.modal-view-info-manager class="dropdown-item dropdown-item--inside" >
+                                            <!--apartment.status === 'booked' && apartment.manager_id != getMe.id-->
                                             <i class="far fa-info-circle"></i> {{ $t('apartments.list.view_manager') }}
                                         </b-link>
 
-                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.status === 1 || !getPermission.apartments.contract && getPermission.apartments.view  || apartment.status === 2 && apartment.manager_id != getMe.id ">
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.status === 'sold' || !getPermission.apartments.contract && getPermission.apartments.view  || apartment.status === 'booked'">
+<!--                                            getPermission.apartments.view && apartment.status === 'sold' || !getPermission.apartments.contract && getPermission.apartments.view  || apartment.status === 2 && apartment.manager_id != getMe.id-->
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.more') }}
                                         </router-link>
                                     </div>
@@ -148,9 +167,9 @@
 <script>
     import { mapActions, mapGetters } from 'vuex';
 
-    import Filter from '../Components/Filter/Apartment';
-    import ReserveAdd from '../Components/Apartment/Reserve'
-    import EditApartment from '../Components/Apartment/Edit'
+    import Filter from '../Objects/Components/Filter/Apartment';
+    import ReserveAdd from './Components/Reserve'
+    import EditApartment from './Components/Edit'
     import ViewClient from './ViewClient'
     import InfoManager from './InfoManager'
 

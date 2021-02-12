@@ -12,6 +12,11 @@
                             <a class="dropdown-item" v-if="getPermission.objects.update" href="#">
                                 <i class="fas fa-pen"></i> {{ $t('edit') }}
                             </a>
+
+                            <b-link class="dropdown-item" v-if="getPermission.objects.update" @click="object_id = object.id" v-b-modal.modal-upload-logo>
+                                <i class="fas fa-image"></i> {{ $t('upload_logo') }}
+                            </b-link>
+
                             <a class="dropdown-item" v-if="getPermission.objects.delete" @click="DeleteObject(object.id)" href="#">
                                 <i class="fas fa-trash"></i> {{ $t('delete') }}
                             </a>
@@ -20,7 +25,8 @@
                 </div>
 
                 <router-link v-if="getPermission.objects.apartments" :class="'object__link'" :to="{ name: 'apartments', params: { id: object.id } }">
-                    <div class="object__img" style="background-image: url('/vendor/dashboard/img/object__img1.png');"></div>
+                    <div class="object__img" v-if="object.image" :style="'background-image: url(' + object.image +');'"></div>
+                    <div class="object__img" v-else style="background-image: url('/vendor/dashboard/img/not-found.png');"></div>
                     <div class="object__name">{{ object.name }}</div>
                     <div class="object__info">{{ $t('objects.apartments') }}: {{ object.apartments_count }}</div>
                     <div class="object__address my-2">{{ object.address }}</div>
@@ -56,16 +62,20 @@
         </div>
 
         <filter-form v-if="getPermission.apartments.filter"></filter-form>
+
+        <upload-logo :object-id="object_id" @UploadLogo="uploadLogo" v-if="getPermission.objects.update"></upload-logo>
     </main>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
     import Filter from './Components/Filter/Index';
+    import UploadLogo from './Components/UploadLogo';
 
     export default {
         components: {
-            'filter-form': Filter
+            'filter-form': Filter,
+            'upload-logo': UploadLogo
         },
 
         data: () => ({
@@ -75,6 +85,7 @@
                 }
             },
 
+            object_id: 0,
             filter: {
                 rooms: [],
                 floors: [],
@@ -102,6 +113,10 @@
                 this.$router.push({ name: 'objectsStore'})
             },
 
+            uploadLogo() {
+                this.fetchObjects(this);
+            },
+
             filterSend() {
                 this.fetchFilterApartments(this);
                 this.$router.push({ name: 'objects-filter' });
@@ -116,7 +131,7 @@
                     confirmButtonText: this.$t('sweetAlert.yes')
                 }).then((result) => {
                     if (result.value) {
-                        this.axios.get(process.env.VUE_APP_URL + '/api/objects/destroy/' + object, this.header).then((response) => {
+                        this.axios.delete(process.env.VUE_APP_URL + '/objects/' + object, this.header).then((response) => {
 
                             this.toasted(response.data.message, 'success');
                             this.fetchObjects(this);

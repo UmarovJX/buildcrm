@@ -31,7 +31,7 @@
                 <div class="apartment__info mb-3">
                     <div class="dropdown my-dropdown__two">
                         <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                            {{ $t('objects.create.plan') }}
+                            {{ $t('objects.create.plan.name') }}
                         </button>
                         <select class="custom-select" v-model="apartment_info.plan_id" required>
                             <option disabled  value="null">
@@ -108,7 +108,7 @@
 
             async GetInfoApartment() {
                 try {
-                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/api/apartments/info/' + this.apartment, this.header);
+                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/apartments/' + this.apartment, this.header);
 
                     this.apartment_info = data.data;
                     this.plans = data.plans;

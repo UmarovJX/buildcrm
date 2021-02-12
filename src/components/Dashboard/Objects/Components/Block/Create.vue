@@ -116,7 +116,7 @@
                                 <div class="apartment__info">
                                     <div class="dropdown my-dropdown__two">
                                         <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                            {{ $t('objects.create.plan') }}
+                                            {{ $t('objects.create.plan.name') }}
                                         </button>
                                         <select class="custom-select" v-model="apartment.type_plan" required>
                                             <option disabled selected value="null">
@@ -136,12 +136,35 @@
                                 </div>
 
                                 <div class="apartment__info">
-                                    {{ $t('objects.create.area') }}:
-                                    <input type="number" min="1" required class="form-control" v-model="apartment.area">
+                                    {{ $t('objects.create.entrance') }}:
+                                    <input type="number" min="1" required class="form-control" v-model="apartment.entrance">
                                 </div>
+
+                                <div class="apartment__info">
+                                    {{ $t('objects.create.area') }}:
+                                    <input type="number" min="0" required class="form-control" disabled v-if="apartment.type_plan === null" >
+                                    <input type="number" min="1" required class="form-control" disabled v-else v-model="dataObject.type_plan[apartment.type_plan].area">
+                                </div>
+
+                                <div v-if="dataObject.type_plan[apartment.type_plan] && dataObject.type_plan[apartment.type_plan].balcony">
+                                    <div class="apartment__info">
+                                        {{ $t('objects.create.plan.balcony_area') }}:
+                                        <input type="number" min="0" required class="form-control" disabled v-if="apartment.type_plan === null" >
+                                        <input type="number" min="1" required class="form-control" disabled v-else v-model="dataObject.type_plan[apartment.type_plan].balcony_area">
+                                    </div>
+
+                                    {{ $t('objects.create.plan.balcony_paid') }}:
+                                    <input type="checkbox" v-model="apartment.balcony_paid">
+                                </div>
+
                                 <div class="apartment__info">
                                     {{ $t('objects.create.price') }}:
-                                    <span>{{ calcApartmentPrice(index, apartment.area, apartment.floor) }} {{ $t('ye') }}</span></div>
+                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, 0) | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('usd') }}</span><br>
+
+                                    {{ $t('objects.create.price') }} {{ $t('ye') }}:
+                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, currency.usd) | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('ye') }}</span>
+                                </div>
+
                             </div>
                         </div>
 
@@ -176,7 +199,10 @@
 
 <script>
     export default {
-        props: ['dataObject'],
+        props: {
+            dataObject: {},
+            currency: {}
+        },
 
         data: () => ({
 
@@ -260,9 +286,11 @@
                             floor: 1,
                             type_plan: null,
                             rooms: 0,
-                            area: 0,
+                            //area: 0,
                             price: 0,
-                            price_id: 0
+                            price_id: 0,
+                            balcony_paid: false,
+                            entrance: 1,
                         })
                     }
                     this.disabled.apartments = true;
@@ -324,19 +352,33 @@
                 this.sortAvailableFloors()
             },
 
-            calcApartmentPrice(index, area, floor) {
+            calcApartmentPrice(index, area, apartment, currency) {
                 var price = 0;
+
+                if (area === 0)
+                    return 0;
 
                 for (var prices = 0; prices < this.block_preview.prices.length; prices++) {
                     for (var floors = 0; floors < this.block_preview.prices[prices].floors.length; floors++) {
-                        if (this.block_preview.prices[prices].floors[floors] === floor) {
+                        if (this.block_preview.prices[prices].floors[floors] === apartment.floor) {
                             this.block_preview.apartments[index].price_id = prices;
                             price = this.block_preview.prices[prices].price;
                         }
                     }
                 }
 
-                return price * area;
+                if (currency === 0) {
+                    if (area.balcony && apartment.balcony_paid)
+                        return (price * area.area) + (price * area.balcony_area);
+
+                    return price * area.area;
+                } else {
+                    if (area.balcony && apartment.balcony_paid)
+                        return ((price * area.area) + (price * area.balcony_area)) * currency;
+
+                    return price * area.area * currency;
+                }
+
             },
 
 
@@ -357,8 +399,10 @@
                     floor: 1,
                     type_plan: null,
                     rooms: 0,
-                    area: 0,
+                    //area: 0,
                     price: 0,
+                    balcony_paid: false,
+                    entrance: 1,
                 });
 
                 let apartment_count = this.block_preview.apartment + 1;
