@@ -5,6 +5,15 @@
                 {{ $t('apartments.list.apartments') }}: {{ getApartments.length }}
             </div>
         </div>
+
+        <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">
+            <div class="d-flex justify-content-md-end justify-content-center">
+                <b-link class="my-btn my-btn__blue d-flex align-items-center justify-content-center" v-b-modal.modal-filter-all>
+                    <i class="far fa-sliders-h mr-2"></i> {{ $t('apartments.list.filter') }}
+                </b-link>
+            </div>
+        </div>
+
         <div class="my-container px-0 mx-0">
             <div class="table-responsive">
                 <table class="table table-borderless my-table my-table-second">
@@ -142,13 +151,6 @@
             </div>
         </div>
 
-        <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">
-            <div class="d-flex justify-content-md-end justify-content-center">
-                <b-link class="my-btn my-btn__blue d-flex align-items-center justify-content-center" v-b-modal.modal-filter-all>
-                    <i class="far fa-sliders-h mr-2"></i> {{ $t('apartments.list.filter') }}
-                </b-link>
-            </div>
-        </div>
 
         <reserve-add v-if="reserve | getPermission.apartments.reserve" :apartment="apartment_id" @CreateReserve="CreateReserveSuccess"></reserve-add>
 
@@ -187,6 +189,7 @@
                 price_from: null,
                 price_to: null,
                 status: 0,
+                usd: false,
 
                 area_from: null,
                 area_to: null,
@@ -212,7 +215,7 @@
         computed: mapGetters(['getApartments', 'getPermission', 'getMe', 'getLoading']),
 
         methods: {
-            ...mapActions(['fetchApartments', 'fetchApartmentsFilter', 'fetchApartmentsFloors', 'fetchApartmentsRooms', 'fetchReserveClient']),
+            ...mapActions(['fetchApartments', 'fetchApartmentsFilter', 'fetchReserveClient']),
 
             getPrice(area, price) {
                 return price * area;

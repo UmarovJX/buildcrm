@@ -40,7 +40,7 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.post(process.env.VUE_APP_URL + '/api/apartments/filter/' + vm.$route.params.id, vm.filter, header);
+                const response = await vm.axios.post(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id + '/filter', vm.filter, header);
                 const apartments = response.data;
                 ctx.commit('updateApartment', apartments);
                 ctx.commit('updateLoading', false, { root: true });
@@ -61,7 +61,7 @@ export default {
             }
         },
 
-        async fetchApartmentsFloors(ctx, vm) {
+        async fetchFilterObject(ctx, vm) {
             ctx.commit('updateLoading', true, { root: true });
             try {
                 let header = {
@@ -70,9 +70,9 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/apartments/filter/params/floors', header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id +'/filter', header);
                 const floors = response.data;
-                ctx.commit('updateFilterFloors', floors);
+                ctx.commit('updateFilter', floors);
                 ctx.commit('updateLoading', false, { root: true });
             } catch (error) {
                 if (! error.response) {
@@ -91,35 +91,6 @@ export default {
             }
         },
 
-        async fetchApartmentsRooms(ctx, vm) {
-            ctx.commit('updateLoading', true, { root: true });
-            try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/apartments/filter/params/rooms', header);
-                const floors = response.data;
-                ctx.commit('updateFilterRooms', floors);
-                ctx.commit('updateLoading', false, { root: true });
-            } catch (error) {
-                if (! error.response) {
-                    vm.toasted('Error: Network Error', 'error');
-                } else {
-                    if (error.response.status === 403) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 401) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 500) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else {
-                        vm.toasted(error.response.data.message, 'error');
-                    }
-                }
-            }
-        },
 
         async fetchReserveClient(ctx, vm)
         {
@@ -156,12 +127,8 @@ export default {
             state.apartments = apartments;
         },
 
-        updateFilterFloors(state, floors) {
-            state.filter.floors = floors;
-        },
-
-        updateFilterRooms(state, rooms) {
-            state.filter.rooms = rooms;
+        updateFilter(state, filter) {
+            state.filter = filter;
         },
 
         updateReserveClient(state, client) {
@@ -171,10 +138,7 @@ export default {
 
     state: {
         apartments: [],
-        filter: {
-            rooms: [],
-            floors: []
-        },
+        filter: {},
 
         client: {}
     },
@@ -184,12 +148,8 @@ export default {
             return state.apartments;
         },
 
-        getFilterRooms (state) {
-            return state.filter.rooms;
-        },
-
-        getFilterFloors (state) {
-            return state.filter.floors;
+        getFilterParams (state) {
+            return state.filter;
         },
 
         getReserveClient(state) {

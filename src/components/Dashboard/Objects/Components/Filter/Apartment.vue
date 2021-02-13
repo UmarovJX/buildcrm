@@ -7,7 +7,7 @@
                         {{ $t('apartments.filter.apartments') }}
                     </label>
                     <div class="room">
-                            <span v-for="(room, index) in getFilterRooms" :key="index">
+                            <span v-for="(room, index) in getFilterParams.rooms" :key="index">
                                 <input type="checkbox" :id="'rooms' + index" :value="room" v-model="filter.rooms">
                                 <label :for="'rooms' + index">{{ room }}</label>
                             </span>
@@ -18,7 +18,7 @@
                         {{ $t('apartments.filter.floor') }}
                     </label>
                     <div class="room">
-                            <span v-for="(floor, index) in getFilterFloors" :key="index">
+                            <span v-for="(floor, index) in getFilterParams.floors" :key="index">
                                 <input v-model="filter.floors" type="checkbox" :id="'floor' + index" :value="floor">
                                 <label :for="'floor' + index">{{ floor }}</label>
                             </span>
@@ -68,6 +68,13 @@
                         </div>
                     </div>
 
+                    <div class="d-flex align-items-center">
+                        <div class="custom-control custom-checkbox mr-4">
+                            <input type="checkbox" class="custom-control-input" id="usd" value="1" v-model="filter.usd">
+                            <label class="custom-control-label" for="usd">{{ $t('apartments.filter.usd') }}</label>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -98,53 +105,66 @@
                 price_to: null,
                 status: 0,
 
+                usd: false,
                 area_from: null,
                 area_to: null,
             },
         }),
 
         mounted() {
-            this.fetchApartmentsFloors(this);
-            this.fetchApartmentsRooms(this);
+            this.fetchFilterObject(this);
         },
 
         watch: {
             'filter.rooms': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.floors': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.price_from': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.price_to': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.area_from': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.area_to': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.status': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
+            'filter.usd': function () {
+                this.$emit('Filtered', this.filter);
+                this.fetchApartmentsFilter(this);
+             },
+
             'filter.objects': function () {
+                this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
         },
-        computed: mapGetters(['getObjects', 'getFilterRooms', 'getFilterFloors']),
+        computed: mapGetters(['getObjects', 'getFilterParams']),
 
         methods: {
-            ...mapActions(['fetchApartmentsFilter', 'fetchObjects', 'fetchApartmentsFloors', 'fetchApartmentsRooms',]),
+            ...mapActions(['fetchApartmentsFilter', 'fetchObjects', 'fetchFilterObject',]),
 
             Filter() {
                 this.$emit('Filtered', this.filter);
