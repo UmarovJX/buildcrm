@@ -10,13 +10,12 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/type/plan/' + vm.$route.params.id, header);
-                const plans = response.data.plans;
-                const object = response.data.object;
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id + '/plans', header);
+                const plans = response.data;
 
-                ctx.commit('updatePlans', plans);
-                ctx.commit('updateObject', object);
+                ctx.commit('updatePlan', plans);
                 ctx.commit('updateLoading', false, { root: true });
+
 
             } catch (error) {
                 if (! error.response) {
@@ -44,12 +43,10 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/type/plan/update/' + vm.$route.params.object +'/' + vm.$route.params.id, header);
-                const plan = response.data.plan;
-                const object = response.data.object;
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.object +'/plans/' + vm.$route.params.id, header);
+                const plan = response.data;
 
                 ctx.commit('updatePlan', plan);
-                ctx.commit('updateObject', object);
 
             } catch (error) {
                 if (! error.response) {
@@ -70,36 +67,20 @@ export default {
     },
 
     mutations: {
-        updatePlans(state, plans) {
-            state.plans = plans;
+
+        updatePlan(state, object) {
+            state.object = object;
         },
 
-        updatePlan(state, plan) {
-            state.plan = plan;
-        },
-
-        updateObject(state, object) {
-            state.object = object
-        }
     },
 
     state: {
-        plans: [],
         object: {},
-        plan: {}
     },
 
     getters: {
-        getPlans(state) {
-            return state.plans;
-        },
-
         getPlan(state) {
-            return state.plan;
-        },
-
-        getPlanObject(state) {
             return state.object;
-        }
+        },
     }
 }

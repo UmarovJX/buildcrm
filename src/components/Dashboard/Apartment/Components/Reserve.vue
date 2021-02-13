@@ -24,6 +24,18 @@
                     <b-form-input id="phone" v-model="client.phone"></b-form-input>
                 </b-form-group>
 
+                <div role="group" class="form-row form-group" >
+                    <label for="language" class="col-lg-2 col-4 col-form-label" >
+                        {{ $t('clients.language') }}
+                    </label>
+                    <div class="bv-no-focus-ring col">
+                        <select class="form-control" id="language" v-model="client.language">
+                            <option value="uz">Узбекский</option>
+                            <option value="ru">Русский</option>
+                        </select>
+                    </div>
+                </div>
+
                 <b-form-group label-cols="4" label-cols-lg="4" :label="$t('apartments.list.period_date')" label-for="period_date">
                     <b-form-datepicker v-model="client.period_date" locale="ru"></b-form-datepicker>
                 </b-form-group>
@@ -54,7 +66,8 @@
                 last_name: null,
                 phone: null,
                 period_date: null,
-                apartment_id: null
+                apartment_id: null,
+                language: 'uz'
             },
 
             error: false,
@@ -89,7 +102,7 @@
                 try {
                     this.client.apartment_id = this.apartment;
 
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/api/clients/reserve', this.client, this.header);
+                    const response = await this.axios.post(process.env.VUE_APP_URL + '/orders/reserve', this.client, this.header);
 
                     this.toasted(response.data.message, 'success');
 
@@ -105,9 +118,12 @@
                     } else {
                         if (error.response.status === 403) {
                             this.toasted(error.response.data.message, 'error');
+                        } else if(error.response.status === 422) {
+                            this.error = true;
+                            this.errors = error.response.data;
                         } else {
                             this.error = true;
-                            this.errors = error.response.data.errors;
+                            this.errors = error.response.data;
                         }
                     }
                 }

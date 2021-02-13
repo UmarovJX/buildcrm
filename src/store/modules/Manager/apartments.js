@@ -130,7 +130,7 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/apartments/reserve/info/' + vm.apartment_preview.id, header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/orders/' + vm.order_id + '/client', header);
                 const client = response.data;
                 ctx.commit('updateReserveClient', client);
             } catch (error) {

@@ -18,7 +18,7 @@
 
                     <li class="breadcrumb-item">
                         <a href="#">
-                            {{ getPlanObject.name }}
+                            {{ getPlan.name }}
                         </a>
                     </li>
 
@@ -37,6 +37,8 @@
                         <th width="50"><i class="fas fa-hashtag"></i></th>
                         <th width="150">{{ $t('type_plan.plan') }}</th>
                         <th>{{ $t('type_plan.name') }}</th>
+                        <th>{{ $t('type_plan.area') }}</th>
+                        <th>{{ $t('type_plan.balcony') }}</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -55,24 +57,32 @@
                         </tr>
 
                         <tr>
-                            <td colspan="4" v-if="getPlans.length === 0 && !getLoading">
+                            <td colspan="4" v-if="getPlan.plans.length === 0 && !getLoading">
                                 <center>
                                     {{ $t('no_data') }}
                                 </center>
                             </td>
                         </tr>
 
-                        <tr v-for="(plan, index) in getPlans" :key="index">
+                        <tr v-for="(plan, index) in getPlan.plans" :key="index">
                             <td>
                                 {{ plan.id }}
                             </td>
 
                             <td>
-                                <img :src="plan.plan" width="100%">
+                                <img :src="plan.image" width="100%">
                             </td>
 
                             <td>
                                 {{ plan.name }}
+                            </td>
+
+                            <td>
+                                {{ plan.area }} м²
+                            </td>
+
+                            <td>
+                                {{ plan.balcony ? plan.balcony_area  + ' м²' : $t('no') }}
                             </td>
                             <td class="float-right">
                                 <div class="dropdown my-dropdown dropleft" v-if="getPermission.type_plan.update">
@@ -116,7 +126,7 @@
             }
         }),
 
-        computed: mapGetters(['getPermission', 'getPlanObject', 'getPlans', 'getLoading']),
+        computed: mapGetters(['getPlan', 'getLoading', 'getPermission']),
 
         mounted() {
             this.fetchPlans(this);
@@ -126,7 +136,7 @@
             ...mapActions(['fetchPlans']),
 
             edit(id) {
-                this.$router.push({ name: 'type-plan-edit', params: { object: this.getPlanObject.id, id: id } })
+                this.$router.push({ name: 'type-plan-edit', params: { object: this.getPlan.id, id: id } })
             }
         }
 

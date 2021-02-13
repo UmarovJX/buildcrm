@@ -83,7 +83,7 @@
                                     </button>
                                     <div class="dropdown-menu">
 
-                                        <b-link v-if="client.status === 'booking' && client.manager_id === getMe.id || getMe.role.id === 1 && client.status === 'booking'" @click="ReserveInfo(client)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
+                                        <b-link v-if="client.status === 'booking' && client.manager_id === getMe.user.id || getMe.role.id === 1 && client.status === 'booking'" @click="ReserveInfo(client)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
                                         </b-link>
 

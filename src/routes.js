@@ -23,9 +23,9 @@ import Roles from './components/Dashboard/Roles/Index';
 import RolesUpdate from './components/Dashboard/Roles/Update';
 import RolesStore from './components/Dashboard/Roles/Store';
 
-// import TypePlan from './components/Dashboard/TypePlan/Index';
-// import TypePlanList from './components/Dashboard/TypePlan/List';
-// import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
+import TypePlan from './components/Dashboard/TypePlan/Index';
+import TypePlanList from './components/Dashboard/TypePlan/List';
+import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
 //
 //
 // import ApartmentView from './components/Dashboard/Apartment/View';
@@ -104,23 +104,23 @@ const routes = [
     //     component: Clients
     // },
 
-    // {
-    //     name: 'type_plan',
-    //     path: '/type/layouts',
-    //     component: TypePlan,
-    // },
-    //
-    // {
-    //     name: 'type-plan-view',
-    //     path: '/type/layouts/view/:id',
-    //     component: TypePlanList,
-    // },
-    //
-    // {
-    //     name: 'type-plan-edit',
-    //     path: '/type/layouts/:object/edit/:id',
-    //     component: TypePlanEdit,
-    // },
+    {
+        name: 'type_plan',
+        path: '/type/layouts',
+        component: TypePlan,
+    },
+
+    {
+        name: 'type-plan-view',
+        path: '/type/layouts/view/:id',
+        component: TypePlanList,
+    },
+
+    {
+        name: 'type-plan-edit',
+        path: '/type/layouts/:object/edit/:id',
+        component: TypePlanEdit,
+    },
     //
     // {
     //     name: 'settings',

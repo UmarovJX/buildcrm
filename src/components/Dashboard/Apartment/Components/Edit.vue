@@ -19,13 +19,13 @@
                 </div>
 
                 <div class="apartment__info mb-3">
-                    {{ $t('objects.create.rooms') }}:
-                    <input type="number" min="1" required class="form-control" v-model="apartment_info.rooms">
+                    {{ $t('apartments.list.entrance') }}:
+                    <input type="number" min="1" required class="form-control" v-model="apartment_info.entrance">
                 </div>
 
                 <div class="apartment__info mb-3">
-                    {{ $t('objects.create.area') }}:
-                    <input type="number" min="1" required class="form-control" v-model="apartment_info.area">
+                    {{ $t('objects.create.rooms') }}:
+                    <input type="number" min="1" required class="form-control" v-model="apartment_info.rooms">
                 </div>
 
                 <div class="apartment__info mb-3">
@@ -39,7 +39,7 @@
                             </option>
 
                             <option v-for="(plan, index) in plans" :value="plan.id" :key="index">
-                                {{ plan.name }}
+                                {{ plan.name }} - {{ $t('apartments.list.balcony') }}: {{ plan.balcony ? plan.balcony_area : $t('no') }}
                             </option>
 
                         </select>
@@ -50,7 +50,7 @@
                     {{ $t('objects.create.floor') }}:
 
                     <select class="custom-select" v-model="apartment_info.floor">
-                        <option v-for="floor in apartment_info.block.floors" :value="floor" :key="floor">
+                        <option v-for="floor in floors" :value="floor" :key="floor">
                             {{ floor }}
                         </option>
                     </select>
@@ -86,6 +86,7 @@
                 plan_id: 0
             },
             plans: [],
+            floors: [],
 
             error: false,
             errors: [],
@@ -110,8 +111,9 @@
                 try {
                     const { data } = await this.axios.get(process.env.VUE_APP_URL + '/apartments/' + this.apartment, this.header);
 
-                    this.apartment_info = data.data;
+                    this.apartment_info = data;
                     this.plans = data.plans;
+                    this.floors = data.floors;
 
                 } catch (error) {
                     if (! error.response) {
@@ -145,13 +147,11 @@
                         'rooms': this.apartment_info.rooms,
                         'plan_id': this.apartment_info.plan_id,
                         'floor': this.apartment_info.floor,
-                        'area': this.apartment_info.area,
+                        'entrance': this.apartment_info.entrance,
                         'number': this.apartment_info.number
                     };
 
-                    // this.client.apartment_id = this.apartment;
-
-                    const { data } = await this.axios.post(process.env.VUE_APP_URL + '/api/apartments/update/' + this.apartment_info.id, info, this.header);
+                    const { data } = await this.axios.put(process.env.VUE_APP_URL + '/apartments/' + this.apartment_info.id, info, this.header);
 
                     this.toasted(data.message, 'success');
 

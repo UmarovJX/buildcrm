@@ -85,7 +85,7 @@
                                 <small>{{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}</small>
                             </td>
                             <td>
-                                <div class="dropdown my-dropdown dropleft" v-if="!apartment.status || apartment.manager_id === getMe.id || getMe.role.id === 1">
+                                <div class="dropdown my-dropdown dropleft" v-if="!apartment.status || apartment.manager_id === getMe.user.id || getMe.role.id === 1">
                                     <button type="button" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="far fa-ellipsis-h"></i>
                                     </button>
@@ -94,7 +94,7 @@
                                             <i class="far fa-calendar-check"></i> {{ $t('apartments.list.book') }}
                                         </b-link>
 
-                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.id || getMe.role.id === 1 && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
+                                        <b-link v-if="apartment.status === 2 && apartment.manager_id === getMe.user.id || getMe.role.id === 1 && apartment.status === 2" @click="ReserveInfo(apartment)" v-b-modal.modal-view-client class="dropdown-item dropdown-item--inside" >
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
                                         </b-link>
 

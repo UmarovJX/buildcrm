@@ -16,7 +16,7 @@
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="4" :label="$t('apartments.list.period_date')" label-for="period_date">
-                    <b-form-datepicker disabled locale="ru" v-model="ApartmentData.booking_date"></b-form-datepicker>
+                    <b-form-datepicker disabled locale="ru" v-model="getReserveClient.booking_date"></b-form-datepicker>
                 </b-form-group>
 
                 <div class="float-right">
@@ -72,7 +72,7 @@
                 }).then((result) => {
                     if (result.value) {
 
-                        this.axios.post(process.env.VUE_APP_URL + '/api/clients/reserve/cancel/' + this.ClientId, {}, this.header).then((response) => {
+                        this.axios.delete(process.env.VUE_APP_URL + '/orders/' + this.getReserveClient.id  + '/reserve', this.header).then((response) => {
 
                             this.toasted(response.data.message, 'success');
 

@@ -17,8 +17,8 @@
                     </li>
 
                     <li class="breadcrumb-item">
-                        <router-link :to="{ name: 'type-plan-view', params: { id: getPlanObject.id } }">
-                            {{ getPlanObject.name }}
+                        <router-link :to="{ name: 'type-plan-view', params: { id: getPlan.object.id } }">
+                            {{ getPlan.object.name }}
                         </router-link>
                     </li>
 
@@ -56,6 +56,29 @@
                                 </label>
                                 <input id="title" v-model="getPlan.name" type="text" required :placeholder="$t('type_plan.name')" class="my-form__input">
                             </div>
+
+                            <div class="mb-3">
+                                <label for="area" class="d-block text-uppercase">
+                                    {{ $t('objects.create.plan.area') }}
+                                </label>
+                                <input id="area" v-model="getPlan.area" type="text" required :placeholder="$t('type_plan.area')" class="my-form__input">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="balcony" class="d-block text-uppercase">
+                                    {{ $t('objects.create.plan.balcony') }}
+                                </label>
+                                <input id="balcony" v-model="getPlan.balcony" type="checkbox">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="balcony_area" class="d-block text-uppercase">
+                                    {{ $t('objects.create.plan.balcony_area') }}
+                                </label>
+                                <input id="balcony_area" v-model="getPlan.balcony_area" type="text" required :placeholder="$t('type_plan.balcony_area')" class="my-form__input">
+                            </div>
+
+
                             <div class="mb-3">
                                 <label for="plan" class="d-block text-uppercase">
                                     {{ $t('type_plan.plan') }} <span :class="getPlan.image ? 'text-success' : 'text-danger'">{{ getPlan.image ? $t('type_plan.yes_img') : $t('type_plan.no_img') }}</span>
@@ -95,7 +118,7 @@
             // }, 2000)
         },
 
-        computed: mapGetters(['getPermission', 'getPlanObject', 'getPlan']),
+        computed: mapGetters(['getPermission', 'getPlan']),
 
         methods: {
             ...mapActions(['fetchPlan']),
@@ -117,14 +140,17 @@
 
                 formData.append('image', this.plan.image);
                 formData.append('name', this.getPlan.name);
+                formData.append('area', this.getPlan.area);
+                formData.append('balcony', this.getPlan.balcony);
+                formData.append('balcony_area', this.getPlan.balcony_area);
 
                 let vm = this;
 
-                this.axios.post( process.env.VUE_APP_URL + '/api/type/plan/update/' + this.$route.params.object +'/' + this.$route.params.id,
+                this.axios.post( process.env.VUE_APP_URL + '/objects/' + this.$route.params.object +'/plans/' + this.$route.params.id,
                     formData,
                     headers
                 ).then((response) => {
-                    if (response.data.status) {
+                    if (response.status === 202) {
                         vm.$router.back(-1);
                     }
                 })

@@ -37,7 +37,7 @@
                         </div>
 
                         <div class="col-12">
-                            <b-link v-if="getApartment.status === 2 && getApartment.manager_id === getMe.id || getMe.role.id === 1 && getApartment.status === 2" @click="ReserveInfo(getApartment)" v-b-modal.modal-view-client class="btn btn-primary mt-3" >
+                            <b-link v-if="getApartment.status === 2 && getApartment.manager_id === getMe.user.id || getMe.role.id === 1 && getApartment.status === 2" @click="ReserveInfo(getApartment)" v-b-modal.modal-view-client class="btn btn-primary mt-3" >
                                 <i class="far fa-eye"></i> {{ $t('apartments.list.view_client') }}
                             </b-link>
                         </div>

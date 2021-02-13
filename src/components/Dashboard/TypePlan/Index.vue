@@ -28,7 +28,7 @@
                     <thead>
                     <tr>
                         <th width="50"><i class="fas fa-hashtag"></i></th>
-                        <th>{{ $t('managers.object') }}</th>
+                        <th>{{ $t('objects.title') }}</th>
                         <th></th>
                     </tr>
                     </thead>
