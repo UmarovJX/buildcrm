@@ -109,7 +109,7 @@
 
             async GetInfoApartment() {
                 try {
-                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/apartments/' + this.apartment, this.header);
+                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/apartments/' + this.apartment + '/info', this.header);
 
                     this.apartment_info = data;
                     this.plans = data.plans;

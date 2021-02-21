@@ -5,7 +5,7 @@
                 <h1 class="title__big my-0 order-md-0 order-1">{{ $t('users.title') }}</h1>
                 <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
                     <li class="breadcrumb-item">
-                        <router-link :to="{ name: 'objects' }">
+                        <router-link :to="{ name: 'home' }">
                             <i class="far fa-home"></i>
                         </router-link>
                     </li>

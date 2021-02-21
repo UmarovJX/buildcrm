@@ -29,6 +29,7 @@ import Loading from './modules/Loading/index';
 import Role from './modules/Role/index';
 import HomeCount from './modules/Home/index';
 import Currencies from './modules/currency';
+import Branches from './modules/branches';
 
 
 
@@ -64,7 +65,8 @@ export default new Vuex.Store({
         Role,
 
         HomeCount,
-        Currencies
+        Currencies,
+        Branches
 
     }
 })

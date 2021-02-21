@@ -201,7 +201,8 @@
     export default {
         props: {
             dataObject: {},
-            currency: {}
+            currency: {},
+            balcony: {}
         },
 
         data: () => ({
@@ -369,12 +370,12 @@
 
                 if (currency === 0) {
                     if (area.balcony && apartment.balcony_paid)
-                        return (price * area.area) + (price * area.balcony_area);
+                        return (price * area.area) + (this.balcony * area.balcony_area);
 
                     return price * area.area;
                 } else {
                     if (area.balcony && apartment.balcony_paid)
-                        return ((price * area.area) + (price * area.balcony_area)) * currency;
+                        return ((price * area.area) + (this.balcony * area.balcony_area)) * currency;
 
                     return price * area.area * currency;
                 }

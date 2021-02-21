@@ -28,7 +28,8 @@ import TypePlanList from './components/Dashboard/TypePlan/List';
 import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
 //
 //
-// import ApartmentView from './components/Dashboard/Apartment/View';
+import ApartmentView from './components/Dashboard/Apartment/View';
+import Branches from './components/Dashboard/Branches/Index';
 
 const routes = [
     {
@@ -67,11 +68,11 @@ const routes = [
         component: ApartmentList
     },
 
-    // {
-    //     name: 'apartments-view',
-    //     path: '/apartments/view/:id',
-    //     component: ApartmentView
-    // },
+    {
+        name: 'apartments-view',
+        path: '/apartments/:id',
+        component: ApartmentView
+    },
 
     {
         name: 'users',
@@ -121,6 +122,13 @@ const routes = [
         path: '/type/layouts/:object/edit/:id',
         component: TypePlanEdit,
     },
+
+    {
+        name: 'companies',
+        path: '/companies',
+        component: Branches
+    },
+
     //
     // {
     //     name: 'settings',

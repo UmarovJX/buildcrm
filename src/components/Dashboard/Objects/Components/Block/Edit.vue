@@ -159,7 +159,10 @@
 
                                 <div class="apartment__info">
                                     {{ $t('objects.create.price') }}:
-                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment) }} {{ $t('ye') }}</span>
+                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, 0) | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('usd') }}</span><br>
+
+                                    {{ $t('objects.create.price') }} {{ $t('ye') }}:
+                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, currency.usd) | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('ye') }}</span>
                                 </div>
 
                             </div>
@@ -196,7 +199,7 @@
 
 <script>
     export default {
-        props: ['dataObject', 'block_preview', 'currency'],
+        props: ['dataObject', 'block_preview', 'currency', 'balcony'],
 
         data: () => ({
             //block_preview: dataBlock,
@@ -320,7 +323,7 @@
                 this.sortAvailableFloors()
             },
 
-            calcApartmentPrice(index, area, apartment) {
+            calcApartmentPrice(index, area, apartment, currency) {
                 var price = 0;
 
                 if (area === 0)
@@ -335,10 +338,18 @@
                     }
                 }
 
-                if (area.balcony && apartment.balcony_paid)
-                    return (price * area.area) + (price * area.balcony_area);
+                if (currency === 0) {
+                    if (area.balcony && apartment.balcony_paid)
+                        return (price * area.area) + (this.balcony * area.balcony_area);
 
-                return price * area.area;
+                    return price * area.area;
+                } else {
+                    if (area.balcony && apartment.balcony_paid)
+                        return ((price * area.area) + (this.balcony * area.balcony_area)) * currency;
+
+                    return price * area.area * currency;
+                }
+
             },
 
             sortDisabledFloors() {

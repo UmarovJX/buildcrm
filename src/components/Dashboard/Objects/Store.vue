@@ -44,6 +44,8 @@
 
                 <hr>
 
+
+
                 <div>
                     <label class="d-block text-uppercase" for="type_plan">
                         {{ $t('objects.create.type_plan') }}
@@ -117,16 +119,41 @@
                             </h3>
                         </div>
 
+                        <div v-if="!building.edit">
+                            <p class="my-3">
+                                {{ $t('objects.create.balcony_price') }}: {{ building.balcony_price ? building.balcony_price : $t('no') }} $
+                            </p>
+                        </div>
+
                         <div class="col-md-4" v-else>
                             <div class="row">
-                                <div class="input-group">
-                                    <input type="text" :placeholder="$t('objects.placeholder.building_name')" class="form-control"  v-model="building.name">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-success" @click="saveBuildingName(index)" type="button">
-                                            <i class="fa fa-save"></i> {{ $t('save') }}
-                                        </button>
-                                    </div>
+<!--                                <div class="input-group">-->
+<!--                                    <input type="text" :placeholder="$t('objects.placeholder.building_name')" class="form-control"  v-model="building.name">-->
+<!--                                    <div class="input-group-append">-->
+<!--                                        <button class="btn btn-success" @click="saveBuildingName(index)" type="button">-->
+<!--                                            <i class="fa fa-save"></i> {{ $t('save') }}-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">
+                                        {{ $t('objects.placeholder.building_name') }}
+                                    </span>
+                                    <input type="text" class="form-control" v-model="building.name" :placeholder="$t('objects.placeholder.building_name')">
                                 </div>
+
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">
+                                        {{ $t('objects.create.balcony_price') }}
+                                    </span>
+                                    <input type="text" class="form-control"  v-model="building.balcony_price" :placeholder="$t('objects.create.balcony_price')">
+                                </div>
+
+                                <button class="btn btn-success" @click="saveBuildingName(index)" type="button">
+                                    <i class="fa fa-save"></i> {{ $t('save') }}
+                                </button>
+
                             </div>
                         </div>
 
@@ -288,10 +315,9 @@
 
         </div>
 
+        <create-block v-if="disabled.block.create" :data-object="object" :balcony="building_balcony_price" :currency="getCurrency" @InsertBlock="InsertBlock" @RemoveBlock="disabledBlock"></create-block>
 
-        <create-block v-if="disabled.block.create" :data-object="object" :currency="getCurrency" @InsertBlock="InsertBlock" @RemoveBlock="disabledBlock"></create-block>
-
-        <edit-block v-if="disabled.block.edit" :data-object="object" :currency="getCurrency" :block_preview="edit.block" @CancelEditBlock="CancelEditBlock" @SaveEditBlock="saveEditBlock"></edit-block>
+        <edit-block v-if="disabled.block.edit" :data-object="object" :balcony="building_balcony_price" :currency="getCurrency" :block_preview="edit.block" @CancelEditBlock="CancelEditBlock" @SaveEditBlock="saveEditBlock"></edit-block>
 
         <create-discount v-if="disabled.discount.create" @RemoveDiscount="disabled.discount.create = false" @SaveDiscount="SaveDiscount" ></create-discount>
 
@@ -327,6 +353,8 @@
             discounts: [],
 
             block_building_index: 0,
+            building_balcony_price: 0,
+
             edit: {
                 block: {},
                 discount: {}
@@ -362,6 +390,7 @@
         mounted() {
             this.buildings.push({
                 name: 'Корпус A',
+                balcony_price: null,
                 edit: false,
                 blocks: []
             });
@@ -451,6 +480,7 @@
             createBlock(index) {
                 if (! this.disabled.block.create) {
                     this.disabled.block.create = true;
+                    this.building_balcony_price = this.buildings[index].balcony_price;
                     this.block_building_index = index;
                 }
             },
@@ -475,6 +505,7 @@
             createBuilding() {
                 this.buildings.push({
                     name: null,
+                    balcony_price: null,
                     edit: true,
                     blocks: []
                 })
@@ -507,6 +538,7 @@
 
             editBlock(building, index) {
                 this.disabled.block.edit = true;
+                this.building_balcony_price = this.buildings[building].balcony_price;
                 this.edit.block = this.buildings[building].blocks[index];
             },
 

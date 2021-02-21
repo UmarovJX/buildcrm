@@ -20,7 +20,7 @@
                     <thead>
                     <tr>
                         <th scope="col" width="50">{{ $t('apartments.list.number') }}</th>
-                        <th scope="col">{{ $t('apartments.list.object') }}</th>
+<!--                        <th scope="col">{{ $t('apartments.list.object') }}</th>-->
                         <th scope="col">{{ $t('apartments.list.building') }}</th>
                         <th scope="col">{{ $t('apartments.list.block') }}</th>
                         <th scope="col" class="text-center">{{ $t('apartments.list.rooms') }}</th>
@@ -61,14 +61,14 @@
 
 
 
-                        <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' ? 'table-danger' : '']">
+                        <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' || apartment.order.status === 'contract' ? 'table-danger' : '' ]">
                             <td scope="row">
                                 {{ apartment.number }}
                             </td>
 
-                            <td>
-                                {{ apartment.object.name }}
-                            </td>
+<!--                            <td>-->
+<!--                                {{ apartment.object.name }}-->
+<!--                            </td>-->
 
                             <td>
                                 {{ apartment.building.name }}
@@ -135,11 +135,12 @@
                                             <i class="far fa-info-circle"></i> {{ $t('apartments.list.view_manager') }}
                                         </b-link>
 
-                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id && getPermission.apartments.contract || apartment.order.status != 'sold' && getPermission.apartments.root_contract || apartment.order.status === 'available' && getPermission.apartments.contract">
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="(apartment.order.status != 'sold' || apartment.order.status != 'contract') && apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id && getPermission.apartments.contract || !(apartment.order.status == 'sold' || apartment.order.status == 'contract') && getPermission.apartments.root_contract || (apartment.order.status != 'sold' || apartment.order.status != 'contract') && apartment.order.status === 'available' && getPermission.apartments.contract">
+<!--                                            apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id && getPermission.apartments.contract || apartment.order.status != 'sold' && getPermission.apartments.root_contract || apartment.order.status === 'available' && getPermission.apartments.contract-->
                                             <i class="far fa-ballot-check"></i> {{ $t('apartments.list.confirm') }}
                                         </router-link>
 
-                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.order.status === 'sold' || !getPermission.apartments.contract && getPermission.apartments.view  || apartment.order.status === 'booked' && apartment.order.user.id != getMe.user.id">
+                                        <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'dropdown-item dropdown-item--inside'" v-if="getPermission.apartments.view && apartment.order.status === 'contract' ||getPermission.apartments.view && apartment.order.status === 'sold' || !getPermission.apartments.contract && getPermission.apartments.view  || apartment.order.status === 'booked' && apartment.order.user.id != getMe.user.id">
                                             <i class="far fa-eye"></i> {{ $t('apartments.list.more') }}
                                         </router-link>
                                     </div>
@@ -150,7 +151,6 @@
                 </table>
             </div>
         </div>
-
 
         <reserve-add v-if="reserve | getPermission.apartments.reserve" :apartment="apartment_id" @CreateReserve="CreateReserveSuccess"></reserve-add>
 
@@ -278,6 +278,12 @@
                         break;
                     case 'booked':
                         msg = 'Забронировано до ' + booking_date;
+                        break;
+                    case 'available':
+                        msg = 'Свободен';
+                        break;
+                    case 'contract':
+                        msg = 'Ждет оплата';
                         break;
                     default:
                         msg = 'Свободен';

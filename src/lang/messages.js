@@ -8,6 +8,7 @@ export default {
         'add': 'Добавить',
         'delete': 'Удалить',
         'action': 'Действия',
+        'search': 'Найти',
         'save': 'Сохранить',
         'create': 'Создать',
         'view': 'Посмотреть',
@@ -117,6 +118,25 @@ export default {
             'search': 'Найти по номеру договора или ФИО клиента'
         },
 
+        'companies': {
+            'title': 'Компании',
+            'name': 'Компания',
+            'director': 'Директор',
+            'type': 'Тип',
+            'inn': 'ИНН',
+            'mfo': 'МФО',
+            'phone': 'Телефон',
+            'other_phone': 'Дополнительный телефон',
+            'payment_account': 'Расчетный счет',
+            'bank_name': 'Названия банка',
+            'first_name': 'Имя директора',
+            'last_name': 'Фамилия директора',
+            'second_name': 'Отчество директора',
+
+
+            'type_enter': 'Выберите тип'
+        },
+
         'apartments': {
             'list': {
                 'number': '№Дом',
@@ -170,6 +190,30 @@ export default {
                 'status': 'Статус',
                 'variant': 'Вариант оплаты',
 
+            },
+
+            'agree': {
+                'first_name': 'Имя',
+                'last_name': 'Фамилия',
+                'second_name': 'Отчество',
+                'passport_series': 'Номер паспорта',
+                'issued_by_whom': 'Место выдачи паспорта',
+                'language': 'Язык',
+                'phone': 'Телефон номер',
+                'other_phone': 'Дополнительный номер',
+                'date_of_issue': 'Дата выпуска пасспорта',
+                'discounts': 'Тип покупка',
+                'placeholder': {
+                    'search': 'Найти по телефон номеру или Номер паспорта',
+                    'first_name': 'Ахмад',
+                    'last_name': 'Жасуров',
+                    'second_name': 'Хакимович',
+                    'passport_series': 'AA1234567',
+                    'issued_by_whom': 'Тошкент шахар Олмазор тумани И.И.Б',
+                    'phone': '+99899 123 45 67',
+                    'other_phone': '+99899 765 43 21',
+                    'enter_discount': 'Выберите вариант оплаты',
+                }
             }
         },
 
@@ -203,6 +247,7 @@ export default {
                 'blocks_apartment': 'КВАРТИРНЫЕ БЛОКИ',
                 'copy_block': 'Клонировать блок',
                 'copy_building': 'Клонировать здание',
+                'balcony_price': 'Цена за балкон',
 
                 'new': 'Создать новый объект',
                 'type_plan': 'Типы планировок',

@@ -9,7 +9,7 @@ export default {
                     }
                 };
 
-                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/api/apartments/view/' + vm.$route.params.id, header);
+                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/apartments/' + vm.$route.params.id, header);
 
                 ctx.commit('updateApartment', data);
                 ctx.commit('updateLoading', false, { root: true });

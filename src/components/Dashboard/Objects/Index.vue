@@ -52,14 +52,14 @@
         </div>
 
 
-        <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">
-            <div class="d-flex justify-content-md-end justify-content-center">
+<!--        <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">-->
+<!--            <div class="d-flex justify-content-md-end justify-content-center">-->
 
-                <router-link :to="{'name': 'objects-filter'}" class="my-btn my-btn__blue d-flex align-items-center justify-content-center" >
-                    <i class="far fa-sliders-h mr-2"></i> {{ $t('apartments.list.filter') }}
-                </router-link>
-            </div>
-        </div>
+<!--                <router-link :to="{'name': 'objects-filter'}" class="my-btn my-btn__blue d-flex align-items-center justify-content-center" >-->
+<!--                    <i class="far fa-sliders-h mr-2"></i> {{ $t('apartments.list.filter') }}-->
+<!--                </router-link>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <filter-form v-if="getPermission.apartments.filter"></filter-form>
 
