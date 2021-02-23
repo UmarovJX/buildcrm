@@ -79,7 +79,7 @@
                             </td>
 
                             <td>
-                                {{ getPrice(apartment.area, apartment.price.price) | number('0,0', { thousandsSeparator: ' ' }) }} сум
+                                {{ getPrice(apartment.area, apartment.price.price) | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} сум
                             </td>
                             <td>
                                 <small>{{ apartment.status | getStatus($moment(apartment.booking_date).format('DD.MM.YYYY'))  }}</small>

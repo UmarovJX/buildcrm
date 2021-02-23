@@ -101,10 +101,10 @@
                                         {{ $t('edit') }}
                                     </b-button>
 
-                                    <b-button v-if="getPermission.users.delete" class="dropdown-item dropdown-item--inside">
-                                        <i class="fas fa-trash"></i>
-                                        {{ $t('delete') }}
-                                    </b-button>
+<!--                                    <b-button v-if="getPermission.users.delete" class="dropdown-item dropdown-item&#45;&#45;inside">-->
+<!--                                        <i class="fas fa-trash"></i>-->
+<!--                                        {{ $t('delete') }}-->
+<!--                                    </b-button>-->
                                 </div>
                             </div>
                         </td>

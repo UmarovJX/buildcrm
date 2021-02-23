@@ -63,7 +63,7 @@
                             </td>
                             <td>
                                 <span v-if="client.price_apartment">
-                                    {{ client.price_apartment | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('ye') }}
+                                    {{ client.price_apartment | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
                                 </span>
                             </td>
 

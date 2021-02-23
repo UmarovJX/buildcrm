@@ -159,10 +159,10 @@
 
                                 <div class="apartment__info">
                                     {{ $t('objects.create.price') }}:
-                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, 0) | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('usd') }}</span><br>
+                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, 0) | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('usd') }}</span><br>
 
                                     {{ $t('objects.create.price') }} {{ $t('ye') }}:
-                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, currency.usd) | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('ye') }}</span>
+                                    <span>{{  calcApartmentPrice(index, apartment.type_plan === null ? 0 : dataObject.type_plan[apartment.type_plan], apartment, currency.usd) | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</span>
                                 </div>
 
                             </div>

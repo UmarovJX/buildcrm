@@ -106,7 +106,7 @@
                             </td>
 
                             <td>
-                                {{ apartment.price | number('0,0', { thousandsSeparator: ' ' }) }} сум
+                                {{ apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} сум
                             </td>
                             <td>
                                 <small>{{ apartment.order.status | getStatus($moment(apartment.order.booking_date).format('DD.MM.YYYY'))  }}</small>

@@ -38,12 +38,28 @@
                                 <input class="my-form__input" id="address" type="text" v-model="object.address" :placeholder="$t('objects.placeholder.address')" required >
                             </div>
                         </div>
+
+                        <div class="col-lg-6">
+
+                            <div class="mb-3">
+                                <label class="d-block text-uppercase" for="address">
+                                    {{ $t('companies.title') }}
+                                </label>
+                                <select class="form-control" v-model="object.branch_id">
+                                    <option value="0">
+                                        {{ $t('companies.branch_enter') }}
+                                    </option>
+                                    <option v-for="(branch, index) in getBranches" :key="index" :value="branch.id">
+                                        {{ branch.type.name.ru }} "{{ branch.name }}"
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- </div> -->
 
                 <hr>
-
 
 
                 <div>
@@ -70,7 +86,7 @@
                                 <td>{{ plan.balcony ? $t('yes') : $t('no') }}</td>
                                 <td>{{ plan.balcony_area }}</td>
                                 <td class="text-right">
-                                    <b-button v-if="!plan.deleted" size="sm" variant="danger" @click="deletePlan(index)">
+                                    <b-button v-if="!plan.deleted" size="sm" variant="danger" @click="deletePlan(plan)">
                                         <i class="fas fa-trash"></i>
                                     </b-button>
                                 </td>
@@ -342,10 +358,17 @@
             'type-plan-create': TypePlanCreateModal
         },
 
+        watch: {
+            'object.type_plan': function () {
+
+            }
+        },
+
         data: () => ({
             object: {
                 name: null,
                 address: null,
+                branch_id: 0,
                 type_plan: [],
                 new_type_plan: null,
             },
@@ -384,7 +407,7 @@
             }
         }),
 
-        computed: mapGetters(['getCurrency']),
+        computed: mapGetters(['getCurrency', 'getBranches']),
 
 
         mounted() {
@@ -396,10 +419,11 @@
             });
 
             this.fetchCurrency(this);
+            this.fetchBranches(this);
         },
 
         methods: {
-            ...mapActions(['fetchCurrency']),
+            ...mapActions(['fetchCurrency', 'fetchBranches']),
             addTypePlan() {
                 if (this.object.new_type_plan != null) {
                     this.object.type_plan.push({
@@ -457,7 +481,7 @@
             },
 
 
-            deletePlan(index) {
+            deletePlan(plan) {
                 this.$swal({
                     title: this.$t('sweetAlert.title'),
                     text: this.$t('sweetAlert.text'),
@@ -466,13 +490,12 @@
                     confirmButtonText: this.$t('sweetAlert.yes')
                 }).then((result) => {
                     if (result.value) {
-                        this.object.type_plan[index] = {
-                            name: 'Удалено',
-                            area: 0,
-                            balcony: false,
-                            balcony_area: 0,
-                            deleted: true
-                        };
+
+                        plan.name = 'Удалено';
+                        plan.area = 0;
+                        plan.balcony = false;
+                        plan.balcony_area = 0;
+                        plan.deleted = true;
                     }
                 });
             },

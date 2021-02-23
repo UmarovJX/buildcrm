@@ -11,7 +11,10 @@ import i18n from './lang';
 import toasted from './util/toasted';
 // import getAuth from './util/getAuth';
 import store from './store';
-import moment from 'moment';
+// import moment from 'moment';
+import vueMoment from 'vue-moment';
+
+Vue.use(vueMoment);
 
 
 import { mapActions, mapGetters} from 'vuex';
@@ -52,7 +55,7 @@ Vue.use(Toasted, {
 });
 
 Vue.config.productionTip = false;
-Vue.prototype.$moment = moment;
+// Vue.prototype.$moment = moment;
 
 new Vue({
     el: "#app",

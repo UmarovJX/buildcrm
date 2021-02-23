@@ -34,8 +34,8 @@
                             </p>
                             <p>{{ $t('apartments.view.rooms') }}: {{ getApartment.rooms }}</p>
                             <p>{{ $t('apartments.view.floor') }}: {{ getApartment.floor }}</p>
-                            <p>{{ $t('apartments.view.price_m2') }}: {{ getApartment.price_m2 | number('0.00', {  decimalSeparator: '.' }) }} {{ $t('ye') }}</p>
-                            <p>{{ $t('apartments.view.total_price') }}: {{ getApartment.price | number('0,0', { thousandsSeparator: ' ' }) }} {{ $t('ye') }}</p>
+                            <p>{{ $t('apartments.view.price_m2') }}: {{ getApartment.price_m2 | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</p>
+                            <p>{{ $t('apartments.view.total_price') }}: {{ getApartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</p>
                         </div>
                         <div class="building__info mt-3 d-flex align-items-center">
                             <p>{{ $t('apartments.view.status') }}</p>
@@ -79,6 +79,7 @@
                     <i class="far fa-ballot-check"></i>  {{ $t('apartments.list.confirm') }}
                 </b-button>
 
+
             </div>
         </div>
 
@@ -86,7 +87,9 @@
 
         <reserve-add v-if="reserve | getPermission.apartments.reserve" :apartment="apartment_id" @CreateReserve="CreateReserveSuccess"></reserve-add>
 
-        <agree-modal v-if="confirm" :apartment="getApartment" @CloseAgree="CloseAgree"></agree-modal>
+        <agree-modal v-if="confirm" :apartment="getApartment" @successAgree="successAgree" @CloseAgree="CloseAgree"></agree-modal>
+
+        <success-agree :contract="contract"></success-agree>
     </main>
 </template>
 
@@ -96,6 +99,7 @@
     import ViewClient from './ViewClient'
     import ReserveAdd from './Components/Reserve'
     import Agree from './Components/Agree'
+    import SuccessAgree from './Components/SuccessAgree'
     import Discount from './Components/Discount'
 
     export default {
@@ -103,7 +107,8 @@
             'view-client': ViewClient,
             'reserve-add': ReserveAdd,
             'agree-modal': Agree,
-            'Discount': Discount
+            'Discount': Discount,
+            'success-agree': SuccessAgree
         },
 
         data: () => ({
@@ -121,6 +126,13 @@
 
             info_reserve: false,
 
+            contract: {
+                id: null,
+                contract: null,
+                contract_path: null,
+            },
+
+
             header: {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.token
@@ -130,10 +142,6 @@
 
         created () {
             this.fetchApartment(this);
-        },
-
-        beforeUpdate() {
-            this.ifConfirm();
         },
 
 
@@ -172,52 +180,10 @@
                 this.confirm = false;
             },
 
-            ifConfirm() {
-                // getApartment.order.status != 'contract'  || getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id && getPermission.apartments.contract || getApartment.order.status != 'sold' &&  getPermission.apartments.root_contract || getApartment.order.status === 'available' && getPermission.apartments.contract
-
-                console.log((this.getApartment.order.status != 'sold' || this.getApartment.order.status != 'contract') && this.getApartment.order.status === 'booked' && this.getApartment.order.user.id === this.getMe.user.id && this.getPermission.apartments.contract);
-                console.log(!(this.getApartment.order.status == 'sold' || this.getApartment.order.status == 'contract') && this.getPermission.apartments.root_contract  );
-                console.log((this.getApartment.order.status != 'sold' || this.getApartment.order.status != 'contract') && this.getApartment.order.status === 'available' && this.getPermission.apartments.contract);
-                // console.log((this.getApartment.order.status != 'sold' && this.getApartment.order.status != 'contract'));
-                // console.log((this.getApartment.order.status === 'booked' && this.getApartment.order.user.id === this.getMe.user.id && this.getPermission.apartments.contract));
-                // console.log((this.getApartment.order.status != 'contract' && this.getApartment.order.status != 'sold'));
-
-
-                if (this.getPermission.apartments.root_contract && this.getApartment.order.status === 'booked' || this.getApartment.order.status === 'available') {
-                    this.isConfirm = true;
-                    console.log(1)
-                    return;
-                }
-
-                if (this.getApartment.order.status === 'available' && this.getPermission.apartments.contract) {
-                    this.isConfirm = true;
-                    console.log(2)
-                    return;
-                }
-
-                if (this.getApartment.order.status === 'booked' && this.getApartment.order.user.id === this.getMe.user.id && (this.getPermission.apartments.root_contract || this.getPermission.apartments.contract)){
-                    this.isConfirm = true;
-                    console.log(3)
-                    return;
-                }
-
-
-
-                if (this.getApartment.order.status != 'sold' && (this.getPermission.apartments.root_contract || this.getPermission.apartments.contract)) {
-                    this.isConfirm = true;
-                    console.log(4);
-                    return;
-                }
-
-                if (this.getApartment.order.status != 'sold' && this.getApartment.order.status != 'contract' && (this.getPermission.apartments.root_contract || this.getPermission.apartments.contract)) {
-                    this.isConfirm = true;
-                    console.log(5)
-                    return;
-                }
-
-                console.log(6);
-
-                this.isConfirm = false;
+            successAgree(value) {
+                this.fetchApartment(this);
+                this.contract = value;
+                this.$bvModal.show('modal-success-agree');
             },
 
             async cancelReserve() {
