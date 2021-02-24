@@ -29,22 +29,23 @@ export default {
                     }
                 }
             }
-        }
+        },
     },
 
     mutations: {
         updateApartment(state, apartment) {
             state.apartment = apartment;
-        }
+        },
+
     },
 
     state: {
-        apartment: {}
+        apartment: {},
     },
 
     getters: {
         getApartment(state) {
             return state.apartment;
-        }
+        },
     }
 }

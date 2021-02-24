@@ -33,7 +33,7 @@
                                         {{ $t('roles.permissions.name_ru') }}
                                     </td>
                                     <td width="50%">
-                                        <input class="form-control" v-model="getRole.name.ru" type="text" :placeholder="$t('roles.permissions.placeholder_ru')">
+                                        <input class="form-control" v-model="role.name.ru" type="text" :placeholder="$t('roles.permissions.placeholder_ru')">
                                     </td>
                                 </tr>
 
@@ -43,7 +43,7 @@
                                         {{ $t('roles.permissions.name_uz') }}
                                     </td>
                                     <td width="50%">
-                                        <input class="form-control" v-model="getRole.name.uz" type="text" :placeholder="$t('roles.permissions.placeholder_uz')">
+                                        <input class="form-control" v-model="role.name.uz" type="text" :placeholder="$t('roles.permissions.placeholder_uz')">
                                     </td>
                                 </tr>
 
@@ -52,7 +52,7 @@
                                         {{ $t('roles.permissions.objects.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.objects.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.objects.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -62,7 +62,7 @@
                                         {{ $t('roles.permissions.users.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.users.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.users.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -71,7 +71,7 @@
                                         {{ $t('roles.permissions.roles.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.roles.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.roles.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -80,7 +80,7 @@
                                         {{ $t('roles.permissions.clients.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.clients.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.clients.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -90,7 +90,7 @@
                                         {{ $t('roles.permissions.type_plan.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.type_plan.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.type_plan.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -99,7 +99,7 @@
                                         {{ $t('roles.permissions.apartments.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.apartments.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.apartments.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -115,7 +115,7 @@
                                         {{ $t('roles.permissions.objects.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.objects.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.objects.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -124,7 +124,7 @@
                                         {{ $t('roles.permissions.objects.create') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.objects.create" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.objects.create" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -133,7 +133,7 @@
                                         {{ $t('roles.permissions.objects.update') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.objects.update" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.objects.update" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -142,7 +142,7 @@
                                         {{ $t('roles.permissions.objects.delete') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.objects.delete" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.objects.delete" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -151,7 +151,7 @@
                                         {{ $t('roles.permissions.objects.apartments') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.objects.apartments" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.objects.apartments" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -167,7 +167,7 @@
                                     {{ $t('roles.permissions.users.view') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.users.view" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.users.view" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -176,7 +176,7 @@
                                     {{ $t('roles.permissions.users.create') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.users.create" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.users.create" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -185,7 +185,7 @@
                                     {{ $t('roles.permissions.users.update') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.users.update" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.users.update" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -194,7 +194,7 @@
                                     {{ $t('roles.permissions.users.delete') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.users.delete" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.users.delete" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -210,7 +210,7 @@
                                     {{ $t('roles.permissions.roles.view') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.roles.view" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.roles.view" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -219,7 +219,7 @@
                                     {{ $t('roles.permissions.roles.create') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.roles.create" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.roles.create" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -228,7 +228,7 @@
                                     {{ $t('roles.permissions.roles.update') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.roles.update" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.roles.update" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -237,7 +237,7 @@
                                     {{ $t('roles.permissions.roles.delete') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="getRole.permissions.roles.delete" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.roles.delete" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
@@ -245,57 +245,57 @@
                         </table>
                     </b-tab><!--roles-->
 
-                    <b-tab :title="$t('clients.title')">
-                        <table class="table table-striped">
-                            <tbody>
-                                <tr>
-                                    <td width="50%">
-                                        {{ $t('roles.permissions.clients.view') }}
-                                    </td>
-                                    <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.clients.view" size="lg"></b-form-checkbox>
-                                    </td>
-                                </tr>
+<!--                    <b-tab :title="$t('clients.title')">-->
+<!--                        <table class="table table-striped">-->
+<!--                            <tbody>-->
+<!--                                <tr>-->
+<!--                                    <td width="50%">-->
+<!--                                        {{ $t('roles.permissions.clients.view') }}-->
+<!--                                    </td>-->
+<!--                                    <td width="50%">-->
+<!--                                        <b-form-checkbox switch v-model="role.permissions.clients.view" size="lg"></b-form-checkbox>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
 
-                                <tr>
-                                    <td width="50%">
-                                        {{ $t('roles.permissions.clients.cancel_contract') }}
-                                    </td>
-                                    <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.clients.cancel_contract" size="lg"></b-form-checkbox>
-                                    </td>
-                                </tr>
+<!--&lt;!&ndash;                                <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        {{ $t('roles.permissions.clients.cancel_contract') }}&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <b-form-checkbox switch v-model="role.permissions.clients.cancel_contract" size="lg"></b-form-checkbox>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </tr>&ndash;&gt;-->
 
-                                <tr>
-                                    <td width="50%">
-                                        {{ $t('roles.permissions.clients.delete') }}
-                                    </td>
-                                    <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.clients.delete" size="lg"></b-form-checkbox>
-                                    </td>
-                                </tr>
+<!--&lt;!&ndash;                                <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        {{ $t('roles.permissions.clients.delete') }}&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <b-form-checkbox switch v-model="role.permissions.clients.delete" size="lg"></b-form-checkbox>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </tr>&ndash;&gt;-->
 
-                                <tr>
-                                    <td width="50%">
-                                        {{ $t('roles.permissions.clients.terminate') }}
-                                    </td>
-                                    <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.clients.terminate" size="lg"></b-form-checkbox>
-                                    </td>
-                                </tr>
+<!--&lt;!&ndash;                                <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        {{ $t('roles.permissions.clients.terminate') }}&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <b-form-checkbox switch v-model="role.permissions.clients.terminate" size="lg"></b-form-checkbox>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </tr>&ndash;&gt;-->
 
-                                <tr>
-                                    <td width="50%">
-                                        {{ $t('roles.permissions.clients.cancelled') }}
-                                    </td>
-                                    <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.clients.cancelled" size="lg"></b-form-checkbox>
-                                    </td>
-                                </tr>
+<!--&lt;!&ndash;                                <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        {{ $t('roles.permissions.clients.cancelled') }}&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <td width="50%">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <b-form-checkbox switch v-model="role.permissions.clients.cancelled" size="lg"></b-form-checkbox>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </tr>&ndash;&gt;-->
 
-                            </tbody>
-                        </table>
-                    </b-tab><!--clients-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </b-tab>&lt;!&ndash;clients&ndash;&gt;-->
 
                     <b-tab :title="$t('type_plan.title')">
                         <table class="table table-striped">
@@ -305,7 +305,7 @@
                                         {{ $t('roles.permissions.type_plan.view') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.type_plan.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.type_plan.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -314,7 +314,7 @@
                                         {{ $t('roles.permissions.type_plan.update') }}
                                     </td>
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.type_plan.update" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.type_plan.update" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -331,7 +331,7 @@
                                     </td>
 
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.apartments.view" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.apartments.view" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -341,7 +341,7 @@
                                     </td>
 
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.apartments.reserve" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.apartments.reserve" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -352,7 +352,7 @@
                                     </td>
 
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.apartments.contract" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.apartments.contract" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -362,7 +362,7 @@
                                     </td>
 
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.apartments.filter" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.apartments.filter" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -372,7 +372,7 @@
                                     </td>
 
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.apartments.edit" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.apartments.edit" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
 
@@ -382,16 +382,94 @@
                                     </td>
 
                                     <td width="50%">
-                                        <b-form-checkbox switch v-model="getRole.permissions.apartments.root_contract" size="lg"></b-form-checkbox>
+                                        <b-form-checkbox switch v-model="role.permissions.apartments.root_contract" size="lg"></b-form-checkbox>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </b-tab><!--apartments-->
 
-                    <b-tab :title="$t('accountants.role_title')">
+<!--                    <b-tab :title="$t('accountants.role_title')">-->
 
-                    </b-tab><!--accountants-->
+<!--                    </b-tab>&lt;!&ndash;accountants&ndash;&gt;-->
+
+                    <b-tab :title="$t('companies.title')">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.view') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.branches.view" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.update') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.branches.update" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.create') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.branches.create" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.delete') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.branches.delete" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </b-tab><!-- companies -->
+
+                    <b-tab :title="$t('contracts.title')">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.view') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.view" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.cancelled') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.cancelled" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.paid') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.paid" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </b-tab><!--contracts-->
 
 
                 </b-tabs>
@@ -412,10 +490,10 @@
 </template>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex';
 
     export default {
         data: () => ({
+            role: {},
 
             header: {
                 headers: {
@@ -426,17 +504,13 @@
         }),
 
         mounted() {
-            this.fetchRole(this);
+            this.fetchRole();
         },
-
-        computed: mapGetters(['getRole']),
 
         methods: {
 
-            ...mapActions(['fetchRole']),
-
             UpdateRoles () {
-                this.axios.put(process.env.VUE_APP_URL + '/roles/' + this.$route.params.id, this.getRole, this.header).then((response) => {
+                this.axios.put(process.env.VUE_APP_URL + '/roles/' + this.$route.params.id, this.role, this.header).then((response) => {
 
                     this.toasted(response.data.message, 'success');
 
@@ -464,6 +538,47 @@
                         }
                     }
                 });
+            },
+
+            async fetchRole() {
+                // try {
+                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/roles/' + this.$route.params.id,  this.header);
+
+                    this.role = data;
+
+                    if (!this.role.permissions.branches) {
+                        this.role.permissions.branches  = {
+                                create: false,
+                                update: false,
+                                delete: false,
+                                view: false
+                            }
+
+                    }
+
+                if (!this.role.permissions.contracts) {
+                    this.role.permissions.contracts = {
+                        view: false,
+                        cancelled: false,
+                        paid: false,
+                    }
+                }
+                //
+                // } catch (error) {
+                //     if (! error.response) {
+                //         this.toasted('Error: Network Error', 'error');
+                //     } else {
+                //         if (error.response.status === 403) {
+                //             this.toasted(error.response.data.message, 'error');
+                //         } else if (error.response.status === 401) {
+                //             this.toasted(error.response.data.message, 'error');
+                //         } else if (error.response.status === 500) {
+                //             this.toasted(error.response.data.message, 'error');
+                //         } else {
+                //             this.toasted(error.response.data.message, 'error');
+                //         }
+                //     }
+                // }
             }
         }
     }

@@ -343,7 +343,6 @@
         methods: {
 
             async Search() {
-
                 try {
                     const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/client/search?field=' + this.search_label, this.header);
                     this.step = 2;

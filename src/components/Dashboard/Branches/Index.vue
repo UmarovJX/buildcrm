@@ -21,7 +21,7 @@
                 </ul>
             </div>
 
-            <b-link v-if="getPermission.users.create" class="my-btn my-btn__blue d-flex align-items-center" v-b-modal.modal-create>
+            <b-link v-if="getPermission.branches.create" class="my-btn my-btn__blue d-flex align-items-center" v-b-modal.modal-create>
                 <i class="fal fa-plus mr-2"></i>
                 {{ $t('add') }}
             </b-link>
@@ -96,7 +96,7 @@
                                 </button>
 
                                 <div class="dropdown-menu">
-                                    <b-button v-if="getPermission.users.update" @click="EditBranch(branch)" class="dropdown-item dropdown-item--inside" v-b-modal.modal-update>
+                                    <b-button v-if="getPermission.branches.update" @click="EditBranch(branch)" class="dropdown-item dropdown-item--inside" v-b-modal.modal-update>
                                         <i class="fas fa-edit"></i>
                                         {{ $t('edit') }}
                                     </b-button>

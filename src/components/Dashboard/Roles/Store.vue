@@ -236,57 +236,57 @@
                         </table>
                     </b-tab><!--roles-->
 
-                    <b-tab :title="$t('clients.title')">
-                        <table class="table table-striped">
-                            <tbody>
-                            <tr>
-                                <td width="50%">
-                                    {{ $t('roles.permissions.clients.view') }}
-                                </td>
-                                <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.clients.view" size="lg"></b-form-checkbox>
-                                </td>
-                            </tr>
+<!--                    <b-tab :title="$t('clients.title')">-->
+<!--                        <table class="table table-striped">-->
+<!--                            <tbody>-->
+<!--                            <tr>-->
+<!--                                <td width="50%">-->
+<!--                                    {{ $t('roles.permissions.clients.view') }}-->
+<!--                                </td>-->
+<!--                                <td width="50%">-->
+<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.view" size="lg"></b-form-checkbox>-->
+<!--                                </td>-->
+<!--                            </tr>-->
 
-                            <tr>
-                                <td width="50%">
-                                    {{ $t('roles.permissions.clients.cancel_contract') }}
-                                </td>
-                                <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.clients.cancel_contract" size="lg"></b-form-checkbox>
-                                </td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td width="50%">-->
+<!--                                    {{ $t('roles.permissions.clients.cancel_contract') }}-->
+<!--                                </td>-->
+<!--                                <td width="50%">-->
+<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.cancel_contract" size="lg"></b-form-checkbox>-->
+<!--                                </td>-->
+<!--                            </tr>-->
 
-                            <tr>
-                                <td width="50%">
-                                    {{ $t('roles.permissions.clients.delete') }}
-                                </td>
-                                <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.clients.delete" size="lg"></b-form-checkbox>
-                                </td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td width="50%">-->
+<!--                                    {{ $t('roles.permissions.clients.delete') }}-->
+<!--                                </td>-->
+<!--                                <td width="50%">-->
+<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.delete" size="lg"></b-form-checkbox>-->
+<!--                                </td>-->
+<!--                            </tr>-->
 
-                            <tr>
-                                <td width="50%">
-                                    {{ $t('roles.permissions.clients.terminate') }}
-                                </td>
-                                <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.clients.terminate" size="lg"></b-form-checkbox>
-                                </td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td width="50%">-->
+<!--                                    {{ $t('roles.permissions.clients.terminate') }}-->
+<!--                                </td>-->
+<!--                                <td width="50%">-->
+<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.terminate" size="lg"></b-form-checkbox>-->
+<!--                                </td>-->
+<!--                            </tr>-->
 
-                            <tr>
-                                <td width="50%">
-                                    {{ $t('roles.permissions.clients.cancelled') }}
-                                </td>
-                                <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.clients.cancelled" size="lg"></b-form-checkbox>
-                                </td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td width="50%">-->
+<!--                                    {{ $t('roles.permissions.clients.cancelled') }}-->
+<!--                                </td>-->
+<!--                                <td width="50%">-->
+<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.cancelled" size="lg"></b-form-checkbox>-->
+<!--                                </td>-->
+<!--                            </tr>-->
 
-                            </tbody>
-                        </table>
-                    </b-tab><!--clients-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </b-tab>&lt;!&ndash;clients&ndash;&gt;-->
 
                     <b-tab :title="$t('type_plan.title')">
                         <table class="table table-striped">
@@ -381,9 +381,91 @@
                     </b-tab><!--apartments-->
 
 
-                    <b-tab :title="$t('accountants.role_title')">
+<!--                    <b-tab :title="$t('accountants.role_title')">-->
 
-                    </b-tab><!--accountants-->
+<!--                    </b-tab>&lt;!&ndash;accountants&ndash;&gt;-->
+<!--                    -->
+<!--                    -->
+<!--                    -->
+
+                    <b-tab :title="$t('companies.title')">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.view') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.branches.view" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.create') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.branches.create" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.update') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.branches.update" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.delete') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.branches.delete" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </b-tab><!--companies-->
+
+                    <b-tab :title="$t('contracts.title')">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.view') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.view" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.cancelled') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.cancelled" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.paid') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.paid" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </b-tab><!--contracts-->
+
 
 
                 </b-tabs>
@@ -428,7 +510,20 @@
                         update: false,
                     },
 
+                    contracts: {
+                        view: false,
+                        cancelled: false,
+                        paid: false,
+                    },
+
                     roles: {
+                        view: false,
+                        create: false,
+                        delete: false,
+                        update: false,
+                    },
+
+                    branches: {
                         view: false,
                         create: false,
                         delete: false,
