@@ -47,9 +47,9 @@
                                     <i class="fas fa-pen"></i> {{ $t('edit') }}
                                 </a>
 
-                                <a class="dropdown-item dropdown-item--inside" href="#" >
-                                    <i class="fas fa-copy"></i> {{ $t('objects.create.copy_building') }}
-                                </a>
+<!--                                <a class="dropdown-item dropdown-item&#45;&#45;inside" href="#" >-->
+<!--                                    <i class="fas fa-copy"></i> {{ $t('objects.create.copy_building') }}-->
+<!--                                </a>-->
 
                                 <a @click="DeleteBuild(building, index)" class="dropdown-item dropdown-item--inside" href="#" >
                                     <i class="far fa-trash"></i> {{ $t('delete') }}
@@ -72,11 +72,11 @@
                                         <i class="fas fa-pen"></i> {{ $t('edit') }}
                                     </b-link>
 
-                                    <a class="dropdown-item dropdown-item--inside" >
-                                        <i class="far fa-copy"></i>{{ $t('objects.create.copy_block') }}
-                                    </a>
+<!--                                    <a class="dropdown-item dropdown-item&#45;&#45;inside" >-->
+<!--                                        <i class="far fa-copy"></i>{{ $t('objects.create.copy_block') }}-->
+<!--                                    </a>-->
 
-                                    <a class="dropdown-item dropdown-item--inside">
+                                    <a class="dropdown-item dropdown-item--inside" @click="DeleteBlock(block, block_index, index)">
                                         <i class="far fa-trash"></i> {{ $t('delete') }}
                                     </a>
                                 </div>
@@ -296,6 +296,30 @@
 
             },
 
+            DeleteBlock(block, block_index, index) {
+                this.$swal({
+                    title: this.$t('sweetAlert.title'),
+                    text: this.$t('sweetAlert.text'),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: this.$t('sweetAlert.yes')
+                }).then((result) => {
+                    if (result.value) {
+                        this.axios.delete(process.env.VUE_APP_URL + '/v2/objects/block/' + block.id, this.header).then((response) => {
+                            if (response.status === 204) {
+                                this.buildings[index].blocks.splice(block_index, 1);
+                            }
+                        }).catch((error) => {
+                            this.toastedWithErrorCode(error);
+
+                            if (error.response.status === 422) {
+                                this.error = true;
+                                this.errors = error.response.data;
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 </script>

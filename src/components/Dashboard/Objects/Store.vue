@@ -268,6 +268,12 @@
             'edit-discount': EditDiscount,
         },
 
+        created() {
+            if (this.$route.params.id) {
+                this.object.id = this.$route.params.id
+            }
+        },
+
         watch: {
             'object.type_plan': function () {
 
@@ -280,7 +286,7 @@
 
         data: () => ({
             object: {
-                id: 5,
+                id: null,
                 name: null,
                 address: null,
                 branch_id: 0,
@@ -330,7 +336,7 @@
             },
 
 
-            step: 4,
+            step: 1,
             loading: false,
 
             error: false,

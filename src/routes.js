@@ -59,6 +59,12 @@ const routes = [
         component: ObjStore
     },
 
+    {
+        name: 'objectsEdit',
+        path: '/objects/:id/update',
+        component: ObjStore
+    },
+
     // {
     //     name: 'objects-filter',
     //     path: '/objects/filter',

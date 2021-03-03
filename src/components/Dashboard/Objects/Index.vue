@@ -9,9 +9,9 @@
                             <i class="far fa-ellipsis-h"></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" v-if="getPermission.objects.update" href="#">
+                            <router-link v-if="getPermission.objects.update" :class="'dropdown-item'" :to="{ name: 'objectsEdit', params: { id: object.id } }">
                                 <i class="fas fa-pen"></i> {{ $t('edit') }}
-                            </a>
+                            </router-link>
 
                             <b-link class="dropdown-item" v-if="getPermission.objects.update" @click="object_id = object.id" v-b-modal.modal-upload-logo>
                                 <i class="fas fa-image"></i> {{ $t('upload_logo') }}
@@ -143,11 +143,7 @@
                             );
 
                         }).catch((error) => {
-                            if (! error.response) {
-                                this.toasted('Error: Network Error', 'error');
-                            } else {
-                                this.toasted(error.response.data.error, 'error');
-                            }
+                            this.toastedWithErrorCode(error);
                         });
                     }
                 });
