@@ -15,7 +15,10 @@ import ApartmentList from './components/Dashboard/Apartment/ApartmentsList';
 // import Accountants from './components/Dashboard/Accountants/Index';
 // import Cashiers from './components/Dashboard/Cashiers/Index';
 
-// import Clients from './components/Dashboard/Clients/Index';
+import Clients from './components/Dashboard/Clients/Index';
+
+import Contracts from './components/Dashboard/Contracts/Index';
+import ContractsView from './components/Dashboard/Contracts/View';
 
 import Users from './components/Dashboard/Users/Index';
 
@@ -99,11 +102,23 @@ const routes = [
     },
 
 
-    // {
-    //     name: 'clients',
-    //     path: '/clients',
-    //     component: Clients
-    // },
+    {
+        name: 'clients',
+        path: '/clients',
+        component: Clients
+    },
+
+    {
+        name: 'contracts',
+        path: '/contracts',
+        component: Contracts
+    },
+
+    {
+        name: 'contracts-view',
+        path: '/contracts/:id',
+        component: ContractsView
+    },
 
     {
         name: 'type_plan',

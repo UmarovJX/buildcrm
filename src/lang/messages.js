@@ -43,7 +43,8 @@ export default {
         },
 
         'contracts': {
-            'title': 'Контракты',
+            'title': 'Договоры',
+            'download': 'Скачать договор'
         },
 
         'roles': {
@@ -135,7 +136,7 @@ export default {
             'number': '№ Договора',
             'language': 'Язык',
             'date': 'Дата',
-            'search': 'Найти по номеру договора или ФИО клиента'
+            'search': 'Найти по номеру договора или Телефон номер клиента'
         },
 
         'companies': {
@@ -173,7 +174,7 @@ export default {
                 'confirm': 'Оформить',
                 'filter': 'Фильтр',
                 'apartments': 'Квартиры',
-                'contract': 'Контракт',
+                'contract': 'Договор',
 
                 'entrance': 'Подъезд',
                 'balcony': 'Балкон',
@@ -277,6 +278,13 @@ export default {
                 'no_type_plan': 'нет планировок',
                 'new_type_plan': 'Создать планировка',
                 'entrance': 'Подъезд',
+                'other_price': 'Другой цена за м2',
+                'price_m2': 'Цена за м2',
+                'price_update': 'Обновить цены',
+                'clone_apartments': 'Клонировать этаж',
+                'clone': 'Клонировать',
+                'choose_clone': 'С какого этажа клонировать',
+
 
                 'plan': {
                     'name': 'Планировка',
@@ -290,6 +298,7 @@ export default {
                 'floors': 'Этажи',
 
                 'blocks': 'Блоки',
+                'buildings': 'Здания',
                 'new_block': 'Новый блок',
                 'edit_block': 'Редактировать блок',
                 'count_floors': 'Количество этажей',
@@ -297,6 +306,8 @@ export default {
 
                 'price_area': 'Цена за м2',
                 'new_price': 'Новая цена',
+                'create_price': 'Создать цены',
+                'alert_price': 'Чтобы продолжить добавления добавьте цены этажей',
                 'prices': 'Цены',
 
                 'apartment': 'Квартира',
@@ -314,8 +325,10 @@ export default {
                 'prepay_from': 'от',
                 'prepay_to': 'до',
 
+
                 'create_build': 'Добавить здание',
                 'create_discount': 'Добавить скидку',
+                'discounts': 'Тарифы продаж',
 
                 'choose_plan': 'Выберите планировку'
             },
@@ -334,12 +347,14 @@ export default {
         'sweetAlert': {
             'title': 'Вы уверены?',
             'text': 'Вы действительно хотите удалить?',
+            'text_copy_block': 'Вы действительно хотите клонировать этаж?',
             'yes': 'Да, удалить его',
             'yes_close': 'Да, закрыть',
             'yes_agree': 'Да, заключить',
+            'yes_clone': 'Да, клонировать',
             'no': '',
             'deleted': 'Удалено!',
-            'text_cancel_contract': 'Вы действительно хотите расторгнуть контракт?',
+            'text_cancel_contract': 'Вы действительно хотите расторгнуть договор?',
             'yes_cancel_contract': 'Да, расторгнуть',
             'canceled_contract': 'Контракт расторгнуть',
 

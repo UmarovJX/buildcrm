@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="col-lg-3 ml-2 d-flex flex-column justify-content-end align-items-end">
                                     <div class="mb-3" v-if="disabled.btn_save">
-                                        <button type="button" @click="createFloor" :disabled="!block.floor ? true : false" class=" my-btn my-btn__blue">
+                                        <button type="button" @click="createApartments" :disabled="!block.floor ? true : false" class=" my-btn my-btn__blue">
                                             {{ $t('create') }}
                                         </button>
                                     </div>
@@ -105,7 +105,7 @@
                         <div :id="'collapseOne' + index" :class="index === 0 ? 'collapse show' : 'collapse show'" :aria-labelledby="'headingOne' + index" data-parent="#floors">
                             <div class="card-body">
                                 <div class="row">
-                                    <apartments :building="building" @RemoveApartment="RemoveApartment" :apartments="settings.apartments[index]" @UpdateApartments="UpdateApartments" :block="block" :type-plans="typePlans"></apartments>
+                                    <apartments :building="building" :apartments="settings.apartments[index]" @UpdateApartments="UpdateApartments" :block="block" :type-plans="typePlans"></apartments>
 
                                     <div class="col-lg-4 my-2">
                                         <div class="apartment apartment-last">
@@ -151,7 +151,7 @@
                                                     </button>
 
                                                     <button type="button" class="btn "  data-toggle="collapse" :data-target="'#collapseCopy' + index" aria-expanded="false" :aria-controls="'collapseCopy' + index">
-                                                        {{  $t('close') }}
+                                                         {{  $t('close') }}
                                                     </button>
                                                 </div>
                                             </div>
@@ -162,6 +162,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <div class="mt-4 d-flex justify-content-md-start justify-content-center float-right">
                     <button type="button" class="btn btn-default mr-2" @click="removeBlock">
@@ -204,7 +205,6 @@
             },
 
             disabled: {
-                create: false,
                 apartments: false,
                 block_create: false,
                 settings: false,
@@ -226,21 +226,29 @@
 
         watch: {
             'block.name': function() {
-                if (this.block.id != null) {
-                    this.disabled.create = true;
-
-                    this.updateBlock();
-                    if (this.block.name.length > 0 && this.block.floor > 0) {
-                        this.settings.btn_save = true;
-                    }
+                this.updateBlock();
+                if (this.block.name.length > 0 && this.block.floor > 0) {
+                    this.settings.btn_save = true;
                 }
-
             },
 
+            // 'block.floor': function() {
+            //     this.updateBlock();
+            // },
+
+            // 'block.floors': function() {
+            //     this.updateBlock();
+            // },
+
+
+        //     'block_preview.apartment': function () {
+        //         if (this.block_preview.apartment > 0 && this.block_preview.floor > 0) {
+        //             this.disabled.btn_save = true;
+        //         }
+        //     },
+
             'block.apartments': function () {
-                if (this.block.id != null) {
-                    this.setGroupApartments();
-                }
+                this.setGroupApartments();
             },
 
             'block.floors': function () {
@@ -251,10 +259,6 @@
                 var old = parseInt(oldVal);
 
                 if (newVal === old) {
-                    return;
-                }
-
-                if (this.block.floor == null) {
                     return;
                 }
 
@@ -273,6 +277,7 @@
         methods: {
             saveBlock() {
                 this.$emit('InsertBlock', this.block);
+                // this.$emit('RemoveBlock');
                 this.clearPreviewBlock();
             },
 
@@ -284,24 +289,6 @@
                     // if (status === 202) {
                     //     this.block = data;
                     // }
-                } catch (error) {
-                    this.toastedWithErrorCode(error);
-
-                    if (error.response.status === 422) {
-                        this.error = true;
-                        this.errors = error.response.data;
-                    }
-                }
-            },
-
-            async RemoveApartment() {
-                try {
-                    const { data, status } = await this.axios.get(process.env.VUE_APP_URL + '/v2/objects/block/'+ this.block.id +'/apartments/', this.header);
-                    if (status === 200) {
-                        this.block.apartments = [];
-                        this.block.apartments = data;
-                        this.setGroupApartments();
-                    }
                 } catch (error) {
                     this.toastedWithErrorCode(error);
 
@@ -325,7 +312,6 @@
                             if (response.status === 204) {
                                 this.$bvModal.hide('modal-create-block');
                                 this.$emit('CreateBlockClose');
-                                this.clearPreviewBlock();
                                 //this.buildings.splice(index, 1);
                             }
                         }).catch((error) => {
@@ -356,8 +342,7 @@
 
                         this.axios.post(process.env.VUE_APP_URL + '/v2/objects/apartments/' + this.block.id + '/clone', data, this.header).then((response) => {
                             if (response.status === 201) {
-                                this.block.apartments = [];
-                                this.block.apartments = response.data;
+                                this.block = response.data;
                                 this.setGroupApartments();
 
                                 this.settings.clone_floor = null;
@@ -382,45 +367,17 @@
             },
 
             clearPreviewBlock() {
-                this.settings = {
-                    available_floors: [],
-                        disabled_floors: [],
-
-                        apartments: [],
-
-                        clone_floor: null,
-                        clone_floor_select: null,
-
-                        btn_save: false
-                };
-
-                this.disabled = {
-                    create: false,
-                    apartments: false,
-                    block_create: false,
-                    settings: false,
-                    btn_save: false,
-                    price_update: false,
-                };
-            },
-
-            async AddApartment(floor) {
-                try {
-                    const { data, status } = await this.axios.post(process.env.VUE_APP_URL + '/v2/objects/block/' + this.block.id + '/apartment', {
-                        floor: floor
-                    }, this.header);
-
-                    if (status === 201) {
-                        this.block.apartments.push(data);
-                    }
-                } catch (error) {
-                    this.toastedWithErrorCode(error);
-
-                    if (error.response.status === 422) {
-                        this.error = true;
-                        this.errors = error.response.data;
-                    }
-                }
+                // this.block_preview.apartment = 1;
+                // this.block_preview.apartments = [];
+                // this.block_preview.floor = 1;
+                // this.block_preview.floors = [];
+                // this.block_preview.name = '';
+                // this.block_preview.prices = [];
+                //
+                // this.disabled.block_create = false;
+                // this.disabled.btn_save = true;
+                // this.disabled.settings = false;
+                // this.disabled.apartments = false;
             },
 
             async UpdateApartments() {
@@ -436,7 +393,7 @@
                 }
             },
 
-            createFloor() {
+            createApartments() {
                 this.block.floors = [];
                 this.settings.available_floors = [];
 
@@ -445,20 +402,62 @@
                     // this.settings.available_floors.push(i);
                 }
 
+                // if (this.settings.available_floors.length > 0|| this.settings.disabled_floors.length > 0) {
+                //     for (let i = 1; i <= this.block.floor; i++) {
+                //         this.block.floors.push(i);
+                //         this.settings.available_floors.push(i);
+                //     }
+                //     this.settings.disabled_floors = [];
+                //     this.block.prices = [{
+                //         price: 0,
+                //         floors: []
+                //     }];
+                // } else {
+                //     for (let i = 1; i <= this.block.floor; i++) {
+                //         this.block.floors.push(i);
+                //         this.settings.available_floors.push(i);
+                //     }
+                // }
+
                 this.disabled.settings = true;
                 this.disabled.btn_save = false;
 
                 this.setFloors();
                 this.updateBlock();
-                this.setGroupApartments();
             },
 
             selectFloor(price) {
+
+                // let keyy = 0;
+                // this.settings.available_floors.map((value, key) => {
+                //     if (value === index) {
+                //         keyy =  key;
+                //     }
+                // });
+
+                // this.settings.available_floors.splice(keyy, 1);
+                // this.settings.disabled_floors.push(index);
+                // this.sortDisabledFloors();
+
+
                 this.updatePrice(price);
 
             },
 
             removeFloor(price) {
+                // let keyy = 0;
+                //
+                // this.settings.disabled_floors.map((value, key) => {
+                //     if (value === index) {
+                //         keyy =  key;
+                //     }
+                // });
+                //
+                // this.settings.disabled_floors.splice(keyy, 1);
+
+                // this.setFloors();
+                // this.settings.available_floors.push(index);
+                //this.sortAvailableFloors();
                 this.updatePrice(price)
             },
 
@@ -501,6 +500,7 @@
 
                         this.settings.available_floors = available;
                     } else {
+
                         let available = this.rr_diff(floors.flat(), this.block.floors);
 
                         available = available.map(function (key) {
@@ -512,6 +512,25 @@
                 }
             },
 
+            async AddApartment(floor) {
+                try {
+                    const { data, status } = await this.axios.post(process.env.VUE_APP_URL + '/v2/objects/block/' + this.block.id + '/apartment', {
+                        floor: floor
+                    }, this.header);
+
+                    if (status === 202) {
+                        this.block = data;
+                    }
+                } catch (error) {
+                    this.toastedWithErrorCode(error);
+
+                    if (error.response.status === 422) {
+                        this.error = true;
+                        this.errors = error.response.data;
+                    }
+                }
+            },
+
             setGroupApartments() {
 
                 let apartments = this.block.apartments;
@@ -519,7 +538,13 @@
                 if (this.block.floors === null) {
                     this.block.floors = []
                 }
-
+                // var sources = images.reduce(function(result, img) {
+                //     if (img.src.split('.').pop() !== "json") {
+                //         result.push(img.src);
+                //     }
+                //     return result;
+                // }, []);
+                //
                 let floors = this.block.floors.map(function (floor) {
                     let group = [];
                     let apartment;
@@ -535,6 +560,7 @@
                     }
 
                     group[floor] = apartment;
+
 
                     return group
                 }).flat();
@@ -578,11 +604,28 @@
                 }
             },
 
+
+            // createApartment() {
+            //     this.block_preview.apartments.push({
+            //         floor: 1,
+            //         type_plan: null,
+            //         rooms: 0,
+            //         //area: 0,
+            //         price: 0,
+            //         balcony_paid: false,
+            //         entrance: 1,
+            //     });
+            //
+            //     let apartment_count = this.block_preview.apartment + 1;
+            //
+            //     this.block_preview.apartment = apartment_count;
+            // },
+
             async addPrice() {
                 try {
                     const { data, status } = await this.axios.post(process.env.VUE_APP_URL + '/v2/objects/block/' + this.block.id + '/prices', {},  this.header);
                     if (status === 201) {
-                        this.block.prices.push(data);
+                        this.block = data;
                         this.disabled.apartments = true;
                         this.setFloors();
                     }
@@ -597,12 +640,12 @@
             },
 
 
-            async removePrice(price, index) {
+            async removePrice(price) {
                 try {
-                    const { status} = await this.axios.delete(process.env.VUE_APP_URL + '/v2/objects/block/' + this.block.id + '/prices/' + price.id,  this.header);
+                    const { data, status} = await this.axios.delete(process.env.VUE_APP_URL + '/v2/objects/block/' + this.block.id + '/prices/' + price.id,  this.header);
 
-                    if (status === 204) {
-                        this.block.prices.splice(index, 1);
+                    if (status === 202) {
+                        this.block = data;
                         this.setFloors();
                     }
                 } catch (error) {
@@ -614,9 +657,23 @@
                     }
                 }
 
-
+                // this.block_preview.prices[index].floors.map((value) => {
+                //     for (let ii = 0; ii < this.settings.disabled_floors.length; ii++) {
+                //         if (value == this.settings.disabled_floors[ii]) {
+                //             this.settings.disabled_floors.splice(ii, 1);
+                //             this.settings.available_floors.push(value);
+                //             this.sortAvailableFloors();
+                //             this.sortDisabledFloors();
+                //         }
+                //     }
+                // });
+                // this.block_preview.prices.splice(index, 1);
             },
-
+            //
+            // removeApartment(index) {
+            // this.block_preview.apartment -= 1;
+            // this.block_preview.apartments.splice(index, 1)
+            // }
         }
     }
 </script>

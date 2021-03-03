@@ -9,13 +9,13 @@
                                 <label class="d-block">{{ $t('objects.create.pre_pay') }}</label>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="">
-                                        <input  class="my-form__input" type="number" min="0" v-model="dataDiscount.prepay_from">
+                                        <input  class="my-form__input" type="number" min="0" step="0.1" v-model="discount.prepay_from">
                                     </div>
                                     <div class="mx-2 long-horizontal-line">
                                         &#8213;
                                     </div>
                                     <div class="">
-                                        <input class="my-form__input" type="number" min="0" v-model="dataDiscount.prepay_to">
+                                        <input class="my-form__input" type="number" min="0" step="0.1" v-model="discount.prepay_to">
                                     </div>
                                 </div>
                             </div>
@@ -24,7 +24,7 @@
                             <div class="mb-3">
                                 <label class="d-block" for="new_block_discount">{{ $t('objects.create.discount') }}</label>
                                 <div class="flex-grow-1">
-                                    <input id="new_block_discount" class="my-form__input" type="number" min="0" v-model="dataDiscount.discount">
+                                    <input id="new_block_discount" class="my-form__input" type="number" step="0.1" min="0" v-model="discount.discount">
                                 </div>
                             </div>
                         </div>
@@ -48,19 +48,58 @@
 
 <script>
     export default {
-        props: ['dataDiscount'],
+        props: ['discount', 'object'],
 
         data: () => ({
+            error: false,
+            errors: [],
 
+            header: {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.token
+                }
+            }
         }),
 
         methods: {
-            discountCancel () {
-                this.$emit('cancelDiscount');
+            async discountCancel () {
+                try {
+                    const { data, status } = await this.axios.get(process.env.VUE_APP_URL + '/v2/objects/' + this.object.id + '/discounts', this.header);
+
+                    if (status === 200) {
+                        this.$emit('CancelDiscount', data);
+                        this.$bvModal.hide('modal-edit-discount');
+                    }
+                } catch (error) {
+                    this.toastedWithErrorCode(error);
+
+                    if (error.response.status === 422) {
+                        this.error = true;
+                        this.errors = error.response.data;
+                    }
+                }
+
             },
 
-            SaveDiscount () {
-                this.$emit('SaveDiscount');
+            async SaveDiscount () {
+
+                try {
+                    const { data, status } = await this.axios.put(process.env.VUE_APP_URL + '/v2/objects/' + this.object.id + '/discounts/' + this.discount.id, this.discount, this.header);
+
+                    if (status === 202) {
+                        this.$emit('CancelDiscount', data);
+                        this.$bvModal.hide('modal-edit-discount');
+                    }
+                } catch (error) {
+                    this.toastedWithErrorCode(error);
+
+                    if (error.response.status === 422) {
+                        this.error = true;
+                        this.errors = error.response.data;
+                    }
+                }
+
+                //this.$emit('SaveDiscount', this.discount);
                 // this.clearDiscount();
             }
         }

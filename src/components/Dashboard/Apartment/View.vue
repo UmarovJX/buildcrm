@@ -76,9 +76,9 @@
                     <i class="far fa-ballot-check"></i>  {{ $t('apartments.list.confirm') }}
                 </b-button>
 
-                <b-button variant="primary" v-b-modal.modal-contract-info class="my-btn my-btn__blue ml-1" v-if="getPermission.apartments.contract  && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') && getMe.user.id === getApartment.order.user.id  || getPermission.apartments.root_contract && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') || getMe.role.id === 1 && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') ">
+                <router-link :to="{ name: 'contracts-view', params: { id: getApartment.order.id }}"  :class="'btn btn-primary ml-1'" v-if="getPermission.apartments.contract  && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') && getMe.user.id === getApartment.order.user.id  || getPermission.apartments.root_contract && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') || getMe.role.id === 1 && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') ">
                     <i class="far fa-file-signature"></i>  {{ $t('apartments.list.contract') }}
-                </b-button>
+                </router-link>
             </div>
         </div>
 
@@ -90,7 +90,7 @@
 
         <success-agree v-if="getApartment.order.status != 'sold' || getApartment.order.status != 'contract'" :contract="contract"></success-agree>
 
-        <view-contract :apartment="getApartment" v-if="getPermission.apartments.contract  && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') && getMe.user.id === getApartment.order.user.id  || getPermission.apartments.root_contract && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') || getMe.role.id === 1 && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') "></view-contract>
+<!--        <view-contract :apartment="getApartment" v-if="getPermission.apartments.contract  && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') && getMe.user.id === getApartment.order.user.id  || getPermission.apartments.root_contract && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') || getMe.role.id === 1 && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') "></view-contract>-->
     </main>
 </template>
 
@@ -102,7 +102,7 @@
     import Agree from './Components/Agree'
     import SuccessAgree from './Components/SuccessAgree'
     import Discount from './Components/Discount'
-    import ViewContract from './Components/ViewContract'
+    // import ViewContract from './Components/ViewContract'
 
     export default {
         components: {
@@ -111,7 +111,7 @@
             'agree-modal': Agree,
             'Discount': Discount,
             'success-agree': SuccessAgree,
-            'view-contract': ViewContract,
+            // 'view-contract': ViewContract,
         },
 
         data: () => ({

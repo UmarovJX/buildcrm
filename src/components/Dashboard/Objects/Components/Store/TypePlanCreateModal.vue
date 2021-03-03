@@ -50,13 +50,25 @@
 
 <script>
     export default {
+        props: {
+            object: {}
+        },
+
         data: () => ({
             plan: {
+                id: null,
+                object_id: null,
                 name: null,
                 area: null,
                 balcony: false,
                 balcony_area: null,
                 deleted: false
+            },
+
+            header: {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.token
+                }
             }
         }),
 
@@ -77,11 +89,26 @@
                 }
             },
 
-            SaveDiscount () {
-                this.$emit('savePlan', this.plan);
-                this.$bvModal.hide('modal-create-type-plan');
-                this.clearDiscount();
-            }
+            async SaveDiscount () {
+                try {
+                    const { data, status } = await this.axios.post(process.env.VUE_APP_URL + '/v2/objects/' + this.object.id  + '/plans', this.plan, this.header);
+
+                    if (status === 201) {
+                        this.$emit('savePlan', data);
+                        this.$bvModal.hide('modal-create-type-plan');
+                        this.clearDiscount();
+                    }
+                } catch (error) {
+                    this.toastedWithErrorCode(error);
+
+                    if (error.response.status === 422) {
+                        this.error = true;
+                        this.errors = error.response.data;
+                    }
+                }
+            },
+
+
         },
     }
 </script>
