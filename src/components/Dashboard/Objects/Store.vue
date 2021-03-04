@@ -69,7 +69,7 @@
                     <div class="card-body">
                         <plans-table :plans="this.plans"></plans-table>
 
-                        <b-button variant="success" v-b-modal.modal-create-type-plan v-if="plans.length > 0">
+                        <b-button variant="success" @click="disabled.plan.create = true" v-b-modal.modal-create-type-plan v-if="plans.length > 0">
                             <i class="fas fa-plus-circle"></i> {{ $t('objects.create.new_type_plan') }}
                         </b-button>
 
