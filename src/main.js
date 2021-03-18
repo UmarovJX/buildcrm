@@ -13,6 +13,7 @@ import toasted from './util/toasted';
 import store from './store';
 // import moment from 'moment';
 import vueMoment from 'vue-moment';
+import VueHtmlToPaper from 'vue-html-to-paper';
 
 Vue.use(vueMoment);
 
@@ -30,6 +31,21 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.config.devtools = true;
+
+const optionsPrint = {
+    name: '_blank',
+    specs: [
+        'fullscreen=yes',
+        'titlebar=yes',
+        'scrollbars=yes'
+    ],
+    "styles": [
+        "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
+        "https://unpkg.com/kidlat-css/css/kidlat.css",
+        "./landscape.css"
+    ]
+}
+Vue.use(VueHtmlToPaper, optionsPrint);
 
 const sweetOptions = {
     confirmButtonColor: '#3085d6',

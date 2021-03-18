@@ -65,6 +65,12 @@
     }
 </script>
 
+
 <style scoped>
+    .apartment__variant {
+        height: 180px !important;
+    }
+
 
 </style>
+
