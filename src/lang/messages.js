@@ -88,6 +88,7 @@ export default {
                     'view': 'Разрешить просмотр',
                     'cancelled': 'Разрешить отменить контракт',
                     'paid': 'Разрешить отмечать оплаты',
+                    'other_price': 'Разрешить продать другой цене',
                 },
 
                 'clients': {
@@ -212,6 +213,7 @@ export default {
                 'total_price': 'Цена продажи',
                 'status': 'Статус',
                 'variant': 'Вариант оплаты',
+                'other_variant': 'Другой вариант'
 
             },
 
@@ -265,6 +267,8 @@ export default {
             'title': 'Объекты',
             'apartments': 'Квартиры',
             'address': 'Адрес',
+            'full_address': 'Адрес для договора',
+            'build_date': 'Дата окончания строительства',
 
             'create': {
                 'name': 'Название',
@@ -336,6 +340,8 @@ export default {
             'placeholder': {
                 'name': 'Названия объекта',
                 'address': 'Адрес объекта',
+                'full_address': 'Адрес для договора',
+
                 'type_plan': 'Названия планировку',
 
                 'block_name': 'Названия блока',

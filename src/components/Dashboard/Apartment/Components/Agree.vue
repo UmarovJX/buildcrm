@@ -114,13 +114,17 @@
                                     </option>
 
                                     <option v-for="(discount, index) in apartment.discounts" :value="discount" :key="index">
-                                        {{ $t('apartments.view.variant') }} {{ index + 1}} - {{ discount.prepay_from }}%  -  {{ discount.prepay_to }}%
+                                        {{ $t('apartments.view.variant') }} {{ index + 1}}  -  {{ discount.prepay_to }}%
                                     </option>
+
+<!--                                    <option :value="{id: 'other'}">-->
+<!--                                        {{ $t('apartments.view.other_variant') }}-->
+<!--                                    </option>-->
                                 </select>
                             </div>
                         </div>
 
-                        <div class="col-md-12 my-2" v-if="client.discount.id">
+                        <div class="col-md-12 my-2" v-if="client.discount.id && client.discount.id != 'other'">
                             <Discount :discount="client.discount" :apartment="apartment"></Discount>
                         </div>
                     </div>
@@ -175,20 +179,20 @@
 
                         <table class="table table-hover mx-0 mt-2 p-0 my-table-another-variant">
                             <tbody class="m-0 p-0">
-                            <tr>
-                                <td class="px-0 py-2">Скидка - {{ client.discount.discount }}%</td>
-                                <td class="px-0 py-2 text-right">{{ getDiscount() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td class="px-0 py-2">Скидка - {{ client.discount.discount }}%</td>-->
+<!--                                <td class="px-0 py-2 text-right">{{ getDiscount() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>-->
+<!--                            </tr>-->
 
-                            <tr>
-                                <td class="px-0 py-2">Итого со скидкой</td>
-                                <td class="px-0 py-2 text-right">{{ getTotal() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td class="px-0 py-2">Итого со скидкой</td>-->
+<!--                                <td class="px-0 py-2 text-right">{{ getTotal() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>-->
+<!--                            </tr>-->
 
-                            <tr>
-                                <td class="px-0 py-2">Сумма рассрочки</td>
-                                <td class="px-0 py-2 text-right">{{ getDebt() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>
-                            </tr>
+                                <tr>
+                                    <td class="px-0 py-2">Сумма рассрочки</td>
+                                    <td class="px-0 py-2 text-right">{{ getDebt() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>
+                                </tr>
                             </tbody>
                         </table>
 
@@ -517,6 +521,17 @@
                     return;
                 }
 
+                // if (this.client.discount.id === 'other') {
+                //     this.client.discount = {
+                //         id: null,
+                //         prepay_to: 30
+                //     };
+                //
+                //     this.next = true;
+                //     this.confirm = false;
+                //     return;
+                // }
+
                 if (this.client.discount.prepay_to === 100) {
                     this.next = false;
                     this.confirm = true;
@@ -530,16 +545,54 @@
             },
 
 
+            // sgetPrepay() {
+            //     let total_discount = this.getDiscount();
+            //
+            //     let total = this.apartment.price - total_discount;
+            //
+            //     return this.client.discount.prepay_to * total / 100;
+            // },
+            //
+            // sgetDiscount() {
+            //     return this.client.discount.discount * this.apartment.price / 100;
+            // },
+            //
+            // sgetMonth() {
+            //     return (this.getTotal() - this.getPrepay()) / this.month;
+            // },
+            //
+            // sgetDebt() {
+            //     return this.getTotal() - this.getPrepay();
+            // },
+            //
+            // sgetTotal() {
+            //     let total_discount = this.getDiscount();
+            //
+            //     // let total = price * area;
+            //     let total = this.apartment.price - total_discount;
+            //
+            //     return total;
+            // },
+
             getPrepay() {
+                if (this.prepay_to === 100)
+                    return 0;
+
                 let total_discount = this.getDiscount();
 
-                let total = this.apartment.price - total_discount;
+                let total = this.apartment.price / total_discount;
+
+                // return total;
 
                 return this.client.discount.prepay_to * total / 100;
             },
 
             getDiscount() {
-                return this.client.discount.discount * this.apartment.price / 100;
+                if (this.prepay_to === 100)
+                    return 0;
+
+                return 1 - (this.client.discount.discount / 100);
+                // return this.discount.discount * this.apartment.price / 100;
             },
 
             getMonth() {
@@ -547,17 +600,23 @@
             },
 
             getDebt() {
+                // let price = this.getTotal() - this.getPrepay();
+                //console.log(price);
                 return this.getTotal() - this.getPrepay();
             },
 
             getTotal() {
                 let total_discount = this.getDiscount();
 
+                //console.log(total_discount);
+
                 // let total = price * area;
-                let total = this.apartment.price - total_discount;
+                let total = this.apartment.price / total_discount;
 
                 return total;
             },
+
+
 
             CreditMonths(newVal) {
 

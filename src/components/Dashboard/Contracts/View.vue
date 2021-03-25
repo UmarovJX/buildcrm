@@ -103,14 +103,14 @@
                                 </thead>
 
                                 <tbody>
-                                    <tr>
-                                        <td width="240">
-                                            Цена продажи
-                                        </td>
-                                        <td>
-                                            {{ order.apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
-                                        </td>
-                                    </tr>
+<!--                                    <tr>-->
+<!--                                        <td width="240">-->
+<!--                                            Цена продажи-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            {{ order.apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
 
                                     <tr>
                                         <td width="240">
@@ -121,14 +121,14 @@
                                         </td>
                                     </tr>
 
-                                    <tr>
-                                        <td width="240">
-                                            Скидка
-                                        </td>
-                                        <td>
-                                            {{ order.discount.discount }} %
-                                        </td>
-                                    </tr>
+<!--                                    <tr>-->
+<!--                                        <td width="240">-->
+<!--                                            Скидка-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            {{ order.discount.discount }} %-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
 
                                     <tr>
                                         <td width="240">

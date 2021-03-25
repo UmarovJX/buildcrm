@@ -34,6 +34,21 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="address_full" class="form-label">
+                                {{ $t('objects.full_address') }}
+                            </label>
+                            <input type="text" class="form-control" id="address_full" v-model="object.full_address" required :placeholder="$t('objects.placeholder.full_address')">
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="date_build" class="form-label">
+                                {{ $t('objects.build_date') }}
+                            </label>
+                            <input type="date" class="form-control" id="date_build" v-model="object.build_date" required :placeholder="$t('objects.placeholder.build_date')">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label" for="comapnies">
                                 {{ $t('companies.title') }}
                             </label>
@@ -289,6 +304,8 @@
                 id: null,
                 name: null,
                 address: null,
+                full_address: null,
+                build_date: null,
                 branch_id: 0,
                 draft: false
             },

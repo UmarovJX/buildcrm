@@ -462,6 +462,15 @@
                                     </td>
                                 </tr>
 
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.other_price') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.other_price" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
                             </tbody>
                         </table>
                     </b-tab><!--contracts-->
@@ -514,6 +523,7 @@
                         view: false,
                         cancelled: false,
                         paid: false,
+                        other_price: false
                     },
 
                     roles: {

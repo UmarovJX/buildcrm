@@ -1,6 +1,6 @@
 <template>
     <main>
-            <section ref="document">
+            <section ref="document" id="printMe">
                 <div class="d-flex align-items-center pb-3 pt-0 px-3 px-md-0 py-lg-3">
                     <h1 class="title__default mb-md-0 mb-3">
                         {{ getApartment.object.name }} - {{ getApartment.number }}
@@ -140,7 +140,10 @@
     import SuccessAgree from './Components/SuccessAgree'
     import Discount from './Components/Discount'
 
-    import html2pdf from 'html2pdf.js'
+
+    // import pdf from 'phantom-html2pdf';
+
+    // import html2pdf from 'html2pdf.js'
     // import pdf2html from 'pdf2html';
     // import { jsPDF } from "jspdf";
     // import VueHtml2pdf from 'vue-html2pdf'
@@ -242,6 +245,10 @@
                 // this.$htmlToPaper('printMe');
                 // const html = this.$refs.document.innerHTML;
                 //
+                // pdf.convert({
+                //     html: html
+                // })
+                //
                 // let doc = new jsPDF();
                 //
                 // doc.fromHTML(html, 15, 15);
@@ -256,13 +263,21 @@
                 //     }
                 // })
 
-                html2pdf(this.$refs.document, {
-                    margin: 0,
-                    filename: 'document.pdf',
-                    image: { type: "jpg", quality: 0.95},
-                    html2canvas: { dpi: 300, letterRendering: true, scale: 1.2, useCORS: true,  imageTimeout: 30000 },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-                });
+                // this.$htmlToPaper('printMe');
+
+                // html2pdf(this.$refs.document, {
+                //     margin: 0,
+                //     filename: 'document.pdf',
+                //     image: { type: "jpg", quality: 0.95},
+                //     // html2canvas: { dpi: 300, letterRendering: true, scale: 1.2, useCORS: false, allowTaint: false,  imageTimeout: 30000, onrendered: function(canvas) {
+                //     //         var a = document.createElement('a');
+                //     //         // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
+                //     //         a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
+                //     //         a.download = 'somefilename.jpg';
+                //     //         a.click();
+                //     // } },
+                //     jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+                // });
 
             },
 
