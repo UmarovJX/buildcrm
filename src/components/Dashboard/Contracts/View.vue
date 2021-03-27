@@ -231,7 +231,45 @@
                                 </tbody>
                             </table>
 
+                            <div class="col-md-12">
+                                <h3>
+                                    Комментарии
+                                </h3>
+                                <div class="alert alert-info" v-if="order.comments.length === 0">
+                                    <i class="fa fa-info-circle"></i> Пока нету комментариев
+                                </div>
+                                <ul class="timeline" v-if="order.comments.length > 0">
+                                    <li class="timeline-inverted" v-for="(comment, index) in order.comments" :key="index">
+                                        <div class="timeline-badge" :class="[comment.type === 'bought' ? 'success' : 'primary', comment.type === 'cancelled_contract' ? 'danger' : 'primary']">
+                                            <i class="fa fa-comment" v-if="comment.type === 'comment'"></i>
+                                            <i class="fa fa-shopping-cart" v-if="comment.type === 'bought'"></i>
+                                            <i class="fa fa-archive" v-if="comment.type === 'cancelled_contract'"></i>
+                                        </div>
+                                        <div class="timeline-panel">
 
+                                            <div class="timeline-body" v-html="comment.comment">
+                                            </div>
+
+                                            <small>Пользователь: {{ comment.user.first_name }} {{ comment.user.last_name }} | Дата: {{ comment.created_at | moment('HH:mm, DD.MM.YYYY') }}</small>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <button type="button" class="btn btn-light" @click="comment_store = true" data-toggle="collapse" href="#collapseComment" role="button" aria-expanded="false" aria-controls="collapseComment">
+                                    <i class="fa fa-plus-square"></i>  Добавить комментарий
+                                </button>
+
+                                <div class="collapse mt-2" id="collapseComment" v-if="comment_store">
+                                    <form @submit.stop.prevent="saveComment" >
+                                        <label>Комментария</label>
+                                        <textarea name="comment" v-model="comment" id="" class="form-control" cols="3" rows="3"></textarea>
+
+                                        <button class="btn btn-warning mt-2 waves-effect waves-light" type="submit">
+                                            <i class="fa fa-save"></i> Сохранить
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -344,10 +382,15 @@
                     discount: {id: null},
                     edit: false
                 },
+
+                comments: []
             },
 
             error: false,
             errors: [],
+
+            comment_store: false,
+            comment: '',
 
             header: {
                 headers: {
@@ -361,7 +404,23 @@
         },
 
         methods: {
+            async saveComment() {
+                console.log(this.comment);
+                try {
+                    const { data, status } = await this.axios.post(process.env.VUE_APP_URL + '/orders/' + this.$route.params.id + '/comment', {
+                        comment: this.comment
+                    }, this.header);
 
+                    if (status === 201) {
+                        this.comment = '';
+                        this.order.comments.push(data);
+                        this.comment_store = false;
+                    }
+
+                } catch (error) {
+                    this.toastedWithErrorCode(error);
+                }
+            },
 
             async fetchOrder() {
                 try {
@@ -370,19 +429,7 @@
 
                     this.order = data;
                 } catch (error) {
-                    if (! error.response) {
-                        this.toasted('Error: Network Error', 'error');
-                    } else {
-                        if (error.response.status === 403) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 401) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 500) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else {
-                            this.toasted(error.response.data.message, 'error');
-                        }
-                    }
+                    this.toastedWithErrorCode(error);
                 }
             },
 
@@ -392,11 +439,20 @@
                     text: this.$t('sweetAlert.text_cancel_contract'),
                     icon: 'warning',
                     showCancelButton: true,
+                    input: 'textarea',
+                    inputLabel: 'Message',
+                    inputPlaceholder: 'Напишите причину расторгнуть договор',
+                    inputAttributes: {
+                        'aria-label': 'Напишите причину расторгнуть договор'
+                    },
                     confirmButtonText: this.$t('sweetAlert.yes_cancel_reserve')
                 }).then((result) => {
+                    console.log(result);
                     if (result.value) {
 
-                        this.axios.delete(process.env.VUE_APP_URL + '/deals/' + this.order.id , this.header).then((response) => {
+                        this.axios.post(process.env.VUE_APP_URL + '/deals/' + this.order.id, {
+                            comment: result.value
+                        }, this.header).then((response) => {
                             console.log(response);
                             this.$router.back(-1);
 
@@ -407,21 +463,10 @@
                             );
 
                         }).catch((error) => {
-                            if (! error.response) {
-                                this.toasted('Error: Network Error', 'error');
-                            } else {
-                                if (error.response.status === 403) {
-                                    this.toasted(error.response.data.message, 'error');
-                                } else if (error.response.status === 401) {
-                                    this.toasted(error.response.data.message, 'error');
-                                } else if (error.response.status === 500) {
-                                    this.toasted(error.response.data.message, 'error');
-                                } else {
-                                    this.error = true;
-                                    this.errors = error.response.data.errors;
-                                }
-                            }
+                            this.toastedWithErrorCode(error)
                         });
+                    } else {
+                        this.toasted('Напишите причину расторгнуть договор', 'error');
                     }
                 });
             },
@@ -479,83 +524,193 @@
         opacity: 0.8; /* Firefox */
     }
 
-    /*.invoice-box{*/
-    /*    max-width:100%;*/
-    /*    margin:auto;*/
-    /*    padding:30px;*/
-    /*    border:1px solid #eee;*/
-    /*    box-shadow:0 0 10px rgba(0, 0, 0, .15);*/
-    /*    font-size:16px;*/
-    /*    line-height:24px;*/
-    /*    font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;*/
-    /*    color:#555;*/
-    /*    background: #fff;*/
-    /*}*/
+    .timeline {
+        list-style: none;
+        padding: 20px 0 20px;
+        position: relative;
+    }
 
-    /*.invoice-box table{*/
-    /*    width:100%;*/
-    /*    line-height:inherit;*/
-    /*    text-align:left;*/
-    /*}*/
+    .timeline:before {
+        top: 0;
+        bottom: 0;
+        position: absolute;
+        content: " ";
+        width: 3px;
+        background-color: #eeeeee;
+        left: 0%;
+        margin-left: -1.5px;
+    }
 
-    /*.invoice-box table td{*/
-    /*    padding:5px;*/
-    /*    vertical-align:top;*/
-    /*}*/
+    .timeline > li {
+        margin-bottom: 20px;
+        position: relative;
+    }
 
-    /*.invoice-box table tr td:nth-child(2){*/
-    /*    text-align:right;*/
-    /*}*/
+    .timeline > li:before,
+    .timeline > li:after {
+        content: " ";
+        display: table;
+    }
 
-    /*.invoice-box table tr.top table td{*/
-    /*    padding-bottom:20px;*/
-    /*}*/
+    .timeline > li:after {
+        clear: both;
+    }
 
-    /*.invoice-box table tr.top table td.title{*/
-    /*    font-size:45px;*/
-    /*    line-height:45px;*/
-    /*    color:#333;*/
-    /*}*/
+    .timeline > li:before,
+    .timeline > li:after {
+        content: " ";
+        display: table;
+    }
 
-    /*.invoice-box table tr.information table td{*/
-    /*    padding-bottom:40px;*/
-    /*}*/
+    .timeline > li:after {
+        clear: both;
+    }
 
-    /*.invoice-box table tr.heading td{*/
-    /*    background:#eee;*/
-    /*    border-bottom:1px solid #ddd;*/
-    /*    font-weight:bold;*/
-    /*}*/
+    .timeline > li > .timeline-panel {
+        width: 46%;
+        float: left;
+        border: 1px solid #d4d4d4;
+        border-radius: 2px;
+        padding: 20px;
+        position: relative;
+        -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.175);
+    }
 
-    /*.invoice-box table tr.details td{*/
-    /*    padding-bottom:20px;*/
-    /*}*/
+    .timeline > li > .timeline-panel:before {
+        position: absolute;
+        top: 26px;
+        right: -15px;
+        display: inline-block;
+        border-top: 15px solid transparent;
+        border-left: 15px solid #ccc;
+        border-right: 0 solid #ccc;
+        border-bottom: 15px solid transparent;
+        content: " ";
+    }
 
-    /*.invoice-box table tr.item td{*/
-    /*    border-bottom:1px solid #eee;*/
-    /*}*/
+    .timeline > li > .timeline-panel:after {
+        position: absolute;
+        top: 27px;
+        right: -14px;
+        display: inline-block;
+        border-top: 14px solid transparent;
+        border-left: 14px solid #fff;
+        border-right: 0 solid #fff;
+        border-bottom: 14px solid transparent;
+        content: " ";
+    }
 
-    /*.invoice-box table tr.item.last td{*/
-    /*    border-bottom:none;*/
-    /*}*/
+    .timeline > li > .timeline-badge {
+        color: #fff;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 1.4em;
+        text-align: center;
+        position: absolute;
+        top: 16px;
+        left: 0;
+        margin-left: -25px;
+        background-color: #999999;
+        z-index: 100;
+        border-top-right-radius: 50%;
+        border-top-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+    }
 
-    /*.invoice-box table tr.total td:nth-child(2){*/
-    /*    border-top:2px solid #eee;*/
-    /*    font-weight:bold;*/
-    /*}*/
+    .timeline > li.timeline-inverted > .timeline-panel {
+        float: left;
+        left: 45px;
+    }
 
-    /*@media only screen and (max-width: 600px) {*/
-    /*    .invoice-box table tr.top table td{*/
-    /*        width:100%;*/
-    /*        display:block;*/
-    /*        text-align:center;*/
-    /*    }*/
+    .timeline > li.timeline-inverted > .timeline-panel:before {
+        border-left-width: 0;
+        border-right-width: 15px;
+        left: -15px;
+        right: auto;
+    }
 
-    /*    .invoice-box table tr.information table td{*/
-    /*        width:100%;*/
-    /*        display:block;*/
-    /*        text-align:center;*/
-    /*    }*/
-    /*}*/
+    .timeline > li.timeline-inverted > .timeline-panel:after {
+        border-left-width: 0;
+        border-right-width: 14px;
+        left: -14px;
+        right: auto;
+    }
+
+    .timeline-badge.primary {
+        background-color: #2e6da4 !important;
+    }
+
+    .timeline-badge.success {
+        background-color: #3f903f !important;
+    }
+
+    .timeline-badge.warning {
+        background-color: #f0ad4e !important;
+    }
+
+    .timeline-badge.danger {
+        background-color: #d9534f !important;
+    }
+
+    .timeline-badge.info {
+        background-color: #5bc0de !important;
+    }
+
+    .timeline-title {
+        margin-top: 0;
+        color: inherit;
+    }
+
+    .timeline-body > p,
+    .timeline-body > ul {
+        margin-bottom: 0;
+    }
+
+    .timeline-body > p + p {
+        margin-top: 5px;
+    }
+
+    @media (max-width: 767px) {
+        ul.timeline:before {
+            left: 40px;
+        }
+
+        ul.timeline > li > .timeline-panel {
+            width: calc(100% - 90px);
+            width: -moz-calc(100% - 90px);
+            width: -webkit-calc(100% - 90px);
+        }
+
+        ul.timeline > li > .timeline-badge {
+            left: 15px;
+            margin-left: 0;
+            top: 16px;
+        }
+
+        ul.timeline > li > .timeline-panel {
+            float: right;
+        }
+
+        ul.timeline > li > .timeline-panel:before {
+            border-left-width: 0;
+            border-right-width: 15px;
+            left: -15px;
+            right: auto;
+        }
+
+        ul.timeline > li > .timeline-panel:after {
+            border-left-width: 0;
+            border-right-width: 14px;
+            left: -14px;
+            right: auto;
+        }
+    }
+
+    small {
+        color: #969696
+    }
 
 </style>

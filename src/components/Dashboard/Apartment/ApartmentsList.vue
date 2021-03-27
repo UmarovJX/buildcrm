@@ -61,7 +61,7 @@
 
 
 
-                        <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' || apartment.order.status === 'contract' ? 'table-danger' : '' ]">
+                        <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' || apartment.order.status === 'contract' ? 'table-warning' : '' ]">
                             <td scope="row">
                                 {{ apartment.number }}
                             </td>

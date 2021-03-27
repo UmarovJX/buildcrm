@@ -213,7 +213,8 @@ export default {
                 'total_price': 'Цена продажи',
                 'status': 'Статус',
                 'variant': 'Вариант оплаты',
-                'other_variant': 'Другой вариант'
+                'other_variant': 'Другой вариант',
+
 
             },
 
@@ -229,6 +230,7 @@ export default {
                 'date_of_issue': 'Дата выпуска пасспорта',
                 'birth_day': 'Дата рождения',
                 'discounts': 'Тип покупка',
+                'edit_price': 'Редактировать цена',
                 'placeholder': {
                     'search': 'Найти по телефон номеру или Номер паспорта',
                     'first_name': 'Ахмад',

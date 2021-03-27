@@ -42,7 +42,7 @@
                     <tbody>
 
                     <tr v-if="getLoading">
-                        <td colspan="7" style="">
+                        <td colspan="8" style="">
                             <div class="d-flex justify-content-center w-100">
                                 <div class="lds-ellipsis">
                                     <div></div>
@@ -55,7 +55,7 @@
                     </tr>
 
                     <tr v-if="getContracts.length === 0 && !getLoading">
-                        <td colspan="7">
+                        <td colspan="8">
                             <center>
                                 {{ $t('no_data') }}
                             </center>
