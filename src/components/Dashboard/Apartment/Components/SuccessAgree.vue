@@ -3,7 +3,7 @@
         <b-modal id="modal-success-agree" ref="modal" title="Договор успешно создан!" hide-footer @show="resetModal">
 
             <div class="my-3">
-                <h6>№ договора -  E-{{ contract.id }}</h6>
+                <h6>№ договора -  {{ contract.contract }}</h6>
             </div>
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">{{ contract.contract }}.docx</h6>

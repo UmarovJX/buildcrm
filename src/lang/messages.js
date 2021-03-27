@@ -89,6 +89,7 @@ export default {
                     'cancelled': 'Разрешить отменить контракт',
                     'paid': 'Разрешить отмечать оплаты',
                     'other_price': 'Разрешить продать другой цене',
+                    'change_date': 'Разрешить изменить дата договора'
                 },
 
                 'clients': {
@@ -219,6 +220,8 @@ export default {
             },
 
             'agree': {
+                'number': 'Номер договора',
+                'date_contract': 'Дата договора (месяц/число/год)',
                 'first_name': 'Имя',
                 'last_name': 'Фамилия',
                 'second_name': 'Отчество',
@@ -228,10 +231,12 @@ export default {
                 'phone': 'Телефон номер',
                 'other_phone': 'Дополнительный номер',
                 'date_of_issue': 'Дата выпуска пасспорта',
-                'birth_day': 'Дата рождения',
+                'birth_day': 'Дата рождения (месяц/число/год)',
                 'discounts': 'Тип покупка',
                 'edit_price': 'Редактировать цена',
                 'placeholder': {
+                    'number': 'D-6',
+                    'date_contract': '20.12.2020',
                     'search': 'Найти по телефон номеру или Номер паспорта',
                     'first_name': 'Ахмад',
                     'last_name': 'Жасуров',

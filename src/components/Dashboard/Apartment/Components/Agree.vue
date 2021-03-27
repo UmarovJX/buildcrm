@@ -20,6 +20,31 @@
             <form ref="form" @submit.stop.prevent="sendForm" v-if="step === 2">
                 <div class="container px-0 mx-0">
                     <div class="row">
+                        <div class="col-12 mb-2" v-if="getMe.role.id === 1 || getPermission.contracts.date">
+                            <button class="btn btn-light mb-2" @click="date_change = true" type="button">
+                                <i class="fa fa-calendar"></i> Изменить дата договора
+                            </button>
+
+                            <div class="row" v-if="date_change">
+                                <div class="col-md-6" >
+                                    <div class="mb-3">
+                                        <label class="d-block" for="number">{{ $t('apartments.agree.number') }}</label>
+                                        <input id="number" class="my-form__input" type="text" required v-model="apartment_edit.contract_number" :placeholder="$t('apartments.agree.placeholder.number')">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="d-block" for="date">{{ $t('apartments.agree.date_contract') }}</label>
+                                        <input id="date" class="my-form__input" type="date" required v-model="apartment_edit.contract_date" :placeholder="$t('apartments.agree.placeholder.date_contract')">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+                        </div>
+
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="first_name">{{ $t('apartments.agree.first_name') }}</label>
@@ -381,12 +406,15 @@
             apartment_edit: {
                 price: 0,
                 prepay_price: 0,
-                percente: 0
+                percente: 0,
+                contract_number: null,
+                contract_date: null
             },
 
             comment: '',
 
             month: "6",
+            date_change: false,
 
             confirm: false,
             next: false,
@@ -536,6 +564,12 @@
                         if (this.client.discount.id === 'other') {
                             formData.append('apartment_price', this.apartment_edit.price);
                             formData.append('apartment_prepay_price', this.apartment_edit.prepay_price);
+                        }
+
+                        if (this.date_change) {
+                            formData.append('date_change', 1);
+                            formData.append('contract_number', this.apartment_edit.contract_number);
+                            formData.append('contract_date', this.apartment_edit.contract_date);
                         }
 
                         if (this.step === 3 && this.client.discount.prepay_to != 100) {
