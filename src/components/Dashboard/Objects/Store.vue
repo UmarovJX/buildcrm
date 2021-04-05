@@ -49,6 +49,13 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="date_build" class="form-label">
+                                {{ $t('objects.credit_month') }}
+                            </label>
+                            <input type="number" min="0" class="form-control" id="credit_month" v-model="object.credit_month" required :placeholder="$t('objects.placeholder.credit_month')">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label" for="comapnies">
                                 {{ $t('companies.title') }}
                             </label>
@@ -307,6 +314,7 @@
                 full_address: null,
                 build_date: null,
                 branch_id: 0,
+                credit_month: 18,
                 draft: false
             },
 

@@ -89,7 +89,8 @@ export default {
                     'cancelled': 'Разрешить отменить контракт',
                     'paid': 'Разрешить отмечать оплаты',
                     'other_price': 'Разрешить продать другой цене',
-                    'change_date': 'Разрешить изменить дата договора'
+                    'change_date': 'Разрешить изменить дата договора',
+                    'monthly': 'Разрешить редактировать ежемесячных платежей'
                 },
 
                 'clients': {
@@ -234,6 +235,8 @@ export default {
                 'birth_day': 'Дата рождения (месяц/число/год)',
                 'discounts': 'Тип покупка',
                 'edit_price': 'Редактировать цена',
+                'first_payment_date': 'Дата первого оплаты',
+                'payment_date': 'Дата ежемесячного оплаты',
                 'placeholder': {
                     'number': 'D-6',
                     'date_contract': '20.12.2020',
@@ -276,6 +279,7 @@ export default {
             'address': 'Адрес',
             'full_address': 'Адрес для договора',
             'build_date': 'Дата окончания строительства',
+            'credit_month': 'Месяц на рассрочку',
 
             'create': {
                 'name': 'Название',
@@ -353,7 +357,8 @@ export default {
 
                 'block_name': 'Названия блока',
 
-                'building_name': 'Названия корпуса'
+                'building_name': 'Названия корпуса',
+                'credit_month': 'Месяц на рассрочку',
             }
         },
 

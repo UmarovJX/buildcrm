@@ -130,6 +130,7 @@
                             <hr>
                         </div>
 
+
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="discounts">{{ $t('apartments.view.variant') }}</label>
@@ -151,6 +152,29 @@
 
                         <div class="col-md-12 my-2" v-if="client.discount.id && client.discount.id != 'other'">
                             <Discount :discount="client.discount" :apartment="apartment"></Discount>
+                        </div>
+
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-md-6" v-if="client.discount.id">
+                            <div class="mb-3">
+                                <label class="d-block" for="first_payment_date">{{ $t('apartments.agree.first_payment_date') }}</label>
+                                <input v-model="client.first_payment_date" id="first_payment_date" type="date" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6" v-if="!confirm && client.discount.id">
+                            <div class="mb-3">
+                                <label class="d-block" for="payment_date">{{ $t('apartments.agree.payment_date') }}</label>
+                                <input v-model="client.payment_date" id="payment_date" type="date" class="form-control">
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <hr>
                         </div>
                     </div>
                 </div>
@@ -187,7 +211,7 @@
 
             <div class="" v-if="step === 3">
                 <form ref="form" @submit.stop.prevent="sendForm">
-                    <div v-if="!edit_price">
+                    <div v-if="!edit.price">
                         <h6 class="color-blue-darker">Цена продажи: {{ client.discount.id === 'other' ? apartment_edit.price : apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</h6>
 
                         <div class="container px-0 mx-0 mt-4">
@@ -205,7 +229,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="button" v-if="client.discount.id === 'other'" @click="edit_price = true" class="btn btn-light">
+                                    <button type="button" v-if="client.discount.id === 'other'" @click="edit.price = true" class="btn btn-light">
                                         <i class="fa fa-edit"></i> {{ $t('apartments.agree.edit_price') }}
                                     </button>
                                 </div>
@@ -238,7 +262,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="button" @click="edit_price = false" class="btn btn-primary">
+                                    <button type="button" @click="edit.price = false" class="btn btn-primary">
                                         <i class="fa fa-save"></i> {{ $t('save') }}
                                     </button>
                                 </div>
@@ -269,7 +293,7 @@
                             <div class="row">
                                 <div class="mb-3">
                                     <label class="d-block" for="month">Месяцев</label>
-                                    <input id="month" class="my-form__input" type="number" min="1" required v-model="month" :placeholder="$t('apartments.agree.placeholder.first_name')">
+                                    <input id="month" class="my-form__input" type="number" min="1" required v-model="month" >
                                 </div>
                             </div>
                         </div>
@@ -294,7 +318,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        {{ new Date() | moment('DD.MM.YYYY') }}
+                                        {{ this.client.first_payment_date ? this.client.first_payment_date : new Date() | moment('DD.MM.YYYY') }}
                                     </td>
 
                                     <td>
@@ -308,7 +332,23 @@
                                     </td>
 
                                     <td>
-                                        {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
+                                        <span v-if="!month.edit">
+                                            {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
+                                        </span>
+
+                                        <div class="col-md-6 float-left" v-if="month.edit">
+                                            <div class="row">
+                                                <input type="text" class="form-control" v-model="month.amount" >
+                                            </div>
+                                        </div>
+
+                                        <button v-if="getPermission.contracts.monthly && !month.edit" type="button" @click="editMonthlyPayment(index)" class="btn btn-sm btn-primary float-right">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+
+                                        <button v-if="getPermission.contracts.monthly && month.edit" type="button" @click="editMonthlyPayment(index)" class="btn btn-sm btn-success float-right">
+                                            <i class="fa fa-save"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -373,6 +413,10 @@
                 this.CreditMonths(newVal);
             },
 
+            step: function () {
+                this.CreditMonths(this.month);
+            },
+
             'apartment_edit.price': function () {
                 this.getDiscountEdited();
                 this.CreditMonths(this.month);
@@ -400,7 +444,9 @@
                 other_phone: null,
                 date_of_issue: null,
                 discount: {id: null},
-                edit: false
+                edit: false,
+                payment_date: null,
+                first_payment_date: null
             },
 
             apartment_edit: {
@@ -419,7 +465,12 @@
             confirm: false,
             next: false,
 
-            edit_price: false,
+            edit: {
+                price: false,
+                monthly: false,
+
+                monthly_edited: false
+            },
 
             error: false,
             errors: [],
@@ -439,6 +490,8 @@
             if (this.apartment.order.id) {
                 this.reserveClientFull();
             }
+
+            this.month = this.apartment.object.credit_month;
         },
 
         methods: {
@@ -559,12 +612,27 @@
                         formData.append('discount_id', this.client.discount.id);
                         formData.append('birth_day', this.client.birth_day);
 
+                        formData.append('monthly_edited', this.edit.monthly_edited ? 1 : 0);
+
+                        if (this.getPermission.contracts.monthly) {
+                            for (let monthly = 0; monthly < this.credit_months.length; monthly++) {
+                                formData.append('monthly['+ monthly +'][edited]', this.credit_months[monthly].edited ? 1 : 0);
+                                formData.append('monthly['+ monthly +'][amount]', this.credit_months[monthly].amount);
+                                formData.append('monthly['+ monthly +'][date]', this.credit_months[monthly].month);
+                            }
+                        }
+
                         formData.append('comment', this.comment);
 
                         if (this.client.discount.id === 'other') {
                             formData.append('apartment_price', this.apartment_edit.price);
                             formData.append('apartment_prepay_price', this.apartment_edit.prepay_price);
                         }
+
+                        formData.append('first_payment_date', this.client.first_payment_date);
+
+                        if (this.client.payment_date)
+                            formData.append('payment_date', this.client.payment_date);
 
                         if (this.date_change) {
                             formData.append('date_change', 1);
@@ -603,14 +671,11 @@
                                 }
                             }
                         });
-
-
                                 // this.$nextTick(() => {
                                 //     this.$bvModal.hide('modal-upload-logo')
                                 // });
 
                                 // this.$emit('UploadLogo');
-
                     }
                 });
 
@@ -728,8 +793,8 @@
             getDebt() {
                 // let price = this.getTotal() - this.getPrepay();
                 //console.log(price);
-                console.log(this.getTotal());
-                console.log(this.getPrepay());
+                // console.log(this.getTotal());
+                // console.log(this.getPrepay());
 
                 return this.getTotal() - this.getPrepay();
             },
@@ -753,7 +818,7 @@
 
             CreditMonths(newVal) {
 
-               let today = new Date();
+               let today = this.client.payment_date ? new Date(this.client.payment_date) : new Date();
 
                 this.credit_months = [];
 
@@ -761,8 +826,50 @@
 
                     this.credit_months.push({
                         month:  today.setMonth( today.getMonth() + 1 ),
-                        amount: this.getMonth()
+                        amount: this.getMonth(),
+                        edit: false,
+                        edited: false,
                     })
+                }
+            },
+
+            editMonthlyPayment(index) {
+                if (this.credit_months[index].edit) {
+                    this.credit_months[index].edit = false;
+
+                    if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
+                        this.edit.monthly_edited = true;
+                        this.credit_months[index].edited = true;
+                        this.setNewPriceMonthly();
+                    }
+
+                    return;
+                }
+
+                this.credit_months[index].edit = true;
+
+                return;
+            },
+
+            setNewPriceMonthly()
+            {
+                let total = this.getPrepay();
+                let months = 0;
+
+                for (var i = 0; i < this.credit_months.length; i++) {
+                    if (this.credit_months[i].edited) {
+                        total += parseFloat(this.credit_months[i].amount);
+                    } else {
+                        months += 1;
+                    }
+                }
+
+                let monthly_amount = (this.getTotal() - total) / months;
+
+                for (var m = 0; m < this.credit_months.length; m++) {
+                    if (!this.credit_months[m].edited) {
+                        this.credit_months[m].amount = monthly_amount;
+                    }
                 }
             }
         }

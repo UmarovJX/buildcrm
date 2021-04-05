@@ -15,7 +15,7 @@
             </div>
 
             <div class="apartment__info" v-if="discount.discount > 0">
-                Ежемесячный: <span>6 месяцев {{ getMonth() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }} </span>
+                Ежемесячный: <span>{{ apartment.object.credit_month }} месяцев {{ getMonth() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }} </span>
             </div>
 
             <div class="apartment__info" v-if="discount.discount > 0">
@@ -59,7 +59,7 @@
             },
 
             getMonth() {
-                return (this.getTotal() - this.getPrepay()) / 6;
+                return (this.getTotal() - this.getPrepay()) / this.apartment.object.credit_month;
             },
 
             getDebt() {
