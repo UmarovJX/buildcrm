@@ -99,6 +99,7 @@
 
         data: () => ({
             filter: {
+                filtered: false,
                 rooms: [],
                 floors: [],
                 price_from: null,
@@ -109,6 +110,8 @@
                 area_from: null,
                 area_to: null,
             },
+
+            page: 1
         }),
 
         mounted() {
@@ -117,46 +120,55 @@
 
         watch: {
             'filter.rooms': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.floors': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.price_from': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.price_to': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.area_from': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.area_to': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.status': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
 
             'filter.usd': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
              },
 
             'filter.objects': function () {
+                this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);
             },
@@ -174,6 +186,7 @@
             filterClear()
             {
                 this.filter = {
+                    filtered: false,
                     rooms: [],
                     floors: [],
                     price_from: null,

@@ -2,7 +2,7 @@
     <main>
         <div class="mt-4">
             <div class="title__default my-2">
-                {{ $t('apartments.list.apartments') }}: {{ getApartments.length }}
+                {{ $t('apartments.list.apartments') }}: {{ getApartments.pagination.totalItems }}
             </div>
         </div>
 
@@ -38,20 +38,7 @@
                     </thead>
                     <tbody>
 
-                        <tr v-if="getLoading">
-                            <td colspan="12" style="">
-                                <div class="d-flex justify-content-center w-100">
-                                    <div class="lds-ellipsis">
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr v-if="getApartments.length === 0 && !getLoading">
+                        <tr v-if="getApartments.items.length === 0 && !getLoading">
                             <td colspan="12">
                                 <center>
                                     {{ $t('no_data') }}
@@ -60,8 +47,7 @@
                         </tr>
 
 
-
-                        <tr v-for="(apartment, index) in getApartments" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' || apartment.order.status === 'contract' ? 'table-warning' : '' ]">
+                        <tr v-for="(apartment, index) in getApartments.items" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' || apartment.order.status === 'contract' ? 'table-warning' : '' ]">
                             <td scope="row">
                                 {{ apartment.number }}
                             </td>
@@ -147,6 +133,19 @@
                                 </div>
                             </td>
                         </tr>
+
+                        <tr v-if="getLoading">
+                            <td colspan="12" style="">
+                                <div class="d-flex justify-content-center w-100">
+                                    <div class="lds-ellipsis">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -184,6 +183,7 @@
 
         data: () => ({
             filter: {
+                filtered: false,
                 rooms: [],
                 floors: [],
                 price_from: null,
@@ -200,15 +200,18 @@
             order_id: 0,
             edit: false,
 
+            page: 1,
+
             info_reserve: false,
             apartment_preview: {},
-
 
             info_manager: false,
             manager_apartment: {}
         }),
 
+
         mounted() {
+            this.scroll();
             this.fetchApartments(this);
         },
 
@@ -216,6 +219,21 @@
 
         methods: {
             ...mapActions(['fetchApartments', 'fetchApartmentsFilter', 'fetchReserveClient']),
+
+            async scroll(){
+                const vm = this;
+                window.onscroll = async function() {
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                        vm.page = vm.page + 1;
+                        if (vm.getApartments.pagination.next)
+                            if (vm.filter.filtered) {
+                                await vm.fetchApartmentsFilter(vm);
+                            }
+                            else
+                                await vm.fetchApartments(vm);
+                    }
+                };
+            },
 
             getPrice(area, price) {
                 return price * area;
@@ -226,6 +244,7 @@
             },
 
             Filtered(event) {
+                this.page = 1;
                 this.filter = event;
             },
 

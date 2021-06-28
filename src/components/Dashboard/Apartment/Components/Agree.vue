@@ -342,13 +342,16 @@
                                             </div>
                                         </div>
 
-                                        <button v-if="getPermission.contracts.monthly && !month.edit" type="button" @click="editMonthlyPayment(index)" class="btn btn-sm btn-primary float-right">
+                                        <button v-if="getMe.role.id === 1 && !month.edit ||  getPermission.contracts.monthly && !month.edit" type="button" @click="editMonthlyPayment(index)" class="btn btn-sm btn-primary float-right">
                                             <i class="fa fa-edit"></i>
                                         </button>
 
-                                        <button v-if="getPermission.contracts.monthly && month.edit" type="button" @click="editMonthlyPayment(index)" class="btn btn-sm btn-success float-right">
-                                            <i class="fa fa-save"></i>
-                                        </button>
+                                        <div v-if="month.edit">
+                                            <button v-if="getMe.role.id === 1 || getPermission.contracts.monthly" type="button" @click="editMonthlyPayment(index)" class="btn btn-sm btn-success float-right">
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        </div>
+
                                     </td>
                                 </tr>
                             </tbody>
@@ -487,6 +490,9 @@
         }),
 
         mounted() {
+
+            console.log(this.getMe.role.id === 1 && false === false || this.getPermission.contracts.monthly && false === false);
+
             if (this.apartment.order.id) {
                 this.reserveClientFull();
             }
@@ -614,7 +620,7 @@
 
                         formData.append('monthly_edited', this.edit.monthly_edited ? 1 : 0);
 
-                        if (this.getPermission.contracts.monthly) {
+                        if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
                             for (let monthly = 0; monthly < this.credit_months.length; monthly++) {
                                 formData.append('monthly['+ monthly +'][edited]', this.credit_months[monthly].edited ? 1 : 0);
                                 formData.append('monthly['+ monthly +'][amount]', this.credit_months[monthly].amount);

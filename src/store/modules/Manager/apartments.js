@@ -2,6 +2,10 @@ export default {
     actions: {
         async fetchApartments(ctx, vm) {
             ctx.commit('updateLoading', true, { root: true });
+
+            if (vm.$route.name != 'apartments')
+                return;
+
             // this.fetchStartLoading();
             try {
                 let header = {
@@ -10,24 +14,15 @@ export default {
                     }
                 };
 
-                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id + '/apartments', header);
+                // console.log(vm.$route);
+
+                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id + '/apartments?page=' + vm.page, header);
                 const apartments = data;
+
                 ctx.commit('updateApartment', apartments);
                 ctx.commit('updateLoading', false, { root: true });
             } catch (error) {
-                if (! error.response) {
-                    vm.toasted('Error: Network Error', 'error');
-                } else {
-                    if (error.response.status === 403) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 401) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 500) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else {
-                        vm.toasted(error.response.data.message, 'error');
-                    }
-                }
+                vm.toastedWithErrorCode(error);
             }
         },
 
@@ -40,24 +35,12 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.post(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id + '/filter', vm.filter, header);
+                const response = await vm.axios.post(process.env.VUE_APP_URL + '/objects/' + vm.$route.params.id + '/filter?page=' + vm.page, vm.filter, header);
                 const apartments = response.data;
                 ctx.commit('updateApartment', apartments);
                 ctx.commit('updateLoading', false, { root: true });
             } catch (error) {
-                if (! error.response) {
-                    vm.toasted('Error: Network Error', 'error');
-                } else {
-                    if (error.response.status === 403) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 401) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 500) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else {
-                        vm.toasted(error.response.data.message, 'error');
-                    }
-                }
+                vm.toastedWithErrorCode(error);
             }
         },
 
@@ -78,15 +61,7 @@ export default {
                 if (! error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
-                    if (error.response.status === 403) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 401) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 500) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else {
-                        vm.toasted(error.response.data.message, 'error');
-                    }
+                    vm.toastedWithErrorCode(error);
                 }
             }
         },
@@ -108,15 +83,7 @@ export default {
                 if (! error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
-                    if (error.response.status === 403) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 401) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 500) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else {
-                        vm.toasted(error.response.data.message, 'error');
-                    }
+                    vm.toastedWithErrorCode(error);
                 }
             }
         }
@@ -124,7 +91,12 @@ export default {
 
     mutations: {
         updateApartment(state, apartments) {
-            state.apartments = apartments;
+            if (apartments.pagination.current > 1) {
+                state.apartments.pagination = apartments.pagination;
+                state.apartments.items.push(...apartments.items);
+            } else{
+                state.apartments = apartments;
+            }
         },
 
         updateFilter(state, filter) {
@@ -137,7 +109,7 @@ export default {
     },
 
     state: {
-        apartments: [],
+        apartments: {},
         filter: {},
 
         client: {}

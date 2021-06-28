@@ -193,10 +193,9 @@
             }
         }),
 
-        created () {
+        mounted () {
             this.fetchApartment(this);
         },
-
 
         computed: mapGetters(['getApartment', 'getMe', 'getPermission', 'getReserveClient']),
 
@@ -300,7 +299,6 @@
                             this.$nextTick(() => {
                                 this.$bvModal.hide('modal-view-client')
                             });
-
 
                             this.fetchApartment(this);
 
