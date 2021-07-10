@@ -33,7 +33,7 @@
                                 <thead class="table-dark">
                                 <tr>
                                     <th scope="col" width="50">{{ $t('apartments.list.number') }}</th>
-                                            <th scope="col">{{ $t('apartments.list.object') }}</th>
+                                    <th scope="col">{{ $t('apartments.list.object') }}</th>
                                     <th scope="col">{{ $t('apartments.list.building') }}</th>
                                     <th scope="col">{{ $t('apartments.list.block') }}</th>
                                     <th scope="col" class="text-center">{{ $t('apartments.list.rooms') }}</th>
@@ -42,53 +42,67 @@
                                     <th scope="col" class="text-center">{{ $t('apartments.list.area') }}</th>
                                     <th scope="col" class="text-center">{{ $t('apartments.list.balcony') }}</th>
                                     <th scope="col">{{ $t('apartments.list.price') }}</th>
+                                    <th scope="col">{{ $t('apartments.list.price_sold') }}</th>
+                                    <th scope="col"></th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
-                                    <td scope="row">
-                                        {{ order.apartment.number }}
-                                    </td>
-                                    <td>
-                                        {{ order.apartment.object.name }}
-                                    </td>
+                                    <tr v-for="(apartment, index) in order.apartments" :key="index">
+                                        <td scope="row">
+                                            {{ apartment.number }}
+                                        </td>
+                                        <td>
+                                            {{ apartment.object.name }}
+                                        </td>
 
-                                    <td>
-                                        {{ order.apartment.building.name }}
-                                    </td>
+                                        <td>
+                                            {{ apartment.building.name }}
+                                        </td>
 
-                                    <td>
-                                        {{ order.apartment.block.name }}
-                                    </td>
+                                        <td>
+                                            {{ apartment.block.name }}
+                                        </td>
 
-                                    <td class="text-center">
-                                        {{ order.apartment.rooms }}
-                                    </td>
+                                        <td class="text-center">
+                                            {{ apartment.rooms }}
+                                        </td>
 
-                                    <td class="text-center">
-                                        {{ order.apartment.floor }}
-                                    </td>
+                                        <td class="text-center">
+                                            {{ apartment.floor }}
+                                        </td>
 
-                                    <td class="text-center">
-                                        {{ order.apartment.entrance }}
-                                    </td>
+                                        <td class="text-center">
+                                            {{ apartment.entrance }}
+                                        </td>
 
-                                    <td class="text-center">
-                                        {{ order.apartment.plan.area }} м²
-                                    </td>
+                                        <td class="text-center">
+                                            {{ apartment.plan.area }} м²
+                                        </td>
 
-                                    <td class="text-center">
-                                        <span v-if="order.apartment.plan.balcony">
-                                             {{ order.apartment.plan.balcony_area }} м²
+                                        <td class="text-center">
+                                        <span v-if="apartment.plan.balcony">
+                                             {{ apartment.plan.balcony_area }} м²
                                         </span>
                                             <span v-else>
                                             {{ $t('no') }}
                                         </span>
-                                    </td>
+                                        </td>
 
-                                    <td>
-                                        {{ order.apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} сум
-                                    </td>
+                                        <td>
+                                            {{ apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
+                                        </td>
+
+                                        <td>
+                                            {{ apartment.price_sold | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
+                                        </td>
+
+                                        <td>
+                                            <router-link :to="{ name: 'apartments-view', params: { id: apartment.id }  }" :class="'btn btn-primary btn-sm ml-1'" >
+                                                <i class="far fa-eye"></i>
+                                            </router-link>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
 
@@ -273,14 +287,11 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="card-footer">
                     <a :href="order.contract_path" class="btn btn-success "  v-if="order.status === 'contract' || order.status === 'sold'">
                         <i class="fa fa-download"></i> Скачать договор
                     </a>
-
-                    <router-link :to="{ name: 'apartments-view', params: { id: order.apartment.id }  }" :class="'btn btn-primary ml-1'" >
-                        <i class="far fa-eye"></i> Посмотреть квартиру
-                    </router-link>
 
                     <button type="button" @click="cancelOrder" class="btn btn-danger float-right"  v-if="order.status === 'contract'">
                         <i class="fa fa-minus-circle"></i> Отменить договор
@@ -322,29 +333,31 @@
                     discount: 0
                 },
 
-                apartment: {
-                    id: 0,
-                    price: 0,
-                    number: null,
-                    entrance: 0,
-                    floor: 0,
-                    plan: {
-                        area: 0,
-                        balcony: false,
-                        balcony_area: 0
-                    },
-                    object: {
-                        name: null
-                    },
+                apartments: [
+                    {
+                        id: 0,
+                        price: 0,
+                        number: null,
+                        entrance: 0,
+                        floor: 0,
+                        plan: {
+                            area: 0,
+                            balcony: false,
+                            balcony_area: 0
+                        },
+                        object: {
+                            name: null
+                        },
 
-                    building: {
-                        name: null
-                    },
+                        building: {
+                            name: null
+                        },
 
-                    block: {
-                        name: null
-                    },
-                },
+                        block: {
+                            name: null
+                        },
+                    }
+                ],
 
                 currency: {
                     usd: 0
@@ -427,6 +440,7 @@
                     const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/' + this.$route.params.id, this.header);
                     this.step = 1;
 
+                    console.log(data);
                     this.order = data;
                 } catch (error) {
                     this.toastedWithErrorCode(error);

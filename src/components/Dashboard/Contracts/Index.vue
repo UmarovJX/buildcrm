@@ -33,7 +33,7 @@
                         <th>{{ $t('clients.fio') }}</th>
                         <th>{{ $t('clients.phone') }}</th>
                         <th>{{ $t('clients.amount') }}</th>
-                        <th>{{ $t('clients.apartment') }}</th>
+                        <th>{{ $t('clients.object') }}</th>
                         <th>{{ $t('apartments.list.status') }}</th>
                         <th>{{ $t('clients.date') }}</th>
                         <th></th>
@@ -78,7 +78,7 @@
                             </td>
 
                             <td>
-                                {{ contract.apartment.object.name }} - {{ contract.apartment.building.name }} - {{ contract.apartment.number }}
+                                {{ contract.object.name }}
                             </td>
 
                             <td>

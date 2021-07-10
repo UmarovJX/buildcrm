@@ -493,6 +493,25 @@
                         </table>
                     </b-tab><!--contracts-->
 
+                    <b-tab :title="$t('debtors.title')">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.view') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.view" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+
+
+
+                            </tbody>
+                        </table>
+                    </b-tab><!--debtors-->
+
 
 
                 </b-tabs>
@@ -581,6 +600,12 @@
                         edit: false,
                         root_contract: false
                     },
+
+                    debtors: {
+                        view: false,
+                        first_payment: false,
+                        monthly_payment: false
+                    }
                 }
             },
 

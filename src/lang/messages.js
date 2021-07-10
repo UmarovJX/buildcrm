@@ -47,6 +47,7 @@ export default {
             'download': 'Скачать договор'
         },
 
+
         'roles': {
             'title': 'Ролей',
             'name': 'Названия',
@@ -115,6 +116,15 @@ export default {
                     'root_contract': 'Разрешить полный доступ контрактам'
                 },
 
+                'debtors': {
+                    'view': 'Разрешить просмотр',
+                    'cancelled': 'Разрешить отменить контракт',
+                    'paid': 'Разрешить отмечать оплаты',
+                    'other_price': 'Разрешить продать другой цене',
+                    'change_date': 'Разрешить изменить дата договора',
+                    'monthly': 'Разрешить редактировать ежемесячных платежей'
+                },
+
                 // 'companies': {
                 'view': 'Разрешить просмотрет',
                 'create': 'Разрешить создать',
@@ -135,6 +145,7 @@ export default {
             'phone': 'Телефон',
             'amount': 'СТОИМОСТЬ',
             'apartment': 'КВАРТИРА',
+            'object': 'ОБЪЕКТ',
             'file': 'ФАЙЛ договора',
             'number': '№ Договора',
             'language': 'Язык',
@@ -164,6 +175,9 @@ export default {
 
         'apartments': {
             'list': {
+                'choose': 'Выбрать',
+                'reset': 'Сбросить',
+                'contract_all': 'Оформить все',
                 'number': '№Дом',
                 'object': 'Объект',
                 'rooms': 'Комнат',
@@ -188,7 +202,9 @@ export default {
                 'download_contract': 'Скачать контракт',
                 'view_client': 'Посмотреть клиент',
                 'cancel_reserve': 'Отменить бронь',
-                'view_manager': 'Информация о менеджера'
+                'view_manager': 'Информация о менеджера',
+
+                'price_sold': 'Проданный цена'
             },
 
             'filter': {
@@ -235,6 +251,7 @@ export default {
                 'birth_day': 'Дата рождения (месяц/число/год)',
                 'discounts': 'Тип покупка',
                 'edit_price': 'Редактировать цена',
+                'edit_prices': 'Редактировать цены',
                 'first_payment_date': 'Дата первого оплаты',
                 'payment_date': 'Дата ежемесячного оплаты',
                 'placeholder': {

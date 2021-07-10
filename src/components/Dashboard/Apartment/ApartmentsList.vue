@@ -6,9 +6,24 @@
             </div>
         </div>
 
-        <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">
+        <div class="my-container px-0 mx-0 my-4" >
+            <div class="d-flex justify-content-md-end justify-content-center float-left" v-if="getPermission.apartments.contract || getPermission.apartments.root_contract">
+                <button v-if="!selected.view && getPermission.apartments.contract" class="btn btn-secondary mr-2" @click="selected.view = true">
+                    <i class="far fa-list"></i> {{ $t('apartments.list.choose') }}
+                </button>
+
+                <b-button v-b-modal.modal-agree v-if="selected.view && selected.values.length > 1 && getPermission.apartments.contract"  @click="selected.confirm = true"  variant="success" class="my-btn my-btn__blue mr-2" >
+                    <i class="far fa-ballot-check"></i> {{ $t('apartments.list.contract_all') }}
+                </b-button>
+
+                <button v-if="selected.view && getPermission.apartments.contract" class="btn btn-warning mr-2"  @click="[selected.view = false, selected.values = []]">
+                    <i class="far fa-redo"></i> {{ $t('apartments.list.reset') }}
+                </button>
+            </div>
+
             <div class="d-flex justify-content-md-end justify-content-center">
-                <b-link class="my-btn my-btn__blue d-flex align-items-center justify-content-center" v-b-modal.modal-filter-all>
+
+                <b-link class="my-btn my-btn__blue d-flex align-items-center justify-content-center" v-if="getPermission.apartments.filter" v-b-modal.modal-filter-all>
                     <i class="far fa-sliders-h mr-2"></i> {{ $t('apartments.list.filter') }}
                 </b-link>
             </div>
@@ -19,7 +34,7 @@
                 <table class="table table-borderless my-table my-table-second">
                     <thead>
                     <tr>
-                        <th scope="col" width="50">{{ $t('apartments.list.number') }}</th>
+                        <th scope="col" :width="selected.view ? '120' : '50'">{{ $t('apartments.list.number') }}</th>
 <!--                        <th scope="col">{{ $t('apartments.list.object') }}</th>-->
                         <th scope="col">{{ $t('apartments.list.building') }}</th>
                         <th scope="col">{{ $t('apartments.list.block') }}</th>
@@ -37,7 +52,6 @@
                     </tr>
                     </thead>
                     <tbody>
-
                         <tr v-if="getApartments.items.length === 0 && !getLoading">
                             <td colspan="12">
                                 <center>
@@ -46,9 +60,16 @@
                             </td>
                         </tr>
 
-
                         <tr v-for="(apartment, index) in getApartments.items" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' || apartment.order.status === 'contract' ? 'table-warning' : '' ]">
                             <td scope="row">
+                                <b-form-checkbox
+                                        v-if="selected.view&& apartment.order.status === 'available'"
+                                        :id="'checkbox-' + apartment.id"
+                                        v-model="selected.values"
+                                        :name="'checkbox-' + apartment.id"
+                                        :value="apartment.id"
+                                        class="float-left"
+                                ></b-form-checkbox>
                                 {{ apartment.number }}
                             </td>
 
@@ -160,6 +181,11 @@
         <edit-modal v-if="getPermission.apartments.edit || edit" :apartment="apartment_id" @EditApartment="EditApartment"></edit-modal>
 
         <info-manager-modal :manager-data="this.manager_apartment" @ManagerInfo="ManagerInfo"></info-manager-modal>
+
+        <agree-modal v-if="selected.confirm" :apartments="selected.values"   @successAgree="successAgree" @CloseAgree="CloseAgree" ></agree-modal>
+
+        <success-agree :contract="contract"></success-agree>
+
     </main>
 </template>
 
@@ -171,6 +197,8 @@
     import EditApartment from './Components/Edit'
     import ViewClient from './ViewClient'
     import InfoManager from './InfoManager'
+    import AgreeMultiple from './Components/AgreeMultiple';
+    import SuccessAgree from './Components/SuccessAgree';
 
     export default {
         components: {
@@ -178,7 +206,9 @@
             'reserve-add': ReserveAdd,
             'view-client': ViewClient,
             'edit-modal': EditApartment,
-            'info-manager-modal': InfoManager
+            'info-manager-modal': InfoManager,
+            'agree-modal': AgreeMultiple,
+            'success-agree': SuccessAgree,
         },
 
         data: () => ({
@@ -194,6 +224,14 @@
                 area_from: null,
                 area_to: null,
             },
+
+            selected: {
+                view: false,
+                confirm: false,
+                values: []
+            },
+
+            contract: {},
 
             reserve: false,
             apartment_id: 0,
@@ -285,7 +323,22 @@
                 this.apartment_id = 0;
                 this.edit = false;
                 this.fetchApartments(this);
-            }
+            },
+
+            CloseAgree() {
+                this.confirm = false;
+            },
+
+            async successAgree(value) {
+                this.selected.confirm = false;
+                this.selected.values = [];
+
+                this.contract = value;
+
+                await this.fetchApartments(this);
+
+                this.$bvModal.show('modal-success-agree');
+            },
         },
 
         filters: {
