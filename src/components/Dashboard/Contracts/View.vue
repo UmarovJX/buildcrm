@@ -18,7 +18,7 @@
                         </div>
 
                         <div class="col-md-6 text-right">
-                            {{ order.client.first_name }} {{ order.client.last_name }} {{ order.client.second_name }}<br>
+                            {{ order.client.first_name.krill }} {{ order.client.last_name.krill }} {{ order.client.second_name.krill }}<br>
                             {{ order.client.passport_series }}<br>
                             {{ order.client.issued_by_whom }}<br>
                             {{ order.client.date_of_issue | moment('DD.MM.YYYY') }} берилган<br>
@@ -209,16 +209,23 @@
                                         </td>
 
                                         <td >
-
+                                            {{ month.comment }}
                                         </td>
 
                                         <td >
-
+                                            {{ month.date_paid | moment('DD.MM.YYYY') }}
                                         </td>
 
                                         <td  class="text-center">
                                             {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
 
+                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)" v-if="index === 0 && (getMe.role.id === 1 || getPermission.debtors.first_payment)">
+                                                <i class="far fa-wallet"></i>
+                                            </button>
+
+                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="index != 0 && (getMe.role.id === 1 || getPermission.debtors.monthly_payment)">
+                                                <i class="far fa-wallet"></i>
+                                            </button>
                                         </td>
                                     </tr>
 
@@ -304,6 +311,8 @@
 
 <script>
     // import Discount from './Discount'
+
+    import { mapGetters } from 'vuex';
 
     export default {
         props: {
@@ -416,6 +425,8 @@
             this.fetchOrder();
         },
 
+        computed: mapGetters(['getMe', 'getPermission']),
+
         methods: {
             async saveComment() {
                 console.log(this.comment);
@@ -447,6 +458,40 @@
                 }
             },
 
+            paymentMonthly(index)
+            {
+
+                this.$swal({
+                    title: this.$t('sweetAlert.debtors.payment_info'),
+                    icon: 'question',
+                    showCancelButton: true,
+                    html:
+                        '<input id="swal-input" type="number" placeholder="10000" value="'+ this.order.payments[index].amount +'" step="100" class="form-control">',
+                    confirmButtonText: this.$t('sweetAlert.debtors.next')
+                }).then((result) => {
+                    if (result.value) {
+                        this.$swal({
+                            title: this.$t('sweetAlert.title'),
+                            text: this.$t('sweetAlert.debtors.are_you_sure'),
+                            icon: 'warning',
+                            showCancelButton: true,
+                            input: 'textarea',
+                            inputLabel: 'Message',
+                            inputPlaceholder: this.$t('sweetAlert.debtors.placeholder'),
+                            inputAttributes: {
+                                'aria-label': this.$t('sweetAlert.debtors.placeholder')
+                            },
+                            confirmButtonText: this.$t('sweetAlert.debtors.yes')
+                        }).then((result) => {
+                            console.log(result);
+                            // if (result.value) {
+                            //
+                            // }
+                        });
+                    }
+                });
+            },
+
             cancelOrder() {
                 this.$swal({
                     title: this.$t('sweetAlert.title'),
@@ -461,9 +506,7 @@
                     },
                     confirmButtonText: this.$t('sweetAlert.yes_cancel_reserve')
                 }).then((result) => {
-                    console.log(result);
                     if (result.value) {
-
                         this.axios.post(process.env.VUE_APP_URL + '/deals/' + this.order.id, {
                             comment: result.value
                         }, this.header).then((response) => {

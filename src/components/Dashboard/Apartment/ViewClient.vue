@@ -4,11 +4,11 @@
 
             <form ref="form" @submit.stop.prevent="handleSubmit">
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.first_name')" label-for="first_name">
-                    <b-form-input id="first_name" disabled v-model="getReserveClient.first_name" ></b-form-input>
+                    <b-form-input id="first_name" disabled v-model="getReserveClient.first_name.lotin" ></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.last_name')" label-for="last_name">
-                    <b-form-input id="last_name" disabled v-model="getReserveClient.last_name"></b-form-input>
+                    <b-form-input id="last_name" disabled v-model="getReserveClient.last_name.lotin"></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.phone')" label-for="phone">

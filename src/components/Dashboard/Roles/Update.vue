@@ -499,6 +499,45 @@
                     </b-tab><!--contracts-->
 
 
+                    <b-tab :title="$t('debtors.title')">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.view') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.view" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.debtors.first_payment') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.first_payment" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.debtors.monthly_payment') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.monthly_payment" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+
+
+
+                            </tbody>
+                        </table>
+                    </b-tab><!--debtors-->
+
+
                 </b-tabs>
             </div>
 
@@ -593,6 +632,15 @@
                         monthly: false
                     }
                 }
+
+                if (!this.role.permissions.debtors) {
+                    this.role.permissions.debtors = {
+                        view: false,
+                        first_payment: false,
+                        monthly_payment: false
+                    }
+                }
+
                 //
                 // } catch (error) {
                 //     if (! error.response) {

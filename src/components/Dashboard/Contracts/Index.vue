@@ -67,14 +67,14 @@
                                 {{ contract.contract }}
                             </td>
                             <td>
-                                {{ contract.client.first_name }} {{ contract.client.last_name }} {{ contract.client.second_name }}
+                                {{ contract.client.first_name.krill }} {{ contract.client.last_name.krill }} {{ contract.client.second_name.krill }}
                             </td>
                             <td>
                                 +{{ contract.client.phone }}
                             </td>
 
                             <td>
-                                {{ contract.status === 'booked' ? contract.apartment.price : contract.transaction_price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
+                                {{ contract.status === 'booked' ? 0 : contract.transaction_price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
                             </td>
 
                             <td>

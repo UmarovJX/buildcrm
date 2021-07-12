@@ -506,6 +506,25 @@
                             </tr>
 
 
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.debtors.first_payment') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.first_payment" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td width="50%">
+                                    {{ $t('roles.permissions.debtors.monthly_payment') }}
+                                </td>
+                                <td width="50%">
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.monthly_payment" size="lg"></b-form-checkbox>
+                                </td>
+                            </tr>
+
+
 
 
                             </tbody>

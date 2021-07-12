@@ -94,6 +94,7 @@ new Vue({
         let path = this.$router.currentRoute;
 
         if (localStorage.token) {
+            // console.log(localStorage.token);
           let vm = this;
             this.setMe(vm, path);
         } else {
