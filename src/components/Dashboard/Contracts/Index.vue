@@ -67,7 +67,7 @@
                                 {{ contract.contract }}
                             </td>
                             <td>
-                                {{ contract.client.first_name.krill }} {{ contract.client.last_name.krill }} {{ contract.client.second_name.krill }}
+                                {{ contract.client.first_name.kirill }} {{ contract.client.last_name.kirill }} {{ contract.client.second_name.kirill }}
                             </td>
                             <td>
                                 +{{ contract.client.phone }}

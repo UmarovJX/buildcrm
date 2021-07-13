@@ -71,22 +71,22 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="first_name_krill">{{ $t('apartments.agree.first_name') }} (krill)</label>
-                                <input id="first_name_krill" class="my-form__input" type="text" required v-model="client.first_name.krill" :placeholder="$t('apartments.agree.placeholder.first_name')">
+                                <label class="d-block" for="first_name_kirill">{{ $t('apartments.agree.first_name') }} (kirill)</label>
+                                <input id="first_name_kirill" class="my-form__input" type="text" required v-model="client.first_name.kirill" :placeholder="$t('apartments.agree.placeholder.first_name')">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="last_name_krill">{{ $t('apartments.agree.last_name') }} (krill)</label>
-                                <input id="last_name_krill" class="my-form__input" type="text" required v-model="client.last_name.krill" :placeholder="$t('apartments.agree.placeholder.last_name')">
+                                <label class="d-block" for="last_name_kirill">{{ $t('apartments.agree.last_name') }} (kirill)</label>
+                                <input id="last_name_kirill" class="my-form__input" type="text" required v-model="client.last_name.kirill" :placeholder="$t('apartments.agree.placeholder.last_name')">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="second_name_krill">{{ $t('apartments.agree.second_name') }} (krill)</label>
-                                <input id="second_namev" class="my-form__input" type="text" required v-model="client.second_name.krill" :placeholder="$t('apartments.agree.placeholder.second_name')">
+                                <label class="d-block" for="second_name_kirill">{{ $t('apartments.agree.second_name') }} (kirill)</label>
+                                <input id="second_namev" class="my-form__input" type="text" required v-model="client.second_name.kirill" :placeholder="$t('apartments.agree.placeholder.second_name')">
                             </div>
                         </div>
 
@@ -494,15 +494,15 @@
                 id: null,
                 first_name: {
                     lotin: '',
-                    krill: ''
+                    kirill: ''
                 },
                 last_name: {
                     lotin: '',
-                    krill: ''
+                    kirill: ''
                 },
                 second_name: {
                     lotin: '',
-                    krill: ''
+                    kirill: ''
                 },
                 passport_series: '',
                 issued_by_whom: '',
@@ -619,15 +619,15 @@
                         id: data.id,
                         first_name: data.first_name ?? {
                             lotin: null,
-                            krill: null
+                            kirill: null
                         },
                         last_name: data.last_name  ?? {
                             lotin: null,
-                            krill: null
+                            kirill: null
                         },
                         second_name: data.second_name  ?? {
                             lotin: null,
-                            krill: null
+                            kirill: null
                         },
                         passport_series: data.passport_series,
                         issued_by_whom: data.issued_by_whom,
@@ -667,13 +667,13 @@
                         formData.append('id', this.client.id);
 
                         formData.append('first_name[lotin]', this.client.first_name.lotin);
-                        formData.append('first_name[krill]', this.client.first_name.krill);
+                        formData.append('first_name[kirill]', this.client.first_name.kirill);
 
                         formData.append('last_name[lotin]', this.client.last_name.lotin);
-                        formData.append('last_name[krill]', this.client.last_name.krill);
+                        formData.append('last_name[kirill]', this.client.last_name.kirill);
 
                         formData.append('second_name[lotin]', this.client.second_name.lotin);
-                        formData.append('second_name[krill]', this.client.second_name.krill);
+                        formData.append('second_name[kirill]', this.client.second_name.kirill);
 
                         formData.append('passport_series', this.client.passport_series);
                         formData.append('issued_by_whom', this.client.issued_by_whom);

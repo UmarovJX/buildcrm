@@ -10753,7 +10753,7 @@ a.text-dark:hover, a.text-dark:focus {
   }
 }
 
-/* BUTTON MIXIN 
+/* BUTTON MIXIN
 ============================================= */
 .searching button, .filter--from, .filter--to {
   position: absolute;
@@ -11703,7 +11703,7 @@ main > div.d-flex.justify-content-between > div .title__big {
 
 @media only screen and (min-width: 1440px) {
   .my-container {
-    max-width: 1500px;
+    max-width: 2560px;
   }
 }
 
@@ -11941,6 +11941,7 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
 
 .fixed-menu {
   background: #fff;
+  overflow-x: scroll;
   height: 100%;
   padding: 60px 0 10px;
   width: 130px;
@@ -12053,6 +12054,14 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
 
 .menu__item-4 .menu__img {
   background-image: url("../img/cashier.png");
+}
+
+.menu__item-users .menu__img {
+  background-image: url("../img/group.png");
+}
+
+.menu__item-settings .menu__img {
+  background-image: url("../img/settings.png");
 }
 
 .menu__item-4.active .menu__img, .menu__item-4:focus .menu__img {
@@ -12433,15 +12442,15 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
   min-height: 190px;
 }
 
-.apartment__info {
-  font-size: 14px;
-  color: #222222;
-  font-family: "MuseoSansCyrl-700";
-  line-height: 1.714;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
+/*.apartment__info {*/
+/*  font-size: 14px;*/
+/*  color: #222222;*/
+/*  font-family: "MuseoSansCyrl-700";*/
+/*  line-height: 1.714;*/
+/*  display: -webkit-box;*/
+/*  display: -ms-flexbox;*/
+/*  display: flex;*/
+/*}*/
 
 .apartment__info span {
   font-family: "MuseoSansCyrl-500";
@@ -12462,27 +12471,27 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
   overflow-y: auto;
 }
 
-.apartment input, .apartment select {
-  background-color: unset;
-  border: none;
-  display: inline-block;
-  max-width: 50px;
-  padding-left: 5px;
-  font-size: 14px;
-  color: #222222;
-  font-family: "MuseoSansCyrl-500";
-  line-height: 1.714;
-}
+/*.apartment input, .apartment select {*/
+/*  background-color: unset;*/
+/*  border: none;*/
+/*  display: inline-block;*/
+/*  max-width: 50px;*/
+/*  padding-left: 5px;*/
+/*  font-size: 14px;*/
+/*  color: #222222;*/
+/*  font-family: "MuseoSansCyrl-500";*/
+/*  line-height: 1.714;*/
+/*}*/
 
-.apartment select {
-  font-family: "MuseoSansCyrl-700";
-  max-width: unset;
-  padding-left: 0;
-  margin-left: -4px;
-  margin-top: 2px;
-  margin-bottom: 3px;
-  cursor: pointer;
-}
+/*.apartment select {*/
+/*  font-family: "MuseoSansCyrl-700";*/
+/*  max-width: unset;*/
+/*  padding-left: 0;*/
+/*  margin-left: -4px;*/
+/*  margin-top: 2px;*/
+/*  margin-bottom: 3px;*/
+/*  cursor: pointer;*/
+/*}*/
 
 .apartment-last {
   display: -webkit-box;

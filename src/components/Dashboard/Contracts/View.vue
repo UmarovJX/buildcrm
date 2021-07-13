@@ -18,7 +18,7 @@
                         </div>
 
                         <div class="col-md-6 text-right">
-                            {{ order.client.first_name.krill }} {{ order.client.last_name.krill }} {{ order.client.second_name.krill }}<br>
+                            {{ order.client.first_name.kirill }} {{ order.client.last_name.kirill }} {{ order.client.second_name.kirill }}<br>
                             {{ order.client.passport_series }}<br>
                             {{ order.client.issued_by_whom }}<br>
                             {{ order.client.date_of_issue | moment('DD.MM.YYYY') }} берилган<br>

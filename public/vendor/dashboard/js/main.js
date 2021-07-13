@@ -13223,7 +13223,7 @@ return Popper;
 
 })));
 //# sourceMappingURL=popper.js.map
- 
+
 // Импортируем необходимые js-файлы Bootstrap 4
 /*!
   * Bootstrap v4.4.1 (https://getbootstrap.com/)
@@ -17755,7 +17755,7 @@ function humbergers() {
         else
             for (var e = 0, l = t.length; l > e; e++) o.call(r, t[e], e, t)
     };
-    
+
     var hamburgers = document.querySelectorAll(".hamburger");
     if (hamburgers.length > 0) {
         forEach(hamburgers, function (hamburger) {
