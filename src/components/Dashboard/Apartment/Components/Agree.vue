@@ -111,7 +111,8 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="date_of_issue">{{ $t('apartments.agree.date_of_issue') }}</label>
-                                <b-form-datepicker v-model="client.date_of_issue" locale="ru"></b-form-datepicker>
+<!--                                <b-form-datepicker v-model="client.date_of_issue" locale="ru"></b-form-datepicker>-->
+                                <input v-model="client.date_of_issue" type="date" class="form-control">
                             </div>
                         </div>
 
