@@ -26,7 +26,7 @@
                             </button>
 
                             <div class="row" v-if="date_change">
-                                <div class="col-md-6" >
+                                <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="d-block" for="number">{{ $t('apartments.agree.number') }}</label>
                                         <input id="number" class="my-form__input" type="text" required v-model="apartment_edit.contract_number" :placeholder="$t('apartments.agree.placeholder.number')">
@@ -758,6 +758,8 @@
                 }).then((result) => {
                     if (result.value) {
                         this.$bvModal.hide('modal-agree');
+                        this.step = 1;
+                        this.search_label = '';
                         this.$emit('CloseAgree');
                     }
                 });

@@ -156,7 +156,7 @@
                         </tr>
 
                         <tr v-if="getLoading">
-                            <td colspan="12" style="">
+                            <td colspan="11" style="">
                                 <div class="d-flex justify-content-center w-100">
                                     <div class="lds-ellipsis">
                                         <div></div>
@@ -372,4 +372,38 @@
     .dropdown-menu .active {
         background: transparent;
     }
+
+    /*table {*/
+    /*    table-layout: fixed;*/
+    /*}*/
+
+    table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        /*width: 100px;*/
+        background-color: #fff;
+
+    }
+    .my-table thead tr th {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    table tbody th {
+        position: relative;
+    }
+
+    table tbody th {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+    }
+
+    /*.table-responsive {*/
+    /*    width: 100%;*/
+    /*    max-height: 100%;*/
+    /*    overflow: hidden;*/
+    /*}*/
+
 </style>

@@ -748,6 +748,7 @@
                 }).then((result) => {
                     if (result.value) {
                         this.$bvModal.hide('modal-agree');
+
                         this.$emit('CloseAgree');
                     }
                 });
