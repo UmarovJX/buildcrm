@@ -60,7 +60,7 @@
                             </td>
                         </tr>
 
-                        <tr v-for="(apartment, index) in getApartments.items" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'sold' || apartment.order.status === 'contract' ? 'table-warning' : '' ]">
+                        <tr v-for="(apartment, index) in getApartments.items" :key="index" :class="[apartment.order.status === 'booked' ? 'table-warning' : '', apartment.order.status === 'contract' ? 'table-warning': '', apartment.order.status === 'sold' ? 'table-danger' : '']">
                             <td scope="row">
                                 <b-form-checkbox
                                         v-if="selected.view&& apartment.order.status === 'available'"

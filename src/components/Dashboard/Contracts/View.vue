@@ -176,8 +176,8 @@
                             <table class="table table-striped" v-if="order.status === 'contract' || order.status === 'sold'">
                                 <thead class="table-dark">
                                 <tr>
-                                    <th width="250">
-                                        Расписание для оплаты
+                                    <th width="50">
+                                        Расписание
                                     </th>
 
                                     <th class="text-center">
@@ -189,7 +189,15 @@
                                     </th>
 
                                     <th>
+                                        Тип оплаты
+                                    </th>
+
+                                    <th>
                                         Дата оплата
+                                    </th>
+
+                                    <th>
+                                        Сумма оплаты
                                     </th>
 
                                     <th class="text-center">
@@ -213,17 +221,27 @@
                                         </td>
 
                                         <td >
+                                            {{ month.type_payment | getPaymentType }}
+                                        </td>
+
+                                        <td >
                                             {{ month.date_paid | moment('DD.MM.YYYY') }}
+                                        </td>
+
+                                        <td>
+                                            <span v-if="month.amount_paid">
+                                                {{ month.amount_paid | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
+                                            </span>
                                         </td>
 
                                         <td  class="text-center">
                                             {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
 
-                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)" v-if="index === 0 && (getMe.role.id === 1 || getPermission.debtors.first_payment)">
+                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)" v-if="index === 0 && (getMe.role.id === 1 || getPermission.debtors.first_payment) && month.status === 'waiting'">
                                                 <i class="far fa-wallet"></i>
                                             </button>
 
-                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="index != 0 && (getMe.role.id === 1 || getPermission.debtors.monthly_payment)">
+                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="index != 0 && (getMe.role.id === 1 || getPermission.debtors.monthly_payment) && month.status === 'waiting'">
                                                 <i class="far fa-wallet"></i>
                                             </button>
                                         </td>
@@ -236,13 +254,20 @@
                                         <td>
 
                                         </td>
+                                        <td>
+
+                                        </td>
+
+                                        <td>
+
+                                        </td>
 
                                         <td class="text-center">
 
                                         </td>
 
                                         <td class="text-center">
-
+                                            Оплачено: {{ order.paid_total| number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
                                         </td>
 
                                         <td  class="text-center">
@@ -429,7 +454,6 @@
 
         methods: {
             async saveComment() {
-                console.log(this.comment);
                 try {
                     const { data, status } = await this.axios.post(process.env.VUE_APP_URL + '/orders/' + this.$route.params.id + '/comment', {
                         comment: this.comment
@@ -458,38 +482,76 @@
                 }
             },
 
-            paymentMonthly(index)
+            async paymentMonthly(index)
             {
 
-                this.$swal({
+                let id = this.order.payments[index].id;
+
+                const { value: formValues } = await this.$swal({
                     title: this.$t('sweetAlert.debtors.payment_info'),
                     icon: 'question',
                     showCancelButton: true,
                     html:
-                        '<input id="swal-input" type="number" placeholder="10000" value="'+ this.order.payments[index].amount +'" step="100" class="form-control">',
-                    confirmButtonText: this.$t('sweetAlert.debtors.next')
-                }).then((result) => {
-                    if (result.value) {
-                        this.$swal({
-                            title: this.$t('sweetAlert.title'),
-                            text: this.$t('sweetAlert.debtors.are_you_sure'),
-                            icon: 'warning',
-                            showCancelButton: true,
-                            input: 'textarea',
-                            inputLabel: 'Message',
-                            inputPlaceholder: this.$t('sweetAlert.debtors.placeholder'),
-                            inputAttributes: {
-                                'aria-label': this.$t('sweetAlert.debtors.placeholder')
-                            },
-                            confirmButtonText: this.$t('sweetAlert.debtors.yes')
-                        }).then((result) => {
-                            console.log(result);
-                            // if (result.value) {
-                            //
-                            // }
-                        });
+                        '<input id="deb-payment" type="number" placeholder="10000" value="'+ this.order.payments[index].amount +'" max="' + this.order.payments[index].amount + '" step="100" class="form-control">' +
+                        '<label for="date-payment" class="float-left mt-3">Дата оплаты</label>' +
+                        '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
+                        '<label for="type_payment" class="float-left mt-3">Тип оплаты</label>' +
+                        '<select id="type_payment" class="form-control"><option value="cash">Наличный</option><option value="transfer">Перечисления</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">Другое</option></select>',
+                    confirmButtonText: this.$t('sweetAlert.debtors.next'),
+                    preConfirm: () => {
+                        return {
+                            date_payment: document.getElementById('date-payment').value,
+                            pay_amount: document.getElementById('deb-payment').value,
+                            type_payment: document.getElementById('type_payment').value,
+                        }
+
                     }
                 });
+
+                if (formValues) {
+                    this.$swal({
+                        title: this.$t('sweetAlert.title'),
+                        text: this.$t('sweetAlert.debtors.are_you_sure'),
+                        icon: 'warning',
+                        showCancelButton: true,
+                        input: 'textarea',
+                        inputLabel: 'Message',
+                        inputPlaceholder: this.$t('sweetAlert.debtors.placeholder'),
+                        inputAttributes: {
+                            'aria-label': this.$t('sweetAlert.debtors.placeholder')
+                        },
+                        confirmButtonText: this.$t('sweetAlert.debtors.yes')
+                    }).then((result) => {
+                        if (result.value || result.value == '') {
+                            this.axios.post(process.env.VUE_APP_URL + '/debtors/' + id, {
+                                date_paid: formValues.date_payment,
+                                amount_paid: formValues.pay_amount,
+                                type_payment: formValues.type_payment,
+                                comment: result.value
+                            }, this.header).then((response) => {
+                                console.log(response);
+                                // this.$router.back(-1);
+                                this.fetchOrder();
+
+                                this.$swal(
+                                    this.$t('sweetAlert.payment_success'),
+                                    '',
+                                    'success'
+                                );
+
+                            }).catch((error) => {
+                                this.toastedWithErrorCode(error);
+
+                                if (error.response.status === 422) {
+                                    if (error.response.data.date_payment && error.response.data.date_payment.length > 0)
+                                        this.toasted(error.response.data.date_payment[0], 'error');
+                                    if (error.response.data.pay_amount && error.response.data.pay_amount.length > 0)
+                                        this.toasted(error.response.data.pay_amount[0], 'error');
+                                }
+                            });
+                        }
+                    });
+                }
             },
 
             cancelOrder() {
@@ -572,6 +634,35 @@
                 return total;
             },
         },
+
+        filters: {
+            getPaymentType (type) {
+                let msg;
+
+                switch (type) {
+                    case 'payme':
+                        msg = 'Payme';
+                        break;
+                    case 'click':
+                        msg = 'Click';
+                        break;
+                    case 'transfer':
+                        msg = 'Перечисления';
+                        break;
+                    case 'other':
+                        msg = 'Другое';
+                        break;
+                    case 'cash':
+                        msg = 'Наличные';
+                        break;
+                    default:
+                        msg = '';
+                        break;
+                }
+
+                return msg;
+            },
+        }
     }
 </script>
 

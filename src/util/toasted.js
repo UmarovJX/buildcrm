@@ -7,6 +7,7 @@ export default {
         toastedWithErrorCode(error) {
             if (! error.response) {
                 this.toasted('Error: Network Error', 'error');
+                return;
             } else {
                 if (error.response.status === 403) {
                     this.toasted(error.response.data.message, 'error');
@@ -19,6 +20,7 @@ export default {
                 } else {
                     this.toasted(error.response.data.message, 'error');
                 }
+                return;
             }
         }
     },
