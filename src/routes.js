@@ -33,6 +33,7 @@ import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
 //
 import ApartmentView from './components/Dashboard/Apartment/View';
 import Branches from './components/Dashboard/Branches/Index';
+import Debtors from './components/Dashboard/Debtors/DebtorsList';
 
 const routes = [
     {
@@ -75,6 +76,12 @@ const routes = [
         name: 'apartments',
         path: '/objects/:id/apartments',
         component: ApartmentList
+    },
+
+    {
+        name: 'debtors',
+        path: '/debtors',
+        component: Debtors
     },
 
     {

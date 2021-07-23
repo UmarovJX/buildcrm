@@ -31,6 +31,7 @@ import HomeCount from './modules/Home/index';
 import Currencies from './modules/currency';
 import Branches from './modules/branches';
 import Contracts from './modules/contract';
+import Debtors from './modules/debtors';
 
 
 
@@ -68,7 +69,8 @@ export default new Vuex.Store({
         HomeCount,
         Currencies,
         Branches,
-        Contracts
+        Contracts,
+        Debtors
 
     }
 })
