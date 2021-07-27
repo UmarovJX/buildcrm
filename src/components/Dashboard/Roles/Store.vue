@@ -236,57 +236,6 @@
                         </table>
                     </b-tab><!--roles-->
 
-<!--                    <b-tab :title="$t('clients.title')">-->
-<!--                        <table class="table table-striped">-->
-<!--                            <tbody>-->
-<!--                            <tr>-->
-<!--                                <td width="50%">-->
-<!--                                    {{ $t('roles.permissions.clients.view') }}-->
-<!--                                </td>-->
-<!--                                <td width="50%">-->
-<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.view" size="lg"></b-form-checkbox>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-
-<!--                            <tr>-->
-<!--                                <td width="50%">-->
-<!--                                    {{ $t('roles.permissions.clients.cancel_contract') }}-->
-<!--                                </td>-->
-<!--                                <td width="50%">-->
-<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.cancel_contract" size="lg"></b-form-checkbox>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-
-<!--                            <tr>-->
-<!--                                <td width="50%">-->
-<!--                                    {{ $t('roles.permissions.clients.delete') }}-->
-<!--                                </td>-->
-<!--                                <td width="50%">-->
-<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.delete" size="lg"></b-form-checkbox>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-
-<!--                            <tr>-->
-<!--                                <td width="50%">-->
-<!--                                    {{ $t('roles.permissions.clients.terminate') }}-->
-<!--                                </td>-->
-<!--                                <td width="50%">-->
-<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.terminate" size="lg"></b-form-checkbox>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-
-<!--                            <tr>-->
-<!--                                <td width="50%">-->
-<!--                                    {{ $t('roles.permissions.clients.cancelled') }}-->
-<!--                                </td>-->
-<!--                                <td width="50%">-->
-<!--                                    <b-form-checkbox switch v-model="role.permissions.clients.cancelled" size="lg"></b-form-checkbox>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-
-<!--                            </tbody>-->
-<!--                        </table>-->
-<!--                    </b-tab>&lt;!&ndash;clients&ndash;&gt;-->
 
                     <b-tab :title="$t('type_plan.title')">
                         <table class="table table-striped">
@@ -443,6 +392,24 @@
                                     </td>
                                 </tr>
 
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.all') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.all" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.friends') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.friends" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
 
                                 <tr>
                                     <td width="50%">
@@ -577,11 +544,13 @@
 
                     contracts: {
                         view: false,
+                        all: false,
                         cancelled: false,
                         paid: false,
                         other_price: false,
                         date: false,
-                        monthly: false
+                        monthly: false,
+                        friends: false
                     },
 
                     roles: {

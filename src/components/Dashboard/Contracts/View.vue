@@ -24,7 +24,23 @@
                             {{ order.client.date_of_issue | moment('DD.MM.YYYY') }} берилган<br>
                             {{ order.client.birth_day | moment('DD.MM.YYYY') }} тугилган<br>
                             +{{ order.client.phone }}<br>
-                            +{{ order.client.other_phone }}
+                            +{{ order.client.other_phone }}<br>
+
+                            <div class="mb-3 col-6 float-right">
+                                <label class="d-block" for="type_client">{{ $t('apartments.agree.type_client') }}</label>
+                                <select class="form-control" id="type_client" :disabled="!edit.type_client" v-model="order.friends">
+                                    <option value="unknown">Незнакомый</option>
+                                    <option value="friends">Знакомый</option>
+                                </select>
+
+                                <button v-if="!edit.type_client && (getMe.role.id === 1 || getPermission.contracts.friends)" @click="edit.type_client = true" class="btn btn-primary btn-sm mt-3">
+                                    <i class="fa fa-edit"></i> Редактировать тип
+                                </button>
+
+                                <button v-if="edit.type_client && (getMe.role.id === 1 || getPermission.contracts.friends)" @click="ChangeTypeClient" class="btn btn-success btn-sm mt-3">
+                                    <i class="fa fa-save"></i> Сохранить
+                                </button>
+                            </div>
                         </div>
 
                         <div class="col-md-12 mt-3">
@@ -355,6 +371,7 @@
                 id: null,
 
                 contract: null,
+                friends: 'unknown',
                 contract_path: null,
                 initial_payment: null,
                 payment_status: null,
@@ -436,6 +453,10 @@
             error: false,
             errors: [],
 
+            edit: {
+                type_client: false
+            },
+
             comment_store: false,
             comment: '',
 
@@ -477,6 +498,19 @@
 
                     console.log(data);
                     this.order = data;
+                } catch (error) {
+                    this.toastedWithErrorCode(error);
+                }
+            },
+
+            async ChangeTypeClient () {
+                try {
+                    const { data } = await this.axios.put(process.env.VUE_APP_URL + '/orders/' + this.$route.params.id + '/client', {
+                        friends: this.order.friends
+                    } ,this.header);
+
+                    this.edit.type_client = false;
+                    this.toasted(data.message, 'success');
                 } catch (error) {
                     this.toastedWithErrorCode(error);
                 }

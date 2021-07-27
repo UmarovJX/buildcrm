@@ -151,10 +151,19 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6" v-if="getMe.role.id === 1 || getPermission.contracts.friends">
+                            <div class="mb-3">
+                                <label class="d-block" for="type_client">{{ $t('apartments.agree.type_client') }}</label>
+                                <select class="form-control" id="type_client" v-model="type_client">
+                                    <option value="unknown">Незнакомый</option>
+                                    <option value="friends">Знакомый</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <hr>
                         </div>
-
 
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -486,6 +495,8 @@
                 first_payment_date: null
             },
 
+            type_client: 'unknown',
+
             apartment_edit: {
                 price: 0,
                 prepay_price: 0,
@@ -668,6 +679,8 @@
                         formData.append('date_of_issue', this.client.date_of_issue);
                         formData.append('discount_id', this.client.discount.id);
                         formData.append('birth_day', this.client.birth_day);
+
+                        formData.append('type_client', this.type_client);
 
                         formData.append('monthly_edited', this.edit.monthly_edited ? 1 : 0);
 

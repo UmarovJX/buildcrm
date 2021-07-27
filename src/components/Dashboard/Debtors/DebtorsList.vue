@@ -1,12 +1,29 @@
 <template>
     <main>
         <div class="my-container px-0 mx-0">
-<!--            <form action="" class="my-form">-->
-<!--                <div class="mb-3 searching">-->
-<!--                    <input class="my-form__input" type="text" v-model="search" @input="SearchInput" :placeholder="$t('clients.search')">-->
-<!--                    <button><i class="far fa-search"></i></button>-->
-<!--                </div>-->
-<!--            </form>-->
+            <div class="float-right mb-3">
+                <date-picker v-model="date" type="date" range value-type="format" @change="ChangeDate" format="YYYY-MM-DD" placeholder="Select date range"></date-picker>
+
+                <select class="form-control mt-3" v-model="orderBy" aria-label="Default select example">
+                    <option selected value="all">Все</option>
+                    <option value="expired">Просроченные</option>
+                    <option value="friends">Знакомые</option>
+                </select>
+            </div>
+
+            <form action="" class="my-form float-left w-100">
+                <div class="mb-3 searching">
+                    <input class="my-form__input" type="text" v-model="search" @input="SearchInput" :placeholder="$t('clients.search')">
+                    <button><i class="far fa-search"></i></button>
+                </div>
+            </form>
+
+            <div class="col-md-2 float-right">
+                <div class="row">
+
+                </div>
+            </div>
+
 
             <div class="table-responsive">
                 <table class="table table-borderless my-table my-table-third">
@@ -15,6 +32,7 @@
                         <th class="text-center"><i class="fas fa-sort"></i> {{ $t('clients.number') }}</th>
                         <th>{{ $t('clients.fio') }}</th>
                         <th>{{ $t('clients.phone') }}</th>
+                        <th>Тип Клиента</th>
                         <th>Сумма</th>
 <!--                        <th>{{ $t('clients.object') }}</th>-->
 <!--                        <th>{{ $t('apartments.list.status') }}</th>-->
@@ -45,7 +63,7 @@
                         </td>
                     </tr>
 
-                    <tr v-for="(debtor, index) in getDebtors" :key="index">
+                    <tr v-for="(debtor, index) in getDebtors" :class="[debtor.order.friends ? 'table-warning' : '']" :key="index">
                         <td class="text-center">
                             {{ debtor.order.contract }}
                         </td>
@@ -54,6 +72,10 @@
                         </td>
                         <td>
                             +{{ debtor.client.phone }}
+                        </td>
+
+                        <td>
+                            {{ debtor.order.friends | getTypeClient}}
                         </td>
 
                         <td>
@@ -103,8 +125,12 @@
     import { mapActions, mapGetters} from 'vuex';
     // import ViewClient from '../Apartment/ViewClient';
 
+    import DatePicker from 'vue2-datepicker';
+    import 'vue2-datepicker/index.css';
+
     export default {
         components: {
+            DatePicker
             // 'view-client': ViewClient
         },
 
@@ -112,12 +138,12 @@
         watch: {
             orderBy: function (newVal) {
                 if (newVal != 'all') {
-                    this.fetchContractSearch(this);
+                    this.fetchDebtorsFilter(this);
                 } else {
-                    if (this.search.length > 0) {
-                        this.fetchContractSearch(this);
+                    if (this.search.length > 0 || this.date.length > 0) {
+                        this.fetchDebtorsFilter(this);
                     } else {
-                        this.fetchContracts(this);
+                        this.fetchDebtors(this);
                     }
                 }
             }
@@ -126,6 +152,8 @@
         data: () => ({
             orderBy: 'all',
             page: 1,
+
+            date: [],
 
             header: {
                 headers: {
@@ -143,16 +171,24 @@
         },
 
         methods: {
-            ...mapActions(['fetchDebtors']),
+            ...mapActions(['fetchDebtors', 'fetchDebtorsFilter']),
 
             PageCallBack(pageNum) {
                 this.page = pageNum;
 
-                // if (this.search.length > 0) {
-                //     this.fetchContractSearch(this);
-                // } else {
+                if (this.search.length > 0 || this.date.length > 0) {
+                    this.fetchDebtorsFilter(this);
+                } else {
                     this.fetchDebtors(this);
-                // }
+                }
+            },
+
+            ChangeDate() {
+                if (this.date.length > 0) {
+                    this.fetchDebtorsFilter(this);
+                } else {
+                    this.fetchDebtors(this);
+                }
             },
 
             SearchInput(event) {
@@ -160,15 +196,21 @@
                 this.search = event.target.value;
 
                 if (this.search.length > 0) {
-                    this.fetchContractSearch(this);
+                    this.fetchDebtorsFilter(this);
                 } else {
-                    this.fetchContracts(this);
+                    this.fetchDebtors(this);
                 }
             }
         },
 
         filters: {
+            getTypeClient(type) {
+                if (type) {
+                    return 'Знакомый';
+                }
 
+                return 'Клиент';
+            }
         }
     }
 </script>

@@ -448,6 +448,23 @@
                                     </td>
                                 </tr>
 
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.all') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.all" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        {{ $t('roles.permissions.contracts.friends') }}
+                                    </td>
+                                    <td width="50%">
+                                        <b-form-checkbox switch v-model="role.permissions.contracts.friends" size="lg"></b-form-checkbox>
+                                    </td>
+                                </tr>
 
                                 <tr>
                                     <td width="50%">
@@ -625,11 +642,13 @@
                 if (!this.role.permissions.contracts) {
                     this.role.permissions.contracts = {
                         view: false,
+                        all: false,
                         cancelled: false,
                         paid: false,
                         other_price: false,
                         date: false,
-                        monthly: false
+                        monthly: false,
+                        friends: false
                     }
                 }
 
