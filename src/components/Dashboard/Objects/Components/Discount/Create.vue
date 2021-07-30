@@ -34,7 +34,7 @@
                             <div class="mb-3">
                                 <label class="d-block" for="new_block_discount">{{ $t('objects.create.discount') }}</label>
                                 <div class="flex-grow-1">
-                                    <input id="new_block_discount" class="my-form__input" step="0.1" type="number" min="1" v-model="discount.discount">
+                                    <input id="new_block_discount" class="my-form__input" step="0.1" type="number" min="0" v-model="discount.discount">
                                 </div>
                             </div>
                         </div>

@@ -319,10 +319,14 @@
                 this.fetchApartmentsFilter(this);
             },
 
-            EditApartment() {
+            async EditApartment() {
                 this.apartment_id = 0;
                 this.edit = false;
-                this.fetchApartments(this);
+
+                if (this.filter.filtered)
+                    await this.fetchApartmentsFilter(this);
+                else
+                    await this.fetchApartments(this);
             },
 
             CloseAgree() {
