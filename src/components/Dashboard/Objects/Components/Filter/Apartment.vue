@@ -2,6 +2,7 @@
     <div>
         <b-modal id="modal-filter-all" class="py-4" ref="modal" :title="$t('apartments.list.filter')" hide-footer >
             <div class="container px-0 mx-0">
+
                 <div class="mb-3">
                     <label class="d-block" >
                         {{ $t('apartments.filter.apartments') }}
@@ -13,6 +14,7 @@
                             </span>
                     </div>
                 </div>
+
                 <div class="mb-3">
                     <label class="d-block">
                         {{ $t('apartments.filter.floor') }}
@@ -21,6 +23,18 @@
                             <span v-for="(floor, index) in getFilterParams.floors" :key="index">
                                 <input v-model="filter.floors" type="checkbox" :id="'floor' + index" :value="floor">
                                 <label :for="'floor' + index">{{ floor }}</label>
+                            </span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="d-block">
+                        {{ $t('apartments.filter.blocks') }}
+                    </label>
+                    <div class="room">
+                            <span v-for="(block, index) in getFilterParams.blocks" :key="index">
+                                <input v-model="filter.blocks" type="checkbox" :id="'block' + index" :value="block.id">
+                                <label :for="'block' + index">{{ block.name }}</label>
                             </span>
                     </div>
                 </div>
@@ -102,6 +116,7 @@
                 filtered: false,
                 rooms: [],
                 floors: [],
+                blocks: [],
                 price_from: null,
                 price_to: null,
                 status: 0,
@@ -126,6 +141,12 @@
             },
 
             'filter.floors': function () {
+                this.filter.filtered = true;
+                this.$emit('Filtered', this.filter);
+                this.fetchApartmentsFilter(this);
+            },
+
+            'filter.blocks': function () {
                 this.filter.filtered = true;
                 this.$emit('Filtered', this.filter);
                 this.fetchApartmentsFilter(this);

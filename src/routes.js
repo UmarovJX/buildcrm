@@ -34,6 +34,7 @@ import TypePlanEdit from './components/Dashboard/TypePlan/Edit';
 import ApartmentView from './components/Dashboard/Apartment/View';
 import Branches from './components/Dashboard/Branches/Index';
 import Debtors from './components/Dashboard/Debtors/DebtorsList';
+import Settings from './components/Dashboard/Settings/Index';
 
 const routes = [
     {
@@ -76,6 +77,12 @@ const routes = [
         name: 'apartments',
         path: '/objects/:id/apartments',
         component: ApartmentList
+    },
+
+    {
+        name: 'settings',
+        path: '/settings',
+        component: Settings
     },
 
     {

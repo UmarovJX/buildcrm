@@ -46,17 +46,19 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="first_name_lotin">{{ $t('apartments.agree.first_name') }} (lotin)</label>
-                                <input id="first_name_lotin" class="my-form__input" type="text" required v-model="client.first_name.lotin" :placeholder="$t('apartments.agree.placeholder.first_name_lotin')">
+                                <label class="d-block" for="last_name_lotin">{{ $t('apartments.agree.last_name') }} (lotin)</label>
+                                <input id="last_name_lotin" class="my-form__input" type="text" required v-model="client.last_name.lotin" :placeholder="$t('apartments.agree.placeholder.last_name_lotin')">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="last_name_lotin">{{ $t('apartments.agree.last_name') }} (lotin)</label>
-                                <input id="last_name_lotin" class="my-form__input" type="text" required v-model="client.last_name.lotin" :placeholder="$t('apartments.agree.placeholder.last_name_lotin')">
+                                <label class="d-block" for="first_name_lotin">{{ $t('apartments.agree.first_name') }} (lotin)</label>
+                                <input id="first_name_lotin" class="my-form__input" type="text" required v-model="client.first_name.lotin" :placeholder="$t('apartments.agree.placeholder.first_name_lotin')">
                             </div>
                         </div>
+
+
 
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -71,17 +73,20 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label class="d-block" for="last_name_kirill">{{ $t('apartments.agree.last_name') }} (kirill)</label>
+                                <input id="last_name_kirill" class="my-form__input" type="text" required v-model="client.last_name.kirill" :placeholder="$t('apartments.agree.placeholder.last_name')">
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
                                 <label class="d-block" for="first_name_kirill">{{ $t('apartments.agree.first_name') }} (kirill)</label>
                                 <input id="first_name_kirill" class="my-form__input" type="text" required v-model="client.first_name.kirill" :placeholder="$t('apartments.agree.placeholder.first_name')">
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="d-block" for="last_name_kirill">{{ $t('apartments.agree.last_name') }} (kirill)</label>
-                                <input id="last_name_kirill" class="my-form__input" type="text" required v-model="client.last_name.kirill" :placeholder="$t('apartments.agree.placeholder.last_name')">
-                            </div>
-                        </div>
+
 
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -119,7 +124,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="birth_day">{{ $t('apartments.agree.birth_day') }}</label>
-                               <input v-model="client.birth_day" type="date" class="form-control">
+                               <input v-model="client.birth_day"  type="date" class="form-control">
                             </div>
                         </div>
 
@@ -130,14 +135,14 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="phone">{{ $t('apartments.agree.phone') }}</label>
-                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.phone')" required v-model="client.phone"  id="phone">
+                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.phone')" v-model="client.phone"  id="phone">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="other_phone">{{ $t('apartments.agree.other_phone') }}</label>
-                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.other_phone')" required v-model="client.other_phone"  id="other_phone">
+                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.other_phone')" v-model="client.other_phone"  id="other_phone">
                             </div>
                         </div>
 
@@ -167,13 +172,13 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="discounts">{{ $t('apartments.view.variant') }}</label>
+                                <label class="d-block" for="discounts" >{{ $t('apartments.view.variant') }}</label>
                                 <select class="form-control" id="discounts" v-model="client.discount" @change="ChangeDiscount()">
                                     <option :value="{id: null}">
                                         {{ $t('apartments.agree.placeholder.enter_discount') }}
                                     </option>
 
-                                    <option v-for="(discount, index) in apartment.discounts" :value="discount" :key="index">
+                                    <option v-for="(discount, index) in getApartmentDiscounts"  :value="discount" :key="index">
                                         {{ $t('apartments.view.variant') }} {{ index + 1}}  -  {{ discount.prepay_to }}%
                                     </option>
 
@@ -251,11 +256,11 @@
                         <div class="container px-0 mx-0 mt-4">
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="mb-3">
+                                    <div class="mb-3" v-if="month > 0">
                                         <label class="d-block" for="initial-fee">Первоначальный взнос:</label>
                                         <div class="row">
                                             <div class="col-md-6 col-8">
-                                                <input id="initial-fee" class="my-form__input" disabled type="text" :value="getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' })">
+                                                <input id="initial-fee" class="my-form__input" disabled type="text" :value="client.discount.id === 'other' && month == 0 ? getTotalOther() : getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' })">
                                             </div>
                                             <div class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start">
                                                 <div class="h6 mb-0">{{ client.discount.prepay_to }}%</div>
@@ -284,7 +289,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="mb-3" v-if="month > 0">
                                         <label class="d-block" for="initial-fee">Первоначальный взнос:</label>
                                         <div class="row">
                                             <div class="col-md-6 col-8">
@@ -304,7 +309,7 @@
                         </div>
                     </div>
 
-                        <table class="table table-hover mx-0 mt-2 p-0 my-table-another-variant">
+                        <table class="table table-hover mx-0 mt-2 p-0 my-table-another-variant"  v-if="month > 0">
                             <tbody class="m-0 p-0">
 <!--                            <tr>-->
 <!--                                <td class="px-0 py-2">Скидка - {{ client.discount.discount }}%</td>-->
@@ -327,12 +332,12 @@
                             <div class="row">
                                 <div class="mb-3">
                                     <label class="d-block" for="month">Месяцев</label>
-                                    <input id="month" class="my-form__input" type="number" min="1" required v-model="month" >
+                                    <input id="month" class="my-form__input" type="number" min="0" required v-model="month" >
                                 </div>
                             </div>
                         </div>
 
-                        <span v-if="client.discount.prepay_to != 100 || client.discount.prepay_to < 100">
+                        <span v-if="month > 0 && (client.discount.prepay_to != 100 || client.discount.prepay_to < 100)" >
                             {{ month }} месяцев по {{ getMonth() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
                         </span>
 
@@ -356,7 +361,7 @@
                                     </td>
 
                                     <td>
-                                        {{ getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
+                                        {{ client.discount.id === 'other' && month == 0 ? getTotalOther() : getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
                                     </td>
                                 </tr>
 
@@ -441,7 +446,17 @@
             Discount
         },
 
-        computed: mapGetters(['getReserveClient', 'getPermission', 'getMe']),
+        computed: {
+            ...mapGetters(['getReserveClient', 'getPermission', 'getMe']),
+
+            getApartmentDiscounts() {
+                if (this.apartment.object.credit_month != 0) {
+                    return this.apartment.discounts;
+                }
+
+                return [];
+            }
+        },
 
         name: "Agree",
 
@@ -801,36 +816,6 @@
                 return;
             },
 
-
-            // sgetPrepay() {
-            //     let total_discount = this.getDiscount();
-            //
-            //     let total = this.apartment.price - total_discount;
-            //
-            //     return this.client.discount.prepay_to * total / 100;
-            // },
-            //
-            // sgetDiscount() {
-            //     return this.client.discount.discount * this.apartment.price / 100;
-            // },
-            //
-            // sgetMonth() {
-            //     return (this.getTotal() - this.getPrepay()) / this.month;
-            // },
-            //
-            // sgetDebt() {
-            //     return this.getTotal() - this.getPrepay();
-            // },
-            //
-            // sgetTotal() {
-            //     let total_discount = this.getDiscount();
-            //
-            //     // let total = price * area;
-            //     let total = this.apartment.price - total_discount;
-            //
-            //     return total;
-            // },
-
             getPrepay() {
                 if (this.prepay_to === 100)
                     return 0;
@@ -847,6 +832,11 @@
                 // return total;
 
                 return this.client.discount.prepay_to * total / 100;
+            },
+
+
+            getTotalOther() {
+               return this.apartment_edit.price;
             },
 
             getDiscount() {

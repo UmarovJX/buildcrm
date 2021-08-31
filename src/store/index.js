@@ -32,6 +32,7 @@ import Currencies from './modules/currency';
 import Branches from './modules/branches';
 import Contracts from './modules/contract';
 import Debtors from './modules/debtors';
+import Settings from './modules/settings';
 
 
 
@@ -70,7 +71,8 @@ export default new Vuex.Store({
         Currencies,
         Branches,
         Contracts,
-        Debtors
+        Debtors,
+        Settings
 
     }
 })

@@ -55,7 +55,7 @@
                     <div class="container px-0 mx-0 mt-4">
                         <div class="row">
                             <div class="col-lg-4 my-2" v-for="(discount, index) in getApartment.discounts" :key="index">
-                                <Discount :discount="discount" :apartment="getApartment"></Discount>
+                                <Discount v-if="getApartment.object.credit_month != 0 || discount.prepay_to === 100 " :discount="discount" :apartment="getApartment"></Discount>
                             </div>
                         </div>
                     </div>

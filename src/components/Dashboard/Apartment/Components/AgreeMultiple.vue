@@ -46,17 +46,18 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="first_name_lotin">{{ $t('apartments.agree.first_name') }} (lotin)</label>
-                                <input id="first_name_lotin" class="my-form__input" type="text" required v-model="client.first_name.lotin" :placeholder="$t('apartments.agree.placeholder.first_name_lotin')">
+                                <label class="d-block" for="last_name_lotin">{{ $t('apartments.agree.last_name') }} (lotin)</label>
+                                <input id="last_name_lotin" class="my-form__input" type="text" required v-model="client.last_name.lotin" :placeholder="$t('apartments.agree.placeholder.last_name_lotin')">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="last_name_lotin">{{ $t('apartments.agree.last_name') }} (lotin)</label>
-                                <input id="last_name_lotin" class="my-form__input" type="text" required v-model="client.last_name.lotin" :placeholder="$t('apartments.agree.placeholder.last_name_lotin')">
+                                <label class="d-block" for="first_name_lotin">{{ $t('apartments.agree.first_name') }} (lotin)</label>
+                                <input id="first_name_lotin" class="my-form__input" type="text" required v-model="client.first_name.lotin" :placeholder="$t('apartments.agree.placeholder.first_name_lotin')">
                             </div>
                         </div>
+
 
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -71,17 +72,19 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="first_name_kirill">{{ $t('apartments.agree.first_name') }} (kirill)</label>
-                                <input id="first_name_kirill" class="my-form__input" type="text" required v-model="client.first_name.kirill" :placeholder="$t('apartments.agree.placeholder.first_name')">
+                                <label class="d-block" for="last_name_kirill">{{ $t('apartments.agree.last_name') }} (kirill)</label>
+                                <input id="last_name_kirill" class="my-form__input" type="text" required v-model="client.last_name.kirill" :placeholder="$t('apartments.agree.placeholder.last_name')">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="d-block" for="last_name_kirill">{{ $t('apartments.agree.last_name') }} (kirill)</label>
-                                <input id="last_name_kirill" class="my-form__input" type="text" required v-model="client.last_name.kirill" :placeholder="$t('apartments.agree.placeholder.last_name')">
+                                <label class="d-block" for="first_name_kirill">{{ $t('apartments.agree.first_name') }} (kirill)</label>
+                                <input id="first_name_kirill" class="my-form__input" type="text" required v-model="client.first_name.kirill" :placeholder="$t('apartments.agree.placeholder.first_name')">
                             </div>
                         </div>
+
+
 
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -129,14 +132,14 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="phone">{{ $t('apartments.agree.phone') }}</label>
-                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.phone')" required v-model="client.phone"  id="phone">
+                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.phone')" v-model="client.phone"  id="phone">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="d-block" for="other_phone">{{ $t('apartments.agree.other_phone') }}</label>
-                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.other_phone')" required v-model="client.other_phone"  id="other_phone">
+                                <input class="my-form__input" type="tel" :placeholder="$t('apartments.agree.placeholder.other_phone')" v-model="client.other_phone"  id="other_phone">
                             </div>
                         </div>
 
@@ -278,7 +281,7 @@
                         <div class="container px-0 mx-0 mt-4">
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="mb-3">
+                                    <div class="mb-3" v-if="month > 0">
                                         <label class="d-block" for="initial-fee">Первоначальный взнос:</label>
                                         <div class="row">
                                             <div class="col-md-6 col-8">
@@ -312,7 +315,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="mb-3"  v-if="month > 0">
                                         <label class="d-block" for="initial-fee">Первоначальный взнос:</label>
                                         <div class="row">
                                             <div class="col-md-6 col-8">
@@ -334,7 +337,7 @@
 
 
 
-                    <table class="table table-hover mx-0 mt-2 p-0 my-table-another-variant">
+                    <table class="table table-hover mx-0 mt-2 p-0 my-table-another-variant"  v-if="month > 0">
                         <tbody class="m-0 p-0">
                         <!--                            <tr>-->
                         <!--                                <td class="px-0 py-2">Скидка - {{ client.discount.discount }}%</td>-->
@@ -357,12 +360,12 @@
                         <div class="row">
                             <div class="mb-3">
                                 <label class="d-block" for="month">Месяцев</label>
-                                <input id="month" class="my-form__input" type="number" min="1" required v-model="month" >
+                                <input id="month" class="my-form__input" type="number" min="0" required v-model="month" >
                             </div>
                         </div>
                     </div>
 
-                    <span v-if="client.discount.prepay_to != 100 || client.discount.prepay_to < 100">
+                    <span v-if="month > 0 && (client.discount.prepay_to != 100 || client.discount.prepay_to < 100)">
                             {{ month }} месяцев по {{ getMonth() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
                         </span>
 
@@ -386,7 +389,7 @@
                             </td>
 
                             <td>
-                                {{ getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
+                                {{ client.discount.id === 'other' && month == 0 ? getTotalOther() : getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
                             </td>
                         </tr>
 
@@ -529,7 +532,6 @@
 
             type_client: 'unknown',
 
-
             apartment_edit: {
                 price: 0,
                 prepay_price: 0,
@@ -582,6 +584,10 @@
         },
 
         methods: {
+
+            getTotalOther() {
+                return this.apartment_edit.price;
+            },
 
             getDiscountEdited() {
                 let price = this.apartment_edit.price;
