@@ -534,8 +534,17 @@
                                     {{ $t('roles.permissions.debtors.first_payment') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.debtors.first_payment" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.first_payment.accept" size="lg"></b-form-checkbox>
                                 </td>
+                            </tr>
+
+                            <tr>
+                              <td width="50%">
+                                {{ $t('roles.permissions.debtors.first_payment_edit') }}
+                              </td>
+                              <td width="50%">
+                                <b-form-checkbox switch v-model="role.permissions.debtors.first_payment.edit" size="lg"></b-form-checkbox>
+                              </td>
                             </tr>
 
                             <tr>
@@ -543,12 +552,18 @@
                                     {{ $t('roles.permissions.debtors.monthly_payment') }}
                                 </td>
                                 <td width="50%">
-                                    <b-form-checkbox switch v-model="role.permissions.debtors.monthly_payment" size="lg"></b-form-checkbox>
+                                    <b-form-checkbox switch v-model="role.permissions.debtors.monthly.accept" size="lg"></b-form-checkbox>
                                 </td>
                             </tr>
 
-
-
+                            <tr>
+                              <td width="50%">
+                                {{ $t('roles.permissions.debtors.monthly_payment_edit') }}
+                              </td>
+                              <td width="50%">
+                                <b-form-checkbox switch v-model="role.permissions.debtors.monthly.edit" size="lg"></b-form-checkbox>
+                              </td>
+                            </tr>
 
                             </tbody>
                         </table>
@@ -652,13 +667,33 @@
                     }
                 }
 
-                if (!this.role.permissions.debtors) {
-                    this.role.permissions.debtors = {
-                        view: false,
-                        first_payment: false,
-                        monthly_payment: false
-                    }
+              if (!this.role.permissions.debtors.first_payment.edit) {
+                this.role.permissions.debtors = {
+                  view: false,
+                  first_payment: {
+                    edit: false,
+                    accept: false
+                  },
+                  monthly: {
+                    edit: false,
+                    accept: false
+                  }
                 }
+              }
+
+              if (!this.role.permissions.debtors) {
+                  this.role.permissions.debtors = {
+                      view: false,
+                      first_payment: {
+                          edit: false,
+                          accept: false
+                      },
+                      monthly: {
+                        edit: false,
+                        accept: false
+                      }
+                  }
+              }
 
                 //
                 // } catch (error) {

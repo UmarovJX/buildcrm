@@ -9,6 +9,10 @@
                     <option value="expired">Просроченные</option>
                     <option value="friends">Знакомые</option>
                 </select>
+
+              <button v-if="date.length > 0 || orderBy === 'expired' || orderBy === 'friends'" @click="[date = [], orderBy = 'all']" class="btn btn-primary btn-block mt-3">
+                  Сброс фильтр
+              </button>
             </div>
 
             <form action="" class="my-form float-left w-100">
