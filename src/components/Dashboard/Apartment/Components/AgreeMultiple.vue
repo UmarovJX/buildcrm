@@ -288,7 +288,7 @@
                                                 <input id="initial-fee" class="my-form__input" disabled type="text" :value="getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' })">
                                             </div>
                                             <div class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start">
-                                                <div class="h6 mb-0">{{ client.discount.prepay_to }}%</div>
+                                                <div class="h6 mb-0">{{ client.discount.prepay_to.toFixed(2) }}%</div>
                                             </div>
                                         </div>
                                     </div>
@@ -322,7 +322,7 @@
                                                 <input id="initial-fee" class="my-form__input" type="number" step="0.01" v-model="apartment_edit.prepay_price">
                                             </div>
                                             <div class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start">
-                                                <div class="h6 mb-0">{{ client.discount.prepay_to }}%</div>
+                                                <div class="h6 mb-0">{{ client.discount.prepay_to.toFixed(2) }}%</div>
                                             </div>
                                         </div>
                                     </div>
@@ -377,21 +377,83 @@
                             </th>
 
                             <th>
+                              Тип
+                            </th>
+
+                            <th>
                                 Сумма
                             </th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr>
+                        <tr v-if="initial_payments.length === 0 || initial_payments.length === 1">
                             <td>
-                                {{ this.client.first_payment_date ? this.client.first_payment_date : new Date() | moment('DD.MM.YYYY') }}
+                              {{ this.client.first_payment_date ? this.client.first_payment_date : new Date() | moment('DD.MM.YYYY') }}
                             </td>
 
                             <td>
-                                {{ client.discount.id === 'other' && month == 0 ? getTotalOther() : getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
+                              Первоначальный взнос
+                            </td>
+
+                            <td>
+                              {{ client.discount.id === 'other' && month == 0 ? getTotalOther() : getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
+
+                              <button class="btn btn-success btn-sm float-right" type="button" @click="addInitialPayment">
+                                <i class="fa fa-plus-circle"></i>
+                              </button>
                             </td>
                         </tr>
+
+                        <tr v-else v-for="(initialPayment, index) in initial_payments" :key="'initial' + index">
+                            <td>
+                                <span v-if="!initialPayment.edit">
+                                    {{ initialPayment.month | moment('DD.MM.YYYY') }}
+                                </span>
+
+                                <div class="col-md-12 float-left" v-if="initialPayment.edit && index != 0">
+                                  <div class="row">
+                                    <input type="date" class="form-control" v-model="initialPayment.month" >
+                                  </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                Первоначальный взнос
+                            </td>
+
+                            <td>
+                                <span v-if="!initialPayment.edit">
+                                      {{ initialPayment.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
+                                </span>
+
+                                <div class="col-md-6 float-left" v-if="initialPayment.edit">
+                                  <div class="row">
+                                    <input type="text" class="form-control" v-model="initialPayment.amount" >
+                                  </div>
+                                </div>
+
+                                <button class="btn btn-success btn-sm float-right" v-if="index === initial_payments.length - 1" type="button" @click="addInitialPayment">
+                                  <i class="fa fa-plus-circle"></i>
+                                </button>
+
+                                <button v-if="getMe.role.id === 1 && !initialPayment.edit ||  getPermission.contracts.monthly && !initialPayment.edit" type="button" @click="editInitialPayment(index)" class="btn btn-sm btn-primary float-right mr-1">
+                                  <i class="fa fa-edit"></i>
+                                </button>
+
+                                <div v-if="initialPayment.edit">
+                                  <button v-if="getMe.role.id === 1 || getPermission.contracts.monthly" type="button" @click="editInitialPayment(index)" class="btn btn-sm btn-success float-right mr-1">
+                                    <i class="fa fa-save"></i>
+                                  </button>
+                                </div>
+
+                                <button v-if="index != 0 && getMe.role.id === 1 && !month.edit || index != 0 && getPermission.contracts.monthly && !month.edit" type="button" @click="deleteInitialPayment(index)" class="btn btn-sm btn-danger float-right mr-1">
+                                  <i class="fa fa-trash"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+
 
                         <tr v-for="(month, index) in credit_months" :key="index">
                             <td>
@@ -399,9 +461,13 @@
                             </td>
 
                             <td>
-                                        <span v-if="!month.edit">
-                                            {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
-                                        </span>
+                              Ежемесячно
+                            </td>
+
+                            <td>
+                                <span v-if="!month.edit">
+                                    {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
+                                </span>
 
                                 <div class="col-md-6 float-left" v-if="month.edit">
                                     <div class="row">
@@ -465,6 +531,7 @@
 <script>
     import { mapGetters } from 'vuex'
     import Discount from './DiscountMultiple'
+    import moment from "moment";
 
     export default {
         props: {
@@ -545,6 +612,8 @@
             month: "6",
             date_change: false,
 
+            initial_payments: [],
+
             confirm: false,
             next: false,
 
@@ -586,7 +655,7 @@
         methods: {
 
             getTotalOther() {
-                return this.apartment_edit.price;
+                return parseFloat(this.apartment_edit.price);
             },
 
             getDiscountEdited() {
@@ -596,6 +665,58 @@
                 let percente = prepay_price * 100 / price;
 
                 this.client.discount.prepay_to = percente
+            },
+
+            deleteInitialPayment(index) {
+              if (this.initial_payments.length === 2) {
+                this.initial_payments.splice(index, 1);
+                this.initial_payments.splice(0, 1);
+              } else {
+                this.initial_payments.splice(index, 1);
+              }
+            },
+
+            editInitialPayment(index) {
+                if (this.initial_payments[index].edit) {
+                  this.initial_payments[index].edit = false;
+
+                  if (parseFloat(this.initial_payments[index].amount) != this.getMonth()) {
+                    this.edit.initial_edited = true;
+                    this.initial_payments[index].edited = true;
+                    this.setNewPriceMonthly();
+                  }
+
+                  return;
+                }
+
+                this.initial_payments[index].edit = true;
+
+                return;
+            },
+
+            addInitialPayment() {
+              let today = this.client.first_payment_date ? new Date(this.client.first_payment_date) : new Date();
+
+              if (this.initial_payments.length === 0) {
+                let month = parseInt(this.month);
+                let amount = this.client.discount.id === 'other' && month === 0 ? this.getTotalOther() : this.getPrepay();
+
+                this.initial_payments.push({
+                  amount: amount,
+                  edit: false,
+                  edited: false,
+                  month:  moment(today).format('YYYY-MM-DD'),
+                })
+              }
+
+              this.initial_payments.push({
+                amount: 0,
+                edit: false,
+                edited: false,
+                month: moment(today).format('YYYY-MM-DD'),//today,
+              });
+
+              this.getPrepay();
             },
 
             getPrice() {
@@ -715,6 +836,12 @@
                             }
                         }
 
+                        for (let initial_payment = 0; initial_payment < this.initial_payments.length; initial_payment++) {
+                            formData.append('initial_payments['+ initial_payment +'][edited]', this.initial_payments[initial_payment].edited ? 1 : 0);
+                            formData.append('initial_payments['+ initial_payment +'][amount]', this.initial_payments[initial_payment].amount);
+                            formData.append('initial_payments['+ initial_payment +'][date]', this.initial_payments[initial_payment].month);
+                        }
+
                         formData.append('comment', this.comment);
 
                         if (this.client.discount.id === 'other') {
@@ -787,7 +914,6 @@
             },
 
             ChangeDiscount() {
-
                 if (this.client.discount.id === 'other') {
                     this.client.discount = {
                         id: 'other',
@@ -818,7 +944,6 @@
                 this.next = true;
                 return;
             },
-
 
             // sgetPrepay() {
             //     let total_discount = this.getDiscount();
@@ -863,7 +988,19 @@
                 else
                     total = price / total_discount;
 
-                // return total;
+                if (this.initial_payments.length > 1) {
+                  total = 0;
+
+                  for (let i = 0; this.initial_payments.length > i; i++) {
+                    total += parseFloat(this.initial_payments[i].amount);
+                  }
+
+                  return total;
+                }
+
+                if (this.apartment_edit.prepay_price) {
+                    return parseFloat(this.apartment_edit.prepay_price);
+                }
 
                 return this.client.discount.prepay_to * total / 100;
             },

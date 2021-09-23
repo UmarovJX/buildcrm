@@ -628,6 +628,72 @@
                   }
               });
 
+              let type = this.order.payments[index].type;
+              let pay_amount = parseFloat(formValues.pay_amount);
+              let amount = this.order.payments[index].amount;
+
+              console.log(type)
+              console.log(pay_amount)
+              console.log(amount)
+
+              if (type === 'initial_payment' && pay_amount < amount) {
+                  if (formValues) {
+                      const { value: initialValue } = await this.$swal({
+                        title: this.$t('sweetAlert.title'),
+                        text: this.$t('sweetAlert.debtors.are_you_sure'),
+                        icon: 'warning',
+                        showCancelButton: true,
+                        html:
+                            '<label for="date-payment" class="float-left mt-3">Дата следующей оплаты</label>' +
+                            '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
+                            '<label for="comment" class="float-left mt-3">Комментария</label>' +
+                            '<textarea id="comment" class="form-control" rows="3"></textarea>',
+
+                        confirmButtonText: this.$t('sweetAlert.debtors.yes'),
+
+                        preConfirm: () => {
+                          return {
+                            next_payment_date: document.getElementById('date-payment').value,
+                            comment: document.getElementById('comment').value,
+                          }
+                        }
+                      });
+
+
+                    this.axios.post(process.env.VUE_APP_URL + '/debtors/' + id, {
+                        date_paid: formValues.date_payment,
+                        amount_paid: formValues.pay_amount,
+                        type_payment: formValues.type_payment,
+                        comment: initialValue.comment,
+                        next_payment_date: initialValue.next_payment_date,
+                    }, this.header).then((response) => {
+                      console.log(response);
+                      // this.$router.back(-1);
+                      this.fetchOrder();
+
+                      this.$swal(
+                          this.$t('sweetAlert.payment_success'),
+                          '',
+                          'success'
+                      );
+
+                    }).catch((error) => {
+                      this.toastedWithErrorCode(error);
+
+                      if (error.response.status === 422) {
+                        if (error.response.data.date_payment && error.response.data.date_payment.length > 0)
+                          this.toasted(error.response.data.date_payment[0], 'error');
+                        if (error.response.data.pay_amount && error.response.data.pay_amount.length > 0)
+                          this.toasted(error.response.data.pay_amount[0], 'error');
+                      }
+                    });
+
+                      console.log(initialValue);
+                  }
+
+                  return;
+              }
+
               if (formValues) {
                   this.$swal({
                       title: this.$t('sweetAlert.title'),

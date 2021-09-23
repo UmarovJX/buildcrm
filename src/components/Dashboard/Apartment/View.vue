@@ -62,10 +62,8 @@
 
                     <div class="mt-5 d-flex justify-content-md-start justify-content-center">
 
-
-
                         <div v-if="!print">
-                            +998 91 333 31 11
+                            +998 55 501 74 00
                         </div>
 
                         <div v-if="print">

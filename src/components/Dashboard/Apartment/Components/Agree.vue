@@ -263,7 +263,7 @@
                                                 <input id="initial-fee" class="my-form__input" disabled type="text" :value="client.discount.id === 'other' && month == 0 ? getTotalOther() : getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' })">
                                             </div>
                                             <div class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start">
-                                                <div class="h6 mb-0">{{ client.discount.prepay_to }}%</div>
+                                                <div class="h6 mb-0">{{ client.discount.prepay_to.toFixed(2) }}%</div>
                                             </div>
                                         </div>
                                     </div>
@@ -296,7 +296,7 @@
                                                 <input id="initial-fee" class="my-form__input" type="number" step="0.01" v-model="apartment_edit.prepay_price">
                                             </div>
                                             <div class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start">
-                                                <div class="h6 mb-0">{{ client.discount.prepay_to }}%</div>
+                                                <div class="h6 mb-0">{{ client.discount.prepay_to.toFixed(2) }}%</div>
                                             </div>
                                         </div>
                                     </div>
@@ -349,25 +349,92 @@
                                     </th>
 
                                     <th>
+                                      Тип
+                                    </th>
+
+                                    <th>
                                         Сумма
                                     </th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                <tr>
+                                <tr v-if="initial_payments.length === 0 || initial_payments.length === 1">
                                     <td>
                                         {{ this.client.first_payment_date ? this.client.first_payment_date : new Date() | moment('DD.MM.YYYY') }}
                                     </td>
 
                                     <td>
+                                        Первоначальный взнос
+                                    </td>
+
+                                    <td>
                                         {{ client.discount.id === 'other' && month == 0 ? getTotalOther() : getPrepay() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
+
+                                      <button class="btn btn-success btn-sm float-right" type="button" @click="addInitialPayment">
+                                          <i class="fa fa-plus-circle"></i>
+                                      </button>
+                                    </td>
+                                </tr>
+
+                                <tr v-else v-for="(initialPayment, index) in initial_payments" :key="'initial' + index">
+                                    <td>
+                                      <span v-if="!initialPayment.edit">
+                                          {{ initialPayment.month | moment('DD.MM.YYYY') }}
+                                      </span>
+
+                                      <div class="col-md-12 float-left" v-if="initialPayment.edit && index != 0">
+                                        <div class="row">
+                                            <input type="date" class="form-control" v-model="initialPayment.month" >
+                                        </div>
+                                      </div>
+
+                                    </td>
+
+                                    <td>
+                                        Первоначальный взнос
+                                    </td>
+
+                                    <td>
+
+                                      <span v-if="!initialPayment.edit">
+                                            {{ initialPayment.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }}  {{ $t('ye') }}
+                                      </span>
+
+                                      <div class="col-md-6 float-left" v-if="initialPayment.edit">
+                                          <div class="row">
+                                              <input type="text" class="form-control" v-model="initialPayment.amount" >
+                                          </div>
+                                      </div>
+
+                                      <button class="btn btn-success btn-sm float-right" v-if="index === initial_payments.length - 1" type="button" @click="addInitialPayment">
+                                          <i class="fa fa-plus-circle"></i>
+                                      </button>
+
+                                      <button v-if="getMe.role.id === 1 && !initialPayment.edit ||  getPermission.contracts.monthly && !initialPayment.edit" type="button" @click="editInitialPayment(index)" class="btn btn-sm btn-primary float-right mr-1">
+                                          <i class="fa fa-edit"></i>
+                                      </button>
+
+                                      <div v-if="initialPayment.edit">
+                                          <button v-if="getMe.role.id === 1 || getPermission.contracts.monthly" type="button" @click="editInitialPayment(index)" class="btn btn-sm btn-success float-right mr-1">
+                                            <i class="fa fa-save"></i>
+                                          </button>
+                                      </div>
+
+                                      <button v-if="index != 0 && getMe.role.id === 1 && !month.edit || index != 0 && getPermission.contracts.monthly && !month.edit" type="button" @click="deleteInitialPayment(index)" class="btn btn-sm btn-danger float-right mr-1">
+                                        <i class="fa fa-trash"></i>
+                                      </button>
+
                                     </td>
                                 </tr>
 
                                 <tr v-for="(month, index) in credit_months" :key="index">
                                     <td>
                                         {{ month.month | moment('DD.MM.YYYY') }}
+                                    </td>
+
+                                    <td>
+                                        Ежемесячно
                                     </td>
 
                                     <td>
@@ -437,6 +504,8 @@
 <script>
     import { mapGetters } from 'vuex'
     import Discount from './Discount'
+    import moment from 'moment';
+
     export default {
         props: {
             apartment: {}
@@ -538,7 +607,8 @@
             error: false,
             errors: [],
 
-            credit_months: [
+            credit_months: [],
+            initial_payments: [
 
             ],
 
@@ -551,7 +621,7 @@
 
         mounted() {
 
-            console.log(this.getMe.role.id === 1 && false === false || this.getPermission.contracts.monthly && false === false);
+            //console.log(this.getMe.role.id === 1 && false === false || this.getPermission.contracts.monthly && false === false);
 
             if (this.apartment.order.id) {
                 this.reserveClientFull();
@@ -562,377 +632,447 @@
 
         methods: {
 
-            getDiscountEdited() {
-                let price = this.apartment_edit.price;
-                let prepay_price = this.apartment_edit.prepay_price;
+              getDiscountEdited() {
+                  let price = this.apartment_edit.price;
+                  let prepay_price = this.apartment_edit.prepay_price;
 
-                let percente = prepay_price * 100 / price;
+                  let percente = prepay_price * 100 / price;
 
-                this.client.discount.prepay_to = percente
+                  this.client.discount.prepay_to = percente
+              },
 
-            },
+              deleteInitialPayment(index) {
+                  if (this.initial_payments.length === 2) {
+                      this.initial_payments.splice(index, 1);
+                      this.initial_payments.splice(0, 1);
+                  } else {
+                      this.initial_payments.splice(index, 1);
+                  }
+              },
 
-            async Search() {
-                try {
-                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/client/search?field=' + this.search_label, this.header);
-                    this.step = 2;
+              addInitialPayment() {
+                  let today = this.client.first_payment_date ? new Date(this.client.first_payment_date) : new Date();
 
-                    this.client = {
-                        id: data.id,
-                        first_name: data.first_name ?? {
-                            lotin: null,
-                            kirill: null
-                        },
-                        last_name: data.last_name  ?? {
-                            lotin: null,
-                            kirill: null
-                        },
-                        second_name: data.second_name  ?? {
-                            lotin: null,
-                            kirill: null
-                        },
-                        passport_series: data.passport_series,
-                        issued_by_whom: data.issued_by_whom,
-                        language: data.language,
-                        birth_day: data.birth_day,
-                        phone: data.phone,
-                        other_phone: data.other_phone,
-                        date_of_issue: data.date_of_issue,
-                        discount: {id: null},
+                  if (this.initial_payments.length === 0) {
+                      let month = parseInt(this.month);
+                      let amount = this.client.discount.id === 'other' && month === 0 ? this.getTotalOther() : this.getPrepay();
+
+                      this.initial_payments.push({
+                          amount: amount,
+                          edit: false,
+                          edited: false,
+                          month:  moment(today).format('YYYY-MM-DD'),
+                      })
+                  }
+
+                  this.initial_payments.push({
+                      amount: 0,
+                      edit: false,
+                      edited: false,
+                      month: moment(today).format('YYYY-MM-DD'),//today,
+                  });
+
+                  this.getPrepay();
+              },
+
+              async Search() {
+                  try {
+                      const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/client/search?field=' + this.search_label, this.header);
+                      this.step = 2;
+
+                      this.client = {
+                          id: data.id,
+                          first_name: data.first_name ?? {
+                              lotin: null,
+                              kirill: null
+                          },
+                          last_name: data.last_name  ?? {
+                              lotin: null,
+                              kirill: null
+                          },
+                          second_name: data.second_name  ?? {
+                              lotin: null,
+                              kirill: null
+                          },
+                          passport_series: data.passport_series,
+                          issued_by_whom: data.issued_by_whom,
+                          language: data.language,
+                          birth_day: data.birth_day,
+                          phone: data.phone,
+                          other_phone: data.other_phone,
+                          date_of_issue: data.date_of_issue,
+                          discount: {id: null},
+                      }
+
+                  } catch (error) {
+                      //console.log(4);
+                      if (! error.response) {
+                          this.toasted('Error: Network Error', 'error');
+                      } else {
+                          if (error.response.status === 403) {
+                              this.toasted(error.response.data.message, 'error');
+                          } else if (error.response.status === 401) {
+                              this.toasted(error.response.data.message, 'error');
+                          } else if (error.response.status === 500) {
+                              this.toasted(error.response.data.message, 'error');
+                          } else {
+                              this.toasted(error.response.data.message, 'error');
+                          }
+                      }
+                  }
+              },
+
+              async reserveClientFull() {
+                  try {
+                      const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/' + this.apartment.order.id + '/confirm/client', this.header);
+                      this.step = 2;
+                      this.client = {
+                          id: data.id,
+                          first_name: data.first_name,
+                          birth_day: data.birth_day,
+                          last_name: data.last_name,
+                          second_name: data.second_name,
+                          passport_series: data.passport_series,
+                          issued_by_whom: data.issued_by_whom,
+                          language: data.language,
+                          phone: data.phone,
+                          other_phone: data.other_phone,
+                          date_of_issue: data.date_of_issue,
+                          discount: {id: null},
+                      }
+
+                  } catch (error) {
+                      //console.log(4);
+                      if (! error.response) {
+                          this.toasted('Error: Network Error', 'error');
+                      } else {
+                          if (error.response.status === 403) {
+                              this.toasted(error.response.data.message, 'error');
+                          } else if (error.response.status === 401) {
+                              this.toasted(error.response.data.message, 'error');
+                          } else if (error.response.status === 500) {
+                              this.toasted(error.response.data.message, 'error');
+                          } else {
+                              this.toasted(error.response.data.message, 'error');
+                          }
+                      }
+                  }
+              },
+
+              async sendForm() {
+
+                  if (this.client.discount.id === null)
+                      return;
+
+                  this.$swal({
+                      title: this.$t('sweetAlert.title'),
+                      text: this.$t('sweetAlert.text_agree'),
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonText: this.$t('sweetAlert.yes_agree')
+                  }).then((result) => {
+                      if (result.value) {
+                          const formData = new FormData();
+
+                          if (this.apartment.order.id)
+                              formData.append('order_id', this.apartment.order.id);
+
+                          formData.append('type', 'simple');
+                          formData.append('id', this.client.id);
+
+                          formData.append('first_name[lotin]', this.client.first_name.lotin);
+                          formData.append('first_name[kirill]', this.client.first_name.kirill);
+
+                          formData.append('last_name[lotin]', this.client.last_name.lotin);
+                          formData.append('last_name[kirill]', this.client.last_name.kirill);
+
+                          formData.append('second_name[lotin]', this.client.second_name.lotin);
+                          formData.append('second_name[kirill]', this.client.second_name.kirill);
+
+                          formData.append('passport_series', this.client.passport_series);
+                          formData.append('issued_by_whom', this.client.issued_by_whom);
+                          formData.append('language', this.client.language);
+                          formData.append('phone', this.client.phone);
+                          formData.append('other_phone', this.client.other_phone);
+                          formData.append('date_of_issue', this.client.date_of_issue);
+                          formData.append('discount_id', this.client.discount.id);
+                          formData.append('birth_day', this.client.birth_day);
+
+                          formData.append('type_client', this.type_client);
+
+                          formData.append('monthly_edited', this.edit.monthly_edited ? 1 : 0);
+
+                          if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
+                              for (let monthly = 0; monthly < this.credit_months.length; monthly++) {
+                                  formData.append('monthly['+ monthly +'][edited]', this.credit_months[monthly].edited ? 1 : 0);
+                                  formData.append('monthly['+ monthly +'][amount]', this.credit_months[monthly].amount);
+                                  formData.append('monthly['+ monthly +'][date]', this.credit_months[monthly].month);
+                              }
+                          }
+
+                          for (let initial_payment = 0; initial_payment < this.initial_payments.length; initial_payment++) {
+                              formData.append('initial_payments['+ initial_payment +'][edited]', this.initial_payments[initial_payment].edited ? 1 : 0);
+                              formData.append('initial_payments['+ initial_payment +'][amount]', this.initial_payments[initial_payment].amount);
+                              formData.append('initial_payments['+ initial_payment +'][date]', this.initial_payments[initial_payment].month);
+                          }
+
+
+                          formData.append('comment', this.comment);
+
+                          if (this.client.discount.id === 'other') {
+                              formData.append('apartment_price', this.apartment_edit.price);
+                              formData.append('apartment_prepay_price', this.apartment_edit.prepay_price);
+                          }
+
+                          formData.append('first_payment_date', this.client.first_payment_date);
+
+                          if (this.client.payment_date)
+                              formData.append('payment_date', this.client.payment_date);
+
+                          if (this.date_change) {
+                              formData.append('date_change', 1);
+                              formData.append('contract_number', this.apartment_edit.contract_number);
+                              formData.append('contract_date', this.apartment_edit.contract_date);
+                          }
+
+                          if (this.step === 3 && this.client.discount.prepay_to != 100) {
+                              formData.append('months', this.month);
+                          }
+
+                          this.axios.post(process.env.VUE_APP_URL + '/orders/' + this.apartment.id , formData, this.header)
+                          .then(response => {
+                              this.toasted(response.data.message, 'success');
+
+                              this.$bvModal.hide('modal-agree');
+
+                              this.$emit('successAgree', response.data);
+
+                          })
+                          .catch(error => {
+                              if (! error.response) {
+                                  this.toasted('Error: Network Error', 'error');
+                              } else {
+                                  if (error.response.status === 403) {
+                                      this.toasted(error.response.data.message, 'error');
+                                  } else if (error.response.status === 401) {
+                                      this.toasted(error.response.data, 'error');
+                                  } else if (error.response.status === 500) {
+                                      this.toasted(error.response.data.message, 'error');
+                                  } else if (error.response.status === 422) {
+                                      this.error = true;
+                                      this.errors = error.response.data;
+                                  } else {
+                                      this.toasted(error.response.data.message, 'error');
+                                  }
+                              }
+                          });
+                                  // this.$nextTick(() => {
+                                  //     this.$bvModal.hide('modal-upload-logo')
+                                  // });
+
+                                  // this.$emit('UploadLogo');
+                      }
+                  });
+
+              },
+
+              removeBlock() {
+                  this.$swal({
+                      title: this.$t('sweetAlert.title'),
+                      text: this.$t('sweetAlert.text_cancel_agree'),
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonText: this.$t('sweetAlert.yes_close')
+                  }).then((result) => {
+                      if (result.value) {
+                          this.$bvModal.hide('modal-agree');
+
+                          this.$emit('CloseAgree');
+                      }
+                  });
+              },
+
+              ChangeDiscount() {
+
+                  if (this.client.discount.id === 'other') {
+                      this.client.discount = {
+                          id: 'other',
+                          prepay_to: 30,
+                          discount: 0
+                      };
+
+                      this.apartment_edit.price = this.apartment.price;
+                      this.apartment_edit.prepay_price = this.getPrepay();
+                  }
+
+                  this.CreditMonths(this.month);
+
+                  if (this.client.discount.id === null) {
+                      this.next = false;
+                      this.confirm = false;
+                      return;
+                  }
+
+                  if (this.client.discount.prepay_to === 100) {
+                      this.next = false;
+                      this.confirm = true;
+                      return;
+                  }
+
+
+                  this.confirm = false;
+                  this.next = true;
+                  return;
+              },
+
+              getPrepay() {
+                  if (this.prepay_to === 100)
+                      return 0;
+
+                  let total_discount = this.getDiscount();
+
+                  let total;
+
+                  if (this.client.discount.id === 'other')
+                      total = this.apartment_edit.price / total_discount;
+                  else
+                      total = this.apartment.price / total_discount;
+
+                  if (this.initial_payments.length > 1) {
+                      total = 0;
+
+                      for (let i = 0; this.initial_payments.length > i; i++) {
+                          total += parseFloat(this.initial_payments[i].amount);
+                      }
+
+                      return total;
+                  }
+
+                  if (this.apartment_edit.prepay_price) {
+                    return parseFloat(this.apartment_edit.prepay_price);
+                  }
+
+                  //console.log(this.client.discount.prepay_to * total / 100);
+                  return this.client.discount.prepay_to * total / 100;
+              },
+
+              getTotalOther() {
+                 console.log(parseFloat(this.apartment_edit.price))
+                 return parseFloat(this.apartment_edit.price);
+              },
+
+              getDiscount() {
+                  if (this.prepay_to === 100)
+                      return 0;
+
+                  return 1 - (this.client.discount.discount / 100);
+                  // return this.discount.discount * this.apartment.price / 100;
+              },
+
+              getMonth() {
+                  return (this.getTotal() - this.getPrepay()) / this.month;
+              },
+
+              getDebt() {
+                  // let price = this.getTotal() - this.getPrepay();
+                  //console.log(price);
+                  // console.log(this.getTotal());
+                  // console.log(this.getPrepay());
+
+                  return this.getTotal() - this.getPrepay();
+              },
+
+              getTotal() {
+                  let total_discount = this.getDiscount();
+
+                  //console.log(total_discount);
+
+                  // let total = price * area;
+
+                  let total = 0;
+
+                  if (this.client.discount.id === 'other')
+                      total = this.apartment_edit.price / total_discount;
+                  else
+                      total = this.apartment.price / total_discount;
+
+                  return total;
+              },
+
+              CreditMonths(newVal) {
+
+                  let today = this.client.payment_date ? new Date(this.client.payment_date) : new Date();
+
+                  this.credit_months = [];
+
+                  for (var i = 0; i < newVal; i++) {
+
+                      this.credit_months.push({
+                          month:  today.setMonth( today.getMonth() + 1 ),
+                          amount: this.getMonth(),
+                          edit: false,
+                          edited: false,
+                      })
+                  }
+              },
+
+              editMonthlyPayment(index) {
+                  if (this.credit_months[index].edit) {
+                      this.credit_months[index].edit = false;
+
+                      if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
+                          this.edit.monthly_edited = true;
+                          this.credit_months[index].edited = true;
+                          this.setNewPriceMonthly();
+                      }
+
+                      return;
+                  }
+
+                  this.credit_months[index].edit = true;
+
+                  return;
+              },
+
+              editInitialPayment(index) {
+                  if (this.initial_payments[index].edit) {
+                    this.initial_payments[index].edit = false;
+
+                    if (parseFloat(this.initial_payments[index].amount) != this.getMonth()) {
+                      this.edit.initial_edited = true;
+                      this.initial_payments[index].edited = true;
+                      this.setNewPriceMonthly();
                     }
 
-                } catch (error) {
-                    console.log(4);
-                    if (! error.response) {
-                        this.toasted('Error: Network Error', 'error');
-                    } else {
-                        if (error.response.status === 403) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 401) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 500) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else {
-                            this.toasted(error.response.data.message, 'error');
-                        }
-                    }
-                }
-            },
-
-            async reserveClientFull() {
-                try {
-                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/' + this.apartment.order.id + '/confirm/client', this.header);
-                    this.step = 2;
-                    this.client = {
-                        id: data.id,
-                        first_name: data.first_name,
-                        birth_day: data.birth_day,
-                        last_name: data.last_name,
-                        second_name: data.second_name,
-                        passport_series: data.passport_series,
-                        issued_by_whom: data.issued_by_whom,
-                        language: data.language,
-                        phone: data.phone,
-                        other_phone: data.other_phone,
-                        date_of_issue: data.date_of_issue,
-                        discount: {id: null},
-                    }
-
-                } catch (error) {
-                    console.log(4);
-                    if (! error.response) {
-                        this.toasted('Error: Network Error', 'error');
-                    } else {
-                        if (error.response.status === 403) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 401) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 500) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else {
-                            this.toasted(error.response.data.message, 'error');
-                        }
-                    }
-                }
-            },
-
-            async sendForm() {
-
-                if (this.client.discount.id === null)
                     return;
-
-                this.$swal({
-                    title: this.$t('sweetAlert.title'),
-                    text: this.$t('sweetAlert.text_agree'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: this.$t('sweetAlert.yes_agree')
-                }).then((result) => {
-                    if (result.value) {
-                        const formData = new FormData();
-
-                        if (this.apartment.order.id)
-                            formData.append('order_id', this.apartment.order.id);
-
-                        formData.append('type', 'simple');
-                        formData.append('id', this.client.id);
-
-                        formData.append('first_name[lotin]', this.client.first_name.lotin);
-                        formData.append('first_name[kirill]', this.client.first_name.kirill);
-
-                        formData.append('last_name[lotin]', this.client.last_name.lotin);
-                        formData.append('last_name[kirill]', this.client.last_name.kirill);
-
-                        formData.append('second_name[lotin]', this.client.second_name.lotin);
-                        formData.append('second_name[kirill]', this.client.second_name.kirill);
-
-                        formData.append('passport_series', this.client.passport_series);
-                        formData.append('issued_by_whom', this.client.issued_by_whom);
-                        formData.append('language', this.client.language);
-                        formData.append('phone', this.client.phone);
-                        formData.append('other_phone', this.client.other_phone);
-                        formData.append('date_of_issue', this.client.date_of_issue);
-                        formData.append('discount_id', this.client.discount.id);
-                        formData.append('birth_day', this.client.birth_day);
-
-                        formData.append('type_client', this.type_client);
-
-                        formData.append('monthly_edited', this.edit.monthly_edited ? 1 : 0);
-
-                        if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
-                            for (let monthly = 0; monthly < this.credit_months.length; monthly++) {
-                                formData.append('monthly['+ monthly +'][edited]', this.credit_months[monthly].edited ? 1 : 0);
-                                formData.append('monthly['+ monthly +'][amount]', this.credit_months[monthly].amount);
-                                formData.append('monthly['+ monthly +'][date]', this.credit_months[monthly].month);
-                            }
-                        }
-
-                        formData.append('comment', this.comment);
-
-                        if (this.client.discount.id === 'other') {
-                            formData.append('apartment_price', this.apartment_edit.price);
-                            formData.append('apartment_prepay_price', this.apartment_edit.prepay_price);
-                        }
-
-                        formData.append('first_payment_date', this.client.first_payment_date);
-
-                        if (this.client.payment_date)
-                            formData.append('payment_date', this.client.payment_date);
-
-                        if (this.date_change) {
-                            formData.append('date_change', 1);
-                            formData.append('contract_number', this.apartment_edit.contract_number);
-                            formData.append('contract_date', this.apartment_edit.contract_date);
-                        }
-
-                        if (this.step === 3 && this.client.discount.prepay_to != 100) {
-                            formData.append('months', this.month);
-                        }
-
-                        this.axios.post(process.env.VUE_APP_URL + '/orders/' + this.apartment.id , formData, this.header)
-                        .then(response => {
-                            this.toasted(response.data.message, 'success');
-
-                            this.$bvModal.hide('modal-agree');
-
-                            this.$emit('successAgree', response.data);
-
-                        })
-                        .catch(error => {
-                            if (! error.response) {
-                                this.toasted('Error: Network Error', 'error');
-                            } else {
-                                if (error.response.status === 403) {
-                                    this.toasted(error.response.data.message, 'error');
-                                } else if (error.response.status === 401) {
-                                    this.toasted(error.response.data, 'error');
-                                } else if (error.response.status === 500) {
-                                    this.toasted(error.response.data.message, 'error');
-                                } else if (error.response.status === 422) {
-                                    this.error = true;
-                                    this.errors = error.response.data;
-                                } else {
-                                    this.toasted(error.response.data.message, 'error');
-                                }
-                            }
-                        });
-                                // this.$nextTick(() => {
-                                //     this.$bvModal.hide('modal-upload-logo')
-                                // });
-
-                                // this.$emit('UploadLogo');
-                    }
-                });
-
-            },
-
-            removeBlock() {
-                this.$swal({
-                    title: this.$t('sweetAlert.title'),
-                    text: this.$t('sweetAlert.text_cancel_agree'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: this.$t('sweetAlert.yes_close')
-                }).then((result) => {
-                    if (result.value) {
-                        this.$bvModal.hide('modal-agree');
-
-                        this.$emit('CloseAgree');
-                    }
-                });
-            },
-
-
-            ChangeDiscount() {
-
-                if (this.client.discount.id === 'other') {
-                    this.client.discount = {
-                        id: 'other',
-                        prepay_to: 30,
-                        discount: 0
-                    };
-
-                    this.apartment_edit.price = this.apartment.price;
-                    this.apartment_edit.prepay_price = this.getPrepay();
-                }
-
-                this.CreditMonths(this.month);
-
-                if (this.client.discount.id === null) {
-                    this.next = false;
-                    this.confirm = false;
-                    return;
-                }
-
-                if (this.client.discount.prepay_to === 100) {
-                    this.next = false;
-                    this.confirm = true;
-                    return;
-                }
-
-
-                this.confirm = false;
-                this.next = true;
-                return;
-            },
-
-            getPrepay() {
-                if (this.prepay_to === 100)
-                    return 0;
-
-                let total_discount = this.getDiscount();
-
-                let total;
-
-                if (this.client.discount.id === 'other')
-                    total = this.apartment_edit.price / total_discount;
-                else
-                    total = this.apartment.price / total_discount;
-
-                // return total;
-
-                return this.client.discount.prepay_to * total / 100;
-            },
-
-
-            getTotalOther() {
-               return this.apartment_edit.price;
-            },
-
-            getDiscount() {
-                if (this.prepay_to === 100)
-                    return 0;
-
-                return 1 - (this.client.discount.discount / 100);
-                // return this.discount.discount * this.apartment.price / 100;
-            },
-
-            getMonth() {
-                return (this.getTotal() - this.getPrepay()) / this.month;
-            },
-
-            getDebt() {
-                // let price = this.getTotal() - this.getPrepay();
-                //console.log(price);
-                // console.log(this.getTotal());
-                // console.log(this.getPrepay());
-
-                return this.getTotal() - this.getPrepay();
-            },
-
-            getTotal() {
-                let total_discount = this.getDiscount();
-
-                //console.log(total_discount);
-
-                // let total = price * area;
-
-                let total = 0;
-
-                if (this.client.discount.id === 'other')
-                    total = this.apartment_edit.price / total_discount;
-                else
-                    total = this.apartment.price / total_discount;
-
-                return total;
-            },
-
-            CreditMonths(newVal) {
-
-               let today = this.client.payment_date ? new Date(this.client.payment_date) : new Date();
-
-                this.credit_months = [];
-
-                for (var i = 0; i < newVal; i++) {
-
-                    this.credit_months.push({
-                        month:  today.setMonth( today.getMonth() + 1 ),
-                        amount: this.getMonth(),
-                        edit: false,
-                        edited: false,
-                    })
-                }
-            },
-
-            editMonthlyPayment(index) {
-                if (this.credit_months[index].edit) {
-                    this.credit_months[index].edit = false;
-
-                    if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
-                        this.edit.monthly_edited = true;
-                        this.credit_months[index].edited = true;
-                        this.setNewPriceMonthly();
-                    }
-
-                    return;
-                }
-
-                this.credit_months[index].edit = true;
-
-                return;
-            },
-
-            setNewPriceMonthly()
-            {
-                let total = this.getPrepay();
-                let months = 0;
-
-                for (var i = 0; i < this.credit_months.length; i++) {
-                    if (this.credit_months[i].edited) {
-                        total += parseFloat(this.credit_months[i].amount);
-                    } else {
-                        months += 1;
-                    }
-                }
-
-                let monthly_amount = (this.getTotal() - total) / months;
-
-                for (var m = 0; m < this.credit_months.length; m++) {
-                    if (!this.credit_months[m].edited) {
-                        this.credit_months[m].amount = monthly_amount;
-                    }
-                }
-            }
+                  }
+
+                  this.initial_payments[index].edit = true;
+
+                  return;
+              },
+
+              setNewPriceMonthly()
+              {
+                  let total = this.getPrepay();
+                  let months = 0;
+
+                  for (var i = 0; i < this.credit_months.length; i++) {
+                      if (this.credit_months[i].edited) {
+                          total += parseFloat(this.credit_months[i].amount);
+                      } else {
+                          months += 1;
+                      }
+                  }
+
+                  let monthly_amount = (this.getTotal() - total) / months;
+
+                  for (var m = 0; m < this.credit_months.length; m++) {
+                      if (!this.credit_months[m].edited) {
+                          this.credit_months[m].amount = monthly_amount;
+                      }
+                  }
+              }
         }
     }
 </script>
