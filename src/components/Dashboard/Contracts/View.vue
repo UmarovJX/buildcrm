@@ -261,15 +261,19 @@
                                         <td  class="text-center">
                                             {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
 
-                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)" v-if="index === 0 && (getMe.role.id === 1 || getPermission.debtors.first_payment.accept) && month.status === 'waiting'">
+                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)" v-if="month.type === 'initial_payment' && (getMe.role.id === 1 || getPermission.debtors.first_payment.accept) && month.status === 'waiting'">
                                                 <i class="far fa-wallet"></i>
                                             </button>
 
-                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="index != 0 && (getMe.role.id === 1 || getPermission.debtors.monthly.accept) && month.status === 'waiting'">
+                                            <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)" v-if="month.type === 'initial_payment' && (getMe.role.id === 1 || getPermission.debtors.first_payment.edit) && month.status === 'paid'">
+                                              <i class="far fa-edit"></i>
+                                            </button>
+
+                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="month.type === 'monthly' && (getMe.role.id === 1 || getPermission.debtors.monthly.accept) && month.status === 'waiting'">
                                                 <i class="far fa-wallet"></i>
                                             </button>
 
-                                          <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)"  v-if="index != 0 && (getMe.role.id === 1 || getPermission.debtors.monthly.accept) && month.status === 'paid'">
+                                          <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)"  v-if="month.type === 'monthly' && (getMe.role.id === 1 || getPermission.debtors.monthly.edit) && month.status === 'paid'">
                                               <i class="far fa-edit"></i>
                                           </button>
                                         </td>

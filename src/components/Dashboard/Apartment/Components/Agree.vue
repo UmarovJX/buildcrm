@@ -816,7 +816,6 @@
                               formData.append('initial_payments['+ initial_payment +'][date]', this.initial_payments[initial_payment].month);
                           }
 
-
                           formData.append('comment', this.comment);
 
                           if (this.client.discount.id === 'other') {
