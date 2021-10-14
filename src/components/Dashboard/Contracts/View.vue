@@ -189,6 +189,51 @@
                                 </tbody>
                             </table>
 
+<!--                            <button class="btn-primary btn mb-3 float-right">-->
+<!--                                <i class="fa fa-plus-circle"></i> Добавить платеж-->
+<!--                            </button>-->
+
+                            <b-button
+                                :class="payment.view ? null : 'collapsed'"
+                                :aria-expanded="payment.view ? 'true' : 'false'"
+                                aria-controls="collapse-4"
+                                @click="payment.view = !payment.view"
+                                variant="primary"
+                                class="mb-3 float-right"
+                            >
+                              <i class="fa fa-plus-circle"></i> Добавить платеж
+                            </b-button>
+
+
+                            <b-collapse id="collapse-4" v-model="payment.view" class="mb-3 w-100 float-left">
+                              <div class="card">
+                                  <form @submit.prevent="CreatePayment">
+                                      <div class="card-body">
+
+                                          <div class="mb-3">
+                                            <label for="date" class="form-label">Расписание</label>
+                                            <input type="date" class="form-control" v-model="payment.data.date" id="date" placeholder="" required>
+                                          </div>
+
+                                          <div class="mb-3">
+                                            <label for="amount" class="form-label">Сумма</label>
+                                            <input type="number" class="form-control" v-model="payment.data.amount" min="1" id="amount" required placeholder="">
+                                          </div>
+                                      </div>
+
+                                      <div class="card-footer">
+                                          <button type="submit" class="btn btn-success">
+                                              <i class="fa fa-save"></i> Сохранить
+                                          </button>
+
+                                          <button type="button" class="btn ml-1" @click="payment.view = !payment.view">
+                                            Отменить
+                                          </button>
+                                      </div>
+                                    </form>
+                              </div>
+                            </b-collapse>
+
                             <table class="table table-striped" v-if="order.status === 'contract' || order.status === 'sold'">
                                 <thead class="table-dark">
                                 <tr>
@@ -269,11 +314,11 @@
                                               <i class="far fa-edit"></i>
                                             </button>
 
-                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="month.type === 'monthly' && (getMe.role.id === 1 || getPermission.debtors.monthly.accept) && month.status === 'waiting'">
+                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="(month.type === 'monthly' || month.type === 'manual') && (getMe.role.id === 1 || getPermission.debtors.monthly.accept) && month.status === 'waiting'">
                                                 <i class="far fa-wallet"></i>
                                             </button>
 
-                                          <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)"  v-if="month.type === 'monthly' && (getMe.role.id === 1 || getPermission.debtors.monthly.edit) && month.status === 'paid'">
+                                          <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)"  v-if="(month.type === 'monthly' || month.type === 'manual') && (getMe.role.id === 1 || getPermission.debtors.monthly.edit) && month.status === 'paid'">
                                               <i class="far fa-edit"></i>
                                           </button>
                                         </td>
@@ -385,6 +430,15 @@
 
         data: () => ({
             step: 1,
+            add_payment: true,
+
+            payment: {
+              view: false,
+              data: {
+                  date: null,
+                  amount: null
+              }
+            },
 
             order: {
                 id: null,
@@ -507,6 +561,36 @@
 
                 } catch (error) {
                     this.toastedWithErrorCode(error);
+                }
+            },
+
+            async CreatePayment()
+            {
+                try {
+                  const { data } = await this.axios.post(process.env.VUE_APP_URL + '/debtors/payment/' + this.$route.params.id + '/store', {
+                      date: this.payment.data.date,
+                      amount: this.payment.data.amount
+                  }, this.header);
+
+                  this.payment.data = {
+                      date: null,
+                      amount: null
+                  }
+
+                  console.log(data)
+
+                  this.payment.view = false
+                  this.fetchOrder();
+
+                  this.$swal(
+                      this.$t('sweetAlert.payment_success_added'),
+                      '',
+                      'success'
+                  );
+
+
+                } catch (error) {
+                  this.toastedWithErrorCode(error);
                 }
             },
 
@@ -860,6 +944,9 @@
               switch (type) {
                 case 'monthly':
                   msg = 'Ежемесячно';
+                  break;
+                case 'manual':
+                  msg = 'Ручной создано';
                   break;
                 default:
                   msg = 'Первоначальный взнос';

@@ -401,6 +401,7 @@ export default {
             'yes_cancel_contract': 'Да, расторгнуть',
             'canceled_contract': 'Контракт расторгнуть',
             'payment_success': 'Оплата успешно принята',
+            'payment_success_added': 'Оплата успешно создано',
 
             'text_cancel_agree': 'Вы действительно хотите закрыть',
             'text_agree': 'Вы действительно хотите заключить договор ?',
