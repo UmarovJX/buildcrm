@@ -311,16 +311,20 @@
                                             </button>
 
                                             <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)" v-if="month.type === 'initial_payment' && (getMe.role.id === 1 || getPermission.debtors.first_payment.edit) && month.status === 'paid'">
-                                              <i class="far fa-edit"></i>
+                                                <i class="far fa-edit"></i>
                                             </button>
 
-                                            <button class="btn badge-danger btn-sm float-right" @click="paymentMonthly(index)"  v-if="(month.type === 'monthly' || month.type === 'manual') && (getMe.role.id === 1 || getPermission.debtors.monthly.accept) && month.status === 'waiting'">
+                                            <button class="btn badge-danger btn-sm float-right ml-2" @click="paymentMonthly(index)"  v-if="(month.type === 'monthly' || month.type === 'manual' || month.type === 'debt') && (getMe.role.id === 1 || getPermission.debtors.monthly.accept) && month.status === 'waiting'">
                                                 <i class="far fa-wallet"></i>
                                             </button>
 
-                                          <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)"  v-if="(month.type === 'monthly' || month.type === 'manual') && (getMe.role.id === 1 || getPermission.debtors.monthly.edit) && month.status === 'paid'">
-                                              <i class="far fa-edit"></i>
-                                          </button>
+                                            <button class="btn btn-primary btn-sm float-right" @click="editMonthly(index)"  v-if="(month.type === 'monthly' || month.type === 'manual' || month.type === 'debt') && (getMe.role.id === 1 || getPermission.debtors.monthly.edit) && month.status === 'paid'">
+                                                <i class="far fa-edit"></i>
+                                            </button>
+
+                                            <button class="btn btn-sm float-right" @click="deleteMonthly(index)"  v-if="(month.type === 'manual') && (getMe.role.id === 1 || getPermission.debtors.monthly.edit) && month.status === 'waiting'">
+                                                <i class="far fa-trash"></i>
+                                            </button>
                                         </td>
                                     </tr>
 
@@ -619,12 +623,53 @@
                 }
             },
 
+          async deleteMonthly(index)
+          {
+              let id = this.order.payments[index].id;
+
+              this.$swal({
+                title: this.$t('sweetAlert.title'),
+                text: this.$t('sweetAlert.debtors.payment_delete'),
+                // title: this.$t('sweetAlert.debtors.payment_delete'),
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: this.$t('sweetAlert.yes'),
+
+              }).then((result) => {
+                if (result.value || result.value == '') {
+                  this.axios.delete(process.env.VUE_APP_URL + '/debtors/' + id,  this.header).then((response) => {
+                    console.log(response);
+                    // this.$router.back(-1);
+                    this.fetchOrder();
+
+                    this.$swal(
+                        this.$t('sweetAlert.payment_success'),
+                        '',
+                        'success'
+                    );
+
+                  }).catch((error) => {
+                    this.toastedWithErrorCode(error);
+
+                    if (error.response.status === 422) {
+                      if (error.response.data.date_payment && error.response.data.date_payment.length > 0)
+                        this.toasted(error.response.data.date_payment[0], 'error');
+                      if (error.response.data.pay_amount && error.response.data.pay_amount.length > 0)
+                        this.toasted(error.response.data.pay_amount[0], 'error');
+                    }
+                  });
+                }
+              });
+
+
+          },
+
           async editMonthly(index)
           {
               let id = this.order.payments[index].id;
 
               const { value: formValues } = await this.$swal({
-                title: this.$t('sweetAlert.debtors.payment_edit'),
+                title: this.$t('sweetAlert.payment_edit'),
                 icon: 'question',
                 showCancelButton: true,
                 html:
@@ -724,7 +769,7 @@
               console.log(pay_amount)
               console.log(amount)
 
-              if (type === 'initial_payment' && pay_amount < amount) {
+              if ((type === 'monthly' || type === 'debt' || type === 'initial_payment') && pay_amount < amount) {
                   if (formValues) {
                       const { value: initialValue } = await this.$swal({
                         title: this.$t('sweetAlert.title'),
@@ -942,6 +987,7 @@
               let msg;
 
               switch (type) {
+                case 'debt':
                 case 'monthly':
                   msg = 'Ежемесячно';
                   break;
