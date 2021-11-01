@@ -109,7 +109,7 @@
         mounted() {
             this.fetchObjects(this)
 
-            console.log(this.getLoading);
+            // console.log(this.getLoading);
         },
 
         methods: {

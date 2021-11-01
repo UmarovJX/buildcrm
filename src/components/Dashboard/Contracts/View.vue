@@ -603,7 +603,7 @@
                     const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/' + this.$route.params.id, this.header);
                     this.step = 1;
 
-                    console.log(data);
+                    // console.log(data);
                     this.order = data;
                 } catch (error) {
                     this.toastedWithErrorCode(error);
@@ -765,9 +765,9 @@
               let pay_amount = parseFloat(formValues.pay_amount);
               let amount = this.order.payments[index].amount;
 
-              console.log(type)
-              console.log(pay_amount)
-              console.log(amount)
+            //   console.log(type)
+            //   console.log(pay_amount)
+            //   console.log(amount)
 
               if ((type === 'monthly' || type === 'debt' || type === 'initial_payment') && pay_amount < amount) {
                   if (formValues) {
@@ -821,7 +821,7 @@
                       }
                     });
 
-                      console.log(initialValue);
+                    //   console.log(initialValue);
                   }
 
                   return;

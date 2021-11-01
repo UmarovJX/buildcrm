@@ -6,7 +6,53 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      onLine: navigator.onLine,
+      showBackOnline: false,
+    };
+  },
+  methods: {
+    updateOnlineStatus(e) {
+      const {type} = e;
+      this.onLine = type === "online";
+    },
+  },
+  watch: {
+    onLine(v) {
+      if (v) {
+        this.showBackOnline = true;
+        this.$toasted.clear();
+        this.$toasted.show("Siz online dasiz!!", {
+          theme: "toasted-primary",
+          position: "top-right",
+          duration: 5000,
+          type: "success",
+          fitToScreen: true,
+        });
+        setTimeout(() => {
+          this.showBackOnline = false;
+        }, 1000);
+      } else {
+        this.$toasted.show("Internet aloqasi uzildi (", {
+          theme: "toasted-primary",
+          position: "top-right",
+          duration: null,
+          type: "error",
+        });
+      }
+    },
+  },
+  mounted() {
+    window.addEventListener("online", this.updateOnlineStatus);
+    window.addEventListener("offline", this.updateOnlineStatus);
+  },
+  beforeDestroy() {
+    window.removeEventListener("online", this.updateOnlineStatus);
+    window.removeEventListener("offline", this.updateOnlineStatus);
+  },
+};
 </script>
 <style>
 img[lazy="error"] {

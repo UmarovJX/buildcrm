@@ -956,7 +956,7 @@
               },
 
               getTotalOther() {
-                 console.log(parseFloat(this.apartment_edit.price))
+                //  console.log(parseFloat(this.apartment_edit.price))
                  return parseFloat(this.apartment_edit.price);
               },
 
