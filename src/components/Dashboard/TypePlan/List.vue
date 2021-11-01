@@ -140,9 +140,9 @@
 </template>
 
 <script>
+import {mapGetters, mapActions} from "vuex";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
-import {mapGetters, mapActions} from "vuex";
 
 export default {
   data: () => ({
