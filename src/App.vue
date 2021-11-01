@@ -10,7 +10,6 @@ export default {
   data() {
     return {
       onLine: navigator.onLine,
-      showBackOnline: false,
     };
   },
   methods: {
@@ -22,7 +21,6 @@ export default {
   watch: {
     onLine(v) {
       if (v) {
-        this.showBackOnline = true;
         this.$toasted.clear();
         this.$toasted.show("Siz online dasiz!!", {
           theme: "toasted-primary",
@@ -31,9 +29,6 @@ export default {
           type: "success",
           fitToScreen: true,
         });
-        setTimeout(() => {
-          this.showBackOnline = false;
-        }, 1000);
       } else {
         this.$toasted.show("Internet aloqasi uzildi (", {
           theme: "toasted-primary",
