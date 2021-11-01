@@ -33,7 +33,6 @@
                     </tr>
                     </thead>
                     <tbody>
-
                         <tr v-if="getLoading">
                             <td colspan="3" style="">
                                 <div class="d-flex justify-content-center w-100">
@@ -47,8 +46,8 @@
                             </td>
                         </tr>
 
-                        <tr>
-                            <td colspan="3" v-if="getObjects.length === 0 && !getLoading">
+                        <tr v-if="getObjects.length === 0 && !getLoading">
+                            <td colspan="3">
                                 <center>
                                     {{ $t('no_data') }}
                                 </center>
@@ -109,6 +108,8 @@
 
         mounted() {
             this.fetchObjects(this)
+
+            console.log(this.getLoading);
         },
 
         methods: {

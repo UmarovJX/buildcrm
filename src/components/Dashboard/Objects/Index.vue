@@ -25,7 +25,8 @@
                 </div>
 
                 <router-link v-if="getPermission.objects.apartments" :class="'object__link'" :to="{ name: 'apartments', params: { id: object.id } }">
-                    <div class="object__img" v-if="object.image" :style="'background-image: url(' + object.image +');'"></div>
+                    <!-- <div class="object__img" v-if="object.image" :style="'background-image: url(' + object.image +');'"></div> -->
+                    <div class="object__img" v-if="object.image" v-lazy:background-image="object.image"></div>
                     <div class="object__img" v-else style="background-image: url('/vendor/dashboard/img/not-found.png');"></div>
                     <div class="object__name">{{ object.name }}</div>
                     <div class="object__info">{{ $t('objects.apartments') }}: {{ object.apartments_count }}</div>
