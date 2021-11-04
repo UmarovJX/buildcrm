@@ -201,6 +201,8 @@ export default {
         return;
       }
 
+      console.log("Input", fileUpl);
+
       new Compressor(fileUpl, {
         maxWidth: 1200,
         quality: 0.8,
@@ -210,6 +212,7 @@ export default {
             type: result.type,
             lastModified: Date.now(),
           });
+          console.log("Output", this.output);
           this.inputURL = URL.createObjectURL(this.output);
         },
       });

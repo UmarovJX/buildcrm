@@ -14036,8 +14036,8 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
 }
 
 *:not(.table-responsive)::-webkit-scrollbar {
-  width: 8px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 *:not(.table-responsive)::-webkit-scrollbar-track {
@@ -14045,12 +14045,12 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
 }
 
 *:not(.table-responsive)::-webkit-scrollbar-thumb {
-  background: #5851d8;
+  background: #CCCCCC;
   border-radius: 4px;
 }
 
 *:not(.table-responsive)::-webkit-scrollbar-thumb:hover {
-  background: #676ab0;
+  background: #A3A3A3;
 }
 
 .pace {

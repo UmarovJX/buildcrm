@@ -13,9 +13,9 @@ export default {
           process.env.VUE_APP_URL + "/deals?page=" + vm.page,
           header
         );
+        ctx.commit("updateLoading", false, {root: true});
         ctx.commit("updateContract", data.items);
         ctx.commit("updatePagination", data.pagination);
-        ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
         if (!error.response) {
           vm.toasted("Error: Network Error", "error");

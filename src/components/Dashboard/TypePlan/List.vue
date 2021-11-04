@@ -51,90 +51,75 @@
     </div>
 
     <div class="my-container px-0 mx-0">
-      <div class="table-responsive">
-        <table class="table table-borderless my-table">
-          <thead>
-            <tr>
-              <th width="50"><i class="fas fa-hashtag"></i></th>
-              <th width="150">{{ $t("type_plan.plan") }}</th>
-              <th>{{ $t("type_plan.name") }}</th>
-              <th>{{ $t("type_plan.area") }}</th>
-              <th>{{ $t("type_plan.balcony") }}</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="getLoading">
-              <td colspan="4" style="">
-                <div class="d-flex justify-content-center w-100">
-                  <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-              </td>
-            </tr>
+      <b-table
+        sticky-header
+        borderless
+        responsive
+        :items="getPlan.plans"
+        :fields="fields"
+        :busy="getLoading"
+        show-empty
+        class="custom-table"
+        :empty-text="$t('no_data')"
+      >
+        <template #empty="scope" class="text-center">
+          <span class="d-flex justify-content-center align-items-center">{{
+            scope.emptyText
+          }}</span>
+        </template>
+        <template #table-busy>
+          <div class="d-flex justify-content-center w-100">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </template>
 
-            <tr v-if="getPlan.plans.length === 0 && !getLoading">
-              <td colspan="4">
-                <center>
-                  {{ $t("no_data") }}
-                </center>
-              </td>
-            </tr>
+        <template #cell(image)="data">
+          <img
+            style="cursor: pointer; object-fit: contain"
+            :data-fancybox="data.value"
+            v-lazy="data.value"
+            width="150"
+            height="100"
+            fluid
+          />
+        </template>
 
-            <tr v-for="(plan, index) in getPlan.plans" :key="index">
-              <td>
-                {{ plan.id }}
-              </td>
+        <template #cell(balcony_area)="data">
+          {{ data.item.balcony ? data.item.balcony_area + " м²" : $t("no") }}
+        </template>
 
-              <td>
-                <img
-                  :data-fancybox="plan.image"
-                  v-lazy="plan.image"
-                  width="100%"
-                />
-              </td>
+        <template #cell(actions)="data">
+          <div class="float-right">
+            <div
+              class="dropdown my-dropdown dropleft"
+              v-if="getPermission.type_plan.update"
+            >
+              <button
+                type="button"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+              >
+                <i class="far fa-ellipsis-h"></i>
+              </button>
 
-              <td>
-                {{ plan.name }}
-              </td>
-
-              <td>{{ plan.area }} м²</td>
-
-              <td>
-                {{ plan.balcony ? plan.balcony_area + " м²" : $t("no") }}
-              </td>
-              <td class="float-right">
-                <div
-                  class="dropdown my-dropdown dropleft"
-                  v-if="getPermission.type_plan.update"
+              <div class="dropdown-menu">
+                <button
+                  class="dropdown-item dropdown-item--inside"
+                  @click="edit(data.item.id)"
                 >
-                  <button
-                    type="button"
-                    class="dropdown-toggle"
-                    data-toggle="dropdown"
-                  >
-                    <i class="far fa-ellipsis-h"></i>
-                  </button>
-
-                  <div class="dropdown-menu">
-                    <button
-                      class="dropdown-item dropdown-item--inside"
-                      @click="edit(plan.id)"
-                    >
-                      <i class="fas fa-pen"></i>
-                      {{ $t("edit") }}
-                    </button>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                  <i class="fas fa-pen"></i>
+                  {{ $t("edit") }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </b-table>
     </div>
   </main>
 </template>
@@ -145,16 +130,45 @@ import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 
 export default {
-  data: () => ({
-    manager: {},
-    manager_id: null,
+  data() {
+    return {
+      manager: {},
+      manager_id: null,
 
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
+        },
       },
-    },
-  }),
+      fields: [
+        {
+          key: "id",
+          label: "#",
+        },
+        {
+          key: "image",
+          label: "ПЛАНИРОВОКА",
+          image: true,
+        },
+        {
+          key: "name",
+          label: "НАЗВАНИЯ",
+        },
+        {
+          key: "area",
+          label: "Площадь",
+        },
+        {
+          key: "balcony_area",
+          label: "БАЛКОН",
+        },
+        {
+          key: "actions",
+          label: "",
+        },
+      ],
+    };
+  },
 
   computed: mapGetters(["getPlan", "getLoading", "getPermission"]),
 
@@ -176,4 +190,4 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style></style>

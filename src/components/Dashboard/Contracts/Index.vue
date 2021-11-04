@@ -37,150 +37,124 @@
         </div>
       </div>
 
-      <div class="table-responsive">
-        <table
-          class="table table-borderless my-table my-table-third my-table-fixed"
-        >
-          <thead>
-            <tr>
-              <th class="text-center">
-                <i class="fas fa-sort"></i> {{ $t("clients.number") }}
-              </th>
-              <th>{{ $t("clients.fio") }}</th>
-              <th>{{ $t("clients.phone") }}</th>
-              <th>{{ $t("clients.amount") }}</th>
-              <th>{{ $t("clients.object") }}</th>
-              <th>{{ $t("apartments.list.status") }}</th>
-              <th>{{ $t("clients.date") }}</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="getLoading">
-              <td colspan="8" style="">
-                <div class="d-flex justify-content-center w-100">
-                  <div class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-              </td>
-            </tr>
+      <b-table
+        sticky-header
+        borderless
+        responsive
+        :items="getContracts"
+        :fields="fields"
+        :busy="getLoading"
+        show-empty
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        sort-icon-left
+        class="custom-table"
+        :tbody-tr-class="rowClass"
+        :empty-text="$t('no_data')"
+      >
+        <template #empty="scope" class="text-center">
+          <span class="d-flex justify-content-center align-items-center">{{
+            scope.emptyText
+          }}</span>
+        </template>
 
-            <tr v-if="getContracts.length === 0 && !getLoading">
-              <td colspan="8">
-                <center>
-                  {{ $t("no_data") }}
-                </center>
-              </td>
-            </tr>
+        <template #table-busy>
+          <div class="d-flex justify-content-center w-100">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </template>
 
-            <tr
-              v-for="(contract, index) in getContracts"
-              :key="index"
-              :class="[
-                contract.status === 'booked' || contract.status === 'contract'
-                  ? 'table-warning'
-                  : '',
-                contract.status === 'sold' ? 'table-danger' : '',
-              ]"
-            >
-              <td class="text-center">
-                {{ contract.contract }}
-              </td>
-              <td>
-                {{ contract.client.first_name.kirill }}
-                {{ contract.client.last_name.kirill }}
-                {{ contract.client.second_name.kirill }}
-              </td>
-              <td>+{{ contract.client.phone }}</td>
+        <template #cell(status)="data">
+          {{ data.value }}
+        </template>
 
-              <td>
-                {{
-                  contract.status === "booked"
-                    ? 0
-                    : contract.transaction_price
-                      | number("0,0.00", {
-                        thousandsSeparator: " ",
-                        decimalSeparator: ",",
-                      })
-                }}
-                {{ $t("ye") }}
-              </td>
+        <template #cell(client)="data">
+          {{ data.value.first_name.kirill }} {{ data.value.last_name.kirill }}
+          {{ data.value.second_name.kirill }}
+        </template>
 
-              <td>
-                {{ contract.object.name }}
-              </td>
+        <template #cell(transaction_price)="data">
+          {{
+            data.item.status === "booked"
+              ? 0
+              : data.item.transaction_price
+                | number("0,0.00", {
+                  thousandsSeparator: " ",
+                  decimalSeparator: ",",
+                })
+          }}
+          {{ $t("ye") }}
+        </template>
 
-              <td>
-                {{ contract.status | getStatusOrder }}
-              </td>
-              <td>
-                <small v-if="contract.status === 'cancelled'">{{
-                  contract.status | getStatus("", "")
-                }}</small>
-                <small v-else>{{
-                  contract.status
-                    | getStatus(
-                      $moment(contract.contract_date).format("DD.MM.YYYY"),
-                      $moment(contract.booking_date).format("DD.MM.YYYY")
-                    )
-                }}</small>
-              </td>
-              <td>
-                <div class="dropdown my-dropdown dropleft">
-                  <button
-                    type="button"
-                    class="dropdown-toggle"
-                    data-toggle="dropdown"
-                  >
-                    <i class="far fa-ellipsis-h"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a
-                      class="dropdown-item dropdown-item--inside"
-                      v-if="
-                        contract.status === 'contract' ||
-                        contract.status === 'sold'
-                      "
-                      :href="contract.contract_path"
-                    >
-                      <i class="fa fa-download"></i>
-                      {{ $t("contracts.download") }}
-                    </a>
+        <template #cell(contract_date)="data">
+          <span v-if="data.item.status === 'cancelled'">{{
+            data.item.status | getStatus("", "")
+          }}</span>
+          <span v-else>{{
+            data.item.status
+              | getStatus(
+                $moment(data.item.contract_date).format("YYYY.MM.DD"),
+                $moment(data.item.booking_date).format("YYYY.MM.DD")
+              )
+          }}</span>
+        </template>
 
-                    <router-link
-                      :to="{name: 'contracts-view', params: {id: contract.id}}"
-                      :class="'dropdown-item dropdown-item--inside'"
-                    >
-                      <i class="far fa-eye"></i>
-                      {{ $t("apartments.list.more") }}
-                    </router-link>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <template #cell(actions)="data">
+          <div class="float-right">
+            <div class="dropdown my-dropdown dropleft">
+              <button
+                type="button"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+              >
+                <i class="far fa-ellipsis-h"></i>
+              </button>
+              <div class="dropdown-menu">
+                <a
+                  class="dropdown-item dropdown-item--inside"
+                  v-if="
+                    data.item.status === 'contract' ||
+                      data.item.status === 'sold'
+                  "
+                  :href="data.item.contract_path"
+                >
+                  <i class="fa fa-download"></i>
+                  {{ $t("contracts.download") }}
+                </a>
 
-        <paginate
-          v-if="getPagination"
-          :pageCount="getPagination"
-          :clickHandler="PageCallBack"
-          :prevText="'Prev'"
-          :nextText="'Next'"
-          :container-class="'pagination'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :next-class="'page-item'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-link-class="'page-link'"
-        >
-        </paginate>
-      </div>
+                <router-link
+                  :to="{name: 'contracts-view', params: {id: data.item.id}}"
+                  :class="'dropdown-item dropdown-item--inside'"
+                >
+                  <i class="far fa-eye"></i>
+                  {{ $t("apartments.list.more") }}
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </template>
+      </b-table>
+
+      <paginate
+        v-if="getPagination"
+        :pageCount="getPagination"
+        :clickHandler="PageCallBack"
+        :prevText="`<i class='fa fa-chevron-left'></i>`"
+        :nextText="`<i class='fa fa-chevron-right'></i>`"
+        :container-class="'pagination'"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :next-class="'page-item'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-link-class="'page-link'"
+      >
+      </paginate>
     </div>
   </main>
 </template>
@@ -195,7 +169,7 @@ export default {
   },
 
   watch: {
-    orderBy: function (newVal) {
+    orderBy: function(newVal) {
       if (newVal != "all") {
         this.fetchContractSearch(this);
       } else {
@@ -224,6 +198,50 @@ export default {
       },
 
       search: "",
+
+      sortBy: "contract",
+      sortDesc: false,
+      fields: [
+        {
+          key: "contract",
+          label: "№",
+          sortable: true,
+        },
+        {
+          key: "client",
+          label: "ИМЯ КЛИЕНТА",
+          sortable: true,
+        },
+        {
+          key: "client.phone",
+          label: "ТЕЛЕФОН",
+          formatter: (value) => "+" + value,
+        },
+        {
+          key: "transaction_price",
+          label: "СТОИМОСТЬ",
+          sortable: true,
+        },
+        {
+          key: "object.name",
+          label: "ОБЪЕКТ",
+        },
+        {
+          key: "status",
+          label: "СТАТУС",
+          sortable: true,
+          formatter: (value) => this.getStatusOrder(value),
+        },
+        {
+          key: "contract_date",
+          label: "ДАТА",
+          sortable: true,
+        },
+        {
+          key: "actions",
+          label: "",
+        },
+      ],
     };
   },
 
@@ -251,7 +269,34 @@ export default {
 
   methods: {
     ...mapActions(["fetchContracts", "fetchCurrency", "fetchContractSearch"]),
+    rowClass(item, type) {
+      if (item && type === "row") {
+        if (item.status === "contract") {
+          return "table-info";
+        }
+        if (item.status === "sold") {
+          return "table-success";
+        }
+      } else {
+        return null;
+      }
+    },
+    getStatusOrder(status) {
+      let msg;
+      switch (status) {
+        case "sold":
+          msg = "Продано";
+          break;
+        case "booked":
+          msg = "";
+          break;
+        case "contract":
+          msg = "Оформлен контракт ";
+          break;
+      }
 
+      return msg;
+    },
     PageCallBack(pageNum) {
       this.page = pageNum;
 

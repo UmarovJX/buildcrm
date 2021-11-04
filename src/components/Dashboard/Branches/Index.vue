@@ -1,198 +1,226 @@
 <template>
-    <main>
-        <div class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3">
-            <div class="d-flex w-100 align-items-center flex-md-row flex-column mb-md-0 mb-3">
-                <h1 class="title__big my-0 order-md-0 order-1">{{ $t('companies.title') }}</h1>
-                <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
-                    <li class="breadcrumb-item">
-                        <router-link :to="{ name: 'home' }">
-                            <i class="far fa-home"></i>
-                        </router-link>
-                    </li>
+  <main>
+    <div
+      class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
+    >
+      <div
+        class="d-flex w-100 align-items-center flex-md-row flex-column mb-md-0 mb-3"
+      >
+        <h1 class="title__big my-0 order-md-0 order-1">
+          {{ $t("companies.title") }}
+        </h1>
+        <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
+          <li class="breadcrumb-item">
+            <router-link :to="{name: 'home'}">
+              <i class="far fa-home"></i>
+            </router-link>
+          </li>
 
-                    <li class="breadcrumb-item">
-                        <a href="#">
-                            {{ $t('companies.title') }}
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active">
-                        {{ $t('list') }}
-                    </li>
-                </ul>
+          <li class="breadcrumb-item">
+            <a href="#">
+              {{ $t("companies.title") }}
+            </a>
+          </li>
+          <li class="breadcrumb-item active">
+            {{ $t("list") }}
+          </li>
+        </ul>
+      </div>
+
+      <b-link
+        v-if="getPermission.branches.create"
+        class="my-btn my-btn__blue d-flex align-items-center"
+        v-b-modal.modal-create
+      >
+        <i class="fal fa-plus mr-2"></i>
+        {{ $t("add") }}
+      </b-link>
+    </div>
+
+    <div class="my-container px-0 mx-0">
+      <b-table
+        sticky-header
+        borderless
+        responsive
+        :items="getBranches"
+        :fields="fields"
+        :busy="getLoading"
+        show-empty
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        sort-icon-left
+        class="custom-table"
+        :empty-text="$t('no_data')"
+      >
+        <template #empty="scope" class="text-center">
+          <span class="d-flex justify-content-center align-items-center">{{
+            scope.emptyText
+          }}</span>
+        </template>
+
+        <template #table-busy>
+          <div class="d-flex justify-content-center w-100">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
             </div>
+          </div>
+        </template>
 
-            <b-link v-if="getPermission.branches.create" class="my-btn my-btn__blue d-flex align-items-center" v-b-modal.modal-create>
-                <i class="fal fa-plus mr-2"></i>
-                {{ $t('add') }}
-            </b-link>
-        </div>
+        <template #cell(name)="data">
+          {{ getName(data.item.type.name) }} «{{ data.item.name }}»
+        </template>
 
-        <div class="my-container px-0 mx-0">
-            <div class="table-responsive">
-                <table class="table table-borderless my-table">
-                    <thead>
-                    <tr>
-                        <th width="50"><i class="fas fa-hashtag"></i></th>
-                        <th>{{ $t('companies.name') }}</th>
-                        <th>{{ $t('companies.payment_account') }}</th>
-                        <th>{{ $t('companies.phone') }}</th>
-                        <th>{{ $t('companies.inn') }}</th>
-                        <th>{{ $t('companies.mfo') }}</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
+        <template #cell(actions)="data">
+          <div class="float-right">
+            <div class="dropdown my-dropdown dropleft">
+              <button
+                type="button"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+              >
+                <i class="far fa-ellipsis-h"></i>
+              </button>
 
-                    <tr v-if="getLoading">
-                        <td colspan="3" style="">
-                            <div class="d-flex justify-content-center w-100">
-                                <div class="lds-ellipsis">
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+              <div class="dropdown-menu">
+                <b-button
+                  v-if="getPermission.branches.update"
+                  @click="EditBranch(data.item)"
+                  class="dropdown-item dropdown-item--inside"
+                  v-b-modal.modal-update
+                >
+                  <i class="fas fa-edit"></i>
+                  {{ $t("edit") }}
+                </b-button>
 
-                    <tr>
-                        <td colspan="3" v-if="getBranches.length === 0 && !getLoading">
-                            <center>
-                                {{ $t('no_data') }}
-                            </center>
-                        </td>
-                    </tr>
-
-                    <tr v-for="(branch, index) in getBranches" :key="index">
-                        <td>
-                            {{ branch.id }}
-                        </td>
-
-                        <td>
-                            {{ getName(branch.type.name) }} «{{ branch.name }}»
-                        </td>
-
-                        <td>
-                            {{ branch.payment_account }}
-                        </td>
-
-                        <td>
-                           +{{ branch.phone }}
-                        </td>
-
-                        <td>
-                            {{ branch.inn }}
-                        </td>
-
-                        <td>
-                            {{ branch.mfo }}
-                        </td>
-
-                        <td class="float-right">
-                            <div class="dropdown my-dropdown dropleft">
-                                <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="far fa-ellipsis-h"></i>
-                                </button>
-
-                                <div class="dropdown-menu">
-                                    <b-button v-if="getPermission.branches.update" @click="EditBranch(branch)" class="dropdown-item dropdown-item--inside" v-b-modal.modal-update>
-                                        <i class="fas fa-edit"></i>
-                                        {{ $t('edit') }}
-                                    </b-button>
-
-<!--                                    <b-button v-if="getPermission.users.delete" class="dropdown-item dropdown-item&#45;&#45;inside">-->
-<!--                                        <i class="fas fa-trash"></i>-->
-<!--                                        {{ $t('delete') }}-->
-<!--                                    </b-button>-->
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    </tbody>
-                </table>
+                <!--                                    <b-button v-if="getPermission.users.delete" class="dropdown-item dropdown-item&#45;&#45;inside">-->
+                <!--                                        <i class="fas fa-trash"></i>-->
+                <!--                                        {{ $t('delete') }}-->
+                <!--                                    </b-button>-->
+              </div>
             </div>
-        </div>
-        <Create @CreateCompany="CreateCompany"></Create>
-        <Update v-if="edit" :branch-id="branch_id" :branc="branch" @UpdateCompany="UpdateCompany"></Update>
-    </main>
+          </div>
+        </template>
+      </b-table>
+    </div>
+
+    <Create @CreateCompany="CreateCompany"></Create>
+    <Update
+      v-if="edit"
+      :branch-id="branch_id"
+      :branch="branch"
+      @UpdateCompany="UpdateCompany"
+    ></Update>
+  </main>
 </template>
 
 <script>
+import {mapGetters, mapActions} from "vuex";
 
-    import { mapGetters, mapActions } from 'vuex';
+import Create from "./Components/CreateModal";
+import Update from "./Components/UpdateModal";
 
-    import Create from './Components/CreateModal';
-    import Update from './Components/UpdateModal';
+export default {
+  components: {
+    Create,
+    Update,
+  },
 
-    export default {
+  data() {
+    return {
+      edit: false,
+      branch_id: false,
 
-        components: {
-            Create,
-            Update
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
         },
+      },
 
-        data: () => ({
-            edit: false,
-            branch_id: false,
-
-            header: {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.token
-                }
-            }
-        }),
-
-        computed: mapGetters(['getPermission', 'getBranches', 'getLoading']),
-
-        mounted() {
-            this.fetchBranches(this)
+      sortBy: "id",
+      sortDesc: false,
+      fields: [
+        {
+          key: "id",
+          label: "#",
         },
+        {
+          key: "name",
+          label: this.$t("companies.name"),
+        },
+        {
+          key: "payment_account",
+          label: this.$t("companies.payment_account"),
+        },
+        {
+          key: "phone",
+          label: this.$t("companies.phone"),
+          formatter: (value) => "+" + value,
+        },
+        {
+          key: "inn",
+          label: this.$t("companies.inn"),
+        },
+        {
+          key: "mfo",
+          label: this.$t("companies.mfo"),
+        },
+        {
+          key: "actions",
+          label: "",
+        },
+      ],
+    };
+  },
 
-        methods: {
-            ...mapActions(['fetchBranches', 'fetchBranch']),
+  computed: mapGetters(["getPermission", "getBranches", "getLoading"]),
 
-            EditBranch(branch) {
-                this.edit = true;
-                this.branch_id = branch.id;
-                this.fetchBranch(this);
-            },
+  mounted() {
+    this.fetchBranches(this);
+  },
 
-            getName(name) {
-                let locale = localStorage.locale;
-                let value = '';
+  methods: {
+    ...mapActions(["fetchBranches", "fetchBranch"]),
 
-                if (locale) {
-                    switch(locale){
-                        case "ru":
-                            value = name.ru;
-                            break;
-                        case "uz":
-                            value = name.uz;
-                            break;
-                    }
-                } else {
-                    value = name.ru;
-                }
+    EditBranch(branch) {
+      console.log(branch);
+      this.edit = true;
+      this.branch_id = branch.id;
+      this.fetchBranch(this);
+    },
 
-                return value;
-            },
+    getName(name) {
+      let locale = localStorage.locale;
+      let value = "";
 
-
-            CreateCompany() {
-                this.fetchBranches(this);
-            },
-
-            UpdateCompany() {
-                this.edit = false;
-                this.fetchBranches(this);
-            }
+      if (locale) {
+        switch (locale) {
+          case "ru":
+            value = name.ru;
+            break;
+          case "uz":
+            value = name.uz;
+            break;
         }
+      } else {
+        value = name.ru;
+      }
 
-    }
+      return value;
+    },
+
+    CreateCompany() {
+      this.fetchBranches(this);
+    },
+
+    UpdateCompany() {
+      this.edit = false;
+      this.fetchBranches(this);
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

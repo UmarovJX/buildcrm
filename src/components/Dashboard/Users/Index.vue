@@ -1,210 +1,281 @@
 <template>
-    <main>
-        <div class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3">
-            <div class="d-flex w-100 align-items-center flex-md-row flex-column mb-md-0 mb-3">
-                <h1 class="title__big my-0 order-md-0 order-1">{{ $t('users.title') }}</h1>
-                <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
-                    <li class="breadcrumb-item">
-                        <router-link :to="{ name: 'home' }">
-                            <i class="far fa-home"></i>
-                        </router-link>
-                    </li>
+  <main>
+    <div
+      class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
+    >
+      <div
+        class="d-flex w-100 align-items-center flex-md-row flex-column mb-md-0 mb-3"
+      >
+        <h1 class="title__big my-0 order-md-0 order-1">
+          {{ $t("users.title") }}
+        </h1>
+        <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
+          <li class="breadcrumb-item">
+            <router-link :to="{name: 'home'}">
+              <i class="far fa-home"></i>
+            </router-link>
+          </li>
 
-                    <li class="breadcrumb-item">
-                        <a href="#">
-                            {{ $t('users.title') }}
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active">
-                        {{ $t('list') }}
-                    </li>
-                </ul>
+          <li class="breadcrumb-item">
+            <a href="#">
+              {{ $t("users.title") }}
+            </a>
+          </li>
+          <li class="breadcrumb-item active">
+            {{ $t("list") }}
+          </li>
+        </ul>
+      </div>
+
+      <b-link
+        v-if="getPermission.users.create"
+        class="my-btn my-btn__blue d-flex align-items-center"
+        v-b-modal.modal-create
+      >
+        <i class="fal fa-plus mr-2"></i>
+        {{ $t("add") }}
+      </b-link>
+    </div>
+
+    <div class="my-container px-0 mx-0">
+      <b-table
+        sticky-header
+        borderless
+        responsive
+        :items="getUsers"
+        :fields="fields"
+        :busy="getLoading"
+        show-empty
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        sort-icon-left
+        class="custom-table"
+        :empty-text="$t('no_data')"
+      >
+        <template #empty="scope" class="text-center">
+          <span class="d-flex justify-content-center align-items-center">{{
+            scope.emptyText
+          }}</span>
+        </template>
+
+        <template #table-busy>
+          <div class="d-flex justify-content-center w-100">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
             </div>
+          </div>
+        </template>
 
-            <b-link v-if="getPermission.users.create" class="my-btn my-btn__blue d-flex align-items-center" v-b-modal.modal-create>
-                <i class="fal fa-plus mr-2"></i>
-                {{ $t('add') }}
-            </b-link>
-        </div>
+        <template #cell(userFullName)="data">
+          {{ data.item.first_name }} {{ data.item.last_name }}
+        </template>
 
-        <div class="my-container px-0 mx-0">
-            <div class="table-responsive">
-                <table class="table table-borderless my-table">
-                    <thead>
-                    <tr>
-                        <th><i class="fas fa-hashtag"></i></th>
-                        <th>{{ $t('users.name') }}</th>
-                        <th>{{ $t('users.object') }}</th>
-                        <th>{{ $t('users.phone') }}</th>
-                        <th>{{ $t('users.roles') }}</th>
-                        <th>{{ $t('users.login') }}</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="getLoading">
-                            <td colspan="7" style="">
-                                <div class="d-flex justify-content-center w-100">
-                                    <div class="lds-ellipsis">
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+        <template #cell(objects)="data">
+          <span v-for="object in data.item.objects" :key="object.id">
+            {{ object.name }},
+          </span>
+        </template>
 
-                        <tr>
-                            <td colspan="7" v-if="getUsers.length === 0">
-                                <center>
-                                    {{ $t('no_data') }}
-                                </center>
-                            </td>
-                        </tr>
-                        <tr v-for="(user, index) in getUsers" :key="index">
-                            <td>{{ user.id }}</td>
-                            <td> {{ user.first_name }} {{ user.last_name}}</td>
+        <template #cell(role)="data">
+          {{ getName(data.item.role.name) }}
+        </template>
 
-                            <td>
-                                <span v-for="object in user.objects" :key="object.id">
-                                    {{ object.name }},
-                                </span>
-                            </td>
+        <template #cell(actions)="data">
+          <div class="float-right">
+            <div
+              class="dropdown my-dropdown dropleft"
+              v-if="data.item.id != getMe.user.id"
+            >
+              <!--user.role.id != 1 &&-->
+              <button
+                type="button"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+              >
+                <i class="far fa-ellipsis-h"></i>
+              </button>
 
-                            <td>+{{ user.phone }}</td>
-                            <td>{{ getName(user.role.name) }}</td>
-                            <td>{{ user.email }}</td>
+              <div
+                class="dropdown-menu"
+                v-if="getPermission.users.update || getPermission.users.delete"
+              >
+                <b-button
+                  v-if="getPermission.users.update"
+                  @click="clickManager(data.item.id)"
+                  class="dropdown-item dropdown-item--inside"
+                  href="#"
+                  v-b-modal.modal-edit
+                >
+                  <i class="fas fa-pen"></i>
+                  {{ $t("edit") }}
+                </b-button>
 
-                            <td>
-                                <div class="dropdown my-dropdown dropleft" v-if="user.id != getMe.user.id"> <!--user.role.id != 1 &&-->
-                                    <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                        <i class="far fa-ellipsis-h"></i>
-                                    </button>
-
-                                    <div class="dropdown-menu" v-if="getPermission.users.update || getPermission.users.delete">
-                                        <b-button v-if="getPermission.users.update" @click="clickManager(user.id)" class="dropdown-item dropdown-item--inside" href="#" v-b-modal.modal-edit>
-                                            <i class="fas fa-pen"></i>
-                                            {{ $t('edit') }}
-                                        </b-button>
-
-                                        <a class="dropdown-item dropdown-item--inside" v-if="getPermission.users.delete"  @click="Delete(user.id)" href="#">
-                                            <i class="far fa-trash"></i>  {{ $t('delete') }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <a
+                  class="dropdown-item dropdown-item--inside"
+                  v-if="getPermission.users.delete"
+                  @click="Delete(data.item.id)"
+                  href="#"
+                >
+                  <i class="far fa-trash"></i> {{ $t("delete") }}
+                </a>
+              </div>
             </div>
-        </div>
+          </div>
+        </template>
+      </b-table>
+    </div>
 
-        <create-modal v-if="getPermission.users.create" @CreateManager="CreateManager"></create-modal>
-        <edit-modal v-if="getPermission.users.update" :manager-id="manager_id" @EditManager="EditManager"></edit-modal>
-    </main>
+    <create-modal
+      v-if="getPermission.users.create"
+      @CreateManager="CreateManager"
+    ></create-modal>
+    <edit-modal
+      v-if="getPermission.users.update"
+      :manager-id="manager_id"
+      @EditManager="EditManager"
+    ></edit-modal>
+  </main>
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex';
-    import Create from './Modal/Create';
-    import Edit from './Modal/Edit';
+import {mapActions, mapGetters} from "vuex";
+import Create from "./Modal/Create";
+import Edit from "./Modal/Edit";
 
-    export default {
-        components: {
-            'create-modal': Create,
-            'edit-modal': Edit,
+export default {
+  components: {
+    "create-modal": Create,
+    "edit-modal": Edit,
+  },
+
+  data() {
+    return {
+      manager: {},
+      manager_id: null,
+
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
         },
+      },
 
-        data: () => ({
-            manager: {},
-            manager_id: null,
-
-            header: {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.token
-                }
-            }
-        }),
-
-        computed: mapGetters(['getUsers', 'getUser', 'getPermission', 'getLoading', 'getMe']),
-
-        mounted() {
-            this.fetchUsers(this);
+      sortBy: "id",
+      sortDesc: false,
+      fields: [
+        {
+          key: "id",
+          label: "#",
         },
+        {
+          key: "userFullName",
+          label: this.$t("users.name"),
+        },
+        {
+          key: "objects",
+          label: this.$t("users.object"),
+        },
+        {
+          key: "phone",
+          label: this.$t("users.phone"),
+        },
+        {
+          key: "role",
+          label: this.$t("users.roles"),
+          sortable: true,
+        },
+        {
+          key: "email",
+          label: this.$t("users.login"),
+        },
+        {
+          key: "actions",
+          label: "",
+        },
+      ],
+    };
+  },
 
-        methods: {
+  computed: mapGetters([
+    "getUsers",
+    "getUser",
+    "getPermission",
+    "getLoading",
+    "getMe",
+  ]),
 
-            ...mapActions(['fetchUsers', 'fetchUser', 'fetchMenu']),
+  mounted() {
+    this.fetchUsers(this);
+  },
 
-            CreateManager () {
-                this.fetchUsers(this);
-            },
+  methods: {
+    ...mapActions(["fetchUsers", "fetchUser", "fetchMenu"]),
 
-            EditManager () {
-                this.fetchUsers(this);
-            },
+    CreateManager() {
+      this.fetchUsers(this);
+    },
 
-            clickManager(id) {
-                this.manager_id = id;
-                this.fetchUser(this);
-            },
+    EditManager() {
+      this.fetchUsers(this);
+    },
 
-            getName(name) {
-                let locale = localStorage.locale;
-                let value = '';
+    clickManager(id) {
+      this.manager_id = id;
+      this.fetchUser(this);
+    },
 
-                if (locale) {
-                    switch(locale){
-                        case "ru":
-                            value = name.ru;
-                            break;
-                        case "uz":
-                            value = name.uz;
-                            break;
-                    }
-                } else {
-                    value = name.ru;
-                }
+    getName(name) {
+      let locale = localStorage.locale;
+      let value = "";
 
-                return value;
-            },
-
-            Delete (user) {
-                this.$swal({
-                    title: this.$t('sweetAlert.title'),
-                    text: this.$t('sweetAlert.text'),
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: this.$t('sweetAlert.yes')
-                }).then((result) => {
-                    if (result.value) {
-                        this.axios.delete(process.env.VUE_APP_URL + '/users/' + user, this.header).then((response) => {
-
-                            this.toasted(response.data.message, 'success');
-                            this.fetchUsers(this);
-                            this.fetchMenu(this);
-
-                            this.$swal(
-                                this.$t('sweetAlert.deleted'),
-                                '',
-                                'success'
-                            );
-
-                        }).catch((error) => {
-                            if (! error.response) {
-                                this.toasted('Error: Network Error', 'error');
-                            } else {
-                                this.toasted(error.response.data.error, 'error');
-                            }
-                        });
-                    }
-                });
-            },
+      if (locale) {
+        switch (locale) {
+          case "ru":
+            value = name.ru;
+            break;
+          case "uz":
+            value = name.uz;
+            break;
         }
-    }
+      } else {
+        value = name.ru;
+      }
+
+      return value;
+    },
+
+    Delete(user) {
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then((result) => {
+        if (result.value) {
+          this.axios
+            .delete(process.env.VUE_APP_URL + "/users/" + user, this.header)
+            .then((response) => {
+              this.toasted(response.data.message, "success");
+              this.fetchUsers(this);
+              this.fetchMenu(this);
+
+              this.$swal(this.$t("sweetAlert.deleted"), "", "success");
+            })
+            .catch((error) => {
+              if (!error.response) {
+                this.toasted("Error: Network Error", "error");
+              } else {
+                this.toasted(error.response.data.error, "error");
+              }
+            });
+        }
+      });
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
