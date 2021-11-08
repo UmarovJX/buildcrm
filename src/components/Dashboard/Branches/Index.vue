@@ -107,12 +107,7 @@
     </div>
 
     <Create @CreateCompany="CreateCompany"></Create>
-    <Update
-      v-if="edit"
-      :branch-id="branch_id"
-      :branch="branch"
-      @UpdateCompany="UpdateCompany"
-    ></Update>
+    <Update :branch-id="branch_id" @UpdateCompany="UpdateCompany"></Update>
   </main>
 </template>
 
@@ -130,7 +125,6 @@ export default {
 
   data() {
     return {
-      edit: false,
       branch_id: false,
 
       header: {
@@ -185,10 +179,10 @@ export default {
     ...mapActions(["fetchBranches", "fetchBranch"]),
 
     EditBranch(branch) {
-      console.log(branch);
-      this.edit = true;
       this.branch_id = branch.id;
-      this.fetchBranch(this);
+      this.fetchBranch(this).then(() => {
+        this.$bvModal.show("modal-update");
+      });
     },
 
     getName(name) {
@@ -216,8 +210,9 @@ export default {
     },
 
     UpdateCompany() {
-      this.edit = false;
-      this.fetchBranches(this);
+      this.fetchBranches(this).then(() => {
+        this.$bvModal.hide("modal-update");
+      });
     },
   },
 };

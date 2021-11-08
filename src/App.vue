@@ -51,6 +51,39 @@ export default {
 </script>
 
 <style>
+.btn {
+  box-shadow: unset !important;
+  padding: 8px 20px !important;
+  border-radius: 6px !important;
+}
+.btn-primary {
+  color: #fff;
+  background-color: #5851d8 !important;
+  border-color: #5851d8 !important;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #463ed3 !important;
+  border-color: #463ed3 !important;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3),
+    -2px -2px 6px rgba(255, 181, 202, 0.31) !important;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #45a85c !important;
+  border-color: #45a85c !important;
+}
+
+.btn-success:hover {
+  color: #fff;
+  background-color: #429c57 !important;
+  border-color: #429c57 !important;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3),
+    -2px -2px 6px rgba(255, 181, 202, 0.31) !important;
+}
+
 img[lazy="error"] {
   max-width: 100%;
   max-height: 100%;

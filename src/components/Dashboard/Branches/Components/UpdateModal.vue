@@ -149,6 +149,7 @@ export default {
   data() {
     return {
       branch: {},
+      error: null,
       company: {
         first_name: null,
         last_name: null,
