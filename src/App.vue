@@ -22,7 +22,7 @@ export default {
     onLine(v) {
       if (v) {
         this.$toasted.clear();
-        this.$toasted.show("Siz online dasiz!!", {
+        this.$toasted.show("Подключен к интернету!", {
           theme: "toasted-primary",
           position: "top-right",
           duration: 5000,
@@ -30,7 +30,7 @@ export default {
           fitToScreen: true,
         });
       } else {
-        this.$toasted.show("Internet aloqasi uzildi (", {
+        this.$toasted.show("Нет подключения к Интернету", {
           theme: "toasted-primary",
           position: "top-right",
           duration: null,

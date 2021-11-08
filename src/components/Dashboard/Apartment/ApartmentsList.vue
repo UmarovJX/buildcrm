@@ -416,20 +416,10 @@ export default {
     };
   },
 
-  // mounted() {
-  //   this.onScroll();
-  //   this.fetchApartments(this);
-  // },
-  created() {
-    this.fetchApartments(this);
-  },
   mounted() {
-    const tableScrollBody = this.$refs["my-table"].$el;
-    /* Consider debouncing the event call */
-    tableScrollBody.addEventListener("scroll", this.onScroll);
+    this.getData();
   },
   beforeDestroy() {
-    /* Clean up just to be sure */
     const tableScrollBody = this.$refs["my-table"].$el;
     tableScrollBody.removeEventListener("scroll", this.onScroll);
   },
@@ -459,6 +449,14 @@ export default {
       } else {
         return null;
       }
+    },
+
+    async getData() {
+      await this.fetchApartments(this);
+      // setTimeout(() => {
+      const tableScrollBody = this.$refs["my-table"].$el;
+      /* Consider debouncing the event call */
+      tableScrollBody.addEventListener("scroll", this.onScroll);
     },
 
     // scroll() {
