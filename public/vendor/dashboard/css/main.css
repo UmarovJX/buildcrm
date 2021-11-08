@@ -10970,9 +10970,7 @@ main > div.d-flex.justify-content-between > div {
   -ms-flex-direction: row !important;
   flex-direction: row !important;
   margin-top: 15px !important;
-  -webkit-box-align: start !important;
-  -ms-flex-align: start !important;
-  align-items: start !important;
+  align-items: center !important;
   padding-left: 15px;
 }
 
@@ -11467,9 +11465,9 @@ main > div.d-flex.justify-content-between > div .title__big {
 .breadcrumb {
   font-size: 16px;
   font-family: "MuseoSansCyrl-500";
-  color: #222222;
+  color: #222222 !important;
   line-height: 1.2;
-  background-color: transparent;
+  background-color: transparent !important;
   padding: 0;
   margin: 0;
   margin-top: 6px;
@@ -11484,7 +11482,11 @@ main > div.d-flex.justify-content-between > div .title__big {
 .breadcrumb-item {
   padding: 0;
   margin: 0;
-  color: #5851d8;
+  color: #212529 !important;
+}
+
+.breadcrumb-item a {
+  color: #5851d8 !important;
 }
 
 .breadcrumb-item:first-of-type {
@@ -12663,7 +12665,7 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
 }
 
 .currency {
-  background-color: #ebf1fa;
+  /* background-color: #ebf1fa; */
   border-radius: 3px;
   padding: 10px 15px;
   font-size: 18px;
@@ -12671,7 +12673,8 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
 }
 
 .currency__price {
-  color: #222222;
+  color: #fff;
+  line-height: 1;
 }
 
 .currency__changing {

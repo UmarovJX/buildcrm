@@ -363,15 +363,15 @@ export default {
           label: "№ ДОМ",
           sortable: true,
         },
-        {
-          key: "building.name",
-          label: "ЗДАНИЯ",
-          sortable: true,
-        },
-        {
-          key: "block.name",
-          label: "КОРПУС",
-        },
+        // {
+        //   key: "building.name",
+        //   label: "ЗДАНИЯ",
+        //   sortable: true,
+        // },
+        // {
+        //   key: "block.name",
+        //   label: "КОРПУС",
+        // },
         {
           key: "rooms",
           label: "КОМНАТ",

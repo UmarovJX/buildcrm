@@ -3,6 +3,10 @@ import VueRouter from "vue-router";
 import * as Sentry from "@sentry/vue";
 import {Integrations} from "@sentry/tracing";
 
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => err);
+};
 Vue.use(VueRouter);
 
 import Auth from "./components/Auth/Login";
@@ -19,7 +23,7 @@ import ApartmentList from "./components/Dashboard/Apartment/ApartmentsList";
 
 import Clients from "./components/Dashboard/Clients/Index";
 
-import Contracts from "./components/Dashboard/Contracts/Index";
+// import Contracts from "./components/Dashboard/Contracts/Index";
 import ContractsView from "./components/Dashboard/Contracts/View";
 
 import Users from "./components/Dashboard/Users/Index";
@@ -132,7 +136,7 @@ const routes = [
   {
     name: "contracts",
     path: "/contracts",
-    component: Contracts,
+    component: require(/* webpackChunkName: "contracts" */ '@/components/Dashboard/Contracts/Index').default,
   },
 
   {
@@ -181,7 +185,8 @@ const router = new VueRouter({
 
 Sentry.init({
   Vue,
-  dsn: "https://b3a6289d3b5846c4b42327c0e3f7ecdb@o1056926.ingest.sentry.io/6043378",
+  dsn:
+    "https://b3a6289d3b5846c4b42327c0e3f7ecdb@o1056926.ingest.sentry.io/6043378",
   integrations: [
     new Integrations.BrowserTracing({
       routingInstrumentation: Sentry.vueRouterInstrumentation(router),

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-
 import objects from './modules/objects';
 import objects_filter from './modules/objects/filter';
 import menus from './modules/Menu';
