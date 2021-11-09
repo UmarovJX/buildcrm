@@ -117,7 +117,7 @@
           ></b-form-input>
         </b-form-group>
 
-        <div class="float-right">
+        <div class="d-flex justify-content-center pb-4">
           <b-button variant="light" @click="resetModal">
             {{ $t("cancel") }}
           </b-button>

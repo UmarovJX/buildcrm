@@ -1,13 +1,6 @@
 <template>
   <main>
-    <div class="my-container px-0 mx-0">
-      <div class="d-flex justify-content-md-end justify-content-center mb-3">
-        <div class="currency d-flex align-items-center">
-          <div class="currency__price mr-3">1USD = 95500 UZS</div>
-          <div class="currency__changing">+0,3020</div>
-        </div>
-      </div>
-
+    <div class="my-container">
       <form action="" class="my-form">
         <div class="mb-3 searching">
           <input

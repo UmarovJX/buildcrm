@@ -44,7 +44,7 @@
                     <b-form-checkbox-group v-model="manager.objects" :options="getObjects" class="mb-3" value-field="id" text-field="name" switches></b-form-checkbox-group>
                 </b-form-group>
 
-                <div class="float-right">
+                <div class="d-flex justify-content-end">
                     <b-button variant="light" @click="resetModal">
                         {{ $t('cancel') }}
                     </b-button>

@@ -45,7 +45,7 @@
                         {{ $t('cancel') }}
                     </button>
 
-                    <button type="submit" class=" my-btn my-btn__blue">
+                    <button type="submit" class=" btn btn-primary">
                         {{ $t('save') }}
                     </button>
                 </div>

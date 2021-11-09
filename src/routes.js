@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Vue from "vue";
 import VueRouter from "vue-router";
 import * as Sentry from "@sentry/vue";
@@ -38,6 +39,7 @@ import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
 //
 //
 import ApartmentView from "./components/Dashboard/Apartment/View";
+import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
 import Branches from "./components/Dashboard/Branches/Index";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
@@ -102,6 +104,11 @@ const routes = [
     path: "/apartments/:id",
     component: ApartmentView,
   },
+  {
+    name: "confirm-apartment",
+    path: "/apartments/:id/confirm-apartment",
+    component: ConfirmApartment,
+  },
 
   {
     name: "users",
@@ -136,7 +143,8 @@ const routes = [
   {
     name: "contracts",
     path: "/contracts",
-    component: require(/* webpackChunkName: "contracts" */ '@/components/Dashboard/Contracts/Index').default,
+    component: require(/* webpackChunkName: "contracts" */ "@/components/Dashboard/Contracts/Index")
+      .default,
   },
 
   {
@@ -181,6 +189,9 @@ const router = new VueRouter({
   routes: routes,
   mode: "history",
   linkActiveClass: "active",
+  scrollBehavior(to, from, savedPosition) {
+    return {x: 0, y: 0};
+  },
 });
 
 Sentry.init({

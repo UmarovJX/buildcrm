@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="col-lg-3 ml-2 d-flex flex-column justify-content-end align-items-end">
                                     <div class="mb-3" v-if="disabled.btn_save">
-                                        <button type="button" @click="createFloor" :disabled="!block.floor ? true : false" class=" my-btn my-btn__blue">
+                                        <button type="button" @click="createFloor" :disabled="!block.floor ? true : false" class=" btn btn-primary">
                                             {{ $t('create') }}
                                         </button>
                                     </div>
@@ -86,7 +86,7 @@
                     </div>
 
                     <div class="mt-4 d-flex justify-content-md-start justify-content-center" v-if="disabled.settings && block.prices.length > 0">
-                        <button type="button" class="my-btn my-btn__blue" @click="addPrice">
+                        <button type="button" class="btn btn-primary" @click="addPrice">
                             <i class="fal fa-plus mr-2"></i> {{ $t('objects.create.new_price') }}
                         </button>
                     </div>

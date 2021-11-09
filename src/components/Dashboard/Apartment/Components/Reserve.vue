@@ -1,137 +1,176 @@
 <template>
-    <div>
-        <b-modal id="modal-create" ref="modal" :title="$t('apartments.list.book')" hide-footer @show="resetModal">
-            <b-alert show variant="danger" v-if="error">
-                <ul>
-                    <li v-for="(error, index) in errors" :key="index">
-                        <span v-for="msg in error" :key="msg">
-                            {{ msg }}
-                        </span>
-                    </li>
-                </ul>
-            </b-alert>
+  <div>
+    <b-modal
+      id="modal-create"
+      ref="modal"
+      :title="$t('apartments.list.book')"
+      hide-footer
+      @show="resetModal"
+    >
+      <b-alert show variant="danger" v-if="error">
+        <ul>
+          <li v-for="(error, index) in errors" :key="index">
+            <span v-for="msg in error" :key="msg">
+              {{ msg }}
+            </span>
+          </li>
+        </ul>
+      </b-alert>
 
-            <form ref="form" @submit.stop.prevent="handleSubmit">
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.first_name')" label-for="first_name">
-                    <b-form-input id="first_name" v-model="client.first_name"></b-form-input>
-                </b-form-group>
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.first_name')"
+          label-for="first_name"
+        >
+          <b-form-input
+            id="first_name"
+            v-model="client.first_name"
+          ></b-form-input>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.last_name')" label-for="last_name">
-                    <b-form-input id="last_name" v-model="client.last_name"></b-form-input>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.last_name')"
+          label-for="last_name"
+        >
+          <b-form-input
+            id="last_name"
+            v-model="client.last_name"
+          ></b-form-input>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.phone')" label-for="phone">
-                    <b-form-input id="phone" v-model="client.phone"></b-form-input>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.phone')"
+          label-for="phone"
+        >
+          <b-form-input id="phone" v-model="client.phone"></b-form-input>
+        </b-form-group>
 
-                <div role="group" class="form-row form-group" >
-                    <label for="language" class="col-lg-2 col-4 col-form-label" >
-                        {{ $t('clients.language') }}
-                    </label>
-                    <div class="bv-no-focus-ring col">
-                        <select class="form-control" id="language" v-model="client.language">
-                            <option value="uz">Узбекский</option>
-                            <option value="ru">Русский</option>
-                        </select>
-                    </div>
-                </div>
+        <div role="group" class="form-row form-group">
+          <label for="language" class="col-lg-2 col-4 col-form-label">
+            {{ $t("clients.language") }}
+          </label>
+          <div class="bv-no-focus-ring col">
+            <select
+              class="form-control"
+              id="language"
+              v-model="client.language"
+            >
+              <option value="uz">Узбекский</option>
+              <option value="ru">Русский</option>
+            </select>
+          </div>
+        </div>
 
-                <b-form-group label-cols="4" label-cols-lg="4" :label="$t('apartments.list.period_date')" label-for="period_date">
-                    <b-form-datepicker v-model="client.period_date" locale="ru"></b-form-datepicker>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="4"
+          :label="$t('apartments.list.period_date')"
+          label-for="period_date"
+        >
+          <b-form-datepicker
+            v-model="client.period_date"
+            locale="ru"
+          ></b-form-datepicker>
+        </b-form-group>
 
-                <div class="float-right">
-                    <b-button variant="light" @click="resetModal">
-                        {{ $t('cancel') }}
-                    </b-button>
+        <div class="float-right">
+          <b-button variant="light" @click="resetModal">
+            {{ $t("cancel") }}
+          </b-button>
 
-                    <b-button type="submit" class="ml-1" variant="success">
-                        <b-icon-box-arrow-up-right></b-icon-box-arrow-up-right> {{ $t('apartments.list.book') }}
-                    </b-button>
-                </div>
-            </form>
-        </b-modal>
-    </div>
+          <b-button type="submit" class="ml-1" variant="success">
+            <b-icon-box-arrow-up-right></b-icon-box-arrow-up-right>
+            {{ $t("apartments.list.book") }}
+          </b-button>
+        </div>
+      </form>
+    </b-modal>
+  </div>
 </template>
 
 <script>
-    export default {
+export default {
+  props: ["apartment"],
 
-        props: ['apartment'],
+  data: () => ({
+    client: {
+      first_name: null,
+      last_name: null,
+      phone: null,
+      period_date: null,
+      apartment_id: null,
+      language: "uz",
+    },
 
-        data: () => ({
+    error: false,
+    errors: [],
 
-            client: {
-                first_name: null,
-                last_name: null,
-                phone: null,
-                period_date: null,
-                apartment_id: null,
-                language: 'uz'
-            },
+    header: {
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+      },
+    },
+  }),
 
-            error: false,
-            errors: [],
+  methods: {
+    resetModal() {
+      this.client.first_name = null;
+      this.client.last_name = null;
+      this.client.phone = null;
+      this.client.period_date = null;
 
-            header: {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.token
-                }
-            }
-        }),
+      this.$bvModal.hide("modal-create");
 
-        methods: {
-            resetModal() {
-                this.client.first_name = null;
-                this.client.last_name = null;
-                this.client.phone = null;
-                this.client.period_date = null;
+      this.error = false;
+      this.errors = [];
+    },
 
-                this.$bvModal.hide('modal-create');
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefault();
+      this.handleSubmit();
+    },
 
-                this.error = false;
-                this.errors = [];
-            },
+    async handleSubmit() {
+      try {
+        this.client.apartment_id = this.apartment;
 
-            handleOk(bvModalEvt) {
-                bvModalEvt.preventDefault();
-                this.handleSubmit()
-            },
+        const response = await this.axios.post(
+          process.env.VUE_APP_URL + "/orders/reserve",
+          this.client,
+          this.header
+        );
 
-            async handleSubmit() {
-                try {
-                    this.client.apartment_id = this.apartment;
+        this.toasted(response.data.message, "success");
 
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/orders/reserve', this.client, this.header);
+        this.$nextTick(() => {
+          this.$bvModal.hide("modal-create");
+        });
 
-                    this.toasted(response.data.message, 'success');
-
-                    this.$nextTick(() => {
-                        this.$bvModal.hide('modal-create')
-                    });
-
-                    this.$emit('CreateReserve', this.client);
-
-                } catch (error) {
-                    if (! error.response) {
-                        this.toasted('Error: Network Error', 'error');
-                    } else {
-                        if (error.response.status === 403) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if(error.response.status === 422) {
-                            this.error = true;
-                            this.errors = error.response.data;
-                        } else {
-                            this.error = true;
-                            this.errors = error.response.data;
-                        }
-                    }
-                }
-            }
+        this.$emit("CreateReserve", this.client);
+      } catch (error) {
+        if (!error.response) {
+          this.toasted("Error: Network Error", "error");
+        } else {
+          if (error.response.status === 403) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 422) {
+            this.error = true;
+            this.errors = error.response.data;
+          } else {
+            this.error = true;
+            this.errors = error.response.data;
+          }
         }
-    }
+      }
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

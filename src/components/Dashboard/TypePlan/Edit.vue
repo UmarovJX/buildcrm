@@ -1,164 +1,172 @@
 <template>
   <main>
-    <div
-      class="
+    <div class="my-container">
+      <div
+        class="
         d-flex
         justify-content-between
         align-items-center
         flex-md-row flex-column
-        pb-3
-        pt-0
-        px-0
-        py-lg-3
       "
-    >
-      <div
-        class="
+      >
+        <div
+          class="
           d-flex
           w-100
           align-items-center
           flex-md-row flex-column
           mb-md-0 mb-3
         "
-      >
-        <h1 class="title__big my-0 order-md-0 order-1">{{ $t("edit") }}</h1>
-        <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
-          <li class="breadcrumb-item">
-            <router-link :to="{name: 'home'}">
-              <i class="far fa-home"></i>
-            </router-link>
-          </li>
+        >
+          <h1 class="title__big my-0 order-md-0 order-1">{{ $t("edit") }}</h1>
+          <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0 align-self-start">
+            <li class="breadcrumb-item">
+              <router-link :to="{name: 'home'}">
+                <i class="far fa-home"></i>
+              </router-link>
+            </li>
 
-          <li class="breadcrumb-item">
-            <router-link :to="{name: 'type_plan'}">
-              {{ $t("type_plan.title") }}
-            </router-link>
-          </li>
+            <li class="breadcrumb-item">
+              <router-link :to="{name: 'type_plan'}">
+                {{ $t("type_plan.title") }}
+              </router-link>
+            </li>
 
-          <li class="breadcrumb-item">
-            <router-link
-              :to="{name: 'type-plan-view', params: {id: getPlan.object.id}}"
-            >
-              {{ getPlan.object.name }}
-            </router-link>
-          </li>
+            <li class="breadcrumb-item">
+              <router-link
+                :to="{name: 'type-plan-view', params: {id: getPlan.object.id}}"
+              >
+                {{ getPlan.object.name }}
+              </router-link>
+            </li>
 
-          <li class="breadcrumb-item">
-            <a href="#">
-              {{ getPlan.name }}
-            </a>
-          </li>
+            <li class="breadcrumb-item">
+              <a href="#">
+                {{ getPlan.name }}
+              </a>
+            </li>
 
-          <li class="breadcrumb-item active">
-            {{ $t("edit") }}
+            <li class="breadcrumb-item active">
+              {{ $t("edit") }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="alert alert-danger mt-3" v-if="error">
+        <ul>
+          <li v-for="(error, index) in errors" :key="index">
+            <span v-for="msg in error" :key="msg">
+              {{ msg }}
+            </span>
           </li>
         </ul>
       </div>
-    </div>
 
-    <div class="alert alert-danger mt-3" v-if="error">
-      <ul>
-        <li v-for="(error, index) in errors" :key="index">
-          <span v-for="msg in error" :key="msg">
-            {{ msg }}
-          </span>
-        </li>
-      </ul>
-    </div>
+      <div class="new-object">
+        <form @submit.prevent="SavePlan">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="title" class="d-block text-uppercase">
+                    {{ $t("type_plan.name") }}
+                  </label>
+                  <input
+                    id="title"
+                    v-model="getPlan.name"
+                    type="text"
+                    required
+                    :placeholder="$t('type_plan.name')"
+                    class="my-form__input"
+                  />
+                </div>
 
-    <div class="new-object px-3 px-sm-4 py-4">
-      <form @submit.prevent="SavePlan">
-        <div class="container px-0 mx-0">
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="mb-3">
-                <label for="title" class="d-block text-uppercase">
-                  {{ $t("type_plan.name") }}
-                </label>
-                <input
-                  id="title"
-                  v-model="getPlan.name"
-                  type="text"
-                  required
-                  :placeholder="$t('type_plan.name')"
-                  class="my-form__input"
-                />
-              </div>
+                <div class="mb-3">
+                  <label for="area" class="d-block text-uppercase">
+                    {{ $t("objects.create.plan.area") }}
+                  </label>
+                  <input
+                    id="area"
+                    v-model="getPlan.area"
+                    type="text"
+                    required
+                    :placeholder="$t('type_plan.area')"
+                    class="my-form__input"
+                  />
+                </div>
 
-              <div class="mb-3">
-                <label for="area" class="d-block text-uppercase">
-                  {{ $t("objects.create.plan.area") }}
-                </label>
-                <input
-                  id="area"
-                  v-model="getPlan.area"
-                  type="text"
-                  required
-                  :placeholder="$t('type_plan.area')"
-                  class="my-form__input"
-                />
-              </div>
+                <div class="mb-3">
+                  <label for="balcony" class="d-block text-uppercase">
+                    {{ $t("objects.create.plan.balcony") }}
+                  </label>
+                  <input
+                    id="balcony"
+                    v-model="getPlan.balcony"
+                    type="checkbox"
+                  />
+                </div>
 
-              <div class="mb-3">
-                <label for="balcony" class="d-block text-uppercase">
-                  {{ $t("objects.create.plan.balcony") }}
-                </label>
-                <input id="balcony" v-model="getPlan.balcony" type="checkbox" />
-              </div>
+                <div class="mb-3">
+                  <label for="balcony_area" class="d-block text-uppercase">
+                    {{ $t("objects.create.plan.balcony_area") }}
+                  </label>
+                  <input
+                    id="balcony_area"
+                    v-model="getPlan.balcony_area"
+                    type="text"
+                    required
+                    :placeholder="$t('type_plan.balcony_area')"
+                    class="my-form__input"
+                  />
+                </div>
 
-              <div class="mb-3">
-                <label for="balcony_area" class="d-block text-uppercase">
-                  {{ $t("objects.create.plan.balcony_area") }}
-                </label>
-                <input
-                  id="balcony_area"
-                  v-model="getPlan.balcony_area"
-                  type="text"
-                  required
-                  :placeholder="$t('type_plan.balcony_area')"
-                  class="my-form__input"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="plan" class="d-block text-uppercase">
-                  {{ $t("type_plan.plan") }}
-                  <span
-                    :class="getPlan.image ? 'text-success' : 'text-danger'"
-                    >{{
-                      getPlan.image
-                        ? $t("type_plan.yes_img")
-                        : $t("type_plan.no_img")
-                    }}</span
-                  >
-                </label>
-                <input id="plan" type="file" @change="compressImage($event)" />
+                <div class="mb-3">
+                  <label for="plan" class="d-block text-uppercase">
+                    {{ $t("type_plan.plan") }}
+                    <span
+                      :class="getPlan.image ? 'text-success' : 'text-danger'"
+                      >{{
+                        getPlan.image
+                          ? $t("type_plan.yes_img")
+                          : $t("type_plan.no_img")
+                      }}</span
+                    >
+                  </label>
+                  <input
+                    id="plan"
+                    type="file"
+                    @change="compressImage($event)"
+                  />
+                  <img
+                    class="mt-4 img-fluid"
+                    v-if="getPlan.image && !inputURL"
+                    :data-fancybox="getPlan.image"
+                    v-lazy="getPlan.image"
+                    alt="Plan image"
+                  />
+                </div>
                 <img
-                  class="mt-4 img-fluid"
-                  v-if="getPlan.image && !inputURL"
-                  :data-fancybox="getPlan.image"
-                  v-lazy="getPlan.image"
-                  alt="Plan image"
+                  v-if="inputURL"
+                  :data-fancybox="inputURL"
+                  class="img-fluid"
+                  :src="inputURL"
+                  alt="image"
                 />
               </div>
-              <img
-                v-if="inputURL"
-                :data-fancybox="inputURL"
-                class="img-fluid"
-                :src="inputURL"
-                alt="image"
-              />
             </div>
           </div>
-        </div>
-        <div
-          class="mt-4 d-flex justify-content-md-start justify-content-center"
-        >
-          <button type="submit" class="my-btn my-btn__blue">
-            <i class="fa fa-save"></i> Сохранить
-          </button>
-        </div>
-      </form>
+          <div class="container-fluid">
+            <div
+              class="mt-4 d-flex justify-content-md-start justify-content-center"
+            >
+              <button type="submit" class="btn btn-primary mr-0">
+                <i class="fa fa-save"></i> Сохранить
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </main>
 </template>
@@ -273,4 +281,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.new-object img {
+  cursor: pointer;
+}
+</style>

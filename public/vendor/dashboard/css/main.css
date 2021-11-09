@@ -10965,12 +10965,7 @@ a:hover {
 }
 
 main > div.d-flex.justify-content-between > div {
-  -webkit-box-orient: horizontal !important;
-  -webkit-box-direction: normal !important;
-  -ms-flex-direction: row !important;
-  flex-direction: row !important;
   margin-top: 15px !important;
-  align-items: center !important;
   padding-left: 15px;
 }
 
@@ -14203,7 +14198,7 @@ input.my-input:focus, .my-btn__group input:focus, .my-form__input:focus {
 
 main {
   min-height: calc(100% - 39px);
-  padding: 80px 30px 10px 150px;
+  padding: 60px 30px 10px 150px;
 }
 
 @media only screen and (max-width: 1023px) {
@@ -14214,7 +14209,7 @@ main {
 
 @media only screen and (max-width: 559px) {
   main {
-    padding: 90px 16px 90px 16px;
+    padding: 70px 10px 50px 10px;
   }
 }
 

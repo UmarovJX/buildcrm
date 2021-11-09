@@ -1,113 +1,115 @@
 <template>
   <main>
-    <div
-      class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
-    >
+    <div class="my-container">
       <div
-        class="d-flex w-100 align-items-center flex-md-row flex-column mb-md-0 mb-3"
+        class="d-flex justify-content-between align-items-center flex-md-row flex-column"
       >
-        <h1 class="title__big my-0 order-md-0 order-1">
-          {{ $t("companies.title") }}
-        </h1>
-        <ul class="breadcrumb ml-md-4 ml-3 mb-3 mb-md-0 align-self-start">
-          <li class="breadcrumb-item">
-            <router-link :to="{name: 'home'}">
-              <i class="far fa-home"></i>
-            </router-link>
-          </li>
+        <div
+          class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
+        >
+          <h1 class="title__big my-0">
+            {{ $t("companies.title") }}
+          </h1>
+          <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
+            <li class="breadcrumb-item">
+              <router-link :to="{name: 'home'}">
+                <i class="far fa-home"></i>
+              </router-link>
+            </li>
 
-          <li class="breadcrumb-item">
-            <a href="#">
-              {{ $t("companies.title") }}
-            </a>
-          </li>
-          <li class="breadcrumb-item active">
-            {{ $t("list") }}
-          </li>
-        </ul>
+            <li class="breadcrumb-item">
+              <a href="#">
+                {{ $t("companies.title") }}
+              </a>
+            </li>
+            <li class="breadcrumb-item active">
+              {{ $t("list") }}
+            </li>
+          </ul>
+        </div>
+
+        <b-link
+          v-if="getPermission.branches.create"
+          class="btn btn-primary mr-0"
+          v-b-modal.modal-create
+        >
+          <i class="fal fa-plus mr-2"></i>
+          {{ $t("add") }}
+        </b-link>
       </div>
 
-      <b-link
-        v-if="getPermission.branches.create"
-        class="my-btn my-btn__blue d-flex align-items-center"
-        v-b-modal.modal-create
-      >
-        <i class="fal fa-plus mr-2"></i>
-        {{ $t("add") }}
-      </b-link>
-    </div>
+      <div class="mt-4">
+        <b-table
+          sticky-header
+          borderless
+          responsive
+          :items="getBranches"
+          :fields="fields"
+          :busy="getLoading"
+          show-empty
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
+          sort-icon-left
+          class="custom-table"
+          :empty-text="$t('no_data')"
+        >
+          <template #empty="scope" class="text-center">
+            <span class="d-flex justify-content-center align-items-center">{{
+              scope.emptyText
+            }}</span>
+          </template>
 
-    <div class="my-container px-0 mx-0">
-      <b-table
-        sticky-header
-        borderless
-        responsive
-        :items="getBranches"
-        :fields="fields"
-        :busy="getLoading"
-        show-empty
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
-        sort-icon-left
-        class="custom-table"
-        :empty-text="$t('no_data')"
-      >
-        <template #empty="scope" class="text-center">
-          <span class="d-flex justify-content-center align-items-center">{{
-            scope.emptyText
-          }}</span>
-        </template>
-
-        <template #table-busy>
-          <div class="d-flex justify-content-center w-100">
-            <div class="lds-ellipsis">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        </template>
-
-        <template #cell(name)="data">
-          {{ getName(data.item.type.name) }} «{{ data.item.name }}»
-        </template>
-
-        <template #cell(actions)="data">
-          <div class="float-right">
-            <div class="dropdown my-dropdown dropleft">
-              <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
-              >
-                <i class="far fa-ellipsis-h"></i>
-              </button>
-
-              <div class="dropdown-menu">
-                <b-button
-                  v-if="getPermission.branches.update"
-                  @click="EditBranch(data.item)"
-                  class="dropdown-item dropdown-item--inside"
-                  v-b-modal.modal-update
-                >
-                  <i class="fas fa-edit"></i>
-                  {{ $t("edit") }}
-                </b-button>
-
-                <!--                                    <b-button v-if="getPermission.users.delete" class="dropdown-item dropdown-item&#45;&#45;inside">-->
-                <!--                                        <i class="fas fa-trash"></i>-->
-                <!--                                        {{ $t('delete') }}-->
-                <!--                                    </b-button>-->
+          <template #table-busy>
+            <div class="d-flex justify-content-center w-100">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
               </div>
             </div>
-          </div>
-        </template>
-      </b-table>
-    </div>
+          </template>
 
-    <Create @CreateCompany="CreateCompany"></Create>
-    <Update :branch-id="branch_id" @UpdateCompany="UpdateCompany"></Update>
+          <template #cell(name)="data">
+            {{ getName(data.item.type.name) }} «{{ data.item.name }}»
+          </template>
+
+          <template #cell(actions)="data">
+            <div class="d-flex justify-content-center">
+              <div class="dropdown my-dropdown dropleft">
+                <button
+                  type="button"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+                >
+                  <i class="far fa-ellipsis-h"></i>
+                </button>
+
+                <div class="dropdown-menu">
+                  <b-button
+                    v-if="getPermission.branches.update"
+                    @click="EditBranch(data.item)"
+                    class="dropdown-item dropdown-item--inside"
+                    v-b-modal.modal-update
+                  >
+                    <i class="fas fa-edit"></i>
+                    {{ $t("edit") }}
+                  </b-button>
+
+                  <!--                                    <b-button v-if="getPermission.users.delete" class="dropdown-item dropdown-item&#45;&#45;inside">-->
+                  <!--                                        <i class="fas fa-trash"></i>-->
+                  <!--                                        {{ $t('delete') }}-->
+                  <!--                                    </b-button>-->
+                </div>
+              </div>
+            </div>
+          </template>
+        </b-table>
+      </div>
+
+      <Create @CreateCompany="CreateCompany"></Create>
+      <Update :branch-id="branch_id" @UpdateCompany="UpdateCompany"></Update>
+    </div>
   </main>
 </template>
 

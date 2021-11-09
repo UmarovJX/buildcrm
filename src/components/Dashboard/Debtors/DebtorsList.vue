@@ -1,7 +1,7 @@
 <template>
   <main>
-    <div class="my-container px-0 mx-0">
-      <div class="float-right mb-3">
+    <div class="my-container">
+      <div class="float-md-right mb-3">
         <date-picker
           v-model="date"
           type="date"

@@ -1,367 +1,401 @@
 <template>
-    <div>
-        <b-modal id="modal-contract-info" class="py-4" ref="modal" :title="$t('apartments.list.contract')" size="lg" hide-footer hide-header-close>
-            <div class="invoice-box">
-             <table cellpadding="0" cellspacing="0">
-                <tbody><tr class="top">
-                    <td colspan="3">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td class="title">
-    <!--                                    <img src="/images/logo.png" style="width:100%; max-width:300px;">-->
-                                    </td>
-                                    <td>
-                                        {{ $t('apartments.list.contract') }} #: {{ order.contract }}<br>
-                                        Дата контракта: {{ order.contract_date | moment('DD.MM.YYYY') }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr class="information">
-                    <td colspan="3">
-                        <table>
-                            <tbody><tr>
-                                <td>
-                                    {{ order.branches.type }} "{{ order.branches.name }}"<br>
-                                    {{ order.branches.first_name }} {{ order.branches.last_name }} {{ order.branches.second_name }}  <br>
-                                    р/с: {{ order.branches.payment_account }} <br>
-                                    ИНН: {{ order.branches.inn }}, МФО: {{ order.branches.mfo}} <br>
-                                </td>
-                                <td>
-                                    {{ order.client.first_name }} {{ order.client.last_name }} {{ order.client.second_name }}<br>
-                                    {{ order.client.passport_series }}<br>
-                                    {{ order.client.issued_by_whom }}<br>
-                                    {{ order.client.date_of_issue | moment('DD.MM.YYYY') }} берилган<br>
-                                    {{ order.client.birth_day | moment('DD.MM.YYYY') }} тугилган<br>
-                                    {{ order.client.phone }}<br>
-                                    {{ order.client.other_phone }}
-                                </td>
-                            </tr>
-                            </tbody></table>
-                    </td>
-                </tr>
-                <tr class="heading">
-                    <td colspan="3">
-                        Первоначальный взнос
-                    </td>
+  <div>
+    <b-modal
+      id="modal-contract-info"
+      class="py-4"
+      ref="modal"
+      :title="$t('apartments.list.contract')"
+      size="lg"
+      hide-footer
+      hide-header-close
+    >
+      <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr class="top">
+              <td colspan="3">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td class="title">
+                        <!--                                    <img src="/images/logo.png" style="width:100%; max-width:300px;">-->
+                      </td>
+                      <td>
+                        {{ $t("apartments.list.contract") }} #:
+                        {{ order.contract }}<br />
+                        Дата контракта:
+                        {{ order.contract_date | moment("DD.MM.YYYY") }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr class="information">
+              <td colspan="3">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>
+                        {{ order.branches.type }} "{{
+                          order.branches.name
+                        }}"<br />
+                        {{ order.branches.first_name }}
+                        {{ order.branches.last_name }}
+                        {{ order.branches.second_name }} <br />
+                        р/с: {{ order.branches.payment_account }} <br />
+                        ИНН: {{ order.branches.inn }}, МФО:
+                        {{ order.branches.mfo }} <br />
+                      </td>
+                      <td>
+                        {{ order.client.first_name }}
+                        {{ order.client.last_name }}
+                        {{ order.client.second_name }}<br />
+                        {{ order.client.passport_series }}<br />
+                        {{ order.client.issued_by_whom }}<br />
+                        {{
+                          order.client.date_of_issue | moment("DD.MM.YYYY")
+                        }}
+                        берилган<br />
+                        {{
+                          order.client.birth_day | moment("DD.MM.YYYY")
+                        }}
+                        тугилган<br />
+                        {{ order.client.phone }}<br />
+                        {{ order.client.other_phone }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr class="heading">
+              <td colspan="3">
+                Первоначальный взнос
+              </td>
+            </tr>
+            <tr class="details">
+              <td colspan="3">
+                {{
+                  order.initial_payment
+                    | number("0,0.00", {
+                      thousandsSeparator: " ",
+                      decimalSeparator: ",",
+                    })
+                }}
+                {{ $t("ye") }}
+              </td>
+            </tr>
+            <tr class="heading">
+              <td>
+                Расписание для оплаты
+              </td>
 
-                </tr>
-                <tr class="details">
-                    <td colspan="3">
-                        {{ order.initial_payment | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
-                    </td>
-                </tr>
-                <tr class="heading">
-                    <td>
-                        Расписание для оплаты
-                    </td>
+              <td class="text-center">
+                Статус
+              </td>
 
-                    <td class="text-center">
-                        Статус
-                    </td>
+              <td>
+                Сумма
+              </td>
+            </tr>
 
-                    <td>
-                        Сумма
-                    </td>
-                </tr>
+            <tr v-for="(month, index) in order.payments" :key="index">
+              <td>
+                {{ month.date_payment | moment("DD.MM.YYYY") }}
+              </td>
 
-                <tr v-for="(month, index) in order.payments" :key="index">
-                    <td>
-                        {{ month.date_payment | moment('DD.MM.YYYY') }}
-                    </td>
+              <td class="text-center">
+                {{ getStatusPayment(month) }}
+              </td>
 
-                    <td class="text-center">
-                        {{ getStatusPayment(month) }}
-                    </td>
+              <td>
+                {{
+                  month.amount
+                    | number("0,0.00", {
+                      thousandsSeparator: " ",
+                      decimalSeparator: ",",
+                    })
+                }}
+                {{ $t("ye") }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-                    <td>
-                        {{ month.amount | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}
-
-                    </td>
-                </tr>
-
-                </tbody>
-             </table>
-
-
-            </div>
-
-            <a :href="order.contract_path" class="btn btn-success float-right mt-2">
-                <i class="fa fa-download"></i> Скачать договор
-            </a>
-
-        </b-modal>
-    </div>
+      <a :href="order.contract_path" class="btn btn-success float-right mt-2">
+        <i class="fa fa-download"></i> Скачать договор
+      </a>
+    </b-modal>
+  </div>
 </template>
 
 <script>
-    // import Discount from './Discount'
+// import Discount from './Discount'
 
-    export default {
-        props: {
-            apartment: {}
-        },
+export default {
+  props: {
+    apartment: {},
+  },
 
-        components: {
-            // Discount
-        },
+  components: {
+    // Discount
+  },
 
-        data: () => ({
-            step: 1,
+  data: () => ({
+    step: 1,
 
-            order: {
-                id: null,
+    order: {
+      id: null,
 
-                contract: null,
-                contract_path: null,
-                initial_payment: null,
-                payment_status: null,
-                status: 'contract',
-                transaction_price: null,
-                contract_date: null,
-                payments: [],
+      contract: null,
+      contract_path: null,
+      initial_payment: null,
+      payment_status: null,
+      status: "contract",
+      transaction_price: null,
+      contract_date: null,
+      payments: [],
 
-                branches: {
-                    name: null,
-                    payment_account: null,
-                    inn: null,
-                    mfo: null,
-                    bank_name: null,
-                    phone: null,
-                    first_name: null,
-                    last_name: null,
-                    second_name: null,
-                    type: null,
-                },
+      branches: {
+        name: null,
+        payment_account: null,
+        inn: null,
+        mfo: null,
+        bank_name: null,
+        phone: null,
+        first_name: null,
+        last_name: null,
+        second_name: null,
+        type: null,
+      },
 
-                client: {
-                    id: null,
-                    first_name: '',
-                    last_name: '',
-                    second_name: '',
-                    passport_series: '',
-                    issued_by_whom: '',
-                    birth_day: null,
-                    language: 'uz',
-                    phone: '',
-                    other_phone: null,
-                    date_of_issue: null,
-                    discount: {id: null},
-                    edit: false
-                },
-            },
+      client: {
+        id: null,
+        first_name: "",
+        last_name: "",
+        second_name: "",
+        passport_series: "",
+        issued_by_whom: "",
+        birth_day: null,
+        language: "uz",
+        phone: "",
+        other_phone: null,
+        date_of_issue: null,
+        discount: {id: null},
+        edit: false,
+      },
+    },
 
-            error: false,
-            errors: [],
+    error: false,
+    errors: [],
 
-            header: {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.token
-                }
-            }
-        }),
+    header: {
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+      },
+    },
+  }),
 
-        mounted() {
-            this.fetchOrder();
-        },
+  mounted() {
+    this.fetchOrder();
+  },
 
-        methods: {
+  methods: {
+    async fetchOrder() {
+      try {
+        const {data} = await this.axios.get(
+          process.env.VUE_APP_URL + "/orders/" + this.apartment.order.id,
+          this.header
+        );
+        this.step = 1;
 
+        this.order = {
+          id: data.id,
+          contract: data.contract,
+          contract_path: data.contract_path,
+          initial_payment: data.initial_payment,
+          payment_status: data.payment_status,
+          status: data.status,
+          transaction_price: data.transaction_price,
+          discount: data.discount,
+          contract_date: data.contract_date,
+          payments: data.payments,
 
-            async fetchOrder() {
-                try {
-                    const { data } = await this.axios.get(process.env.VUE_APP_URL + '/orders/' + this.apartment.order.id, this.header);
-                    this.step = 1;
+          branches: {
+            name: data.branch.name,
+            payment_account: data.branch.payment_account,
+            inn: data.branch.inn,
+            mfo: data.branch.mfo,
+            bank_name: data.branch.bank_name.uz,
+            phone: data.branch.phone,
+            first_name: data.branch.first_name,
+            last_name: data.branch.last_name,
+            second_name: data.branch.second_name,
+            type: data.branch.type.name.kr,
+          },
 
-                    this.order = {
-                        id: data.id,
-                        contract: data.contract,
-                        contract_path: data.contract_path,
-                        initial_payment: data.initial_payment,
-                        payment_status: data.payment_status,
-                        status: data.status,
-                        transaction_price: data.transaction_price,
-                        discount: data.discount,
-                        contract_date: data.contract_date,
-                        payments: data.payments,
+          client: {
+            id: data.client.id,
+            first_name: data.client.first_name,
+            birth_day: data.client.birth_day,
+            last_name: data.client.last_name,
+            second_name: data.client.second_name,
+            passport_series: data.client.passport_series,
+            issued_by_whom: data.client.issued_by_whom,
+            language: data.client.language,
+            phone: data.client.phone,
+            other_phone: data.client.other_phone,
+            date_of_issue: data.client.date_of_issue,
+          },
+        };
+      } catch (error) {
+        if (!error.response) {
+          this.toasted("Error: Network Error", "error");
+        } else {
+          if (error.response.status === 403) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 401) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 500) {
+            this.toasted(error.response.data.message, "error");
+          } else {
+            this.toasted(error.response.data.message, "error");
+          }
+        }
+      }
+    },
 
-                        branches: {
-                            name: data.branch.name,
-                            payment_account: data.branch.payment_account,
-                            inn: data.branch.inn,
-                            mfo: data.branch.mfo,
-                            bank_name: data.branch.bank_name.uz,
-                            phone: data.branch.phone,
-                            first_name: data.branch.first_name,
-                            last_name: data.branch.last_name,
-                            second_name: data.branch.second_name,
-                            type: data.branch.type.name.kr,
-                        },
+    removeBlock() {
+      this.$bvModal.hide("modal-contract-info");
+    },
 
-                        client: {
-                            id: data.client.id,
-                            first_name: data.client.first_name,
-                            birth_day: data.client.birth_day,
-                            last_name: data.client.last_name,
-                            second_name: data.client.second_name,
-                            passport_series: data.client.passport_series,
-                            issued_by_whom: data.client.issued_by_whom,
-                            language: data.client.language,
-                            phone: data.client.phone,
-                            other_phone: data.client.other_phone,
-                            date_of_issue: data.client.date_of_issue,
+    getPrepay() {
+      let total_discount = this.getDiscount();
 
-                        }
-                    };
-                } catch (error) {
-                    if (! error.response) {
-                        this.toasted('Error: Network Error', 'error');
-                    } else {
-                        if (error.response.status === 403) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 401) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 500) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else {
-                            this.toasted(error.response.data.message, 'error');
-                        }
-                    }
-                }
-            },
+      let total = this.apartment.price - total_discount;
 
-            removeBlock() {
-                this.$bvModal.hide('modal-contract-info');
-            },
+      return (this.client.discount.prepay_to * total) / 100;
+    },
 
-            getPrepay() {
-                let total_discount = this.getDiscount();
+    getDiscount() {
+      return (this.client.discount.discount * this.apartment.price) / 100;
+    },
 
-                let total = this.apartment.price - total_discount;
+    getMonth() {
+      return (this.getTotal() - this.getPrepay()) / this.month;
+    },
 
-                return this.client.discount.prepay_to * total / 100;
-            },
+    getDebt() {
+      return this.getTotal() - this.getPrepay();
+    },
 
-            getDiscount() {
-                return this.client.discount.discount * this.apartment.price / 100;
-            },
+    getStatusPayment(payment) {
+      switch (payment.status) {
+        case "waiting":
+          return "Ожидает оплату";
+        case "paid":
+          return "Оплачено";
+        default:
+          return "Отказано";
+      }
+    },
 
-            getMonth() {
-                return (this.getTotal() - this.getPrepay()) / this.month;
-            },
+    getTotal() {
+      let total_discount = this.getDiscount();
 
-            getDebt() {
-                return this.getTotal() - this.getPrepay();
-            },
+      // let total = price * area;
+      let total = this.apartment.price - total_discount;
 
-            getStatusPayment(payment) {
-                switch (payment.status) {
-                    case 'waiting':
-                        return 'Ожидает оплату';
-                    case 'paid':
-                        return 'Оплачено';
-                    default:
-                        return 'Отказано'
-                }
-            },
-
-            getTotal() {
-                let total_discount = this.getDiscount();
-
-                // let total = price * area;
-                let total = this.apartment.price - total_discount;
-
-                return total;
-            },
-        },
-    }
+      return total;
+    },
+  },
+};
 </script>
 
 <style scoped>
-    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-        color: #a4a4a4;
-        opacity: 0.8; /* Firefox */
-    }
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #a4a4a4;
+  opacity: 0.8; /* Firefox */
+}
 
-    .invoice-box{
-        max-width:800px;
-        margin:auto;
-        padding:30px;
-        border:1px solid #eee;
-        box-shadow:0 0 10px rgba(0, 0, 0, .15);
-        font-size:16px;
-        line-height:24px;
-        font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-        color:#555;
-    }
+.invoice-box {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px;
+  border: 1px solid #eee;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  font-size: 16px;
+  line-height: 24px;
+  font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  color: #555;
+}
 
-    .invoice-box table{
-        width:100%;
-        line-height:inherit;
-        text-align:left;
-    }
+.invoice-box table {
+  width: 100%;
+  line-height: inherit;
+  text-align: left;
+}
 
-    .invoice-box table td{
-        padding:5px;
-        vertical-align:top;
-    }
+.invoice-box table td {
+  padding: 5px;
+  vertical-align: top;
+}
 
-    .invoice-box table tr td:nth-child(2){
-        text-align:right;
-    }
+.invoice-box table tr td:nth-child(2) {
+  text-align: right;
+}
 
-    .invoice-box table tr.top table td{
-        padding-bottom:20px;
-    }
+.invoice-box table tr.top table td {
+  padding-bottom: 20px;
+}
 
-    .invoice-box table tr.top table td.title{
-        font-size:45px;
-        line-height:45px;
-        color:#333;
-    }
+.invoice-box table tr.top table td.title {
+  font-size: 45px;
+  line-height: 45px;
+  color: #333;
+}
 
-    .invoice-box table tr.information table td{
-        padding-bottom:40px;
-    }
+.invoice-box table tr.information table td {
+  padding-bottom: 40px;
+}
 
-    .invoice-box table tr.heading td{
-        background:#eee;
-        border-bottom:1px solid #ddd;
-        font-weight:bold;
-    }
+.invoice-box table tr.heading td {
+  background: #eee;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
 
-    .invoice-box table tr.details td{
-        padding-bottom:20px;
-    }
+.invoice-box table tr.details td {
+  padding-bottom: 20px;
+}
 
-    .invoice-box table tr.item td{
-        border-bottom:1px solid #eee;
-    }
+.invoice-box table tr.item td {
+  border-bottom: 1px solid #eee;
+}
 
-    .invoice-box table tr.item.last td{
-        border-bottom:none;
-    }
+.invoice-box table tr.item.last td {
+  border-bottom: none;
+}
 
-    .invoice-box table tr.total td:nth-child(2){
-        border-top:2px solid #eee;
-        font-weight:bold;
-    }
+.invoice-box table tr.total td:nth-child(2) {
+  border-top: 2px solid #eee;
+  font-weight: bold;
+}
 
-    @media only screen and (max-width: 600px) {
-        .invoice-box table tr.top table td{
-            width:100%;
-            display:block;
-            text-align:center;
-        }
+@media only screen and (max-width: 600px) {
+  .invoice-box table tr.top table td {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
 
-        .invoice-box table tr.information table td{
-            width:100%;
-            display:block;
-            text-align:center;
-        }
-    }
-
+  .invoice-box table tr.information table td {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+}
 </style>

@@ -145,10 +145,13 @@
         <div
           class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
         >
-          <div class="my-btn__reset mr-2" @click="filterClear">
-            <i class="far fa-times "></i>
-            <input type="reset" :value="$t('apartments.filter.clear')" />
-          </div>
+          <button
+            class="btn btn-outline-secondary"
+            type="reset"
+            @click="filterClear"
+          >
+            <i class="far fa-times "></i> {{ $t("apartments.filter.clear") }}
+          </button>
 
           <button type="submit" class="btn btn-success">
             <i class="far fa-sliders-h"></i> {{ $t("apartments.list.filter") }}

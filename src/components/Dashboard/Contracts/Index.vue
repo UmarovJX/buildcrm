@@ -1,15 +1,7 @@
 <template>
   <main>
-    <div class="my-container px-0 mx-0">
-      <div class="d-flex justify-content-md-end justify-content-center mb-3">
-        <div class="currency d-flex align-items-center">
-          <!-- <div class="currency__price mr-3">
-            1 USD = {{ getCurrency.usd }} UZS
-          </div> -->
-        </div>
-      </div>
-
-      <form action="" class="my-form">
+    <div class="my-container">
+      <form action="" class="my-form pt-4">
         <div class="mb-3 searching">
           <input
             class="my-form__input"
@@ -300,52 +292,10 @@ export default {
     PageCallBack(pageNum) {
       this.page = pageNum;
 
-      this.$router
-        .push({
-          name: "contracts",
-          query: {
-            page: this.page,
-            search: this.search,
-            orderBy: this.orderBy,
-          },
-        })
-        .catch((error) => {
-          if (
-            error.name !== "NavigationDuplicated" &&
-            !error.message.includes(
-              "Avoided redundant navigation to current location"
-            )
-          ) {
-            console.log(error);
-          }
-        });
-
       if (this.search.length > 0) {
         this.fetchContractSearch(this);
-        this.$router
-          .push({
-            name: "contracts",
-            query: {
-              page: this.page,
-              search: this.search,
-            },
-          })
-          .catch((error) => {
-            if (
-              error.name !== "NavigationDuplicated" &&
-              !error.message.includes(
-                "Avoided redundant navigation to current location"
-              )
-            ) {
-              console.log(error);
-            }
-          });
       } else {
         this.fetchContracts(this);
-        this.$router.push({
-          name: "contracts",
-          query: {},
-        });
       }
     },
     onSearchInputChange(event) {
@@ -354,43 +304,8 @@ export default {
 
       if (this.search.length > 0) {
         this.fetchContractSearch(this);
-
-        this.$router
-          .push({
-            name: "contracts",
-            query: {
-              page: this.page,
-              search: this.search,
-              orderBy: this.orderBy,
-            },
-          })
-          .catch((error) => {
-            if (
-              error.name !== "NavigationDuplicated" &&
-              !error.message.includes(
-                "Avoided redundant navigation to current location"
-              )
-            ) {
-              console.log(error);
-            }
-          });
       } else {
         this.fetchContracts(this);
-        this.$router
-          .push({
-            name: "contracts",
-            query: {},
-          })
-          .catch((error) => {
-            if (
-              error.name !== "NavigationDuplicated" &&
-              !error.message.includes(
-                "Avoided redundant navigation to current location"
-              )
-            ) {
-              console.log(error);
-            }
-          });
       }
     },
     SearchInput: debounce(function(value) {

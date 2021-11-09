@@ -8,7 +8,9 @@
       </router-link>
 
       <div class="d-flex justify-content-center align-items-center">
-        <div class="d-flex justify-content-md-end justify-content-center mr-3">
+        <div
+          class="d-none d-md-flex justify-content-md-end justify-content-center mr-3"
+        >
           <div class="currency d-flex align-items-center">
             <div class="currency__price">1 USD = {{ getCurrency.usd }} UZS</div>
           </div>
@@ -67,6 +69,8 @@
         </div>
       </div>
     </nav>
+
+    <div class="header-navbar-shadow"></div>
 
     <div class="fixed-menu">
       <div class="menu">
