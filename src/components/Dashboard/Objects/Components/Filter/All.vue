@@ -52,9 +52,7 @@
                 :placeholder="$t('objects.create.prepay_from')"
               />
             </div>
-            <div class="mx-2 long-horizontal-line">
-              &#8213;
-            </div>
+            <div class="mx-2 long-horizontal-line">&#8213;</div>
             <div class="">
               <input
                 class="my-form__input"
@@ -77,9 +75,7 @@
                 :placeholder="$t('objects.create.prepay_from')"
               />
             </div>
-            <div class="mx-2 long-horizontal-line">
-              &#8213;
-            </div>
+            <div class="mx-2 long-horizontal-line">&#8213;</div>
             <div class="">
               <input
                 v-model="filter.area_to"
@@ -138,14 +134,19 @@
       </div>
 
       <div
-        class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
+        class="
+          mt-4
+          d-flex
+          justify-content-md-start justify-content-center
+          float-right
+        "
       >
         <button
           class="btn btn-outline-secondary"
           type="reset"
           @click="filterClear"
         >
-          <i class="far fa-times "></i> {{ $t("apartments.filter.clear") }}
+          <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
         </button>
 
         <button type="button" @click="Filter" class="btn btn-success">
@@ -181,35 +182,35 @@ export default {
   },
 
   watch: {
-    "filter.rooms": function() {
+    "filter.rooms": function () {
       this.fetchFilterApartments(this);
     },
 
-    "filter.floors": function() {
+    "filter.floors": function () {
       this.fetchFilterApartments(this);
     },
 
-    "filter.price_from": function() {
+    "filter.price_from": function () {
       this.fetchFilterApartments(this);
     },
 
-    "filter.price_to": function() {
+    "filter.price_to": function () {
       this.fetchFilterApartments(this);
     },
 
-    "filter.area_from": function() {
+    "filter.area_from": function () {
       this.fetchFilterApartments(this);
     },
 
-    "filter.area_to": function() {
+    "filter.area_to": function () {
       this.fetchFilterApartments(this);
     },
 
-    "filter.status": function() {
+    "filter.status": function () {
       this.fetchFilterApartments(this);
     },
 
-    "filter.objects": function() {
+    "filter.objects": function () {
       this.fetchFilterApartments(this);
     },
   },

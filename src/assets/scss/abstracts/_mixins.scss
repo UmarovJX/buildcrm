@@ -1,0 +1,41 @@
+@mixin text-clamp($clamp, $height: auto) {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $clamp;
+  height: $height;
+}
+
+// Media Queries
+$breakpoints: (
+  "phone-smallest": 251px,
+  "phone-small": 321px,
+  "phone": 400px,
+  "phone-wide": 480px,
+  "phablet": 560px,
+  "tablet-small": 640px,
+  "tablet": 768px,
+  "tablet-wide": 1024px,
+  "desktop": 1248px,
+  "desktop-wide": 1440px,
+  "desktop-large": 2500px
+);
+
+@mixin mq($width, $type: min) {
+  @if map_has_key($breakpoints, $width) {
+    $width: map_get($breakpoints, $width);
+
+    @if $type==max {
+      $width: $width - 1px;
+    }
+
+    @media only screen and (#{$type}-width: $width) {
+      @content;
+    }
+  }
+}
+
+//   @include mq('tablet-wide') {
+//       padding-top: 4rem;
+//       font-size: 2.4rem;
+//   }

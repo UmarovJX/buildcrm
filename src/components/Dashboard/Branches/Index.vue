@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
         class="d-flex justify-content-between align-items-center flex-md-row flex-column"
       >
@@ -38,7 +38,7 @@
         </b-link>
       </div>
 
-      <div class="mt-4">
+      <div class="mt-2">
         <b-table
           sticky-header
           borderless

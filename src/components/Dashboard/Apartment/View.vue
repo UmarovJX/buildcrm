@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div ref="document" id="printMe">
         <div class="d-flex align-items-center pb-3 pt-0 px-3 px-md-0 py-lg-3">
           <h1 class="title__default mb-md-0 mb-3">

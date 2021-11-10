@@ -1,50 +1,74 @@
 <template>
   <main>
-    <div class="my-container">
-      <div class="float-md-right mb-3">
-        <date-picker
-          v-model="date"
-          type="date"
-          range
-          value-type="format"
-          @change="ChangeDate"
-          format="YYYY-MM-DD"
-          placeholder="Select date range"
-        ></date-picker>
-
-        <select
-          class="form-control mt-3"
-          v-model="orderBy"
-          aria-label="Default select example"
-        >
-          <option selected value="all">Все</option>
-          <option value="expired">Просроченные</option>
-          <option value="friends">Знакомые</option>
-        </select>
-
-        <button
-          v-if="
-            date.length > 0 || orderBy === 'expired' || orderBy === 'friends'
-          "
-          @click="[(date = []), (orderBy = 'all')]"
-          class="btn btn-primary btn-block mt-3"
-        >
-          Сброс фильтр
-        </button>
-      </div>
-
-      <form action="" class="my-form float-left w-100">
-        <div class="mb-3 searching">
-          <input
-            class="my-form__input"
-            type="text"
-            v-model="search"
-            @input="SearchInput"
-            :placeholder="$t('clients.search')"
-          />
-          <button><i class="far fa-search"></i></button>
+    <div class="app-content">
+      <div class="row">
+        <div class="col-md-5">
+          <form action="" class="my-form float-left w-100">
+            <div class="mb-3 searching">
+              <input
+                class="my-form__input"
+                type="text"
+                v-model="search"
+                @input="SearchInput"
+                :placeholder="$t('clients.search')"
+              />
+              <button class="rounded bg-white">
+                <i class="far fa-search"></i>
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+        <div class="col-md-7">
+          <div class="row">
+            <div class="col-md-6">
+              <date-picker
+                v-model="date"
+                type="date"
+                range
+                value-type="format"
+                @change="ChangeDate"
+                format="YYYY-MM-DD"
+                placeholder="Select date range"
+                class="w-100"
+              ></date-picker>
+            </div>
+            <div
+              :class="
+                date.length > 0 ||
+                orderBy === 'expired' ||
+                orderBy === 'friends'
+                  ? 'col-md-5'
+                  : 'col-md-6'
+              "
+            >
+              <select
+                class="form-control"
+                v-model="orderBy"
+                aria-label="Default select example"
+              >
+                <option selected value="all">Все</option>
+                <option value="expired">Просроченные</option>
+                <option value="friends">Знакомые</option>
+              </select>
+            </div>
+            <div
+              class="col-md-1"
+              v-if="
+                date.length > 0 ||
+                orderBy === 'expired' ||
+                orderBy === 'friends'
+              "
+            >
+              <button
+                @click="[(date = []), (orderBy = 'all')]"
+                class="btn btn-primary btn-block mt-0"
+              >
+                <i class="far fa-redo"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <b-table
         sticky-header
@@ -162,7 +186,7 @@ export default {
   },
 
   watch: {
-    orderBy: function(newVal) {
+    orderBy: function (newVal) {
       if (newVal != "all") {
         this.fetchDebtorsFilter(this);
       } else {

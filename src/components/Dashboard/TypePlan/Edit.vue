@@ -1,22 +1,22 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
         class="
-        d-flex
-        justify-content-between
-        align-items-center
-        flex-md-row flex-column
-      "
+          d-flex
+          justify-content-between
+          align-items-center
+          flex-md-row flex-column
+        "
       >
         <div
           class="
-          d-flex
-          w-100
-          align-items-center
-          flex-md-row flex-column
-          mb-md-0 mb-3
-        "
+            d-flex
+            w-100
+            align-items-center
+            flex-md-row flex-column
+            mb-md-0 mb-3
+          "
         >
           <h1 class="title__big my-0 order-md-0 order-1">{{ $t("edit") }}</h1>
           <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0 align-self-start">
@@ -63,7 +63,7 @@
         </ul>
       </div>
 
-      <div class="new-object">
+      <div class="new-object mt-3">
         <form @submit.prevent="SavePlan">
           <div class="container-fluid">
             <div class="row">
@@ -158,7 +158,11 @@
           </div>
           <div class="container-fluid">
             <div
-              class="mt-4 d-flex justify-content-md-start justify-content-center"
+              class="
+                mt-4
+                d-flex
+                justify-content-md-start justify-content-center
+              "
             >
               <button type="submit" class="btn btn-primary mr-0">
                 <i class="fa fa-save"></i> Сохранить

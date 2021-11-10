@@ -53,9 +53,7 @@
                   :placeholder="$t('objects.create.prepay_from')"
                 />
               </div>
-              <div class="mx-2 long-horizontal-line">
-                &#8213;
-              </div>
+              <div class="mx-2 long-horizontal-line">&#8213;</div>
               <div class="">
                 <input
                   class="my-form__input"
@@ -78,9 +76,7 @@
                   :placeholder="$t('objects.create.prepay_from')"
                 />
               </div>
-              <div class="mx-2 long-horizontal-line">
-                &#8213;
-              </div>
+              <div class="mx-2 long-horizontal-line">&#8213;</div>
               <div class="">
                 <input
                   v-model="filter.area_to"
@@ -143,14 +139,19 @@
         </div>
 
         <div
-          class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
+          class="
+            mt-4
+            d-flex
+            justify-content-md-start justify-content-center
+            float-right
+          "
         >
           <button
             class="btn btn-outline-secondary"
             type="reset"
             @click="filterClear"
           >
-            <i class="far fa-times "></i> {{ $t("apartments.filter.clear") }}
+            <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
           </button>
 
           <button type="submit" class="btn btn-success">

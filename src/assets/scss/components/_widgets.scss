@@ -1,0 +1,587 @@
+.page-link {
+  color: $dark;
+
+  &:focus,
+  &:hover {
+    color: $dark;
+  }
+}
+
+.my-dropdown .dropdown-toggle {
+  width: 32px;
+  height: 32px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: #f9fbff;
+  -webkit-box-shadow: 0.5px 1px 0px rgba(5, 8, 9, 0.1),
+    0px 5px 9px 1px rgba(5, 8, 9, 0.1);
+  box-shadow: 0.5px 1px 0px rgba(5, 8, 9, 0.1),
+    0px 5px 9px 1px rgba(5, 8, 9, 0.1);
+  border: unset;
+}
+
+.my-dropdown .dropdown-toggle::after,
+.my-dropdown .dropdown-toggle::before {
+  display: none !important;
+  content: unset !important;
+  position: unset !important;
+}
+
+.my-dropdown .dropdown-toggle i {
+  font-size: 20px;
+  color: #a5acc1;
+}
+
+.my-dropdown .dropdown-toggle:focus {
+  -webkit-box-shadow: rgba(5, 8, 9, 0.1), 0px 5px 9px 1px rgba(5, 8, 9, 0.1);
+  box-shadow: rgba(5, 8, 9, 0.1), 0px 5px 9px 1px rgba(5, 8, 9, 0.1);
+}
+
+@media only screen and (min-width: 768px) {
+  .my-dropdown .dropdown-item--inside {
+    padding: 0.25rem 0.8rem !important;
+  }
+}
+
+.my-dropdown .dropdown-menu {
+  -webkit-transform: unset !important;
+  transform: unset !important;
+  top: 35px !important;
+  right: 0% !important;
+  left: unset !important;
+  text-align: left;
+  list-style: none;
+  background-clip: padding-box;
+  border-radius: 0.25rem;
+  -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2),
+    0 1px 2px 0 rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.1) !important;
+  border: none;
+  padding: 10px 5px;
+  -webkit-transition: all 0.3s ease-in !important;
+  transition: all 0.3s ease-in !important;
+  min-width: 10rem;
+}
+
+.my-dropdown .dropdown-menu a {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 15px;
+  font-family: "MuseoSansCyrl-500", Arial, Helvetica, sans-serif;
+  color: #222222;
+  border-radius: 0.25rem;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.my-dropdown .dropdown-menu a:focus {
+  color: #222222;
+}
+
+.my-dropdown .dropdown-menu a i {
+  margin-right: 10px;
+  color: #55547a;
+}
+
+.my-dropdown .dropdown-menu a:hover {
+  background-color: #e9f1fa;
+}
+
+.my-dropdown .dropdown-menu__user {
+  top: 55px !important;
+}
+
+.my-dropdown .dropdown-user__button {
+  background-color: unset;
+  -webkit-box-shadow: unset;
+  box-shadow: unset;
+  width: 100%;
+  height: 100%;
+}
+
+.my-dropdown__two .dropdown-toggle {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.my-dropdown__two .dropdown-menu .dropdown-item {
+  color: #333;
+  padding: 0.2rem 1rem;
+  font-size: 14px;
+  font-family: "MuseoSansCyrl-700";
+}
+
+.my-dropdown__two .dropdown-menu .dropdown-item:hover,
+.my-dropdown__two .dropdown-menu .dropdown-item.active {
+  background-color: transparent;
+}
+
+.my-download {
+  color: #5851d8;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.my-download i {
+  margin-right: 5px;
+}
+
+.my-download span {
+  font-size: 14px;
+  font-family: "MuseoSansCyrl-300";
+  color: #222222;
+  text-decoration: underline;
+}
+
+.my-download:hover {
+  color: #5851d8;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 90px;
+  height: 35px;
+  margin-bottom: 0 !important;
+  /* Rounded sliders */
+}
+
+.switch span {
+  font-family: "MuseoSansCyrl-500", Arial, Helvetica, sans-serif;
+  color: #222222;
+  font-size: 14px;
+  line-height: 22px;
+  position: absolute;
+  -webkit-transition: 0.4s ease-in;
+  transition: 0.4s ease-in;
+  top: 7px;
+}
+
+.switch span:nth-of-type(1) {
+  left: 27%;
+  z-index: 1;
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+}
+
+.switch span:nth-of-type(2) {
+  right: 30%;
+  z-index: -1;
+  -webkit-transform: translateX(100%);
+  transform: translateX(100%);
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch input:focus + .slider {
+  -webkit-box-shadow: 0 0 1px #fff;
+  box-shadow: 0 0 1px #fff;
+}
+
+.switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background-color: #ebf1fa;
+  -webkit-box-shadow: inset 0px 1px 2.91px 0.09px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0px 1px 2.91px 0.09px rgba(0, 0, 0, 0.2);
+  -webkit-transition: 0.4s ease-in;
+  transition: 0.4s ease-in;
+}
+
+.switch .slider:before {
+  position: absolute;
+  content: "";
+  right: 3px;
+  bottom: 5px;
+  z-index: 111;
+  background-color: #fff;
+  -webkit-transition: 0.4s ease-in;
+  transition: 0.4s ease-in;
+  border-radius: 2px;
+  background-color: white;
+  -webkit-box-shadow: 0px 1px 4.75px 0.25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 1px 4.75px 0.25px rgba(0, 0, 0, 0.2);
+  width: 50px;
+  height: 25px;
+  background-image: url("../img/four-square.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 14px;
+}
+
+.switch input:checked + .slider:before {
+  background-color: #fff;
+  -webkit-transform: translateX(-33px);
+  transform: translateX(-33px);
+}
+
+.switch input:checked + .slider > span:nth-of-type(1) {
+  z-index: -1;
+}
+
+.switch input:checked + .slider > span:nth-of-type(2) {
+  z-index: 1;
+}
+
+.switch .slider.round {
+  border-radius: 10px;
+}
+
+.switch .slider.round:before {
+  border-radius: 8px;
+}
+
+.type-plane {
+  color: #a5acc1;
+  font-family: "MuseoSansCyrl-700", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.discount {
+  background-color: #ebf1fa;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.long-horizontal-line {
+  color: rgba(51, 51, 51, 0.302);
+}
+
+.breadcrumb {
+  font-size: 16px;
+  font-family: "MuseoSansCyrl-500";
+  color: #222222 !important;
+  line-height: 1.2;
+  background-color: transparent !important;
+  padding: 0;
+  margin: 0;
+  margin-top: 6px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.breadcrumb-item {
+  padding: 0;
+  margin: 0;
+  color: #212529 !important;
+}
+
+.breadcrumb-item a {
+  color: #5851d8 !important;
+}
+
+.breadcrumb-item:first-of-type {
+  font-size: 18px;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  padding-right: 0.5rem;
+  color: #222222;
+  content: "\f101";
+  font-weight: 400;
+  font-size: 14px;
+  font-family: "Font Awesome 5 Pro";
+}
+
+.my-table {
+  padding: 20px 0;
+  border-collapse: separate;
+  border-spacing: 0 1em;
+}
+
+.my-table thead tr {
+  background-color: transparent;
+}
+
+.my-table thead tr th {
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 14px;
+  font-family: "MuseoSansCyrl-700";
+  color: #222222;
+  text-transform: uppercase;
+}
+
+.my-table tbody tr {
+  background-color: white;
+  border-radius: 6px;
+}
+
+.my-table tbody tr:hover {
+  background-color: transparent;
+  -webkit-box-shadow: 0px 3px 9px 1px rgba(5, 8, 9, 0.08);
+  box-shadow: 0px 3px 9px 1px rgba(5, 8, 9, 0.08);
+}
+
+.my-table tbody tr td {
+  font-size: 16px;
+  font-family: "MuseoSansCyrl-300";
+  color: black;
+}
+
+.my-table tr th,
+.my-table tr td {
+  padding: 15px 25px;
+  vertical-align: middle;
+}
+
+.my-table tr th:first-of-type,
+.my-table tr td:first-of-type {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table tr th:first-of-type,
+  .my-table tr td:first-of-type {
+    min-width: 50px;
+  }
+}
+
+.my-table tr th:last-of-type,
+.my-table tr td:last-of-type {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table tr th:last-of-type,
+  .my-table tr td:last-of-type {
+    min-width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table tr th:nth-of-type(2),
+  .my-table tr td:nth-of-type(2) {
+    min-width: 300px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table tr th,
+  .my-table tr td {
+    min-width: 250px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th:first-of-type,
+  .my-table-second tr td:first-of-type {
+    min-width: 120px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th:last-of-type,
+  .my-table-second tr td:last-of-type {
+    min-width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th:nth-of-type(2),
+  .my-table-second tr td:nth-of-type(2) {
+    min-width: 200px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th:nth-of-type(3),
+  .my-table-second tr td:nth-of-type(3) {
+    min-width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th:nth-of-type(4),
+  .my-table-second tr td:nth-of-type(4) {
+    min-width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th:nth-of-type(5),
+  .my-table-second tr td:nth-of-type(5) {
+    min-width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th:nth-of-type(7),
+  .my-table-second tr td:nth-of-type(7) {
+    min-width: 300px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-second tr th,
+  .my-table-second tr td {
+    min-width: 250px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th:first-of-type,
+  .my-table-third tr td:first-of-type {
+    min-width: 200px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th:last-of-type,
+  .my-table-third tr td:last-of-type {
+    min-width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th:nth-of-type(2),
+  .my-table-third tr td:nth-of-type(2) {
+    min-width: 200px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th:nth-of-type(3),
+  .my-table-third tr td:nth-of-type(3) {
+    min-width: 200px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th:nth-of-type(4),
+  .my-table-third tr td:nth-of-type(4) {
+    min-width: 50px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th:nth-of-type(5),
+  .my-table-third tr td:nth-of-type(5) {
+    min-width: 300px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th:nth-of-type(7),
+  .my-table-third tr td:nth-of-type(7) {
+    min-width: 300px;
+  }
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-table-third tr th,
+  .my-table-third tr td {
+    min-width: 250px;
+  }
+}
+
+.my-table-another-variant th,
+.my-table-another-variant td {
+  font-size: 14px;
+  font-family: "MuseoSansCyrl-500";
+  color: #222222;
+  line-height: 1.286;
+}
+
+.my-user {
+  position: absolute;
+  right: 1.5rem;
+  top: 8px;
+}
+
+@media only screen and (max-width: 1247px) {
+  .my-user {
+    right: 7rem;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .my-user {
+    top: 3px;
+    right: 4rem;
+  }
+}
+
+.room input[type="checkbox"] {
+  display: none;
+  margin: 10px;
+}
+
+.room input[type="checkbox"] + label {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: transparent;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgba(34, 34, 34, 0.2);
+  font-size: 14px;
+  color: black;
+  font-family: "MuseoSansCyrl-500";
+  text-align: center;
+  font-size: 14px;
+}
+
+.room input[type="checkbox"]:checked + label {
+  background-image: none;
+  background-color: #5851d8;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #5851d8;
+  color: white;
+}
+
+.searching {
+  position: relative;
+}
+
+.searching input {
+  height: 50px;
+  background-color: transparent;
+  padding-right: 50px;
+}
+
+.searching button {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  height: 42px;
+  width: 44px;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+}

@@ -15,7 +15,6 @@ import store from "./store";
 // import moment from 'moment';
 import vueMoment from "vue-moment";
 // import VueHtmlToPaper from 'vue-html-to-paper';
-
 Vue.use(vueMoment);
 Vue.use(VueLazyload, {
   preLoad: 1.3,
@@ -35,6 +34,7 @@ import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import "@/assets/scss/main.scss";
 
 Vue.config.devtools = true;
 

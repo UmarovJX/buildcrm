@@ -1,0 +1,83 @@
+body {
+  width: 100%;
+  height: 100%;
+  background-image: url("../img/bg_img.png");
+  background-attachment: fixed;
+  overflow-x: hidden;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+html {
+  scroll-behavior: smooth !important;
+}
+
+* {
+  outline: none !important;
+}
+
+*::-moz-selection {
+  background-color: #5851d8;
+  color: white;
+}
+
+*::selection {
+  background-color: #5851d8;
+  color: white;
+}
+
+a,
+a:hover,
+.my-btn,
+.my-dropdown__two .dropdown-menu .dropdown-item,
+.my-table tbody tr,
+input.my-input,
+.my-btn__group input,
+.my-form__input,
+.menu__img,
+.menu__name {
+  -webkit-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
+}
+
+.btn.focus,
+.btn:focus {
+  outline: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+button:focus {
+  outline: none !important;
+  outline: 0 auto -webkit-focus-ring-color;
+}
+
+.form-control:focus {
+  outline: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.input-group > .custom-file .custom-file-input:focus ~ .custom-file-label,
+.input-group > .custom-select:focus,
+.input-group > .form-control:focus {
+  z-index: 0;
+}
+
+.btn-dark:not(:disabled):not(.disabled).active:focus,
+.btn-dark:not(:disabled):not(.disabled):active:focus,
+.show > .btn-dark.dropdown-toggle:focus {
+  -webkit-box-shadow: 0;
+  box-shadow: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: none;
+  color: inherit;
+}

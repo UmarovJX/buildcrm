@@ -1,176 +1,241 @@
 <template>
-    <div>
-        <b-modal id="modal-create" ref="modal" :title="$t('add')" hide-footer @show="resetModal">
-            <b-alert show variant="danger" v-if="error">
-                <ul>
-                    <li v-for="(error, index) in errors" :key="index">
-                        <span v-for="msg in error" :key="msg">
-                            {{ msg }}
-                        </span>
-                    </li>
-                </ul>
-            </b-alert>
+  <div>
+    <b-modal
+      id="modal-create"
+      ref="modal"
+      :title="$t('add')"
+      hide-footer
+      @show="resetModal"
+    >
+      <b-alert show variant="danger" v-if="error">
+        <ul>
+          <li v-for="(error, index) in errors" :key="index">
+            <span v-for="msg in error" :key="msg">
+              {{ msg }}
+            </span>
+          </li>
+        </ul>
+      </b-alert>
 
-            <form ref="form" @submit.stop.prevent="handleSubmit">
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.first_name')" label-for="first_name">
-                    <b-form-input id="first_name" v-model="manager.first_name"></b-form-input>
-                </b-form-group>
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.first_name')"
+          label-for="first_name"
+        >
+          <b-form-input
+            id="first_name"
+            v-model="manager.first_name"
+          ></b-form-input>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.last_name')" label-for="last_name">
-                    <b-form-input id="last_name" v-model="manager.last_name"></b-form-input>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.last_name')"
+          label-for="last_name"
+        >
+          <b-form-input
+            id="last_name"
+            v-model="manager.last_name"
+          ></b-form-input>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.phone')" label-for="phone">
-                    <b-form-input id="phone" v-model="manager.phone"></b-form-input>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.phone')"
+          label-for="phone"
+        >
+          <b-form-input id="phone" v-model="manager.phone"></b-form-input>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.email')" label-for="email">
-                    <b-form-input type="email" v-model="manager.email" id="email"></b-form-input>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.email')"
+          label-for="email"
+        >
+          <b-form-input
+            type="email"
+            v-model="manager.email"
+            id="email"
+          ></b-form-input>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.role')" label-for="roles">
-                    <b-form-select v-model="manager.role_id" id="roles" class="mb-3">
-                        <b-form-select-option v-for="(role, index) in getRoles" :key="index" :value="role.id">
-                            {{ getName(role.name) }}
-                        </b-form-select-option>
-                    </b-form-select>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.role')"
+          label-for="roles"
+        >
+          <b-form-select v-model="manager.role_id" id="roles" class="mb-3">
+            <b-form-select-option
+              v-for="(role, index) in getRoles"
+              :key="index"
+              :value="role.id"
+            >
+              {{ getName(role.name) }}
+            </b-form-select-option>
+          </b-form-select>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('user.password')" label-for="password">
-                    <b-form-input type="password" min="5" v-model="manager.password" id="password"></b-form-input>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.password')"
+          label-for="password"
+        >
+          <b-form-input
+            type="password"
+            min="5"
+            v-model="manager.password"
+            id="password"
+          ></b-form-input>
+        </b-form-group>
 
-                <b-form-group label-cols="4" label-cols-lg="2" :label="$t('objects.title')" label-for="objects">
-                    <b-form-checkbox-group v-model="manager.objects" :options="getObjects" class="mb-3" value-field="id" text-field="name" switches></b-form-checkbox-group>
-                </b-form-group>
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('objects.title')"
+          label-for="objects"
+        >
+          <b-form-checkbox-group
+            v-model="manager.objects"
+            :options="getObjects"
+            class="mb-3"
+            value-field="id"
+            text-field="name"
+            switches
+          ></b-form-checkbox-group>
+        </b-form-group>
 
-                <div class="d-flex justify-content-end">
-                    <b-button variant="light" @click="resetModal">
-                        {{ $t('cancel') }}
-                    </b-button>
+        <div class="d-flex justify-content-end">
+          <b-button variant="light" @click="resetModal">
+            {{ $t("cancel") }}
+          </b-button>
 
-                    <b-button type="submit" class="ml-1" variant="success">
-                        <i class="fas fa-save"></i> {{ $t('save') }}
-                    </b-button>
-                </div>
-            </form>
-        </b-modal>
-    </div>
+          <b-button type="submit" class="ml-1" variant="success">
+            <i class="fas fa-save"></i> {{ $t("save") }}
+          </b-button>
+        </div>
+      </form>
+    </b-modal>
+  </div>
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex';
+import {mapActions, mapGetters} from "vuex";
 
-    export default {
-        data: () => ({
-            manager: {
-                first_name: null,
-                last_name: null,
-                phone: null,
-                password: null,
-                email: null,
-                objects: [],
-                role_id: null
-            },
+export default {
+  data: () => ({
+    manager: {
+      first_name: null,
+      last_name: null,
+      phone: null,
+      password: null,
+      email: null,
+      objects: [],
+      role_id: null,
+    },
 
-            error: false,
-            errors: [],
+    error: false,
+    errors: [],
 
-            header: {
-                headers: {
-                    Authorization: 'Bearer ' + localStorage.token
-                }
-            }
-        }),
+    header: {
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+      },
+    },
+  }),
 
-        computed: mapGetters(['getObjects', 'getRoles']),
+  computed: mapGetters(["getObjects", "getRoles"]),
 
-        mounted() {
-            this.fetchObjects(this);
-            this.fetchRoles(this);
-        },
+  mounted() {
+    this.fetchObjects(this);
+    this.fetchRoles(this);
+  },
 
-        methods: {
+  methods: {
+    ...mapActions(["fetchObjects", "fetchRoles"]),
 
-            ...mapActions(['fetchObjects', 'fetchRoles']),
+    resetModal() {
+      this.manager.first_name = null;
+      this.manager.last_name = null;
+      this.manager.phone = null;
+      this.manager.password = null;
+      this.manager.email = null;
 
-            resetModal() {
-                this.manager.first_name = null;
-                this.manager.last_name = null;
-                this.manager.phone = null;
-                this.manager.password = null;
-                this.manager.email = null;
+      this.$bvModal.hide("modal-create");
 
-                this.$bvModal.hide('modal-create');
+      this.error = false;
+      this.errors = [];
 
-                this.error = false;
-                this.errors = [];
+      this.objects = [];
+    },
 
-                this.objects = [];
-            },
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefault();
+      this.handleSubmit();
+    },
 
-            handleOk(bvModalEvt) {
-                bvModalEvt.preventDefault();
-                this.handleSubmit()
-            },
+    async handleSubmit() {
+      try {
+        const response = await this.axios.post(
+          process.env.VUE_APP_URL + "/users",
+          this.manager,
+          this.header
+        );
 
-            async handleSubmit() {
-                try {
-                    const response = await this.axios.post(process.env.VUE_APP_URL + '/users', this.manager, this.header);
+        this.toasted(response.data.message, "success");
 
-                    this.toasted(response.data.message, 'success');
+        this.$nextTick(() => {
+          this.$bvModal.hide("modal-create");
+        });
 
-                    this.$nextTick(() => {
-                        this.$bvModal.hide('modal-create')
-                    });
-
-                    this.$emit('CreateManager', this.manager);
-
-                } catch (error) {
-                    if (! error.response) {
-                        this.toasted('Error: Network Error', 'error');
-                    } else {
-                        if (error.response.status === 403) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 401) {
-                            this.toasted(error.response.data, 'error');
-                        } else if (error.response.status === 500) {
-                            this.toasted(error.response.data.message, 'error');
-                        } else if (error.response.status === 422) {
-                            this.error = true;
-                            this.errors = error.response.data;
-                        } else {
-                            this.toasted(error.response.data.message, 'error');
-                        }
-
-
-                    }
-                }
-            },
-
-            getName(name) {
-                let locale = localStorage.locale;
-                let value = '';
-
-                if (locale) {
-                    switch(locale){
-                        case "ru":
-                            value = name.ru;
-                            break;
-                        case "uz":
-                            value = name.uz;
-                            break;
-                    }
-                } else {
-                    value = name.ru;
-                }
-
-                return value;
-            },
+        this.$emit("CreateManager", this.manager);
+      } catch (error) {
+        if (!error.response) {
+          this.toasted("Error: Network Error", "error");
+        } else {
+          if (error.response.status === 403) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 401) {
+            this.toasted(error.response.data, "error");
+          } else if (error.response.status === 500) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 422) {
+            this.error = true;
+            this.errors = error.response.data;
+          } else {
+            this.toasted(error.response.data.message, "error");
+          }
         }
-    }
+      }
+    },
+
+    getName(name) {
+      let locale = localStorage.locale;
+      let value = "";
+
+      if (locale) {
+        switch (locale) {
+          case "ru":
+            value = name.ru;
+            break;
+          case "uz":
+            value = name.uz;
+            break;
+        }
+      } else {
+        value = name.ru;
+      }
+
+      return value;
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

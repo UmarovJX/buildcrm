@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div class="">
         <div class="title__default my-2">
           {{ $t("apartments.list.apartments") }}:
@@ -10,10 +10,14 @@
 
       <div class="">
         <div
-          class="d-flex justify-content-md-end justify-content-center float-left"
+          class="
+            d-flex
+            justify-content-md-end justify-content-center
+            float-left
+          "
           v-if="
             getPermission.apartments.contract ||
-              getPermission.apartments.root_contract
+            getPermission.apartments.root_contract
           "
         >
           <button
@@ -28,8 +32,8 @@
             v-b-modal.modal-agree
             v-if="
               selected.view &&
-                selected.values.length > 1 &&
-                getPermission.apartments.contract
+              selected.values.length > 1 &&
+              getPermission.apartments.contract
             "
             @click="selected.confirm = true"
             variant="success"
@@ -50,7 +54,7 @@
 
         <div class="d-flex justify-content-md-end justify-content-center">
           <b-link
-            class="btn btn-primary"
+            class="btn btn-primary mr-0"
             v-if="getPermission.apartments.filter"
             v-b-modal.modal-filter-all
           >
@@ -148,7 +152,7 @@
                   <b-link
                     v-if="
                       getPermission.apartments.reserve &&
-                        data.item.order.status === 'available'
+                      data.item.order.status === 'available'
                     "
                     @click="[(reserve = true), (apartment_id = data.item.id)]"
                     v-b-modal.modal-create
@@ -162,8 +166,8 @@
                     v-if="
                       (data.item.order.status === 'booked' &&
                         data.item.order.user_id === getMe.user.id) ||
-                        (getPermission.apartments.root_contract &&
-                          data.item.order.status === 'booked')
+                      (getPermission.apartments.root_contract &&
+                        data.item.order.status === 'booked')
                     "
                     @click="ReserveInfo(data.item)"
                     v-b-modal.modal-view-client
@@ -176,7 +180,7 @@
                   <b-link
                     v-if="
                       data.item.order.status === 'booked' &&
-                        data.item.order.user_id != getMe.user.id
+                      data.item.order.user_id != getMe.user.id
                     "
                     @click="getInfoReserve(data.item)"
                     v-b-modal.modal-view-info-manager
@@ -198,15 +202,15 @@
                         data.item.order.status === 'booked' &&
                         data.item.order.user_id === getMe.user.id &&
                         getPermission.apartments.contract) ||
-                        (!(
-                          data.item.order.status == 'sold' ||
-                          data.item.order.status == 'contract'
-                        ) &&
-                          getPermission.apartments.root_contract) ||
-                        ((data.item.order.status != 'sold' ||
-                          data.item.order.status != 'contract') &&
-                          data.item.order.status === 'available' &&
-                          getPermission.apartments.contract)
+                      (!(
+                        data.item.order.status == 'sold' ||
+                        data.item.order.status == 'contract'
+                      ) &&
+                        getPermission.apartments.root_contract) ||
+                      ((data.item.order.status != 'sold' ||
+                        data.item.order.status != 'contract') &&
+                        data.item.order.status === 'available' &&
+                        getPermission.apartments.contract)
                     "
                   >
                     <!--                                            apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id && getPermission.apartments.contract || apartment.order.status != 'sold' && getPermission.apartments.root_contract || apartment.order.status === 'available' && getPermission.apartments.contract-->
@@ -223,12 +227,12 @@
                     v-if="
                       (getPermission.apartments.view &&
                         data.item.order.status === 'contract') ||
-                        (getPermission.apartments.view &&
-                          data.item.order.status === 'sold') ||
-                        (!getPermission.apartments.contract &&
-                          getPermission.apartments.view) ||
-                        (data.item.order.status === 'booked' &&
-                          data.item.order.user_id != getMe.user.id)
+                      (getPermission.apartments.view &&
+                        data.item.order.status === 'sold') ||
+                      (!getPermission.apartments.contract &&
+                        getPermission.apartments.view) ||
+                      (data.item.order.status === 'booked' &&
+                        data.item.order.user_id != getMe.user.id)
                     "
                   >
                     <i class="far fa-eye"></i>
@@ -490,7 +494,7 @@ export default {
       return price * area;
     },
 
-    moment: function() {
+    moment: function () {
       return this.$moment();
     },
 

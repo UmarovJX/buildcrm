@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
         class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
       >
@@ -327,7 +327,7 @@
                     <a href="#" class="object__link">
                       <div
                         class="object__img object__img--inside"
-                        style="background-image: url('/vendor/dashboard/img/object__img2.png');"
+                        :style="'background-image: url(' + require('@/assets/img/object__img2.png')+ ');'"
                       ></div>
                       <div class="object__name object__name--inside">
                         {{ block.name }}

@@ -1,0 +1,25 @@
+@import "abstracts/variables";
+@import "abstracts/functions";
+@import "abstracts/mixins";
+@import "abstracts/placeholders";
+
+@import "base/fonts";
+@import "base/animations";
+@import "base/base";
+@import "base/utilities";
+@import "base/typography";
+
+@import "layout/navigation";
+@import "layout/header";
+@import "layout/sections";
+@import "layout/footer";
+
+@import "components/loader";
+@import "components/button";
+@import "components/widgets";
+@import "components/modal";
+@import "components/my-form";
+@import "components/cards";
+@import "components/sliders";
+
+@import "pages/all";

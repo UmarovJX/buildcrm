@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div class="card">
         <div class="card-content">
           <div class="card-header">
@@ -31,7 +31,7 @@
                 +{{ order.client.phone }}<br />
                 +{{ order.client.other_phone }}<br />
 
-                <div class="mb-3 ml-auto col-md-4 d-flex justify-content-end flex-column">
+                <div class="mb-3 ml-auto col-md-5 d-flex justify-content-end flex-column">
                   <label class="d-block" for="type_client">{{
                     $t("apartments.agree.type_client")
                   }}</label>

@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div class="new-object px-0">
         <div class="container-fluid">
           <form ref="form" @submit.stop.prevent="sendForm">
@@ -340,7 +340,7 @@
                       <option
                         v-if="
                           getMe.role.id === 1 ||
-                            getPermission.contracts.other_price
+                          getPermission.contracts.other_price
                         "
                         :value="{id: 'other', discount: 0, prepay_to: 30}"
                       >
@@ -482,7 +482,13 @@
                             />
                           </div>
                           <div
-                            class="col-md-4 col-4 pl-0 d-flex align-items-center justify-content-start"
+                            class="
+                              col-md-4 col-4
+                              pl-0
+                              d-flex
+                              align-items-center
+                              justify-content-start
+                            "
                           >
                             <div class="h6 mb-0">
                               {{ client.discount.prepay_to.toFixed(2) }}%
@@ -540,7 +546,13 @@
                           />
                         </div>
                         <div
-                          class="col-md-4 col-4 pl-0 d-flex align-items-center justify-content-start"
+                          class="
+                            col-md-4 col-4
+                            pl-0
+                            d-flex
+                            align-items-center
+                            justify-content-start
+                          "
                         >
                           <div class="h6 mb-0">
                             {{ client.discount.prepay_to.toFixed(2) }}%
@@ -558,7 +570,7 @@
                     </button>
                   </div>
                 </div>
-                <div class="container px-0 mx-0 "></div>
+                <div class="container px-0 mx-0"></div>
               </div>
 
               <table
@@ -596,7 +608,7 @@
                 class="col-md-12"
                 v-if="
                   client.discount.prepay_to != 100 ||
-                    client.discount.prepay_to < 100
+                  client.discount.prepay_to < 100
                 "
               >
                 <div class="row">
@@ -617,8 +629,8 @@
               <span
                 v-if="
                   month > 0 &&
-                    (client.discount.prepay_to != 100 ||
-                      client.discount.prepay_to < 100)
+                  (client.discount.prepay_to != 100 ||
+                    client.discount.prepay_to < 100)
                 "
               >
                 {{ month }} месяцев по
@@ -636,22 +648,16 @@
                 class="table"
                 v-if="
                   client.discount.prepay_to != 100 ||
-                    client.discount.prepay_to < 100
+                  client.discount.prepay_to < 100
                 "
               >
                 <thead>
                   <tr>
-                    <th>
-                      Месяцы
-                    </th>
+                    <th>Месяцы</th>
 
-                    <th>
-                      Тип
-                    </th>
+                    <th>Тип</th>
 
-                    <th>
-                      Сумма
-                    </th>
+                    <th>Сумма</th>
                   </tr>
                 </thead>
 
@@ -659,7 +665,7 @@
                   <tr
                     v-if="
                       initial_payments.length === 0 ||
-                        initial_payments.length === 1
+                      initial_payments.length === 1
                     "
                   >
                     <td>
@@ -670,9 +676,7 @@
                       }}
                     </td>
 
-                    <td>
-                      Первоначальный взнос
-                    </td>
+                    <td>Первоначальный взнос</td>
 
                     <td>
                       {{
@@ -720,9 +724,7 @@
                       </div>
                     </td>
 
-                    <td>
-                      Первоначальный взнос
-                    </td>
+                    <td>Первоначальный взнос</td>
 
                     <td>
                       <span v-if="!initialPayment.edit">
@@ -761,8 +763,8 @@
                       <button
                         v-if="
                           (getMe.role.id === 1 && !initialPayment.edit) ||
-                            (getPermission.contracts.monthly &&
-                              !initialPayment.edit)
+                          (getPermission.contracts.monthly &&
+                            !initialPayment.edit)
                         "
                         type="button"
                         @click="editInitialPayment(index)"
@@ -775,7 +777,7 @@
                         <button
                           v-if="
                             getMe.role.id === 1 ||
-                              getPermission.contracts.monthly
+                            getPermission.contracts.monthly
                           "
                           type="button"
                           @click="editInitialPayment(index)"
@@ -788,9 +790,9 @@
                       <button
                         v-if="
                           (index != 0 && getMe.role.id === 1 && !month.edit) ||
-                            (index != 0 &&
-                              getPermission.contracts.monthly &&
-                              !month.edit)
+                          (index != 0 &&
+                            getPermission.contracts.monthly &&
+                            !month.edit)
                         "
                         type="button"
                         @click="deleteInitialPayment(index)"
@@ -806,9 +808,7 @@
                       {{ month.month | moment("DD.MM.YYYY") }}
                     </td>
 
-                    <td>
-                      Ежемесячно
-                    </td>
+                    <td>Ежемесячно</td>
 
                     <td>
                       <span v-if="!month.edit">
@@ -835,7 +835,7 @@
                       <button
                         v-if="
                           (getMe.role.id === 1 && !month.edit) ||
-                            (getPermission.contracts.monthly && !month.edit)
+                          (getPermission.contracts.monthly && !month.edit)
                         "
                         type="button"
                         @click="editMonthlyPayment(index)"
@@ -848,7 +848,7 @@
                         <button
                           v-if="
                             getMe.role.id === 1 ||
-                              getPermission.contracts.monthly
+                            getPermission.contracts.monthly
                           "
                           type="button"
                           @click="editMonthlyPayment(index)"
@@ -882,7 +882,11 @@
                 </ul>
               </div>
               <div
-                class="mt-4 d-flex justify-content-md-end justify-content-center"
+                class="
+                  mt-4
+                  d-flex
+                  justify-content-md-end justify-content-center
+                "
               >
                 <button
                   type="button"
@@ -1020,20 +1024,20 @@ export default {
   },
 
   watch: {
-    month: function(newVal) {
+    month: function (newVal) {
       this.CreditMonths(newVal);
     },
 
-    step: function() {
+    step: function () {
       this.CreditMonths(this.month);
     },
 
-    "apartment_edit.price": function() {
+    "apartment_edit.price": function () {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
 
-    "apartment_edit.prepay_price": function() {
+    "apartment_edit.prepay_price": function () {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },

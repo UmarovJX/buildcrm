@@ -1,9 +1,9 @@
 <template>
   <main>
-    <div class="my-container">
-      <div class="object pt-3">
+    <div class="app-content">
+      <div class="object">
         <div
-          class="object__item  object__item--manager "
+          class="object__item object__item--manager"
           v-for="(object, index) in getObjects"
           :key="index"
         >
@@ -63,7 +63,11 @@
             <div
               class="object__img"
               v-else
-              style="background-image: url('/vendor/dashboard/img/not-found.png');"
+              :style="
+                'background-image: url(' +
+                require('@/assets/img/not-found.png') +
+                ');'
+              "
             ></div>
             <div class="object__name">{{ object.name }}</div>
             <div class="object__info">
@@ -75,7 +79,11 @@
           <a href="#" :class="'object__link'" v-else>
             <div
               class="object__img"
-              style="background-image: url('/vendor/dashboard/img/object__img1.png');"
+              :style="
+                'background-image: url(' +
+                require('@/assets/img/object__img1.png') +
+                ');'
+              "
             ></div>
             <div class="object__name">{{ object.name }}</div>
             <div class="object__info">
@@ -99,7 +107,7 @@
         </div>
       </div>
 
-      <!--        <div class="my-container px-0 mx-0 my-4" v-if="getPermission.apartments.filter">-->
+      <!--        <div class="app-content px-0 mx-0 my-4" v-if="getPermission.apartments.filter">-->
       <!--            <div class="d-flex justify-content-md-end justify-content-center">-->
 
       <!--                <router-link :to="{'name': 'objects-filter'}" class="btn btn-primary" >-->

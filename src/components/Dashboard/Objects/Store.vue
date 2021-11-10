@@ -1,8 +1,8 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
-        class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
+        class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3"
       >
         <h1 class="title__big mb-md-0 mb-3">{{ $t("objects.create.new") }}</h1>
       </div>

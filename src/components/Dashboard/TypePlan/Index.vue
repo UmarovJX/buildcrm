@@ -1,8 +1,13 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
-        class="d-flex justify-content-between align-items-center flex-md-row flex-column"
+        class="
+          d-flex
+          justify-content-between
+          align-items-center
+          flex-md-row flex-column
+        "
       >
         <div
           class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"

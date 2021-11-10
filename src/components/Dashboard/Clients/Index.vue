@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <form action="" class="my-form">
         <div class="mb-3 searching">
           <input

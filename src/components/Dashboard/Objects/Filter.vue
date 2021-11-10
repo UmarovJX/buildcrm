@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div class="mt-4">
         <!--            <div class="title__default my-2">Ташкент, Мирабадский район, пересечение улиц Янгизамон и Сайхун </div>-->
         <div class="title__default my-2">
@@ -114,8 +114,8 @@
                     class="dropdown my-dropdown dropleft"
                     v-if="
                       !apartment.status ||
-                        apartment.manager_id === getMe.user.id ||
-                        getMe.role.id === 1
+                      apartment.manager_id === getMe.user.id ||
+                      getMe.role.id === 1
                     "
                   >
                     <button
@@ -144,7 +144,7 @@
                         v-if="
                           (apartment.status === 2 &&
                             apartment.manager_id === getMe.user.id) ||
-                            (getMe.role.id === 1 && apartment.status === 2)
+                          (getMe.role.id === 1 && apartment.status === 2)
                         "
                         @click="ReserveInfo(apartment)"
                         v-b-modal.modal-view-client
@@ -185,7 +185,7 @@
 
       <div class="" v-if="getPermission.apartments.filter">
         <div class="d-flex justify-content-md-end justify-content-center">
-          <b-link class="btn btn-primary" v-b-modal.modal-filter-all>
+          <b-link class="btn btn-primary mr-0" v-b-modal.modal-filter-all>
             <i class="far fa-sliders-h mr-2"></i>
             {{ $t("apartments.list.filter") }}
           </b-link>
@@ -271,7 +271,7 @@ export default {
       return price * area;
     },
 
-    moment: function() {
+    moment: function () {
       return this.$moment();
     },
 

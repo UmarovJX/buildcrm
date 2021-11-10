@@ -1,8 +1,13 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
-        class="d-flex justify-content-between align-items-center flex-md-row flex-column"
+        class="
+          d-flex
+          justify-content-between
+          align-items-center
+          flex-md-row flex-column
+        "
       >
         <div
           class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
@@ -31,7 +36,7 @@
         <router-link
           :to="{name: 'roles-store'}"
           v-if="getPermission.roles.create"
-          :class="'btn btn-primary mr-0'"
+          :class="'btn btn-primary mr-0 mt-0'"
         >
           <i class="fal fa-plus mr-2"></i>
           {{ $t("add") }}
@@ -80,7 +85,7 @@
                 class="dropdown my-dropdown dropleft"
                 v-if="
                   (getPermission.roles.update && data.item.id != 1) ||
-                    (getPermission.roles.delete && data.item.id != 1)
+                  (getPermission.roles.delete && data.item.id != 1)
                 "
               >
                 <button

@@ -1,8 +1,13 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
-        class="d-flex justify-content-between align-items-center flex-md-row flex-column"
+        class="
+          d-flex
+          justify-content-between
+          align-items-center
+          flex-md-row flex-column
+        "
       >
         <div
           class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
@@ -30,7 +35,7 @@
 
         <b-link
           v-if="getPermission.users.create"
-          class="btn btn-primary mr-0"
+          class="btn btn-primary mr-0 mt-md-0"
           v-b-modal.modal-create
         >
           <i class="fal fa-plus mr-2"></i>
@@ -38,7 +43,7 @@
         </b-link>
       </div>
 
-      <div class="mt-4">
+      <div class="pt-2">
         <b-table
           sticky-header
           borderless

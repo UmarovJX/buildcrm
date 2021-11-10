@@ -1,106 +1,109 @@
 <template>
-    <div>
-        <div class="container vh-100 mt-3">
-            <div class="d-flex justify-content-center align-items-center h-100">
-                <form method="post" @submit.prevent="Login" class="w-50">
-                    <div class="form">
-                        <div class="form-group">
-                            <label>{{ $t('auth.email') }}</label>
-                            <input type="email" v-model="user.email" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>{{ $t('auth.password') }}</label>
-                            <input type="password" v-model="user.password" class="form-control">
-                        </div>
-
-                        <button type="submit" class="btn btn-success">
-                            {{ $t('auth.login') }}
-                        </button>
-                    </div>
-                </form>
+  <div>
+    <div class="container vh-100 mt-3">
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <form method="post" @submit.prevent="Login" class="w-50">
+          <div class="form">
+            <div class="form-group">
+              <label>{{ $t("auth.email") }}</label>
+              <input type="email" v-model="user.email" class="form-control" />
             </div>
-        </div>
+
+            <div class="form-group">
+              <label>{{ $t("auth.password") }}</label>
+              <input
+                type="password"
+                v-model="user.password"
+                class="form-control"
+              />
+            </div>
+
+            <button type="submit" class="btn btn-success">
+              {{ $t("auth.login") }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
+import {mapActions} from "vuex";
 
-    import { mapActions } from 'vuex';
+export default {
+  data: () => ({
+    user: {
+      email: null,
+      password: null,
+    },
 
-    export default {
-        data: () => ({
-            user: {
-                email: null,
-                password: null
-            },
+    info: null,
+  }),
 
-            info: null
-        }),
+  mounted() {
+    this.CheckLogin();
+  },
 
-        mounted() {
-            this.CheckLogin();
-        },
+  methods: {
+    ...mapActions(["fetchAuth", "fetchMenu", "setMe"]),
 
-        methods: {
+    Login() {
+      let vm = this;
+      let path = this.$router.currentRoute;
 
-            ...mapActions(['fetchAuth', 'fetchMenu', 'setMe']),
+      this.axios
+        .post(process.env.VUE_APP_URL + "/oauth", this.user)
+        .then((response) => {
+          const token = response.data.access_token;
+          localStorage.token = token;
+          // this.setToken(token);
 
-            Login() {
-                let vm = this;
-                let path = this.$router.currentRoute;
+          this.fetchAuth(this);
+          this.fetchMenu(this);
+          this.setMe(this, path);
 
-                this.axios.post(process.env.VUE_APP_URL + '/oauth', this.user)
-                    .then((response) => {
-                        const token = response.data.access_token;
-                        localStorage.token = token;
-                        // this.setToken(token);
-
-                        this.fetchAuth(this);
-                        this.fetchMenu(this);
-                        this.setMe(this, path);
-
-                        vm.toasted(response.data.message, 'success');
-                        vm.$router.push('/home')
-                    }).catch(function (error) {
-                        if (! error.response) {
-                            vm.toasted('Error: Network Error', 'error');
-                        } else {
-                            if (error.response.status === 403) {
-                                vm.toasted(error.response.data.message, 'error');
-                            } else if (error.response.status === 401) {
-                                vm.toasted(error.response.data, 'error');
-                            } else if (error.response.status === 500) {
-                                vm.toasted(error.response.data.message, 'error');
-                            } else {
-                                vm.toasted(error.response.data.message, 'error');
-                            }
-                        }
-                    });
-            },
-
-            CheckLogin() {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                let vm = this;
-
-                this.axios.get(process.env.VUE_APP_URL + '/oauth/me', header).then(() => {
-                    //this.items = response.data;
-                    vm.$router.push({ path: 'dashboard' });
-                }).catch(() => {
-                    localStorage.clear();
-                });
+          vm.toasted(response.data.message, "success");
+          vm.$router.push("/home");
+        })
+        .catch(function (error) {
+          if (!error.response) {
+            vm.toasted("Error: Network Error", "error");
+          } else {
+            if (error.response.status === 403) {
+              vm.toasted(error.response.data.message, "error");
+            } else if (error.response.status === 401) {
+              vm.toasted(error.response.data, "error");
+            } else if (error.response.status === 500) {
+              vm.toasted(error.response.data.message, "error");
+            } else {
+              vm.toasted(error.response.data.message, "error");
             }
+          }
+        });
+    },
+
+    CheckLogin() {
+      let header = {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
         },
+      };
 
+      let vm = this;
 
-    }
+      this.axios
+        .get(process.env.VUE_APP_URL + "/oauth/me", header)
+        .then(() => {
+          //this.items = response.data;
+          vm.$router.push({path: "dashboard"});
+        })
+        .catch(() => {
+          localStorage.clear();
+        });
+    },
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

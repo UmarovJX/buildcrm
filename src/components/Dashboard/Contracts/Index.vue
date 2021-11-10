@@ -1,31 +1,34 @@
 <template>
   <main>
-    <div class="my-container">
-      <form action="" class="my-form pt-4">
-        <div class="mb-3 searching">
-          <input
-            class="my-form__input"
-            type="text"
-            v-model="search"
-            @input="SearchInput"
-            :placeholder="$t('clients.search')"
-          />
-          <button><i class="far fa-search"></i></button>
-        </div>
-      </form>
-
-      <div class="col-md-2 float-right">
+    <div class="app-content">
+      <div class="container-fluid px-0">
         <div class="row">
-          <select
-            class="form-control"
-            v-model="orderBy"
-            aria-label="Default select example"
-          >
-            <option selected value="all">Все</option>
-            <option value="sold">Проданные</option>
-            <option value="contract">Неоплаченные</option>
-            <option value="booked">Забронированные</option>
-          </select>
+          <div class="col-md-8">
+            <form action="" class="my-form">
+              <div class="mb-3 searching">
+                <input
+                  class="my-form__input"
+                  type="text"
+                  v-model="search"
+                  @input="SearchInput"
+                  :placeholder="$t('clients.search')"
+                />
+                <button><i class="far fa-search"></i></button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-4">
+            <select
+              class="form-control"
+              v-model="orderBy"
+              aria-label="Default select example"
+            >
+              <option selected value="all">Все</option>
+              <option value="sold">Проданные</option>
+              <option value="contract">Неоплаченные</option>
+              <option value="booked">Забронированные</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -111,7 +114,7 @@
                   class="dropdown-item dropdown-item--inside"
                   v-if="
                     data.item.status === 'contract' ||
-                      data.item.status === 'sold'
+                    data.item.status === 'sold'
                   "
                   :href="data.item.contract_path"
                 >
@@ -161,7 +164,7 @@ export default {
   },
 
   watch: {
-    orderBy: function(newVal) {
+    orderBy: function (newVal) {
       if (newVal != "all") {
         this.fetchContractSearch(this);
       } else {
@@ -308,7 +311,7 @@ export default {
         this.fetchContracts(this);
       }
     },
-    SearchInput: debounce(function(value) {
+    SearchInput: debounce(function (value) {
       this.onSearchInputChange(value);
     }, 800),
   },

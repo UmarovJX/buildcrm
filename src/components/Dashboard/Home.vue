@@ -1,8 +1,14 @@
 <template>
   <main>
-    <div class="my-container">
+    <div class="app-content">
       <div
-        class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-3"
+        class="
+          d-flex
+          justify-content-between
+          align-items-center
+          flex-md-row flex-column
+          pb-3
+        "
       >
         <div
           class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
@@ -61,7 +67,10 @@
               <!--                    </div>-->
               <!--                </div>-->
 
-              <div class="col-lg-3 col-md-6" v-if="getPermission.apartments.view">
+              <div
+                class="col-lg-3 col-md-6"
+                v-if="getPermission.apartments.view"
+              >
                 <router-link :to="{name: 'objects-filter'}">
                   <div class="card-counter apartments">
                     <i class="far fa-home"></i>
