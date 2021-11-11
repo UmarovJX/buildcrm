@@ -81,3 +81,28 @@ a:hover {
   text-decoration: none;
   color: inherit;
 }
+
+main {
+  margin-left: 260px;
+  position: relative;
+  transition: all 0.3s ease;
+  backface-visibility: hidden;
+  min-height: calc(100% - 3rem);
+  padding: 2rem 2rem 0 2rem;
+
+  @include mq("tablet", max) {
+    margin: 1rem;
+    padding: 4rem 0 0 0;
+  }
+}
+
+main > div.d-flex.justify-content-between > div {
+  margin-top: 15px !important;
+  padding-left: 15px;
+}
+
+main > div.d-flex.justify-content-between > div .title__big {
+  -webkit-box-ordinal-group: 1 !important;
+  -ms-flex-order: 0 !important;
+  order: 0 !important;
+}

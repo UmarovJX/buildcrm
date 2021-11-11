@@ -23,7 +23,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-lg-3 col-md-6" v-if="getPermission.objects.view">
+              <div class="col-lg-3 col-md-6 mb-md-0 mb-3" v-if="getPermission.objects.view">
                 <router-link :to="{name: 'objects'}">
                   <div class="card-counter primary">
                     <i class="far fa-building"></i>
@@ -35,7 +35,7 @@
                 </router-link>
               </div>
 
-              <!-- <div class="col-lg-3 col-md-6" v-if="getPermission.clients.view">
+              <!-- <div class="col-lg-3 col-md-6 mb-md-0 mb-3" v-if="getPermission.clients.view">
           <router-link :to="{name: 'clients'}">
             <div class="card-counter danger">
               <i class="far fa-users-class"></i>
@@ -47,7 +47,7 @@
           </router-link>
         </div> -->
 
-              <div class="col-lg-3 col-md-6" v-if="getPermission.users.view">
+              <div class="col-lg-3 col-md-6 mb-md-0 mb-3" v-if="getPermission.users.view">
                 <router-link :to="{name: 'users'}">
                   <div class="card-counter success">
                     <i class="far fa-users"></i>
@@ -59,7 +59,7 @@
                 </router-link>
               </div>
 
-              <!--                <div class="col-lg-3 col-md-6">-->
+              <!--                <div class="col-lg-3 col-md-6 mb-md-0 mb-3">-->
               <!--                    <div class="card-counter info">-->
               <!--                        <i class="far fa-cogs"></i>-->
               <!--                        <span class="count-numbers"></span>-->
@@ -68,7 +68,7 @@
               <!--                </div>-->
 
               <div
-                class="col-lg-3 col-md-6"
+                class="col-lg-3 col-md-6 mb-md-0 mb-3"
                 v-if="getPermission.apartments.view"
               >
                 <router-link :to="{name: 'objects-filter'}">
@@ -112,7 +112,6 @@ export default {
 <style>
 .card-counter {
   box-shadow: 2px 2px 10px #dadada;
-  margin: 5px;
   padding: 25px 16px;
   background-color: #fff;
   height: 200px;
