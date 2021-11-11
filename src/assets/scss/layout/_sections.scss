@@ -5,7 +5,11 @@
   background-color: #fff;
   background-clip: border-box;
   border-radius: 0.428rem;
-  padding: 1rem 0.5rem;
+  padding: 1rem;
+  @include mq("tablet", max) {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
 .app-content {

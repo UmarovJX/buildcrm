@@ -194,7 +194,7 @@ export default {
 
       search: "",
 
-      sortBy: "contract",
+      sortBy: "",
       sortDesc: false,
       fields: [
         {

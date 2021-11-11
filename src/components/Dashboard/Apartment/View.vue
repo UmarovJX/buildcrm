@@ -2,8 +2,8 @@
   <main>
     <div class="app-content">
       <div ref="document" id="printMe">
-        <div class="d-flex align-items-center pb-3 pt-0 px-3 px-md-0 py-lg-3">
-          <h1 class="title__default mb-md-0 mb-3">
+        <div class="d-flex align-items-center pb-3">
+          <h1 class="title__default mb-0">
             {{ getApartment.object.name }} - {{ getApartment.number }}
           </h1>
         </div>

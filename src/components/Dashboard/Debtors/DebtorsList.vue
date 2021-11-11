@@ -33,6 +33,7 @@
               ></date-picker>
             </div>
             <div
+            class="my-3 my-md-0"
               :class="
                 date.length > 0 ||
                 orderBy === 'expired' ||

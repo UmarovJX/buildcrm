@@ -1,395 +1,475 @@
 <template>
   <main>
     <div class="app-content">
-      <div class="new-object px-0">
+      <div class="new-object">
         <div class="container-fluid">
-          <form ref="form" @submit.stop.prevent="sendForm">
-            <div class="container-fluid px-0 mx-0">
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="checkout-pasport">{{
-                      $t("apartments.agree.passport_series")
-                    }}</label>
-                    <input
-                      class="my-form__input"
-                      type="text"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.passport_series')
-                      "
-                      required
-                      v-model="client.passport_series"
-                      id="checkout-pasport"
-                    />
-                  </div>
+          <div class="row">
+            <div class="col-lg-2">
+              <div class="building">
+                <div class="building__img">
+                  <img
+                    :data-fancybox="getApartment.plan.image"
+                    v-lazy="getApartment.plan.image"
+                    width="100%"
+                  />
                 </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="issue_passport">{{
-                      $t("apartments.agree.issued_by_whom")
-                    }}</label>
-                    <input
-                      class="my-form__input"
-                      type="text"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.issued_by_whom')
-                      "
-                      required
-                      v-model="client.issued_by_whom"
-                      id="issue_passport"
-                    />
-                  </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="building__info mt-md-0 mt-3">
+                <p>
+                  {{ $t("apartments.view.number") }}:
+                  {{ getApartment.number }}
+                </p>
+                <p>
+                  {{ $t("apartments.view.area") }}:
+                  {{ getApartment.plan.area }} м² |
+                  {{ $t("apartments.list.balcony") }}:
+                  <span v-if="getApartment.plan.balcony">
+                    {{ getApartment.plan.balcony_area }} м²
+                  </span>
+                  <span v-else>
+                    {{ $t("no") }}
+                  </span>
+                </p>
+                <p>
+                  {{ $t("apartments.view.rooms") }}: {{ getApartment.rooms }}
+                  |
+                  {{ $t("apartments.view.floor") }}: {{ getApartment.floor }}
+                </p>
+                <p>
+                  {{ $t("apartments.view.price_m2") }}:
+                  {{
+                    getApartment.price_m2
+                      | number("0,0.00", {
+                        thousandsSeparator: " ",
+                        decimalSeparator: ",",
+                      })
+                  }}
+                  {{ $t("ye") }}
+                </p>
+                <p>
+                  {{ $t("apartments.view.total_price") }}:
+                  {{
+                    getApartment.price
+                      | number("0,0.00", {
+                        thousandsSeparator: " ",
+                        decimalSeparator: ",",
+                      })
+                  }}
+                  {{ $t("ye") }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="new-object">
+        <div class="container-fluid">
+          <form ref="form" @submit.stop.prevent="sendForm" v-if="step === 2">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="checkout-pasport">{{
+                    $t("apartments.agree.passport_series")
+                  }}</label>
+                  <input
+                    class="my-form__input"
+                    type="text"
+                    @change="getClientData"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.passport_series')
+                    "
+                    required
+                    v-model="client.passport_series"
+                    id="checkout-pasport"
+                  />
                 </div>
+              </div>
 
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="date_of_issue">{{
-                      $t("apartments.agree.date_of_issue")
-                    }}</label>
-                    <!--                                <b-form-datepicker v-model="client.date_of_issue" locale="ru"></b-form-datepicker>-->
-                    <input
-                      v-model="client.date_of_issue"
-                      type="date"
-                      class="form-control"
-                    />
-                  </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="issue_passport">{{
+                    $t("apartments.agree.issued_by_whom")
+                  }}</label>
+                  <input
+                    class="my-form__input"
+                    type="text"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.issued_by_whom')
+                    "
+                    required
+                    v-model="client.issued_by_whom"
+                    id="issue_passport"
+                  />
                 </div>
+              </div>
 
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="birth_day">{{
-                      $t("apartments.agree.birth_day")
-                    }}</label>
-                    <input
-                      v-model="client.birth_day"
-                      type="date"
-                      class="form-control"
-                    />
-                  </div>
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="date_of_issue">{{
+                    $t("apartments.agree.date_of_issue")
+                  }}</label>
+                  <!--                                <b-form-datepicker v-model="client.date_of_issue" locale="ru"></b-form-datepicker>-->
+                  <input
+                    v-model="client.date_of_issue"
+                    type="date"
+                    class="form-control"
+                  />
                 </div>
+              </div>
 
-                <div class="col-md-12">
-                  <hr />
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="birth_day">{{
+                    $t("apartments.agree.birth_day")
+                  }}</label>
+                  <input
+                    v-model="client.birth_day"
+                    type="date"
+                    class="form-control"
+                  />
                 </div>
+              </div>
 
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="last_name_kirill"
-                      >{{ $t("apartments.agree.last_name") }} (kirill)</label
-                    >
-                    <input
-                      id="last_name_kirill"
-                      class="my-form__input"
-                      type="text"
-                      required
-                      v-model="client.last_name.kirill"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.last_name')
-                      "
-                    />
-                  </div>
-                </div>
+              <div class="col-md-12">
+                <hr />
+              </div>
 
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="first_name_kirill"
-                      >{{ $t("apartments.agree.first_name") }} (kirill)</label
-                    >
-                    <input
-                      id="first_name_kirill"
-                      class="my-form__input"
-                      type="text"
-                      required
-                      v-model="client.first_name.kirill"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.first_name')
-                      "
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="second_name_kirill"
-                      >{{ $t("apartments.agree.second_name") }} (kirill)</label
-                    >
-                    <input
-                      id="second_namev"
-                      class="my-form__input"
-                      type="text"
-                      required
-                      v-model="client.second_name.kirill"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.second_name')
-                      "
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-12">
-                  <hr />
-                </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="last_name_lotin"
-                      >{{ $t("apartments.agree.last_name") }} (lotin)</label
-                    >
-                    <input
-                      id="last_name_lotin"
-                      class="my-form__input"
-                      type="text"
-                      required
-                      v-model="client.last_name.lotin"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.last_name_lotin')
-                      "
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="first_name_lotin"
-                      >{{ $t("apartments.agree.first_name") }} (lotin)</label
-                    >
-                    <input
-                      id="first_name_lotin"
-                      class="my-form__input"
-                      type="text"
-                      required
-                      v-model="client.first_name.lotin"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.first_name_lotin')
-                      "
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="second_name_lotin"
-                      >{{ $t("apartments.agree.second_name") }} (lotin)</label
-                    >
-                    <input
-                      id="second_name_lotin"
-                      class="my-form__input"
-                      type="text"
-                      required
-                      v-model="client.second_name.lotin"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.second_name_lotin')
-                      "
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-12">
-                  <hr />
-                </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="phone">{{
-                      $t("apartments.agree.phone")
-                    }}</label>
-                    <input
-                      class="my-form__input"
-                      type="tel"
-                      :placeholder="$t('apartments.agree.placeholder.phone')"
-                      v-model="client.phone"
-                      id="phone"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="other_phone">{{
-                      $t("apartments.agree.other_phone")
-                    }}</label>
-                    <input
-                      class="my-form__input"
-                      type="tel"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.other_phone')
-                      "
-                      v-model="client.other_phone"
-                      id="other_phone"
-                    />
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="language">{{
-                      $t("apartments.agree.language")
-                    }}</label>
-                    <select
-                      class="form-control"
-                      id="language"
-                      v-model="client.language"
-                    >
-                      <option value="uz">Узбекский</option>
-                      <option value="ru">Русский</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div
-                  class="col-md-4"
-                  v-if="getMe.role.id === 1 || getPermission.contracts.friends"
-                >
-                  <div class="mb-3">
-                    <label class="d-block" for="type_client">{{
-                      $t("apartments.agree.type_client")
-                    }}</label>
-                    <select
-                      class="form-control"
-                      id="type_client"
-                      v-model="type_client"
-                    >
-                      <option value="unknown">Незнакомый</option>
-                      <option value="friends">Знакомый</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="col-md-12">
-                  <hr />
-                </div>
-
-                <div
-                  class="col-12 mb-2"
-                  v-if="getMe.role.id === 1 || getPermission.contracts.date"
-                >
-                  <button
-                    class="btn btn-primary mb-2"
-                    @click="date_change = true"
-                    type="button"
+              <!-- last_name_kirill -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="last_name_kirill"
+                    >{{ $t("apartments.agree.last_name") }} (kirill)</label
                   >
-                    <i class="fa fa-calendar"></i> Изменить дата договора
-                  </button>
-
-                  <div class="row" v-if="date_change">
-                    <div class="col-md-4">
-                      <div class="mb-3">
-                        <label class="d-block" for="number">{{
-                          $t("apartments.agree.number")
-                        }}</label>
-                        <input
-                          id="number"
-                          class="my-form__input"
-                          type="text"
-                          required
-                          v-model="apartment_edit.contract_number"
-                          :placeholder="
-                            $t('apartments.agree.placeholder.number')
-                          "
-                        />
-                      </div>
-                    </div>
-
-                    <div class="col-md-4">
-                      <div class="mb-3">
-                        <label class="d-block" for="date">{{
-                          $t("apartments.agree.date_contract")
-                        }}</label>
-                        <input
-                          id="date"
-                          class="my-form__input"
-                          type="date"
-                          required
-                          v-model="apartment_edit.contract_date"
-                          :placeholder="
-                            $t('apartments.agree.placeholder.date_contract')
-                          "
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <hr />
+                  <input
+                    id="last_name_kirill"
+                    class="my-form__input"
+                    type="text"
+                    required
+                    v-model="client.last_name.kirill"
+                    @input="
+                      isCyrillic_last_name_kirill(client.last_name.kirill)
+                    "
+                    @change="textToLatin_last_name_kirill"
+                    :placeholder="$t('apartments.agree.placeholder.last_name')"
+                  />
                 </div>
+              </div>
 
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="discounts">{{
-                      $t("apartments.view.variant")
-                    }}</label>
-                    <select
-                      class="form-control"
-                      id="discounts"
-                      v-model="client.discount"
-                      @change="ChangeDiscount()"
-                    >
-                      <option :value="{id: null}">
-                        {{ $t("apartments.agree.placeholder.enter_discount") }}
-                      </option>
-
-                      <option
-                        v-for="(discount, index) in getApartmentDiscounts"
-                        :value="discount"
-                        :key="index"
-                      >
-                        {{ $t("apartments.view.variant") }}
-                        {{ index + 1 }} - {{ discount.prepay_to }}%
-                      </option>
-
-                      <option
-                        v-if="
-                          getMe.role.id === 1 ||
-                          getPermission.contracts.other_price
-                        "
-                        :value="{id: 'other', discount: 0, prepay_to: 30}"
-                      >
-                        {{ $t("apartments.view.other_variant") }}
-                      </option>
-                    </select>
-                  </div>
+              <!-- first_name_kirill -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="first_name_kirill"
+                    >{{ $t("apartments.agree.first_name") }} (kirill)</label
+                  >
+                  <input
+                    id="first_name_kirill"
+                    class="my-form__input"
+                    type="text"
+                    required
+                    v-model="client.first_name.kirill"
+                    @input="
+                      isCyrillic_first_name_kirill(client.first_name.kirill)
+                    "
+                    @change="textToLatin_first_name_kirill"
+                    :placeholder="$t('apartments.agree.placeholder.first_name')"
+                  />
                 </div>
+              </div>
 
-                <div
-                  class="col-md-12 my-2"
-                  v-if="client.discount.id && client.discount.id != 'other'"
+              <!-- second_name_kirill -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="second_name_kirill"
+                    >{{ $t("apartments.agree.second_name") }} (kirill)</label
+                  >
+                  <input
+                    id="second_namev"
+                    class="my-form__input"
+                    type="text"
+                    required
+                    v-model="client.second_name.kirill"
+                    @input="
+                      isCyrillic_second_name_kirill(client.second_name.kirill)
+                    "
+                    @change="textToLatin_second_name_kirill"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.second_name')
+                    "
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <!-- last_name_lotin -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="last_name_lotin"
+                    >{{ $t("apartments.agree.last_name") }} (lotin)</label
+                  >
+                  <input
+                    id="last_name_lotin"
+                    class="my-form__input"
+                    type="text"
+                    required
+                    v-model="client.last_name.lotin"
+                    @input="isLatin_last_name_lotin(client.last_name.lotin)"
+                    @change="textToCyrillic_last_name_lotin"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.last_name_lotin')
+                    "
+                  />
+                </div>
+              </div>
+
+              <!-- first_name_lotin -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="first_name_lotin"
+                    >{{ $t("apartments.agree.first_name") }} (lotin)</label
+                  >
+                  <input
+                    id="first_name_lotin"
+                    class="my-form__input"
+                    type="text"
+                    required
+                    v-model="client.first_name.lotin"
+                    @input="isLatin_first_name_lotin(client.first_name.lotin)"
+                    @change="textToCyrillic_first_name_lotin"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.first_name_lotin')
+                    "
+                  />
+                </div>
+              </div>
+
+              <!-- second_name_lotin -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="second_name_lotin"
+                    >{{ $t("apartments.agree.second_name") }} (lotin)</label
+                  >
+                  <input
+                    id="second_name_lotin"
+                    class="my-form__input"
+                    type="text"
+                    required
+                    v-model="client.second_name.lotin"
+                    @input="isLatin_second_name_lotin(client.second_name.lotin)"
+                    @change="textToCyrillic_second_name_lotin"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.second_name_lotin')
+                    "
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="phone">{{
+                    $t("apartments.agree.phone")
+                  }}</label>
+                  <input
+                    class="my-form__input"
+                    type="tel"
+                    :placeholder="$t('apartments.agree.placeholder.phone')"
+                    v-model="client.phone"
+                    id="phone"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="other_phone">{{
+                    $t("apartments.agree.other_phone")
+                  }}</label>
+                  <input
+                    class="my-form__input"
+                    type="tel"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.other_phone')
+                    "
+                    v-model="client.other_phone"
+                    id="other_phone"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="language">{{
+                    $t("apartments.agree.language")
+                  }}</label>
+                  <select
+                    class="form-control"
+                    id="language"
+                    v-model="client.language"
+                  >
+                    <option value="uz">Узбекский</option>
+                    <option value="ru">Русский</option>
+                  </select>
+                </div>
+              </div>
+
+              <div
+                class="col-md-4"
+                v-if="getMe.role.id === 1 || getPermission.contracts.friends"
+              >
+                <div class="mb-3">
+                  <label class="d-block" for="type_client">{{
+                    $t("apartments.agree.type_client")
+                  }}</label>
+                  <select
+                    class="form-control"
+                    id="type_client"
+                    v-model="type_client"
+                  >
+                    <option value="unknown">Незнакомый</option>
+                    <option value="friends">Знакомый</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <div
+                class="col-12 mb-2"
+                v-if="getMe.role.id === 1 || getPermission.contracts.date"
+              >
+                <button
+                  class="btn btn-primary mb-2"
+                  @click="date_change = true"
+                  type="button"
                 >
-                  <Discount
-                    :discount="client.discount"
-                    :apartment="apartment"
-                  ></Discount>
-                </div>
+                  <i class="fa fa-calendar"></i> Изменить дата договора
+                </button>
 
-                <div class="col-md-12">
-                  <hr />
-                </div>
+                <div class="row" v-if="date_change">
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label class="d-block" for="number">{{
+                        $t("apartments.agree.number")
+                      }}</label>
+                      <input
+                        id="number"
+                        class="my-form__input"
+                        type="text"
+                        required
+                        v-model="apartment_edit.contract_number"
+                        :placeholder="$t('apartments.agree.placeholder.number')"
+                      />
+                    </div>
+                  </div>
 
-                <div class="col-md-4" v-if="client.discount.id">
-                  <div class="mb-3">
-                    <label class="d-block" for="first_payment_date">{{
-                      $t("apartments.agree.first_payment_date")
-                    }}</label>
-                    <input
-                      v-model="client.first_payment_date"
-                      id="first_payment_date"
-                      type="date"
-                      class="form-control"
-                    />
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label class="d-block" for="date">{{
+                        $t("apartments.agree.date_contract")
+                      }}</label>
+                      <input
+                        id="date"
+                        class="my-form__input"
+                        type="date"
+                        required
+                        v-model="apartment_edit.contract_date"
+                        :placeholder="
+                          $t('apartments.agree.placeholder.date_contract')
+                        "
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div class="col-md-4" v-if="!confirm && client.discount.id">
-                  <div class="mb-3">
-                    <label class="d-block" for="payment_date">{{
-                      $t("apartments.agree.payment_date")
-                    }}</label>
-                    <input
-                      v-model="client.payment_date"
-                      id="payment_date"
-                      type="date"
-                      class="form-control"
-                    />
-                  </div>
+                <hr />
+              </div>
+
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="discounts">{{
+                    $t("apartments.view.variant")
+                  }}</label>
+                  <select
+                    class="form-control"
+                    id="discounts"
+                    v-model="client.discount"
+                    @change="ChangeDiscount()"
+                  >
+                    <option :value="{id: null}">
+                      {{ $t("apartments.agree.placeholder.enter_discount") }}
+                    </option>
+
+                    <option
+                      v-for="(discount, index) in getApartmentDiscounts"
+                      :value="discount"
+                      :key="index"
+                    >
+                      {{ $t("apartments.view.variant") }}
+                      {{ index + 1 }} - {{ discount.prepay_to }}%
+                    </option>
+
+                    <option
+                      v-if="
+                        getMe.role.id === 1 ||
+                        getPermission.contracts.other_price
+                      "
+                      :value="{id: 'other', discount: 0, prepay_to: 30}"
+                    >
+                      {{ $t("apartments.view.other_variant") }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div
+                class="col-md-12 my-2"
+                v-if="client.discount.id && client.discount.id != 'other'"
+              >
+                <Discount
+                  :discount="client.discount"
+                  :apartment="apartment"
+                ></Discount>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <div class="col-md-4" v-if="client.discount.id">
+                <div class="mb-3">
+                  <label class="d-block" for="first_payment_date">{{
+                    $t("apartments.agree.first_payment_date")
+                  }}</label>
+                  <input
+                    v-model="client.first_payment_date"
+                    id="first_payment_date"
+                    type="date"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4" v-if="!confirm && client.discount.id">
+                <div class="mb-3">
+                  <label class="d-block" for="payment_date">{{
+                    $t("apartments.agree.payment_date")
+                  }}</label>
+                  <input
+                    v-model="client.payment_date"
+                    id="payment_date"
+                    type="date"
+                    class="form-control"
+                  />
                 </div>
               </div>
             </div>
@@ -931,7 +1011,7 @@ export default {
 
   data() {
     return {
-      step: 1,
+      step: 2,
       search_label: "",
       client: {
         id: null,
@@ -1003,6 +1083,8 @@ export default {
     Discount,
   },
 
+  created() {},
+
   computed: {
     ...mapGetters([
       "getReserveClient",
@@ -1045,7 +1127,7 @@ export default {
 
   mounted() {
     this.fetchApartment(this);
-    //console.log(this.getMe.role.id === 1 && false === false || this.getPermission.contracts.monthly && false === false);
+    this.backToView();
 
     if (this.apartment.order.id) {
       this.reserveClientFull();
@@ -1056,7 +1138,15 @@ export default {
 
   methods: {
     ...mapActions(["fetchApartment"]),
-
+    backToView() {
+      console.log(this.getApartment.order.status);
+      if (this.getApartment.order.status == "contract") {
+        this.$router.push({
+          name: "apartments-view",
+          params: {id: this.$route.params.id},
+        });
+      }
+    },
     getDiscountEdited() {
       let price = this.apartment_edit.price;
       let prepay_price = this.apartment_edit.prepay_price;
@@ -1139,7 +1229,6 @@ export default {
           discount: {id: null},
         };
       } catch (error) {
-        //console.log(4);
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -1181,7 +1270,6 @@ export default {
           discount: {id: null},
         };
       } catch (error) {
-        //console.log(4);
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -1325,6 +1413,11 @@ export default {
               this.$bvModal.hide("modal-agree");
 
               this.$emit("successAgree", response.data);
+
+              this.$router.push({
+                name: "apartments-view",
+                params: {id: this.$route.params.id},
+              });
             })
             .catch((error) => {
               if (!error.response) {
@@ -1430,12 +1523,10 @@ export default {
         return parseFloat(this.apartment_edit.prepay_price);
       }
 
-      //console.log(this.client.discount.prepay_to * total / 100);
       return (this.client.discount.prepay_to * total) / 100;
     },
 
     getTotalOther() {
-      //  console.log(parseFloat(this.apartment_edit.price))
       return parseFloat(this.apartment_edit.price);
     },
 
@@ -1452,17 +1543,12 @@ export default {
 
     getDebt() {
       // let price = this.getTotal() - this.getPrepay();
-      //console.log(price);
-      // console.log(this.getTotal());
-      // console.log(this.getPrepay());
 
       return this.getTotal() - this.getPrepay();
     },
 
     getTotal() {
       let total_discount = this.getDiscount();
-
-      //console.log(total_discount);
 
       // let total = price * area;
 
@@ -1550,14 +1636,299 @@ export default {
         }
       }
     },
+    async getClientData() {
+      try {
+        this.search_label = this.client.passport_series;
+        const {data} = await this.axios.get(
+          process.env.VUE_APP_URL +
+            "/orders/client/search?field=" +
+            this.search_label,
+          this.header
+        );
+        this.client = {
+          id: data.id,
+          first_name: data.first_name ?? {
+            lotin: null,
+            kirill: null,
+          },
+          last_name: data.last_name ?? {
+            lotin: null,
+            kirill: null,
+          },
+          second_name: data.second_name ?? {
+            lotin: null,
+            kirill: null,
+          },
+          passport_series: data.passport_series,
+          issued_by_whom: data.issued_by_whom,
+          language: data.language,
+          birth_day: data.birth_day,
+          phone: data.phone,
+          other_phone: data.other_phone,
+          date_of_issue: data.date_of_issue,
+          discount: {id: null},
+        };
+      } catch (error) {
+        this.toastedWithErrorCode(error);
+      }
+    },
+
+    isCyrillic_last_name_kirill(value) {
+      this.client.last_name.kirill = this.symbolIsCyrillic(value);
+    },
+    isCyrillic_first_name_kirill(value) {
+      this.client.first_name.kirill = this.symbolIsCyrillic(value);
+    },
+    isCyrillic_second_name_kirill(value) {
+      this.client.second_name.kirill = this.symbolIsCyrillic(value);
+    },
+
+    isLatin_last_name_lotin(value) {
+      this.client.last_name.lotin = this.symbolIsLatin(value);
+    },
+    isLatin_first_name_lotin(value) {
+      this.client.first_name.lotin = this.symbolIsLatin(value);
+    },
+    isLatin_second_name_lotin(value) {
+      this.client.second_name.lotin = this.symbolIsLatin(value);
+    },
+
+    textToLatin_last_name_kirill(value) {
+      this.client.last_name.lotin = this.translateTextToLatin(value);
+    },
+    textToLatin_first_name_kirill(value) {
+      this.client.first_name.lotin = this.translateTextToLatin(value);
+    },
+    textToLatin_second_name_kirill(value) {
+      this.client.second_name.lotin = this.translateTextToLatin(value);
+    },
+
+    textToCyrillic_last_name_lotin(value) {
+      this.client.last_name.kirill = this.translateTextToCyrillic(value);
+    },
+    textToCyrillic_first_name_lotin(value) {
+      this.client.first_name.kirill = this.translateTextToCyrillic(value);
+    },
+    textToCyrillic_second_name_lotin(value) {
+      this.client.second_name.kirill = this.translateTextToCyrillic(value);
+    },
+
+    symbolIsCyrillic(event) {
+      return event.replace(/[^а-яё]/i, "").replace(/(\..*?)\..*/g, "$1");
+    },
+    symbolIsLatin(event) {
+      return event.replace(/[^a-z.]/i, "").replace(/(\..*?)\..*/g, "$1");
+    },
+
+    translateTextToLatin(value) {
+      return this.symbolCyrillicToLatin(value.target.value);
+    },
+    translateTextToCyrillic(value) {
+      value.target.value = value.target.value.replace("Sh", "Ш");
+      value.target.value = value.target.value.replace("sh", "ш");
+
+      value.target.value = value.target.value.replace("Ch", "Ч");
+      value.target.value = value.target.value.replace("ch", "ч");
+
+      value.target.value = value.target.value.replace("Yu", "Ю");
+      value.target.value = value.target.value.replace("yu", "ю");
+
+      value.target.value = value.target.value.replace("Ya", "Я");
+      value.target.value = value.target.value.replace("Ya", "я");
+
+      value.target.value = value.target.value.replace("Yo", "Ё");
+      value.target.value = value.target.value.replace("yo", "ё");
+
+      value.target.value = value.target.value.replace("Ye", "Е");
+      value.target.value = value.target.value.replace("ye", "е");
+
+      value.target.value = value.target.value.replace("Kh", "Х");
+      value.target.value = value.target.value.replace("kh", "х");
+
+      return this.symbolLatinToCyrillic(value.target.value);
+    },
+
+    symbolCyrillicToLatin(word) {
+      var answer = "",
+        a = {};
+
+      a["Ё"] = "YO";
+      a["Й"] = "I";
+      a["Ц"] = "TS";
+      a["У"] = "U";
+      a["К"] = "K";
+      a["Е"] = "E";
+      a["Н"] = "N";
+      a["Г"] = "G";
+      a["Ш"] = "Sh";
+      a["Щ"] = "Sch";
+      a["З"] = "Z";
+      a["Х"] = "Kh";
+      a["Ъ"] = "'";
+      a["ё"] = "yo";
+      a["й"] = "i";
+      a["ц"] = "ts";
+      a["у"] = "u";
+      a["к"] = "k";
+      a["е"] = "e";
+      a["н"] = "n";
+      a["г"] = "g";
+      a["ш"] = "sh";
+      a["щ"] = "sch";
+      a["з"] = "z";
+      a["х"] = "kh";
+      a["ъ"] = "'";
+      a["Ф"] = "F";
+      a["Ы"] = "I";
+      a["В"] = "V";
+      a["А"] = "a";
+      a["П"] = "P";
+      a["Р"] = "R";
+      a["О"] = "O";
+      a["Л"] = "L";
+      a["Д"] = "D";
+      a["Ж"] = "J";
+      a["Э"] = "E";
+      a["ф"] = "f";
+      a["ы"] = "i";
+      a["в"] = "v";
+      a["а"] = "a";
+      a["п"] = "p";
+      a["р"] = "r";
+      a["о"] = "o";
+      a["л"] = "l";
+      a["д"] = "d";
+      a["ж"] = "j";
+      a["э"] = "e";
+      a["Я"] = "Ya";
+      a["Ч"] = "Ch";
+      a["С"] = "S";
+      a["М"] = "M";
+      a["И"] = "I";
+      a["Т"] = "T";
+      a["Ь"] = "'";
+      a["Б"] = "B";
+      a["Ю"] = "Yu";
+      a["я"] = "ya";
+      a["ч"] = "ch";
+      a["с"] = "s";
+      a["м"] = "m";
+      a["и"] = "i";
+      a["т"] = "t";
+      a["ь"] = "'";
+      a["б"] = "b";
+      a["ю"] = "yu";
+
+      for (let i in word) {
+        if (word.hasOwnProperty(i)) {
+          if (a[word[i]] === undefined) {
+            answer += word[i];
+          } else {
+            answer += a[word[i]];
+          }
+        }
+      }
+      return answer;
+    },
+    symbolLatinToCyrillic(word) {
+      var answer = "",
+        a = {};
+      a["I"] = "Й";
+      a["U"] = "У";
+      a["K"] = "К";
+      a["N"] = "Н";
+      a["G"] = "Г";
+      a["Z"] = "З";
+      a["'"] = "Ъ";
+      a["i"] = "й";
+      a["u"] = "у";
+      a["k"] = "к";
+      a["E"] = "Е";
+      a["e"] = "е";
+      a["n"] = "н";
+      a["g"] = "г";
+      a["z"] = "з";
+      a["'"] = "ъ";
+      a["F"] = "Ф";
+      a["I"] = "Ы";
+      a["V"] = "В";
+      a["a"] = "А";
+      a["P"] = "П";
+      a["R"] = "Р";
+      a["O"] = "О";
+      a["L"] = "Л";
+      a["D"] = "Д";
+      a["J"] = "Ж";
+      a["f"] = "ф";
+      a["i"] = "ы";
+      a["v"] = "в";
+      a["a"] = "а";
+      a["p"] = "п";
+      a["r"] = "р";
+      a["o"] = "о";
+      a["l"] = "л";
+      a["d"] = "д";
+      a["j"] = "ж";
+      // a["E"] = "Э";
+      // a["e"] = "э";
+
+      a["S"] = "С";
+      a["M"] = "М";
+      a["I"] = "И";
+      a["T"] = "Т";
+      a["'"] = "Ь";
+      a["B"] = "Б";
+
+      a["s"] = "с";
+      a["m"] = "м";
+      a["i"] = "и";
+      a["t"] = "т";
+      a["'"] = "ь";
+      a["b"] = "б";
+
+      a["SCH"] = "Щ";
+      a["Kh"] = "Х";
+      a["yo"] = "ё";
+      a["ts"] = "ц";
+      a["sch"] = "щ";
+      a["kh"] = "х";
+      a["Ya"] = "Я";
+      a["Yu"] = "Ю";
+      a["ya"] = "я";
+      a["yu"] = "ю";
+      a["Yo"] = "Ё";
+      a["Ts"] = "Ц";
+      a["Ch"] = "Ч";
+      a["ch"] = "ч";
+      a["Sh"] = "Ш";
+      a["sh"] = "ш";
+
+      for (let i in word) {
+        if (word.hasOwnProperty(i)) {
+          if (a[word[i]] === undefined) {
+            answer += word[i];
+          } else {
+            answer += a[word[i]];
+          }
+        }
+      }
+      return answer;
+    },
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 ::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: #a4a4a4;
-  opacity: 0.8; /* Firefox */
+  opacity: 0.8;
+}
+.building__img {
+  height: 150px;
+}
+.building__info {
+  p {
+    font-size: 16px;
+  }
 }
 </style>

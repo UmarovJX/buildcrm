@@ -20,17 +20,11 @@
           "
         >
           <div class="rounded overflow-hidden">
-            <!-- <img
-            src="@/assets/img/login-img1.svg"
-            alt="login img"
-            class="mw-100"
-          /> -->
             <img
               src="@/assets/img/login-img2.svg"
               alt="login img"
               class="mw-100"
             />
-            <!-- <img src="@/assets/img/xonsaroy.jpg" alt="login img" class="mw-100" /> -->
           </div>
         </div>
         <div class="col-md-4">

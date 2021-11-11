@@ -38,6 +38,28 @@
           ></a>
         </li>
       </ul>
+
+      <button
+        v-if="
+          $route.name !== 'login' &&
+          $route.name !== 'home' &&
+          $route.name !== 'objects' &&
+          $route.name !== 'settings' &&
+          $route.name !== 'users' &&
+          $route.name !== 'roles' &&
+          $route.name !== 'clients' &&
+          $route.name !== 'type_plan' &&
+          $route.name !== 'debtors' &&
+          $route.name !== 'contracts' &&
+          $route.name !== 'companies'
+        "
+        class="btn-back d-xl-block d-none"
+        @click="$router.go(-1)"
+      >
+        <i class="fal fa-arrow-left mr-2"></i>
+        <span>Назад</span>
+      </button>
+
       <div class="ml-auto d-flex justify-content-center align-items-center">
         <div
           class="
@@ -193,7 +215,7 @@ export default {
     return {
       locale: null,
       app_name: process.env.VUE_APP_NAME,
-      isActive: false,
+      isActive: true,
       menuExpanded: false,
     };
   },
@@ -202,6 +224,7 @@ export default {
     this.fetchAuth(this);
     this.fetchMenu(this);
     this.fetchCurrency(this);
+    // this.isActived();
 
     this.locale = localStorage.locale == "uz" ? false : true;
   },
@@ -221,6 +244,11 @@ export default {
       this.nullMe();
       this.$router.push({name: "login"});
     },
+
+    // isActived() {
+    //   console.log(this.isActive);
+    //   this.isActive = localStorage.isActive;
+    // },
 
     getName(name) {
       let locale = localStorage.locale;
@@ -253,6 +281,7 @@ export default {
     },
 
     toggleCollapse() {
+      // localStorage.isActive = this.isActive == false ? true : false;
       this.isActive = !this.isActive;
     },
   },
