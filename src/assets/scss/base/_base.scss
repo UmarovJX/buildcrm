@@ -90,9 +90,9 @@ main {
   min-height: calc(100% - 3rem);
   padding: 2rem 2rem 0 2rem;
 
-  @include mq("tablet", max) {
+  @include mq("desktop", max) {
     margin: 1rem;
-    padding: 4rem 0 0 0;
+    padding: 0rem 0 0 0;
   }
 }
 

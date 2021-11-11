@@ -2,19 +2,15 @@
   <main>
     <div class="app-content">
       <div class="">
-        <div class="title__default my-2">
+        <div class="title__default">
           {{ $t("apartments.list.apartments") }}:
           {{ getApartments.pagination.totalItems }}
         </div>
       </div>
 
-      <div class="">
+      <div class="d-flex justify-content-between flex-wrap">
         <div
-          class="
-            d-flex
-            justify-content-md-end justify-content-center
-            float-left
-          "
+          class="d-flex justify-content-md-end justify-content-center"
           v-if="
             getPermission.apartments.contract ||
             getPermission.apartments.root_contract

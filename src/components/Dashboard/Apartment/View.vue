@@ -218,7 +218,7 @@
                     name: 'contracts-view',
                     params: {id: getApartment.order.id},
                   }"
-                  :class="'btn btn-primary ml-1'"
+                  :class="'btn btn-primary ml-md-1 mr-0 mr-md-2'"
                   v-if="
                     (getPermission.apartments.contract &&
                       (getApartment.order.status === 'sold' ||

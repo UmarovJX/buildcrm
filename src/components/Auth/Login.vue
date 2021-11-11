@@ -1,28 +1,69 @@
 <template>
-  <div>
-    <div class="container vh-100 mt-3">
-      <div class="d-flex justify-content-center align-items-center h-100">
-        <form method="post" @submit.prevent="Login" class="w-50">
-          <div class="form">
-            <div class="form-group">
-              <label>{{ $t("auth.email") }}</label>
-              <input type="email" v-model="user.email" class="form-control" />
-            </div>
-
-            <div class="form-group">
-              <label>{{ $t("auth.password") }}</label>
-              <input
-                type="password"
-                v-model="user.password"
-                class="form-control"
-              />
-            </div>
-
-            <button type="submit" class="btn btn-success">
-              {{ $t("auth.login") }}
-            </button>
+  <div
+    class="vh-100 d-flex justify-content-center align-items-center flex-column"
+  >
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 mb-5">
+          <div class="logo">
+            <router-link to="/">
+              <img src="@/assets/img/object__img1.png" alt="logo" />
+            </router-link>
           </div>
-        </form>
+        </div>
+        <div
+          class="
+            col-md-8
+            d-none d-md-flex
+            justify-content-center
+            align-items-center
+          "
+        >
+          <div class="rounded overflow-hidden">
+            <!-- <img
+            src="@/assets/img/login-img1.svg"
+            alt="login img"
+            class="mw-100"
+          /> -->
+            <img
+              src="@/assets/img/login-img2.svg"
+              alt="login img"
+              class="mw-100"
+            />
+            <!-- <img src="@/assets/img/xonsaroy.jpg" alt="login img" class="mw-100" /> -->
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex justify-content-center align-items-center h-100">
+            <form method="post" @submit.prevent="Login" class="">
+              <div class="form">
+                <div class="form-group">
+                  <label>{{ $t("auth.email") }}</label>
+                  <input
+                    type="email"
+                    v-model="user.email"
+                    class="form-control bg-transparent"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>{{ $t("auth.password") }}</label>
+                  <input
+                    type="password"
+                    v-model="user.password"
+                    class="form-control bg-transparent"
+                  />
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary mr-0 w-100">
+                    {{ $t("auth.login") }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -106,4 +147,19 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+form {
+  width: 350px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@media screen and (max-width: 576px) {
+  .container {
+    margin-top: -100px;
+  }
+}
+</style>

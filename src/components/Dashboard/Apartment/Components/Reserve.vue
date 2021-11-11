@@ -79,12 +79,12 @@
           ></b-form-datepicker>
         </b-form-group>
 
-        <div class="float-right">
+        <div class="w-100 d-flex justify-content-center">
           <b-button variant="light" @click="resetModal">
             {{ $t("cancel") }}
           </b-button>
 
-          <b-button type="submit" class="ml-1" variant="success">
+          <b-button type="submit" class="ml-1 mr-0" variant="success">
             <b-icon-box-arrow-up-right></b-icon-box-arrow-up-right>
             {{ $t("apartments.list.book") }}
           </b-button>

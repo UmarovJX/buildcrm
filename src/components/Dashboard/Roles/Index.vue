@@ -36,7 +36,7 @@
         <router-link
           :to="{name: 'roles-store'}"
           v-if="getPermission.roles.create"
-          :class="'btn btn-primary mr-0 mt-0'"
+          :class="'btn btn-primary mr-0 mt-md-0'"
         >
           <i class="fal fa-plus mr-2"></i>
           {{ $t("add") }}
