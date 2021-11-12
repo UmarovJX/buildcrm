@@ -1018,14 +1018,17 @@ export default {
         first_name: {
           lotin: "",
           kirill: "",
+          counter: 0,
         },
         last_name: {
           lotin: "",
           kirill: "",
+          counter: 0,
         },
         second_name: {
           lotin: "",
           kirill: "",
+          counter: 0,
         },
         passport_series: "",
         issued_by_whom: "",
@@ -1694,30 +1697,50 @@ export default {
     },
 
     textToLatin_last_name_kirill(value) {
-      this.client.last_name.lotin = this.translateTextToLatin(value);
+      if (this.client.last_name.counter == 0) {
+        this.client.last_name.lotin = this.translateTextToLatin(value);
+      }
+      this.client.last_name.counter = 1;
     },
     textToLatin_first_name_kirill(value) {
-      this.client.first_name.lotin = this.translateTextToLatin(value);
+      if (this.client.first_name.counter == 0) {
+        this.client.first_name.lotin = this.translateTextToLatin(value);
+      }
+      this.client.first_name.counter = 1;
     },
     textToLatin_second_name_kirill(value) {
-      this.client.second_name.lotin = this.translateTextToLatin(value);
+      if (this.client.second_name.counter == 0) {
+        this.client.second_name.lotin = this.translateTextToLatin(value);
+      }
+      this.client.second_name.counter = 1;
     },
 
     textToCyrillic_last_name_lotin(value) {
-      this.client.last_name.kirill = this.translateTextToCyrillic(value);
+      if (this.client.last_name.counter == 0) {
+        this.client.last_name.kirill = this.translateTextToCyrillic(value);
+      }
+      this.client.last_name.counter = 1;
     },
     textToCyrillic_first_name_lotin(value) {
-      this.client.first_name.kirill = this.translateTextToCyrillic(value);
+      if (this.client.first_name.counter == 0) {
+        this.client.first_name.kirill = this.translateTextToCyrillic(value);
+      }
+      this.client.first_name.counter = 1;
     },
     textToCyrillic_second_name_lotin(value) {
-      this.client.second_name.kirill = this.translateTextToCyrillic(value);
+      if (this.client.second_name.counter == 0) {
+        this.client.second_name.kirill = this.translateTextToCyrillic(value);
+      }
+      this.client.second_name.counter = 1;
     },
 
     symbolIsCyrillic(event) {
-      return event.replace(/[^а-яё]/i, "").replace(/(\..*?)\..*/g, "$1");
+      return event
+        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
+        .replace(/(\..*?)\..*/g, "$1");
     },
     symbolIsLatin(event) {
-      return event.replace(/[^a-z.]/i, "").replace(/(\..*?)\..*/g, "$1");
+      return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
     },
 
     translateTextToLatin(value) {
@@ -1729,6 +1752,15 @@ export default {
 
       value.target.value = value.target.value.replace("Ch", "Ч");
       value.target.value = value.target.value.replace("ch", "ч");
+
+      value.target.value = value.target.value.replace("Q", "Қ");
+      value.target.value = value.target.value.replace("q", "қ");
+
+      value.target.value = value.target.value.replace("O'", "Ў");
+      value.target.value = value.target.value.replace("o'", "ў");
+
+      value.target.value = value.target.value.replace("G'", "Ғ");
+      value.target.value = value.target.value.replace("g'", "ғ");
 
       value.target.value = value.target.value.replace("Yu", "Ю");
       value.target.value = value.target.value.replace("yu", "ю");
@@ -1744,6 +1776,26 @@ export default {
 
       value.target.value = value.target.value.replace("Kh", "Х");
       value.target.value = value.target.value.replace("kh", "х");
+
+      value.target.value = value.target.value.replace("H", "Ҳ");
+      value.target.value = value.target.value.replace("h", "ҳ");
+
+      // a["SCH"] = "Щ";
+      // a["Kh"] = "Х";
+      // a["yo"] = "ё";
+      // a["ts"] = "ц";
+      // a["sch"] = "щ";
+      // a["kh"] = "х";
+      // a["Ya"] = "Я";
+      // a["Yu"] = "Ю";
+      // a["ya"] = "я";
+      // a["yu"] = "ю";
+      // a["Yo"] = "Ё";
+      // a["Ts"] = "Ц";
+      // a["Ch"] = "Ч";
+      // a["ch"] = "ч";
+      // a["Sh"] = "Ш";
+      // a["sh"] = "ш";
 
       return this.symbolLatinToCyrillic(value.target.value);
     },
@@ -1819,6 +1871,18 @@ export default {
       a["б"] = "b";
       a["ю"] = "yu";
 
+      a["Қ"] = "Q";
+      a["қ"] = "q";
+
+      a["Ў"] = "O'";
+      a["ў"] = "o'";
+
+      a["Ҳ"] = "H";
+      a["ҳ"] = "h";
+
+      a["Ғ"] = "G'";
+      a["ғ"] = "g'";
+
       for (let i in word) {
         if (word.hasOwnProperty(i)) {
           if (a[word[i]] === undefined) {
@@ -1833,13 +1897,27 @@ export default {
     symbolLatinToCyrillic(word) {
       var answer = "",
         a = {};
+
+      a["Q"] = "Қ";
+      a["q"] = "қ";
+
+      a["O'"] = "Ў";
+      a["o'"] = "ў";
+
+      a["H"] = "Ҳ";
+      a["h"] = "ҳ";
+
+      a["G'"] = "Ғ";
+      a["g'"] = "ғ";
+
       a["I"] = "Й";
       a["U"] = "У";
       a["K"] = "К";
       a["N"] = "Н";
       a["G"] = "Г";
       a["Z"] = "З";
-      a["'"] = "Ъ";
+      // a["'"] = "Ъ";
+      // a["'"] = "ъ";
       a["i"] = "й";
       a["u"] = "у";
       a["k"] = "к";
@@ -1848,7 +1926,6 @@ export default {
       a["n"] = "н";
       a["g"] = "г";
       a["z"] = "з";
-      a["'"] = "ъ";
       a["F"] = "Ф";
       a["I"] = "Ы";
       a["V"] = "В";
@@ -1876,32 +1953,15 @@ export default {
       a["M"] = "М";
       a["I"] = "И";
       a["T"] = "Т";
-      a["'"] = "Ь";
       a["B"] = "Б";
 
       a["s"] = "с";
       a["m"] = "м";
       a["i"] = "и";
       a["t"] = "т";
-      a["'"] = "ь";
+      // a["'"] = "Ь";
+      // a["'"] = "ь";
       a["b"] = "б";
-
-      a["SCH"] = "Щ";
-      a["Kh"] = "Х";
-      a["yo"] = "ё";
-      a["ts"] = "ц";
-      a["sch"] = "щ";
-      a["kh"] = "х";
-      a["Ya"] = "Я";
-      a["Yu"] = "Ю";
-      a["ya"] = "я";
-      a["yu"] = "ю";
-      a["Yo"] = "Ё";
-      a["Ts"] = "Ц";
-      a["Ch"] = "Ч";
-      a["ch"] = "ч";
-      a["Sh"] = "Ш";
-      a["sh"] = "ш";
 
       for (let i in word) {
         if (word.hasOwnProperty(i)) {
