@@ -1086,7 +1086,9 @@ export default {
     Discount,
   },
 
-  created() {},
+  created() {
+    this.backToView();
+  },
 
   computed: {
     ...mapGetters([
@@ -1129,8 +1131,9 @@ export default {
   },
 
   mounted() {
-    this.fetchApartment(this);
-    this.backToView();
+    this.fetchApartment(this).then(() => {
+      this.backToView();
+    });
 
     if (this.apartment.order.id) {
       this.reserveClientFull();
@@ -1158,7 +1161,6 @@ export default {
 
       this.client.discount.prepay_to = percente;
     },
-
     deleteInitialPayment(index) {
       if (this.initial_payments.length === 2) {
         this.initial_payments.splice(index, 1);
@@ -1167,7 +1169,6 @@ export default {
         this.initial_payments.splice(index, 1);
       }
     },
-
     addInitialPayment() {
       let today = this.client.first_payment_date
         ? new Date(this.client.first_payment_date)
@@ -1197,7 +1198,6 @@ export default {
 
       this.getPrepay();
     },
-
     async Search() {
       try {
         const {data} = await this.axios.get(
@@ -1247,7 +1247,6 @@ export default {
         }
       }
     },
-
     async reserveClientFull() {
       try {
         const {data} = await this.axios.get(
@@ -1288,7 +1287,6 @@ export default {
         }
       }
     },
-
     async sendForm() {
       if (this.client.discount.id === null) return;
 
@@ -1448,7 +1446,6 @@ export default {
         }
       });
     },
-
     removeBlock() {
       this.$swal({
         title: this.$t("sweetAlert.title"),
@@ -1469,7 +1466,6 @@ export default {
         }
       });
     },
-
     ChangeDiscount() {
       if (this.client.discount.id === "other") {
         this.client.discount = {
@@ -1500,7 +1496,6 @@ export default {
       this.next = true;
       return;
     },
-
     getPrepay() {
       if (this.prepay_to === 100) return 0;
 
@@ -1528,28 +1523,23 @@ export default {
 
       return (this.client.discount.prepay_to * total) / 100;
     },
-
     getTotalOther() {
       return parseFloat(this.apartment_edit.price);
     },
-
     getDiscount() {
       if (this.prepay_to === 100) return 0;
 
       return 1 - this.client.discount.discount / 100;
       // return this.discount.discount * this.apartment.price / 100;
     },
-
     getMonth() {
       return (this.getTotal() - this.getPrepay()) / this.month;
     },
-
     getDebt() {
       // let price = this.getTotal() - this.getPrepay();
 
       return this.getTotal() - this.getPrepay();
     },
-
     getTotal() {
       let total_discount = this.getDiscount();
 
@@ -1563,7 +1553,6 @@ export default {
 
       return total;
     },
-
     CreditMonths(newVal) {
       let today = this.client.payment_date
         ? new Date(this.client.payment_date)
@@ -1580,7 +1569,6 @@ export default {
         });
       }
     },
-
     editMonthlyPayment(index) {
       if (this.credit_months[index].edit) {
         this.credit_months[index].edit = false;
@@ -1598,7 +1586,6 @@ export default {
 
       return;
     },
-
     editInitialPayment(index) {
       if (this.initial_payments[index].edit) {
         this.initial_payments[index].edit = false;
@@ -1618,7 +1605,6 @@ export default {
 
       return;
     },
-
     setNewPriceMonthly() {
       let total = this.getPrepay();
       let months = 0;
