@@ -131,7 +131,7 @@ export default {
         .get(process.env.VUE_APP_URL + "/oauth/me", header)
         .then(() => {
           //this.items = response.data;
-          vm.$router.push({path: "dashboard"});
+          vm.$router.push({name: "home"});
         })
         .catch(() => {
           localStorage.clear();
