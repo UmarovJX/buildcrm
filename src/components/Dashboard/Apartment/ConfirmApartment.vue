@@ -1662,7 +1662,7 @@ export default {
           this.toastedWithErrorCode(error);
         }
       } else {
-        this.toasted("Error: Network Error", "error");
+        this.toasted("Введите номер и серию паспорта правильно", "error");
       }
     },
 
