@@ -1640,39 +1640,43 @@ export default {
       }
     },
     async getClientData() {
-      try {
-        this.search_label = this.client.passport_series;
-        const {data} = await this.axios.get(
-          process.env.VUE_APP_URL +
-            "/orders/client/search?field=" +
-            this.search_label,
-          this.header
-        );
-        this.client = {
-          id: data.id,
-          first_name: data.first_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          last_name: data.last_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          second_name: data.second_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          passport_series: data.passport_series,
-          issued_by_whom: data.issued_by_whom,
-          language: data.language,
-          birth_day: data.birth_day,
-          phone: data.phone,
-          other_phone: data.other_phone,
-          date_of_issue: data.date_of_issue,
-          discount: {id: null},
-        };
-      } catch (error) {
-        this.toastedWithErrorCode(error);
+      this.search_label = this.client.passport_series;
+      if (this.search_label.length == 9) {
+        try {
+          const {data} = await this.axios.get(
+            process.env.VUE_APP_URL +
+              "/orders/client/search?field=" +
+              this.search_label,
+            this.header
+          );
+          this.client = {
+            id: data.id,
+            first_name: data.first_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            last_name: data.last_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            second_name: data.second_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            passport_series: data.passport_series,
+            issued_by_whom: data.issued_by_whom,
+            language: data.language,
+            birth_day: data.birth_day,
+            phone: data.phone,
+            other_phone: data.other_phone,
+            date_of_issue: data.date_of_issue,
+            discount: {id: null},
+          };
+        } catch (error) {
+          this.toastedWithErrorCode(error);
+        }
+      } else {
+        this.toasted("Error: Network Error", "error");
       }
     },
 
@@ -1697,41 +1701,29 @@ export default {
     },
 
     textToLatin_last_name_kirill(value) {
-      if (this.client.last_name.counter == 0) {
+      if (this.client.last_name.lotin.length === 0)
         this.client.last_name.lotin = this.translateTextToLatin(value);
-      }
-      this.client.last_name.counter = 1;
     },
     textToLatin_first_name_kirill(value) {
-      if (this.client.first_name.counter == 0) {
+      if (this.client.first_name.lotin.length === 0)
         this.client.first_name.lotin = this.translateTextToLatin(value);
-      }
-      this.client.first_name.counter = 1;
     },
     textToLatin_second_name_kirill(value) {
-      if (this.client.second_name.counter == 0) {
+      if (this.client.second_name.lotin.length === 0)
         this.client.second_name.lotin = this.translateTextToLatin(value);
-      }
-      this.client.second_name.counter = 1;
     },
 
     textToCyrillic_last_name_lotin(value) {
-      if (this.client.last_name.counter == 0) {
+      if (this.client.last_name.lotin.length === 0)
         this.client.last_name.kirill = this.translateTextToCyrillic(value);
-      }
-      this.client.last_name.counter = 1;
     },
     textToCyrillic_first_name_lotin(value) {
-      if (this.client.first_name.counter == 0) {
+      if (this.client.first_name.lotin.length === 0)
         this.client.first_name.kirill = this.translateTextToCyrillic(value);
-      }
-      this.client.first_name.counter = 1;
     },
     textToCyrillic_second_name_lotin(value) {
-      if (this.client.second_name.counter == 0) {
+      if (this.client.second_name.lotin.length === 0)
         this.client.second_name.kirill = this.translateTextToCyrillic(value);
-      }
-      this.client.second_name.counter = 1;
     },
 
     symbolIsCyrillic(event) {
