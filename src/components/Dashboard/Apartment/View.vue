@@ -293,15 +293,15 @@
         @CloseAgree="CloseAgree"
       ></agree-modal>
 
-      <success-agree
+      <!-- <success-agree
         v-if="
           getApartment.order.status != 'sold' ||
           getApartment.order.status != 'contract'
         "
         :contract="contract"
-      ></success-agree>
+      ></success-agree> -->
 
-      <view-contract
+      <!-- <view-contract
         :apartment="getApartment"
         v-if="
           (getPermission.apartments.contract &&
@@ -315,7 +315,7 @@
             (getApartment.order.status === 'sold' ||
               getApartment.order.status === 'contract'))
         "
-      ></view-contract>
+      ></view-contract> -->
     </div>
   </main>
 </template>
@@ -325,7 +325,7 @@ import {mapGetters, mapActions} from "vuex";
 import ViewClient from "./ViewClient";
 import ReserveAdd from "./Components/Reserve";
 import Agree from "./Components/Agree";
-import SuccessAgree from "./Components/SuccessAgree";
+// import SuccessAgree from "./Components/SuccessAgree";
 import Discount from "./Components/Discount";
 
 import {Fancybox} from "@fancyapps/ui";
@@ -337,7 +337,7 @@ import "@fancyapps/ui/dist/fancybox.css";
 // import { jsPDF } from "jspdf";
 // import VueHtml2pdf from 'vue-html2pdf'
 
-import ViewContract from './Components/ViewContract'
+// import ViewContract from './Components/ViewContract'
 
 export default {
   components: {
@@ -345,10 +345,10 @@ export default {
     "reserve-add": ReserveAdd,
     "agree-modal": Agree,
     Discount: Discount,
-    "success-agree": SuccessAgree,
+    // "success-agree": SuccessAgree,
     // VueHtml2pdf
     // html2pdf
-    'view-contract': ViewContract,
+    // 'view-contract': ViewContract,
   },
 
   data: () => ({

@@ -1,3 +1,90 @@
-.modal-header {
-  background-color: white;
+.modal-custom {
+  .modal-middle {
+    max-width: 380px;
+  }
+  .modal-content {
+    border: 0;
+    border-radius: 0;
+    background-color: unset;
+    position: relative;
+  }
+
+  .modal-body {
+    border: 0;
+    border-radius: 5px;
+    background-color: white;
+    -webkit-box-shadow: 0px 9px 8.5px 1.5px rgba(5, 8, 9, 0.15);
+    box-shadow: 0px 9px 8.5px 1.5px rgba(5, 8, 9, 0.15);
+  }
+
+  .modal-body p {
+    font-size: 22px;
+    font-family: "MuseoSansCyrl-700", Arial, Helvetica, sans-serif;
+    color: #222222;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    line-height: 1.5;
+  }
+
+  @media only screen and (max-width: 559px) {
+    .modal-body p {
+      font-size: 18px;
+    }
+  }
+
+  .close {
+    opacity: 1;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 99;
+  }
+
+  .modal-header {
+    background-color: white;
+  }
+
+  display: unset !important;
+
+  .modal-dialog {
+    position: fixed !important;
+    right: -450px !important;
+    transform: translateX(0) !important;
+    transition: all 0.3s ease 0s !important;
+    max-width: unset !important;
+    margin: 0 !important;
+    width: 450px !important;
+    height: 100vh !important;
+    margin-left: auto !important;
+  }
+
+  .modal-open .modal-dialog {
+    transform: translateX(-450px) !important;
+  }
+
+  .modal-content,
+  .modal-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 0 !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-body form {
+    height: 100%;
+  }
+
+  @media screen and (max-width: 576px) {
+    .modal-dialog {
+      right: -100% !important;
+      width: 100% !important;
+    }
+
+    .modal-open .modal-dialog {
+      transform: translateX(-100%) !important;
+    }
+  }
 }

@@ -1,0 +1,196 @@
+
+input.my-input,
+.my-btn__group input,
+.my-form__input {
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgba(34, 34, 34, 0.2);
+  border-radius: 3px;
+  padding: 5px 15px;
+  line-height: 2;
+  width: 95%;
+  height: 42px;
+  display: block;
+  margin: 15px auto;
+  color: rgba(34, 34, 34, 0.8);
+}
+
+input.my-input::-webkit-input-placeholder,
+.my-btn__group input::-webkit-input-placeholder,
+.my-form__input::-webkit-input-placeholder {
+  color: rgba(34, 34, 34, 0.8);
+}
+
+input.my-input::-moz-placeholder,
+.my-btn__group input::-moz-placeholder,
+.my-form__input::-moz-placeholder {
+  color: rgba(34, 34, 34, 0.8);
+}
+
+input.my-input:-ms-input-placeholder,
+.my-btn__group input:-ms-input-placeholder,
+.my-form__input:-ms-input-placeholder {
+  color: rgba(34, 34, 34, 0.8);
+}
+
+input.my-input::-ms-input-placeholder,
+.my-btn__group input::-ms-input-placeholder,
+.my-form__input::-ms-input-placeholder {
+  color: rgba(34, 34, 34, 0.8);
+}
+
+input.my-input::placeholder,
+.my-btn__group input::placeholder,
+.my-form__input::placeholder {
+  color: rgba(34, 34, 34, 0.8);
+}
+
+input.my-input:focus,
+.my-btn__group input:focus,
+.my-form__input:focus {
+  border-color: rgba(34, 34, 34, 0.5);
+}
+
+@media only screen and (min-width: 560px) {
+  input.my-input,
+  .my-btn__group input,
+  .my-form__input {
+    width: 400px;
+  }
+}
+
+.my-form__input {
+  margin: 0;
+  width: 100%;
+}
+
+.my-form__textarea {
+  height: 150px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.my-form label {
+  font-size: 14px;
+  font-family: "MuseoSansCyrl-500", Arial, Helvetica, sans-serif;
+  color: black;
+}
+
+.my-custom-control .custom-control-label::before,
+.my-custom-control .custom-control-label::after {
+  top: 0.15rem;
+}
+
+.my-custom-control
+  .custom-control-input:checked
+  ~ .custom-control-label::before {
+  color: #fff;
+  border-color: #5851d8;
+  background-color: #5851d8;
+}
+
+.my-custom-control .custom-control-input:focus ~ .custom-control-label::before {
+  -webkit-box-shadow: unset;
+  box-shadow: unset;
+}
+
+#myInput {
+  background-image: url("../img/search.png");
+  background-position: 10px 16px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 14px;
+  padding: 12px 20px 12px 35px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  border-color: rgba(34, 34, 34, 0.2);
+  border-radius: 3px;
+  background-color: transparent;
+}
+
+#myUL {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  height: 190px;
+  border: 1px solid #ddd;
+  border-color: rgba(34, 34, 34, 0.2);
+  border-radius: 3px;
+}
+
+#myUL li {
+  margin-top: -1px;
+  background-color: #fff;
+  padding: 8px 12px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  font-family: "MuseoSansCyrl-500";
+  color: black;
+  line-height: 1.714;
+}
+
+#myUL li:hover:not(.header) {
+  background-color: #ebf1fa;
+}
+
+// .form-control:focus {
+//   outline: 0;
+//   -webkit-box-shadow: none;
+//   box-shadow: none;
+// }
+
+// .input-group > .custom-file .custom-file-input:focus ~ .custom-file-label,
+// .input-group > .custom-select:focus,
+// .input-group > .form-control:focus {
+//   z-index: 0;
+// }
+
+// input.form-control,
+// input,
+// textarea {
+//   width: 100%;
+//   padding: 0.438rem 1rem;
+//   background-color: #fff;
+//   background-clip: padding-box;
+//   border: 1px solid #d8d6de;
+//   border-radius: 0.357rem;
+//   height: 45px;
+//   font-size: 1rem;
+//   font-weight: 400;
+//   line-height: 1.45;
+//   color: $dark;
+//   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+//     -webkit-box-shadow 0.15s ease-in-out;
+// }
+
+// input.form-control:focus,
+// input:focus,
+// textarea:focus,
+// select:focus {
+//   background-color: #fff;
+//   border-color: #7367f0;
+//   box-shadow: 0 3px 10px 0 rgba(34, 41, 47, 0.1);
+// }
+// input.form-control:focus,
+// input,
+// textarea,
+// select {
+//   color: $dark;
+//   outline: 0;
+// }
+// input.form-control:focus.is-valid,
+// input.form-control:focus:valid,
+// input:focus,
+// textarea:focus,
+// select:focus {
+//   box-shadow: 0 3px 10px 0 rgba(34, 41, 47, 0.1);
+// }
+
+// textarea {
+//   height: 100px;
+//   resize: none;
+// }

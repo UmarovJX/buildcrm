@@ -183,7 +183,7 @@
 
             <div
               :id="'collapseOne' + index"
-              :class="index === 0 ? 'collapse show' : 'collapse show'"
+              :class="index === 0 ? 'collapse' : 'collapse'"
               :aria-labelledby="'headingOne' + index"
               data-parent="#floors"
             >
