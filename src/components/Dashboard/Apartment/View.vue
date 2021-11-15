@@ -114,7 +114,7 @@
                 <Discount
                   v-if="
                     getApartment.object.credit_month != 0 ||
-                      discount.prepay_to === 100
+                    discount.prepay_to === 100
                   "
                   :discount="discount"
                   :apartment="getApartment"
@@ -125,13 +125,24 @@
 
           <div class="container-fluid">
             <div
-              class="mt-5 d-flex justify-content-start w-100 flex-md-row flex-column"
+              class="
+                mt-5
+                d-flex
+                justify-content-start
+                w-100
+                flex-md-row flex-column
+              "
             >
               <div v-if="!print">+998 55 501 74 00</div>
 
               <div
                 v-if="print"
-                class="d-flex justify-content-start w-100 flex-md-row flex-column"
+                class="
+                  d-flex
+                  justify-content-start
+                  w-100
+                  flex-md-row flex-column
+                "
               >
                 <button
                   class="mr-md-2 mr-0 btn btn-info"
@@ -146,8 +157,8 @@
                       getApartment.order.user.id === getMe.user.id &&
                       (getPermission.apartments.root_contract ||
                         getPermission.apartments.reserve_cancel)) ||
-                      (getMe.role.id === 1 &&
-                        getApartment.order.status === 'booked')
+                    (getMe.role.id === 1 &&
+                      getApartment.order.status === 'booked')
                   "
                   type="button"
                   @click="cancelReserve"
@@ -162,8 +173,8 @@
                   v-if="
                     (getApartment.order.status === 'booked' &&
                       getApartment.order.user.id === getMe.user.id) ||
-                      (getMe.role.id === 1 &&
-                        getApartment.order.status === 'booked')
+                    (getMe.role.id === 1 &&
+                      getApartment.order.status === 'booked')
                   "
                   @click="ReserveInfo(getApartment)"
                   v-b-modal.modal-view-client
@@ -177,7 +188,7 @@
                   class="mr-md-2 mr-0 btn btn-primary ml-1"
                   v-if="
                     getPermission.apartments.reserve &&
-                      getApartment.order.status === 'available'
+                    getApartment.order.status === 'available'
                   "
                   @click="[(reserve = true), (apartment_id = getApartment.id)]"
                   v-b-modal.modal-create
@@ -197,15 +208,15 @@
                       getApartment.order.status === 'booked' &&
                       getApartment.order.user.id === getMe.user.id &&
                       getPermission.apartments.contract) ||
-                      (!(
-                        getApartment.order.status == 'sold' ||
-                        getApartment.order.status == 'contract'
-                      ) &&
-                        getPermission.apartments.root_contract) ||
-                      ((getApartment.order.status != 'sold' ||
-                        getApartment.order.status != 'contract') &&
-                        getApartment.order.status === 'available' &&
-                        getPermission.apartments.contract)
+                    (!(
+                      getApartment.order.status == 'sold' ||
+                      getApartment.order.status == 'contract'
+                    ) &&
+                      getPermission.apartments.root_contract) ||
+                    ((getApartment.order.status != 'sold' ||
+                      getApartment.order.status != 'contract') &&
+                      getApartment.order.status === 'available' &&
+                      getPermission.apartments.contract)
                   "
                 >
                   <!--                    getApartment.order.status != 'contract'  || getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id && getPermission.apartments.contract || getApartment.order.status != 'sold' &&  getPermission.apartments.root_contract || getApartment.order.status === 'available' && getPermission.apartments.contract-->
@@ -224,12 +235,12 @@
                       (getApartment.order.status === 'sold' ||
                         getApartment.order.status === 'contract') &&
                       getMe.user.id === getApartment.order.user.id) ||
-                      (getPermission.apartments.root_contract &&
-                        (getApartment.order.status === 'sold' ||
-                          getApartment.order.status === 'contract')) ||
-                      (getMe.role.id === 1 &&
-                        (getApartment.order.status === 'sold' ||
-                          getApartment.order.status === 'contract'))
+                    (getPermission.apartments.root_contract &&
+                      (getApartment.order.status === 'sold' ||
+                        getApartment.order.status === 'contract')) ||
+                    (getMe.role.id === 1 &&
+                      (getApartment.order.status === 'sold' ||
+                        getApartment.order.status === 'contract'))
                   "
                 >
                   <i class="far fa-file-signature"></i>
@@ -285,12 +296,26 @@
       <success-agree
         v-if="
           getApartment.order.status != 'sold' ||
-            getApartment.order.status != 'contract'
+          getApartment.order.status != 'contract'
         "
         :contract="contract"
       ></success-agree>
 
-      <!--        <view-contract :apartment="getApartment" v-if="getPermission.apartments.contract  && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') && getMe.user.id === getApartment.order.user.id  || getPermission.apartments.root_contract && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') || getMe.role.id === 1 && (getApartment.order.status === 'sold' || getApartment.order.status === 'contract') "></view-contract>-->
+      <view-contract
+        :apartment="getApartment"
+        v-if="
+          (getPermission.apartments.contract &&
+            (getApartment.order.status === 'sold' ||
+              getApartment.order.status === 'contract') &&
+            getMe.user.id === getApartment.order.user.id) ||
+          (getPermission.apartments.root_contract &&
+            (getApartment.order.status === 'sold' ||
+              getApartment.order.status === 'contract')) ||
+          (getMe.role.id === 1 &&
+            (getApartment.order.status === 'sold' ||
+              getApartment.order.status === 'contract'))
+        "
+      ></view-contract>
     </div>
   </main>
 </template>
@@ -312,7 +337,7 @@ import "@fancyapps/ui/dist/fancybox.css";
 // import { jsPDF } from "jspdf";
 // import VueHtml2pdf from 'vue-html2pdf'
 
-// import ViewContract from './Components/ViewContract'
+import ViewContract from './Components/ViewContract'
 
 export default {
   components: {
@@ -323,7 +348,7 @@ export default {
     "success-agree": SuccessAgree,
     // VueHtml2pdf
     // html2pdf
-    // 'view-contract': ViewxContract,
+    'view-contract': ViewContract,
   },
 
   data: () => ({

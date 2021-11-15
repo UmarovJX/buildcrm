@@ -1145,7 +1145,6 @@ export default {
   methods: {
     ...mapActions(["fetchApartment"]),
     backToView() {
-      console.log(this.getApartment.order.status);
       if (this.getApartment.order.status == "contract") {
         this.$router.push({
           name: "apartments-view",
@@ -1700,15 +1699,15 @@ export default {
     },
 
     textToCyrillic_last_name_lotin(value) {
-      if (this.client.last_name.lotin.length === 0)
+      if (this.client.last_name.kirill.length === 0)
         this.client.last_name.kirill = this.translateTextToCyrillic(value);
     },
     textToCyrillic_first_name_lotin(value) {
-      if (this.client.first_name.lotin.length === 0)
+      if (this.client.first_name.kirill.length === 0)
         this.client.first_name.kirill = this.translateTextToCyrillic(value);
     },
     textToCyrillic_second_name_lotin(value) {
-      if (this.client.second_name.lotin.length === 0)
+      if (this.client.second_name.kirill.length === 0)
         this.client.second_name.kirill = this.translateTextToCyrillic(value);
     },
 
@@ -1758,23 +1757,6 @@ export default {
       value.target.value = value.target.value.replace("H", "Ҳ");
       value.target.value = value.target.value.replace("h", "ҳ");
 
-      // a["SCH"] = "Щ";
-      // a["Kh"] = "Х";
-      // a["yo"] = "ё";
-      // a["ts"] = "ц";
-      // a["sch"] = "щ";
-      // a["kh"] = "х";
-      // a["Ya"] = "Я";
-      // a["Yu"] = "Ю";
-      // a["ya"] = "я";
-      // a["yu"] = "ю";
-      // a["Yo"] = "Ё";
-      // a["Ts"] = "Ц";
-      // a["Ch"] = "Ч";
-      // a["ch"] = "ч";
-      // a["Sh"] = "Ш";
-      // a["sh"] = "ш";
-
       return this.symbolLatinToCyrillic(value.target.value);
     },
 
@@ -1811,7 +1793,7 @@ export default {
       a["Ф"] = "F";
       a["Ы"] = "I";
       a["В"] = "V";
-      a["А"] = "a";
+      a["А"] = "A";
       a["П"] = "P";
       a["Р"] = "R";
       a["О"] = "O";
@@ -1888,15 +1870,13 @@ export default {
       a["G'"] = "Ғ";
       a["g'"] = "ғ";
 
-      a["I"] = "Й";
+      a["I"] = "И";
       a["U"] = "У";
       a["K"] = "К";
       a["N"] = "Н";
       a["G"] = "Г";
       a["Z"] = "З";
-      // a["'"] = "Ъ";
-      // a["'"] = "ъ";
-      a["i"] = "й";
+      a["i"] = "и";
       a["u"] = "у";
       a["k"] = "к";
       a["E"] = "Е";
@@ -1905,9 +1885,7 @@ export default {
       a["g"] = "г";
       a["z"] = "з";
       a["F"] = "Ф";
-      a["I"] = "Ы";
       a["V"] = "В";
-      a["a"] = "А";
       a["P"] = "П";
       a["R"] = "Р";
       a["O"] = "О";
@@ -1915,17 +1893,15 @@ export default {
       a["D"] = "Д";
       a["J"] = "Ж";
       a["f"] = "ф";
-      a["i"] = "ы";
       a["v"] = "в";
       a["a"] = "а";
+      a["A"] = "А";
       a["p"] = "п";
       a["r"] = "р";
       a["o"] = "о";
       a["l"] = "л";
       a["d"] = "д";
       a["j"] = "ж";
-      // a["E"] = "Э";
-      // a["e"] = "э";
 
       a["S"] = "С";
       a["M"] = "М";
@@ -1937,8 +1913,6 @@ export default {
       a["m"] = "м";
       a["i"] = "и";
       a["t"] = "т";
-      // a["'"] = "Ь";
-      // a["'"] = "ь";
       a["b"] = "б";
 
       for (let i in word) {

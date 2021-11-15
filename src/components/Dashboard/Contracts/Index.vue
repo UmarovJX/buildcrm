@@ -69,8 +69,21 @@
         </template>
 
         <template #cell(client)="data">
-          {{ data.value.first_name.kirill }} {{ data.value.last_name.kirill }}
-          {{ data.value.second_name.kirill }}
+          {{
+            data.value.first_name.kirill
+              ? data.value.first_name.kirill
+              : data.value.first_name.lotin
+          }}
+          {{
+            data.value.last_name.kirill
+              ? data.value.last_name.kirill
+              : data.value.last_name.lotin
+          }}
+          {{
+            data.value.second_name && data.value.second_name.kirill
+              ? data.value.second_name.kirill
+              : ""
+          }}
         </template>
 
         <template #cell(transaction_price)="data">
@@ -193,7 +206,6 @@ export default {
       },
 
       search: "",
-
       sortBy: "",
       sortDesc: false,
       fields: [
@@ -242,11 +254,11 @@ export default {
 
   computed: {
     ...mapGetters([
+      "getContracts",
       "getMe",
       "getPermission",
       "getLoading",
       "getPaginationContracts",
-      "getContracts",
       "getCurrency",
     ]),
     getPagination() {
@@ -256,7 +268,6 @@ export default {
       return 1;
     },
   },
-
   mounted() {
     this.fetchContracts(this);
     this.fetchCurrency(this);
