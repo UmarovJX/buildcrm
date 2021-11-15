@@ -167,7 +167,7 @@
               </b-link>
             </div>
           </div>
-          <div class="card-footer">
+          <div class="card-footer d-flex">
             <button
               type="button"
               v-if="step === 2"
@@ -245,7 +245,7 @@
               {{ $t("objects.create.create_build") }}
             </button>
           </div>
-          <div class="card-footer">
+          <div class="card-footer d-flex">
             <button type="button" @click="step = 2" class="btn mr-1">
               <i class="fa fa-arrow-alt-circle-left"></i> {{ $t("back") }}
             </button>
@@ -338,7 +338,7 @@
                             <button
                               type="button"
                               @click="DiscountEdit(discount)"
-                              class="btn btn-primary my-btn__blue--small ml-2"
+                              class="btn btn-primary ml-2"
                             >
                               <i class="far fa-pen"></i>
                             </button>
@@ -347,7 +347,7 @@
                             <button
                               type="button"
                               @click="RemoveDiscount(discount, index)"
-                              class="btn btn-primary my-btn__blue--small ml-2"
+                              class="btn btn-primary ml-2"
                             >
                               <i class="far fa-trash"></i>
                             </button>
@@ -391,7 +391,7 @@
               </b-link>
             </div>
           </div>
-          <div class="card-footer">
+          <div class="card-footer d-flex">
             <button type="button" @click="step = 3" class="btn mr-1">
               <i class="fa fa-arrow-alt-circle-left"></i> {{ $t("back") }}
             </button>

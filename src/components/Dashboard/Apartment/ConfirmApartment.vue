@@ -2,6 +2,7 @@
   <main>
     <div class="app-content">
       <div class="new-object">
+        <!-- building info -->
         <div class="container-fluid">
           <div class="row">
             <div class="col-lg-2">
@@ -23,7 +24,9 @@
                 </p>
                 <p>
                   {{ $t("apartments.view.area") }}:
-                  {{ getApartment.plan.area }} м² |
+                  {{ getApartment.plan.area }} м²
+                </p>
+                <p>
                   {{ $t("apartments.list.balcony") }}:
                   <span v-if="getApartment.plan.balcony">
                     {{ getApartment.plan.balcony_area }} м²
@@ -34,536 +37,956 @@
                 </p>
                 <p>
                   {{ $t("apartments.view.rooms") }}: {{ getApartment.rooms }}
-                  |
+                </p>
+                <p>
                   {{ $t("apartments.view.floor") }}: {{ getApartment.floor }}
-                </p>
-                <p>
-                  {{ $t("apartments.view.price_m2") }}:
-                  {{
-                    getApartment.price_m2
-                      | number("0,0.00", {
-                        thousandsSeparator: " ",
-                        decimalSeparator: ",",
-                      })
-                  }}
-                  {{ $t("ye") }}
-                </p>
-                <p>
-                  {{ $t("apartments.view.total_price") }}:
-                  {{
-                    getApartment.price
-                      | number("0,0.00", {
-                        thousandsSeparator: " ",
-                        decimalSeparator: ",",
-                      })
-                  }}
-                  {{ $t("ye") }}
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="new-object">
-        <div class="container-fluid">
-          <form ref="form" @submit.stop.prevent="sendForm" v-if="step === 2">
-            <div class="row">
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="checkout-pasport">{{
-                    $t("apartments.agree.passport_series")
-                  }}</label>
-                  <input
-                    class="my-form__input"
-                    type="text"
-                    @change="getClientData"
-                    :placeholder="
-                      $t('apartments.agree.placeholder.passport_series')
-                    "
-                    required
-                    v-model="client.passport_series"
-                    id="checkout-pasport"
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="issue_passport">{{
-                    $t("apartments.agree.issued_by_whom")
-                  }}</label>
-                  <input
-                    class="my-form__input"
-                    type="text"
-                    :placeholder="
-                      $t('apartments.agree.placeholder.issued_by_whom')
-                    "
-                    required
-                    v-model="client.issued_by_whom"
-                    id="issue_passport"
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="date_of_issue">{{
-                    $t("apartments.agree.date_of_issue")
-                  }}</label>
-                  <!--                                <b-form-datepicker v-model="client.date_of_issue" locale="ru"></b-form-datepicker>-->
-                  <input
-                    v-model="client.date_of_issue"
-                    type="date"
-                    class="form-control"
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="birth_day">{{
-                    $t("apartments.agree.birth_day")
-                  }}</label>
-                  <input
-                    v-model="client.birth_day"
-                    type="date"
-                    class="form-control"
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <hr />
-              </div>
-
-              <!-- last_name_kirill -->
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="last_name_kirill"
-                    >{{ $t("apartments.agree.last_name") }} (kirill)</label
-                  >
-                  <input
-                    id="last_name_kirill"
-                    class="my-form__input"
-                    type="text"
-                    required
-                    v-model="client.last_name.kirill"
-                    @input="
-                      isCyrillic_last_name_kirill(client.last_name.kirill)
-                    "
-                    @change="textToLatin_last_name_kirill"
-                    :placeholder="$t('apartments.agree.placeholder.last_name')"
-                  />
-                </div>
-              </div>
-
-              <!-- first_name_kirill -->
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="first_name_kirill"
-                    >{{ $t("apartments.agree.first_name") }} (kirill)</label
-                  >
-                  <input
-                    id="first_name_kirill"
-                    class="my-form__input"
-                    type="text"
-                    required
-                    v-model="client.first_name.kirill"
-                    @input="
-                      isCyrillic_first_name_kirill(client.first_name.kirill)
-                    "
-                    @change="textToLatin_first_name_kirill"
-                    :placeholder="$t('apartments.agree.placeholder.first_name')"
-                  />
-                </div>
-              </div>
-
-              <!-- second_name_kirill -->
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="second_name_kirill"
-                    >{{ $t("apartments.agree.second_name") }} (kirill)</label
-                  >
-                  <input
-                    id="second_namev"
-                    class="my-form__input"
-                    type="text"
-                    required
-                    v-model="client.second_name.kirill"
-                    @input="
-                      isCyrillic_second_name_kirill(client.second_name.kirill)
-                    "
-                    @change="textToLatin_second_name_kirill"
-                    :placeholder="
-                      $t('apartments.agree.placeholder.second_name')
-                    "
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <hr />
-              </div>
-
-              <!-- last_name_lotin -->
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="last_name_lotin"
-                    >{{ $t("apartments.agree.last_name") }} (lotin)</label
-                  >
-                  <input
-                    id="last_name_lotin"
-                    class="my-form__input"
-                    type="text"
-                    required
-                    v-model="client.last_name.lotin"
-                    @input="isLatin_last_name_lotin(client.last_name.lotin)"
-                    @change="textToCyrillic_last_name_lotin"
-                    :placeholder="
-                      $t('apartments.agree.placeholder.last_name_lotin')
-                    "
-                  />
-                </div>
-              </div>
-
-              <!-- first_name_lotin -->
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="first_name_lotin"
-                    >{{ $t("apartments.agree.first_name") }} (lotin)</label
-                  >
-                  <input
-                    id="first_name_lotin"
-                    class="my-form__input"
-                    type="text"
-                    required
-                    v-model="client.first_name.lotin"
-                    @input="isLatin_first_name_lotin(client.first_name.lotin)"
-                    @change="textToCyrillic_first_name_lotin"
-                    :placeholder="
-                      $t('apartments.agree.placeholder.first_name_lotin')
-                    "
-                  />
-                </div>
-              </div>
-
-              <!-- second_name_lotin -->
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="second_name_lotin"
-                    >{{ $t("apartments.agree.second_name") }} (lotin)</label
-                  >
-                  <input
-                    id="second_name_lotin"
-                    class="my-form__input"
-                    type="text"
-                    required
-                    v-model="client.second_name.lotin"
-                    @input="isLatin_second_name_lotin(client.second_name.lotin)"
-                    @change="textToCyrillic_second_name_lotin"
-                    :placeholder="
-                      $t('apartments.agree.placeholder.second_name_lotin')
-                    "
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <hr />
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="phone">{{
-                    $t("apartments.agree.phone")
-                  }}</label>
-                  <input
-                    class="my-form__input"
-                    type="tel"
-                    :placeholder="$t('apartments.agree.placeholder.phone')"
-                    v-model="client.phone"
-                    id="phone"
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="other_phone">{{
-                    $t("apartments.agree.other_phone")
-                  }}</label>
-                  <input
-                    class="my-form__input"
-                    type="tel"
-                    :placeholder="
-                      $t('apartments.agree.placeholder.other_phone')
-                    "
-                    v-model="client.other_phone"
-                    id="other_phone"
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="language">{{
-                    $t("apartments.agree.language")
-                  }}</label>
-                  <select
-                    class="form-control"
-                    id="language"
-                    v-model="client.language"
-                  >
-                    <option value="uz">Узбекский</option>
-                    <option value="ru">Русский</option>
-                  </select>
-                </div>
-              </div>
-
-              <div
-                class="col-md-4"
-                v-if="getMe.role.id === 1 || getPermission.contracts.friends"
-              >
-                <div class="mb-3">
-                  <label class="d-block" for="type_client">{{
-                    $t("apartments.agree.type_client")
-                  }}</label>
-                  <select
-                    class="form-control"
-                    id="type_client"
-                    v-model="type_client"
-                  >
-                    <option value="unknown">Незнакомый</option>
-                    <option value="friends">Знакомый</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="col-md-12">
-                <hr />
-              </div>
-
-              <div
-                class="col-12 mb-2"
-                v-if="getMe.role.id === 1 || getPermission.contracts.date"
-              >
-                <button
-                  class="btn btn-primary mb-2"
-                  @click="date_change = true"
-                  type="button"
-                >
-                  <i class="fa fa-calendar"></i> Изменить дата договора
-                </button>
-
-                <div class="row" v-if="date_change">
-                  <div class="col-md-4">
-                    <div class="mb-3">
-                      <label class="d-block" for="number">{{
-                        $t("apartments.agree.number")
-                      }}</label>
-                      <input
-                        id="number"
-                        class="my-form__input"
-                        type="text"
-                        required
-                        v-model="apartment_edit.contract_number"
-                        :placeholder="$t('apartments.agree.placeholder.number')"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="col-md-4">
-                    <div class="mb-3">
-                      <label class="d-block" for="date">{{
-                        $t("apartments.agree.date_contract")
-                      }}</label>
-                      <input
-                        id="date"
-                        class="my-form__input"
-                        type="date"
-                        required
-                        v-model="apartment_edit.contract_date"
-                        :placeholder="
-                          $t('apartments.agree.placeholder.date_contract')
-                        "
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <hr />
-              </div>
-
-              <div class="col-md-4">
-                <div class="mb-3">
-                  <label class="d-block" for="discounts">{{
-                    $t("apartments.view.variant")
-                  }}</label>
-                  <select
-                    class="form-control"
-                    id="discounts"
-                    v-model="client.discount"
-                    @change="ChangeDiscount()"
-                  >
-                    <option :value="{id: null}">
-                      {{ $t("apartments.agree.placeholder.enter_discount") }}
-                    </option>
-
-                    <option
-                      v-for="(discount, index) in getApartmentDiscounts"
-                      :value="discount"
-                      :key="index"
-                    >
-                      {{ $t("apartments.view.variant") }}
-                      {{ index + 1 }} - {{ discount.prepay_to }}%
-                    </option>
-
-                    <option
-                      v-if="
-                        getMe.role.id === 1 ||
-                        getPermission.contracts.other_price
-                      "
-                      :value="{id: 'other', discount: 0, prepay_to: 30}"
-                    >
-                      {{ $t("apartments.view.other_variant") }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <div
-                class="col-md-12 my-2"
-                v-if="client.discount.id && client.discount.id != 'other'"
-              >
-                <Discount
-                  :discount="client.discount"
-                  :apartment="apartment"
-                ></Discount>
-              </div>
-
-              <div class="col-md-12">
-                <hr />
-              </div>
-
-              <div class="col-md-4" v-if="client.discount.id">
-                <div class="mb-3">
-                  <label class="d-block" for="first_payment_date">{{
-                    $t("apartments.agree.first_payment_date")
-                  }}</label>
-                  <input
-                    v-model="client.first_payment_date"
-                    id="first_payment_date"
-                    type="date"
-                    class="form-control"
-                  />
-                </div>
-              </div>
-
-              <div class="col-md-4" v-if="!confirm && client.discount.id">
-                <div class="mb-3">
-                  <label class="d-block" for="payment_date">{{
-                    $t("apartments.agree.payment_date")
-                  }}</label>
-                  <input
-                    v-model="client.payment_date"
-                    id="payment_date"
-                    type="date"
-                    class="form-control"
-                  />
-                </div>
+      <div class="new-object p-3" v-if="step === 2">
+        <form ref="form" @submit.stop.prevent="sendForm">
+          <div class="row">
+            <!-- apartments.agree.passport_series -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="checkout-pasport">{{
+                  $t("apartments.agree.passport_series")
+                }}</label>
+                <input
+                  class="my-form__input"
+                  type="text"
+                  @change="getClientData"
+                  :placeholder="
+                    $t('apartments.agree.placeholder.passport_series')
+                  "
+                  required
+                  v-model="client.passport_series"
+                  id="checkout-pasport"
+                />
               </div>
             </div>
 
-            <div v-if="confirm">
+            <!-- apartments.agree.issued_by_whom -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="issue_passport">{{
+                  $t("apartments.agree.issued_by_whom")
+                }}</label>
+                <input
+                  class="my-form__input"
+                  type="text"
+                  :placeholder="
+                    $t('apartments.agree.placeholder.issued_by_whom')
+                  "
+                  required
+                  v-model="client.issued_by_whom"
+                  id="issue_passport"
+                />
+              </div>
+            </div>
+
+            <!-- apartments.agree.date_of_issue -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="date_of_issue">{{
+                  $t("apartments.agree.date_of_issue")
+                }}</label>
+                <!--                                <b-form-datepicker v-model="client.date_of_issue" locale="ru"></b-form-datepicker>-->
+                <input
+                  v-model="client.date_of_issue"
+                  type="date"
+                  class="form-control"
+                />
+              </div>
+            </div>
+
+            <!-- client.birth_day -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="birth_day">{{
+                  $t("apartments.agree.birth_day")
+                }}</label>
+                <input
+                  v-model="client.birth_day"
+                  type="date"
+                  class="form-control"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-12">
               <hr />
-              <label>Комментария</label>
-              <textarea
-                rows="3"
-                cols="3"
-                v-model="comment"
-                class="form-control"
-              ></textarea>
             </div>
 
-            <div class="alert alert-danger mt-3" v-if="error">
-              <ul>
-                <li v-for="(error, index) in errors" :key="index">
-                  <span v-for="msg in error" :key="msg">
-                    {{ msg }}
-                  </span>
-                </li>
-              </ul>
+            <!-- last_name_kirill -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="last_name_kirill"
+                  >{{ $t("apartments.agree.last_name") }} (kirill)</label
+                >
+                <input
+                  id="last_name_kirill"
+                  class="my-form__input"
+                  type="text"
+                  required
+                  v-model="client.last_name.kirill"
+                  @input="isCyrillic_last_name_kirill(client.last_name.kirill)"
+                  @change="textToLatin_last_name_kirill"
+                  :placeholder="$t('apartments.agree.placeholder.last_name')"
+                />
+              </div>
             </div>
 
-            <div class="mt-4 d-flex justify-content-end">
+            <!-- first_name_kirill -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="first_name_kirill"
+                  >{{ $t("apartments.agree.first_name") }} (kirill)</label
+                >
+                <input
+                  id="first_name_kirill"
+                  class="my-form__input"
+                  type="text"
+                  required
+                  v-model="client.first_name.kirill"
+                  @input="
+                    isCyrillic_first_name_kirill(client.first_name.kirill)
+                  "
+                  @change="textToLatin_first_name_kirill"
+                  :placeholder="$t('apartments.agree.placeholder.first_name')"
+                />
+              </div>
+            </div>
+
+            <!-- second_name_kirill -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="second_name_kirill"
+                  >{{ $t("apartments.agree.second_name") }} (kirill)</label
+                >
+                <input
+                  id="second_namev"
+                  class="my-form__input"
+                  type="text"
+                  required
+                  v-model="client.second_name.kirill"
+                  @input="
+                    isCyrillic_second_name_kirill(client.second_name.kirill)
+                  "
+                  @change="textToLatin_second_name_kirill"
+                  :placeholder="$t('apartments.agree.placeholder.second_name')"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <hr />
+            </div>
+
+            <!-- last_name_lotin -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="last_name_lotin"
+                  >{{ $t("apartments.agree.last_name") }} (lotin)</label
+                >
+                <input
+                  id="last_name_lotin"
+                  class="my-form__input"
+                  type="text"
+                  required
+                  v-model="client.last_name.lotin"
+                  @input="isLatin_last_name_lotin(client.last_name.lotin)"
+                  @change="textToCyrillic_last_name_lotin"
+                  :placeholder="
+                    $t('apartments.agree.placeholder.last_name_lotin')
+                  "
+                />
+              </div>
+            </div>
+
+            <!-- first_name_lotin -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="first_name_lotin"
+                  >{{ $t("apartments.agree.first_name") }} (lotin)</label
+                >
+                <input
+                  id="first_name_lotin"
+                  class="my-form__input"
+                  type="text"
+                  required
+                  v-model="client.first_name.lotin"
+                  @input="isLatin_first_name_lotin(client.first_name.lotin)"
+                  @change="textToCyrillic_first_name_lotin"
+                  :placeholder="
+                    $t('apartments.agree.placeholder.first_name_lotin')
+                  "
+                />
+              </div>
+            </div>
+
+            <!-- second_name_lotin -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="second_name_lotin"
+                  >{{ $t("apartments.agree.second_name") }} (lotin)</label
+                >
+                <input
+                  id="second_name_lotin"
+                  class="my-form__input"
+                  type="text"
+                  required
+                  v-model="client.second_name.lotin"
+                  @input="isLatin_second_name_lotin(client.second_name.lotin)"
+                  @change="textToCyrillic_second_name_lotin"
+                  :placeholder="
+                    $t('apartments.agree.placeholder.second_name_lotin')
+                  "
+                />
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <hr />
+            </div>
+
+            <!-- client.phone -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="phone">{{
+                  $t("apartments.agree.phone")
+                }}</label>
+                <input
+                  class="my-form__input"
+                  type="tel"
+                  :placeholder="$t('apartments.agree.placeholder.phone')"
+                  v-model="client.phone"
+                  id="phone"
+                />
+              </div>
+            </div>
+
+            <!-- client.other_phone -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="other_phone">{{
+                  $t("apartments.agree.other_phone")
+                }}</label>
+                <input
+                  class="my-form__input"
+                  type="tel"
+                  :placeholder="$t('apartments.agree.placeholder.other_phone')"
+                  v-model="client.other_phone"
+                  id="other_phone"
+                />
+              </div>
+            </div>
+
+            <!-- apartments.agree.language -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="language">{{
+                  $t("apartments.agree.language")
+                }}</label>
+                <select
+                  class="form-control"
+                  id="language"
+                  v-model="client.language"
+                >
+                  <option value="uz">Узбекский</option>
+                  <option value="ru">Русский</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- apartments.agree.type_client -->
+            <div
+              class="col-md-4"
+              v-if="getMe.role.id === 1 || getPermission.contracts.friends"
+            >
+              <div class="mb-3">
+                <label class="d-block" for="type_client">{{
+                  $t("apartments.agree.type_client")
+                }}</label>
+                <select
+                  class="form-control"
+                  id="type_client"
+                  v-model="type_client"
+                >
+                  <option value="unknown">Незнакомый</option>
+                  <option value="friends">Знакомый</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <hr />
+            </div>
+
+            <!-- Изменить дата договора -->
+            <div
+              class="col-12 mb-2"
+              v-if="getMe.role.id === 1 || getPermission.contracts.date"
+            >
               <button
+                class="btn btn-primary mb-2"
+                @click="date_change = true"
                 type="button"
-                class="btn btn-secondary mr-2"
-                @click="removeBlock"
               >
-                {{ $t("cancel") }}
+                <i class="fa fa-calendar"></i> Изменить дата договора
               </button>
 
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click="[(step = 3), (next = false), (confirm = true)]"
-                v-if="next"
-              >
-                {{ $t("next") }} <i class="fa fa-chevron-circle-right"></i>
-              </button>
+              <div class="row" v-if="date_change">
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label class="d-block" for="number">{{
+                      $t("apartments.agree.number")
+                    }}</label>
+                    <input
+                      id="number"
+                      class="my-form__input"
+                      type="text"
+                      required
+                      v-model="apartment_edit.contract_number"
+                      :placeholder="$t('apartments.agree.placeholder.number')"
+                    />
+                  </div>
+                </div>
 
-              <button type="submit" class="btn btn-success" v-if="confirm">
-                {{ $t("create_agree") }} <i class="fa fa-file-contract"></i>
-              </button>
+                <div class="col-md-4">
+                  <div class="mb-3">
+                    <label class="d-block" for="date">{{
+                      $t("apartments.agree.date_contract")
+                    }}</label>
+                    <input
+                      id="date"
+                      class="my-form__input"
+                      type="date"
+                      required
+                      v-model="apartment_edit.contract_date"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.date_contract')
+                      "
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <hr />
             </div>
-          </form>
 
-          <div class="" v-if="step === 3">
-            <form ref="form" @submit.stop.prevent="sendForm">
-              <div v-if="!edit.price">
-                <h6 class="color-blue-darker">
-                  Цена продажи:
-                  {{
-                    client.discount.id === "other"
-                      ? apartment_edit.price
-                      : apartment.price
+            <!-- apartments.view.variant -->
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="d-block" for="discounts">{{
+                  $t("apartments.view.variant")
+                }}</label>
+                <select
+                  class="form-control"
+                  id="discounts"
+                  v-model="client.discount"
+                  @change="ChangeDiscount()"
+                >
+                  <option :value="{id: null}">
+                    {{ $t("apartments.agree.placeholder.enter_discount") }}
+                  </option>
+
+                  <option
+                    v-for="(discount, index) in getApartmentDiscounts"
+                    :value="discount"
+                    :key="index"
+                  >
+                    {{ $t("apartments.view.variant") }}
+                    {{ index + 1 }} - {{ discount.prepay_to }}%
+                  </option>
+
+                  <option
+                    v-if="
+                      getMe.role.id === 1 || getPermission.contracts.other_price
+                    "
+                    :value="{id: 'other', discount: 0, prepay_to: 30}"
+                  >
+                    {{ $t("apartments.view.other_variant") }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- client.discount -->
+            <div
+              class="col-md-12 my-2"
+              v-if="client.discount.id && client.discount.id != 'other'"
+            >
+              <Discount
+                :discount="client.discount"
+                :apartment="apartment"
+              ></Discount>
+            </div>
+
+            <div class="col-md-12">
+              <hr />
+            </div>
+
+            <!-- apartments.agree.first_payment_date -->
+            <div class="col-md-4" v-if="client.discount.id">
+              <div class="mb-3">
+                <label class="d-block" for="first_payment_date">{{
+                  $t("apartments.agree.first_payment_date")
+                }}</label>
+                <input
+                  v-model="client.first_payment_date"
+                  id="first_payment_date"
+                  type="date"
+                  class="form-control"
+                />
+              </div>
+            </div>
+
+            <!-- apartments.agree.payment_date -->
+            <div class="col-md-4" v-if="!confirm && client.discount.id">
+              <div class="mb-3">
+                <label class="d-block" for="payment_date">{{
+                  $t("apartments.agree.payment_date")
+                }}</label>
+                <input
+                  v-model="client.payment_date"
+                  id="payment_date"
+                  type="date"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Комментария -->
+          <div v-if="confirm">
+            <hr />
+            <label>Комментария</label>
+            <textarea
+              rows="3"
+              cols="3"
+              v-model="comment"
+              class="form-control"
+            ></textarea>
+          </div>
+
+          <!-- errors alert -->
+          <div class="alert alert-danger mt-3" v-if="error">
+            <ul>
+              <li v-for="(error, index) in errors" :key="index">
+                <span v-for="msg in error" :key="msg">
+                  {{ msg }}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- removeBlock -->
+          <div class="mt-4 d-flex justify-content-end flex-md-row flex-column">
+            <button
+              type="button"
+              class="btn btn-default mr-md-2 mr-0"
+              @click="removeBlock"
+            >
+              {{ $t("cancel") }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary mr-0"
+              @click="[(step = 3), (next = false), (confirm = true)]"
+              v-if="next"
+            >
+              {{ $t("next") }}
+              <i class="fa fa-chevron-circle-right"></i>
+            </button>
+
+            <button type="submit" class="btn btn-success" v-if="confirm">
+              {{ $t("create_agree") }}
+              <i class="fa fa-file-contract"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="container-fluid px-0 mx-0" v-if="step === 3">
+        <form ref="form" @submit.stop.prevent="sendForm">
+          <div class="row">
+            <!-- Таблица ежемесячных платежей -->
+            <div class="col-xl-8">
+              <div
+                class="
+                  d-flex
+                  justify-content-between
+                  align-items-center
+                  bg-white
+                  sticky-top
+                  px-3
+                  py-2
+                  rounded
+                  shadow-sm
+                "
+              >
+                <h6 class="mb-0">Таблица ежемесячных платежей:</h6>
+                <div class="d-flex justify-content-end align-items-center">
+                  <div
+                    class="mr-2 w-25"
+                    v-if="
+                      client.discount.prepay_to != 100 ||
+                      client.discount.prepay_to < 100
+                    "
+                  >
+                    <!-- <label class="d-block" for="month">Месяцев</label> -->
+                    <input
+                      id="month"
+                      class="my-form__input w-100"
+                      type="number"
+                      min="0"
+                      required
+                      v-model="month"
+                    />
+                  </div>
+                  <span
+                    v-if="
+                      month > 0 &&
+                      (client.discount.prepay_to != 100 ||
+                        client.discount.prepay_to < 100)
+                    "
+                  >
+                    {{ month }} месяцев по <br />
+                    {{
+                      getMonth()
                         | number("0,0.00", {
                           thousandsSeparator: " ",
                           decimalSeparator: ",",
                         })
-                  }}
-                  {{ $t("ye") }}
-                </h6>
+                    }}
+                    {{ $t("ye") }}
+                  </span>
+                </div>
+              </div>
+              <div class="table-responsive custom-table mt-0">
+                <table
+                  class="table"
+                  v-if="
+                    client.discount.prepay_to != 100 ||
+                    client.discount.prepay_to < 100
+                  "
+                >
+                  <thead>
+                    <tr>
+                      <th>Месяцы</th>
 
-                <div class="container px-0 mx-0 mt-4">
-                  <div class="row">
+                      <th>Тип</th>
+
+                      <th>Сумма</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      v-if="
+                        initial_payments.length === 0 ||
+                        initial_payments.length === 1
+                      "
+                    >
+                      <td>
+                        {{
+                          this.client.first_payment_date
+                            ? this.client.first_payment_date
+                            : new Date() | moment("DD.MM.YYYY")
+                        }}
+                      </td>
+
+                      <td>Первоначальный взнос</td>
+
+                      <td>
+                        <div
+                          class="
+                            d-flex
+                            justify-content-between
+                            align-items-center
+                          "
+                        >
+                          <span class="table-sm-width">
+                            {{
+                              client.discount.id === "other" && month == 0
+                                ? getTotalOther()
+                                : getPrepay()
+                                  | number("0,0.00", {
+                                    thousandsSeparator: " ",
+                                    decimalSeparator: ",",
+                                  })
+                            }}
+                            {{ $t("ye") }}
+                          </span>
+
+                          <button
+                            class="btn btn-success btn-sm mr-0 mt-0"
+                            type="button"
+                            @click="addInitialPayment"
+                          >
+                            <i class="fa fa-plus-circle"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr
+                      v-else
+                      v-for="(initialPayment, index) in initial_payments"
+                      :key="'initial' + index"
+                    >
+                      <td>
+                        <span v-if="!initialPayment.edit">
+                          {{ initialPayment.month | moment("DD.MM.YYYY") }}
+                        </span>
+
+                        <div
+                          class="col-md-12 float-left"
+                          v-if="initialPayment.edit && index != 0"
+                        >
+                          <div class="row">
+                            <input
+                              type="date"
+                              class="form-control"
+                              v-model="initialPayment.month"
+                            />
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>Первоначальный взнос</td>
+
+                      <td>
+                        <div
+                          class="
+                            d-flex
+                            justify-content-between
+                            align-items-center
+                          "
+                        >
+                          <span v-if="!initialPayment.edit">
+                            {{
+                              initialPayment.amount
+                                | number("0,0.00", {
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                            }}
+                            {{ $t("ye") }}
+                          </span>
+
+                          <div
+                            class="col-md-4 float-left"
+                            v-if="initialPayment.edit"
+                          >
+                            <div class="row">
+                              <input
+                                type="text"
+                                class="form-control"
+                                v-model="initialPayment.amount"
+                              />
+                            </div>
+                          </div>
+
+                          <div
+                            class="
+                              d-flex
+                              justify-content-between
+                              align-items-center
+                            "
+                          >
+                            <button
+                              class="btn btn-success btn-sm mr-1 mt-0"
+                              v-if="index === initial_payments.length - 1"
+                              type="button"
+                              @click="addInitialPayment"
+                            >
+                              <i class="fa fa-plus-circle"></i>
+                            </button>
+
+                            <button
+                              v-if="
+                                (getMe.role.id === 1 && !initialPayment.edit) ||
+                                (getPermission.contracts.monthly &&
+                                  !initialPayment.edit)
+                              "
+                              type="button"
+                              @click="editInitialPayment(index)"
+                              class="btn btn-sm btn-primary mt-0 mr-1"
+                            >
+                              <i class="fa fa-edit"></i>
+                            </button>
+
+                            <div v-if="initialPayment.edit">
+                              <button
+                                v-if="
+                                  getMe.role.id === 1 ||
+                                  getPermission.contracts.monthly
+                                "
+                                type="button"
+                                @click="editInitialPayment(index)"
+                                class="btn btn-sm btn-success mt-0 mr-1"
+                              >
+                                <i class="fa fa-save"></i>
+                              </button>
+                            </div>
+
+                            <button
+                              v-if="
+                                (index != 0 &&
+                                  getMe.role.id === 1 &&
+                                  !month.edit) ||
+                                (index != 0 &&
+                                  getPermission.contracts.monthly &&
+                                  !month.edit)
+                              "
+                              type="button"
+                              @click="deleteInitialPayment(index)"
+                              class="btn btn-sm btn-danger mt-0 mr-0"
+                            >
+                              <i class="fa fa-trash"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr v-for="(month, index) in credit_months" :key="index">
+                      <td>
+                        {{ month.month | moment("DD.MM.YYYY") }}
+                      </td>
+
+                      <td>Ежемесячно</td>
+
+                      <td>
+                        <div
+                          class="
+                            d-flex d-flex
+                            justify-content-between
+                            align-items-center
+                          "
+                        >
+                          <span v-if="!month.edit">
+                            {{
+                              month.amount
+                                | number("0,0.00", {
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                            }}
+                            {{ $t("ye") }}
+                          </span>
+
+                          <div class="col-md-4 float-left" v-if="month.edit">
+                            <div class="row">
+                              <input
+                                type="text"
+                                class="form-control"
+                                v-model="month.amount"
+                              />
+                            </div>
+                          </div>
+
+                          <button
+                            v-if="
+                              (getMe.role.id === 1 && !month.edit) ||
+                              (getPermission.contracts.monthly && !month.edit)
+                            "
+                            type="button"
+                            @click="editMonthlyPayment(index)"
+                            class="btn btn-sm btn-primary mr-0 mt-0"
+                          >
+                            <i class="fa fa-edit"></i>
+                          </button>
+
+                          <div v-if="month.edit">
+                            <button
+                              v-if="
+                                getMe.role.id === 1 ||
+                                getPermission.contracts.monthly
+                              "
+                              type="button"
+                              @click="editMonthlyPayment(index)"
+                              class="btn btn-sm btn-success mr-0 mt-0"
+                            >
+                              <i class="fa fa-save"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- sticky sidebar -->
+            <div class="col-xl-4 h-auto">
+              <div class="sticky-top">
+                <!-- Info -->
+                <div class="new-object p-3">
+                  <table class="table mx-0 mt-2 p-0 my-table-another-variant">
+                    <tbody class="m-0 p-0">
+                      <tr>
+                        <td class="px-0 py-2">Номер паспорта</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.passport_series }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Место выдачи паспорта</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.issued_by_whom }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Дата выпуска пасспорта</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.date_of_issue }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Дата рождения</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.birth_day }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">ФИО</td>
+                        <td
+                          class="px-0 py-2 text-right"
+                          :title="`${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`"
+                        >
+                          {{ client.last_name.lotin }}
+                          {{ client.first_name.lotin }}
+                          {{ client.second_name.lotin }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Телефон номер</td>
+                        <td class="px-0 py-2 text-right">{{ client.phone }}</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Дополнительный номер</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.other_phone }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="new-object p-3">
+                  <!--  Цена продажи: -->
+                  <div v-if="!edit.price">
+                    <h6 class="color-blue-darker mb-0">
+                      Цена продажи:
+                      {{
+                        client.discount.id === "other"
+                          ? apartment_edit.price
+                          : apartment.price
+                            | number("0,0.00", {
+                              thousandsSeparator: " ",
+                              decimalSeparator: ",",
+                            })
+                      }}
+                      {{ $t("ye") }}
+                    </h6>
+
+                    <!-- Первоначальный взнос -->
+                    <div class="container px-0 mx-0 mt-4">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="mb-3" v-if="month > 0">
+                            <label
+                              class="d-block h6 font-weight-normal"
+                              for="initial-fee"
+                              >Первоначальный взнос:</label
+                            >
+                            <div class="row">
+                              <div class="col-md-8">
+                                <input
+                                  id="initial-fee"
+                                  class="my-form__input"
+                                  disabled
+                                  type="text"
+                                  :value="
+                                    client.discount.id === 'other' && month == 0
+                                      ? getTotalOther()
+                                      : getPrepay()
+                                        | number('0,0.00', {
+                                          thousandsSeparator: ' ',
+                                          decimalSeparator: ',',
+                                        })
+                                  "
+                                />
+                              </div>
+                              <div class="col-md-4 pl-md-0 mt-md-0 mt-2">
+                                <input
+                                  class="my-form__input"
+                                  disabled
+                                  type="text"
+                                  :value="
+                                    client.discount.prepay_to.toFixed(2) + ' %'
+                                  "
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            v-if="client.discount.id === 'other'"
+                            @click="edit.price = true"
+                            class="btn btn-light mx-auto mb-3"
+                          >
+                            <i class="fa fa-edit"></i>
+                            {{ $t("apartments.agree.edit_price") }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Цена продажи -->
+                  <div class="row" v-else>
                     <div class="col-12">
+                      <div class="mb-3">
+                        <label class="d-block" for="initial-fee"
+                          >Цена продажи:</label
+                        >
+                        <div class="row">
+                          <div class="col-12">
+                            <input
+                              id="initial-price"
+                              class="my-form__input"
+                              step="0.01"
+                              type="number"
+                              v-model="apartment_edit.price"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
                       <div class="mb-3" v-if="month > 0">
                         <label class="d-block" for="initial-fee"
                           >Первоначальный взнос:</label
                         >
                         <div class="row">
-                          <div class="col-md-4 col-8">
+                          <div class="col-md-10">
                             <input
                               id="initial-fee"
                               class="my-form__input"
-                              disabled
-                              type="text"
-                              :value="
-                                client.discount.id === 'other' && month == 0
-                                  ? getTotalOther()
-                                  : getPrepay()
-                                    | number('0,0.00', {
-                                      thousandsSeparator: ' ',
-                                      decimalSeparator: ',',
-                                    })
-                              "
+                              type="number"
+                              step="0.01"
+                              v-model="apartment_edit.prepay_price"
                             />
                           </div>
                           <div
                             class="
-                              col-md-4 col-4
+                              col-md-2
                               pl-0
                               d-flex
                               align-items-center
@@ -579,425 +1002,101 @@
 
                       <button
                         type="button"
-                        v-if="client.discount.id === 'other'"
-                        @click="edit.price = true"
-                        class="btn btn-light"
+                        @click="edit.price = false"
+                        class="btn btn-primary mx-auto mb-3"
                       >
-                        <i class="fa fa-edit"></i>
-                        {{ $t("apartments.agree.edit_price") }}
+                        <i class="fa fa-save"></i> {{ $t("save") }}
                       </button>
                     </div>
                   </div>
+
+                  <!-- Сумма рассрочки -->
+                  <table
+                    class="table mx-0 p-0 my-0 my-table-another-variant"
+                    v-if="month > 0"
+                  >
+                    <tbody class="m-0 p-0">
+                      <tr>
+                        <td class="px-0 py-2">Сумма рассрочки</td>
+                        <td class="px-0 py-2 text-right">
+                          {{
+                            getDebt()
+                              | number("0,0.00", {
+                                thousandsSeparator: " ",
+                                decimalSeparator: ",",
+                              })
+                          }}
+                          {{ $t("ye") }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-              </div>
 
-              <div v-else>
-                <div class="row">
-                  <div class="col-12">
-                    <div class="mb-3">
-                      <label class="d-block" for="initial-fee"
-                        >Цена продажи:</label
-                      >
-                      <div class="row">
-                        <div class="col-md-4 col-8">
-                          <input
-                            id="initial-price"
-                            class="my-form__input"
-                            step="0.01"
-                            type="number"
-                            v-model="apartment_edit.price"
-                          />
-                        </div>
-                      </div>
-                    </div>
+                <div class="new-object p-3">
+                  <!-- Комментария -->
+                  <div>
+                    <label>Комментария</label>
+                    <textarea
+                      rows="3"
+                      cols="3"
+                      v-model="comment"
+                      class="form-control"
+                    ></textarea>
+                  </div>
 
-                    <div class="mb-3" v-if="month > 0">
-                      <label class="d-block" for="initial-fee"
-                        >Первоначальный взнос:</label
-                      >
-                      <div class="row">
-                        <div class="col-md-4 col-8">
-                          <input
-                            id="initial-fee"
-                            class="my-form__input"
-                            type="number"
-                            step="0.01"
-                            v-model="apartment_edit.prepay_price"
-                          />
-                        </div>
-                        <div
-                          class="
-                            col-md-4 col-4
-                            pl-0
-                            d-flex
-                            align-items-center
-                            justify-content-start
-                          "
-                        >
-                          <div class="h6 mb-0">
-                            {{ client.discount.prepay_to.toFixed(2) }}%
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <!-- error msg -->
+                  <div class="alert alert-danger mt-3" v-if="error">
+                    <ul>
+                      <li v-for="(error, index) in errors" :key="index">
+                        <span v-for="msg in error" :key="msg">
+                          {{ msg }}
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
 
+                  <!-- Btns -->
+                  <div class="sidebar-btns">
                     <button
                       type="button"
-                      @click="edit.price = false"
-                      class="btn btn-primary"
+                      class="btn btn-secondary mr-0"
+                      @click="[(step = 2), (next = true), (confirm = false)]"
                     >
-                      <i class="fa fa-save"></i> {{ $t("save") }}
+                      <i class="fa fa-chevron-circle-left"></i>
+                      {{ $t("back") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-default mx-md-2"
+                      @click="removeBlock"
+                    >
+                      {{ $t("cancel") }}
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-success mr-0"
+                      v-if="confirm"
+                    >
+                      {{ $t("create_agree") }}
+                      <i class="fa fa-file-contract"></i>
                     </button>
                   </div>
                 </div>
-                <div class="container px-0 mx-0"></div>
               </div>
-
-              <table
-                class="table table-hover mx-0 mt-2 p-0 my-table-another-variant"
-                v-if="month > 0"
-              >
-                <tbody class="m-0 p-0">
-                  <!--                            <tr>-->
-                  <!--                                <td class="px-0 py-2">Скидка - {{ client.discount.discount }}%</td>-->
-                  <!--                                <td class="px-0 py-2 text-right">{{ getDiscount() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>-->
-                  <!--                            </tr>-->
-
-                  <!--                            <tr>-->
-                  <!--                                <td class="px-0 py-2">Итого со скидкой</td>-->
-                  <!--                                <td class="px-0 py-2 text-right">{{ getTotal() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>-->
-                  <!--                            </tr>-->
-
-                  <tr>
-                    <td class="px-0 py-2">Сумма рассрочки</td>
-                    <td class="px-0 py-2 text-right">
-                      {{
-                        getDebt()
-                          | number("0,0.00", {
-                            thousandsSeparator: " ",
-                            decimalSeparator: ",",
-                          })
-                      }}
-                      {{ $t("ye") }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div
-                class="col-md-12"
-                v-if="
-                  client.discount.prepay_to != 100 ||
-                  client.discount.prepay_to < 100
-                "
-              >
-                <div class="row">
-                  <div class="mb-3">
-                    <label class="d-block" for="month">Месяцев</label>
-                    <input
-                      id="month"
-                      class="my-form__input"
-                      type="number"
-                      min="0"
-                      required
-                      v-model="month"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <span
-                v-if="
-                  month > 0 &&
-                  (client.discount.prepay_to != 100 ||
-                    client.discount.prepay_to < 100)
-                "
-              >
-                {{ month }} месяцев по
-                {{
-                  getMonth()
-                    | number("0,0.00", {
-                      thousandsSeparator: " ",
-                      decimalSeparator: ",",
-                    })
-                }}
-                {{ $t("ye") }}
-              </span>
-
-              <table
-                class="table"
-                v-if="
-                  client.discount.prepay_to != 100 ||
-                  client.discount.prepay_to < 100
-                "
-              >
-                <thead>
-                  <tr>
-                    <th>Месяцы</th>
-
-                    <th>Тип</th>
-
-                    <th>Сумма</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr
-                    v-if="
-                      initial_payments.length === 0 ||
-                      initial_payments.length === 1
-                    "
-                  >
-                    <td>
-                      {{
-                        this.client.first_payment_date
-                          ? this.client.first_payment_date
-                          : new Date() | moment("DD.MM.YYYY")
-                      }}
-                    </td>
-
-                    <td>Первоначальный взнос</td>
-
-                    <td>
-                      {{
-                        client.discount.id === "other" && month == 0
-                          ? getTotalOther()
-                          : getPrepay()
-                            | number("0,0.00", {
-                              thousandsSeparator: " ",
-                              decimalSeparator: ",",
-                            })
-                      }}
-                      {{ $t("ye") }}
-
-                      <button
-                        class="btn btn-success btn-sm float-right"
-                        type="button"
-                        @click="addInitialPayment"
-                      >
-                        <i class="fa fa-plus-circle"></i>
-                      </button>
-                    </td>
-                  </tr>
-
-                  <tr
-                    v-else
-                    v-for="(initialPayment, index) in initial_payments"
-                    :key="'initial' + index"
-                  >
-                    <td>
-                      <span v-if="!initialPayment.edit">
-                        {{ initialPayment.month | moment("DD.MM.YYYY") }}
-                      </span>
-
-                      <div
-                        class="col-md-12 float-left"
-                        v-if="initialPayment.edit && index != 0"
-                      >
-                        <div class="row">
-                          <input
-                            type="date"
-                            class="form-control"
-                            v-model="initialPayment.month"
-                          />
-                        </div>
-                      </div>
-                    </td>
-
-                    <td>Первоначальный взнос</td>
-
-                    <td>
-                      <span v-if="!initialPayment.edit">
-                        {{
-                          initialPayment.amount
-                            | number("0,0.00", {
-                              thousandsSeparator: " ",
-                              decimalSeparator: ",",
-                            })
-                        }}
-                        {{ $t("ye") }}
-                      </span>
-
-                      <div
-                        class="col-md-4 float-left"
-                        v-if="initialPayment.edit"
-                      >
-                        <div class="row">
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="initialPayment.amount"
-                          />
-                        </div>
-                      </div>
-
-                      <button
-                        class="btn btn-success btn-sm float-right"
-                        v-if="index === initial_payments.length - 1"
-                        type="button"
-                        @click="addInitialPayment"
-                      >
-                        <i class="fa fa-plus-circle"></i>
-                      </button>
-
-                      <button
-                        v-if="
-                          (getMe.role.id === 1 && !initialPayment.edit) ||
-                          (getPermission.contracts.monthly &&
-                            !initialPayment.edit)
-                        "
-                        type="button"
-                        @click="editInitialPayment(index)"
-                        class="btn btn-sm btn-primary float-right mr-1"
-                      >
-                        <i class="fa fa-edit"></i>
-                      </button>
-
-                      <div v-if="initialPayment.edit">
-                        <button
-                          v-if="
-                            getMe.role.id === 1 ||
-                            getPermission.contracts.monthly
-                          "
-                          type="button"
-                          @click="editInitialPayment(index)"
-                          class="btn btn-sm btn-success float-right mr-1"
-                        >
-                          <i class="fa fa-save"></i>
-                        </button>
-                      </div>
-
-                      <button
-                        v-if="
-                          (index != 0 && getMe.role.id === 1 && !month.edit) ||
-                          (index != 0 &&
-                            getPermission.contracts.monthly &&
-                            !month.edit)
-                        "
-                        type="button"
-                        @click="deleteInitialPayment(index)"
-                        class="btn btn-sm btn-danger float-right mr-1"
-                      >
-                        <i class="fa fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-
-                  <tr v-for="(month, index) in credit_months" :key="index">
-                    <td>
-                      {{ month.month | moment("DD.MM.YYYY") }}
-                    </td>
-
-                    <td>Ежемесячно</td>
-
-                    <td>
-                      <span v-if="!month.edit">
-                        {{
-                          month.amount
-                            | number("0,0.00", {
-                              thousandsSeparator: " ",
-                              decimalSeparator: ",",
-                            })
-                        }}
-                        {{ $t("ye") }}
-                      </span>
-
-                      <div class="col-md-4 float-left" v-if="month.edit">
-                        <div class="row">
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="month.amount"
-                          />
-                        </div>
-                      </div>
-
-                      <button
-                        v-if="
-                          (getMe.role.id === 1 && !month.edit) ||
-                          (getPermission.contracts.monthly && !month.edit)
-                        "
-                        type="button"
-                        @click="editMonthlyPayment(index)"
-                        class="btn btn-sm btn-primary float-right"
-                      >
-                        <i class="fa fa-edit"></i>
-                      </button>
-
-                      <div v-if="month.edit">
-                        <button
-                          v-if="
-                            getMe.role.id === 1 ||
-                            getPermission.contracts.monthly
-                          "
-                          type="button"
-                          @click="editMonthlyPayment(index)"
-                          class="btn btn-sm btn-success float-right"
-                        >
-                          <i class="fa fa-save"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div class="col-md-12">
-                <label>Комментария</label>
-                <textarea
-                  rows="3"
-                  cols="3"
-                  v-model="comment"
-                  class="form-control"
-                ></textarea>
-              </div>
-
-              <div class="alert alert-danger mt-3" v-if="error">
-                <ul>
-                  <li v-for="(error, index) in errors" :key="index">
-                    <span v-for="msg in error" :key="msg">
-                      {{ msg }}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div
-                class="
-                  mt-4
-                  d-flex
-                  justify-content-md-end justify-content-center
-                "
-              >
-                <button
-                  type="button"
-                  class="btn btn-default mr-2"
-                  @click="removeBlock"
-                >
-                  {{ $t("cancel") }}
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-secondary mr-1"
-                  @click="[(step = 2), (next = true), (confirm = false)]"
-                >
-                  <i class="fa fa-chevron-circle-left"></i> {{ $t("back") }}
-                </button>
-
-                <button type="submit" class="btn btn-success" v-if="confirm">
-                  {{ $t("create_agree") }}
-                  <i class="fa fa-file-contract"></i>
-                </button>
-              </div>
-            </form>
-
-            <!--                <button type="submit" class="btn btn-success" v-if="confirm">-->
-            <!--                    {{ $t('create_agree') }} <i class="fa fa-file-contract"></i>-->
-            <!--                </button>-->
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
+
+    <success-agree
+      v-if="
+        getApartment.order.status != 'sold' ||
+        getApartment.order.status != 'contract'
+      "
+      :contract="contract"
+    ></success-agree>
   </main>
 </template>
 
@@ -1005,10 +1104,10 @@
 import {mapGetters, mapActions} from "vuex";
 import Discount from "./Components/Discount";
 import moment from "moment";
+import SuccessAgree from "./Components/SuccessAgree";
 
 export default {
-  name: "Agree",
-
+  name: "ConfirmApartment",
   data() {
     return {
       step: 2,
@@ -1079,14 +1178,22 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
+      contract: {
+        id: null,
+        contract: null,
+        contract_path: null,
+      },
     };
   },
 
   components: {
     Discount,
+    "success-agree": SuccessAgree,
   },
 
-  created() {},
+  created() {
+    this.backToView();
+  },
 
   computed: {
     ...mapGetters([
@@ -1129,8 +1236,9 @@ export default {
   },
 
   mounted() {
-    this.fetchApartment(this);
-    this.backToView();
+    this.fetchApartment(this).then(() => {
+      this.backToView();
+    });
 
     if (this.apartment.order.id) {
       this.reserveClientFull();
@@ -1140,9 +1248,16 @@ export default {
   },
 
   methods: {
+    successAgree(value) {
+      this.fetchApartment(this);
+      this.contract = value;
+      this.$bvModal.show("modal-success-agree");
+    },
+    CloseAgree() {
+      this.confirm = false;
+    },
     ...mapActions(["fetchApartment"]),
     backToView() {
-      console.log(this.getApartment.order.status);
       if (this.getApartment.order.status == "contract") {
         this.$router.push({
           name: "apartments-view",
@@ -1158,7 +1273,6 @@ export default {
 
       this.client.discount.prepay_to = percente;
     },
-
     deleteInitialPayment(index) {
       if (this.initial_payments.length === 2) {
         this.initial_payments.splice(index, 1);
@@ -1167,7 +1281,6 @@ export default {
         this.initial_payments.splice(index, 1);
       }
     },
-
     addInitialPayment() {
       let today = this.client.first_payment_date
         ? new Date(this.client.first_payment_date)
@@ -1197,7 +1310,6 @@ export default {
 
       this.getPrepay();
     },
-
     async Search() {
       try {
         const {data} = await this.axios.get(
@@ -1247,7 +1359,6 @@ export default {
         }
       }
     },
-
     async reserveClientFull() {
       try {
         const {data} = await this.axios.get(
@@ -1288,7 +1399,6 @@ export default {
         }
       }
     },
-
     async sendForm() {
       if (this.client.discount.id === null) return;
 
@@ -1415,12 +1525,16 @@ export default {
 
               this.$bvModal.hide("modal-agree");
 
-              this.$emit("successAgree", response.data);
+              console.log(response.data);
+              // this.$emit("successAgree", response.data);
+              // this.fetchApartment(this);
+              this.contract = response.data;
+              this.$bvModal.show("modal-success-agree");
 
-              this.$router.push({
-                name: "apartments-view",
-                params: {id: this.$route.params.id},
-              });
+              // this.$router.push({
+              //   name: "apartments-view",
+              //   params: {id: this.$route.params.id},
+              // });
             })
             .catch((error) => {
               if (!error.response) {
@@ -1448,7 +1562,6 @@ export default {
         }
       });
     },
-
     removeBlock() {
       this.$swal({
         title: this.$t("sweetAlert.title"),
@@ -1469,7 +1582,6 @@ export default {
         }
       });
     },
-
     ChangeDiscount() {
       if (this.client.discount.id === "other") {
         this.client.discount = {
@@ -1500,7 +1612,6 @@ export default {
       this.next = true;
       return;
     },
-
     getPrepay() {
       if (this.prepay_to === 100) return 0;
 
@@ -1528,28 +1639,23 @@ export default {
 
       return (this.client.discount.prepay_to * total) / 100;
     },
-
     getTotalOther() {
       return parseFloat(this.apartment_edit.price);
     },
-
     getDiscount() {
       if (this.prepay_to === 100) return 0;
 
       return 1 - this.client.discount.discount / 100;
       // return this.discount.discount * this.apartment.price / 100;
     },
-
     getMonth() {
       return (this.getTotal() - this.getPrepay()) / this.month;
     },
-
     getDebt() {
       // let price = this.getTotal() - this.getPrepay();
 
       return this.getTotal() - this.getPrepay();
     },
-
     getTotal() {
       let total_discount = this.getDiscount();
 
@@ -1563,7 +1669,6 @@ export default {
 
       return total;
     },
-
     CreditMonths(newVal) {
       let today = this.client.payment_date
         ? new Date(this.client.payment_date)
@@ -1580,7 +1685,6 @@ export default {
         });
       }
     },
-
     editMonthlyPayment(index) {
       if (this.credit_months[index].edit) {
         this.credit_months[index].edit = false;
@@ -1598,7 +1702,6 @@ export default {
 
       return;
     },
-
     editInitialPayment(index) {
       if (this.initial_payments[index].edit) {
         this.initial_payments[index].edit = false;
@@ -1618,7 +1721,6 @@ export default {
 
       return;
     },
-
     setNewPriceMonthly() {
       let total = this.getPrepay();
       let months = 0;
@@ -1676,7 +1778,7 @@ export default {
           this.toastedWithErrorCode(error);
         }
       } else {
-        this.toasted("Error: Network Error", "error");
+        this.toasted("Введите номер и серию паспорта правильно", "error");
       }
     },
 
@@ -1714,15 +1816,15 @@ export default {
     },
 
     textToCyrillic_last_name_lotin(value) {
-      if (this.client.last_name.lotin.length === 0)
+      if (this.client.last_name.kirill.length === 0)
         this.client.last_name.kirill = this.translateTextToCyrillic(value);
     },
     textToCyrillic_first_name_lotin(value) {
-      if (this.client.first_name.lotin.length === 0)
+      if (this.client.first_name.kirill.length === 0)
         this.client.first_name.kirill = this.translateTextToCyrillic(value);
     },
     textToCyrillic_second_name_lotin(value) {
-      if (this.client.second_name.lotin.length === 0)
+      if (this.client.second_name.kirill.length === 0)
         this.client.second_name.kirill = this.translateTextToCyrillic(value);
     },
 
@@ -1772,23 +1874,6 @@ export default {
       value.target.value = value.target.value.replace("H", "Ҳ");
       value.target.value = value.target.value.replace("h", "ҳ");
 
-      // a["SCH"] = "Щ";
-      // a["Kh"] = "Х";
-      // a["yo"] = "ё";
-      // a["ts"] = "ц";
-      // a["sch"] = "щ";
-      // a["kh"] = "х";
-      // a["Ya"] = "Я";
-      // a["Yu"] = "Ю";
-      // a["ya"] = "я";
-      // a["yu"] = "ю";
-      // a["Yo"] = "Ё";
-      // a["Ts"] = "Ц";
-      // a["Ch"] = "Ч";
-      // a["ch"] = "ч";
-      // a["Sh"] = "Ш";
-      // a["sh"] = "ш";
-
       return this.symbolLatinToCyrillic(value.target.value);
     },
 
@@ -1825,7 +1910,7 @@ export default {
       a["Ф"] = "F";
       a["Ы"] = "I";
       a["В"] = "V";
-      a["А"] = "a";
+      a["А"] = "A";
       a["П"] = "P";
       a["Р"] = "R";
       a["О"] = "O";
@@ -1902,15 +1987,13 @@ export default {
       a["G'"] = "Ғ";
       a["g'"] = "ғ";
 
-      a["I"] = "Й";
+      a["I"] = "И";
       a["U"] = "У";
       a["K"] = "К";
       a["N"] = "Н";
       a["G"] = "Г";
       a["Z"] = "З";
-      // a["'"] = "Ъ";
-      // a["'"] = "ъ";
-      a["i"] = "й";
+      a["i"] = "и";
       a["u"] = "у";
       a["k"] = "к";
       a["E"] = "Е";
@@ -1919,9 +2002,7 @@ export default {
       a["g"] = "г";
       a["z"] = "з";
       a["F"] = "Ф";
-      a["I"] = "Ы";
       a["V"] = "В";
-      a["a"] = "А";
       a["P"] = "П";
       a["R"] = "Р";
       a["O"] = "О";
@@ -1929,17 +2010,15 @@ export default {
       a["D"] = "Д";
       a["J"] = "Ж";
       a["f"] = "ф";
-      a["i"] = "ы";
       a["v"] = "в";
       a["a"] = "а";
+      a["A"] = "А";
       a["p"] = "п";
       a["r"] = "р";
       a["o"] = "о";
       a["l"] = "л";
       a["d"] = "д";
       a["j"] = "ж";
-      // a["E"] = "Э";
-      // a["e"] = "э";
 
       a["S"] = "С";
       a["M"] = "М";
@@ -1951,8 +2030,6 @@ export default {
       a["m"] = "м";
       a["i"] = "и";
       a["t"] = "т";
-      // a["'"] = "Ь";
-      // a["'"] = "ь";
       a["b"] = "б";
 
       for (let i in word) {
@@ -1981,6 +2058,24 @@ export default {
 .building__info {
   p {
     font-size: 16px;
+  }
+}
+
+.table-sm-width {
+  @media screen and (max-width: 576px) {
+    min-width: 150px;
+  }
+}
+.sidebar-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media screen and (max-width: 1366px) {
+    flex-wrap: wrap;
+    .btn {
+      width: 100%;
+    }
+    flex-direction: column;
   }
 }
 </style>

@@ -434,7 +434,7 @@
                                 <div>
                                   <button
                                     type="button"
-                                    class="btn btn-primary my-btn__blue--small ml-2"
+                                    class="btn btn-primary ml-2"
                                     @click="editDiscount(index)"
                                     v-b-modal.modal-edit-discount
                                   >
@@ -444,7 +444,7 @@
                                 <div>
                                   <button
                                     type="button"
-                                    class="btn btn-primary my-btn__blue--small ml-2"
+                                    class="btn btn-primary ml-2"
                                     @click="DeleteDiscount(index)"
                                   >
                                     <i class="far fa-trash"></i>

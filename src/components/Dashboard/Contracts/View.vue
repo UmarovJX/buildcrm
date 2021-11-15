@@ -51,7 +51,7 @@
                         (getMe.role.id === 1 || getPermission.contracts.friends)
                     "
                     @click="edit.type_client = true"
-                    class="btn btn-primary btn-sm mt-3 mr-0"
+                    class="btn btn-primary mt-3 mr-0"
                   >
                     <i class="fa fa-edit"></i> Редактировать тип
                   </button>
@@ -62,7 +62,7 @@
                         (getMe.role.id === 1 || getPermission.contracts.friends)
                     "
                     @click="ChangeTypeClient"
-                    class="btn btn-success btn-sm mt-3"
+                    class="btn btn-success mt-3"
                   >
                     <i class="fa fa-save"></i> Сохранить
                   </button>

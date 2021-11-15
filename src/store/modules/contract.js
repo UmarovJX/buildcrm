@@ -3,8 +3,6 @@
 export default {
   actions: {
     async fetchContracts(ctx, vm) {
-      // console.log(router.currentRoute.query.page);
-      console.log(vm.page);
       ctx.commit("updateLoading", true, {root: true});
       try {
         let header = {
@@ -17,12 +15,6 @@ export default {
           process.env.VUE_APP_URL + "/deals?page=" + vm.page,
           header
         );
-        // router.push({
-        //   name: "contracts",
-        //   query: {
-        //     page: router.currentRoute.query.page,
-        //   },
-        // });
         ctx.commit("updateLoading", false, {root: true});
         ctx.commit("updateContract", data.items);
         ctx.commit("updatePagination", data.pagination);
@@ -63,14 +55,6 @@ export default {
           header
         );
 
-        // router.push({
-        //   name: "contracts",
-        //   query: {
-        //     page: router.currentRoute.query.page,
-        //     search: router.currentRoute.query.search,
-        //     orderBy: router.currentRoute.query.orderBy,
-        //   },
-        // });
         ctx.commit("updateContract", data.items);
         ctx.commit("updatePagination", data.pagination);
         ctx.commit("updateLoading", false, {root: true});

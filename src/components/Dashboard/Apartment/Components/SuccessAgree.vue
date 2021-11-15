@@ -5,20 +5,28 @@
       ref="modal"
       title="Договор успешно создан!"
       hide-footer
-      @show="resetModal"
+      @hidden="resetModal"
     >
       <div class="my-3">
         <h6>№ договора - {{ contract.contract }}</h6>
       </div>
       <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0">{{ contract.contract }}.docx</h6>
-        <a :href="contract.contract_path" class="my-download"
+        <a
+          @click="goApartment"
+          :href="contract.contract_path"
+          class="my-download"
           ><i class="far fa-download"></i> <span>Скачать</span></a
         >
       </div>
 
       <div
-        class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
+        class="
+          mt-4
+          d-flex
+          justify-content-md-start justify-content-center
+          float-right
+        "
       >
         <button type="button" class="btn btn-default mr-2" @click="resetModal">
           {{ $t("close") }}
@@ -31,12 +39,24 @@
 <script>
 export default {
   props: ["contract"],
-
-  data: () => ({}),
-
+  mounted() {
+    this.$root.$on("bv::modal::hide", (bvEvent, modalId) => {
+      console.log("Modal is about to be shown", bvEvent, modalId);
+    });
+  },
   methods: {
     resetModal() {
       this.$bvModal.hide("modal-success-agree");
+      this.$router.push({
+        name: "apartments-view",
+        params: {id: this.$route.params.id},
+      });
+    },
+    goApartment() {
+      this.$router.push({
+        name: "apartments-view",
+        params: {id: this.$route.params.id},
+      });
     },
   },
 };

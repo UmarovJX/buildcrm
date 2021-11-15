@@ -1,140 +1,158 @@
-.my-btn {
-  border: 1px solid #5851d8;
-  display: inline-block;
-}
-
-.my-btn__blue,
-.my-btn__green {
-  height: 42px;
-  border-radius: 3px;
-  font-size: 16px;
-  font-family: "MuseoSansCyrl-500", Arial, Helvetica, sans-serif;
-  color: white;
-  text-align: center;
-  padding: 5px 20px;
-  min-width: 150px;
-  background-color: #5851d8;
-}
-
-@media only screen and (max-width: 559px) {
-  .my-btn__blue,
-  .my-btn__green {
-    min-width: 125px;
-  }
-}
-
-@media only screen and (max-width: 320px) {
-  .my-btn__blue,
-  .my-btn__green {
-    min-width: unset;
-    margin: 0 auto;
-  }
-}
-
-.my-btn__blue:hover,
-.my-btn__green:hover {
-  color: white;
-}
-
-.my-btn__blue--small {
-  min-width: unset;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.my-btn__blue:hover,
-.my-btn__green:hover {
-  background-color: rgba(88, 81, 216, 0.85);
-}
-
-.my-btn__blue--none {
-  background-color: transparent;
-  color: #5851d8;
-  border-width: 1px;
-}
-
-.my-btn__blue--none:hover {
-  color: #5851d8;
-  background-color: transparent;
-  border-width: 1px;
-}
-
-.my-btn__blue--delet {
-  background-color: transparent;
-  color: #cc0e0e;
-  border-width: 1px;
-  border-color: #cc0e0e;
-}
-
-.my-btn__blue--delet:hover {
-  color: #cc0e0e;
-  background-color: transparent;
-  border-width: 1px;
-}
-
-.my-btn__group input {
-  margin: 0 !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-}
-
-.my-btn__group .my-btn__blue,
-.my-btn__group .my-btn__green {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.my-btn__reset {
-  border-style: solid;
-  border-width: 2px;
-  border-color: rgba(34, 34, 34, 0.2);
-  border-radius: 3px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  height: 42px;
-  font-size: 16px;
-  font-family: "MuseoSansCyrl-500", Arial, Helvetica, sans-serif;
-  padding: 5px 20px;
-  min-width: 150px;
-  position: relative;
-}
-
-.my-btn__reset i {
-  color: #222222;
-}
-
-.my-btn__reset input {
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 0;
-  height: 100%;
-  background-color: transparent;
-  border: 0;
-  padding: 0;
-  margin: 0;
-  font-family: "MuseoSansCyrl-500";
-  color: #222222;
-}
-
-.my-btn__green {
-  background-color: #1bd83a;
-  border-color: #1bd83a;
-  color: white;
-  cursor: default !important;
-}
-
-.my-btn__green:hover {
-  border-color: #1bd83a;
-  background-color: #1bd83a;
-}
-
 .btn-back {
   background-color: transparent;
   border: unset;
   color: white;
+}
+
+a,
+a:hover,
+.my-btn,
+.my-dropdown__two .dropdown-menu .dropdown-item,
+.my-table tbody tr,
+input.my-input,
+.my-btn__group input,
+.my-form__input,
+.menu__img,
+.menu__name {
+  -webkit-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
+}
+
+.btn.focus,
+.btn:focus {
+  outline: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+button:focus {
+  outline: none !important;
+  outline: 0 auto -webkit-focus-ring-color;
+}
+
+.btn-dark:not(:disabled):not(.disabled).active:focus,
+.btn-dark:not(:disabled):not(.disabled):active:focus,
+.show > .btn-dark.dropdown-toggle:focus {
+  -webkit-box-shadow: 0;
+  box-shadow: 0;
+}
+
+.btn:not(.dropdown-item) {
+  box-shadow: unset !important;
+  border: 1px solid transparent !important;
+  padding: 0.786rem 1.5rem !important;
+  border-radius: 0.358rem !important;
+  text-align: center;
+  font-weight: 500;
+  user-select: none;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background 0s,
+    border 0s, -webkit-box-shadow 0.15s ease-in-out !important;
+  text-transform: none;
+
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  height: 45px;
+}
+.btn i,
+.btn span,
+.btn svg,
+.btn img {
+  display: inline-block;
+  margin: 0 6px;
+}
+
+.btn-sm {
+  max-width: 50px;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #5851d8 !important;
+  border-color: #5851d8 !important;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #463ed3 !important;
+  border-color: #463ed3 !important;
+  box-shadow: 0 8px 25px -8px #463ed3 !important;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #45a85c !important;
+  border-color: #45a85c !important;
+}
+
+.btn-success:hover {
+  color: #fff;
+  background-color: #429c57 !important;
+  border-color: #429c57 !important;
+  box-shadow: 0 8px 25px -8px #429c57 !important;
+}
+
+.btn-secondary:not(.dropdown-item) {
+  color: #fff;
+  background-color: #82868b !important;
+  border-color: #82868b !important;
+}
+.btn-secondary:not(.dropdown-item):hover {
+  color: #fff;
+  background-color: #82868b !important;
+  border-color: #82868b !important;
+  box-shadow: 0 8px 25px -8px #82868b !important;
+}
+
+.btn-warning {
+  color: #fff !important;
+  background-color: #ff9f43 !important;
+  border-color: #ff9f43 !important;
+}
+.btn-warning:hover {
+  color: #fff;
+  background-color: #ff9f43 !important;
+  border-color: #ff9f43 !important;
+  box-shadow: 0 8px 25px -8px #ff9f43 !important;
+}
+
+.btn-warning {
+  color: #fff !important;
+  background-color: #138496 !important;
+  border-color: #138496 !important;
+}
+.btn-info:hover {
+  color: #fff;
+  background-color: #138496 !important;
+  border-color: #138496 !important;
+  box-shadow: 0 8px 25px -8px #138496 !important;
+}
+.btn-default {
+  color: #414141 !important;
+  background-color: #e7e7e7 !important;
+  border-color: #e7e7e7 !important;
+}
+.btn-default:hover {
+  color: #414141;
+  background-color: #e7e7e7 !important;
+  border-color: #e7e7e7 !important;
+  box-shadow: 0 8px 25px -8px #e7e7e7 !important;
+}
+
+.btn-outline-secondary {
+  border: 1px solid #82868b !important;
+  background-color: transparent;
+}
+
+.btn-outline-secondary:hover:not(.disabled):not(:disabled) {
+  background-color: rgba(130, 134, 139, 0.04);
+}
+
+.btn-outline-secondary:hover:not(.disabled):not(:disabled) {
+  color: #82868b;
 }

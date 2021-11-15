@@ -15,7 +15,7 @@ export default {
     cancel: "Отменить",
     back: "Назад",
     next: "Продолжить",
-    create_agree: "Оформить договор",
+    create_agree: "Оформить",
     yes: "Есть",
     no: "Нет",
     image: "Изображения",
