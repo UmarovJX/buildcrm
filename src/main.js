@@ -35,7 +35,16 @@ import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@/assets/scss/main.scss";
+import VeeValidate from 'vee-validate'
 
+Vue.use(VeeValidate, {
+  // This is the default
+  inject: true,
+  // Important to name this something other than 'fields'
+  fieldsBagName: 'veeFields',
+  // This is not required but avoids possible naming conflicts
+  errorBagName: 'veeErrors'
+})
 Vue.config.devtools = true;
 
 // const optionsPrint = {
@@ -78,7 +87,6 @@ Vue.use(Toasted, {
 
 Vue.config.productionTip = false;
 // Vue.prototype.$moment = moment;
-
 new Vue({
   el: "#app",
   i18n,

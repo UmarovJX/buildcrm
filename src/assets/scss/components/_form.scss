@@ -1,4 +1,3 @@
-
 input.my-input,
 .my-btn__group input,
 .my-form__input {
@@ -194,3 +193,13 @@ input.my-input:focus,
 //   height: 100px;
 //   resize: none;
 // }
+
+.b-form-tags-button {
+  display: none !important;
+}
+
+.b-form-tags-button {
+  padding: 3px !important;
+  margin: 0 !important;
+  height: unset !important;
+}

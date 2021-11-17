@@ -1,37 +1,61 @@
 <template>
   <main>
-    <div class="app-content">
-      <div class="container-fluid px-0">
-        <div class="row">
-          <div class="col-md-8">
-            <form action="" class="my-form">
-              <div class="mb-3 searching">
-                <input
-                  class="my-form__input"
-                  type="text"
-                  v-model="search"
-                  @input="SearchInput"
-                  :placeholder="$t('clients.search')"
-                />
-                <button><i class="far fa-search"></i></button>
-              </div>
-            </form>
-          </div>
-          <div class="col-md-4">
-            <select
-              class="form-control"
-              v-model="orderBy"
-              aria-label="Default select example"
-            >
-              <option selected value="all">Все</option>
-              <option value="sold">Проданные</option>
-              <option value="contract">Неоплаченные</option>
-              <option value="booked">Забронированные</option>
-            </select>
+    <button class=" btn btn-primary mt-0 mr-0 ml-auto" v-b-toggle.sidebar-right>
+      <i class="far fa-sliders-h mr-2"></i>
+      {{ $t("apartments.list.filter") }}
+    </button>
+    <b-sidebar
+      id="sidebar-right"
+      title=""
+      right
+      shadow
+      width="420px"
+      backdrop
+    >
+      <div class="px-3 py-2">
+        <div class="container-fluid px-0">
+          <div class="row">
+            <div class="col-md-12">
+              <form action="" class="my-form">
+                <div class="mb-3 searching">
+                  <input
+                    class="my-form__input"
+                    type="text"
+                    v-model="search"
+                    @input="SearchInput"
+                    :placeholder="$t('clients.search')"
+                  />
+                  <button><i class="far fa-search"></i></button>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-12">
+              <select
+                class="form-control"
+                v-model="orderBy"
+                aria-label="Default select example"
+              >
+                <option selected value="all">Все</option>
+                <option value="sold">Проданные</option>
+                <option value="contract">Неоплаченные</option>
+                <option value="booked">Забронированные</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
-
+      <template #footer="{hide}">
+        <div class="d-flex text-light align-items-center px-3 py-2">
+          <b-button variant="primary" class="mx-auto" size="md" @click="hide"
+            >
+            <i class="far fa-save mr-2"></i>
+            Сохранить</b-button
+          >
+        </div>
+      </template>
+    </b-sidebar>
+    
+    <div class="app-content">
       <b-table
         sticky-header
         borderless

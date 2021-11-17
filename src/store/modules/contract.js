@@ -12,7 +12,7 @@ export default {
         };
 
         const {data} = await vm.axios.get(
-          process.env.VUE_APP_URL + "/deals?page=" + vm.page,
+          process.env.VUE_APP_URL + "/contracts2?page=" + vm.page,
           header
         );
         ctx.commit("updateLoading", false, {root: true});
@@ -46,7 +46,7 @@ export default {
 
         const {data} = await vm.axios.get(
           process.env.VUE_APP_URL +
-            "/deals/search?page=" +
+            "/contracts/search?page=" +
             vm.page +
             "&search=" +
             vm.search +

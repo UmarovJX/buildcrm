@@ -1,16 +1,14 @@
 <template>
   <main>
-    <div class="app-content">
-      <div class="">
-        <div class="title__default">
-          {{ $t("apartments.list.apartments") }}:
-          {{ getApartments.pagination.totalItems }}
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-between flex-wrap">
+    <div class="app-content apartment-list-filter">
+      <div class="d-flex justify-content-between flex-md-row flex-column">
         <div
-          class="d-flex justify-content-md-end justify-content-center"
+          class="
+            d-flex
+            justify-content-center
+            align-items-center
+            flex-md-row flex-column
+          "
           v-if="
             getPermission.apartments.contract ||
             getPermission.apartments.root_contract
@@ -18,7 +16,7 @@
         >
           <button
             v-if="!selected.view && getPermission.apartments.contract"
-            class="btn btn-secondary mr-2"
+            class="btn btn-secondary mr-2 mt-md-0 order-2"
             @click="selected.view = true"
           >
             <i class="far fa-list"></i> {{ $t("apartments.list.choose") }}
@@ -33,7 +31,7 @@
             "
             @click="selected.confirm = true"
             variant="success"
-            class="btn btn-primary mr-2"
+            class="btn btn-primary mr-md-2 mr-0 mt-md-0 order-3"
           >
             <i class="far fa-ballot-check"></i>
             {{ $t("apartments.list.contract_all") }}
@@ -41,23 +39,28 @@
 
           <button
             v-if="selected.view && getPermission.apartments.contract"
-            class="btn btn-warning mr-2"
+            class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-4"
             @click="[(selected.view = false), (selected.values = [])]"
           >
             <i class="far fa-redo"></i> {{ $t("apartments.list.reset") }}
           </button>
+
+          <div class="mt-md-0 order-md-6 order-1">
+            <div class="title__default">
+              {{ $t("apartments.list.apartments") }}:
+              {{ getApartments.pagination.totalItems }}
+            </div>
+          </div>
         </div>
 
-        <div class="d-flex justify-content-md-end justify-content-center">
-          <b-link
-            class="btn btn-primary mr-0"
-            v-if="getPermission.apartments.filter"
-            v-b-modal.modal-filter-all
-          >
-            <i class="far fa-sliders-h mr-2"></i>
-            {{ $t("apartments.list.filter") }}
-          </b-link>
-        </div>
+        <button
+          class="btn btn-primary mr-0 mt-md-0 ml-md-auto"
+          v-b-toggle.apartment-list-filter
+          v-if="getPermission.apartments.filter"
+        >
+          <i class="far fa-sliders-h mr-2"></i>
+          {{ $t("apartments.list.filter") }}
+        </button>
       </div>
 
       <div class="mt-4">
@@ -75,6 +78,7 @@
           class="custom-table"
           :tbody-tr-class="rowClass"
           :empty-text="$t('no_data')"
+          @sort-changed="sortingChanged"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">{{
@@ -94,7 +98,11 @@
             {{ data.item.number }}
           </template>
 
-          <template #cell(balcony_area)="data">
+          <template #cell(area)="data">
+            <span v-if="data.item.plan"> {{ data.item.plan.area }} м² </span>
+          </template>
+
+          <template #cell(balcony)="data">
             <span v-if="data.item.plan.balcony">
               {{ data.item.plan.balcony_area }} м²
             </span>
@@ -321,18 +329,7 @@ export default {
 
   data() {
     return {
-      filter: {
-        filtered: false,
-        rooms: [],
-        floors: [],
-        price_from: null,
-        price_to: null,
-        status: 0,
-        usd: false,
-
-        area_from: null,
-        area_to: null,
-      },
+      filter: {},
 
       selected: {
         view: false,
@@ -357,7 +354,7 @@ export default {
       info_manager: false,
       manager_apartment: {},
 
-      sortBy: "number",
+      sortBy: "",
       sortDesc: false,
       fields: [
         {
@@ -390,13 +387,12 @@ export default {
           sortable: true,
         },
         {
-          key: "plan.area",
+          key: "area",
           label: "ПЛОЩАД",
           sortable: true,
-          formatter: (value) => value + "м²",
         },
         {
-          key: "balcony_area",
+          key: "balcony",
           label: "БАЛКОН",
           sortable: true,
         },
@@ -408,7 +404,6 @@ export default {
         {
           key: "status",
           label: "СТАТУС",
-          sortable: true,
         },
         {
           key: "actions",
@@ -431,11 +426,19 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      "fetchApartments",
-      "fetchApartmentsFilter",
-      "fetchReserveClient",
-    ]),
+    ...mapActions(["fetchApartments", "fetchApartments", "fetchReserveClient"]),
+
+    async sortingChanged(val) {
+      this.filter.filtered = true;
+      this.filter.sort_by = val.sortBy;
+      this.filter.order_by = val.sortDesc ? "desc" : "asc";
+
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+      await this.fetchApartments(this);
+    },
 
     rowClass(item, type) {
       if (item && type === "row") {
@@ -461,28 +464,18 @@ export default {
       tableScrollBody.addEventListener("scroll", this.onScroll);
     },
 
-    // scroll() {
-    //   window.onscroll = async function() {
-    //     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-    //       this.page = this.page + 1;
-    //       if (this.getApartments.pagination.next)
-    //         if (this.filter.filtered) {
-    //           await this.fetchApartmentsFilter(this);
-    //         } else await this.fetchApartments(this);
-    //     }
-    //   };
-    // },
-
     async onScroll(event) {
       if (
         event.target.scrollTop + event.target.clientHeight >=
         event.target.scrollHeight
       ) {
         this.page = this.page + 1;
-        if (this.getApartments.pagination.next)
-          if (this.filter.filtered) {
-            await this.fetchApartmentsFilter(this);
-          } else await this.fetchApartments(this);
+        this.filter.page = this.page;
+        this.$router.push({
+          name: "apartments",
+          query: this.filter,
+        });
+        await this.fetchApartments(this);
       }
     },
 
@@ -494,9 +487,16 @@ export default {
       return this.$moment();
     },
 
-    Filtered(event) {
+    async Filtered(event) {
       this.page = 1;
+      this.filter.page = this.page;
       this.filter = event;
+
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+      await this.fetchApartments(this);
     },
 
     CreateReserve(id) {
@@ -505,7 +505,7 @@ export default {
     },
 
     CreateReserveSuccess() {
-      this.fetchApartmentsFilter(this);
+      this.fetchApartments(this);
     },
 
     ReserveInfo(apartment) {
@@ -513,7 +513,6 @@ export default {
       this.apartment_preview = apartment;
       this.order_id = apartment.order.id;
       this.fetchReserveClient(this);
-      // this.$bvModal.show('modal-view-client');
     },
 
     getInfoReserve(apartment) {
@@ -529,14 +528,19 @@ export default {
     CloseReserveInfo() {
       this.info_reserve = false;
       this.apartment_preview = {};
-      this.fetchApartmentsFilter(this);
+      this.fetchApartments(this);
     },
 
     async EditApartment() {
       this.apartment_id = 0;
       this.edit = false;
 
-      if (this.filter.filtered) await this.fetchApartmentsFilter(this);
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+
+      if (this.filter.filtered) await this.fetchApartments(this);
       else await this.fetchApartments(this);
     },
 
@@ -583,20 +587,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .dropdown-menu .active {
   background: transparent;
 }
-
-/*table {*/
-/*    table-layout: fixed;*/
-/*}*/
 
 table thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  /*width: 100px;*/
   background-color: #fff;
 }
 .my-table thead tr th {
@@ -614,9 +613,11 @@ table tbody th {
   z-index: 1;
 }
 
-/*.table-responsive {*/
-/*    width: 100%;*/
-/*    max-height: 100%;*/
-/*    overflow: hidden;*/
-/*}*/
+.apartment-list-filter {
+  @media screen and (max-width: 576px) {
+    .btn {
+      width: 100%;
+    }
+  }
+}
 </style>

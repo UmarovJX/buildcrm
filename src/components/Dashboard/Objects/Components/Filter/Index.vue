@@ -148,7 +148,7 @@
         >
           <button
             class="btn btn-outline-secondary"
-            type="reset"
+            type="button"
             @click="filterClear"
           >
             <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
@@ -214,17 +214,7 @@ export default {
     },
 
     filterClear() {
-      this.filter = {
-        rooms: [],
-        floors: [],
-        price_from: null,
-        price_to: null,
-        status: 0,
-        objects: [],
-
-        area_from: null,
-        area_to: null,
-      };
+      this.filter = {};
     },
   },
 };

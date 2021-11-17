@@ -60,16 +60,16 @@
                   <label class="d-block text-uppercase" for="address">
                     {{ $t("companies.title") }}
                   </label>
-                  <select class="form-control" v-model="object.branch_id">
+                  <select class="form-control" v-model="object.company_id">
                     <option value="0">
-                      {{ $t("companies.branch_enter") }}
+                      {{ $t("companies.company_enter") }}
                     </option>
                     <option
-                      v-for="(branch, index) in getBranches"
+                      v-for="(company, index) in getCompanies"
                       :key="index"
-                      :value="branch.id"
+                      :value="company.id"
                     >
-                      {{ branch.type.name.ru }} "{{ branch.name }}"
+                      {{ company.type.name.ru }} "{{ company.name }}"
                     </option>
                   </select>
                 </div>
@@ -550,7 +550,7 @@ export default {
     object: {
       name: null,
       address: null,
-      branch_id: 0,
+      company_id: 0,
       type_plan: [],
       new_type_plan: null,
     },
@@ -589,7 +589,7 @@ export default {
     },
   }),
 
-  computed: mapGetters(["getCurrency", "getBranches"]),
+  computed: mapGetters(["getCurrency", "getCompanies"]),
 
   mounted() {
     this.buildings.push({
@@ -600,11 +600,11 @@ export default {
     });
 
     this.fetchCurrency(this);
-    this.fetchBranches(this);
+    this.fetchCompanies(this);
   },
 
   methods: {
-    ...mapActions(["fetchCurrency", "fetchBranches"]),
+    ...mapActions(["fetchCurrency", "fetchCompanies"]),
     addTypePlan() {
       if (this.object.new_type_plan != null) {
         this.object.type_plan.push({

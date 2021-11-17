@@ -523,7 +523,7 @@
                     <td width="50%">
                       <b-form-checkbox
                         switch
-                        v-model="role.permissions.branches.view"
+                        v-model="role.permissions.companies.view"
                         size="lg"
                       ></b-form-checkbox>
                     </td>
@@ -536,7 +536,7 @@
                     <td width="50%">
                       <b-form-checkbox
                         switch
-                        v-model="role.permissions.branches.update"
+                        v-model="role.permissions.companies.update"
                         size="lg"
                       ></b-form-checkbox>
                     </td>
@@ -549,7 +549,7 @@
                     <td width="50%">
                       <b-form-checkbox
                         switch
-                        v-model="role.permissions.branches.create"
+                        v-model="role.permissions.companies.create"
                         size="lg"
                       ></b-form-checkbox>
                     </td>
@@ -562,7 +562,7 @@
                     <td width="50%">
                       <b-form-checkbox
                         switch
-                        v-model="role.permissions.branches.delete"
+                        v-model="role.permissions.companies.delete"
                         size="lg"
                       ></b-form-checkbox>
                     </td>
@@ -826,8 +826,8 @@ export default {
 
       this.role = data;
 
-      if (!this.role.permissions.branches) {
-        this.role.permissions.branches = {
+      if (!this.role.permissions.companies) {
+        this.role.permissions.companies = {
           create: false,
           update: false,
           delete: false,

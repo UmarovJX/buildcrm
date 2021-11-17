@@ -99,17 +99,17 @@
                 <select
                   class="form-control"
                   id="comapnies"
-                  v-model="object.branch_id"
+                  v-model="object.company_id"
                 >
                   <option value="0">
-                    {{ $t("companies.branch_enter") }}
+                    {{ $t("companies.company_enter") }}
                   </option>
                   <option
-                    v-for="(branch, index) in getBranches"
+                    v-for="(company, index) in getCompanies"
                     :key="index"
-                    :value="branch.id"
+                    :value="company.id"
                   >
-                    {{ branch.type.name.ru }} "{{ branch.name }}"
+                    {{ company.type.name.ru }} "{{ company.name }}"
                   </option>
                 </select>
               </div>
@@ -490,7 +490,7 @@ export default {
       address: null,
       full_address: null,
       build_date: null,
-      branch_id: 0,
+      company_id: 0,
       credit_month: 18,
       draft: false,
     },
@@ -550,7 +550,7 @@ export default {
     },
   }),
 
-  computed: mapGetters(["getCurrency", "getBranches"]),
+  computed: mapGetters(["getCurrency", "getCompanies"]),
 
   mounted() {
     this.getData();
@@ -562,11 +562,11 @@ export default {
     // });
 
     this.fetchCurrency(this);
-    this.fetchBranches(this);
+    this.fetchCompanies(this);
   },
 
   methods: {
-    ...mapActions(["fetchCurrency", "fetchBranches"]),
+    ...mapActions(["fetchCurrency", "fetchCompanies"]),
 
     async requestObject() {
       this.loading = true;

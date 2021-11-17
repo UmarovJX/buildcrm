@@ -1,13 +1,31 @@
 <template>
   <div>
-    <b-modal
-      id="modal-filter-all"
-      class="py-4"
-      ref="modal"
+    <b-sidebar
+      id="apartment-list-filter"
+      right
+      shadow
+      width="420px"
+      backdrop
       :title="$t('apartments.list.filter')"
-      hide-footer
+      ref="mySidebar"
+      :no-close-on-route-change="true"
     >
-      <div class="container px-0 mx-0">
+      <div class="container">
+        <div class="mb-3">
+          <label for="tags-separators">Номер квартира: </label>
+          <b-form-tags
+            input-id="tags-separators"
+            v-model="filter.number"
+            separator=" "
+            remove-on-delete
+            tag-pills
+            inputType="tel"
+            addButtonVariant="primary"
+            addButtonText="+"
+            placeholder="Номер квартира"
+          ></b-form-tags>
+        </div>
+
         <div class="mb-3">
           <label class="d-block">
             {{ $t("apartments.filter.apartments") }}
@@ -142,27 +160,29 @@
         </div>
       </div>
 
-      <div
-        class="
-          mt-4
-          d-flex
-          justify-content-md-start justify-content-center
-          float-right
-        "
-      >
-        <button
-          class="btn btn-outline-secondary"
-          type="reset"
-          @click="filterClear"
-        >
-          <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
-        </button>
+      <template #footer>
+        <div class="d-flex justify-content-center align-items-center my-2">
+          <button
+            class="btn btn-default mr-2 mt-0"
+            type="reset"
+            @click="filterClear"
+          >
+            <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
+          </button>
 
-        <button type="button" @click="Filter" class="btn btn-success">
-          <i class="far fa-sliders-h"></i> {{ $t("apartments.list.filter") }}
-        </button>
-      </div>
-    </b-modal>
+          <b-button
+            class="mt-0 mr-0"
+            variant="primary"
+            size="md"
+            type="button"
+            @click="Filter"
+          >
+            <i class="far fa-sliders-h mr-2"></i>
+            Фильтровать</b-button
+          >
+        </div>
+      </template>
+    </b-sidebar>
   </div>
 </template>
 
@@ -173,113 +193,143 @@ export default {
   data: () => ({
     filter: {
       filtered: false,
+      number: [],
       rooms: [],
       floors: [],
       blocks: [],
       price_from: null,
       price_to: null,
-      status: 0,
-
-      usd: false,
       area_from: null,
       area_to: null,
+      status: 0,
+      usd: false,
     },
 
     page: 1,
   }),
 
-  mounted() {
-    this.fetchFilterObject(this);
-  },
-
   watch: {
+    "filter.number": function () {
+      this.filter.filtered = true;
+    },
+
     "filter.rooms": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.floors": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.blocks": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.price_from": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.price_to": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.area_from": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.area_to": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.status": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
 
     "filter.usd": function () {
       this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
-    },
-
-    "filter.objects": function () {
-      this.filter.filtered = true;
-      this.$emit("Filtered", this.filter);
-      this.fetchApartmentsFilter(this);
     },
   },
+
+  mounted() {
+    this.fetchFilterObject(this);
+  },
+
   computed: mapGetters(["getObjects", "getFilterParams"]),
 
   methods: {
-    ...mapActions([
-      "fetchApartmentsFilter",
-      "fetchObjects",
-      "fetchFilterObject",
-    ]),
+    ...mapActions(["fetchApartments", "fetchObjects", "fetchFilterObject"]),
 
-    Filter() {
-      this.$emit("Filtered", this.filter);
-      this.$bvModal.hide("modal-filter-all");
+    async Filter() {
+      let filter = {};
+      if (this.filter.number.length > 0) {
+        filter.rooms = this.filter.rooms;
+      }
+      if (this.filter.rooms.length > 0) {
+        filter.rooms = this.filter.rooms;
+      }
+      if (this.filter.floors.length > 0) {
+        filter.floors = this.filter.floors;
+      }
+      if (this.filter.blocks.length > 0) {
+        filter.blocks = this.filter.blocks;
+      }
+
+      if (this.filter.price_from !== null) {
+        filter.price_from = this.filter.price_from;
+      }
+      if (this.filter.price_to !== null) {
+        filter.price_to = this.filter.price_to;
+      }
+      if (this.filter.area_from !== null) {
+        filter.area_from = this.filter.area_from;
+      }
+      if (this.filter.area_to !== null) {
+        filter.area_to = this.filter.area_to;
+      }
+      if (this.filter.status !== 0) {
+        filter.status = this.filter.status;
+      }
+      if (this.filter.usd !== false) {
+        filter.usd = this.filter.usd;
+      }
+      if (this.$route.query.sort_by && this.$route.query) {
+        filter.sort_by = this.$route.query.sort_by;
+      }
+      if (this.$route.query.order_by && this.$route.query) {
+        filter.order_by = this.$route.query.order_by;
+      }
+
+      if (this.filter.filtered) {
+        this.$emit("Filtered", filter);
+        await this.fetchApartments(this);
+        this.$refs.mySidebar.hide();
+      } else {
+        this.$refs.mySidebar.hide();
+      }
     },
 
-    filterClear() {
+    async filterClear() {
       this.filter = {
         filtered: false,
+        number: [],
         rooms: [],
         floors: [],
+        blocks: [],
         price_from: null,
         price_to: null,
-        status: 0,
-        objects: [],
-
         area_from: null,
         area_to: null,
+        status: 0,
+        usd: false,
+        sort_by: null,
+        order_by: null,
       };
+      this.$emit("Filtered", this.filter);
+      this.$router.push({
+        name: "apartments",
+        query: {},
+      });
+      this.fetchApartments(this);
     },
   },
 };

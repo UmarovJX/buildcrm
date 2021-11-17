@@ -40,7 +40,7 @@ import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
 //
 import ApartmentView from "./components/Dashboard/Apartment/View";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
-import Branches from "./components/Dashboard/Branches/Index";
+import Companies from "./components/Dashboard/Companies/Index";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
 
@@ -173,7 +173,7 @@ const routes = [
   {
     name: "companies",
     path: "/companies",
-    component: Branches,
+    component: Companies,
   },
 
   //
