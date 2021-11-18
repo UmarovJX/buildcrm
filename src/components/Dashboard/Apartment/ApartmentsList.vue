@@ -66,6 +66,7 @@
       <div class="mt-4">
         <b-table
           ref="table"
+          id="my-table"
           class="custom-table"
           sticky-header
           borderless
@@ -261,6 +262,23 @@
             </div>
           </template>
         </b-overlay>
+
+        <paginate
+          v-if="getPagination"
+          :pageCount="getPagination"
+          :click-handler="PageCallBack"
+          :prevText="`<i class='fa fa-chevron-left'></i>`"
+          :nextText="`<i class='fa fa-chevron-right'></i>`"
+          :container-class="'pagination'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :next-class="'page-item'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-link-class="'page-link'"
+          v-model="currentPage"
+        >
+        </paginate>
       </div>
 
       <div>
@@ -346,7 +364,6 @@ export default {
       edit: false,
 
       page: 1,
-      currentPage: 0,
       perPage: 10,
 
       info_reserve: false,
@@ -411,17 +428,26 @@ export default {
           label: "",
         },
       ],
+      currentPage: 1,
+      scrollActive: true,
     };
   },
   created() {
     this.filter = {
       ...this.$route.query,
     };
+    this.currentPage = Number(this.filter.page);
   },
   computed: {
     ...mapGetters(["getApartments", "getPermission", "getMe", "getLoading"]),
     items() {
       return this.getApartments.items;
+    },
+    getPagination() {
+      if (this.getApartments.pagination.total) {
+        return this.getApartments.pagination.total;
+      }
+      return 1;
     },
   },
   mounted() {
@@ -429,16 +455,34 @@ export default {
   },
 
   methods: {
-    ...mapActions(["fetchApartments", "fetchApartments", "fetchReserveClient"]),
-
+    ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    async PageCallBack(event) {
+      this.scrollActive = false;
+      this.page = event;
+      this.filter.page = Number(this.page);
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+      await this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
+    },
     async handleScroll(event) {
+      if (!this.scrollActive) {
+        this.scrollActive = true;
+        return;
+      }
+
       if (
         event.target.scrollTop + event.target.clientHeight >=
         event.target.scrollHeight
       ) {
         if (this.getApartments.pagination.next) {
           this.page = this.page + 1;
-          this.filter.page = this.page;
+          this.filter.page = Number(this.page);
+          this.currentPage = this.filter.page;
           this.$router.push({
             name: "apartments",
             query: this.filter,
@@ -449,7 +493,7 @@ export default {
     },
 
     async sortingChanged(val) {
-      // console.log(this.filter);
+      this.scrollActive = false;
       this.filter.filtered = true;
       this.filter.sort_by = val.sortBy;
       this.filter.order_by = val.sortDesc ? "desc" : "asc";
@@ -458,7 +502,10 @@ export default {
         name: "apartments",
         query: this.filter,
       });
-      await this.fetchApartments(this);
+      await this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
     },
 
     rowClass(item, type) {
@@ -486,15 +533,20 @@ export default {
     },
 
     async Filtered(event) {
+      this.scrollActive = false;
       this.page = 1;
-      this.filter.page = this.page;
+      this.filter.page = 1;
+      this.currentPage = this.filter.page;
       this.filter = event;
 
       this.$router.push({
         name: "apartments",
         query: this.filter,
       });
-      await this.fetchApartments(this);
+      await this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
     },
 
     CreateReserve(id) {

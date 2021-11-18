@@ -57,19 +57,19 @@
     
     <div class="app-content">
       <b-table
+        class="custom-table"
         sticky-header
         borderless
         responsive
+        show-empty
+        sort-icon-left
         :items="getContracts"
         :fields="fields"
         :busy="getLoading"
-        show-empty
         :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
-        sort-icon-left
-        class="custom-table"
         :tbody-tr-class="rowClass"
         :empty-text="$t('no_data')"
+        :sort-desc.sync="sortDesc"
       >
         <template #empty="scope" class="text-center">
           <span class="d-flex justify-content-center align-items-center">{{
@@ -193,13 +193,8 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-// import ViewClient from '../Apartment/ViewClient';
 import {debounce} from "debounce";
 export default {
-  components: {
-    // 'view-client': ViewClient
-  },
-
   watch: {
     orderBy: function (newVal) {
       if (newVal != "all") {

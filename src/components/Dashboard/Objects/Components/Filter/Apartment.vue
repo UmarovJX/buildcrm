@@ -205,47 +205,47 @@ export default {
       usd: false,
       page: 1,
     },
-
   }),
 
   watch: {
-    "filter.number": function () {
+    "filter.number": function() {
+      console.log(this.filter.number);
       this.filter.filtered = true;
     },
 
-    "filter.rooms": function () {
+    "filter.rooms": function() {
       this.filter.filtered = true;
     },
 
-    "filter.floors": function () {
+    "filter.floors": function() {
       this.filter.filtered = true;
     },
 
-    "filter.blocks": function () {
+    "filter.blocks": function() {
       this.filter.filtered = true;
     },
 
-    "filter.price_from": function () {
+    "filter.price_from": function() {
       this.filter.filtered = true;
     },
 
-    "filter.price_to": function () {
+    "filter.price_to": function() {
       this.filter.filtered = true;
     },
 
-    "filter.area_from": function () {
+    "filter.area_from": function() {
       this.filter.filtered = true;
     },
 
-    "filter.area_to": function () {
+    "filter.area_to": function() {
       this.filter.filtered = true;
     },
 
-    "filter.status": function () {
+    "filter.status": function() {
       this.filter.filtered = true;
     },
 
-    "filter.usd": function () {
+    "filter.usd": function() {
       this.filter.filtered = true;
     },
   },
@@ -262,7 +262,7 @@ export default {
     async Filter() {
       let filter = {};
       if (this.filter.number.length > 0) {
-        filter.rooms = this.filter.rooms;
+        filter.number = this.filter.number;
       }
       if (this.filter.rooms.length > 0) {
         filter.rooms = this.filter.rooms;
@@ -299,9 +299,7 @@ export default {
         filter.order_by = this.$route.query.order_by;
       }
 
-      if (this.$route.query.page && this.$route.query) {
-        filter.page = this.$route.query.page;
-      }
+      this.filter.page = 1;
 
       if (this.filter.filtered) {
         this.$emit("Filtered", filter);
@@ -327,7 +325,7 @@ export default {
         usd: false,
         sort_by: null,
         order_by: null,
-        page: null,
+        page: 1,
       };
       this.$emit("Filtered", this.filter);
       this.$router.push({
