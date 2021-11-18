@@ -1,10 +1,36 @@
 export default {
+  state: {
+    apartments: {
+      items: [],
+      pagination: {},
+    },
+    filter: {},
+
+    client: {},
+  },
+  mutations: {
+    updateApartment(state, apartments) {
+      if (apartments.pagination.current > 1) {
+        state.apartments.pagination = apartments.pagination;
+        state.apartments.items.push(...apartments.items);
+      } else {
+        state.apartments = apartments;
+      }
+    },
+
+    updateFilter(state, filter) {
+      state.filter = filter;
+    },
+
+    updateReserveClient(state, client) {
+      state.client = client;
+    },
+  },
   actions: {
     async fetchApartments(ctx, vm) {
       ctx.commit("updateLoading", true, {root: true});
 
       if (vm.$route.name != "apartments") return;
-
       try {
         let header = {
           headers: {
@@ -17,9 +43,7 @@ export default {
           `${process.env.VUE_APP_URL}/objects/${vm.$route.params.id}/apartments/`,
           header
         );
-        const apartments = data;
-
-        ctx.commit("updateApartment", apartments);
+        ctx.commit("updateApartment", data);
         ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
         vm.toastedWithErrorCode(error);
@@ -103,33 +127,6 @@ export default {
       }
     },
   },
-
-  mutations: {
-    updateApartment(state, apartments) {
-      if (apartments.pagination.current > 1) {
-        state.apartments.pagination = apartments.pagination;
-        state.apartments.items.push(...apartments.items);
-      } else {
-        state.apartments = apartments;
-      }
-    },
-
-    updateFilter(state, filter) {
-      state.filter = filter;
-    },
-
-    updateReserveClient(state, client) {
-      state.client = client;
-    },
-  },
-
-  state: {
-    apartments: {},
-    filter: {},
-
-    client: {},
-  },
-
   getters: {
     getApartments(state) {
       return state.apartments;

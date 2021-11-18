@@ -11,7 +11,7 @@
           "
           v-if="
             getPermission.apartments.contract ||
-            getPermission.apartments.root_contract
+              getPermission.apartments.root_contract
           "
         >
           <button
@@ -26,8 +26,8 @@
             v-b-modal.modal-agree
             v-if="
               selected.view &&
-              selected.values.length > 1 &&
-              getPermission.apartments.contract
+                selected.values.length > 1 &&
+                getPermission.apartments.contract
             "
             @click="selected.confirm = true"
             variant="success"
@@ -65,20 +65,21 @@
 
       <div class="mt-4">
         <b-table
-          ref="my-table"
+          ref="table"
+          class="custom-table"
           sticky-header
           borderless
-          responsive
-          :items="getApartments.items"
-          :fields="fields"
           show-empty
+          responsive
+          sort-icon-left
+          :items="items"
+          :fields="fields"
           :sort-by.sync="sortBy"
           :sort-desc.sync="sortDesc"
-          sort-icon-left
-          class="custom-table"
           :tbody-tr-class="rowClass"
           :empty-text="$t('no_data')"
           @sort-changed="sortingChanged"
+          @scroll.native="handleScroll"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">{{
@@ -156,7 +157,7 @@
                   <b-link
                     v-if="
                       getPermission.apartments.reserve &&
-                      data.item.order.status === 'available'
+                        data.item.order.status === 'available'
                     "
                     @click="[(reserve = true), (apartment_id = data.item.id)]"
                     v-b-modal.modal-create
@@ -170,8 +171,8 @@
                     v-if="
                       (data.item.order.status === 'booked' &&
                         data.item.order.user_id === getMe.user.id) ||
-                      (getPermission.apartments.root_contract &&
-                        data.item.order.status === 'booked')
+                        (getPermission.apartments.root_contract &&
+                          data.item.order.status === 'booked')
                     "
                     @click="ReserveInfo(data.item)"
                     v-b-modal.modal-view-client
@@ -184,7 +185,7 @@
                   <b-link
                     v-if="
                       data.item.order.status === 'booked' &&
-                      data.item.order.user_id != getMe.user.id
+                        data.item.order.user_id != getMe.user.id
                     "
                     @click="getInfoReserve(data.item)"
                     v-b-modal.modal-view-info-manager
@@ -206,15 +207,15 @@
                         data.item.order.status === 'booked' &&
                         data.item.order.user_id === getMe.user.id &&
                         getPermission.apartments.contract) ||
-                      (!(
-                        data.item.order.status == 'sold' ||
-                        data.item.order.status == 'contract'
-                      ) &&
-                        getPermission.apartments.root_contract) ||
-                      ((data.item.order.status != 'sold' ||
-                        data.item.order.status != 'contract') &&
-                        data.item.order.status === 'available' &&
-                        getPermission.apartments.contract)
+                        (!(
+                          data.item.order.status == 'sold' ||
+                          data.item.order.status == 'contract'
+                        ) &&
+                          getPermission.apartments.root_contract) ||
+                        ((data.item.order.status != 'sold' ||
+                          data.item.order.status != 'contract') &&
+                          data.item.order.status === 'available' &&
+                          getPermission.apartments.contract)
                     "
                   >
                     <!--                                            apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id && getPermission.apartments.contract || apartment.order.status != 'sold' && getPermission.apartments.root_contract || apartment.order.status === 'available' && getPermission.apartments.contract-->
@@ -231,12 +232,12 @@
                     v-if="
                       (getPermission.apartments.view &&
                         data.item.order.status === 'contract') ||
-                      (getPermission.apartments.view &&
-                        data.item.order.status === 'sold') ||
-                      (!getPermission.apartments.contract &&
-                        getPermission.apartments.view) ||
-                      (data.item.order.status === 'booked' &&
-                        data.item.order.user_id != getMe.user.id)
+                        (getPermission.apartments.view &&
+                          data.item.order.status === 'sold') ||
+                        (!getPermission.apartments.contract &&
+                          getPermission.apartments.view) ||
+                        (data.item.order.status === 'booked' &&
+                          data.item.order.user_id != getMe.user.id)
                     "
                   >
                     <i class="far fa-eye"></i>
@@ -412,23 +413,43 @@ export default {
       ],
     };
   },
-
-  mounted() {
-    this.getData();
+  created() {
+    this.filter = {
+      ...this.$route.query,
+    };
   },
-  beforeDestroy() {
-    const tableScrollBody = this.$refs["my-table"].$el;
-    tableScrollBody.removeEventListener("scroll", this.onScroll);
-  },
-
   computed: {
     ...mapGetters(["getApartments", "getPermission", "getMe", "getLoading"]),
+    items() {
+      return this.getApartments.items;
+    },
+  },
+  mounted() {
+    this.fetchApartments(this);
   },
 
   methods: {
     ...mapActions(["fetchApartments", "fetchApartments", "fetchReserveClient"]),
 
+    async handleScroll(event) {
+      if (
+        event.target.scrollTop + event.target.clientHeight >=
+        event.target.scrollHeight
+      ) {
+        if (this.getApartments.pagination.next) {
+          this.page = this.page + 1;
+          this.filter.page = this.page;
+          this.$router.push({
+            name: "apartments",
+            query: this.filter,
+          });
+          await this.fetchApartments(this);
+        }
+      }
+    },
+
     async sortingChanged(val) {
+      // console.log(this.filter);
       this.filter.filtered = true;
       this.filter.sort_by = val.sortBy;
       this.filter.order_by = val.sortDesc ? "desc" : "asc";
@@ -456,34 +477,11 @@ export default {
       }
     },
 
-    async getData() {
-      await this.fetchApartments(this);
-      // setTimeout(() => {
-      const tableScrollBody = this.$refs["my-table"].$el;
-      /* Consider debouncing the event call */
-      tableScrollBody.addEventListener("scroll", this.onScroll);
-    },
-
-    async onScroll(event) {
-      if (
-        event.target.scrollTop + event.target.clientHeight >=
-        event.target.scrollHeight
-      ) {
-        this.page = this.page + 1;
-        this.filter.page = this.page;
-        this.$router.push({
-          name: "apartments",
-          query: this.filter,
-        });
-        await this.fetchApartments(this);
-      }
-    },
-
     getPrice(area, price) {
       return price * area;
     },
 
-    moment: function () {
+    moment: function() {
       return this.$moment();
     },
 

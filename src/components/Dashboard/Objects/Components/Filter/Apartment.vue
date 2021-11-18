@@ -203,9 +203,9 @@ export default {
       area_to: null,
       status: 0,
       usd: false,
+      page: 1,
     },
 
-    page: 1,
   }),
 
   watch: {
@@ -299,6 +299,10 @@ export default {
         filter.order_by = this.$route.query.order_by;
       }
 
+      if (this.$route.query.page && this.$route.query) {
+        filter.page = this.$route.query.page;
+      }
+
       if (this.filter.filtered) {
         this.$emit("Filtered", filter);
         await this.fetchApartments(this);
@@ -323,6 +327,7 @@ export default {
         usd: false,
         sort_by: null,
         order_by: null,
+        page: null,
       };
       this.$emit("Filtered", this.filter);
       this.$router.push({

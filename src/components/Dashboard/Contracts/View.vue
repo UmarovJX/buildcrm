@@ -11,11 +11,14 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                {{ order.company.type.name.kr }} "{{ order.company.name }}"<br />
+                {{ order.company.type.name.kr }} "{{
+                  order.company.name
+                }}"<br />
                 {{ order.company.first_name }} {{ order.company.last_name }}
                 {{ order.company.second_name }} <br />
                 р/с: {{ order.company.payment_account }} <br />
-                ИНН: {{ order.company.inn }}, МФО: {{ order.company.mfo }} <br />
+                ИНН: {{ order.company.inn }}, МФО: {{ order.company.mfo }}
+                <br />
               </div>
 
               <div class="col-md-6 text-right">
@@ -31,7 +34,9 @@
                 +{{ order.client.phone }}<br />
                 +{{ order.client.other_phone }}<br />
 
-                <div class="mb-3 ml-auto col-md-5 d-flex justify-content-end flex-column">
+                <div
+                  class="mb-3 ml-auto col-md-5 d-flex justify-content-end flex-column"
+                >
                   <label class="d-block" for="type_client">{{
                     $t("apartments.agree.type_client")
                   }}</label>
@@ -833,7 +838,7 @@ export default {
 
     async CreatePayment() {
       try {
-        const {data} = await this.axios.post(
+        await this.axios.post(
           process.env.VUE_APP_URL +
             "/debtors/payment/" +
             this.$route.params.id +
@@ -849,8 +854,6 @@ export default {
           date: null,
           amount: null,
         };
-
-        console.log(data);
 
         this.payment.view = false;
         this.fetchOrder();
@@ -910,9 +913,7 @@ export default {
         if (result.value || result.value == "") {
           this.axios
             .delete(process.env.VUE_APP_URL + "/debtors/" + id, this.header)
-            .then((response) => {
-              console.log(response);
-              // this.$router.back(-1);
+            .then(() => {
               this.fetchOrder();
 
               this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
@@ -996,9 +997,7 @@ export default {
                 },
                 this.header
               )
-              .then((response) => {
-                console.log(response);
-                // this.$router.back(-1);
+              .then(() => {
                 this.fetchOrder();
 
                 this.$swal(
@@ -1102,9 +1101,7 @@ export default {
               },
               this.header
             )
-            .then((response) => {
-              console.log(response);
-              // this.$router.back(-1);
+            .then(() => {
               this.fetchOrder();
 
               this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
@@ -1158,9 +1155,7 @@ export default {
                 },
                 this.header
               )
-              .then((response) => {
-                console.log(response);
-                // this.$router.back(-1);
+              .then(() => {
                 this.fetchOrder();
 
                 this.$swal(
@@ -1213,8 +1208,7 @@ export default {
               },
               this.header
             )
-            .then((response) => {
-              console.log(response);
+            .then(() => {
               this.$router.back(-1);
 
               this.$swal(

@@ -687,8 +687,7 @@ export default {
       }
     },
 
-    InsertBlock(event) {
-      console.log(event);
+    InsertBlock() {
       // let index = this.block_building_index;
       // this.buildings[index].blocks.push(event);
     },
