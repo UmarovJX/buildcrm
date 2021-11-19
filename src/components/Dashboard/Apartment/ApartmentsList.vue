@@ -16,7 +16,7 @@
         >
           <button
             v-if="!selected.view && getPermission.apartments.contract"
-            class="btn btn-secondary mr-2 mt-md-0 order-2"
+            class="btn btn-secondary mr-md-2 mr-0 mt-md-0 order-2"
             @click="selected.view = true"
           >
             <i class="far fa-list"></i> {{ $t("apartments.list.choose") }}
@@ -348,7 +348,6 @@ export default {
 
   data() {
     return {
-      filter: {},
 
       selected: {
         view: false,
@@ -364,16 +363,12 @@ export default {
       edit: false,
 
       page: 1,
-      perPage: 10,
-
       info_reserve: false,
       apartment_preview: {},
 
       info_manager: false,
       manager_apartment: {},
 
-      sortBy: "",
-      sortDesc: false,
       fields: [
         {
           key: "number",
@@ -428,16 +423,21 @@ export default {
           label: "",
         },
       ],
+      filter: {},
+      sortBy: "",
+      sortDesc: false,
       currentPage: 1,
       scrollActive: true,
     };
   },
+
   created() {
     this.filter = {
       ...this.$route.query,
     };
     this.currentPage = Number(this.filter.page);
   },
+
   computed: {
     ...mapGetters(["getApartments", "getPermission", "getMe", "getLoading"]),
     items() {
@@ -450,6 +450,7 @@ export default {
       return 1;
     },
   },
+
   mounted() {
     this.fetchApartments(this);
   },

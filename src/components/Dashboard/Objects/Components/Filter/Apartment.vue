@@ -209,7 +209,7 @@ export default {
 
   watch: {
     "filter.number": function() {
-      console.log(this.filter.number);
+      // console.log(this.filter.number);
       this.filter.filtered = true;
     },
 

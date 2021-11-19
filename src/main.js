@@ -8,7 +8,7 @@ import Vue2Filters from "vue2-filters";
 import VueLazyload from "vue-lazyload";
 
 import router from "./routes";
-import i18n from "./lang";
+import i18n from "./locales";
 import toasted from "./util/toasted";
 // import getAuth from './util/getAuth';
 import store from "./store";

@@ -1,62 +1,19 @@
 <template>
   <main>
-    <button class=" btn btn-primary mt-0 mr-0 ml-auto" v-b-toggle.sidebar-right>
+    <button
+      class="btn btn-primary mt-0 mr-0 ml-auto"
+      v-b-toggle.contracts-list-filter
+    >
       <i class="far fa-sliders-h mr-2"></i>
       {{ $t("apartments.list.filter") }}
     </button>
-    <b-sidebar
-      id="sidebar-right"
-      title=""
-      right
-      shadow
-      width="420px"
-      backdrop
-    >
-      <div class="px-3 py-2">
-        <div class="container-fluid px-0">
-          <div class="row">
-            <div class="col-md-12">
-              <form action="" class="my-form">
-                <div class="mb-3 searching">
-                  <input
-                    class="my-form__input"
-                    type="text"
-                    v-model="search"
-                    @input="SearchInput"
-                    :placeholder="$t('clients.search')"
-                  />
-                  <button><i class="far fa-search"></i></button>
-                </div>
-              </form>
-            </div>
-            <div class="col-md-12">
-              <select
-                class="form-control"
-                v-model="orderBy"
-                aria-label="Default select example"
-              >
-                <option selected value="all">Все</option>
-                <option value="sold">Проданные</option>
-                <option value="contract">Неоплаченные</option>
-                <option value="booked">Забронированные</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <template #footer="{hide}">
-        <div class="d-flex text-light align-items-center px-3 py-2">
-          <b-button variant="primary" class="mx-auto" size="md" @click="hide"
-            >
-            <i class="far fa-save mr-2"></i>
-            Сохранить</b-button
-          >
-        </div>
-      </template>
-    </b-sidebar>
-    
+
+    <SideBarFilter @contractsFiltered="contractsFiltered" />
+
     <div class="app-content">
       <b-table
+        ref="contracts-table"
+        id="contracts-table"
         class="custom-table"
         sticky-header
         borderless
@@ -68,8 +25,9 @@
         :busy="getLoading"
         :sort-by.sync="sortBy"
         :tbody-tr-class="rowClass"
-        :empty-text="$t('no_data')"
         :sort-desc.sync="sortDesc"
+        :empty-text="$t('no_data')"
+        @sort-changed="sortingChanged"
       >
         <template #empty="scope" class="text-center">
           <span class="d-flex justify-content-center align-items-center">{{
@@ -86,6 +44,10 @@
               <div></div>
             </div>
           </div>
+        </template>
+
+        <template #cell(contract_number)="data">
+          {{ data.item.contract }}
         </template>
 
         <template #cell(status)="data">
@@ -110,7 +72,7 @@
           }}
         </template>
 
-        <template #cell(transaction_price)="data">
+        <template #cell(price)="data">
           {{
             data.item.status === "booked"
               ? 0
@@ -123,15 +85,15 @@
           {{ $t("ye") }}
         </template>
 
-        <template #cell(contract_date)="data">
+        <template #cell(date)="data">
           <span v-if="data.item.status === 'cancelled'">{{
             data.item.status | getStatus("", "")
           }}</span>
           <span v-else>{{
             data.item.status
               | getStatus(
-                $moment(data.item.contract_date).format("YYYY.MM.DD"),
-                $moment(data.item.booking_date).format("YYYY.MM.DD")
+                $moment(data.item.contract_date).format("DD.MM.YYYY"),
+                $moment(data.item.booking_date).format("DD.MM.YYYY")
               )
           }}</span>
         </template>
@@ -151,7 +113,7 @@
                   class="dropdown-item dropdown-item--inside"
                   v-if="
                     data.item.status === 'contract' ||
-                    data.item.status === 'sold'
+                      data.item.status === 'sold'
                   "
                   :href="data.item.contract_path"
                 >
@@ -185,6 +147,7 @@
         :prev-class="'page-item'"
         :prev-link-class="'page-link'"
         :next-link-class="'page-link'"
+        v-model="currentPage"
       >
       </paginate>
     </div>
@@ -193,50 +156,25 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-import {debounce} from "debounce";
+
+import SideBarFilter from "./SideBarFilter.vue";
 export default {
-  watch: {
-    orderBy: function (newVal) {
-      if (newVal != "all") {
-        this.fetchContractSearch(this);
-      } else {
-        if (this.search.length > 0) {
-          this.fetchContractSearch(this);
-        } else {
-          this.fetchContracts(this);
-        }
-      }
-    },
+  components: {
+    SideBarFilter,
   },
 
   data() {
     return {
-      info_reserve: false,
-      apartment_preview: {},
-      client_id: 0,
-
-      orderBy: "all",
-      page: 1,
-
-      header: {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
-        },
-      },
-
-      search: "",
-      sortBy: "",
-      sortDesc: false,
       fields: [
         {
-          key: "contract",
+          key: "contract_number",
           label: "№",
           sortable: true,
         },
         {
           key: "client",
           label: "ИМЯ КЛИЕНТА",
-          sortable: true,
+          // sortable: true,
         },
         {
           key: "client.phone",
@@ -244,7 +182,7 @@ export default {
           formatter: (value) => "+" + value,
         },
         {
-          key: "transaction_price",
+          key: "price",
           label: "СТОИМОСТЬ",
           sortable: true,
         },
@@ -255,11 +193,11 @@ export default {
         {
           key: "status",
           label: "СТАТУС",
-          sortable: true,
+          // sortable: true,
           formatter: (value) => this.getStatusOrder(value),
         },
         {
-          key: "contract_date",
+          key: "date",
           label: "ДАТА",
           sortable: true,
         },
@@ -268,18 +206,21 @@ export default {
           label: "",
         },
       ],
+      filter: {},
+      sortBy: "",
+      sortDesc: false,
+      page: 1,
+      currentPage: 1,
     };
   },
-
+  created() {
+    this.filter = {
+      ...this.$route.query,
+    };
+    this.currentPage = Number(this.filter.page);
+  },
   computed: {
-    ...mapGetters([
-      "getContracts",
-      "getMe",
-      "getPermission",
-      "getLoading",
-      "getPaginationContracts",
-      "getCurrency",
-    ]),
+    ...mapGetters(["getContracts", "getLoading", "getPaginationContracts"]),
     getPagination() {
       if (this.getPaginationContracts.total) {
         return this.getPaginationContracts.total;
@@ -289,11 +230,57 @@ export default {
   },
   mounted() {
     this.fetchContracts(this);
-    this.fetchCurrency(this);
   },
 
   methods: {
-    ...mapActions(["fetchContracts", "fetchCurrency", "fetchContractSearch"]),
+    ...mapActions(["fetchContracts"]),
+    async sortingChanged(val) {
+      this.filter.sort_by = val.sortBy;
+      this.filter.order_by = val.sortDesc ? "desc" : "asc";
+      this.filter.page = 1;
+      this.currentPage = this.filter.page;
+
+      this.$router.push({
+        name: "contracts",
+        query: this.filter,
+      });
+      await this.fetchContracts(this);
+    },
+
+    async contractsFiltered(event) {
+      this.filter = event;
+      let filter = {};
+      if (this.filter.object_id.length > 0) {
+        filter.object_id = this.filter.object_id;
+      }
+      if (this.filter.apartment_number.length > 0) {
+        filter.apartment_number = this.filter.apartment_number;
+      }
+      if (this.filter.date.length > 0) {
+        filter.date = this.filter.date;
+      }
+      // if (this.filter.status.length > 0) {
+      //   filter.status = this.filter.status;
+      // }
+
+      if (this.filter.contract_number !== "") {
+        filter.contract_number = this.filter.contract_number;
+      }
+      if (this.filter.phone !== "") {
+        filter.phone = this.filter.phone;
+      }
+      if (this.filter.full_name !== "") {
+        filter.full_name = this.filter.full_name;
+      }
+      this.filter.page = 1;
+      this.currentPage = this.filter.page;
+      filter.page = this.filter.page;
+      this.$router.push({
+        name: "contracts",
+        query: filter,
+      });
+      await this.fetchContracts(this);
+    },
     rowClass(item, type) {
       if (item && type === "row") {
         if (item.status === "contract") {
@@ -305,6 +292,17 @@ export default {
       } else {
         return null;
       }
+    },
+
+    async PageCallBack(pageNum) {
+      this.page = pageNum;
+      this.filter.page = Number(this.page);
+      this.currentPage = this.filter.page;
+      this.$router.push({
+        name: "contracts",
+        query: this.filter,
+      });
+      await this.fetchContracts(this);
     },
     getStatusOrder(status) {
       let msg;
@@ -322,28 +320,6 @@ export default {
 
       return msg;
     },
-    PageCallBack(pageNum) {
-      this.page = pageNum;
-
-      if (this.search.length > 0) {
-        this.fetchContractSearch(this);
-      } else {
-        this.fetchContracts(this);
-      }
-    },
-    onSearchInputChange(event) {
-      this.page = 1;
-      this.search = event.target.value;
-
-      if (this.search.length > 0) {
-        this.fetchContractSearch(this);
-      } else {
-        this.fetchContracts(this);
-      }
-    },
-    SearchInput: debounce(function (value) {
-      this.onSearchInputChange(value);
-    }, 800),
   },
 
   filters: {
