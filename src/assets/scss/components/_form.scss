@@ -203,3 +203,27 @@ input.my-input:focus,
   margin: 0 !important;
   height: unset !important;
 }
+
+.form-control:focus,
+.custom-select:focus {
+  box-shadow: unset;
+  border-color: inherit !important;
+}
+
+.form-control.is-invalid:focus {
+  border-color: #dc3545 !important;
+  box-shadow: unset;
+}
+
+.was-validated .form-control:valid,
+.form-control.is-valid {
+  background-image: none;
+  box-shadow: unset;
+  border-color: inherit;
+
+  &:focus {
+    background-image: none;
+    box-shadow: unset;
+    border-color: inherit;
+  }
+}
