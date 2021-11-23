@@ -1,6 +1,6 @@
 <template>
-  <div class="apartment">
-    <h6>{{ $t("apartments.view.variant") }}</h6>
+  <div class="">
+    <!-- <h6>{{ $t("apartments.view.variant") }}</h6> -->
     <div class="apartment__variant">
       <div class="apartment__info">
         Предоплата: <span> {{ discount.prepay_to }}%</span>
@@ -128,6 +128,5 @@ export default {
 
 <style scoped>
 .apartment__variant {
-  height: 180px !important;
 }
 </style>
