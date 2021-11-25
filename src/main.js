@@ -12,6 +12,8 @@ import i18n from "./locales";
 import toasted from "./util/toasted";
 import store from "./store";
 import vueMoment from "vue-moment";
+import VueMask from 'v-mask'
+Vue.use(VueMask);
 Vue.use(vueMoment);
 Vue.use(VueLazyload, {
   preLoad: 1.3,

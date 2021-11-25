@@ -48,7 +48,7 @@
       </div>
       <div class="new-object p-3" v-if="step === 2">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
-          <form ref="form" @submit.stop.prevent="handleSubmit(sendForm)">
+          <form ref="form" @submit.prevent="handleSubmit(sendForm)">
             <div class="row">
               <!-- Изменить дата договора -->
               <div
@@ -57,67 +57,41 @@
               >
                 <div class="row">
                   <div class="col-md-4">
-                    <validation-provider
-                      :name="`'${$t('apartments.agree.number')}'`"
-                      :rules="{required: false}"
-                      v-slot="validationContext"
+                    <b-form-group
+                      :label="$t('apartments.agree.number')"
+                      label-for="number"
+                      class="mb-3"
                     >
-                      <b-form-group
-                        :label="$t('apartments.agree.number')"
-                        label-for="number"
-                        class="mb-3"
-                      >
-                        <b-form-input
-                          id="number"
-                          name="number"
-                          :placeholder="
-                            $t('apartments.agree.placeholder.number')
-                          "
-                          v-model="apartment_edit.contract_number"
-                          :state="getValidationState(validationContext)"
-                          aria-describedby="number-feedback"
-                        ></b-form-input>
-
-                        <b-form-invalid-feedback id="number-feedback">{{
-                          validationContext.errors[0]
-                        }}</b-form-invalid-feedback>
-                      </b-form-group>
-                    </validation-provider>
+                      <b-form-input
+                        id="number"
+                        name="number"
+                        :placeholder="$t('apartments.agree.placeholder.number')"
+                        v-model="apartment_edit.contract_number"
+                      ></b-form-input>
+                    </b-form-group>
                   </div>
 
                   <div class="col-md-4">
-                    <validation-provider
-                      :name="`'${$t('apartments.agree.date_contract')}'`"
-                      :rules="{required: false}"
-                      v-slot="validationContext"
-                      class="mb-3"
+                    <b-form-group
+                      :label="$t('apartments.agree.date_contract')"
+                      label-for="date"
                     >
-                      <b-form-group
-                        :label="$t('apartments.agree.date_contract')"
-                        label-for="date"
-                      >
-                        <b-form-input
-                          id="date"
-                          name="date"
-                          type="date"
-                          :placeholder="
-                            $t('apartments.agree.placeholder.date_contract')
-                          "
-                          v-model="apartment_edit.contract_date"
-                          :state="getValidationState(validationContext)"
-                          aria-describedby="date-feedback"
-                        ></b-form-input>
-
-                        <b-form-invalid-feedback id="date-feedback">{{
-                          validationContext.errors[0]
-                        }}</b-form-invalid-feedback>
-                      </b-form-group>
-                    </validation-provider>
+                      <b-form-input
+                        id="date"
+                        name="date"
+                        type="date"
+                        :placeholder="
+                          $t('apartments.agree.placeholder.date_contract')
+                        "
+                        v-model="apartment_edit.contract_date"
+                      ></b-form-input>
+                    </b-form-group>
                   </div>
                 </div>
 
                 <hr />
               </div>
+              
               <!-- apartments.agree.passport_series -->
               <div class="col-md-4">
                 <validation-provider
@@ -680,18 +654,14 @@
               <button
                 type="button"
                 class="btn btn-primary mr-0"
-                @click="handleSubmit(onSubmit)"
+                @click.prevent="handleSubmit(onSubmit)"
                 v-if="next"
               >
                 {{ $t("next") }}
                 <i class="fa fa-chevron-circle-right"></i>
               </button>
 
-              <button
-                type="submit"
-                class="btn btn-success"
-                v-if="confirm"
-              >
+              <button type="submit" class="btn btn-success" v-if="confirm">
                 {{ $t("create_agree") }}
                 <i class="fa fa-file-contract"></i>
               </button>
@@ -1457,21 +1427,6 @@ export default {
   },
 
   methods: {
-    getValidationState({dirty, validated, valid = null}) {
-      return dirty || validated ? valid : null;
-    },
-    onSubmit() {
-      this.$validator.validateAll().then((result) => {
-        if (!result) {
-          console.log(result);
-          return;
-        } else {
-          this.step = 3;
-          this.next = false;
-          this.confirm = true;
-        }
-      });
-    },
     successAgree(value) {
       this.fetchApartment(this);
       this.contract = value;
@@ -1623,170 +1578,160 @@ export default {
         }
       }
     },
+    getValidationState({dirty, validated, valid = null}) {
+      return dirty || validated ? valid : null;
+    },
+    onSubmit() {
+      this.step = 3;
+      this.next = false;
+      this.confirm = true;
+    },
     async sendForm() {
-      this.$validator.validateAll().then((result) => {
-        if (!result) {
-          console.log(result);
-          return;
-        }
-        if (this.client.discount.id === null) return;
-        console.log(1);
-        this.$swal({
-          title: this.$t("sweetAlert.title"),
-          text: this.$t("sweetAlert.text_agree"),
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: this.$t("sweetAlert.yes_agree"),
-        }).then((result) => {
-          if (result.value) {
-            const formData = new FormData();
+      if (this.client.discount.id === null) return;
 
-            if (this.apartment.order.id)
-              formData.append("order_id", this.apartment.order.id);
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text_agree"),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: this.$t("sweetAlert.yes_agree"),
+      }).then((result) => {
+        if (result.value) {
+          const formData = new FormData();
 
-            formData.append("type", "simple");
-            formData.append("id", this.client.id);
+          if (this.apartment.order.id)
+            formData.append("order_id", this.apartment.order.id);
 
-            formData.append("first_name[lotin]", this.client.first_name.lotin);
-            formData.append(
-              "first_name[kirill]",
-              this.client.first_name.kirill
-            );
+          formData.append("type", "simple");
+          formData.append("id", this.client.id);
 
-            formData.append("last_name[lotin]", this.client.last_name.lotin);
-            formData.append("last_name[kirill]", this.client.last_name.kirill);
+          formData.append("first_name[lotin]", this.client.first_name.lotin);
+          formData.append("first_name[kirill]", this.client.first_name.kirill);
 
-            formData.append(
-              "second_name[lotin]",
-              this.client.second_name.lotin
-            );
-            formData.append(
-              "second_name[kirill]",
-              this.client.second_name.kirill
-            );
+          formData.append("last_name[lotin]", this.client.last_name.lotin);
+          formData.append("last_name[kirill]", this.client.last_name.kirill);
 
-            formData.append("passport_series", this.client.passport_series);
-            formData.append("issued_by_whom", this.client.issued_by_whom);
-            formData.append("language", this.client.language);
-            formData.append("phone", this.client.phone);
-            formData.append("other_phone", this.client.other_phone);
-            formData.append("date_of_issue", this.client.date_of_issue);
-            formData.append("discount_id", this.client.discount.id);
-            formData.append("birth_day", this.client.birth_day);
+          formData.append("second_name[lotin]", this.client.second_name.lotin);
+          formData.append(
+            "second_name[kirill]",
+            this.client.second_name.kirill
+          );
 
-            formData.append("type_client", this.type_client);
+          formData.append("passport_series", this.client.passport_series);
+          formData.append("issued_by_whom", this.client.issued_by_whom);
+          formData.append("language", this.client.language);
+          formData.append("phone", this.client.phone);
+          formData.append("other_phone", this.client.other_phone);
+          formData.append("date_of_issue", this.client.date_of_issue);
+          formData.append("discount_id", this.client.discount.id);
+          formData.append("birth_day", this.client.birth_day);
 
-            formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
+          formData.append("type_client", this.type_client);
 
-            if (
-              this.getMe.role.id === 1 ||
-              this.getPermission.contracts.monthly
-            ) {
-              for (
-                let monthly = 0;
-                monthly < this.credit_months.length;
-                monthly++
-              ) {
-                formData.append(
-                  "monthly[" + monthly + "][edited]",
-                  this.credit_months[monthly].edited ? 1 : 0
-                );
-                formData.append(
-                  "monthly[" + monthly + "][amount]",
-                  this.credit_months[monthly].amount
-                );
-                formData.append(
-                  "monthly[" + monthly + "][date]",
-                  this.credit_months[monthly].month
-                );
-              }
-            }
+          formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
 
+          if (
+            this.getMe.role.id === 1 ||
+            this.getPermission.contracts.monthly
+          ) {
             for (
-              let initial_payment = 0;
-              initial_payment < this.initial_payments.length;
-              initial_payment++
+              let monthly = 0;
+              monthly < this.credit_months.length;
+              monthly++
             ) {
               formData.append(
-                "initial_payments[" + initial_payment + "][edited]",
-                this.initial_payments[initial_payment].edited ? 1 : 0
+                "monthly[" + monthly + "][edited]",
+                this.credit_months[monthly].edited ? 1 : 0
               );
               formData.append(
-                "initial_payments[" + initial_payment + "][amount]",
-                this.initial_payments[initial_payment].amount
+                "monthly[" + monthly + "][amount]",
+                this.credit_months[monthly].amount
               );
               formData.append(
-                "initial_payments[" + initial_payment + "][date]",
-                this.initial_payments[initial_payment].month
+                "monthly[" + monthly + "][date]",
+                this.credit_months[monthly].month
               );
             }
-
-            formData.append("comment", this.comment);
-
-            if (this.client.discount.id === "other") {
-              formData.append("apartment_price", this.apartment_edit.price);
-              formData.append(
-                "apartment_prepay_price",
-                this.apartment_edit.prepay_price
-              );
-            }
-
-            formData.append(
-              "first_payment_date",
-              this.client.first_payment_date
-            );
-
-            if (this.client.payment_date)
-              formData.append("payment_date", this.client.payment_date);
-
-            if (this.date_change) {
-              formData.append("date_change", 1);
-              formData.append(
-                "contract_number",
-                this.apartment_edit.contract_number
-              );
-              formData.append(
-                "contract_date",
-                this.apartment_edit.contract_date
-              );
-            }
-
-            if (this.step === 3 && this.client.discount.prepay_to != 100) {
-              formData.append("months", this.month);
-            }
-
-            this.axios
-              .post(
-                process.env.VUE_APP_URL + "/orders/" + this.apartment.id,
-                formData,
-                this.header
-              )
-              .then((response) => {
-                this.toasted(response.data.message, "success");
-                this.$bvModal.hide("modal-agree");
-                this.contract = response.data;
-                this.$bvModal.show("modal-success-agree");
-              })
-              .catch((error) => {
-                if (!error.response) {
-                  this.toasted("Error: Network Error", "error");
-                } else {
-                  if (error.response.status === 403) {
-                    this.toasted(error.response.data.message, "error");
-                  } else if (error.response.status === 401) {
-                    this.toasted(error.response.data, "error");
-                  } else if (error.response.status === 500) {
-                    this.toasted(error.response.data.message, "error");
-                  } else if (error.response.status === 422) {
-                    this.error = true;
-                    this.geteErrors = error.response.data;
-                  } else {
-                    this.toasted(error.response.data.message, "error");
-                  }
-                }
-              });
           }
-        });
+
+          for (
+            let initial_payment = 0;
+            initial_payment < this.initial_payments.length;
+            initial_payment++
+          ) {
+            formData.append(
+              "initial_payments[" + initial_payment + "][edited]",
+              this.initial_payments[initial_payment].edited ? 1 : 0
+            );
+            formData.append(
+              "initial_payments[" + initial_payment + "][amount]",
+              this.initial_payments[initial_payment].amount
+            );
+            formData.append(
+              "initial_payments[" + initial_payment + "][date]",
+              this.initial_payments[initial_payment].month
+            );
+          }
+
+          formData.append("comment", this.comment);
+
+          if (this.client.discount.id === "other") {
+            formData.append("apartment_price", this.apartment_edit.price);
+            formData.append(
+              "apartment_prepay_price",
+              this.apartment_edit.prepay_price
+            );
+          }
+
+          formData.append("first_payment_date", this.client.first_payment_date);
+
+          if (this.client.payment_date)
+            formData.append("payment_date", this.client.payment_date);
+
+          if (this.date_change) {
+            formData.append("date_change", 1);
+            formData.append(
+              "contract_number",
+              this.apartment_edit.contract_number
+            );
+            formData.append("contract_date", this.apartment_edit.contract_date);
+          }
+
+          if (this.step === 3 && this.client.discount.prepay_to != 100) {
+            formData.append("months", this.month);
+          }
+
+          this.axios
+            .post(
+              process.env.VUE_APP_URL + "/orders/" + this.apartment.id,
+              formData,
+              this.header
+            )
+            .then((response) => {
+              this.toasted(response.data.message, "success");
+              this.$bvModal.hide("modal-agree");
+              this.contract = response.data;
+              this.$bvModal.show("modal-success-agree");
+            })
+            .catch((error) => {
+              if (!error.response) {
+                this.toasted("Error: Network Error", "error");
+              } else {
+                if (error.response.status === 403) {
+                  this.toasted(error.response.data.message, "error");
+                } else if (error.response.status === 401) {
+                  this.toasted(error.response.data, "error");
+                } else if (error.response.status === 500) {
+                  this.toasted(error.response.data.message, "error");
+                } else if (error.response.status === 422) {
+                  this.error = true;
+                  this.geteErrors = error.response.data;
+                } else {
+                  this.toasted(error.response.data.message, "error");
+                }
+              }
+            });
+        }
       });
     },
     removeBlock() {

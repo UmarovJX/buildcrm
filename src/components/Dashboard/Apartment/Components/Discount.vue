@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="apartment">
     <!-- <h6>{{ $t("apartments.view.variant") }}</h6> -->
     <div class="apartment__variant">
       <div class="apartment__info">
@@ -125,8 +125,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.apartment__variant {
-}
-</style>

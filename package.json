@@ -24,6 +24,7 @@
     "node-sass": "^6.0.1",
     "routes": "^2.1.0",
     "sass-loader": "^10",
+    "v-mask": "^2.3.0",
     "vee-validate": "^3.4.14",
     "vue": "^2.6.12",
     "vue-axios": "^2.1.5",

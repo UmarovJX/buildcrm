@@ -1049,8 +1049,6 @@ export default {
   }),
 
   mounted() {
-    //console.log(this.getMe.role.id === 1 && false === false || this.getPermission.contracts.monthly && false === false);
-
     if (this.apartment.order.id) {
       this.reserveClientFull();
     }
@@ -1141,7 +1139,6 @@ export default {
           discount: {id: null},
         };
       } catch (error) {
-        //console.log(4);
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -1183,7 +1180,6 @@ export default {
           discount: {id: null},
         };
       } catch (error) {
-        //console.log(4);
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -1427,7 +1423,6 @@ export default {
         return parseFloat(this.apartment_edit.prepay_price);
       }
 
-      //console.log(this.client.discount.prepay_to * total / 100);
       return (this.client.discount.prepay_to * total) / 100;
     },
 

@@ -27,7 +27,6 @@ export default {
   },
   actions: {
     async fetchContracts(ctx, vm) {
-      console.log(vm.$route.query);
       ctx.commit("updateLoading", true, {root: true});
       try {
         let header = {

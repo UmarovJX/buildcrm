@@ -1,13 +1,14 @@
 <template>
   <main>
-    <div class="app-content">
+    <div class="app-content print-page">
       <div ref="document" id="printMe" :class="{'map-active': isMapActive}">
         <div class="row">
-          <div class="col-md-9 pr-md-0">
+          <div class="col-md-9 pr-md-0 object-detail">
             <div class="new-object mb-0">
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-lg-8 pr-md-0 border-right">
+                    <!-- building__img -->
                     <div class="building">
                       <div class="building__img">
                         <img
@@ -17,47 +18,80 @@
                         />
                       </div>
                     </div>
-                    <h2 class="mt-2">
-                      {{ getApartment.object.name }} - {{ getApartment.number }}
-                    </h2>
-                    <div class="building__info my-3 d-flex align-items-center">
-                      <p>{{ $t("apartments.view.status") }}:</p>
+                    <!-- building__info -->
+                    <div>
+                      <p class="building__info mt-2 mb-1">
+                        <i
+                          style="color: #4C0852"
+                          class="far fa-map-marker-alt"
+                        ></i>
+                        Адрес: {{ getApartment.object.name }} -
+                        {{ getApartment.number }},
+                        {{ getApartment.block.name }},
+                        {{ getApartment.building.name }}
+                      </p>
+                      <div class="building__info d-flex align-items-center">
+                        <p>
+                          <i style="color: #4C0852" class="far fa-spinner"></i>
+                          {{ $t("apartments.view.status") }}:
+                        </p>
 
-                      <div
-                        class="small"
-                        :class="[
-                          getApartment.order === 'booked'
-                            ? 'text-warning ml-3'
-                            : '',
-                          getApartment.order.status === 'sold' ||
-                          getApartment.order.status === 'contract'
-                            ? 'text-danger ml-3'
-                            : 'text-success ml-3',
-                        ]"
-                      >
-                        {{
-                          getApartment.order.status
-                            | getStatus(
-                              $moment(getApartment.order.booking_date).format(
-                                "DD.MM.YYYY"
+                        <div
+                          :class="[
+                            getApartment.order === 'booked'
+                              ? 'text-warning ml-3'
+                              : '',
+                            getApartment.order.status === 'sold' ||
+                            getApartment.order.status === 'contract'
+                              ? 'text-danger ml-3'
+                              : 'text-success ml-3',
+                          ]"
+                        >
+                          {{
+                            getApartment.order.status
+                              | getStatus(
+                                $moment(getApartment.order.booking_date).format(
+                                  "DD.MM.YYYY"
+                                )
                               )
-                            )
-                        }}
+                          }}
+                        </div>
+                      </div>
+                      <div
+                        class="building__info mb-3 d-flex align-items-center"
+                      >
+                        <p>
+                          <i
+                            style="color: #4C0852"
+                            class="far fa-calendar-check"
+                          ></i>
+                          Дата завершения строительства :
+                        </p>
+
+                        <div class="ml-3">11.12.2022</div>
                       </div>
                     </div>
                     <hr />
+                    <!-- apartment info -->
                     <div class="row">
                       <div class="col-md-4 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.number") }}:</p>
-                        <h5>{{ getApartment.number }}</h5>
+                        <h5>
+                          <i style="color: #4C0852" class="far fa-building"></i>
+                          {{ getApartment.number }}
+                        </h5>
                       </div>
                       <div class="col-md-4 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.area") }}:</p>
-                        <h5>{{ getApartment.plan.area }} м²</h5>
+                        <h5>
+                          <i style="color: #4C0852" class="far fa-expand"></i>
+                          {{ getApartment.plan.area }} м²
+                        </h5>
                       </div>
                       <div class="col-md-4 mb-4">
                         <p class="mb-1">{{ $t("apartments.list.balcony") }}:</p>
                         <h5>
+                          <i style="color: #4C0852" class="far fa-inbox"></i>
                           <span v-if="getApartment.plan.balcony">
                             {{ getApartment.plan.balcony_area }} м²
                           </span>
@@ -69,11 +103,20 @@
                       </div>
                       <div class="col-md-4 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.rooms") }}:</p>
-                        <h5>{{ getApartment.rooms }}</h5>
+                        <h5>
+                          <i
+                            style="color: #4C0852"
+                            class="far fa-door-open"
+                          ></i>
+                          {{ getApartment.rooms }}
+                        </h5>
                       </div>
                       <div class="col-md-4 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.floor") }}:</p>
-                        <h5>{{ getApartment.floor }}</h5>
+                        <h5>
+                          <i style="color: #4C0852" class="far fa-industry"></i>
+                          {{ getApartment.floor }}
+                        </h5>
                       </div>
                       <!-- <div class="col-md-4 mb-4">
                         <p>{{ $t("apartments.view.price_m2") }}:</p>
@@ -103,32 +146,50 @@
                       </div> -->
                     </div>
                   </div>
-                  <div
-                    class="col-md-4"
-                  >
-                    <div>
+                  <div class="col-md-4">
+                    <!-- object-calculator -->
+                    <div class="object-calculator">
                       <b-form-group
                         class="mb-1"
                         label-cols="12"
                         content-cols="12"
-                        label="Способ оплаты:"
-                        label-for="choose-percent-type"
+                        :label="
+                          $t('apartments.agree.placeholder.enter_discount')
+                        "
+                        label-for="discounts"
                       >
                         <b-form-select
-                          id="choose-percent-type"
-                          v-model="selected"
-                          :options="options"
-                        ></b-form-select>
+                          id="discounts"
+                          v-model="client.discount"
+                          @change="ChangeDiscount()"
+                        >
+                          <b-form-select-option
+                            v-for="(discount, index) in getApartmentDiscounts"
+                            :value="discount"
+                            :key="'discounts' + index"
+                          >
+                            {{ $t("apartments.view.variant") }}
+                            {{ index + 1 }} - {{ discount.prepay_to }}%
+                          </b-form-select-option>
+                        </b-form-select>
                       </b-form-group>
 
                       <b-form-group
                         class="mb-1"
                         label-cols="12"
                         content-cols="12"
-                        label="Цена продажы:"
+                        label="Цена продажы за м2:"
                         label-for="price"
                       >
-                        <b-form-input id="price"></b-form-input>
+                        <b-form-input
+                          id="price"
+                          @change="changePrice_price_for_m2"
+                          v-model="client.price_for_m2"
+                        ></b-form-input>
+                        <span
+                          style="position: absolute; right: 20px; top: 6px"
+                          >{{ $t("ye") }}</span
+                        >
                       </b-form-group>
 
                       <b-form-group
@@ -138,7 +199,18 @@
                         label="Скидка:"
                         label-for="discound-price"
                       >
-                        <b-form-input id="discound-price"></b-form-input>
+                        <b-form-input
+                          id="discound-price"
+                          @change="
+                            changePrice_price_for_m2(client.discount_price)
+                          "
+                          v-model="client.discount_price"
+                        >
+                        </b-form-input>
+                        <span
+                          style="position: absolute; right: 20px; top: 6px"
+                          >{{ $t("ye") }}</span
+                        >
                       </b-form-group>
 
                       <b-form-group
@@ -149,24 +221,32 @@
                         label="Общ. цена:"
                         label-for="total-price"
                       >
-                        <b-form-input id="total-price"></b-form-input>
+                        <b-form-input
+                          id="total-price"
+                          @change="changePrice_price_for_m2(client.total_price)"
+                          v-model="client.total_price"
+                        ></b-form-input>
+                        <span
+                          style="position: absolute; right: 20px; top: 6px"
+                          >{{ $t("ye") }}</span
+                        >
                       </b-form-group>
                     </div>
                     <hr />
-                    <div class="">
+                    <div class="object-sales-type">
                       <Discount
                         v-if="
                           getApartment.object.credit_month != 0 ||
-                            discount.prepay_to === 100
+                            client.discount.prepay_to != 100
                         "
-                        :discount="getApartment.discounts[0]"
+                        :discount="client.discount"
                         :apartment="getApartment"
                       ></Discount>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="container-fluid">
+              <div class="container-fluid footer-btns">
                 <div
                   class="
                     mt-md-5
@@ -187,7 +267,11 @@
                       flex-md-row flex-column
                     "
                   >
-                    <button class="mr-md-2 mr-0 btn btn-info" type="button">
+                    <button
+                      class="mr-md-2 mr-0 btn btn-info"
+                      type="button"
+                      @click="printPage"
+                    >
                       <i class="fa fa-print"></i> Печать
                     </button>
                     <b-button
@@ -314,30 +398,26 @@
               width="100%"
               height="100%"
               style="border:0;"
-              allowfullscreen=""
-              loading="lazy"
             ></iframe>
           </div>
         </div>
       </div>
 
-      <div>
-        <div class="container-fluid mt-4 d-none">
-          <div class="row">
-            <div
-              class="col-lg-4 my-2"
-              v-for="(discount, index) in getApartment.discounts"
-              :key="index"
-            >
-              <Discount
-                v-if="
-                  getApartment.object.credit_month != 0 ||
-                    discount.prepay_to === 100
-                "
-                :discount="discount"
-                :apartment="getApartment"
-              ></Discount>
-            </div>
+      <div class="container-fluid mt-4" v-if="false">
+        <div class="row">
+          <div
+            class="col-lg-4 my-2"
+            v-for="(discount, index) in getApartment.discounts"
+            :key="index"
+          >
+            <Discount
+              v-if="
+                getApartment.object.credit_month != 0 ||
+                  discount.prepay_to === 100
+              "
+              :discount="discount"
+              :apartment="getApartment"
+            ></Discount>
           </div>
         </div>
       </div>
@@ -346,7 +426,6 @@
         v-if="info_reserve"
         @CancelReserve="CloseReserveInfo"
         :apartment-data="apartment_preview"
-        :client-id="client_id"
       ></view-client>
 
       <reserve-add
@@ -379,16 +458,12 @@ export default {
     "view-client": ViewClient,
     "reserve-add": ReserveAdd,
     "agree-modal": Agree,
-    Discount: Discount
+    Discount: Discount,
   },
 
   data() {
     return {
-      url: process.env.VUE_APP_URL,
-
       apartment_preview: {},
-      client_id: 0,
-
       reserve: false,
       apartment_id: 0,
       order_id: 0,
@@ -397,6 +472,12 @@ export default {
       isConfirm: false,
 
       info_reserve: false,
+      client: {
+        discount: "",
+        price_for_m2: 0,
+        discount_price: 0,
+        total_price: 0,
+      },
 
       contract: {
         id: null,
@@ -412,32 +493,60 @@ export default {
         },
       },
 
-      selected: "20%",
-      options: [
-        {value: 20, text: "20%", selected: true},
-        {value: 30, text: "30%"},
-        {value: 50, text: "50%"},
-        {value: 100, text: "100%"},
-      ],
       isMapActive: false,
     };
   },
 
   mounted() {
-    this.fetchApartment(this);
-
+    this.fetchApartment(this).then(() => {
+      this.client.discount = this.getApartmentDiscounts[0];
+      this.client.price_for_m2 = this.apartment.price_m2;
+      this.client.total_price = this.apartment.price;
+    });
     Fancybox.bind("[data-fancybox]");
   },
+  computed: {
+    ...mapGetters([
+      "getApartment",
+      "getMe",
+      "getPermission",
+      "getReserveClient",
+    ]),
+    getApartmentDiscounts() {
+      let arr = this.apartment.discounts;
+      if (this.apartment.object.credit_month != 0) {
+        // arr = arr.map((a) => a.prepay_to);
+        return arr.sort((a, b) => a.prepay_to - b.prepay_to);
+      }
 
-  computed: mapGetters([
-    "getApartment",
-    "getMe",
-    "getPermission",
-    "getReserveClient",
-  ]),
+      return [];
+    },
+    apartment() {
+      return this.getApartment;
+    },
+  },
 
   methods: {
+    formatTo(item) {
+      return (Math.round(item * 100) / 100)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    },
+    changePrice_price_for_m2(val) {
+      console.log(val);
+      this.client.total_price
+    },
+    getDiscount() {
+      this.client.discount = this.discount;
+    },
     ...mapActions(["fetchApartment", "fetchReserveClient"]),
+    ChangeDiscount() {
+      console.log(this.client.discount);
+    },
+
+    printPage() {
+      window.print();
+    },
 
     ReserveInfo(apartment) {
       this.info_reserve = true;

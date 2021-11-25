@@ -173,8 +173,6 @@ export default {
     ...mapActions(["fetchObjects"]),
 
     contractsFilter() {
-      console.log(1);
-    
       this.$emit("contractsFiltered", this.filter);
       this.$refs.mySidebarFilter.hide();
     },

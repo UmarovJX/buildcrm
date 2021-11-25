@@ -7,12 +7,12 @@ html {
 }
 
 *::-moz-selection {
-  background-color: #5851d8;
+  background-color: $primary;
   color: white;
 }
 
 *::selection {
-  background-color: #5851d8;
+  background-color: $primary;
   color: white;
 }
 
@@ -35,6 +35,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  font-family: "MuseoSansCyrl", Arial, Helvetica, sans-serif;
 }
 
 main {
@@ -44,7 +45,7 @@ main {
   backface-visibility: hidden;
   min-height: calc(100% - 3rem);
   padding: 2rem 2rem 0 2rem;
-  
+
   @include mq("desktop", max) {
     margin: 1rem;
     padding: 0rem 0 0 0;
