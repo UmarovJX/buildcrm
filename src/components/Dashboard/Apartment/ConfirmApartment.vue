@@ -672,285 +672,6 @@
       <div class="container-fluid px-0 mx-0" v-if="step === 3">
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
-            <!-- sticky sidebar -->
-            <div class="col-xl-4 h-auto">
-              <div class="sticky-top">
-                <!-- Info -->
-                <div class="new-object p-3" v-if="false">
-                  <table class="table mx-0 mt-2 p-0 my-table-another-variant">
-                    <tbody class="m-0 p-0">
-                      <tr>
-                        <td class="px-0 py-2">Номер паспорта</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.passport_series }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Место выдачи паспорта</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.issued_by_whom }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Дата выпуска пасспорта</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.date_of_issue }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Дата рождения</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.birth_day }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">ФИО</td>
-                        <td
-                          class="px-0 py-2 text-right"
-                          :title="
-                            `${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`
-                          "
-                        >
-                          {{ client.last_name.lotin }}
-                          {{ client.first_name.lotin }}
-                          {{ client.second_name.lotin }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Телефон номер</td>
-                        <td class="px-0 py-2 text-right">{{ client.phone }}</td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Дополнительный номер</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.other_phone }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="new-object p-3" v-if="false">
-                  <div>
-                    <!--  Цена продажи: -->
-                    <div v-if="!edit.price">
-                      <h6 class="color-blue-darker mb-0">
-                        Цена продажи:
-                        {{
-                          client.discount.id === "other"
-                            ? apartment_edit.price
-                            : apartment.price
-                              | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                        }}
-                        {{ $t("ye") }}
-                      </h6>
-
-                      <!-- Первоначальный взнос -->
-                      <div class="container px-0 mx-0 mt-4">
-                        <div class="row">
-                          <div class="col-12">
-                            <div class="mb-3" v-if="month > 0">
-                              <label
-                                class="d-block h6 font-weight-normal"
-                                for="initial-fee"
-                                >Первоначальный взнос:</label
-                              >
-                              <div class="row">
-                                <div class="col-md-8">
-                                  <input
-                                    id="initial-fee"
-                                    class="my-form__input"
-                                    disabled
-                                    type="text"
-                                    :value="
-                                      client.discount.id === 'other' &&
-                                      month == 0
-                                        ? getTotalOther()
-                                        : getPrepay()
-                                          | number('0,0.00', {
-                                            thousandsSeparator: ' ',
-                                            decimalSeparator: ',',
-                                          })
-                                    "
-                                  />
-                                </div>
-                                <div class="col-md-4 pl-md-0 mt-md-0 mt-2">
-                                  <input
-                                    class="my-form__input"
-                                    disabled
-                                    type="text"
-                                    :value="
-                                      client.discount.prepay_to.toFixed(2) +
-                                        ' %'
-                                    "
-                                  />
-                                </div>
-                              </div>
-                            </div>
-
-                            <button
-                              type="button"
-                              v-if="client.discount.id === 'other'"
-                              @click="edit.price = true"
-                              class="btn btn-light mx-auto mb-3"
-                            >
-                              <i class="fa fa-edit"></i>
-                              {{ $t("apartments.agree.edit_price") }}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Цена продажи -->
-                    <div class="row" v-else>
-                      <div class="col-12">
-                        <div class="mb-3">
-                          <label class="d-block" for="initial-fee"
-                            >Цена продажи:</label
-                          >
-                          <div class="row">
-                            <div class="col-12">
-                              <input
-                                id="initial-price"
-                                class="my-form__input"
-                                step="0.01"
-                                type="number"
-                                v-model="apartment_edit.price"
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="mb-3" v-if="month > 0">
-                          <label class="d-block" for="initial-fee"
-                            >Первоначальный взнос:</label
-                          >
-                          <div class="row">
-                            <div class="col-md-10">
-                              <input
-                                id="initial-fee"
-                                class="my-form__input"
-                                type="number"
-                                step="0.01"
-                                v-model="apartment_edit.prepay_price"
-                              />
-                            </div>
-                            <div
-                              class="
-                                col-md-2
-                                pl-0
-                                d-flex
-                                align-items-center
-                                justify-content-start
-                              "
-                            >
-                              <div class="h6 mb-0">
-                                {{ client.discount.prepay_to.toFixed(2) }}%
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <button
-                          type="button"
-                          @click="edit.price = false"
-                          class="btn btn-primary mx-auto mb-3"
-                        >
-                          <i class="fa fa-save"></i> {{ $t("save") }}
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Сумма рассрочки -->
-
-                    <table
-                      class="table mx-0 p-0 my-0 my-table-another-variant"
-                      v-if="month > 0"
-                    >
-                      <tbody class="m-0 p-0">
-                        <tr>
-                          <td class="px-0 py-2">Сумма рассрочки</td>
-                          <td class="px-0 py-2 text-right">
-                            {{
-                              getDebt()
-                                | number("0,0.00", {
-                                  thousandsSeparator: " ",
-                                  decimalSeparator: ",",
-                                })
-                            }}
-                            {{ $t("ye") }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="new-object p-3">
-                  <!-- client.discount -->
-                  <div class="" v-if="client.discount.id">
-                    <DiscountCalc
-                      :discount="client.discount"
-                      :apartment="apartment"
-                    ></DiscountCalc>
-                  </div>
-                </div>
-
-                <div class="new-object p-3">
-                  <!-- Комментария -->
-                  <div>
-                    <label>Комментария</label>
-                    <textarea
-                      rows="3"
-                      cols="3"
-                      v-model="comment"
-                      class="form-control"
-                    ></textarea>
-                  </div>
-
-                  <!-- error msg -->
-                  <div class="alert alert-danger mt-3" v-if="error">
-                    <ul>
-                      <li v-for="(error, index) in geteErrors" :key="index">
-                        <span v-for="msg in error" :key="msg">
-                          {{ msg }}
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <!-- Btns -->
-                  <div class="sidebar-btns">
-                    <button
-                      type="button"
-                      class="btn btn-secondary mr-0"
-                      @click="[(step = 2), (next = true), (confirm = false)]"
-                    >
-                      <i class="fa fa-chevron-circle-left"></i>
-                      {{ $t("back") }}
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-default mx-md-2"
-                      @click="removeBlock"
-                    >
-                      {{ $t("cancel") }}
-                    </button>
-                    <button
-                      type="submit"
-                      class="btn btn-success mr-0"
-                      v-if="confirm"
-                    >
-                      {{ $t("create_agree") }}
-                      <i class="fa fa-file-contract"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
             <!-- Таблица ежемесячных платежей -->
             <div class="col-xl-8">
               <div
@@ -972,7 +693,7 @@
                     class="mr-2 w-25"
                     v-if="
                       client.discount.prepay_to != 100 ||
-                        client.discount.prepay_to < 100
+                      client.discount.prepay_to < 100
                     "
                   >
                     <!-- <label class="d-block" for="month">Месяцев</label> -->
@@ -988,8 +709,8 @@
                   <span
                     v-if="
                       month > 0 &&
-                        (client.discount.prepay_to != 100 ||
-                          client.discount.prepay_to < 100)
+                      (client.discount.prepay_to != 100 ||
+                        client.discount.prepay_to < 100)
                     "
                   >
                     {{ month }} месяцев по <br />
@@ -1009,7 +730,7 @@
                   class="table"
                   v-if="
                     client.discount.prepay_to != 100 ||
-                      client.discount.prepay_to < 100
+                    client.discount.prepay_to < 100
                   "
                 >
                   <thead>
@@ -1026,7 +747,7 @@
                     <tr
                       v-if="
                         initial_payments.length === 0 ||
-                          initial_payments.length === 1
+                        initial_payments.length === 1
                       "
                     >
                       <td>
@@ -1148,8 +869,8 @@
                             <button
                               v-if="
                                 (getMe.role.id === 1 && !initialPayment.edit) ||
-                                  (getPermission.contracts.monthly &&
-                                    !initialPayment.edit)
+                                (getPermission.contracts.monthly &&
+                                  !initialPayment.edit)
                               "
                               type="button"
                               @click="editInitialPayment(index)"
@@ -1162,7 +883,7 @@
                               <button
                                 v-if="
                                   getMe.role.id === 1 ||
-                                    getPermission.contracts.monthly
+                                  getPermission.contracts.monthly
                                 "
                                 type="button"
                                 @click="editInitialPayment(index)"
@@ -1177,9 +898,9 @@
                                 (index != 0 &&
                                   getMe.role.id === 1 &&
                                   !month.edit) ||
-                                  (index != 0 &&
-                                    getPermission.contracts.monthly &&
-                                    !month.edit)
+                                (index != 0 &&
+                                  getPermission.contracts.monthly &&
+                                  !month.edit)
                               "
                               type="button"
                               @click="deleteInitialPayment(index)"
@@ -1223,7 +944,8 @@
                               <input
                                 type="text"
                                 class="form-control"
-                                v-model="month.amount"
+                                required
+                                v-model.number="month.amount"
                               />
                             </div>
                           </div>
@@ -1231,7 +953,7 @@
                           <button
                             v-if="
                               (getMe.role.id === 1 && !month.edit) ||
-                                (getPermission.contracts.monthly && !month.edit)
+                              (getPermission.contracts.monthly && !month.edit)
                             "
                             type="button"
                             @click="editMonthlyPayment(index)"
@@ -1244,7 +966,7 @@
                             <button
                               v-if="
                                 getMe.role.id === 1 ||
-                                  getPermission.contracts.monthly
+                                getPermission.contracts.monthly
                               "
                               type="button"
                               @click="editMonthlyPayment(index)"
@@ -1258,6 +980,268 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+            <!-- sticky sidebar -->
+            <div class="col-xl-4 h-auto">
+              <div class="sticky-top">
+                <!-- Info -->
+                <div class="new-object p-3">
+                  <table class="table mx-0 mt-2 p-0 my-table-another-variant">
+                    <tbody class="m-0 p-0">
+                      <tr>
+                        <td class="px-0 py-2">Номер паспорта</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.passport_series }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Место выдачи паспорта</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.issued_by_whom }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Дата выпуска пасспорта</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.date_of_issue }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Дата рождения</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.birth_day }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">ФИО</td>
+                        <td
+                          class="px-0 py-2 text-right"
+                          :title="`${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`"
+                        >
+                          {{ client.last_name.lotin }}
+                          {{ client.first_name.lotin }}
+                          {{ client.second_name.lotin }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Телефон номер</td>
+                        <td class="px-0 py-2 text-right">{{ client.phone }}</td>
+                      </tr>
+                      <tr>
+                        <td class="px-0 py-2">Дополнительный номер</td>
+                        <td class="px-0 py-2 text-right">
+                          {{ client.other_phone }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="new-object p-3">
+                  <!--  Цена продажи: -->
+                  <div v-if="!edit.price">
+                    <h6 class="color-blue-darker mb-0">
+                      Цена продажи:
+                      {{
+                        client.discount.id === "other"
+                          ? apartment_edit.price
+                          : apartment.price
+                            | number("0,0.00", {
+                              thousandsSeparator: " ",
+                              decimalSeparator: ",",
+                            })
+                      }}
+                      {{ $t("ye") }}
+                    </h6>
+
+                    <!-- Первоначальный взнос -->
+                    <div class="container px-0 mx-0 mt-4">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="mb-3" v-if="month > 0">
+                            <label
+                              class="d-block h6 font-weight-normal"
+                              for="initial-fee"
+                              >Первоначальный взнос:</label
+                            >
+                            <div class="row">
+                              <div class="col-md-8">
+                                <input
+                                  id="initial-fee"
+                                  class="my-form__input"
+                                  disabled
+                                  type="text"
+                                  :value="
+                                    client.discount.id === 'other' && month == 0
+                                      ? getTotalOther()
+                                      : getPrepay()
+                                        | number('0,0.00', {
+                                          thousandsSeparator: ' ',
+                                          decimalSeparator: ',',
+                                        })
+                                  "
+                                />
+                              </div>
+                              <div class="col-md-4 pl-md-0 mt-md-0 mt-2">
+                                <input
+                                  class="my-form__input"
+                                  disabled
+                                  type="text"
+                                  :value="
+                                    client.discount.prepay_to.toFixed(2) + ' %'
+                                  "
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            v-if="client.discount.id === 'other'"
+                            @click="edit.price = true"
+                            class="btn btn-light mx-auto mb-3"
+                          >
+                            <i class="fa fa-edit"></i>
+                            {{ $t("apartments.agree.edit_price") }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Цена продажи -->
+                  <div class="row" v-else>
+                    <div class="col-12">
+                      <div class="mb-3">
+                        <label class="d-block" for="initial-fee"
+                          >Цена продажи:</label
+                        >
+                        <div class="row">
+                          <div class="col-12">
+                            <input
+                              id="initial-price"
+                              class="my-form__input"
+                              step="0.01"
+                              type="number"
+                              v-model="apartment_edit.price"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="mb-3" v-if="month > 0">
+                        <label class="d-block" for="initial-fee"
+                          >Первоначальный взнос:</label
+                        >
+                        <div class="row">
+                          <div class="col-md-10">
+                            <input
+                              id="initial-fee"
+                              class="my-form__input"
+                              type="number"
+                              step="0.01"
+                              v-model="apartment_edit.prepay_price"
+                            />
+                          </div>
+                          <div
+                            class="
+                              col-md-2
+                              pl-0
+                              d-flex
+                              align-items-center
+                              justify-content-start
+                            "
+                          >
+                            <div class="h6 mb-0">
+                              {{ client.discount.prepay_to.toFixed(2) }}%
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        @click="edit.price = false"
+                        class="btn btn-primary mx-auto mb-3"
+                      >
+                        <i class="fa fa-save"></i> {{ $t("save") }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Сумма рассрочки -->
+                  <table
+                    class="table mx-0 p-0 my-0 my-table-another-variant"
+                    v-if="month > 0"
+                  >
+                    <tbody class="m-0 p-0">
+                      <tr>
+                        <td class="px-0 py-2">Сумма рассрочки</td>
+                        <td class="px-0 py-2 text-right">
+                          {{
+                            getDebt()
+                              | number("0,0.00", {
+                                thousandsSeparator: " ",
+                                decimalSeparator: ",",
+                              })
+                          }}
+                          {{ $t("ye") }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="new-object p-3">
+                  <!-- Комментария -->
+                  <div>
+                    <label>Комментария</label>
+                    <textarea
+                      rows="3"
+                      cols="3"
+                      v-model="comment"
+                      class="form-control"
+                    ></textarea>
+                  </div>
+
+                  <!-- error msg -->
+                  <div class="alert alert-danger mt-3" v-if="error">
+                    <ul>
+                      <li v-for="(error, index) in errors" :key="index">
+                        <span v-for="msg in error" :key="msg">
+                          {{ msg }}
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Btns -->
+                  <div class="sidebar-btns">
+                    <button
+                      type="button"
+                      class="btn btn-secondary mr-0"
+                      @click="[(step = 2), (next = true), (confirm = false)]"
+                    >
+                      <i class="fa fa-chevron-circle-left"></i>
+                      {{ $t("back") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-default mx-md-2"
+                      @click="removeBlock"
+                    >
+                      {{ $t("cancel") }}
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-success mr-0"
+                      v-if="confirm"
+                    >
+                      {{ $t("create_agree") }}
+                      <i class="fa fa-file-contract"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1858,6 +1842,12 @@ export default {
     editMonthlyPayment(index) {
       if (this.credit_months[index].edit) {
         this.credit_months[index].edit = false;
+
+
+      if (!this.credit_months[index].amount) {
+          this.credit_months[index].amount = 0
+      }
+      
 
         if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
           this.edit.monthly_edited = true;

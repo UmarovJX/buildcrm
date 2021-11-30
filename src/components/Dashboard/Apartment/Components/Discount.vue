@@ -42,6 +42,7 @@
     <!-- Скидка -->
     <b-form-group
       class="mb-1"
+      v-if="discount.amount > 0"
       label-cols="12"
       content-cols="12"
       label="Скидка за м2:"
