@@ -184,10 +184,13 @@ export default {
     };
   },
 
+
   async mounted() {
-    this.discount = this.getApartmentDiscounts[0];
+    setTimeout(() => {
+      this.discount = this.getApartmentDiscounts[0];
     //this.discountWith = this.discount;
-    await this.initialCalc();
+      this.initialCalc();
+    }, 100);
   },
   computed: {
     getApartmentDiscounts() {

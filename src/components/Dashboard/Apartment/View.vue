@@ -379,14 +379,15 @@ export default {
       isMapActive: false,
     };
   },
-  created() {
+  async created() {
+    await this.fetchApartment(this);
+
     this.coords = [
       this.getApartment.object.location.latitude,
       this.getApartment.object.location.longitude,
     ];
   },
   mounted() {
-    this.fetchApartment(this);
     Fancybox.bind("[data-fancybox]");
   },
   computed: {
