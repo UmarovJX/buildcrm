@@ -353,14 +353,14 @@
                     :key="index"
                   >
                     {{ $t("apartments.view.variant") }} {{ index + 1 }} -
-                    {{ discount.prepay_to }}%
+                    {{ discount.prepay }}%
                   </option>
 
                   <option
                     v-if="
                       getMe.role.id === 1 || getPermission.contracts.other_price
                     "
-                    :value="{id: 'other', discount: 0, prepay_to: 30}"
+                    :value="{id: 'other', amount: 0, prepay: 30}"
                   >
                     {{ $t("apartments.view.other_variant") }}
                   </option>
@@ -1406,8 +1406,8 @@ export default {
       if (this.client.discount.id === "other") {
         this.client.discount = {
           id: "other",
-          prepay_to: 30,
-          discount: 0,
+          prepay: 30,
+          amount: 0,
         };
 
         this.apartment_edit.price = this.getPrice();
@@ -1422,7 +1422,7 @@ export default {
         return;
       }
 
-      if (this.client.discount.prepay_to === 100) {
+      if (this.client.discount.prepay === 100) {
         this.next = false;
         this.confirm = true;
         return;
@@ -1463,7 +1463,7 @@ export default {
     // },
 
     getPrepay() {
-      if (this.prepay_to === 100) return 0;
+      if (this.prepay === 100) return 0;
 
       let total_discount = this.getDiscount();
       let price = this.getPrice();
@@ -1488,13 +1488,13 @@ export default {
         return parseFloat(this.apartment_edit.prepay_price);
       }
 
-      return (this.client.discount.prepay_to * total) / 100;
+      return (this.client.discount.prepay * total) / 100;
     },
 
     getDiscount() {
-      if (this.prepay_to === 100) return 0;
+      if (this.prepay === 100) return 0;
 
-      return 1 - this.client.discount.discount / 100;
+      return 1 - this.client.discount.amount / 100;
       // return this.discount.discount * this.apartment.price / 100;
     },
 

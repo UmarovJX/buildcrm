@@ -259,7 +259,6 @@ export default {
 
       let total_discount = this.getDiscount();
 
-      //console.log(this.getDiscount());
       let total = 0;
 
       switch (this.discount.type) {
@@ -295,10 +294,8 @@ export default {
       switch (this.discount.type) {
         case "fixed":
           if (this.calc.discount_price) {
-            console.log(this.discount.amount - parseFloat(this.calc.discount_price))
             total = (this.discount.amount - parseFloat(this.calc.discount_price)) * this.apartment.plan.area;
           } else {
-            console.log(3333)
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
           break;

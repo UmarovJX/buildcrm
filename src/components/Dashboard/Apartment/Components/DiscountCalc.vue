@@ -119,9 +119,7 @@ export default {
     // },
 
     getPrepay() {
-      console.log(111)
       //if (this.discount.prepay === 100) return 0;    
-      console.log(222)
       let total_discount = this.getDiscount();
 
       let total = 0;
@@ -135,7 +133,6 @@ export default {
           break;
       }
 
-      console.log(333)
       return (this.discount.prepay * total) / 100;
     },
     getDiscount() {
