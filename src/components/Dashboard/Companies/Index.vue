@@ -29,7 +29,7 @@
         </div>
 
         <b-link
-          v-if="getPermission.branches.create"
+          v-if="getPermission.companies.create"
           class="btn btn-primary mr-0"
           v-b-modal.modal-create
         >
@@ -43,7 +43,7 @@
           sticky-header
           borderless
           responsive
-          :items="getBranches"
+          :items="getCompanies"
           :fields="fields"
           :busy="getLoading"
           show-empty
@@ -87,7 +87,7 @@
 
                 <div class="dropdown-menu">
                   <b-button
-                    v-if="getPermission.branches.update"
+                    v-if="getPermission.companies.update"
                     @click="EditBranch(data.item)"
                     class="dropdown-item dropdown-item--inside"
                     v-b-modal.modal-update
@@ -108,7 +108,7 @@
       </div>
 
       <Create @CreateCompany="CreateCompany"></Create>
-      <Update :branch-id="branch_id" @UpdateCompany="UpdateCompany"></Update>
+      <Update :branch-id="company_id" @UpdateCompany="UpdateCompany"></Update>
     </div>
   </main>
 </template>
@@ -127,7 +127,7 @@ export default {
 
   data() {
     return {
-      branch_id: false,
+      company_id: false,
 
       header: {
         headers: {
@@ -171,17 +171,17 @@ export default {
     };
   },
 
-  computed: mapGetters(["getPermission", "getBranches", "getLoading"]),
+  computed: mapGetters(["getPermission", "getCompanies", "getLoading"]),
 
   mounted() {
-    this.fetchBranches(this);
+    this.fetchCompanies(this);
   },
 
   methods: {
-    ...mapActions(["fetchBranches", "fetchBranch"]),
+    ...mapActions(["fetchCompanies", "fetchBranch"]),
 
     EditBranch(branch) {
-      this.branch_id = branch.id;
+      this.company_id = branch.id;
       this.fetchBranch(this).then(() => {
         this.$bvModal.show("modal-update");
       });
@@ -208,11 +208,11 @@ export default {
     },
 
     CreateCompany() {
-      this.fetchBranches(this);
+      this.fetchCompanies(this);
     },
 
     UpdateCompany() {
-      this.fetchBranches(this).then(() => {
+      this.fetchCompanies(this).then(() => {
         this.$bvModal.hide("modal-update");
       });
     },

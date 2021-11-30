@@ -8,18 +8,17 @@ import Vue2Filters from "vue2-filters";
 import VueLazyload from "vue-lazyload";
 
 import router from "./routes";
-import i18n from "./lang";
+import i18n from "./locales";
 import toasted from "./util/toasted";
-// import getAuth from './util/getAuth';
 import store from "./store";
-// import moment from 'moment';
 import vueMoment from "vue-moment";
-// import VueHtmlToPaper from 'vue-html-to-paper';
+import VueMask from 'v-mask'
+Vue.use(VueMask);
 Vue.use(vueMoment);
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  error: "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg",
-  loading: "https://i.stack.imgur.com/MEBIB.gif",
+  error: require("@/assets/img/no-image.jpg"),
+  loading: require("@/assets/img/loading.gif"),
   attempt: 1,
 });
 
@@ -31,28 +30,19 @@ import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
+import {
+  ValidationObserver,
+  ValidationProvider,
+  extend,
+  localize,
+} from "vee-validate";
+import ru from "vee-validate/dist/locale/ru.json";
+import * as rules from "vee-validate/dist/rules";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@/assets/scss/main.scss";
-
 Vue.config.devtools = true;
-
-// const optionsPrint = {
-//     name: '_blank',
-//     specs: [
-//         // 'fullscreen=yes',
-//         // 'titlebar=yes',
-//         // 'scrollbars=yes'
-//     ],
-//     "styles": [
-//         "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
-//         "https://unpkg.com/kidlat-css/css/kidlat.css",
-//         "./landscape.css"
-//     ]
-// };
-//
-// Vue.use(VueHtmlToPaper, optionsPrint);
 
 const sweetOptions = {
   confirmButtonColor: "#3085d6",
@@ -60,6 +50,15 @@ const sweetOptions = {
 };
 
 Vue.use(VueSweetalert2, sweetOptions);
+
+Object.keys(rules).forEach((rule) => {
+  extend(rule, rules[rule]);
+});
+
+localize("ru", ru);
+
+Vue.component("ValidationObserver", ValidationObserver);
+Vue.component("ValidationProvider", ValidationProvider);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(Vue2Filters);
@@ -76,9 +75,8 @@ Vue.use(Toasted, {
   duration: 5000,
 });
 
-Vue.config.productionTip = false;
+// Vue.config.productionTip = false;
 // Vue.prototype.$moment = moment;
-
 new Vue({
   el: "#app",
   i18n,

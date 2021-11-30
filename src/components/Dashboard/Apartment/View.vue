@@ -1,283 +1,313 @@
 <template>
   <main>
-    <div class="app-content">
-      <div ref="document" id="printMe">
-        <div class="d-flex align-items-center pb-3">
-          <h1 class="title__default mb-0">
-            {{ getApartment.object.name }} - {{ getApartment.number }}
-          </h1>
-        </div>
+    <div class="app-content print-page">
+      <div ref="document" id="printMe" :class="{'map-active': isMapActive}">
+        <div class="row">
+          <div class="col-md-9 pr-md-0 object-detail">
+            <div class="new-object mb-0">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-lg-8 pr-md-0 border-right">
+                    <!-- building__img -->
+                    <div class="building">
+                      <div class="building__img">
+                        <img
+                          :data-fancybox="getApartment.plan.image"
+                          v-lazy="getApartment.plan.image"
+                          width="100%"
+                        />
+                      </div>
+                    </div>
+                    <!-- building__info -->
+                    <div>
+                      <!-- Объект -->
+                      <p class="building__info mt-2 mb-1">
+                        <i style="color: #4C0852" class="far fa-building"></i>
+                        Объект: {{ getApartment.object.name }},
+                        {{ getApartment.building.name }},
+                        {{ getApartment.block.name }}
+                      </p>
+                      <!-- Адрес -->
+                      <p class="building__info mt-2 mb-1">
+                        <i
+                          style="color: #4C0852"
+                          class="far fa-map-marker-alt"
+                        ></i>
+                        Адрес: {{ getApartment.object.address }}
+                      </p>
+                      <!-- Status -->
+                      <div class="building__info d-flex align-items-center">
+                        <p>
+                          <i style="color: #4C0852" class="far fa-spinner"></i>
+                          {{ $t("apartments.view.status") }}:
+                        </p>
 
-        <div class="new-object">
-          <div class="container-fluid">
-            <div class="row mx-0">
-              <div class="col-lg-4 px-0">
-                <div class="building">
-                  <div class="building__img">
-                    <img
-                      :data-fancybox="getApartment.plan.image"
-                      v-lazy="getApartment.plan.image"
-                      width="100%"
-                    />
+                        <div
+                          :class="[
+                            getApartment.order === 'booked'
+                              ? 'text-warning ml-3'
+                              : '',
+                            getApartment.order.status === 'sold' ||
+                            getApartment.order.status === 'contract'
+                              ? 'text-danger ml-3'
+                              : 'text-success ml-3',
+                          ]"
+                        >
+                          {{
+                            getApartment.order.status
+                              | getStatus(
+                                $moment(getApartment.order.booking_date).format(
+                                  "DD.MM.YYYY"
+                                )
+                              )
+                          }}
+                        </div>
+                      </div>
+                      <!-- Дата завершения строительства -->
+                      <div
+                        class="building__info mb-3 d-flex align-items-center"
+                      >
+                        <p>
+                          <i
+                            style="color: #4C0852"
+                            class="far fa-calendar-check"
+                          ></i>
+                          Дата завершения строительства :
+                        </p>
+
+                        <div class="ml-3">
+                          {{ momentQuarter(getApartment.object.build_date) }} -
+                          четверть
+                          {{ getApartment.object.build_date | moment("YYYY") }}
+                          года
+                        </div>
+                        <!-- первый четверть 2022 года -->
+                      </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- apartment info -->
+                    <div class="row">
+                      <div class="col-md-4 col-6 mb-4">
+                        <p class="mb-1">{{ $t("apartments.view.number") }}:</p>
+                        <h5>
+                          <i style="color: #4C0852" class="far fa-building"></i>
+                          {{ getApartment.number }}
+                        </h5>
+                      </div>
+                      <div class="col-md-4 col-6 mb-4">
+                        <p class="mb-1">{{ $t("apartments.view.area") }}:</p>
+                        <h5>
+                          <i style="color: #4C0852" class="far fa-expand"></i>
+                          {{ getApartment.plan.area }} м²
+                        </h5>
+                      </div>
+                      <div class="col-md-4 col-6 mb-4">
+                        <p class="mb-1">{{ $t("apartments.list.balcony") }}:</p>
+                        <h5>
+                          <i style="color: #4C0852" class="far fa-inbox"></i>
+                          <span v-if="getApartment.plan.balcony">
+                            {{ getApartment.plan.balcony_area }} м²
+                          </span>
+
+                          <span v-else>
+                            {{ $t("no") }}
+                          </span>
+                        </h5>
+                      </div>
+                      <div class="col-md-4 col-6 mb-4">
+                        <p class="mb-1">{{ $t("apartments.view.rooms") }}:</p>
+                        <h5>
+                          <i
+                            style="color: #4C0852"
+                            class="far fa-door-open"
+                          ></i>
+                          {{ getApartment.rooms }}
+                        </h5>
+                      </div>
+                      <div class="col-md-4 col-6 mb-4">
+                        <p class="mb-1">{{ $t("apartments.view.floor") }}:</p>
+                        <h5>
+                          <i style="color: #4C0852" class="far fa-industry"></i>
+                          {{ getApartment.floor }}
+                        </h5>
+                      </div>
+                      <div class="col-md-4 col-6 mb-4">
+                        <p class="mb-1">Этажность блока:</p>
+                        <h5>
+                          <i
+                            style="color: #4C0852"
+                            class="far fa-align-justify"
+                          ></i>
+                          {{ getApartment.block.floors }}
+                        </h5>
+                      </div>
+                    </div>
                   </div>
-                  <div class="building__type">
-                    {{ $t("apartments.view.plan") }}:
-                    {{ getApartment.plan.name }}
+                  <div class="col-md-4">
+                    <!-- Calc -->
+                    <Discount
+                      v-if="getApartment"
+                      :apartment="getApartment"
+                    ></Discount>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-1 px-0"></div>
-              <div class="col-lg-7 px-0">
-                <div class="building__info mt-3">
-                  <p>
-                    {{ $t("apartments.view.number") }}:
-                    {{ getApartment.number }}
-                  </p>
-                  <p>
-                    {{ $t("apartments.view.area") }}:
-                    {{ getApartment.plan.area }} м²
-                  </p>
-                  <p>
-                    {{ $t("apartments.list.balcony") }}:
-                    <span v-if="getApartment.plan.balcony">
-                      {{ getApartment.plan.balcony_area }} м²
-                    </span>
-
-                    <span v-else>
-                      {{ $t("no") }}
-                    </span>
-                  </p>
-                  <p>
-                    {{ $t("apartments.view.rooms") }}: {{ getApartment.rooms }}
-                  </p>
-                  <p>
-                    {{ $t("apartments.view.floor") }}: {{ getApartment.floor }}
-                  </p>
-                  <p>
-                    {{ $t("apartments.view.price_m2") }}:
-                    {{
-                      getApartment.price_m2
-                        | number("0,0.00", {
-                          thousandsSeparator: " ",
-                          decimalSeparator: ",",
-                        })
-                    }}
-                    {{ $t("ye") }}
-                  </p>
-                  <p>
-                    {{ $t("apartments.view.total_price") }}:
-                    {{
-                      getApartment.price
-                        | number("0,0.00", {
-                          thousandsSeparator: " ",
-                          decimalSeparator: ",",
-                        })
-                    }}
-                    {{ $t("ye") }}
-                  </p>
-                </div>
-                <div class="building__info mt-3 d-flex align-items-center">
-                  <p>{{ $t("apartments.view.status") }}</p>
-
-                  <div
-                    :class="[
-                      getApartment.order === 'booked'
-                        ? 'btn btn-warning ml-3'
-                        : '',
-                      getApartment.order.status === 'sold' ||
-                      getApartment.order.status === 'contract'
-                        ? 'btn btn-danger ml-3'
-                        : 'btn btn-success ml-3',
-                    ]"
+              <!-- footer-btns -->
+              <div class="container-fluid footer-btns">
+                <div
+                  class="
+                      mt-3
+                      d-flex
+                      justify-content-end
+                      w-100
+                      flex-md-row flex-column
+                    "
+                >
+                  <button
+                    class="mr-md-2 mr-0 btn btn-info"
+                    type="button"
+                    @click="printPage"
                   >
-                    {{
-                      getApartment.order.status
-                        | getStatus(
-                          $moment(getApartment.order.booking_date).format(
-                            "DD.MM.YYYY"
-                          )
-                        )
-                    }}
-                  </div>
+                    <i class="fa fa-print"></i> Печать
+                  </button>
+                  <b-button
+                    v-if="
+                      (getApartment.order.status === 'booked' &&
+                        getApartment.order.user.id === getMe.user.id &&
+                        (getPermission.apartments.root_contract ||
+                          getPermission.apartments.reserve_cancel)) ||
+                        (getMe.role.id === 1 &&
+                          getApartment.order.status === 'booked')
+                    "
+                    type="button"
+                    @click="cancelReserve"
+                    class="ml-1"
+                    variant="light"
+                  >
+                    <i class="fas fa-eraser"></i>
+                    {{ $t("apartments.list.cancel_reserve") }}
+                  </b-button>
+
+                  <b-link
+                    v-if="
+                      (getApartment.order.status === 'booked' &&
+                        getApartment.order.user.id === getMe.user.id) ||
+                        (getMe.role.id === 1 &&
+                          getApartment.order.status === 'booked')
+                    "
+                    @click="ReserveInfo(getApartment)"
+                    v-b-modal.modal-view-client
+                    class="mr-md-2 mr-0 btn btn-secondary ml-1"
+                  >
+                    <i class="far fa-eye"></i>
+                    {{ $t("apartments.list.view_client") }}
+                  </b-link>
+
+                  <b-button
+                    class="mr-md-2 mr-0 btn btn-primary ml-1"
+                    v-if="
+                      getPermission.apartments.reserve &&
+                        getApartment.order.status === 'available'
+                    "
+                    @click="
+                      [(reserve = true), (apartment_id = getApartment.id)]
+                    "
+                    v-b-modal.modal-create
+                  >
+                    <i class="far fa-calendar-check"></i>
+                    {{ $t("apartments.list.book") }}
+                  </b-button>
+
+                  <b-button
+                    v-b-modal.modal-agree
+                    @click="ConfirmFindUser"
+                    variant="primary"
+                    class="mr-md-2 mr-0 btn btn-primary ml-1"
+                    v-if="
+                      ((getApartment.order.status != 'sold' ||
+                        getApartment.order.status != 'contract') &&
+                        getApartment.order.status === 'booked' &&
+                        getApartment.order.user.id === getMe.user.id &&
+                        getPermission.apartments.contract) ||
+                        (!(
+                          getApartment.order.status == 'sold' ||
+                          getApartment.order.status == 'contract'
+                        ) &&
+                          getPermission.apartments.root_contract) ||
+                        ((getApartment.order.status != 'sold' ||
+                          getApartment.order.status != 'contract') &&
+                          getApartment.order.status === 'available' &&
+                          getPermission.apartments.contract)
+                    "
+                  >
+                    <!--                    getApartment.order.status != 'contract'  || getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id && getPermission.apartments.contract || getApartment.order.status != 'sold' &&  getPermission.apartments.root_contract || getApartment.order.status === 'available' && getPermission.apartments.contract-->
+                    <i class="far fa-ballot-check"></i>
+                    {{ $t("apartments.list.confirm") }}
+                  </b-button>
+
+                  <router-link
+                    :to="{
+                      name: 'contracts-view',
+                      params: {id: getApartment.order.id},
+                    }"
+                    :class="'btn btn-primary ml-md-1 mr-0 mr-md-2'"
+                    v-if="
+                      (getPermission.apartments.contract &&
+                        (getApartment.order.status === 'sold' ||
+                          getApartment.order.status === 'contract') &&
+                        getMe.user.id === getApartment.order.user.id) ||
+                        (getPermission.apartments.root_contract &&
+                          (getApartment.order.status === 'sold' ||
+                            getApartment.order.status === 'contract')) ||
+                        (getMe.role.id === 1 &&
+                          (getApartment.order.status === 'sold' ||
+                            getApartment.order.status === 'contract'))
+                    "
+                  >
+                    <i class="far fa-file-signature"></i>
+                    {{ $t("apartments.list.contract") }}
+                  </router-link>
                 </div>
               </div>
             </div>
           </div>
-
-          <div class="container-fluid mt-4">
-            <div class="row">
-              <div
-                class="col-lg-4 my-2"
-                v-for="(discount, index) in getApartment.discounts"
-                :key="index"
-              >
-                <Discount
-                  v-if="
-                    getApartment.object.credit_month != 0 ||
-                    discount.prepay_to === 100
-                  "
-                  :discount="discount"
-                  :apartment="getApartment"
-                ></Discount>
-              </div>
-            </div>
-          </div>
-
-          <div class="container-fluid">
-            <div
-              class="
-                mt-5
-                d-flex
-                justify-content-start
-                w-100
-                flex-md-row flex-column
-              "
+          <!-- map -->
+          <div
+            class="map"
+            :class="
+              isMapActive ? 'map-active' : 'col-md-3 pl-md-0 position-relative'
+            "
+          >
+            <!-- <button
+              class="rounded-circle toggle-map"
+              @click="isMapActive = !isMapActive"
             >
-              <div v-if="!print">+998 55 501 74 00</div>
-
-              <div
-                v-if="print"
-                class="
-                  d-flex
-                  justify-content-start
-                  w-100
-                  flex-md-row flex-column
+              <i
+                class="fal"
+                :class="
+                  isMapActive ? 'fa-angle-double-right' : 'fa-angle-double-left'
                 "
+              ></i>
+            </button> -->
+
+            <yandex-map :coords="coords" zoom="18">
+              <ymap-marker
+                :coords="coords"
+                marker-id="123123"
+                marker-type="placemark"
               >
-                <button
-                  class="mr-md-2 mr-0 btn btn-info"
-                  type="button"
-                  @click="generateReport"
-                >
-                  <i class="fa fa-print"></i> Печать
-                </button>
-                <b-button
-                  v-if="
-                    (getApartment.order.status === 'booked' &&
-                      getApartment.order.user.id === getMe.user.id &&
-                      (getPermission.apartments.root_contract ||
-                        getPermission.apartments.reserve_cancel)) ||
-                    (getMe.role.id === 1 &&
-                      getApartment.order.status === 'booked')
-                  "
-                  type="button"
-                  @click="cancelReserve"
-                  class="ml-1"
-                  variant="light"
-                >
-                  <i class="fas fa-eraser"></i>
-                  {{ $t("apartments.list.cancel_reserve") }}
-                </b-button>
-
-                <b-link
-                  v-if="
-                    (getApartment.order.status === 'booked' &&
-                      getApartment.order.user.id === getMe.user.id) ||
-                    (getMe.role.id === 1 &&
-                      getApartment.order.status === 'booked')
-                  "
-                  @click="ReserveInfo(getApartment)"
-                  v-b-modal.modal-view-client
-                  class="mr-md-2 mr-0 btn btn-secondary ml-1"
-                >
-                  <i class="far fa-eye"></i>
-                  {{ $t("apartments.list.view_client") }}
-                </b-link>
-
-                <b-button
-                  class="mr-md-2 mr-0 btn btn-primary ml-1"
-                  v-if="
-                    getPermission.apartments.reserve &&
-                    getApartment.order.status === 'available'
-                  "
-                  @click="[(reserve = true), (apartment_id = getApartment.id)]"
-                  v-b-modal.modal-create
-                >
-                  <i class="far fa-calendar-check"></i>
-                  {{ $t("apartments.list.book") }}
-                </b-button>
-
-                <b-button
-                  v-b-modal.modal-agree
-                  @click="ConfirmFindUser"
-                  variant="primary"
-                  class="mr-md-2 mr-0 btn btn-primary ml-1"
-                  v-if="
-                    ((getApartment.order.status != 'sold' ||
-                      getApartment.order.status != 'contract') &&
-                      getApartment.order.status === 'booked' &&
-                      getApartment.order.user.id === getMe.user.id &&
-                      getPermission.apartments.contract) ||
-                    (!(
-                      getApartment.order.status == 'sold' ||
-                      getApartment.order.status == 'contract'
-                    ) &&
-                      getPermission.apartments.root_contract) ||
-                    ((getApartment.order.status != 'sold' ||
-                      getApartment.order.status != 'contract') &&
-                      getApartment.order.status === 'available' &&
-                      getPermission.apartments.contract)
-                  "
-                >
-                  <!--                    getApartment.order.status != 'contract'  || getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id && getPermission.apartments.contract || getApartment.order.status != 'sold' &&  getPermission.apartments.root_contract || getApartment.order.status === 'available' && getPermission.apartments.contract-->
-                  <i class="far fa-ballot-check"></i>
-                  {{ $t("apartments.list.confirm") }}
-                </b-button>
-
-                <router-link
-                  :to="{
-                    name: 'contracts-view',
-                    params: {id: getApartment.order.id},
-                  }"
-                  :class="'btn btn-primary ml-md-1 mr-0 mr-md-2'"
-                  v-if="
-                    (getPermission.apartments.contract &&
-                      (getApartment.order.status === 'sold' ||
-                        getApartment.order.status === 'contract') &&
-                      getMe.user.id === getApartment.order.user.id) ||
-                    (getPermission.apartments.root_contract &&
-                      (getApartment.order.status === 'sold' ||
-                        getApartment.order.status === 'contract')) ||
-                    (getMe.role.id === 1 &&
-                      (getApartment.order.status === 'sold' ||
-                        getApartment.order.status === 'contract'))
-                  "
-                >
-                  <i class="far fa-file-signature"></i>
-                  {{ $t("apartments.list.contract") }}
-                </router-link>
-              </div>
-            </div>
+              </ymap-marker>
+            </yandex-map>
           </div>
         </div>
       </div>
-
-      <!-- <vue-html2pdf
-      :show-layout="false"
-      :float-layout="true"
-      :enable-download="true"
-      :preview-modal="true"
-      :paginate-elements-by-height="1400"
-      filename="hee hee"
-      :pdf-quality="2"
-      :manual-pagination="false"
-      pdf-format="a4"
-      pdf-orientation="landscape"
-      pdf-content-width="800px"
-      ref="html2Pdf"
-    >
-      <section slot="pdf-content">
-        <img
-          src="http://localhost:8000/uploads/plans/diplomat/jMouonrJN8zRk99MBxFDMTlBKHbaRBcq1wK9g5P1.png"
-        />
-      </section>
-    </vue-html2pdf> -->
 
       <view-client
         v-if="info_reserve"
         @CancelReserve="CloseReserveInfo"
         :apartment-data="apartment_preview"
-        :client-id="client_id"
       ></view-client>
 
       <reserve-add
@@ -292,110 +322,90 @@
         @successAgree="successAgree"
         @CloseAgree="CloseAgree"
       ></agree-modal>
-
-      <!-- <success-agree
-        v-if="
-          getApartment.order.status != 'sold' ||
-          getApartment.order.status != 'contract'
-        "
-        :contract="contract"
-      ></success-agree> -->
-
-      <!-- <view-contract
-        :apartment="getApartment"
-        v-if="
-          (getPermission.apartments.contract &&
-            (getApartment.order.status === 'sold' ||
-              getApartment.order.status === 'contract') &&
-            getMe.user.id === getApartment.order.user.id) ||
-          (getPermission.apartments.root_contract &&
-            (getApartment.order.status === 'sold' ||
-              getApartment.order.status === 'contract')) ||
-          (getMe.role.id === 1 &&
-            (getApartment.order.status === 'sold' ||
-              getApartment.order.status === 'contract'))
-        "
-      ></view-contract> -->
     </div>
   </main>
 </template>
 
 <script>
 import {mapGetters, mapActions} from "vuex";
+import {yandexMap, ymapMarker} from "vue-yandex-maps";
 import ViewClient from "./ViewClient";
 import ReserveAdd from "./Components/Reserve";
 import Agree from "./Components/Agree";
-// import SuccessAgree from "./Components/SuccessAgree";
 import Discount from "./Components/Discount";
-
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
-// import pdf from 'phantom-html2pdf';
-
-// import html2pdf from 'html2pdf.js'
-// import pdf2html from 'pdf2html';
-// import { jsPDF } from "jspdf";
-// import VueHtml2pdf from 'vue-html2pdf'
-
-// import ViewContract from './Components/ViewContract'
-
 export default {
   components: {
     "view-client": ViewClient,
     "reserve-add": ReserveAdd,
     "agree-modal": Agree,
     Discount: Discount,
-    // "success-agree": SuccessAgree,
-    // VueHtml2pdf
-    // html2pdf
-    // 'view-contract': ViewContract,
+    yandexMap,
+    ymapMarker,
   },
 
-  data: () => ({
-    url: process.env.VUE_APP_URL,
-
-    apartment_preview: {},
-    client_id: 0,
-
-    reserve: false,
-    apartment_id: 0,
-    order_id: 0,
-    edit: false,
-    confirm: false,
-    isConfirm: false,
-
-    info_reserve: false,
-
-    contract: {
-      id: null,
-      contract: null,
-      contract_path: null,
-    },
-
-    print: true,
-
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
+  data() {
+    return {
+      settings: {
+        // apiKey: "65fb39dd-bc0c-4ba6-8a62-96e80a9a9f4f",
+        lang: "ru_RU",
+        coordorder: "latlong",
+        enterprise: false,
+        version: "2.1",
       },
-    },
-  }),
+      coords: [41.36499519043105, 69.29568268947267],
 
+      apartment_preview: {},
+      reserve: false,
+      apartment_id: 0,
+      order_id: 0,
+      confirm: false,
+
+      info_reserve: false,
+
+      contract: {
+        id: null,
+        contract: null,
+        contract_path: null,
+      },
+
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
+        },
+      },
+
+      isMapActive: false,
+    };
+  },
+  created() {
+    this.coords = [
+      this.getApartment.object.location.latitude,
+      this.getApartment.object.location.longitude,
+    ];
+  },
   mounted() {
     this.fetchApartment(this);
-
     Fancybox.bind("[data-fancybox]");
   },
-
-  computed: mapGetters([
-    "getApartment",
-    "getMe",
-    "getPermission",
-    "getReserveClient",
-  ]),
-
+  computed: {
+    ...mapGetters([
+      "getApartment",
+      "getMe",
+      "getPermission",
+      "getReserveClient",
+    ]),
+  },
   methods: {
     ...mapActions(["fetchApartment", "fetchReserveClient"]),
+    momentQuarter(val) {
+      return this.$moment(val).quarter();
+    },
+
+    printPage() {
+      window.print();
+    },
 
     ReserveInfo(apartment) {
       this.info_reserve = true;
@@ -408,10 +418,6 @@ export default {
       this.fetchApartment(this);
     },
 
-    getPrice(area, price) {
-      return price * area;
-    },
-
     CloseReserveInfo() {
       this.info_reserve = false;
       this.apartment_preview = {};
@@ -419,8 +425,6 @@ export default {
     },
 
     ConfirmFindUser() {
-      // this.confirm = true;
-      // this.fetchReserveClientFull(this);
       this.$router.push({name: "confirm-apartment"});
     },
 
@@ -432,44 +436,6 @@ export default {
       this.fetchApartment(this);
       this.contract = value;
       this.$bvModal.show("modal-success-agree");
-    },
-
-    generateReport() {
-      // this.$refs.html2Pdf.generatePdf()
-      // this.print = false;
-      // this.$htmlToPaper('printMe');
-      // const html = this.$refs.document.innerHTML;
-      //
-      // pdf.convert({
-      //     html: html
-      // })
-      //
-      // let doc = new jsPDF();
-      //
-      // doc.fromHTML(html, 15, 15);
-      //
-      // doc.save('sample-file.pdf');
-      // pdf2html.html('sample.pdf', (err, html) => {
-      //     if (err) {
-      //         console.error('Conversion error: ' + err)
-      //     } else {
-      //         console.log(html)
-      //     }
-      // })
-      // this.$htmlToPaper('printMe');
-      // html2pdf(this.$refs.document, {
-      //     margin: 0,
-      //     filename: 'document.pdf',
-      //     image: { type: "jpg", quality: 0.95},
-      //     // html2canvas: { dpi: 300, letterRendering: true, scale: 1.2, useCORS: false, allowTaint: false,  imageTimeout: 30000, onrendered: function(canvas) {
-      //     //         var a = document.createElement('a');
-      //     //         // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
-      //     //         a.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream");
-      //     //         a.download = 'somefilename.jpg';
-      //     //         a.click();
-      //     // } },
-      //     jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-      // });
     },
 
     async cancelReserve() {
@@ -549,11 +515,56 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss">
 .building__img img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
   cursor: pointer;
+}
+
+.toggle-map {
+  top: 48%;
+  left: -20px;
+  transform: translateY(-50%);
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid #b8b8b8;
+
+  @media screen and (max-width: 576px) {
+    display: none;
+  }
+}
+.ymap-container {
+  height: 100%;
+  width: 100%;
+}
+@media screen and (min-width: 576px) {
+  .map-active {
+    position: relative;
+    right: 0;
+    .map-active {
+      width: 100%;
+      position: absolute;
+      height: 100%;
+      z-index: 112;
+      right: 0;
+
+      .ymap-container {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+@media screen and (max-width: 576px) {
+  map {
+    margin-top: 30px;
+  }
+  .ymap-container {
+    height: 400px;
+  }
 }
 </style>

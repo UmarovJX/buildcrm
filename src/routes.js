@@ -40,7 +40,7 @@ import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
 //
 import ApartmentView from "./components/Dashboard/Apartment/View";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
-import Branches from "./components/Dashboard/Branches/Index";
+import Companies from "./components/Dashboard/Companies/Index";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
 
@@ -83,7 +83,7 @@ const routes = [
 
   {
     name: "apartments",
-    path: "/objects/:id/apartments",
+    path: "/objects/:object/apartments",
     component: ApartmentList,
   },
 
@@ -101,12 +101,12 @@ const routes = [
 
   {
     name: "apartments-view",
-    path: "/apartments/:id",
+    path: "/objects/:object/apartments/:id",
     component: ApartmentView,
   },
   {
     name: "confirm-apartment",
-    path: "/apartments/:id/confirm-apartment",
+    path: "/objects/:object/apartments/:id/confirm-apartment",
     component: ConfirmApartment,
   },
 
@@ -173,7 +173,7 @@ const routes = [
   {
     name: "companies",
     path: "/companies",
-    component: Branches,
+    component: Companies,
   },
 
   //

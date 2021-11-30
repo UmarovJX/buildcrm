@@ -1,6 +1,6 @@
 export default {
     actions: {
-        async fetchBranches(ctx, vm) {
+        async fetchCompanies(ctx, vm) {
             ctx.commit('updateLoading', true, { root: true });
             try {
                 let header = {
@@ -9,9 +9,9 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/branches', header);
-                const branches = response.data;
-                ctx.commit('updateBranches', branches);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/companies', header);
+                const companies = response.data;
+                ctx.commit('updateCompanies', companies);
                 ctx.commit('updateLoading', false, { root: true });
             } catch (error) {
                 if (! error.response) {
@@ -38,7 +38,7 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/branches/' + vm.branch_id , header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/companies/' + vm.company_id , header);
                 const branch = response.data;
                 ctx.commit('updateBranch', branch);
             } catch (error) {
@@ -66,7 +66,7 @@ export default {
                     }
                 };
 
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/branches/types', header);
+                const response = await vm.axios.get(process.env.VUE_APP_URL + '/companies/types', header);
                 const types = response.data;
                 ctx.commit('updateBranchTypes', types);
             } catch (error) {
@@ -88,14 +88,14 @@ export default {
     },
 
     state: {
-        branches: [],
+        companies: [],
         types: [],
         branch: {}
     },
 
     mutations: {
-        updateBranches(state, branches) {
-            state.branches = branches;
+        updateCompanies(state, companies) {
+            state.companies = companies;
         },
 
         updateBranchTypes(state, types) {
@@ -109,8 +109,8 @@ export default {
     },
 
     getters: {
-        getBranches(state) {
-            return state.branches;
+        getCompanies(state) {
+            return state.companies;
         },
 
         getBranchTypes(state) {

@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="app-content">
-      <div class="new-object">
+      <div class="new-object" v-if="false">
         <!-- building info -->
         <div class="container-fluid">
           <div class="row">
@@ -47,469 +47,627 @@
         </div>
       </div>
       <div class="new-object p-3" v-if="step === 2">
-        <form ref="form" @submit.stop.prevent="sendForm">
-          <div class="row">
-            <!-- apartments.agree.passport_series -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="checkout-pasport">{{
-                  $t("apartments.agree.passport_series")
-                }}</label>
-                <input
-                  class="my-form__input"
-                  type="text"
-                  @change="getClientData"
-                  :placeholder="
-                    $t('apartments.agree.placeholder.passport_series')
-                  "
-                  required
-                  v-model="client.passport_series"
-                  id="checkout-pasport"
-                />
+        <validation-observer ref="observer" v-slot="{handleSubmit}">
+          <form ref="form" @submit.prevent="handleSubmit(sendForm)">
+            <div class="row">
+              <!-- Изменить дата договора -->
+              <div
+                class="col-12 mb-2"
+                v-if="getMe.role.id === 1 || getPermission.contracts.date"
+              >
+                <div class="row">
+                  <div class="col-md-4">
+                    <b-form-group
+                      :label="$t('apartments.agree.number')"
+                      label-for="number"
+                      class="mb-3"
+                    >
+                      <b-form-input
+                        id="number"
+                        name="number"
+                        :placeholder="$t('apartments.agree.placeholder.number')"
+                        v-model="apartment_edit.contract_number"
+                      ></b-form-input>
+                    </b-form-group>
+                  </div>
+
+                  <div class="col-md-4">
+                    <b-form-group
+                      :label="$t('apartments.agree.date_contract')"
+                      label-for="date"
+                    >
+                      <b-form-input
+                        id="date"
+                        name="date"
+                        type="date"
+                        :placeholder="
+                          $t('apartments.agree.placeholder.date_contract')
+                        "
+                        v-model="apartment_edit.contract_date"
+                      ></b-form-input>
+                    </b-form-group>
+                  </div>
+                </div>
+
+                <hr />
+              </div>
+              
+              <!-- apartments.agree.passport_series -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.passport_series')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.passport_series')"
+                    label-for="checkout-pasport"
+                  >
+                    <b-form-input
+                      id="checkout-pasport"
+                      name="checkout-pasport"
+                      type="text"
+                      @change="getClientData"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.passport_series')
+                      "
+                      v-model="client.passport_series"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="checkout-pasport-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="checkout-pasport-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- apartments.agree.issued_by_whom -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.issued_by_whom')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.issued_by_whom')"
+                    label-for="issue_passport"
+                  >
+                    <b-form-input
+                      id="issue_passport"
+                      name="issue_passport"
+                      type="text"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.issued_by_whom')
+                      "
+                      v-model="client.issued_by_whom"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="issue_passport-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="issue_passport-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- apartments.agree.date_of_issue -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.date_of_issue')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.date_of_issue')"
+                    label-for="date_of_issue"
+                  >
+                    <b-form-input
+                      id="date_of_issue"
+                      name="date_of_issue"
+                      type="date"
+                      :placeholder="$t('apartments.agree.date_of_issue')"
+                      v-model="client.date_of_issue"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="date_of_issue-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="date_of_issue-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- client.birth_day -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.birth_day')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.birth_day')"
+                    label-for="birth_day"
+                  >
+                    <b-form-input
+                      id="birth_day"
+                      name="birth_day"
+                      type="date"
+                      :placeholder="$t('apartments.agree.birth_day')"
+                      v-model="client.birth_day"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="birth_day-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="birth_day-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <!-- last_name_kirill -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.last_name')} (kirill)'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="`${$t('apartments.agree.last_name')} (kirill)`"
+                    label-for="last_name_kirill"
+                  >
+                    <b-form-input
+                      id="last_name_kirill"
+                      name="last_name_kirill"
+                      type="text"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.last_name')
+                      "
+                      v-model="client.last_name.kirill"
+                      @input="
+                        isCyrillic_last_name_kirill(client.last_name.kirill)
+                      "
+                      @change="textToLatin_last_name_kirill"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="last_name_kirill-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="last_name_kirill-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- first_name_kirill -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.first_name')} (lotin)'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="`${$t('apartments.agree.first_name')} (lotin)`"
+                    label-for="first_name_kirill"
+                  >
+                    <b-form-input
+                      id="first_name_kirill"
+                      name="first_name_kirill"
+                      type="text"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.first_name')
+                      "
+                      v-model="client.first_name.kirill"
+                      @input="
+                        isCyrillic_first_name_kirill(client.first_name.kirill)
+                      "
+                      @change="textToLatin_first_name_kirill"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="first_name_kirill-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="first_name_kirill-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- second_name_kirill -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.second_name')} (lotin)'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="`${$t('apartments.agree.second_name')} (lotin)`"
+                    label-for="second_name_kirill"
+                  >
+                    <b-form-input
+                      id="second_name_kirill"
+                      name="second_name_kirill"
+                      type="text"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.second_name')
+                      "
+                      v-model="client.second_name.kirill"
+                      @input="
+                        isCyrillic_second_name_kirill(client.second_name.kirill)
+                      "
+                      @change="textToLatin_second_name_kirill"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="second_name_kirill-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="second_name_kirill-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <!-- last_name_lotin -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.last_name')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.last_name')"
+                    label-for="last_name_lotin"
+                  >
+                    <b-form-input
+                      id="last_name_lotin"
+                      name="last_name_lotin"
+                      type="text"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.last_name_lotin')
+                      "
+                      v-model="client.last_name.lotin"
+                      @input="isLatin_last_name_lotin(client.last_name.lotin)"
+                      @change="textToCyrillic_last_name_lotin"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="last_name_lotin-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="last_name_lotin-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- first_name_lotin -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.first_name')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.first_name')"
+                    label-for="first_name_lotin"
+                  >
+                    <b-form-input
+                      id="first_name_lotin"
+                      name="first_name_lotin"
+                      type="text"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.first_name_lotin')
+                      "
+                      v-model="client.first_name.lotin"
+                      @input="isLatin_first_name_lotin(client.first_name.lotin)"
+                      @change="textToCyrillic_first_name_lotin"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="first_name_lotin-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="first_name_lotin-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- second_name_lotin -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.second_name')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.second_name')"
+                    label-for="second_name_lotin"
+                  >
+                    <b-form-input
+                      id="second_name_lotin"
+                      name="second_name_lotin"
+                      type="text"
+                      :placeholder="
+                        $t('apartments.agree.placeholder.second_name_lotin')
+                      "
+                      v-model="client.second_name.lotin"
+                      @input="
+                        isLatin_second_name_lotin(client.second_name.lotin)
+                      "
+                      @change="textToCyrillic_second_name_lotin"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="second_name_lotin-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="second_name_lotin-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <!-- client.phone -->
+              <div class="col-md-4">
+                <validation-provider
+                  :name="`'${$t('apartments.agree.phone')}'`"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.phone')"
+                    label-for="phone"
+                  >
+                    <b-form-input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      :placeholder="$t('apartments.agree.placeholder.phone')"
+                      v-model="client.phone"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="phone-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="phone-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- client.other_phone -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="other_phone">{{
+                    $t("apartments.agree.other_phone")
+                  }}</label>
+                  <input
+                    class="my-form__input"
+                    type="tel"
+                    :placeholder="
+                      $t('apartments.agree.placeholder.other_phone')
+                    "
+                    v-model="client.other_phone"
+                    id="other_phone"
+                  />
+                </div>
+              </div>
+
+              <!-- apartments.agree.language -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="language">{{
+                    $t("apartments.agree.language")
+                  }}</label>
+                  <select
+                    class="form-control"
+                    id="language"
+                    v-model="client.language"
+                  >
+                    <option value="uz">Узбекский</option>
+                    <option value="ru">Русский</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- apartments.agree.type_client -->
+              <div
+                class="col-md-4"
+                v-if="getMe.role.id === 1 || getPermission.contracts.friends"
+              >
+                <div class="mb-3">
+                  <label class="d-block" for="type_client">{{
+                    $t("apartments.agree.type_client")
+                  }}</label>
+                  <select
+                    class="form-control"
+                    id="type_client"
+                    v-model="type_client"
+                  >
+                    <option value="unknown">Незнакомый</option>
+                    <option value="friends">Знакомый</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <!-- apartments.view.variant -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="discounts">{{
+                    $t("apartments.view.variant")
+                  }}</label>
+                  <select
+                    class="form-control"
+                    id="discounts"
+                    v-model="client.discount"
+                    @change="ChangeDiscount()"
+                  >
+                    <option :value="{id: null}">
+                      {{ $t("apartments.agree.placeholder.enter_discount") }}
+                    </option>
+
+                    <option
+                      v-for="(discount, index) in getApartmentDiscounts"
+                      :value="discount"
+                      :key="index"
+                    >
+                      {{ $t("apartments.view.variant") }}
+                      {{ index + 1 }} - {{ discount.prepay }}%
+                    </option>
+
+                    <option
+                      v-if="
+                        getMe.role.id === 1 ||
+                          getPermission.contracts.other_price
+                      "
+                      :value="{id: 'other', amount: 0, prepay: 30}"
+                    >
+                      {{ $t("apartments.view.other_variant") }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- client.discount -->
+              <div
+                class="col-md-12 my-2"
+                v-if="client.discount.id && client.discount.id != 'other'"
+              >
+                <DiscountCalc
+                  :discount="client.discount"
+                  :apartment="apartment"
+                ></DiscountCalc>
+              </div>
+
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <!-- apartments.agree.first_payment_date -->
+              <div class="col-md-4" v-if="client.discount.id">
+                <validation-provider
+                  :name="$t('apartments.agree.first_payment_date')"
+                  :rules="{required: true}"
+                  v-slot="validationContext"
+                  class="mb-3"
+                >
+                  <b-form-group
+                    :label="$t('apartments.agree.first_payment_date')"
+                    label-for="first_payment_date"
+                  >
+                    <b-form-input
+                      id="first_payment_date"
+                      name="first_payment_date"
+                      type="date"
+                      v-model="client.first_payment_date"
+                      :state="getValidationState(validationContext)"
+                      aria-describedby="first_payment_date-feedback"
+                    ></b-form-input>
+
+                    <b-form-invalid-feedback id="first_payment_date-feedback">{{
+                      validationContext.errors[0]
+                    }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
+              </div>
+
+              <!-- apartments.agree.payment_date -->
+              <div class="col-md-4" v-if="!confirm && client.discount.id">
+                <div class="mb-3">
+                  <label class="d-block" for="payment_date">{{
+                    $t("apartments.agree.payment_date")
+                  }}</label>
+                  <input
+                    v-model="client.payment_date"
+                    id="payment_date"
+                    type="date"
+                    class="form-control"
+                  />
+                </div>
               </div>
             </div>
 
-            <!-- apartments.agree.issued_by_whom -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="issue_passport">{{
-                  $t("apartments.agree.issued_by_whom")
-                }}</label>
-                <input
-                  class="my-form__input"
-                  type="text"
-                  :placeholder="
-                    $t('apartments.agree.placeholder.issued_by_whom')
-                  "
-                  required
-                  v-model="client.issued_by_whom"
-                  id="issue_passport"
-                />
-              </div>
-            </div>
-
-            <!-- apartments.agree.date_of_issue -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="date_of_issue">{{
-                  $t("apartments.agree.date_of_issue")
-                }}</label>
-                <!--                                <b-form-datepicker v-model="client.date_of_issue" locale="ru"></b-form-datepicker>-->
-                <input
-                  v-model="client.date_of_issue"
-                  type="date"
-                  class="form-control"
-                />
-              </div>
-            </div>
-
-            <!-- client.birth_day -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="birth_day">{{
-                  $t("apartments.agree.birth_day")
-                }}</label>
-                <input
-                  v-model="client.birth_day"
-                  type="date"
-                  class="form-control"
-                />
-              </div>
-            </div>
-
-            <div class="col-md-12">
+            <!-- Комментария -->
+            <div v-if="confirm">
               <hr />
+              <label>Комментария</label>
+              <textarea
+                rows="3"
+                cols="3"
+                v-model="comment"
+                class="form-control"
+              ></textarea>
             </div>
 
-            <!-- last_name_kirill -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="last_name_kirill"
-                  >{{ $t("apartments.agree.last_name") }} (kirill)</label
-                >
-                <input
-                  id="last_name_kirill"
-                  class="my-form__input"
-                  type="text"
-                  required
-                  v-model="client.last_name.kirill"
-                  @input="isCyrillic_last_name_kirill(client.last_name.kirill)"
-                  @change="textToLatin_last_name_kirill"
-                  :placeholder="$t('apartments.agree.placeholder.last_name')"
-                />
-              </div>
+            <!-- errors alert -->
+            <div class="alert alert-danger mt-3" v-if="error">
+              <ul>
+                <li v-for="(error, index) in geteErrors" :key="index">
+                  <span v-for="msg in error" :key="msg">
+                    {{ msg }}
+                  </span>
+                </li>
+              </ul>
             </div>
 
-            <!-- first_name_kirill -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="first_name_kirill"
-                  >{{ $t("apartments.agree.first_name") }} (kirill)</label
-                >
-                <input
-                  id="first_name_kirill"
-                  class="my-form__input"
-                  type="text"
-                  required
-                  v-model="client.first_name.kirill"
-                  @input="
-                    isCyrillic_first_name_kirill(client.first_name.kirill)
-                  "
-                  @change="textToLatin_first_name_kirill"
-                  :placeholder="$t('apartments.agree.placeholder.first_name')"
-                />
-              </div>
-            </div>
-
-            <!-- second_name_kirill -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="second_name_kirill"
-                  >{{ $t("apartments.agree.second_name") }} (kirill)</label
-                >
-                <input
-                  id="second_namev"
-                  class="my-form__input"
-                  type="text"
-                  required
-                  v-model="client.second_name.kirill"
-                  @input="
-                    isCyrillic_second_name_kirill(client.second_name.kirill)
-                  "
-                  @change="textToLatin_second_name_kirill"
-                  :placeholder="$t('apartments.agree.placeholder.second_name')"
-                />
-              </div>
-            </div>
-
-            <div class="col-md-12">
-              <hr />
-            </div>
-
-            <!-- last_name_lotin -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="last_name_lotin"
-                  >{{ $t("apartments.agree.last_name") }} (lotin)</label
-                >
-                <input
-                  id="last_name_lotin"
-                  class="my-form__input"
-                  type="text"
-                  required
-                  v-model="client.last_name.lotin"
-                  @input="isLatin_last_name_lotin(client.last_name.lotin)"
-                  @change="textToCyrillic_last_name_lotin"
-                  :placeholder="
-                    $t('apartments.agree.placeholder.last_name_lotin')
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- first_name_lotin -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="first_name_lotin"
-                  >{{ $t("apartments.agree.first_name") }} (lotin)</label
-                >
-                <input
-                  id="first_name_lotin"
-                  class="my-form__input"
-                  type="text"
-                  required
-                  v-model="client.first_name.lotin"
-                  @input="isLatin_first_name_lotin(client.first_name.lotin)"
-                  @change="textToCyrillic_first_name_lotin"
-                  :placeholder="
-                    $t('apartments.agree.placeholder.first_name_lotin')
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- second_name_lotin -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="second_name_lotin"
-                  >{{ $t("apartments.agree.second_name") }} (lotin)</label
-                >
-                <input
-                  id="second_name_lotin"
-                  class="my-form__input"
-                  type="text"
-                  required
-                  v-model="client.second_name.lotin"
-                  @input="isLatin_second_name_lotin(client.second_name.lotin)"
-                  @change="textToCyrillic_second_name_lotin"
-                  :placeholder="
-                    $t('apartments.agree.placeholder.second_name_lotin')
-                  "
-                />
-              </div>
-            </div>
-
-            <div class="col-md-12">
-              <hr />
-            </div>
-
-            <!-- client.phone -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="phone">{{
-                  $t("apartments.agree.phone")
-                }}</label>
-                <input
-                  class="my-form__input"
-                  type="tel"
-                  :placeholder="$t('apartments.agree.placeholder.phone')"
-                  v-model="client.phone"
-                  id="phone"
-                />
-              </div>
-            </div>
-
-            <!-- client.other_phone -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="other_phone">{{
-                  $t("apartments.agree.other_phone")
-                }}</label>
-                <input
-                  class="my-form__input"
-                  type="tel"
-                  :placeholder="$t('apartments.agree.placeholder.other_phone')"
-                  v-model="client.other_phone"
-                  id="other_phone"
-                />
-              </div>
-            </div>
-
-            <!-- apartments.agree.language -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="language">{{
-                  $t("apartments.agree.language")
-                }}</label>
-                <select
-                  class="form-control"
-                  id="language"
-                  v-model="client.language"
-                >
-                  <option value="uz">Узбекский</option>
-                  <option value="ru">Русский</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- apartments.agree.type_client -->
+            <!-- removeBlock -->
             <div
-              class="col-md-4"
-              v-if="getMe.role.id === 1 || getPermission.contracts.friends"
-            >
-              <div class="mb-3">
-                <label class="d-block" for="type_client">{{
-                  $t("apartments.agree.type_client")
-                }}</label>
-                <select
-                  class="form-control"
-                  id="type_client"
-                  v-model="type_client"
-                >
-                  <option value="unknown">Незнакомый</option>
-                  <option value="friends">Знакомый</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-md-12">
-              <hr />
-            </div>
-
-            <!-- Изменить дата договора -->
-            <div
-              class="col-12 mb-2"
-              v-if="getMe.role.id === 1 || getPermission.contracts.date"
+              class="mt-4 d-flex justify-content-end flex-md-row flex-column"
             >
               <button
-                class="btn btn-primary mb-2"
-                @click="date_change = true"
                 type="button"
+                class="btn btn-default mr-md-2 mr-0"
+                @click="removeBlock"
               >
-                <i class="fa fa-calendar"></i> Изменить дата договора
+                {{ $t("cancel") }}
               </button>
 
-              <div class="row" v-if="date_change">
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="number">{{
-                      $t("apartments.agree.number")
-                    }}</label>
-                    <input
-                      id="number"
-                      class="my-form__input"
-                      type="text"
-                      required
-                      v-model="apartment_edit.contract_number"
-                      :placeholder="$t('apartments.agree.placeholder.number')"
-                    />
-                  </div>
-                </div>
+              <button
+                type="button"
+                class="btn btn-primary mr-0"
+                @click.prevent="handleSubmit(onSubmit)"
+                v-if="next"
+              >
+                {{ $t("next") }}
+                <i class="fa fa-chevron-circle-right"></i>
+              </button>
 
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="date">{{
-                      $t("apartments.agree.date_contract")
-                    }}</label>
-                    <input
-                      id="date"
-                      class="my-form__input"
-                      type="date"
-                      required
-                      v-model="apartment_edit.contract_date"
-                      :placeholder="
-                        $t('apartments.agree.placeholder.date_contract')
-                      "
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <hr />
+              <button type="submit" class="btn btn-success" v-if="confirm">
+                {{ $t("create_agree") }}
+                <i class="fa fa-file-contract"></i>
+              </button>
             </div>
-
-            <!-- apartments.view.variant -->
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="d-block" for="discounts">{{
-                  $t("apartments.view.variant")
-                }}</label>
-                <select
-                  class="form-control"
-                  id="discounts"
-                  v-model="client.discount"
-                  @change="ChangeDiscount()"
-                >
-                  <option :value="{id: null}">
-                    {{ $t("apartments.agree.placeholder.enter_discount") }}
-                  </option>
-
-                  <option
-                    v-for="(discount, index) in getApartmentDiscounts"
-                    :value="discount"
-                    :key="index"
-                  >
-                    {{ $t("apartments.view.variant") }}
-                    {{ index + 1 }} - {{ discount.prepay_to }}%
-                  </option>
-
-                  <option
-                    v-if="
-                      getMe.role.id === 1 || getPermission.contracts.other_price
-                    "
-                    :value="{id: 'other', discount: 0, prepay_to: 30}"
-                  >
-                    {{ $t("apartments.view.other_variant") }}
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <!-- client.discount -->
-            <div
-              class="col-md-12 my-2"
-              v-if="client.discount.id && client.discount.id != 'other'"
-            >
-              <Discount
-                :discount="client.discount"
-                :apartment="apartment"
-              ></Discount>
-            </div>
-
-            <div class="col-md-12">
-              <hr />
-            </div>
-
-            <!-- apartments.agree.first_payment_date -->
-            <div class="col-md-4" v-if="client.discount.id">
-              <div class="mb-3">
-                <label class="d-block" for="first_payment_date">{{
-                  $t("apartments.agree.first_payment_date")
-                }}</label>
-                <input
-                  v-model="client.first_payment_date"
-                  id="first_payment_date"
-                  type="date"
-                  class="form-control"
-                />
-              </div>
-            </div>
-
-            <!-- apartments.agree.payment_date -->
-            <div class="col-md-4" v-if="!confirm && client.discount.id">
-              <div class="mb-3">
-                <label class="d-block" for="payment_date">{{
-                  $t("apartments.agree.payment_date")
-                }}</label>
-                <input
-                  v-model="client.payment_date"
-                  id="payment_date"
-                  type="date"
-                  class="form-control"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Комментария -->
-          <div v-if="confirm">
-            <hr />
-            <label>Комментария</label>
-            <textarea
-              rows="3"
-              cols="3"
-              v-model="comment"
-              class="form-control"
-            ></textarea>
-          </div>
-
-          <!-- errors alert -->
-          <div class="alert alert-danger mt-3" v-if="error">
-            <ul>
-              <li v-for="(error, index) in errors" :key="index">
-                <span v-for="msg in error" :key="msg">
-                  {{ msg }}
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <!-- removeBlock -->
-          <div class="mt-4 d-flex justify-content-end flex-md-row flex-column">
-            <button
-              type="button"
-              class="btn btn-default mr-md-2 mr-0"
-              @click="removeBlock"
-            >
-              {{ $t("cancel") }}
-            </button>
-
-            <button
-              type="button"
-              class="btn btn-primary mr-0"
-              @click="[(step = 3), (next = false), (confirm = true)]"
-              v-if="next"
-            >
-              {{ $t("next") }}
-              <i class="fa fa-chevron-circle-right"></i>
-            </button>
-
-            <button type="submit" class="btn btn-success" v-if="confirm">
-              {{ $t("create_agree") }}
-              <i class="fa fa-file-contract"></i>
-            </button>
-          </div>
-        </form>
+          </form>
+        </validation-observer>
       </div>
       <div class="container-fluid px-0 mx-0" v-if="step === 3">
         <form ref="form" @submit.stop.prevent="sendForm">
@@ -786,7 +944,8 @@
                               <input
                                 type="text"
                                 class="form-control"
-                                v-model="month.amount"
+                                required
+                                v-model.number="month.amount"
                               />
                             </div>
                           </div>
@@ -1090,10 +1249,11 @@
       </div>
     </div>
 
+    <!-- success-agree modal -->
     <success-agree
       v-if="
         getApartment.order.status != 'sold' ||
-        getApartment.order.status != 'contract'
+          getApartment.order.status != 'contract'
       "
       :contract="contract"
     ></success-agree>
@@ -1102,7 +1262,7 @@
 
 <script>
 import {mapGetters, mapActions} from "vuex";
-import Discount from "./Components/Discount";
+import DiscountCalc from "./Components/DiscountCalc";
 import moment from "moment";
 import SuccessAgree from "./Components/SuccessAgree";
 
@@ -1168,7 +1328,8 @@ export default {
       },
 
       error: false,
-      errors: [],
+      errors: {},
+      geteErrors: [],
 
       credit_months: [],
       initial_payments: [],
@@ -1187,7 +1348,7 @@ export default {
   },
 
   components: {
-    Discount,
+    DiscountCalc,
     "success-agree": SuccessAgree,
   },
 
@@ -1216,20 +1377,20 @@ export default {
   },
 
   watch: {
-    month: function (newVal) {
+    month: function(newVal) {
       this.CreditMonths(newVal);
     },
 
-    step: function () {
+    step: function() {
       this.CreditMonths(this.month);
     },
 
-    "apartment_edit.price": function () {
+    "apartment_edit.price": function() {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
 
-    "apartment_edit.prepay_price": function () {
+    "apartment_edit.prepay_price": function() {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
@@ -1399,6 +1560,14 @@ export default {
         }
       }
     },
+    getValidationState({dirty, validated, valid = null}) {
+      return dirty || validated ? valid : null;
+    },
+    onSubmit() {
+      this.step = 3;
+      this.next = false;
+      this.confirm = true;
+    },
     async sendForm() {
       if (this.client.discount.id === null) return;
 
@@ -1522,19 +1691,9 @@ export default {
             )
             .then((response) => {
               this.toasted(response.data.message, "success");
-
               this.$bvModal.hide("modal-agree");
-
-              console.log(response.data);
-              // this.$emit("successAgree", response.data);
-              // this.fetchApartment(this);
               this.contract = response.data;
               this.$bvModal.show("modal-success-agree");
-
-              // this.$router.push({
-              //   name: "apartments-view",
-              //   params: {id: this.$route.params.id},
-              // });
             })
             .catch((error) => {
               if (!error.response) {
@@ -1548,17 +1707,12 @@ export default {
                   this.toasted(error.response.data.message, "error");
                 } else if (error.response.status === 422) {
                   this.error = true;
-                  this.errors = error.response.data;
+                  this.geteErrors = error.response.data;
                 } else {
                   this.toasted(error.response.data.message, "error");
                 }
               }
             });
-          // this.$nextTick(() => {
-          //     this.$bvModal.hide('modal-upload-logo')
-          // });
-
-          // this.$emit('UploadLogo');
         }
       });
     },
@@ -1688,6 +1842,12 @@ export default {
     editMonthlyPayment(index) {
       if (this.credit_months[index].edit) {
         this.credit_months[index].edit = false;
+
+
+      if (!this.credit_months[index].amount) {
+          this.credit_months[index].amount = 0
+      }
+      
 
         if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
           this.edit.monthly_edited = true;

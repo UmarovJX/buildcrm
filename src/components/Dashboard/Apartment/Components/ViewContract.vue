@@ -37,15 +37,15 @@
                   <tbody>
                     <tr>
                       <td>
-                        {{ order.branches.type }} "{{
-                          order.branches.name
+                        {{ order.companies.type }} "{{
+                          order.companies.name
                         }}"<br />
-                        {{ order.branches.first_name }}
-                        {{ order.branches.last_name }}
-                        {{ order.branches.second_name }} <br />
-                        р/с: {{ order.branches.payment_account }} <br />
-                        ИНН: {{ order.branches.inn }}, МФО:
-                        {{ order.branches.mfo }} <br />
+                        {{ order.companies.first_name }}
+                        {{ order.companies.last_name }}
+                        {{ order.companies.second_name }} <br />
+                        р/с: {{ order.companies.payment_account }} <br />
+                        ИНН: {{ order.companies.inn }}, МФО:
+                        {{ order.companies.mfo }} <br />
                       </td>
                       <td>
                         {{ order.client.first_name }}
@@ -158,7 +158,7 @@ export default {
       contract_date: null,
       payments: [],
 
-      branches: {
+      companies: {
         name: null,
         payment_account: null,
         inn: null,
@@ -223,17 +223,17 @@ export default {
           contract_date: data.contract_date,
           payments: data.payments,
 
-          branches: {
-            name: data.branch.name,
-            payment_account: data.branch.payment_account,
-            inn: data.branch.inn,
-            mfo: data.branch.mfo,
-            bank_name: data.branch.bank_name.uz,
-            phone: data.branch.phone,
-            first_name: data.branch.first_name,
-            last_name: data.branch.last_name,
-            second_name: data.branch.second_name,
-            type: data.branch.type.name.kr,
+          companies: {
+            name: data.company.name,
+            payment_account: data.company.payment_account,
+            inn: data.company.inn,
+            mfo: data.company.mfo,
+            bank_name: data.company.bank_name.uz,
+            phone: data.company.phone,
+            first_name: data.company.first_name,
+            last_name: data.company.last_name,
+            second_name: data.company.second_name,
+            type: data.company.type.name.kr,
           },
 
           client: {

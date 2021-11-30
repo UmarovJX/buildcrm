@@ -28,7 +28,7 @@ import Loading from './modules/Loading/index';
 import Role from './modules/Role/index';
 import HomeCount from './modules/Home/index';
 import Currencies from './modules/currency';
-import Branches from './modules/branches';
+import Companies from './modules/companies';
 import Contracts from './modules/contract';
 import Debtors from './modules/debtors';
 import Settings from './modules/settings';
@@ -68,7 +68,7 @@ export default new Vuex.Store({
 
         HomeCount,
         Currencies,
-        Branches,
+        Companies,
         Contracts,
         Debtors,
         Settings

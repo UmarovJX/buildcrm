@@ -10,6 +10,7 @@
     padding-left: 0;
     padding-right: 0;
   }
+
 }
 
 .app-content {
@@ -22,7 +23,7 @@
 img[lazy="error"] {
   max-width: 100%;
   max-height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 table.b-table[aria-busy="true"] {
   opacity: 0.6;
@@ -30,7 +31,7 @@ table.b-table[aria-busy="true"] {
 
 .custom-table table tbody tr td {
   font-size: 16px;
-  font-family: "MuseoSansCyrl-300";
+  font-weight: 300;
   color: black;
 }
 
@@ -52,7 +53,7 @@ table.b-table[aria-busy="true"] {
   padding-bottom: 15px;
   padding-left: 25px !important;
   font-size: 14px;
-  font-family: "MuseoSansCyrl-700";
+  font-weight: 300;
   color: #222222;
   border-bottom: 1px solid rgba(190, 190, 190, 0.336);
   text-transform: uppercase;
@@ -130,8 +131,8 @@ table.b-table[aria-busy="true"] {
   box-shadow: -2px -2px 7px #ffffff73, 1px 1px 5px rgba(94, 104, 121, 0.288);
 }
 .pagination .page-item.active a {
-  background-color: #5851d8;
-  border-color: #5851d8;
+  background-color: $primary;
+  border-color: $primary;
 }
 
 .page-link:focus {

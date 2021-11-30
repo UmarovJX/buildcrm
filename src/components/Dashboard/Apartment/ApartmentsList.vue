@@ -1,24 +1,22 @@
 <template>
   <main>
-    <div class="app-content">
-      <div class="">
-        <div class="title__default">
-          {{ $t("apartments.list.apartments") }}:
-          {{ getApartments.pagination.totalItems }}
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-between flex-wrap">
+    <div class="app-content apartment-list-filter">
+      <div class="d-flex justify-content-between flex-md-row flex-column">
         <div
-          class="d-flex justify-content-md-end justify-content-center"
+          class="
+            d-flex
+            justify-content-center
+            align-items-center
+            flex-md-row flex-column
+          "
           v-if="
             getPermission.apartments.contract ||
-            getPermission.apartments.root_contract
+              getPermission.apartments.root_contract
           "
         >
           <button
             v-if="!selected.view && getPermission.apartments.contract"
-            class="btn btn-secondary mr-2"
+            class="btn btn-secondary mr-md-2 mr-0 mt-md-0 order-2"
             @click="selected.view = true"
           >
             <i class="far fa-list"></i> {{ $t("apartments.list.choose") }}
@@ -28,12 +26,12 @@
             v-b-modal.modal-agree
             v-if="
               selected.view &&
-              selected.values.length > 1 &&
-              getPermission.apartments.contract
+                selected.values.length > 1 &&
+                getPermission.apartments.contract
             "
             @click="selected.confirm = true"
             variant="success"
-            class="btn btn-primary mr-2"
+            class="btn btn-primary mr-md-2 mr-0 mt-md-0 order-3"
           >
             <i class="far fa-ballot-check"></i>
             {{ $t("apartments.list.contract_all") }}
@@ -41,40 +39,48 @@
 
           <button
             v-if="selected.view && getPermission.apartments.contract"
-            class="btn btn-warning mr-2"
+            class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-4"
             @click="[(selected.view = false), (selected.values = [])]"
           >
             <i class="far fa-redo"></i> {{ $t("apartments.list.reset") }}
           </button>
+
+          <div class="mt-md-0 order-md-6 order-1">
+            <div class="title__default">
+              {{ $t("apartments.list.apartments") }}:
+              {{ getApartments.pagination.totalItems }}
+            </div>
+          </div>
         </div>
 
-        <div class="d-flex justify-content-md-end justify-content-center">
-          <b-link
-            class="btn btn-primary mr-0"
-            v-if="getPermission.apartments.filter"
-            v-b-modal.modal-filter-all
-          >
-            <i class="far fa-sliders-h mr-2"></i>
-            {{ $t("apartments.list.filter") }}
-          </b-link>
-        </div>
+        <button
+          class="btn btn-primary mr-0 mt-md-0 ml-md-auto"
+          v-b-toggle.apartment-list-filter
+          v-if="getPermission.apartments.filter"
+        >
+          <i class="far fa-sliders-h mr-2"></i>
+          {{ $t("apartments.list.filter") }}
+        </button>
       </div>
 
       <div class="mt-4">
         <b-table
-          ref="my-table"
+          ref="table"
+          id="my-table"
+          class="custom-table"
           sticky-header
           borderless
-          responsive
-          :items="getApartments.items"
-          :fields="fields"
           show-empty
+          responsive
+          sort-icon-left
+          :items="items"
+          :fields="fields"
           :sort-by.sync="sortBy"
           :sort-desc.sync="sortDesc"
-          sort-icon-left
-          class="custom-table"
           :tbody-tr-class="rowClass"
           :empty-text="$t('no_data')"
+          @sort-changed="sortingChanged"
+          @scroll.native="handleScroll"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">{{
@@ -94,7 +100,11 @@
             {{ data.item.number }}
           </template>
 
-          <template #cell(balcony_area)="data">
+          <template #cell(area)="data">
+            <span v-if="data.item.plan"> {{ data.item.plan.area }} м² </span>
+          </template>
+
+          <template #cell(balcony)="data">
             <span v-if="data.item.plan.balcony">
               {{ data.item.plan.balcony_area }} м²
             </span>
@@ -148,7 +158,7 @@
                   <b-link
                     v-if="
                       getPermission.apartments.reserve &&
-                      data.item.order.status === 'available'
+                        data.item.order.status === 'available'
                     "
                     @click="[(reserve = true), (apartment_id = data.item.id)]"
                     v-b-modal.modal-create
@@ -162,8 +172,8 @@
                     v-if="
                       (data.item.order.status === 'booked' &&
                         data.item.order.user_id === getMe.user.id) ||
-                      (getPermission.apartments.root_contract &&
-                        data.item.order.status === 'booked')
+                        (getPermission.apartments.root_contract &&
+                          data.item.order.status === 'booked')
                     "
                     @click="ReserveInfo(data.item)"
                     v-b-modal.modal-view-client
@@ -176,7 +186,7 @@
                   <b-link
                     v-if="
                       data.item.order.status === 'booked' &&
-                      data.item.order.user_id != getMe.user.id
+                        data.item.order.user_id != getMe.user.id
                     "
                     @click="getInfoReserve(data.item)"
                     v-b-modal.modal-view-info-manager
@@ -198,15 +208,15 @@
                         data.item.order.status === 'booked' &&
                         data.item.order.user_id === getMe.user.id &&
                         getPermission.apartments.contract) ||
-                      (!(
-                        data.item.order.status == 'sold' ||
-                        data.item.order.status == 'contract'
-                      ) &&
-                        getPermission.apartments.root_contract) ||
-                      ((data.item.order.status != 'sold' ||
-                        data.item.order.status != 'contract') &&
-                        data.item.order.status === 'available' &&
-                        getPermission.apartments.contract)
+                        (!(
+                          data.item.order.status == 'sold' ||
+                          data.item.order.status == 'contract'
+                        ) &&
+                          getPermission.apartments.root_contract) ||
+                        ((data.item.order.status != 'sold' ||
+                          data.item.order.status != 'contract') &&
+                          data.item.order.status === 'available' &&
+                          getPermission.apartments.contract)
                     "
                   >
                     <!--                                            apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id && getPermission.apartments.contract || apartment.order.status != 'sold' && getPermission.apartments.root_contract || apartment.order.status === 'available' && getPermission.apartments.contract-->
@@ -223,12 +233,12 @@
                     v-if="
                       (getPermission.apartments.view &&
                         data.item.order.status === 'contract') ||
-                      (getPermission.apartments.view &&
-                        data.item.order.status === 'sold') ||
-                      (!getPermission.apartments.contract &&
-                        getPermission.apartments.view) ||
-                      (data.item.order.status === 'booked' &&
-                        data.item.order.user_id != getMe.user.id)
+                        (getPermission.apartments.view &&
+                          data.item.order.status === 'sold') ||
+                        (!getPermission.apartments.contract &&
+                          getPermission.apartments.view) ||
+                        (data.item.order.status === 'booked' &&
+                          data.item.order.user_id != getMe.user.id)
                     "
                   >
                     <i class="far fa-eye"></i>
@@ -252,6 +262,23 @@
             </div>
           </template>
         </b-overlay>
+
+        <paginate
+          v-if="getPagination"
+          :pageCount="getPagination"
+          :click-handler="PageCallBack"
+          :prevText="`<i class='fa fa-chevron-left'></i>`"
+          :nextText="`<i class='fa fa-chevron-right'></i>`"
+          :container-class="'pagination'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :next-class="'page-item'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-link-class="'page-link'"
+          v-model="currentPage"
+        >
+        </paginate>
       </div>
 
       <div>
@@ -321,19 +348,6 @@ export default {
 
   data() {
     return {
-      filter: {
-        filtered: false,
-        rooms: [],
-        floors: [],
-        price_from: null,
-        price_to: null,
-        status: 0,
-        usd: false,
-
-        area_from: null,
-        area_to: null,
-      },
-
       selected: {
         view: false,
         confirm: false,
@@ -348,17 +362,12 @@ export default {
       edit: false,
 
       page: 1,
-      currentPage: 0,
-      perPage: 10,
-
       info_reserve: false,
       apartment_preview: {},
 
       info_manager: false,
       manager_apartment: {},
 
-      sortBy: "number",
-      sortDesc: false,
       fields: [
         {
           key: "number",
@@ -390,13 +399,12 @@ export default {
           sortable: true,
         },
         {
-          key: "plan.area",
+          key: "area",
           label: "ПЛОЩАД",
           sortable: true,
-          formatter: (value) => value + "м²",
         },
         {
-          key: "balcony_area",
+          key: "balcony",
           label: "БАЛКОН",
           sortable: true,
         },
@@ -408,34 +416,99 @@ export default {
         {
           key: "status",
           label: "СТАТУС",
-          sortable: true,
         },
         {
           key: "actions",
           label: "",
         },
       ],
+      filter: {},
+      sortBy: "",
+      sortDesc: false,
+      currentPage: 1,
+      scrollActive: true,
     };
   },
 
-  mounted() {
-    this.getData();
-  },
-  beforeDestroy() {
-    const tableScrollBody = this.$refs["my-table"].$el;
-    tableScrollBody.removeEventListener("scroll", this.onScroll);
+  created() {
+    this.filter = {
+      ...this.$route.query,
+    };
+    this.currentPage = Number(this.filter.page);
+
+    console.log(this.$route.params.object);
   },
 
   computed: {
     ...mapGetters(["getApartments", "getPermission", "getMe", "getLoading"]),
+    items() {
+      return this.getApartments.items;
+    },
+    getPagination() {
+      if (this.getApartments.pagination.total) {
+        return this.getApartments.pagination.total;
+      }
+      return 1;
+    },
+  },
+
+  mounted() {
+    this.fetchApartments(this);
   },
 
   methods: {
-    ...mapActions([
-      "fetchApartments",
-      "fetchApartmentsFilter",
-      "fetchReserveClient",
-    ]),
+    ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    async PageCallBack(event) {
+      this.scrollActive = false;
+      this.page = event;
+      this.filter.page = Number(this.page);
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+      await this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
+    },
+    async handleScroll(event) {
+      if (!this.scrollActive) {
+        this.scrollActive = true;
+        return;
+      }
+
+      if (
+        event.target.scrollTop + event.target.clientHeight >=
+        event.target.scrollHeight
+      ) {
+        if (this.getApartments.pagination.next) {
+          this.page = this.page + 1;
+          this.filter.page = Number(this.page);
+          this.currentPage = this.filter.page;
+          this.$router.push({
+            name: "apartments",
+            query: this.filter,
+          });
+          await this.fetchApartments(this);
+        }
+      }
+    },
+
+    async sortingChanged(val) {
+      this.scrollActive = false;
+      this.filter.filtered = true;
+      this.filter.sort_by = val.sortBy;
+      this.filter.order_by = val.sortDesc ? "desc" : "asc";
+
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+      await this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
+    },
 
     rowClass(item, type) {
       if (item && type === "row") {
@@ -453,50 +526,29 @@ export default {
       }
     },
 
-    async getData() {
-      await this.fetchApartments(this);
-      // setTimeout(() => {
-      const tableScrollBody = this.$refs["my-table"].$el;
-      /* Consider debouncing the event call */
-      tableScrollBody.addEventListener("scroll", this.onScroll);
-    },
-
-    // scroll() {
-    //   window.onscroll = async function() {
-    //     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-    //       this.page = this.page + 1;
-    //       if (this.getApartments.pagination.next)
-    //         if (this.filter.filtered) {
-    //           await this.fetchApartmentsFilter(this);
-    //         } else await this.fetchApartments(this);
-    //     }
-    //   };
-    // },
-
-    async onScroll(event) {
-      if (
-        event.target.scrollTop + event.target.clientHeight >=
-        event.target.scrollHeight
-      ) {
-        this.page = this.page + 1;
-        if (this.getApartments.pagination.next)
-          if (this.filter.filtered) {
-            await this.fetchApartmentsFilter(this);
-          } else await this.fetchApartments(this);
-      }
-    },
-
     getPrice(area, price) {
       return price * area;
     },
 
-    moment: function () {
+    moment: function() {
       return this.$moment();
     },
 
-    Filtered(event) {
+    async Filtered(event) {
+      this.scrollActive = false;
       this.page = 1;
+      this.filter.page = 1;
+      this.currentPage = this.filter.page;
       this.filter = event;
+
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+      await this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
     },
 
     CreateReserve(id) {
@@ -505,7 +557,7 @@ export default {
     },
 
     CreateReserveSuccess() {
-      this.fetchApartmentsFilter(this);
+      this.fetchApartments(this);
     },
 
     ReserveInfo(apartment) {
@@ -513,7 +565,6 @@ export default {
       this.apartment_preview = apartment;
       this.order_id = apartment.order.id;
       this.fetchReserveClient(this);
-      // this.$bvModal.show('modal-view-client');
     },
 
     getInfoReserve(apartment) {
@@ -529,14 +580,19 @@ export default {
     CloseReserveInfo() {
       this.info_reserve = false;
       this.apartment_preview = {};
-      this.fetchApartmentsFilter(this);
+      this.fetchApartments(this);
     },
 
     async EditApartment() {
       this.apartment_id = 0;
       this.edit = false;
 
-      if (this.filter.filtered) await this.fetchApartmentsFilter(this);
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+
+      if (this.filter.filtered) await this.fetchApartments(this);
       else await this.fetchApartments(this);
     },
 
@@ -583,20 +639,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .dropdown-menu .active {
   background: transparent;
 }
-
-/*table {*/
-/*    table-layout: fixed;*/
-/*}*/
 
 table thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  /*width: 100px;*/
   background-color: #fff;
 }
 .my-table thead tr th {
@@ -614,9 +665,11 @@ table tbody th {
   z-index: 1;
 }
 
-/*.table-responsive {*/
-/*    width: 100%;*/
-/*    max-height: 100%;*/
-/*    overflow: hidden;*/
-/*}*/
+.apartment-list-filter {
+  @media screen and (max-width: 576px) {
+    .btn {
+      width: 100%;
+    }
+  }
+}
 </style>

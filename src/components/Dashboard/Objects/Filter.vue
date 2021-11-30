@@ -2,7 +2,6 @@
   <main>
     <div class="app-content">
       <div class="mt-4">
-        <!--            <div class="title__default my-2">Ташкент, Мирабадский район, пересечение улиц Янгизамон и Сайхун </div>-->
         <div class="title__default my-2">
           {{ $t("apartments.list.apartments") }}:
           {{ getFilteredApartments.length }}
