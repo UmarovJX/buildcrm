@@ -541,7 +541,7 @@
                       :key="index"
                     >
                       {{ $t("apartments.view.variant") }}
-                      {{ index + 1 }} - {{ discount.prepay_to }}%
+                      {{ index + 1 }} - {{ discount.prepay }}%
                     </option>
 
                     <option
@@ -549,7 +549,7 @@
                         getMe.role.id === 1 ||
                           getPermission.contracts.other_price
                       "
-                      :value="{id: 'other', discount: 0, prepay_to: 30}"
+                      :value="{id: 'other', amount: 0, prepay: 30}"
                     >
                       {{ $t("apartments.view.other_variant") }}
                     </option>
@@ -562,10 +562,10 @@
                 class="col-md-12 my-2"
                 v-if="client.discount.id && client.discount.id != 'other'"
               >
-                <Discount
+                <DiscountCalc
                   :discount="client.discount"
                   :apartment="apartment"
-                ></Discount>
+                ></DiscountCalc>
               </div>
 
               <div class="col-md-12">
@@ -1278,7 +1278,6 @@
 
 <script>
 import {mapGetters, mapActions} from "vuex";
-import Discount from "./Components/Discount";
 import DiscountCalc from "./Components/DiscountCalc";
 import moment from "moment";
 import SuccessAgree from "./Components/SuccessAgree";
@@ -1365,7 +1364,6 @@ export default {
   },
 
   components: {
-    Discount,
     DiscountCalc,
     "success-agree": SuccessAgree,
   },

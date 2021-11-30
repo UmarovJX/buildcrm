@@ -57,7 +57,6 @@ Object.keys(rules).forEach((rule) => {
 
 localize("ru", ru);
 
-// Install VeeValidate components globally
 Vue.component("ValidationObserver", ValidationObserver);
 Vue.component("ValidationProvider", ValidationProvider);
 Vue.use(BootstrapVue);
@@ -76,7 +75,7 @@ Vue.use(Toasted, {
   duration: 5000,
 });
 
-Vue.config.productionTip = false;
+// Vue.config.productionTip = false;
 // Vue.prototype.$moment = moment;
 new Vue({
   el: "#app",

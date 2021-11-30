@@ -348,7 +348,6 @@ export default {
 
   data() {
     return {
-
       selected: {
         view: false,
         confirm: false,
@@ -436,6 +435,8 @@ export default {
       ...this.$route.query,
     };
     this.currentPage = Number(this.filter.page);
+
+    console.log(this.$route.params.object);
   },
 
   computed: {

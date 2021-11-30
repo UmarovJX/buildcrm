@@ -10,7 +10,7 @@ export default {
         };
 
         const {data} = await vm.axios.get(
-          process.env.VUE_APP_URL + "/apartments/" + vm.$route.params.id,
+          process.env.VUE_APP_URL + "/objects/" + vm.$route.params.object + "/apartments/" + vm.$route.params.id,
           header
         );
 

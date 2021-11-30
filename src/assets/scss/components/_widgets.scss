@@ -597,3 +597,12 @@
     width: 100% !important;
   }
 }
+
+.footer-btns {
+  @include mq("tablet", max) {
+    .btn {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+  }
+}

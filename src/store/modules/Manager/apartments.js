@@ -40,7 +40,7 @@ export default {
         };
 
         const {data} = await vm.axios.get(
-          `${process.env.VUE_APP_URL}/objects/${vm.$route.params.id}/apartments/`,
+          `${process.env.VUE_APP_URL}/objects/${vm.$route.params.object}/apartments/`,
           header
         );
         ctx.commit("updateApartment", data);
@@ -62,7 +62,7 @@ export default {
         const response = await vm.axios.post(
           process.env.VUE_APP_URL +
             "/objects/" +
-            vm.$route.params.id +
+            vm.$route.params.object +
             "/filter?page=" +
             vm.page,
           vm.filter,
@@ -88,7 +88,7 @@ export default {
         const response = await vm.axios.get(
           process.env.VUE_APP_URL +
             "/objects/" +
-            vm.$route.params.id +
+            vm.$route.params.object +
             "/filter",
           header
         );

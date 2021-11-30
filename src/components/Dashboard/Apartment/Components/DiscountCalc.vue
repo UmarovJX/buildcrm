@@ -2,7 +2,7 @@
   <div class="bg-white p-0">
     <div class="">
       <div class="apartment__info">
-        Предоплата: <span> {{ discount.prepay_to }}%</span>
+        Предоплата: <span> {{ discount.prepay }}%</span>
       </div>
 
       <div class="apartment__info mt-2">
@@ -19,7 +19,7 @@
         >
       </div>
 
-      <div class="apartment__info mt-2" v-if="discount.discount > 0">
+      <div class="apartment__info mt-2" v-if="discount.amount > 0">
         Ежемесячный:
         <span
           >{{ apartment.object.credit_month }} месяцев
@@ -34,7 +34,7 @@
         </span>
       </div>
 
-      <div class="apartment__info mt-2" v-if="discount.discount > 0">
+      <div class="apartment__info mt-2" v-if="discount.amount > 0">
         Остаток:
         <span
           >{{
@@ -75,45 +75,92 @@ export default {
   name: "Discount",
 
   methods: {
-    getPrepay() {
-      if (this.prepay_to === 100) return 0;
+    // getPrepay() {
+    //   if (this.prepay === 100) return 0;
 
+    //   let total_discount = this.getDiscount();
+
+    //   let total = this.apartment.price / total_discount;
+
+    //   // return total;
+
+    //   return (this.discount.prepay * total) / 100;
+    // },
+
+    // getDiscount() {
+    //   if (this.prepay === 100) return 0;
+
+    //   return 1 - this.discount.amount / 100;
+    //   // return this.discount.discount * this.apartment.price / 100;
+    // },
+
+    // getMonth() {
+    //   return (
+    //     (this.getTotal() - this.getPrepay()) /
+    //     this.apartment.object.credit_month
+    //   );
+    // },
+
+    // getDebt() {
+    //   // let price = this.getTotal() - this.getPrepay();
+    //   //console.log(price);
+    //   return this.getTotal() - this.getPrepay();
+    // },
+
+    // getTotal() {
+    //   let total_discount = this.getDiscount();
+
+    //   //console.log(total_discount);
+
+    //   // let total = price * area;
+    //   let total = this.apartment.price / total_discount;
+
+    //   return total;
+    // },
+
+    getPrepay() {
+      console.log(111)
+      //if (this.discount.prepay === 100) return 0;    
+      console.log(222)
       let total_discount = this.getDiscount();
 
-      let total = this.apartment.price / total_discount;
+      let total = 0;
 
-      // return total;
+      switch (this.discount.type) {
+        case "fixed":
+          total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
+          break;
+        default:
+          total = this.apartment.price / total_discount;
+          break;
+      }
 
-      return (this.discount.prepay_to * total) / 100;
+      console.log(333)
+      return (this.discount.prepay * total) / 100;
     },
-
     getDiscount() {
-      if (this.prepay_to === 100) return 0;
+      if (this.discount.prepay === 100) return 1;
 
-      return 1 - this.discount.discount / 100;
-      // return this.discount.discount * this.apartment.price / 100;
+      return 1 - (this.discount.prepay / 100);
     },
-
     getMonth() {
-      return (
-        (this.getTotal() - this.getPrepay()) /
-        this.apartment.object.credit_month
-      );
+      return (this.getTotal() - this.getPrepay()) / this.apartment.object.credit_month;
     },
-
     getDebt() {
-      // let price = this.getTotal() - this.getPrepay();
-      //console.log(price);
       return this.getTotal() - this.getPrepay();
     },
-
     getTotal() {
       let total_discount = this.getDiscount();
+      let total = 0;
 
-      //console.log(total_discount);
-
-      // let total = price * area;
-      let total = this.apartment.price / total_discount;
+      switch (this.discount.type) {
+        case "fixed":
+          total = this.discount.amount * this.apartment.plan.area;
+          break;
+        default:
+          total = this.apartment.price / total_discount;
+          break;
+      }
 
       return total;
     },
@@ -121,5 +168,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

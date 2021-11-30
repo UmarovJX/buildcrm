@@ -52,7 +52,7 @@
           <router-link
             v-if="getPermission.objects.apartments"
             :class="'object__link'"
-            :to="{name: 'apartments', params: {id: object.id}}"
+            :to="{name: 'apartments', params: {object: object.id}}"
           >
             <!-- <div class="object__img" v-if="object.image" :style="'background-image: url(' + object.image +');'"></div> -->
             <div
