@@ -1202,7 +1202,7 @@ export default {
         if (result.value) {
           this.axios
             .post(
-              process.env.VUE_APP_URL + "/contracts/" + this.order.id,
+              process.env.VUE_APP_URL + "/deals/" + this.order.id,
               {
                 comment: result.value,
               },

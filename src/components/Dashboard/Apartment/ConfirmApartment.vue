@@ -91,7 +91,7 @@
 
                 <hr />
               </div>
-              
+
               <!-- apartments.agree.passport_series -->
               <div class="col-md-4">
                 <validation-provider
@@ -255,13 +255,13 @@
               <!-- first_name_kirill -->
               <div class="col-md-4">
                 <validation-provider
-                  :name="`'${$t('apartments.agree.first_name')} (lotin)'`"
+                  :name="`'${$t('apartments.agree.first_name')} (kirill)'`"
                   :rules="{required: true}"
                   v-slot="validationContext"
                   class="mb-3"
                 >
                   <b-form-group
-                    :label="`${$t('apartments.agree.first_name')} (lotin)`"
+                    :label="`${$t('apartments.agree.first_name')} (kirill)`"
                     label-for="first_name_kirill"
                   >
                     <b-form-input
@@ -290,13 +290,13 @@
               <!-- second_name_kirill -->
               <div class="col-md-4">
                 <validation-provider
-                  :name="`'${$t('apartments.agree.second_name')} (lotin)'`"
+                  :name="`'${$t('apartments.agree.second_name')} (kirill)'`"
                   :rules="{required: true}"
                   v-slot="validationContext"
                   class="mb-3"
                 >
                   <b-form-group
-                    :label="`${$t('apartments.agree.second_name')} (lotin)`"
+                    :label="`${$t('apartments.agree.second_name')} (kirill)`"
                     label-for="second_name_kirill"
                   >
                     <b-form-input
@@ -329,13 +329,13 @@
               <!-- last_name_lotin -->
               <div class="col-md-4">
                 <validation-provider
-                  :name="`'${$t('apartments.agree.last_name')}'`"
+                  :name="`'${$t('apartments.agree.last_name')} (lotin)'`"
                   :rules="{required: true}"
                   v-slot="validationContext"
                   class="mb-3"
                 >
                   <b-form-group
-                    :label="$t('apartments.agree.last_name')"
+                    :label="`${$t('apartments.agree.last_name')} (lotin)`"
                     label-for="last_name_lotin"
                   >
                     <b-form-input
@@ -362,13 +362,13 @@
               <!-- first_name_lotin -->
               <div class="col-md-4">
                 <validation-provider
-                  :name="`'${$t('apartments.agree.first_name')}'`"
+                  :name="`'${$t('apartments.agree.first_name')} (lotin)'`"
                   :rules="{required: true}"
                   v-slot="validationContext"
                   class="mb-3"
                 >
                   <b-form-group
-                    :label="$t('apartments.agree.first_name')"
+                    :label="`${$t('apartments.agree.first_name')} (lotin)`"
                     label-for="first_name_lotin"
                   >
                     <b-form-input
@@ -395,13 +395,13 @@
               <!-- second_name_lotin -->
               <div class="col-md-4">
                 <validation-provider
-                  :name="`'${$t('apartments.agree.second_name')}'`"
+                  :name="`'${$t('apartments.agree.second_name')} (lotin)'`"
                   :rules="{required: true}"
                   v-slot="validationContext"
                   class="mb-3"
                 >
                   <b-form-group
-                    :label="$t('apartments.agree.second_name')"
+                    :label="`${$t('apartments.agree.second_name')} (lotin)`"
                     label-for="second_name_lotin"
                   >
                     <b-form-input
@@ -529,7 +529,7 @@
                     class="form-control"
                     id="discounts"
                     v-model="client.discount"
-                    @change="ChangeDiscount()"
+                    @change="ChangeDiscount"
                   >
                     <option :value="{id: null}">
                       {{ $t("apartments.agree.placeholder.enter_discount") }}
@@ -654,7 +654,7 @@
               <button
                 type="button"
                 class="btn btn-primary mr-0"
-                @click.prevent="handleSubmit(onSubmit)"
+                @click="handleSubmit(onSubmit)"
                 v-if="next"
               >
                 {{ $t("next") }}
@@ -669,7 +669,7 @@
           </form>
         </validation-observer>
       </div>
-      <div class="container-fluid px-0 mx-0" v-if="step === 3">
+      <div class="container-fluid px-0 mx-0" v-if="step == 3">
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
@@ -692,8 +692,8 @@
                   <div
                     class="mr-2 w-25"
                     v-if="
-                      client.discount.prepay_to != 100 ||
-                      client.discount.prepay_to < 100
+                      client.discount.prepay != 100 ||
+                        client.discount.prepay < 100
                     "
                   >
                     <!-- <label class="d-block" for="month">Месяцев</label> -->
@@ -709,8 +709,8 @@
                   <span
                     v-if="
                       month > 0 &&
-                      (client.discount.prepay_to != 100 ||
-                        client.discount.prepay_to < 100)
+                        (client.discount.prepay != 100 ||
+                          client.discount.prepay < 100)
                     "
                   >
                     {{ month }} месяцев по <br />
@@ -729,8 +729,8 @@
                 <table
                   class="table"
                   v-if="
-                    client.discount.prepay_to != 100 ||
-                    client.discount.prepay_to < 100
+                    client.discount.prepay != 100 ||
+                      client.discount.prepay < 100
                   "
                 >
                   <thead>
@@ -747,7 +747,7 @@
                     <tr
                       v-if="
                         initial_payments.length === 0 ||
-                        initial_payments.length === 1
+                          initial_payments.length === 1
                       "
                     >
                       <td>
@@ -869,8 +869,8 @@
                             <button
                               v-if="
                                 (getMe.role.id === 1 && !initialPayment.edit) ||
-                                (getPermission.contracts.monthly &&
-                                  !initialPayment.edit)
+                                  (getPermission.contracts.monthly &&
+                                    !initialPayment.edit)
                               "
                               type="button"
                               @click="editInitialPayment(index)"
@@ -883,7 +883,7 @@
                               <button
                                 v-if="
                                   getMe.role.id === 1 ||
-                                  getPermission.contracts.monthly
+                                    getPermission.contracts.monthly
                                 "
                                 type="button"
                                 @click="editInitialPayment(index)"
@@ -898,9 +898,9 @@
                                 (index != 0 &&
                                   getMe.role.id === 1 &&
                                   !month.edit) ||
-                                (index != 0 &&
-                                  getPermission.contracts.monthly &&
-                                  !month.edit)
+                                  (index != 0 &&
+                                    getPermission.contracts.monthly &&
+                                    !month.edit)
                               "
                               type="button"
                               @click="deleteInitialPayment(index)"
@@ -953,7 +953,7 @@
                           <button
                             v-if="
                               (getMe.role.id === 1 && !month.edit) ||
-                              (getPermission.contracts.monthly && !month.edit)
+                                (getPermission.contracts.monthly && !month.edit)
                             "
                             type="button"
                             @click="editMonthlyPayment(index)"
@@ -966,7 +966,7 @@
                             <button
                               v-if="
                                 getMe.role.id === 1 ||
-                                getPermission.contracts.monthly
+                                  getPermission.contracts.monthly
                               "
                               type="button"
                               @click="editMonthlyPayment(index)"
@@ -1017,7 +1017,9 @@
                         <td class="px-0 py-2">ФИО</td>
                         <td
                           class="px-0 py-2 text-right"
-                          :title="`${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`"
+                          :title="
+                            `${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`
+                          "
                         >
                           {{ client.last_name.lotin }}
                           {{ client.first_name.lotin }}
@@ -1088,7 +1090,7 @@
                                   disabled
                                   type="text"
                                   :value="
-                                    client.discount.prepay_to.toFixed(2) + ' %'
+                                    client.discount.prepay.toFixed(2) + ' %'
                                   "
                                 />
                               </div>
@@ -1153,7 +1155,7 @@
                             "
                           >
                             <div class="h6 mb-0">
-                              {{ client.discount.prepay_to.toFixed(2) }}%
+                              {{ client.discount.prepay.toFixed(2) }}%
                             </div>
                           </div>
                         </div>
@@ -1277,17 +1279,14 @@ export default {
         first_name: {
           lotin: "",
           kirill: "",
-          counter: 0,
         },
         last_name: {
           lotin: "",
           kirill: "",
-          counter: 0,
         },
         second_name: {
           lotin: "",
           kirill: "",
-          counter: 0,
         },
         passport_series: "",
         issued_by_whom: "",
@@ -1432,7 +1431,7 @@ export default {
 
       let percente = (prepay_price * 100) / price;
 
-      this.client.discount.prepay_to = percente;
+      this.client.discount.prepay = percente;
     },
     deleteInitialPayment(index) {
       if (this.initial_payments.length === 2) {
@@ -1565,8 +1564,8 @@ export default {
     },
     onSubmit() {
       this.step = 3;
-      this.next = false;
       this.confirm = true;
+      this.next = false;
     },
     async sendForm() {
       if (this.client.discount.id === null) return;
@@ -1679,7 +1678,7 @@ export default {
             formData.append("contract_date", this.apartment_edit.contract_date);
           }
 
-          if (this.step === 3 && this.client.discount.prepay_to != 100) {
+          if (this.step === 3 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);
           }
 
@@ -1740,8 +1739,8 @@ export default {
       if (this.client.discount.id === "other") {
         this.client.discount = {
           id: "other",
-          prepay_to: 30,
-          discount: 0,
+          prepay: 30,
+          amount: 0,
         };
 
         this.apartment_edit.price = this.apartment.price;
@@ -1756,7 +1755,7 @@ export default {
         return;
       }
 
-      if (this.client.discount.prepay_to === 100) {
+      if (this.client.discount.prepay === 100) {
         this.next = false;
         this.confirm = true;
         return;
@@ -1767,15 +1766,22 @@ export default {
       return;
     },
     getPrepay() {
-      if (this.prepay_to === 100) return 0;
-
       let total_discount = this.getDiscount();
 
       let total;
 
       if (this.client.discount.id === "other")
         total = this.apartment_edit.price / total_discount;
-      else total = this.apartment.price / total_discount;
+      else {
+        switch (this.client.discount.type) {
+          case "fixed":
+            total = this.client.discount.amount * this.apartment.plan.area;
+            break;
+          default:
+            total = this.apartment.price / total_discount;
+            break;
+        }
+      }
 
       if (this.initial_payments.length > 1) {
         total = 0;
@@ -1791,16 +1797,15 @@ export default {
         return parseFloat(this.apartment_edit.prepay_price);
       }
 
-      return (this.client.discount.prepay_to * total) / 100;
+      return (this.client.discount.prepay * total) / 100;
     },
     getTotalOther() {
       return parseFloat(this.apartment_edit.price);
     },
     getDiscount() {
-      if (this.prepay_to === 100) return 0;
+      if (this.client.discount.prepay === 100) return 1;
 
-      return 1 - this.client.discount.discount / 100;
-      // return this.discount.discount * this.apartment.price / 100;
+      return 1 - this.client.discount.amount / 100;
     },
     getMonth() {
       return (this.getTotal() - this.getPrepay()) / this.month;
@@ -1819,7 +1824,16 @@ export default {
 
       if (this.client.discount.id === "other")
         total = this.apartment_edit.price / total_discount;
-      else total = this.apartment.price / total_discount;
+      else {
+        switch (this.client.discount.type) {
+          case "fixed":
+            total = this.client.discount.amount * this.apartment.plan.area;
+            break;
+          default:
+            total = this.apartment.price / total_discount;
+            break;
+        }
+      }
 
       return total;
     },
@@ -1843,11 +1857,9 @@ export default {
       if (this.credit_months[index].edit) {
         this.credit_months[index].edit = false;
 
-
-      if (!this.credit_months[index].amount) {
-          this.credit_months[index].amount = 0
-      }
-      
+        if (!this.credit_months[index].amount) {
+          this.credit_months[index].amount = 0;
+        }
 
         if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
           this.edit.monthly_edited = true;
@@ -1963,29 +1975,41 @@ export default {
     },
 
     textToLatin_last_name_kirill(value) {
-      if (this.client.last_name.lotin.length === 0)
+      if (this.client.last_name.lotin.length === 0) {
+        console.log(value);
         this.client.last_name.lotin = this.translateTextToLatin(value);
+      }
     },
     textToLatin_first_name_kirill(value) {
-      if (this.client.first_name.lotin.length === 0)
+      if (this.client.first_name.lotin.length === 0) {
+        console.log(2);
         this.client.first_name.lotin = this.translateTextToLatin(value);
+      }
     },
     textToLatin_second_name_kirill(value) {
-      if (this.client.second_name.lotin.length === 0)
+      if (this.client.second_name.lotin.length === 0) {
+        console.log(3);
         this.client.second_name.lotin = this.translateTextToLatin(value);
+      }
     },
 
     textToCyrillic_last_name_lotin(value) {
-      if (this.client.last_name.kirill.length === 0)
+      if (this.client.last_name.kirill.length === 0) {
+        console.log(4);
         this.client.last_name.kirill = this.translateTextToCyrillic(value);
+      }
     },
     textToCyrillic_first_name_lotin(value) {
-      if (this.client.first_name.kirill.length === 0)
+      if (this.client.first_name.kirill.length === 0) {
+        console.log(5);
         this.client.first_name.kirill = this.translateTextToCyrillic(value);
+      }
     },
     textToCyrillic_second_name_lotin(value) {
-      if (this.client.second_name.kirill.length === 0)
+      if (this.client.second_name.kirill.length === 0) {
+        console.log(6);
         this.client.second_name.kirill = this.translateTextToCyrillic(value);
+      }
     },
 
     symbolIsCyrillic(event) {
@@ -1998,43 +2022,44 @@ export default {
     },
 
     translateTextToLatin(value) {
-      return this.symbolCyrillicToLatin(value.target.value);
+      console.log('value', value);
+      return this.symbolCyrillicToLatin(value);
     },
     translateTextToCyrillic(value) {
-      value.target.value = value.target.value.replace("Sh", "Ш");
-      value.target.value = value.target.value.replace("sh", "ш");
+      value = value.replace("Sh", "Ш");
+      value = value.replace("sh", "ш");
 
-      value.target.value = value.target.value.replace("Ch", "Ч");
-      value.target.value = value.target.value.replace("ch", "ч");
+      value = value.replace("Ch", "Ч");
+      value = value.replace("ch", "ч");
 
-      value.target.value = value.target.value.replace("Q", "Қ");
-      value.target.value = value.target.value.replace("q", "қ");
+      value = value.replace("Q", "Қ");
+      value = value.replace("q", "қ");
 
-      value.target.value = value.target.value.replace("O'", "Ў");
-      value.target.value = value.target.value.replace("o'", "ў");
+      value = value.replace("O'", "Ў");
+      value = value.replace("o'", "ў");
 
-      value.target.value = value.target.value.replace("G'", "Ғ");
-      value.target.value = value.target.value.replace("g'", "ғ");
+      value = value.replace("G'", "Ғ");
+      value = value.replace("g'", "ғ");
 
-      value.target.value = value.target.value.replace("Yu", "Ю");
-      value.target.value = value.target.value.replace("yu", "ю");
+      value = value.replace("Yu", "Ю");
+      value = value.replace("yu", "ю");
 
-      value.target.value = value.target.value.replace("Ya", "Я");
-      value.target.value = value.target.value.replace("Ya", "я");
+      value = value.replace("Ya", "Я");
+      value = value.replace("Ya", "я");
 
-      value.target.value = value.target.value.replace("Yo", "Ё");
-      value.target.value = value.target.value.replace("yo", "ё");
+      value = value.replace("Yo", "Ё");
+      value = value.replace("yo", "ё");
 
-      value.target.value = value.target.value.replace("Ye", "Е");
-      value.target.value = value.target.value.replace("ye", "е");
+      value = value.replace("Ye", "Е");
+      value = value.replace("ye", "е");
 
-      value.target.value = value.target.value.replace("Kh", "Х");
-      value.target.value = value.target.value.replace("kh", "х");
+      value = value.replace("Kh", "Х");
+      value = value.replace("kh", "х");
 
-      value.target.value = value.target.value.replace("H", "Ҳ");
-      value.target.value = value.target.value.replace("h", "ҳ");
+      value = value.replace("H", "Ҳ");
+      value = value.replace("h", "ҳ");
 
-      return this.symbolLatinToCyrillic(value.target.value);
+      return this.symbolLatinToCyrillic(value);
     },
 
     symbolCyrillicToLatin(word) {

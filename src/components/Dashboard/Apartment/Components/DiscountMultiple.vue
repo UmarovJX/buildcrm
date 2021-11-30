@@ -3,7 +3,7 @@
     <h6>{{ $t("apartments.view.variant") }}</h6>
     <div class="apartment__variant">
       <div class="apartment__info">
-        Предоплата: <span> {{ discount.prepay_to }}%</span>
+        Предоплата: <span> {{ discount.prepay }}%</span>
       </div>
 
       <!--            <div class="apartment__info" v-if="discount.discount > 0">-->
@@ -24,7 +24,7 @@
         >
       </div>
 
-      <div class="apartment__info" v-if="discount.discount > 0">
+      <div class="apartment__info" v-if="discount.amount > 0">
         Ежемесячный:
         <span
           >{{ apartments[0].object.credit_month }} месяцев
@@ -39,7 +39,7 @@
         </span>
       </div>
 
-      <div class="apartment__info" v-if="discount.discount > 0">
+      <div class="apartment__info" v-if="discount.amount > 0">
         Остаток:
         <span
           >{{
@@ -91,7 +91,7 @@ export default {
     },
 
     getPrepay() {
-      if (this.prepay_to === 100) return 0;
+      if (this.prepay === 100) return 0;
 
       let price = this.getPrice();
 
@@ -101,11 +101,11 @@ export default {
 
       // return total;
 
-      return (this.discount.prepay_to * total) / 100;
+      return (this.discount.prepay * total) / 100;
     },
 
     getDiscount() {
-      if (this.prepay_to === 100) return 0;
+      if (this.prepay === 100) return 0;
 
       return 1 - this.discount.discount / 100;
       // return this.discount.discount * this.apartment.price / 100;
