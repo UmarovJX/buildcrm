@@ -10,27 +10,38 @@
       hide-header-close
       no-close-on-backdrop
     >
-      <div class="input-group" v-if="step === 1">
-        <input
-          type="text"
-          :placeholder="$t('apartments.agree.placeholder.search')"
-          class="form-control"
-          v-model="search_label"
-        />
-        <div class="input-group-append">
-          <button class="btn btn-success mt-0 mr-0" @click="Search" type="button">
-            <i class="fa fa-search"></i> {{ $t("search") }}
+      <div v-if="step === 1">
+        <div>
+          <div class="input-group">
+            <input
+              type="text"
+              :placeholder="$t('apartments.agree.placeholder.search')"
+              class="form-control h-auto"
+              v-model="search_label"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-success mt-0 mr-0"
+                @click="Search"
+                type="button"
+              >
+                <i class="fa fa-search"></i> {{ $t("search") }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
+        >
+          <button
+            type="button"
+            class="btn btn-default mr-2"
+            @click="removeBlock"
+          >
+            {{ $t("cancel") }}
           </button>
         </div>
-      </div>
-
-      <div
-        class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
-        v-if="step === 1"
-      >
-        <button type="button" class="btn btn-default mr-2" @click="removeBlock">
-          {{ $t("cancel") }}
-        </button>
       </div>
 
       <form ref="form" @submit.stop.prevent="sendForm" v-if="step === 2">
@@ -341,14 +352,14 @@
                   class="form-control"
                   id="discounts"
                   v-model="client.discount"
-                  @change="ChangeDiscount()"
+                  @change="ChangeDiscount"
                 >
                   <option :value="{id: null}">
                     {{ $t("apartments.agree.placeholder.enter_discount") }}
                   </option>
 
                   <option
-                    v-for="(discount, index) in apartments[0].discounts"
+                    v-for="(discount, index) in getThisApartment[0].discounts"
                     :value="discount"
                     :key="index"
                   >
@@ -372,10 +383,10 @@
               class="col-md-12 my-2"
               v-if="client.discount.id && client.discount.id != 'other'"
             >
-              <Discount
+              <DiscountMultiple
                 :discount="client.discount"
-                :apartments="apartments"
-              ></Discount>
+                :apartments="getThisApartment"
+              ></DiscountMultiple>
             </div>
 
             <div class="col-md-12">
@@ -450,7 +461,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="[(step = 3), (next = false), (confirm = true)]"
+            @click.prevent="BackOne"
             v-if="next"
           >
             {{ $t("next") }} <i class="fa fa-chevron-circle-right"></i>
@@ -462,8 +473,8 @@
         </div>
       </form>
 
-      <div class="" v-if="step === 3">
-        <form ref="form" @submit.stop.prevent="sendForm">
+      <div class="" v-if="step == 3">
+        <form ref="form" @submit.prevent="sendForm">
           <div v-if="!edit.price">
             <table
               class="table table-hover mx-0 mt-2 p-0 my-table-another-variant"
@@ -539,7 +550,7 @@
                         class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start"
                       >
                         <div class="h6 mb-0">
-                          {{ client.discount.prepay_to.toFixed(2) }}%
+                          {{ client.discount.prepay.toFixed(2) }}%
                         </div>
                       </div>
                     </div>
@@ -602,7 +613,7 @@
                         class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start"
                       >
                         <div class="h6 mb-0">
-                          {{ client.discount.prepay_to.toFixed(2) }}%
+                          {{ client.discount.prepay.toFixed(2) }}%
                         </div>
                       </div>
                     </div>
@@ -653,10 +664,7 @@
 
           <div
             class="col-md-12"
-            v-if="
-              client.discount.prepay_to != 100 ||
-                client.discount.prepay_to < 100
-            "
+            v-if="client.discount.prepay != 100 || client.discount.prepay < 100"
           >
             <div class="row">
               <div class="mb-3">
@@ -676,13 +684,12 @@
           <span
             v-if="
               month > 0 &&
-                (client.discount.prepay_to != 100 ||
-                  client.discount.prepay_to < 100)
+                (client.discount.prepay != 100 || client.discount.prepay < 100)
             "
           >
             {{ month }} месяцев по
             {{
-              getMonth()
+              getMonths()
                 | number("0,0.00", {
                   thousandsSeparator: " ",
                   decimalSeparator: ",",
@@ -693,10 +700,7 @@
 
           <table
             class="table"
-            v-if="
-              client.discount.prepay_to != 100 ||
-                client.discount.prepay_to < 100
-            "
+            v-if="client.discount.prepay != 100 || client.discount.prepay < 100"
           >
             <thead>
               <tr>
@@ -948,7 +952,7 @@
             <button
               type="button"
               class="btn btn-secondary mr-1"
-              @click="[(step = 2), (next = true), (confirm = false)]"
+              @click="BackTwo"
             >
               <i class="fa fa-chevron-circle-left"></i> {{ $t("back") }}
             </button>
@@ -958,10 +962,6 @@
             </button>
           </div>
         </form>
-
-        <!--                <button type="submit" class="btn btn-success" v-if="confirm">-->
-        <!--                    {{ $t('create_agree') }} <i class="fa fa-file-contract"></i>-->
-        <!--                </button>-->
       </div>
     </b-modal>
   </div>
@@ -969,7 +969,7 @@
 
 <script>
 import {mapGetters} from "vuex";
-import Discount from "./DiscountMultiple";
+import DiscountMultiple from "./DiscountMultiple";
 import moment from "moment";
 
 export default {
@@ -979,7 +979,7 @@ export default {
   },
 
   components: {
-    Discount,
+    DiscountMultiple,
   },
 
   computed: mapGetters(["getReserveClient", "getPermission", "getMe"]),
@@ -991,9 +991,9 @@ export default {
       this.CreditMonths(newVal);
     },
 
-    step: function() {
-      this.CreditMonths(this.month);
-    },
+    // step: function() {
+    //   this.CreditMonths(this.month);
+    // },
 
     "apartment_edit.price": function() {
       this.getDiscountEdited();
@@ -1006,88 +1006,95 @@ export default {
     },
   },
 
-  data: () => ({
-    step: 1,
-    search_label: "",
-    client: {
-      id: null,
-      first_name: {
-        lotin: "",
-        kirill: "",
+  data() {
+    return {
+      step: 1,
+      search_label: "",
+      client: {
+        id: null,
+        first_name: {
+          lotin: "",
+          kirill: "",
+        },
+        last_name: {
+          lotin: "",
+          kirill: "",
+        },
+        second_name: {
+          lotin: "",
+          kirill: "",
+        },
+        passport_series: "",
+        issued_by_whom: "",
+        birth_day: null,
+        language: "uz",
+        phone: "",
+        other_phone: null,
+        date_of_issue: null,
+        discount: {id: null},
+        edit: false,
+        payment_date: null,
+        first_payment_date: null,
       },
-      last_name: {
-        lotin: "",
-        kirill: "",
+
+      type_client: "unknown",
+
+      apartment_edit: {
+        price: 0,
+        prepay_price: 0,
+        percente: 0,
+        contract_number: null,
+        contract_date: null,
       },
-      second_name: {
-        lotin: "",
-        kirill: "",
+
+      comment: "",
+
+      month: 6,
+      date_change: false,
+
+      initial_payments: [],
+
+      confirm: false,
+      next: false,
+
+      edit: {
+        price: false,
+        monthly: false,
+
+        monthly_edited: false,
       },
-      passport_series: "",
-      issued_by_whom: "",
-      birth_day: null,
-      language: "uz",
-      phone: "",
-      other_phone: null,
-      date_of_issue: null,
-      discount: {id: null},
-      edit: false,
-      payment_date: null,
-      first_payment_date: null,
-    },
 
-    type_client: "unknown",
+      error: false,
+      errors: [],
 
-    apartment_edit: {
-      price: 0,
-      prepay_price: 0,
-      percente: 0,
-      contract_number: null,
-      contract_date: null,
-    },
+      credit_months: [],
 
-    comment: "",
-
-    month: "6",
-    date_change: false,
-
-    initial_payments: [],
-
-    confirm: false,
-    next: false,
-
-    edit: {
-      price: false,
-      monthly: false,
-
-      monthly_edited: false,
-    },
-
-    error: false,
-    errors: [],
-
-    credit_months: [],
-
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
+        },
       },
-    },
-  }),
+      getThisApartment: [],
+    };
+  },
 
-  async mounted() {
-    // if (this.apartment.order.id) {
-    //     this.reserveClientFull();
-    // }
-
-    await this.getApartments();
-
-    if (this.apartments.length > 0) {
-      this.month = this.apartments[0].object.credit_month;
-    }
+  mounted() {
+    this.getApartments();
   },
 
   methods: {
+    BackOne() {
+      // eslint-disable-next-line no-debugger
+      // debugger
+      this.step = 3;
+      this.next = false;
+      this.confirm = true;
+    },
+    BackTwo() {
+      this.step = 2;
+      this.next = true;
+      this.confirm = false;
+    },
     getTotalOther() {
       return parseFloat(this.apartment_edit.price);
     },
@@ -1098,7 +1105,7 @@ export default {
 
       let percente = (prepay_price * 100) / price;
 
-      this.client.discount.prepay_to = percente;
+      this.client.discount.prepay = percente;
     },
 
     deleteInitialPayment(index) {
@@ -1115,7 +1122,7 @@ export default {
         this.initial_payments[index].edit = false;
 
         if (
-          parseFloat(this.initial_payments[index].amount) != this.getMonth()
+          parseFloat(this.initial_payments[index].amount) != this.getMonths()
         ) {
           this.edit.initial_edited = true;
           this.initial_payments[index].edited = true;
@@ -1163,8 +1170,8 @@ export default {
     getPrice() {
       var price = [];
 
-      for (let i = 0; this.apartments.length > i; i++) {
-        price.push(parseFloat(this.apartments[i].price));
+      for (let i = 0; this.getThisApartment.length > i; i++) {
+        price.push(parseFloat(this.getThisApartment[i].price));
       }
 
       return price.reduce((a, b) => a + b, 0);
@@ -1180,7 +1187,10 @@ export default {
           this.header
         );
 
-        this.apartments = data;
+        this.getThisApartment = data;
+        if (this.getThisApartment.length > 0) {
+          this.month = this.getThisApartment[0].object.credit_month;
+        }
       } catch (error) {
         this.toastedWithErrorCode(error);
       }
@@ -1194,41 +1204,44 @@ export default {
     },
 
     async Search() {
-      try {
-        const {data} = await this.axios.get(
+      await this.axios
+        .get(
           process.env.VUE_APP_URL +
             "/orders/client/search?field=" +
             this.search_label,
           this.header
-        );
-        this.step = 2;
-
-        this.client = {
-          id: data.id,
-          first_name: data.first_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          last_name: data.last_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          second_name: data.second_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          passport_series: data.passport_series,
-          issued_by_whom: data.issued_by_whom,
-          language: data.language,
-          birth_day: data.birth_day,
-          phone: data.phone,
-          other_phone: data.other_phone,
-          date_of_issue: data.date_of_issue,
-          discount: {id: null},
-        };
-      } catch (error) {
-        this.toastedWithErrorCode(error);
-      }
+        )
+        .then((data) => {
+          console.log(data);
+          data = data.data
+          this.step = 2;
+          this.client = {
+            id: data.id,
+            first_name: data.first_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            last_name: data.last_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            second_name: data.second_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            passport_series: data.passport_series,
+            issued_by_whom: data.issued_by_whom,
+            language: data.language,
+            birth_day: data.birth_day,
+            phone: data.phone,
+            other_phone: data.other_phone,
+            date_of_issue: data.date_of_issue,
+            discount: {id: null},
+          };
+        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        });
     },
 
     async sendForm() {
@@ -1343,15 +1356,18 @@ export default {
             formData.append("contract_date", this.apartment_edit.contract_date);
           }
 
-          if (this.step === 3 && this.client.discount.prepay_to != 100) {
+          if (this.step === 3 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);
           }
 
-          for (let i = 0; i < this.apartments.length; i++) {
-            formData.append("apartments[" + i + "][id]", this.apartments[i].id);
+          for (let i = 0; i < this.getThisApartment.length; i++) {
+            formData.append(
+              "apartments[" + i + "][id]",
+              this.getThisApartment[i].id
+            );
             formData.append(
               "apartments[" + i + "][price]",
-              this.apartments[i].price
+              this.getThisApartment[i].price
             );
           }
 
@@ -1403,6 +1419,8 @@ export default {
     },
 
     ChangeDiscount() {
+      // eslint-disable-next-line no-debugger
+      // debugger;
       if (this.client.discount.id === "other") {
         this.client.discount = {
           id: "other",
@@ -1413,8 +1431,7 @@ export default {
         this.apartment_edit.price = this.getPrice();
         this.apartment_edit.prepay_price = this.getPrepay();
       }
-
-      this.CreditMonths(this.month);
+      // this.CreditMonths(this.month);
 
       if (this.client.discount.id === null) {
         this.next = false;
@@ -1433,37 +1450,8 @@ export default {
       return;
     },
 
-    // sgetPrepay() {
-    //     let total_discount = this.getDiscount();
-    //
-    //     let total = this.apartment.price - total_discount;
-    //
-    //     return this.client.discount.prepay_to * total / 100;
-    // },
-    //
-    // sgetDiscount() {
-    //     return this.client.discount.discount * this.apartment.price / 100;
-    // },
-    //
-    // sgetMonth() {
-    //     return (this.getTotal() - this.getPrepay()) / this.month;
-    // },
-    //
-    // sgetDebt() {
-    //     return this.getTotal() - this.getPrepay();
-    // },
-    //
-    // sgetTotal() {
-    //     let total_discount = this.getDiscount();
-    //
-    //     // let total = price * area;
-    //     let total = this.apartment.price - total_discount;
-    //
-    //     return total;
-    // },
-
     getPrepay() {
-      if (this.prepay === 100) return 0;
+      if (this.discount.prepay === 100) return 0;
 
       let total_discount = this.getDiscount();
       let price = this.getPrice();
@@ -1492,32 +1480,21 @@ export default {
     },
 
     getDiscount() {
-      if (this.prepay === 100) return 0;
+      if (this.discount.prepay === 100) return 1;
 
-      return 1 - this.client.discount.amount / 100;
-      // return this.discount.discount * this.apartment.price / 100;
+      return 1 - this.client.discount.prepay / 100;
     },
 
-    getMonth() {
+    getMonths() {
       return (this.getTotal() - this.getPrepay()) / this.month;
     },
 
     getDebt() {
-      // let price = this.getTotal() - this.getPrepay();
-      //console.log(price);
-      // console.log(this.getTotal());
-      // console.log(this.getPrepay());
-
       return this.getTotal() - this.getPrepay();
     },
 
     getTotal() {
       let total_discount = this.getDiscount();
-
-      //console.log(total_discount);
-
-      // let total = price * area;
-
       let price = this.getPrice();
       let total = 0;
 
@@ -1534,11 +1511,10 @@ export default {
         : new Date();
 
       this.credit_months = [];
-
-      for (var i = 0; i < newVal; i++) {
-        this.credit_months.push({
+      for (let i = 0; i < newVal; i++) {
+        this.credit_month.push({
           month: today.setMonth(today.getMonth() + 1),
-          amount: this.getMonth(),
+          amount: this.getMonths(),
           edit: false,
           edited: false,
         });
@@ -1549,7 +1525,7 @@ export default {
       if (this.credit_months[index].edit) {
         this.credit_months[index].edit = false;
 
-        if (parseFloat(this.credit_months[index].amount) != this.getMonth()) {
+        if (parseFloat(this.credit_months[index].amount) != this.getMonths()) {
           this.edit.monthly_edited = true;
           this.credit_months[index].edited = true;
           this.setNewPriceMonthly();

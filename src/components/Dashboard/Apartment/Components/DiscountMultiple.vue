@@ -81,34 +81,50 @@ export default {
 
   methods: {
     getPrice() {
-      var price = [];
-
-      for (let i = 0; this.apartments.length > i; i++) {
-        price.push(parseFloat(this.apartments[i].price));
+      let price = [];
+      switch (this.discount.type) {
+        case "fixed":
+          for (let i = 0; this.apartments.length > i; i++) {
+            let a = this.apartments[i].discounts.find(
+              (i) => i.prepay == this.discount.prepay
+            ).amount;
+            price.push(parseFloat(a * this.apartments[i].plan.area));
+          }
+          break;
+        default:
+          for (let i = 0; this.apartments.length > i; i++) {
+            price.push(parseFloat(this.apartments[i].price));
+          }
+          break;
       }
-
+      console.log(price.reduce((a, b) => a + b, 0));
       return price.reduce((a, b) => a + b, 0);
     },
 
     getPrepay() {
-      if (this.prepay === 100) return 0;
+      if (this.discount.prepay === 100) return 0;
 
       let price = this.getPrice();
+      let total;
 
       let total_discount = this.getDiscount();
 
-      let total = price / total_discount;
-
-      // return total;
+      switch (this.discount.type) {
+        case "fixed":
+          total = price;
+          break;
+        default:
+          total = price / total_discount;
+          break;
+      }
 
       return (this.discount.prepay * total) / 100;
     },
 
     getDiscount() {
-      if (this.prepay === 100) return 0;
+      if (this.discount.prepay === 100) return 1;
 
-      return 1 - this.discount.discount / 100;
-      // return this.discount.discount * this.apartment.price / 100;
+      return 1 - this.discount.prepay / 100;
     },
 
     getMonth() {
@@ -119,20 +135,23 @@ export default {
     },
 
     getDebt() {
-      // let price = this.getTotal() - this.getPrepay();
-      //console.log(price);
       return this.getTotal() - this.getPrepay();
     },
 
     getTotal() {
       let total_discount = this.getDiscount();
 
-      //console.log(total_discount);
-
       let price = this.getPrice();
-
+      let total;
       // let total = price * area;
-      let total = price / total_discount;
+      switch (this.discount.type) {
+        case "fixed":
+          total = price;
+          break;
+        default:
+          total = price / total_discount;
+          break;
+      }
 
       return total;
     },
