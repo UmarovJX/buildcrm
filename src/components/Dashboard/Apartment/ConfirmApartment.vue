@@ -1669,14 +1669,14 @@ export default {
           if (this.client.payment_date)
             formData.append("payment_date", this.client.payment_date);
 
-          if (this.date_change) {
+          // if (this.date_change) {
             formData.append("date_change", 1);
             formData.append(
               "contract_number",
               this.apartment_edit.contract_number
             );
             formData.append("contract_date", this.apartment_edit.contract_date);
-          }
+          // }
 
           if (this.step === 3 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);

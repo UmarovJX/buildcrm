@@ -180,17 +180,15 @@ export default {
         total_price: 0,
       },
       calc: {},
-      monthly_price: null
+      monthly_price: null,
     };
   },
-
 
   async mounted() {
     setTimeout(() => {
       this.discount = this.getApartmentDiscounts[0];
-    //this.discountWith = this.discount;
       this.initialCalc();
-    }, 100);
+    }, 300);
   },
   computed: {
     getApartmentDiscounts() {
@@ -204,7 +202,6 @@ export default {
   },
   methods: {
     async initialCalc() {
-      
       this.calc.price_for_m2 = this.discount.amount;
       // this.discountWith.amount = this.calc.price_for_m2;
       this.calc.prepay_percente = this.discount.prepay;
@@ -218,11 +215,10 @@ export default {
     },
 
     async changeDiscount() {
-      
       this.calc.prepay_percente = this.discount.prepay;
-      this.calc.discount_price = 0
+      this.calc.discount_price = 0;
       if (this.discount.type === "fixed") {
-        await this.initialCalc()
+        await this.initialCalc();
         // this.calc.price_for_m2 = this.discount.amount;
         // this.discountWith.amount = this.calc.price_for_m2;
         // this.calc.total = this.discount.amount * this.apartment.plan.area;
@@ -241,8 +237,8 @@ export default {
 
     async changeDiscount_price() {
       //this.calc.discount_price = this.calc.discount_price
-      // console.log(this.calc.discount_price); 
-      await this.initialCalc()
+      // console.log(this.calc.discount_price);
+      await this.initialCalc();
       // console.log(this.calc.discount_price)
       // this.discount.amount = this.calc.price_for_m2 - this.calc.discount_price;
       // this.calc.total = this.discountWith.amount * this.apartment.plan.area;
@@ -267,7 +263,9 @@ export default {
       switch (this.discount.type) {
         case "fixed":
           if (this.calc.discount_price) {
-            total = (this.discount.amount - parseFloat(this.calc.discount_price)) * this.apartment.plan.area;
+            total =
+              (this.discount.amount - parseFloat(this.calc.discount_price)) *
+              this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
@@ -297,7 +295,9 @@ export default {
       switch (this.discount.type) {
         case "fixed":
           if (this.calc.discount_price) {
-            total = (this.discount.amount - parseFloat(this.calc.discount_price)) * this.apartment.plan.area;
+            total =
+              (this.discount.amount - parseFloat(this.calc.discount_price)) *
+              this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
