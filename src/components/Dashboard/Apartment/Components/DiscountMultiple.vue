@@ -97,12 +97,11 @@ export default {
           }
           break;
       }
-      console.log(price.reduce((a, b) => a + b, 0));
       return price.reduce((a, b) => a + b, 0);
     },
 
     getPrepay() {
-      if (this.discount.prepay === 100) return 1;
+      if (this.discount.prepay === 100) return this.getTotal();
 
       let price = this.getPrice();
       let total;
@@ -124,7 +123,7 @@ export default {
     getDiscount() {
       if (this.discount.prepay === 100) return 1;
 
-      return 1 - this.discount.prepay / 100;
+      return 1 - this.discount.amount / 100;
     },
 
     getMonth() {

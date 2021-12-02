@@ -211,7 +211,6 @@ export default {
           this.calc.price_for_m2 = this.apartment.price_m2;
         } else {
           this.calc.price_for_m2 = this.getTotal() / this.apartment.plan.area
-          console.log(1, this.getTotal())
         }
       } else {
         this.calc.price_for_m2 = this.discount.amount;

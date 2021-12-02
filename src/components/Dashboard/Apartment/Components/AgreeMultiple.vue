@@ -485,8 +485,8 @@
                   <th scope="col" class="text-right">Цена</th>
                 </tr>
               </thead>
-              <tbody class="m-0 p-0">
-                <tr v-for="(apartment, index) in apartments" :key="index">
+              <tbody class="m-0 p-0" v-if="getThisApartmentForTable.length>0">
+                <tr v-for="(apartment, index) in getThisApartmentForTable" :key="index">
                   <td>
                     {{ apartment.number }}
                   </td>
@@ -1075,6 +1075,7 @@ export default {
         },
       },
       getThisApartment: [],
+      getThisApartmentForTable: []
     };
   },
 
@@ -1084,17 +1085,17 @@ export default {
 
   methods: {
     BackOne() {
-      // eslint-disable-next-line no-debugger
-      // debugger
       this.step = 3;
       this.next = false;
       this.confirm = true;
     },
+
     BackTwo() {
       this.step = 2;
       this.next = true;
       this.confirm = false;
     },
+
     getTotalOther() {
       return parseFloat(this.apartment_edit.price);
     },
@@ -1165,17 +1166,6 @@ export default {
       });
 
       this.getPrepay();
-    },
-
-    getPrice() {
-      var price = [];
-
-      for (let i = 0; this.getThisApartment.length > i; i++) {
-        // for 
-        price.push(parseFloat(this.getThisApartment[i].price));
-      }
-
-      return price.reduce((a, b) => a + b, 0);
     },
 
     async getApartments() {
@@ -1451,8 +1441,34 @@ export default {
       return;
     },
 
+    getPrice() {
+      var price = [];
+      switch (this.client.discount.type) {
+        case "fixed":
+          for (let i = 0; this.getThisApartment.length > i; i++) {
+            const amountApartment = this.getThisApartment[i].discounts.find(
+              (val) => val.prepay == this.client.discount.prepay
+            ).amount;
+            const totalAmount = parseFloat(amountApartment * this.getThisApartment[i].plan.area)
+            price.push(parseFloat(totalAmount));
+            this.getThisApartmentForTable[i] = {
+              number: this.getThisApartment[i].number,
+              price: totalAmount
+            }
+          }
+          break;
+        default:
+          for (let i = 0; this.getThisApartment.length > i; i++) {
+            price.push(parseFloat(this.getThisApartment[i].price));
+          }
+          break;
+      }
+
+      return price.reduce((a, b) => a + b, 0);
+    },
+
     getPrepay() {
-      if (this.client.discount.prepay === 100) return 0;
+      if (this.client.discount.prepay === 100) return this.getTotal();
 
       let total_discount = this.getDiscount();
       let price = this.getPrice();
@@ -1461,7 +1477,16 @@ export default {
 
       if (this.client.discount.id === "other")
         total = this.apartment_edit.price / total_discount;
-      else total = price / total_discount;
+      else {
+        switch (this.client.discount.type) {
+          case "fixed":
+            total = price;
+            break;
+          default:
+            total = price / total_discount;
+            break;
+        }
+      }
 
       if (this.initial_payments.length > 1) {
         total = 0;
@@ -1483,12 +1508,12 @@ export default {
     getDiscount() {
       if (this.client.discount.prepay === 100) return 1;
 
-      return 1 - this.client.discount.prepay / 100;
+      return 1 - this.client.discount.amount / 100;
     },
 
     getMonths() {
       let total = this.getTotal();
-      let prepay = this.getPrepay()
+      let prepay = this.getPrepay();
       return (total - prepay) / this.month;
     },
 
@@ -1503,7 +1528,16 @@ export default {
 
       if (this.client.discount.id === "other")
         total = this.apartment_edit.price / total_discount;
-      else total = price / total_discount;
+      else {
+        switch (this.client.discount.type) {
+          case "fixed":
+            total = price;
+            break;
+          default:
+            total = price / total_discount;
+            break;
+        }
+      }
 
       return total;
     },
@@ -1518,12 +1552,12 @@ export default {
       let month_amount = this.getMonths();
 
       for (let i = 0; i < newVal; i++) {
-         this.credit_months.push({
-            month:  today.setMonth( today.getMonth() + 1 ),
-            amount: month_amount,
-            edit: false,
-            edited: false,
-        })
+        this.credit_months.push({
+          month: today.setMonth(today.getMonth() + 1),
+          amount: month_amount,
+          edit: false,
+          edited: false,
+        });
       }
     },
 
