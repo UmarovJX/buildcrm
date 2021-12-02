@@ -42,7 +42,6 @@
     <!-- Скидка -->
     <b-form-group
       class="mb-1"
-      v-if="discount.amount > 0"
       label-cols="12"
       content-cols="12"
       label="Скидка за м2:"
@@ -189,31 +188,38 @@ export default {
   },
 
   mounted() {
-    setTimeout(() => {
+     setTimeout(() => {
       this.discount = this.getApartmentDiscounts[0];
-      this.initialCalc();
+      this.initialCalc()
+
     }, 1000);
   },
   computed: {
     ...mapGetters(["getCurrency"]),
     getApartmentDiscounts() {
       let arr = this.apartment.discounts;
-      if (this.apartment.object.credit_month != 0) {
+      // console.log(this.apartment.discounts)
+      // if (this.apartment.object.credit_month != 0) {
+        // console.log(12)
         return arr.sort((a, b) => a.prepay - b.prepay);
-      }
+      // } else {
+      // }
 
-      return [];
+      // return [];
     },
   },
   methods: {
     async initialCalc() {
+      console.log(this.discount);
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
+          //console.log
           this.calc.price_for_m2 = this.apartment.price_m2;
         } else {
           this.calc.price_for_m2 = this.getTotalForPercente() / this.apartment.plan.area;
         }
       } else {
+        // console.log(this.discount.amount)
         this.calc.price_for_m2 = this.discount.amount;
       }
       // this.calc.price_for_m2 = this.discount.amount;
