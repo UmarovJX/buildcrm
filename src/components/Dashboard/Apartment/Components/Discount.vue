@@ -160,6 +160,7 @@
 
 <script>
 import VueNumeric from "vue-numeric";
+import {mapGetters} from "vuex";
 export default {
   name: "Discount",
   components: {
@@ -173,24 +174,27 @@ export default {
     return {
       discount: {},
       discountWith: {},
-      client: {
-        amount: "",
-        price_for_m2: 0,
-        discount_price: 0,
-        total_price: 0,
+      calc: {
+        // amount: "",
+        // price_for_m2: 0,
+        // discount_price: 0,
+        // monthly_price: 0,
+        // prepay: 0,
+        // debt: 0,
+        // total: 0,
       },
-      calc: {},
-      monthly_price: null,
+      monthly_price: 0,
     };
   },
 
-  async mounted() {
+  mounted() {
     setTimeout(() => {
       this.discount = this.getApartmentDiscounts[0];
       this.initialCalc();
-    }, 300);
+    }, 1000);
   },
   computed: {
+    ...mapGetters(["getCurrency"]),
     getApartmentDiscounts() {
       let arr = this.apartment.discounts;
       if (this.apartment.object.credit_month != 0) {
@@ -202,11 +206,19 @@ export default {
   },
   methods: {
     async initialCalc() {
-      this.calc.price_for_m2 = this.discount.amount;
-      // this.discountWith.amount = this.calc.price_for_m2;
+      if (this.discount.type === "percent") {
+        if (this.discount.prepay === 100) {
+          this.calc.price_for_m2 = this.apartment.price_m2;
+        } else {
+          this.calc.price_for_m2 = this.getTotal() / this.apartment.plan.area
+          console.log(1, this.getTotal())
+        }
+      } else {
+        this.calc.price_for_m2 = this.discount.amount;
+      }
+      // this.calc.price_for_m2 = this.discount.amount;
       this.calc.prepay_percente = this.discount.prepay;
       this.calc.prepay = this.getPrepay();
-      //console.log(this.getPrepay())
       this.calc.month = this.apartment.object.credit_month;
       this.calc.monthly_price = this.getMonth();
       this.monthly_price = this.calc.monthly_price;
@@ -219,34 +231,17 @@ export default {
       this.calc.discount_price = 0;
       if (this.discount.type === "fixed") {
         await this.initialCalc();
-        // this.calc.price_for_m2 = this.discount.amount;
-        // this.discountWith.amount = this.calc.price_for_m2;
-        // this.calc.total = this.discount.amount * this.apartment.plan.area;
-        // this.calc.prepay = this.getPrepay();
-        // this.calc.month = this.apartment.object.credit_month;
-        // this.calc.monthly_price = this.getMonth();
-        // this.monthly_price = this.calc.monthly_price;
-        // this.calc.debt = this.getDebt();
-        // this.calc.prepay_percente = this.discount.prepay;
       } else if (this.discount.prepay === 100) {
         this.calc.total = this.apartment.price;
         this.calc.prepay = this.apartment.price;
         this.calc.price_for_m2 = this.apartment.price_m2;
+      } else {
+        await this.initialCalc();
       }
     },
 
     async changeDiscount_price() {
-      //this.calc.discount_price = this.calc.discount_price
-      // console.log(this.calc.discount_price);
       await this.initialCalc();
-      // console.log(this.calc.discount_price)
-      // this.discount.amount = this.calc.price_for_m2 - this.calc.discount_price;
-      // this.calc.total = this.discountWith.amount * this.apartment.plan.area;
-      // this.calc.prepay = this.getPrepay();
-      // this.calc.month = this.apartment.object.credit_month;
-      // this.monthly_price = this.getMonth();
-      // this.calc.debt = this.getDebt();
-      // this.calc.prepay_percente = this.discount.prepay;
     },
 
     changeDiscount_month() {
@@ -278,9 +273,9 @@ export default {
       return (this.discount.prepay * total) / 100;
     },
     getDiscount() {
-      if (this.discount.prepay === 100) return 0;
+      if (this.discount.prepay === 100) return 1;
 
-      return 1 - this.discount.prepay / 100;
+      return 1 - this.discount.amount / 100;
     },
     getMonth() {
       return (this.getTotal() - this.getPrepay()) / this.calc.month;
@@ -292,6 +287,7 @@ export default {
       let total_discount = this.getDiscount();
       let total = 0;
 
+//console.log(total_discount)
       switch (this.discount.type) {
         case "fixed":
           if (this.calc.discount_price) {

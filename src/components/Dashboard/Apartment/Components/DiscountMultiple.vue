@@ -102,7 +102,7 @@ export default {
     },
 
     getPrepay() {
-      if (this.discount.prepay === 100) return 0;
+      if (this.discount.prepay === 100) return 1;
 
       let price = this.getPrice();
       let total;

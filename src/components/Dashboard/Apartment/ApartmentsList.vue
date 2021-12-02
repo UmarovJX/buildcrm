@@ -436,7 +436,6 @@ export default {
     };
     this.currentPage = Number(this.filter.page);
 
-    console.log(this.$route.params.object);
   },
 
   computed: {

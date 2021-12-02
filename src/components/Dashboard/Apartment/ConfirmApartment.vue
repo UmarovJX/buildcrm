@@ -2033,38 +2033,32 @@ export default {
 
     textToLatin_last_name_kirill(value) {
       if (this.client.last_name.lotin.length === 0) {
-        console.log(value);
         this.client.last_name.lotin = this.translateTextToLatin(value);
       }
     },
     textToLatin_first_name_kirill(value) {
       if (this.client.first_name.lotin.length === 0) {
-        console.log(2);
         this.client.first_name.lotin = this.translateTextToLatin(value);
       }
     },
     textToLatin_second_name_kirill(value) {
       if (this.client.second_name.lotin.length === 0) {
-        console.log(3);
         this.client.second_name.lotin = this.translateTextToLatin(value);
       }
     },
 
     textToCyrillic_last_name_lotin(value) {
       if (this.client.last_name.kirill.length === 0) {
-        console.log(4);
         this.client.last_name.kirill = this.translateTextToCyrillic(value);
       }
     },
     textToCyrillic_first_name_lotin(value) {
       if (this.client.first_name.kirill.length === 0) {
-        console.log(5);
         this.client.first_name.kirill = this.translateTextToCyrillic(value);
       }
     },
     textToCyrillic_second_name_lotin(value) {
       if (this.client.second_name.kirill.length === 0) {
-        console.log(6);
         this.client.second_name.kirill = this.translateTextToCyrillic(value);
       }
     },
@@ -2079,7 +2073,6 @@ export default {
     },
 
     translateTextToLatin(value) {
-      console.log("value", value);
       return this.symbolCyrillicToLatin(value);
     },
     translateTextToCyrillic(value) {

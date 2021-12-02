@@ -991,9 +991,9 @@ export default {
       this.CreditMonths(newVal);
     },
 
-    // step: function() {
-    //   this.CreditMonths(this.month);
-    // },
+    step: function() {
+      this.CreditMonths(this.month);
+    },
 
     "apartment_edit.price": function() {
       this.getDiscountEdited();
@@ -1171,6 +1171,7 @@ export default {
       var price = [];
 
       for (let i = 0; this.getThisApartment.length > i; i++) {
+        // for 
         price.push(parseFloat(this.getThisApartment[i].price));
       }
 
@@ -1211,31 +1212,30 @@ export default {
             this.search_label,
           this.header
         )
-        .then((data) => {
-          console.log(data);
-          data = data.data
+        .then((res) => {
+          res = res.data;
           this.step = 2;
           this.client = {
-            id: data.id,
-            first_name: data.first_name ?? {
+            id: res.id,
+            first_name: res.first_name ?? {
               lotin: null,
               kirill: null,
             },
-            last_name: data.last_name ?? {
+            last_name: res.last_name ?? {
               lotin: null,
               kirill: null,
             },
-            second_name: data.second_name ?? {
+            second_name: res.second_name ?? {
               lotin: null,
               kirill: null,
             },
-            passport_series: data.passport_series,
-            issued_by_whom: data.issued_by_whom,
-            language: data.language,
-            birth_day: data.birth_day,
-            phone: data.phone,
-            other_phone: data.other_phone,
-            date_of_issue: data.date_of_issue,
+            passport_series: res.passport_series,
+            issued_by_whom: res.issued_by_whom,
+            language: res.language,
+            birth_day: res.birth_day,
+            phone: res.phone,
+            other_phone: res.other_phone,
+            date_of_issue: res.date_of_issue,
             discount: {id: null},
           };
         })
@@ -1431,7 +1431,8 @@ export default {
         this.apartment_edit.price = this.getPrice();
         this.apartment_edit.prepay_price = this.getPrepay();
       }
-      // this.CreditMonths(this.month);
+
+      this.CreditMonths(this.month);
 
       if (this.client.discount.id === null) {
         this.next = false;
@@ -1451,7 +1452,7 @@ export default {
     },
 
     getPrepay() {
-      if (this.discount.prepay === 100) return 0;
+      if (this.client.discount.prepay === 100) return 0;
 
       let total_discount = this.getDiscount();
       let price = this.getPrice();
@@ -1480,13 +1481,15 @@ export default {
     },
 
     getDiscount() {
-      if (this.discount.prepay === 100) return 1;
+      if (this.client.discount.prepay === 100) return 1;
 
       return 1 - this.client.discount.prepay / 100;
     },
 
     getMonths() {
-      return (this.getTotal() - this.getPrepay()) / this.month;
+      let total = this.getTotal();
+      let prepay = this.getPrepay()
+      return (total - prepay) / this.month;
     },
 
     getDebt() {
@@ -1511,13 +1514,16 @@ export default {
         : new Date();
 
       this.credit_months = [];
+
+      let month_amount = this.getMonths();
+
       for (let i = 0; i < newVal; i++) {
-        this.credit_month.push({
-          month: today.setMonth(today.getMonth() + 1),
-          amount: this.getMonths(),
-          edit: false,
-          edited: false,
-        });
+         this.credit_months.push({
+            month:  today.setMonth( today.getMonth() + 1 ),
+            amount: month_amount,
+            edit: false,
+            edited: false,
+        })
       }
     },
 
