@@ -138,7 +138,7 @@ export default {
     getDiscount() {
       if (this.discount.prepay === 100) return 1;
 
-      return 1 - (this.discount.prepay / 100);
+      return 1 - (this.discount.amount / 100);
     },
     getMonth() {
       return (this.getTotal() - this.getPrepay()) / this.apartment.object.credit_month;

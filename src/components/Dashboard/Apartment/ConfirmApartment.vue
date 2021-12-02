@@ -57,35 +57,69 @@
               >
                 <div class="row">
                   <div class="col-md-4">
-                    <b-form-group
-                      :label="$t('apartments.agree.number')"
-                      label-for="number"
+                    <validation-provider
+                      :name="`'${$t('apartments.agree.number')}'`"
+                      :rules="{required: true}"
+                      v-slot="validationContext"
                       class="mb-3"
                     >
-                      <b-form-input
-                        id="number"
-                        name="number"
-                        :placeholder="$t('apartments.agree.placeholder.number')"
-                        v-model="apartment_edit.contract_number"
-                      ></b-form-input>
-                    </b-form-group>
+                      <b-form-group
+                        :label="$t('apartments.agree.number')"
+                        label-for="number"
+                      >
+                        <b-form-input
+                          id="number"
+                          name="number"
+                          type="text"
+                          :placeholder="
+                            $t('apartments.agree.placeholder.number')
+                          "
+                          v-model="apartment_edit.contract_number"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="number-feedback"
+                        ></b-form-input>
+
+                        <b-form-invalid-feedback
+                          id="number-feedback"
+                          >{{
+                            validationContext.errors[0]
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </validation-provider>
                   </div>
 
                   <div class="col-md-4">
-                    <b-form-group
-                      :label="$t('apartments.agree.date_contract')"
-                      label-for="date"
+                    <validation-provider
+                      :name="`'${$t('apartments.agree.date_contract')}'`"
+                      :rules="{required: true}"
+                      v-slot="validationContext"
+                      class="mb-3"
                     >
-                      <b-form-input
-                        id="date"
-                        name="date"
-                        type="date"
-                        :placeholder="
-                          $t('apartments.agree.placeholder.date_contract')
-                        "
-                        v-model="apartment_edit.contract_date"
-                      ></b-form-input>
-                    </b-form-group>
+                      <b-form-group
+                        :label="$t('apartments.agree.date_contract')"
+                        label-for="date"
+                      >
+                        <b-form-input
+                          id="date"
+                          name="date"
+                          type="date"
+                          :placeholder="
+                            $t('apartments.agree.placeholder.date_contract')
+                          "
+                          v-model="apartment_edit.contract_date"
+                          :state="getValidationState(validationContext)"
+                          aria-describedby="date-feedback"
+                        ></b-form-input>
+
+                        <b-form-invalid-feedback
+                          id="date-feedback"
+                          >{{
+                            validationContext.errors[0]
+                          }}</b-form-invalid-feedback
+                        >
+                      </b-form-group>
+                    </validation-provider>
                   </div>
                 </div>
 
@@ -661,9 +695,21 @@
                 <i class="fa fa-chevron-circle-right"></i>
               </button>
 
-              <button type="submit" class="btn btn-success" v-if="confirm">
+              <button
+                v-if="!loading && confirm"
+                type="submit"
+                class="btn btn-success"
+              >
                 {{ $t("create_agree") }}
                 <i class="fa fa-file-contract"></i>
+              </button>
+              <button
+                v-if="loading && confirm"
+                type="button"
+                class="btn btn-success"
+              >
+                {{ $t("create_agree") }}
+                <i class="fas fa-spinner fa-spin"></i>
               </button>
             </div>
           </form>
@@ -1234,13 +1280,22 @@
                     >
                       {{ $t("cancel") }}
                     </button>
+
                     <button
                       type="submit"
                       class="btn btn-success mr-0"
-                      v-if="confirm"
+                      v-if="!loading && confirm"
                     >
                       {{ $t("create_agree") }}
                       <i class="fa fa-file-contract"></i>
+                    </button>
+                    <button
+                      v-if="loading && confirm"
+                      type="button"
+                      class="btn btn-success mr-0"
+                    >
+                      {{ $t("create_agree") }}
+                      <i class="fas fa-spinner fa-spin"></i>
                     </button>
                   </div>
                 </div>
@@ -1343,6 +1398,7 @@ export default {
         contract: null,
         contract_path: null,
       },
+      loading: false,
     };
   },
 
@@ -1569,7 +1625,6 @@ export default {
     },
     async sendForm() {
       if (this.client.discount.id === null) return;
-
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text_agree"),
@@ -1578,6 +1633,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_agree"),
       }).then((result) => {
         if (result.value) {
+          this.loading = true;
           const formData = new FormData();
 
           if (this.apartment.order.id)
@@ -1670,18 +1726,17 @@ export default {
             formData.append("payment_date", this.client.payment_date);
 
           // if (this.date_change) {
-            formData.append("date_change", 1);
-            formData.append(
-              "contract_number",
-              this.apartment_edit.contract_number
-            );
-            formData.append("contract_date", this.apartment_edit.contract_date);
+          formData.append("date_change", 1);
+          formData.append(
+            "contract_number",
+            this.apartment_edit.contract_number
+          );
+          formData.append("contract_date", this.apartment_edit.contract_date);
           // }
 
           if (this.step === 3 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);
           }
-
           this.axios
             .post(
               process.env.VUE_APP_URL + "/orders/" + this.apartment.id,
@@ -1689,12 +1744,14 @@ export default {
               this.header
             )
             .then((response) => {
+              this.loading = false;
               this.toasted(response.data.message, "success");
               this.$bvModal.hide("modal-agree");
               this.contract = response.data;
               this.$bvModal.show("modal-success-agree");
             })
             .catch((error) => {
+              this.loading = false;
               if (!error.response) {
                 this.toasted("Error: Network Error", "error");
               } else {
@@ -1976,38 +2033,32 @@ export default {
 
     textToLatin_last_name_kirill(value) {
       if (this.client.last_name.lotin.length === 0) {
-        console.log(value);
         this.client.last_name.lotin = this.translateTextToLatin(value);
       }
     },
     textToLatin_first_name_kirill(value) {
       if (this.client.first_name.lotin.length === 0) {
-        console.log(2);
         this.client.first_name.lotin = this.translateTextToLatin(value);
       }
     },
     textToLatin_second_name_kirill(value) {
       if (this.client.second_name.lotin.length === 0) {
-        console.log(3);
         this.client.second_name.lotin = this.translateTextToLatin(value);
       }
     },
 
     textToCyrillic_last_name_lotin(value) {
       if (this.client.last_name.kirill.length === 0) {
-        console.log(4);
         this.client.last_name.kirill = this.translateTextToCyrillic(value);
       }
     },
     textToCyrillic_first_name_lotin(value) {
       if (this.client.first_name.kirill.length === 0) {
-        console.log(5);
         this.client.first_name.kirill = this.translateTextToCyrillic(value);
       }
     },
     textToCyrillic_second_name_lotin(value) {
       if (this.client.second_name.kirill.length === 0) {
-        console.log(6);
         this.client.second_name.kirill = this.translateTextToCyrillic(value);
       }
     },
@@ -2022,7 +2073,6 @@ export default {
     },
 
     translateTextToLatin(value) {
-      console.log('value', value);
       return this.symbolCyrillicToLatin(value);
     },
     translateTextToCyrillic(value) {

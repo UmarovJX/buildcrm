@@ -2,6 +2,9 @@
   <main>
     <div class="app-content print-page">
       <div ref="document" id="printMe" :class="{'map-active': isMapActive}">
+        <h3 class="text-center heading-for-print">
+          "Xon Saroy" - Уверенный шаг к вашим мечтам!
+        </h3>
         <div class="row">
           <div class="col-md-9 pr-md-0 object-detail">
             <div class="new-object mb-0">
@@ -36,7 +39,9 @@
                         Адрес: {{ getApartment.object.address }}
                       </p>
                       <!-- Status -->
-                      <div class="building__info d-flex align-items-center">
+                      <div
+                        class="building__info building__info-for-print d-flex align-items-center"
+                      >
                         <p>
                           <i style="color: #4C0852" class="far fa-spinner"></i>
                           {{ $t("apartments.view.status") }}:
@@ -144,12 +149,174 @@
                         </h5>
                       </div>
                     </div>
+
+                    <div class="datas-for-print">
+                      <div class="table-for-print">
+                        <hr />
+                        <h4>Условия оплаты</h4>
+                        <table class="table">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th>Вариант оплаты</th>
+                              <th>Цена продажы за м2</th>
+                              <th>Скидка за м2</th>
+                              <th>Итого</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{{ calc.prepay_percente }}%</td>
+                              <td>
+                                {{
+                                  calc.price_for_m2
+                                    | number("0,0.00", {
+                                      thousandsSeparator: " ",
+                                      decimalSeparator: ",",
+                                    })
+                                }}
+                                сум
+                              </td>
+                              <td>
+                                {{
+                                  calc.discount_price
+                                    | number("0,0.00", {
+                                      thousandsSeparator: " ",
+                                      decimalSeparator: ",",
+                                    })
+                                }}
+                                сум
+                              </td>
+                              <td>
+                                {{
+                                  calc.total
+                                    | number("0,0.00", {
+                                      thousandsSeparator: " ",
+                                      decimalSeparator: ",",
+                                    })
+                                }}
+                                сум
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div
+                        class="table-for-print pt-5"
+                        v-show="calc.prepay_percente !== 100"
+                      >
+                        <table class="table">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th>Число</th>
+                              <th>Тип оплаты</th>
+                              <th>Сумма оплаты</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>-</td>
+                              <td>Первый взнос</td>
+                              <td>
+                                {{
+                                  calc.prepay
+                                    | number("0,0.00", {
+                                      thousandsSeparator: " ",
+                                      decimalSeparator: ",",
+                                    })
+                                }}
+                                сум
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>{{ calc.month }} месяцев</td>
+                              <td>Ежемесячная</td>
+                              <td>
+                                {{
+                                  calc.monthly_price
+                                    | number("0,0.00", {
+                                      thousandsSeparator: " ",
+                                      decimalSeparator: ",",
+                                    })
+                                }}
+                                сум
+                              </td>
+                            </tr>
+                            <tr>
+                              <!-- <td></td> -->
+                              <td colspan="2">Итого</td>
+                              <td>
+                                {{
+                                  calc.total
+                                    | number("0,0.00", {
+                                      thousandsSeparator: " ",
+                                      decimalSeparator: ",",
+                                    })
+                                }}
+                                сум
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="socials-for-print">
+                        <hr />
+                        <h4>Свяжитесь с нами!</h4>
+                        <ul>
+                          <li>
+                            <a href="https://xonsaroy.uz"
+                              ><i
+                                style="color: #4C0852"
+                                class="far fa-globe"
+                              ></i>
+                              Xonsaroy.uz</a
+                            >
+                          </li>
+                          <li>
+                            <a href="https://www.instagram.com/xonsaroyuz/"
+                              ><i
+                                style="color: #4C0852"
+                                class="fab fa-instagram"
+                              ></i>
+                              Xonsaroyuz</a
+                            >
+                          </li>
+                          <li>
+                            <a href="https://www.facebook.com/xonsaroyuz"
+                              ><i
+                                style="color: #4C0852"
+                                class="fab fa-facebook"
+                              ></i>
+                              Xonsaroyuz</a
+                            >
+                          </li>
+                          <li>
+                            <a href="https://t.me/xonsaroyuz"
+                              ><i
+                                style="color: #4C0852"
+                                class="fab fa-telegram"
+                              ></i>
+                              Xonsaroyuz</a
+                            >
+                          </li>
+                          <li>
+                            <a href="tel:+998555017400"
+                              ><i
+                                style="color: #4C0852"
+                                class="far fa-phone-alt"
+                              ></i>
+                              +998 55 501 74 00</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4 Calc">
                     <!-- Calc -->
                     <Discount
                       v-if="getApartment"
                       :apartment="getApartment"
+                      @getCalData="getCalData"
                     ></Discount>
                   </div>
                 </div>
@@ -376,6 +543,17 @@ export default {
         },
       },
 
+      calc: {
+        debt: 0,
+        discount_price: 0,
+        month: 0,
+        monthly_price: 0,
+        prepay: 0,
+        prepay_percente: 0,
+        price_for_m2: 0,
+        total: 0,
+      },
+
       isMapActive: false,
     };
   },
@@ -400,11 +578,17 @@ export default {
   },
   methods: {
     ...mapActions(["fetchApartment", "fetchReserveClient"]),
+    getCalData(data) {
+      this.calc = data;
+      console.log(this.calc);
+    },
+
     momentQuarter(val) {
       return this.$moment(val).quarter();
     },
 
     printPage() {
+      this.getCalData()
       window.print();
     },
 

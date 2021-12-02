@@ -630,7 +630,26 @@
   color: #2ef413;
 }
 
+.socials-for-print {
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+.heading-for-print, .datas-for-print {
+  display: none;
+}
+
 @media print {
+  .heading-for-print, .datas-for-print {
+    display: block;
+  }
+
+  .building__info-for-print {
+    display: none !important;
+  }
+
   #app > div,
   .navbar,
   .menu-expanded,
@@ -646,6 +665,11 @@
     padding: 0;
 
     #printMe {
+      ul li {
+        a {
+          text-decoration: none !important;
+        }
+      }
       .map {
         display: none;
       }
@@ -667,13 +691,27 @@
       .col-lg-8 {
         border-right: unset !important;
       }
+
+      .building__img {
+        height: 400px;
+        margin-bottom: 50px;
+      }
+
       .object-calculator {
         display: none;
       }
 
-      .building__img {
-        height: 500px;
-        margin-bottom: 50px;
+      .table {
+        .thead-dark th {
+          color: #fff !important;
+          background-color: #343a40 !important;
+          border: 1px solid #454d55 !important;
+          -webkit-print-color-adjust: exact !important;
+        }
+        tbody td {
+          border: 1px solid rgba(0, 0, 0, 0.1) !important;
+          -webkit-print-color-adjust: exact !important;
+        }
       }
     }
   }
