@@ -579,7 +579,6 @@ export default {
   methods: {
     ...mapActions(["fetchApartment", "fetchReserveClient"]),
     getCalData(data) {
-      console.log(data);
       this.calc = {
         ...data,
       };

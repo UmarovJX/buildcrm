@@ -81,7 +81,7 @@
           :empty-text="$t('no_data')"
           @sort-changed="sortingChanged"
           @scroll.native="handleScroll"
-          selectable
+          :selectable="selectable"
           :select-mode="selectMode"
           @row-selected="onRowSelected"
         >
@@ -352,7 +352,8 @@ export default {
 
   data() {
     return {
-      selectMode: 'single',
+      selectMode: "single",
+      selectable: true,
       selected: {
         view: false,
         confirm: false,
@@ -440,7 +441,6 @@ export default {
       ...this.$route.query,
     };
     this.currentPage = Number(this.filter.page);
-
   },
 
   computed: {
@@ -463,20 +463,20 @@ export default {
   methods: {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
     multiSelectOn() {
-      this.selected.view = true
-      // this.selectMode = 'multi'
+      this.selected.view = true;
+      this.selectable = false
     },
     multiSelectOff() {
-      this.selected.view = false
+      this.selected.view = false;
       this.selected.values = [];
-      // this.selectMode = 'single'
+      this.selectable = true
     },
     onRowSelected(items) {
       // console.log(items);
       this.$router.push({
-        name: 'apartments-view',
+        name: "apartments-view",
         params: {id: items[0].id},
-      })
+      });
     },
     async PageCallBack(event) {
       this.scrollActive = false;
@@ -692,6 +692,4 @@ table tbody th {
     }
   }
 }
-
-
 </style>

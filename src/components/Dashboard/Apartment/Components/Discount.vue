@@ -210,7 +210,6 @@ export default {
   },
   methods: {
     async initialCalc() {
-      console.log(this.discount);
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
           //console.log

@@ -40,9 +40,7 @@
 export default {
   props: ["contract"],
   mounted() {
-    this.$root.$on("bv::modal::hide", (bvEvent, modalId) => {
-      console.log("Modal is about to be shown", bvEvent, modalId);
-    });
+    this.$root.$on("bv::modal::hide");
   },
   methods: {
     resetModal() {
