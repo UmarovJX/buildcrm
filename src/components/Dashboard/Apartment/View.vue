@@ -579,8 +579,10 @@ export default {
   methods: {
     ...mapActions(["fetchApartment", "fetchReserveClient"]),
     getCalData(data) {
-      this.calc = data;
-      console.log(this.calc);
+      console.log(data);
+      this.calc = {
+        ...data,
+      };
     },
 
     momentQuarter(val) {
@@ -588,7 +590,6 @@ export default {
     },
 
     printPage() {
-      this.getCalData()
       window.print();
     },
 
