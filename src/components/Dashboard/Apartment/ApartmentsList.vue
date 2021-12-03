@@ -17,7 +17,7 @@
           <button
             v-if="!selected.view && getPermission.apartments.contract"
             class="btn btn-secondary mr-md-2 mr-0 mt-md-0 order-2"
-            @click="selected.view = true"
+            @click="multiSelectOn"
           >
             <i class="far fa-list"></i> {{ $t("apartments.list.choose") }}
           </button>
@@ -40,7 +40,7 @@
           <button
             v-if="selected.view && getPermission.apartments.contract"
             class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-4"
-            @click="[(selected.view = false), (selected.values = [])]"
+            @click="multiSelectOff"
           >
             <i class="far fa-redo"></i> {{ $t("apartments.list.reset") }}
           </button>
@@ -91,16 +91,18 @@
             }}</span>
           </template>
 
-          <template #cell(number)="data">
-            <b-form-checkbox
-              v-if="selected.view && data.item.order.status === 'available'"
-              :id="'checkbox-' + data.item.id"
-              v-model="selected.values"
-              :name="'checkbox-' + data.item.id"
-              :value="data.item.id"
-              class="float-left"
-            ></b-form-checkbox>
-            {{ data.item.number }}
+          <template #cell(number)="data" class="p-0">
+            <div class="table-multi-select">
+              <b-form-checkbox
+                title="Выберите"
+                v-if="selected.view && data.item.order.status === 'available'"
+                :id="'checkbox-' + data.item.id"
+                v-model="selected.values"
+                :name="'checkbox-' + data.item.id"
+                :value="data.item.id"
+              ></b-form-checkbox>
+              <span>{{ data.item.number }}</span>
+            </div>
           </template>
 
           <template #cell(area)="data">
@@ -460,8 +462,17 @@ export default {
 
   methods: {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    multiSelectOn() {
+      this.selected.view = true
+      // this.selectMode = 'multi'
+    },
+    multiSelectOff() {
+      this.selected.view = false
+      this.selected.values = [];
+      // this.selectMode = 'single'
+    },
     onRowSelected(items) {
-      console.log(items);
+      // console.log(items);
       this.$router.push({
         name: 'apartments-view',
         params: {id: items[0].id},
@@ -681,4 +692,6 @@ table tbody th {
     }
   }
 }
+
+
 </style>
