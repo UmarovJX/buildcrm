@@ -203,6 +203,33 @@
 
                   <router-link
                     :to="{
+                      name: 'apartments-view',
+                      params: {id: data.item.id},
+                    }"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    v-if="
+                      ((data.item.order.status != 'sold' ||
+                        data.item.order.status != 'contract') &&
+                        data.item.order.status === 'booked' &&
+                        data.item.order.user_id === getMe.user.id &&
+                        getPermission.apartments.contract) ||
+                        (!(
+                          data.item.order.status == 'sold' ||
+                          data.item.order.status == 'contract'
+                        ) &&
+                          getPermission.apartments.root_contract) ||
+                        ((data.item.order.status != 'sold' ||
+                          data.item.order.status != 'contract') &&
+                          data.item.order.status === 'available' &&
+                          getPermission.apartments.contract)
+                    "
+                  >
+                    <i class="far fa-eye"></i>
+                    {{ $t("apartments.list.more") }}
+                  </router-link>
+
+                  <router-link
+                    :to="{
                       name: 'confirm-apartment',
                       params: {id: data.item.id},
                     }"
@@ -248,6 +275,8 @@
                     <i class="far fa-eye"></i>
                     {{ $t("apartments.list.more") }}
                   </router-link>
+
+                  
                 </div>
               </div>
             </div>
