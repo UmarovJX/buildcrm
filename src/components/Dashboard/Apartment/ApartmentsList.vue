@@ -81,6 +81,9 @@
           :empty-text="$t('no_data')"
           @sort-changed="sortingChanged"
           @scroll.native="handleScroll"
+          selectable
+          :select-mode="selectMode"
+          @row-selected="onRowSelected"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">{{
@@ -198,7 +201,7 @@
 
                   <router-link
                     :to="{
-                      name: 'apartments-view',
+                      name: 'confirm-apartment',
                       params: {id: data.item.id},
                     }"
                     :class="'dropdown-item dropdown-item--inside'"
@@ -219,7 +222,6 @@
                           getPermission.apartments.contract)
                     "
                   >
-                    <!--                                            apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id && getPermission.apartments.contract || apartment.order.status != 'sold' && getPermission.apartments.root_contract || apartment.order.status === 'available' && getPermission.apartments.contract-->
                     <i class="far fa-ballot-check"></i>
                     {{ $t("apartments.list.confirm") }}
                   </router-link>
@@ -348,6 +350,7 @@ export default {
 
   data() {
     return {
+      selectMode: 'single',
       selected: {
         view: false,
         confirm: false,
@@ -457,6 +460,13 @@ export default {
 
   methods: {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    onRowSelected(items) {
+      console.log(items);
+      this.$router.push({
+        name: 'apartments-view',
+        params: {id: items[0].id},
+      })
+    },
     async PageCallBack(event) {
       this.scrollActive = false;
       this.page = event;
