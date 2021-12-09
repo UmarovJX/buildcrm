@@ -406,7 +406,7 @@ export default {
       are_you_sure_delete_role:
         "Если удалите роль вы должны назначить новый ролей пользователем",
       // 'text_cancel_contract': 'Вы действительно хотите расторгнуть контракт',
-
+      payment_edit: "Редактировать оплату",
       debtors: {
         payment_info: "Сумма оплаты!",
         payment_edit: "Редактировать оплату",
