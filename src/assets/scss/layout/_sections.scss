@@ -2,7 +2,7 @@
   border: none;
   margin-bottom: 2rem;
   box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
-  background-color: #fff;
+  background-color: var(--background-color);
   background-clip: border-box;
   border-radius: 0.428rem;
   padding: 1rem;
@@ -10,7 +10,6 @@
     padding-left: 0;
     padding-right: 0;
   }
-
 }
 
 .app-content {
@@ -32,7 +31,7 @@ table.b-table[aria-busy="true"] {
 .custom-table table tbody tr td {
   font-size: 16px;
   font-weight: 300;
-  color: black;
+  color: var(--link);
 }
 
 .custom-table table tr th,
@@ -43,7 +42,7 @@ table.b-table[aria-busy="true"] {
 
 .custom-table table tbody tr,
 .custom-table table thead tr {
-  background-color: white;
+  background-color: var(--background-color-nav);
   border-radius: 6px;
   box-shadow: -2px -2px 7px #ffffff73, 1px 1px 5px rgba(94, 104, 121, 0.288);
 }
@@ -54,10 +53,11 @@ table.b-table[aria-busy="true"] {
   padding-left: 25px !important;
   font-size: 14px;
   font-weight: 300;
-  color: #222222;
+  color: var(--link);
   border-bottom: 1px solid rgba(190, 190, 190, 0.336);
   text-transform: uppercase;
 }
+
 .custom-table tr {
   background-color: transparent;
   transition: all 0.3s ease-in;
@@ -114,31 +114,6 @@ table.b-table[aria-busy="true"] {
   padding-left: calc(0.75rem + 0.65em);
 }
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.pagination .page-item a {
-  margin: 0 5px;
-  border: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 6px !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: -2px -2px 7px #ffffff73, 1px 1px 5px rgba(94, 104, 121, 0.288);
-}
-.pagination .page-item.active a {
-  background-color: $primary;
-  border-color: $primary;
-}
-
-.page-link:focus {
-  box-shadow: unset !important;
-}
-
 .fixed-menu,
 .object__link {
   box-shadow: 0 0 15px 0 rgba(34, 41, 47, 0.05);
@@ -146,4 +121,16 @@ table.b-table[aria-busy="true"] {
 
 select.form-control {
   height: 45px !important;
+}
+
+.dark-theme {
+  .custom-table table tbody tr:hover {
+    background-color: transparent;
+    box-shadow: 0px 3px 9px 1px rgba(5, 8, 9, 0.08);
+  }
+
+  .custom-table table tbody tr,
+  .custom-table table thead tr {
+    box-shadow: -2px -2px 7px #ffffff10, 1px 1px 5px rgba(94, 104, 121, 0.658);
+  }
 }

@@ -117,6 +117,7 @@ export default {
           header
         );
         const client = response.data;
+        console.log(client);
         ctx.commit("updateReserveClient", client);
       } catch (error) {
         if (!error.response) {

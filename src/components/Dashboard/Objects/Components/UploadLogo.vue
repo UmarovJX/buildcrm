@@ -30,7 +30,7 @@
           />
         </div>
 
-        <div class="float-right mt-3">
+        <div class="d-flex justify-content-center mt-3">
           <b-button variant="light" @click="resetModal">
             {{ $t("cancel") }}
           </b-button>

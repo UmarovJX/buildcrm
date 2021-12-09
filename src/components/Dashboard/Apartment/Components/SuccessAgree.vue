@@ -12,12 +12,9 @@
       </div>
       <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0">{{ contract.contract }}.docx</h6>
-        <a
-          @click="goApartment"
-          :href="contract.contract_path"
-          class="my-download"
-          ><i class="far fa-download"></i> <span>Скачать</span></a
-        >
+        <button @click="goApartment" class="my-download btn btn-link">
+          <i class="far fa-download"></i> <span>Скачать</span>
+        </button>
       </div>
 
       <div
@@ -45,16 +42,21 @@ export default {
   methods: {
     resetModal() {
       this.$bvModal.hide("modal-success-agree");
-      this.$router.push({
-        name: "apartments-view",
-        params: {id: this.$route.params.id},
-      });
+      if (this.$route.name === "confirm-apartment") {
+        this.$router.push({
+          name: "apartments-view",
+          params: {id: this.$route.params.id},
+        });
+      }
     },
     goApartment() {
-      this.$router.push({
-        name: "apartments-view",
-        params: {id: this.$route.params.id},
-      });
+      this.$bvModal.hide("modal-success-agree");
+      if (this.$route.name === "confirm-apartment") {
+        this.$router.push({
+          name: "apartments-view",
+          params: {id: this.$route.params.id},
+        });
+      }
     },
   },
 };

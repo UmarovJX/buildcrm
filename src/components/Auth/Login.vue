@@ -29,7 +29,7 @@
         </div>
         <div class="col-md-4">
           <div class="d-flex justify-content-center align-items-center h-100">
-            <form method="post" @submit.prevent="Login" class="">
+            <form method="post" @submit.prevent="Login" class="login-form">
               <div class="form">
                 <div class="form-group">
                   <label>{{ $t("auth.email") }}</label>
@@ -101,7 +101,7 @@ export default {
           vm.toasted(response.data.message, "success");
           vm.$router.push("/home");
         })
-        .catch(function (error) {
+        .catch(function(error) {
           if (!error.response) {
             vm.toasted("Error: Network Error", "error");
           } else {
@@ -154,6 +154,13 @@ form {
 @media screen and (max-width: 576px) {
   .container {
     margin-top: -100px;
+  }
+}
+.dark-theme {
+  .login-form {
+    label {
+      color: #dfdfdf;
+    }
   }
 }
 </style>

@@ -1,66 +1,64 @@
 <template>
-  <div class="bg-white p-0">
-    <div class="">
-      <div class="apartment__info">
-        Предоплата: <span> {{ discount.prepay }}%</span>
-      </div>
+  <div class="">
+    <div class="apartment__info">
+      Предоплата: <span> {{ discount.prepay }}%</span>
+    </div>
 
-      <div class="apartment__info mt-2">
-        Первый взнос -
-        <span
-          >{{
-            getPrepay()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
-          }}
-          {{ $t("ye") }}</span
-        >
-      </div>
+    <div class="apartment__info mt-2">
+      Первый взнос -
+      <span
+        >{{
+          getPrepay()
+            | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
+        }}
+        {{ $t("ye") }}</span
+      >
+    </div>
 
-      <div class="apartment__info mt-2" v-if="discount.amount > 0">
-        Ежемесячный:
-        <span
-          >{{ apartment.object.credit_month }} месяцев
-          {{
-            getMonth()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
-          }}
-          {{ $t("ye") }}
-        </span>
-      </div>
+    <div class="apartment__info mt-2" v-if="discount.amount > 0">
+      Ежемесячный:
+      <span
+        >{{ apartment.object.credit_month }} месяцев
+        {{
+          getMonth()
+            | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
+        }}
+        {{ $t("ye") }}
+      </span>
+    </div>
 
-      <div class="apartment__info mt-2" v-if="discount.amount > 0">
-        Остаток:
-        <span
-          >{{
-            getDebt()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
-          }}
-          {{ $t("ye") }}</span
-        >
-      </div>
+    <div class="apartment__info mt-2" v-if="discount.amount > 0">
+      Остаток:
+      <span
+        >{{
+          getDebt()
+            | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
+        }}
+        {{ $t("ye") }}</span
+      >
+    </div>
 
-      <div class="apartment__info mt-2">
-        Итого:
-        <span
-          >{{
-            getTotal()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
-          }}
-          {{ $t("ye") }}</span
-        >
-      </div>
+    <div class="apartment__info mt-2">
+      Итого:
+      <span
+        >{{
+          getTotal()
+            | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
+        }}
+        {{ $t("ye") }}</span
+      >
     </div>
   </div>
 </template>
@@ -119,7 +117,7 @@ export default {
     // },
 
     getPrepay() {
-      //if (this.discount.prepay === 100) return 0;    
+      //if (this.discount.prepay === 100) return 0;
       let total_discount = this.getDiscount();
 
       let total = 0;
@@ -138,10 +136,13 @@ export default {
     getDiscount() {
       if (this.discount.prepay === 100) return 1;
 
-      return 1 - (this.discount.amount / 100);
+      return 1 - this.discount.amount / 100;
     },
     getMonth() {
-      return (this.getTotal() - this.getPrepay()) / this.apartment.object.credit_month;
+      return (
+        (this.getTotal() - this.getPrepay()) /
+        this.apartment.object.credit_month
+      );
     },
     getDebt() {
       return this.getTotal() - this.getPrepay();

@@ -7,20 +7,20 @@
     border-radius: 0;
     background-color: unset;
     position: relative;
+    background-color: var(--background-color-nav) !important;
   }
 
   .modal-body {
     border: 0;
     border-radius: 5px;
-    background-color: white;
-    -webkit-box-shadow: 0px 9px 8.5px 1.5px rgba(5, 8, 9, 0.15);
+    background-color: var(--background-color-nav) !important;
     box-shadow: 0px 9px 8.5px 1.5px rgba(5, 8, 9, 0.15);
   }
 
   .modal-body p {
     font-size: 22px;
     font-weight: 300;
-    color: #222222;
+    color: var(--link);
     margin-top: 5px;
     margin-bottom: 5px;
     line-height: 1.5;
@@ -41,7 +41,7 @@
   }
 
   .modal-header {
-    background-color: white;
+    background-color: var(--background-color-nav) !important;
   }
 
   display: unset !important;
@@ -86,5 +86,13 @@
     .modal-open .modal-dialog {
       transform: translateX(-100%) !important;
     }
+  }
+}
+
+.modal-content {
+  background-color: var(--background-color-nav);
+
+  * {
+    color: var(--link);
   }
 }

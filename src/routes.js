@@ -106,10 +106,9 @@ const routes = [
   },
   {
     name: "confirm-apartment",
-    path: "/objects/:object/apartments/:id/confirm-apartment",
+    path: "/orders/:id/checkout",
     component: ConfirmApartment,
   },
-
   {
     name: "users",
     path: "/users",

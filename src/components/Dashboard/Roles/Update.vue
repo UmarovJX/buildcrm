@@ -505,6 +505,19 @@
                       ></b-form-checkbox>
                     </td>
                   </tr>
+                  <tr>
+                    <td width="50%">
+                      Разрешить полный доступ к бронированию
+                    </td>
+
+                    <td width="50%">
+                      <b-form-checkbox
+                        switch
+                        v-model="role.permissions.apartments.root_reserve"
+                        size="lg"
+                      ></b-form-checkbox>
+                    </td>
+                  </tr>
                 </tbody>
               </table> </b-tab
             ><!--apartments-->
@@ -848,7 +861,7 @@ export default {
         };
       }
 
-      if (!this.role.permissions.debtors.first_payment.edit) {
+      if (!this.role.permissions.debtors?.first_payment?.edit) {
         this.role.permissions.debtors = {
           view: false,
           first_payment: {

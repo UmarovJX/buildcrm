@@ -29,7 +29,7 @@
                 selected.values.length > 1 &&
                 getPermission.apartments.contract
             "
-            @click="selected.confirm = true"
+            @click="orderHold(this.selected.values)"
             variant="success"
             class="btn btn-primary mr-md-2 mr-0 mt-md-0 order-3"
           >
@@ -151,6 +151,7 @@
                 </button>
 
                 <div class="dropdown-menu">
+                  <!-- Редактировать -->
                   <b-link
                     class="dropdown-item dropdown-item--inside"
                     @click="[(edit = true), (apartment_id = data.item.id)]"
@@ -160,6 +161,7 @@
                     <i class="far fa-pencil"></i> {{ $t("edit") }}
                   </b-link>
 
+                  <!--  Забронировать -->
                   <b-link
                     v-if="
                       getPermission.apartments.reserve &&
@@ -173,6 +175,7 @@
                     {{ $t("apartments.list.book") }}
                   </b-link>
 
+                  <!-- Посмотреть клиент  -->
                   <b-link
                     v-if="
                       (data.item.order.status === 'booked' &&
@@ -188,6 +191,7 @@
                     {{ $t("apartments.list.view_client") }}
                   </b-link>
 
+                  <!--  Информация о менеджера  -->
                   <b-link
                     v-if="
                       data.item.order.status === 'booked' &&
@@ -201,60 +205,7 @@
                     {{ $t("apartments.list.view_manager") }}
                   </b-link>
 
-                  <router-link
-                    :to="{
-                      name: 'apartments-view',
-                      params: {id: data.item.id},
-                    }"
-                    :class="'dropdown-item dropdown-item--inside'"
-                    v-if="
-                      ((data.item.order.status != 'sold' ||
-                        data.item.order.status != 'contract') &&
-                        data.item.order.status === 'booked' &&
-                        data.item.order.user_id === getMe.user.id &&
-                        getPermission.apartments.contract) ||
-                        (!(
-                          data.item.order.status == 'sold' ||
-                          data.item.order.status == 'contract'
-                        ) &&
-                          getPermission.apartments.root_contract) ||
-                        ((data.item.order.status != 'sold' ||
-                          data.item.order.status != 'contract') &&
-                          data.item.order.status === 'available' &&
-                          getPermission.apartments.contract)
-                    "
-                  >
-                    <i class="far fa-eye"></i>
-                    {{ $t("apartments.list.more") }}
-                  </router-link>
-
-                  <router-link
-                    :to="{
-                      name: 'confirm-apartment',
-                      params: {id: data.item.id},
-                    }"
-                    :class="'dropdown-item dropdown-item--inside'"
-                    v-if="
-                      ((data.item.order.status != 'sold' ||
-                        data.item.order.status != 'contract') &&
-                        data.item.order.status === 'booked' &&
-                        data.item.order.user_id === getMe.user.id &&
-                        getPermission.apartments.contract) ||
-                        (!(
-                          data.item.order.status == 'sold' ||
-                          data.item.order.status == 'contract'
-                        ) &&
-                          getPermission.apartments.root_contract) ||
-                        ((data.item.order.status != 'sold' ||
-                          data.item.order.status != 'contract') &&
-                          data.item.order.status === 'available' &&
-                          getPermission.apartments.contract)
-                    "
-                  >
-                    <i class="far fa-ballot-check"></i>
-                    {{ $t("apartments.list.confirm") }}
-                  </router-link>
-
+                  <!--  Подробная информация  -->
                   <router-link
                     :to="{
                       name: 'apartments-view',
@@ -276,7 +227,85 @@
                     {{ $t("apartments.list.more") }}
                   </router-link>
 
-                  
+                  <!-- Подробная информация  -->
+                  <router-link
+                    :to="{
+                      name: 'apartments-view',
+                      params: {id: data.item.id},
+                    }"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    v-else-if="
+                      ((data.item.order.status != 'sold' ||
+                        data.item.order.status != 'contract') &&
+                        data.item.order.status === 'booked' &&
+                        data.item.order.user_id === getMe.user.id &&
+                        getPermission.apartments.contract) ||
+                        (!(
+                          data.item.order.status == 'sold' ||
+                          data.item.order.status == 'contract'
+                        ) &&
+                          getPermission.apartments.root_contract) ||
+                        ((data.item.order.status != 'sold' ||
+                          data.item.order.status != 'contract') &&
+                          data.item.order.status === 'available' &&
+                          getPermission.apartments.contract)
+                    "
+                  >
+                    <i class="far fa-eye"></i>
+                    {{ $t("apartments.list.more") }}
+                  </router-link>
+
+                  <!--  Оформить  -->
+                  <b-link
+                    @click="orderHold([data.item.id])"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    v-if="
+                      (((data.item.order.status != 'sold' ||
+                        data.item.order.status != 'contract') &&
+                        data.item.order.status === 'booked' &&
+                        data.item.order.user_id === getMe.user.id &&
+                        getPermission.apartments.contract) ||
+                        (!(
+                          data.item.order.status == 'sold' ||
+                          data.item.order.status == 'contract'
+                        ) &&
+                          getPermission.apartments.root_contract) ||
+                        ((data.item.order.status != 'sold' ||
+                          data.item.order.status != 'contract') &&
+                          data.item.order.status === 'available' &&
+                          getPermission.apartments.contract)) &&
+                        data.item.order.status !== 'hold'
+                    "
+                  >
+                    <i class="far fa-ballot-check"></i>
+                    {{ $t("apartments.list.confirm") }}
+                  </b-link>
+
+                  <!--  Оформить  -->
+                  <b-link
+                    @click="goOrderHold([data.item.order.id])"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    v-if="
+                      (((data.item.order.status != 'sold' ||
+                        data.item.order.status != 'contract') &&
+                        data.item.order.status === 'booked' &&
+                        data.item.order.user_id === getMe.user.id &&
+                        getPermission.apartments.contract) ||
+                        (!(
+                          data.item.order.status == 'sold' ||
+                          data.item.order.status == 'contract'
+                        ) &&
+                          getPermission.apartments.root_contract) ||
+                        ((data.item.order.status != 'sold' ||
+                          data.item.order.status != 'contract') &&
+                          data.item.order.status === 'available' &&
+                          getPermission.apartments.contract)) &&
+                        data.item.order.status === 'hold'
+                    "
+                  >
+                    <i class="far fa-ballot-check"></i>
+                    Продолжить оформление
+                  </b-link>
                 </div>
               </div>
             </div>
@@ -462,6 +491,11 @@ export default {
       sortDesc: false,
       currentPage: 1,
       scrollActive: true,
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
+        },
+      },
     };
   },
 
@@ -491,14 +525,45 @@ export default {
 
   methods: {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    async orderHold(arr) {
+      await this.axios
+        .post(
+          process.env.VUE_APP_URL + "/orders/hold",
+          {
+            apartments: arr,
+          },
+          this.header
+        )
+        .then((res) => {
+          if (res) {
+            // localStorage.setItem("order", JSON.stringify(res.data));
+            this.$router.push({
+              name: "confirm-apartment",
+              params: {id: res.data.uuid},
+            });
+            this.selected.view = false;
+            this.selected.values = [];
+            this.selectable = true;
+          }
+        });
+    },
+    goOrderHold(order_id) {
+      this.$router.push({
+        name: "confirm-apartment",
+        params: {id: order_id},
+      });
+      this.selected.view = false;
+      this.selected.values = [];
+      this.selectable = true;
+    },
     multiSelectOn() {
       this.selected.view = true;
-      this.selectable = false
+      this.selectable = false;
     },
     multiSelectOff() {
       this.selected.view = false;
       this.selected.values = [];
-      this.selectable = true
+      this.selectable = true;
     },
     onRowSelected(items) {
       // console.log(items);
@@ -560,6 +625,7 @@ export default {
     },
 
     rowClass(item, type) {
+      console.log(item.order.status);
       if (item && type === "row") {
         if (item.order.status === "booked") {
           return "";
@@ -569,6 +635,9 @@ export default {
         }
         if (item.order.status === "sold") {
           return "table-success";
+        }
+        if (item.order.status === "hold") {
+          return "table-warning";
         }
       } else {
         return null;
@@ -650,14 +719,13 @@ export default {
     },
 
     async successAgree(value) {
-      this.selected.confirm = false;
-      this.selected.values = [];
-
       this.contract = value;
-
       await this.fetchApartments(this);
-
       this.$bvModal.show("modal-success-agree");
+      this.selected.confirm = false;
+      this.selected.view = false;
+      this.selected.values = [];
+      this.selectable = true;
     },
   },
 
@@ -676,6 +744,9 @@ export default {
           break;
         case "contract":
           msg = "Ждет оплата";
+          break;
+        case "hold":
+          msg = "Оформляется...";
           break;
         default:
           msg = "Свободен";
@@ -697,7 +768,7 @@ table thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: #fff;
+  background-color: var(--background-color-nav);
 }
 .my-table thead tr th {
   padding-top: 20px;

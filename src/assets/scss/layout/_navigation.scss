@@ -1,5 +1,5 @@
 .navbar {
-  background-color: $primary;
+  background-color: var(--background-color-navbar);
   box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
   position: relative;
   z-index: 12;
@@ -10,7 +10,8 @@
 }
 
 .fixed-menu {
-  background: #fff;
+  // background: #fff;
+  background-color: var(--background-color-nav);
   height: 100%;
   padding: 0px 0 10px;
   width: 260px;
@@ -21,7 +22,7 @@
   transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background 0s;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  box-shadow: 0 0 15px 0 rgba(34, 41, 47, 0.05);
+  box-shadow: 0 0 15px 0 var(--white);
   .menu {
     overflow-y: auto;
   }
@@ -41,7 +42,7 @@
   .menu__item a i {
     font-size: 22px;
     width: 24px;
-    color: #625f6e;
+    color: var(--dark);
     margin-right: 1.1rem;
     flex-shrink: 0;
   }
@@ -104,10 +105,10 @@
   }
 
   .menu__name {
-    color: $primary;
+    color: var(--primary);
     font-size: 13px;
     font-weight: 500;
-    color: #222222;
+    color: var(--dark);
   }
 
   .menu__count {
@@ -171,7 +172,7 @@
     line-height: inherit;
     white-space: nowrap;
     margin-bottom: 0;
-    color: $primary;
+    color: var(--primary);
   }
 
   .nav-toggle {
@@ -238,10 +239,10 @@
   }
 
   .nav-toggle svg {
-    stroke: $primary;
+    stroke: var(--primary);
   }
   .nav-toggle:hover svg {
-    stroke: $primary;
+    stroke: var(--primary);
   }
 }
 
@@ -401,5 +402,11 @@
     .fixed-menu {
       left: 0;
     }
+  }
+}
+
+.dark-theme {
+  .navbar-header img, .brand-text {
+    filter: contrast(50%);
   }
 }

@@ -5,7 +5,7 @@
       class="py-4"
       ref="modal"
       :title="$t('objects.create.edit_block')"
-      size="lg"
+      size="xl"
       hide-footer
       hide-header-close
       no-close-on-backdrop

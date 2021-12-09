@@ -17,6 +17,21 @@ export default {
       const {type} = e;
       this.onLine = type === "online";
     },
+    getMediaPreference() {
+      const hasDarkPreference = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      if (hasDarkPreference) {
+        return "dark-theme";
+      } else {
+        return "light-theme";
+      }
+    },
+    setTheme(theme) {
+      localStorage.setItem("user-theme", theme);
+      this.userTheme = theme;
+      document.documentElement.className = theme;
+    },
   },
   watch: {
     onLine(v) {
@@ -40,6 +55,15 @@ export default {
     },
   },
   mounted() {
+    const initUserTheme = this.getMediaPreference();
+    const activeTheme = localStorage.getItem("user-theme");
+    if (activeTheme === "light-theme") {
+      this.setTheme("light-theme");
+    } else if (activeTheme === "dark-theme") {
+      this.setTheme("dark-theme");
+    } else {
+      this.setTheme(initUserTheme);
+    }
     window.addEventListener("online", this.updateOnlineStatus);
     window.addEventListener("offline", this.updateOnlineStatus);
   },

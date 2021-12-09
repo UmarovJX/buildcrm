@@ -23,7 +23,10 @@
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-              <div class="col-lg-3 col-md-6 mb-md-0 mb-3" v-if="getPermission.objects.view">
+              <div
+                class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                v-if="getPermission.objects.view"
+              >
                 <router-link :to="{name: 'objects'}">
                   <div class="card-counter primary">
                     <i class="far fa-building"></i>
@@ -47,7 +50,10 @@
           </router-link>
         </div> -->
 
-              <div class="col-lg-3 col-md-6 mb-md-0 mb-3" v-if="getPermission.users.view">
+              <div
+                class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                v-if="getPermission.users.view"
+              >
                 <router-link :to="{name: 'users'}">
                   <div class="card-counter success">
                     <i class="far fa-users"></i>
@@ -113,7 +119,8 @@ export default {
 .card-counter {
   box-shadow: 2px 2px 10px #dadada;
   padding: 25px 16px;
-  background-color: #fff;
+  background-color: var(--background-color-nav);
+
   height: 200px;
   transition: 0.3s linear all;
   border-radius: 0.428rem;

@@ -9,8 +9,8 @@
               <div class="building">
                 <div class="building__img">
                   <img
-                    :data-fancybox="getApartment.plan.image"
-                    v-lazy="getApartment.plan.image"
+                    :data-fancybox="getApartmentItem.plan.image"
+                    v-lazy="getApartmentItem.plan.image"
                     width="100%"
                   />
                 </div>
@@ -20,26 +20,28 @@
               <div class="building__info mt-md-0 mt-3">
                 <p>
                   {{ $t("apartments.view.number") }}:
-                  {{ getApartment.number }}
+                  {{ getApartmentItem.number }}
                 </p>
                 <p>
                   {{ $t("apartments.view.area") }}:
-                  {{ getApartment.plan.area }} м²
+                  {{ getApartmentItem.plan.area }} м²
                 </p>
                 <p>
                   {{ $t("apartments.list.balcony") }}:
-                  <span v-if="getApartment.plan.balcony">
-                    {{ getApartment.plan.balcony_area }} м²
+                  <span v-if="getApartmentItem.plan.balcony">
+                    {{ getApartmentItem.plan.balcony_area }} м²
                   </span>
                   <span v-else>
                     {{ $t("no") }}
                   </span>
                 </p>
                 <p>
-                  {{ $t("apartments.view.rooms") }}: {{ getApartment.rooms }}
+                  {{ $t("apartments.view.rooms") }}:
+                  {{ getApartmentItem.rooms }}
                 </p>
                 <p>
-                  {{ $t("apartments.view.floor") }}: {{ getApartment.floor }}
+                  {{ $t("apartments.view.floor") }}:
+                  {{ getApartmentItem.floor }}
                 </p>
               </div>
             </div>
@@ -79,12 +81,9 @@
                           aria-describedby="number-feedback"
                         ></b-form-input>
 
-                        <b-form-invalid-feedback
-                          id="number-feedback"
-                          >{{
-                            validationContext.errors[0]
-                          }}</b-form-invalid-feedback
-                        >
+                        <b-form-invalid-feedback id="number-feedback">{{
+                          validationContext.errors[0]
+                        }}</b-form-invalid-feedback>
                       </b-form-group>
                     </validation-provider>
                   </div>
@@ -112,12 +111,9 @@
                           aria-describedby="date-feedback"
                         ></b-form-input>
 
-                        <b-form-invalid-feedback
-                          id="date-feedback"
-                          >{{
-                            validationContext.errors[0]
-                          }}</b-form-invalid-feedback
-                        >
+                        <b-form-invalid-feedback id="date-feedback">{{
+                          validationContext.errors[0]
+                        }}</b-form-invalid-feedback>
                       </b-form-group>
                     </validation-provider>
                   </div>
@@ -598,7 +594,7 @@
               >
                 <DiscountCalc
                   :discount="client.discount"
-                  :apartment="apartment"
+                  :apartment="getApartmentItem"
                 ></DiscountCalc>
               </div>
 
@@ -725,8 +721,8 @@
                   d-flex
                   justify-content-between
                   align-items-center
-                  bg-white
                   sticky-top
+                  bg-custom-white
                   px-3
                   py-2
                   rounded
@@ -1032,60 +1028,85 @@
             <div class="col-xl-4 h-auto">
               <div class="sticky-top">
                 <!-- Info -->
-                <div class="new-object p-3">
-                  <table class="table mx-0 mt-2 p-0 my-table-another-variant">
-                    <tbody class="m-0 p-0">
-                      <tr>
-                        <td class="px-0 py-2">Номер паспорта</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.passport_series }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Место выдачи паспорта</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.issued_by_whom }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Дата выпуска пасспорта</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.date_of_issue }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Дата рождения</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.birth_day }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">ФИО</td>
-                        <td
-                          class="px-0 py-2 text-right"
-                          :title="
-                            `${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`
-                          "
-                        >
-                          {{ client.last_name.lotin }}
-                          {{ client.first_name.lotin }}
-                          {{ client.second_name.lotin }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Телефон номер</td>
-                        <td class="px-0 py-2 text-right">{{ client.phone }}</td>
-                      </tr>
-                      <tr>
-                        <td class="px-0 py-2">Дополнительный номер</td>
-                        <td class="px-0 py-2 text-right">
-                          {{ client.other_phone }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="new-object p-0">
+                  <div v-b-toggle.collapse-info block class="d-flex p-3">
+                    <span>Информация клиента</span>
+                    <strong v-if="isVisible" aria-hidden="true" class="ml-auto">
+                      <i class="fal fa-chevron-up"></i>
+                    </strong>
+                    <strong v-else aria-hidden="true" class="ml-auto">
+                      <i class="fal fa-chevron-down"></i>
+                    </strong>
+                  </div>
+                  <b-collapse
+                    id="collapse-info"
+                    v-model="isVisible"
+                    class="px-3 pb-3"
+                  >
+                    <table class="table mx-0 mt-2 p-0 my-table-another-variant">
+                      <tbody class="m-0 p-0">
+                        <tr>
+                          <td class="px-0 py-2">Номер паспорта</td>
+                          <td class="px-0 py-2 text-right">
+                            {{ client.passport_series }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-2">Место выдачи паспорта</td>
+                          <td class="px-0 py-2 text-right">
+                            {{ client.issued_by_whom }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-2">Дата выпуска пасспорта</td>
+                          <td class="px-0 py-2 text-right">
+                            {{ client.date_of_issue }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-2">Дата рождения</td>
+                          <td class="px-0 py-2 text-right">
+                            {{ client.birth_day }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-2">ФИО</td>
+                          <td
+                            class="px-0 py-2 text-right"
+                            :title="
+                              `${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`
+                            "
+                          >
+                            {{ client.last_name.lotin }}
+                            {{ client.first_name.lotin }}
+                            {{ client.second_name.lotin }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-2">Телефон номер</td>
+                          <td class="px-0 py-2 text-right">
+                            {{ client.phone }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="px-0 py-2">Дополнительный номер</td>
+                          <td class="px-0 py-2 text-right">
+                            {{ client.other_phone }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </b-collapse>
                 </div>
                 <div class="new-object p-3">
+                  <!-- Calc -->
+                  <Discount
+                    v-if="getApartmentItem"
+                    :apartment="getApartmentItem"
+                    @getCalData="getCalData"
+                  ></Discount>
+                </div>
+                <div class="new-object p-3 d-none">
                   <!--  Цена продажи: -->
                   <div v-if="!edit.price">
                     <h6 class="color-blue-darker mb-0">
@@ -1093,7 +1114,7 @@
                       {{
                         client.discount.id === "other"
                           ? apartment_edit.price
-                          : apartment.price
+                          : getApartmentItem.price
                             | number("0,0.00", {
                               thousandsSeparator: " ",
                               decimalSeparator: ",",
@@ -1242,7 +1263,7 @@
 
                 <div class="new-object p-3">
                   <!-- Комментария -->
-                  <div>
+                  <div class="d-none">
                     <label>Комментария</label>
                     <textarea
                       rows="3"
@@ -1309,8 +1330,8 @@
     <!-- success-agree modal -->
     <success-agree
       v-if="
-        getApartment.order.status != 'sold' ||
-          getApartment.order.status != 'contract'
+        apartmentInfoItem.status != 'sold' ||
+          apartmentInfoItem.status != 'contract'
       "
       :contract="contract"
     ></success-agree>
@@ -1322,7 +1343,7 @@ import {mapGetters, mapActions} from "vuex";
 import DiscountCalc from "./Components/DiscountCalc";
 import moment from "moment";
 import SuccessAgree from "./Components/SuccessAgree";
-
+import Discount from "./Components/Discount";
 export default {
   name: "ConfirmApartment",
   data() {
@@ -1399,11 +1420,14 @@ export default {
         contract_path: null,
       },
       loading: false,
+      isVisible: true,
+      calc: {}
     };
   },
 
   components: {
     DiscountCalc,
+    Discount,
     "success-agree": SuccessAgree,
   },
 
@@ -1416,18 +1440,45 @@ export default {
       "getReserveClient",
       "getPermission",
       "getMe",
-      "getApartment",
+      "getApartmentOrder",
     ]),
 
+    
+
     getApartmentDiscounts() {
-      if (this.apartment.object.credit_month != 0) {
-        return this.apartment.discounts;
+      if (this.getApartmentItem.object.credit_month != 0) {
+        return this.getApartmentItem.discounts;
       }
 
       return [];
     },
-    apartment() {
-      return this.getApartment;
+    getApartmentItem() {
+      let val = this.getApartmentOrder;
+      console.log(val);
+      if (val && val.apartments.length == 1) {
+        return val.apartments[0];
+      }
+      return [];
+    },
+    getApartmentMultiple() {
+      let val = JSON.parse(localStorage.getItem("order"));
+      if (val && val.apartments.length > 0) {
+        return val.apartments;
+      }
+      return [];
+    },
+    apartmentInfoItem() {
+      let val = this.getApartmentOrder;
+      if (val) {
+        return {
+          contract_number: val.contract_number,
+          created_by: val.created_by,
+          expiry_at: val.expiry_at,
+          status: val.status,
+          uuid: val.uuid,
+        };
+      }
+      return {};
     },
   },
 
@@ -1452,29 +1503,35 @@ export default {
   },
 
   mounted() {
-    this.fetchApartment(this).then(() => {
+    this.fetchApartmentOrder(this).then(() => {
       this.backToView();
+
+      this.apartment_edit.contract_number = this.apartmentInfoItem.contract_number;
     });
 
-    if (this.apartment.order.id) {
+    if (this.getApartmentItem.order.id) {
       this.reserveClientFull();
     }
 
-    this.month = this.apartment.object.credit_month;
+    this.month = this.getApartmentItem.object.credit_month;
   },
 
   methods: {
+    ...mapActions(["fetchApartmentOrder"]),
+    getCalData(data) {
+      this.calc = {
+        ...data,
+      };
+    },
     successAgree(value) {
-      this.fetchApartment(this);
       this.contract = value;
       this.$bvModal.show("modal-success-agree");
     },
     CloseAgree() {
       this.confirm = false;
     },
-    ...mapActions(["fetchApartment"]),
     backToView() {
-      if (this.getApartment.order.status == "contract") {
+      if (this.apartmentInfoItem.status == "contract") {
         this.$router.push({
           name: "apartments-view",
           params: {id: this.$route.params.id},
@@ -1530,7 +1587,7 @@ export default {
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL +
-            "/orders/client/search?field=" +
+            "/clients/search?field=" +
             this.search_label,
           this.header
         );
@@ -1579,9 +1636,8 @@ export default {
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL +
-            "/orders/" +
-            this.apartment.order.id +
-            "/confirm/client",
+            "/clients/" +
+            this.getApartmentItem.order.id,
           this.header
         );
         this.step = 2;
@@ -1636,8 +1692,8 @@ export default {
           this.loading = true;
           const formData = new FormData();
 
-          if (this.apartment.order.id)
-            formData.append("order_id", this.apartment.order.id);
+          // if (this.getApartmentItem.order.id)
+          //   formData.append("order_id", this.getApartmentItem.order.id);
 
           formData.append("type", "simple");
           formData.append("id", this.client.id);
@@ -1739,7 +1795,7 @@ export default {
           }
           this.axios
             .post(
-              process.env.VUE_APP_URL + "/orders/" + this.apartment.id,
+              process.env.VUE_APP_URL + "/orders/" + this.getApartmentItem.id,
               formData,
               this.header
             )
@@ -1800,7 +1856,7 @@ export default {
           amount: 0,
         };
 
-        this.apartment_edit.price = this.apartment.price;
+        this.apartment_edit.price = this.getApartmentItem.price;
         this.apartment_edit.prepay_price = this.getPrepay();
       }
 
@@ -1832,10 +1888,11 @@ export default {
       else {
         switch (this.client.discount.type) {
           case "fixed":
-            total = this.client.discount.amount * this.apartment.plan.area;
+            total =
+              this.client.discount.amount * this.getApartmentItem.plan.area;
             break;
           default:
-            total = this.apartment.price / total_discount;
+            total = this.getApartmentItem.price / total_discount;
             break;
         }
       }
@@ -1884,10 +1941,11 @@ export default {
       else {
         switch (this.client.discount.type) {
           case "fixed":
-            total = this.client.discount.amount * this.apartment.plan.area;
+            total =
+              this.client.discount.amount * this.getApartmentItem.plan.area;
             break;
           default:
-            total = this.apartment.price / total_discount;
+            total = this.getApartmentItem.price / total_discount;
             break;
         }
       }
@@ -1976,7 +2034,7 @@ export default {
         try {
           const {data} = await this.axios.get(
             process.env.VUE_APP_URL +
-              "/orders/client/search?field=" +
+              "/clients/search?field=" +
               this.search_label,
             this.header
           );
@@ -2295,7 +2353,6 @@ export default {
     font-size: 16px;
   }
 }
-
 .table-sm-width {
   @media screen and (max-width: 576px) {
     min-width: 150px;

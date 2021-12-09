@@ -1,3 +1,52 @@
+/* Define styles for the default root window element */
+:root {
+  --background-color: #fff;
+  --background-color-nav: #fff;
+  --background-color-dropdown: #f9fbff;
+  --background-color-main: transparent;
+  --background-color-navbar: #5851d8;
+  --white: #fff;
+  --plus-icon: #5851d8;
+  --primary: #5851d8;
+  --success: #45a85c;
+  --info: #0c5460;
+  --warning: #ff9f43;
+  --danger: #dc3545;
+  --ligth: #bebebe;
+  --table-ligth: #000;
+  --dark: #535353;
+  --secondary: #82868b;
+  --link: #222222;
+  --placeholder: #969696;
+  --dropdown-icon: #55547a;
+  --border-color: #22222233;
+  --element-size: 1rem;
+}
+
+/* Define styles for the root window with dark - mode preference */
+:root.dark-theme {
+  --background-color: #10163a;
+  --background-color-nav: #283046;
+  --background-color-navbar: #283046;
+  --background-color-dropdown: #10163a;
+  --background-color-main: transparent;
+  --white: #3b4253;
+  --plus-icon: #fff;
+  --primary: #7367f0;
+  --success: #45a85c;
+  --info: #0c5460;
+  --warning: #ff9f43;
+  --danger: #dc3545;
+  --ligth: #3b4253;
+  --dark: #dcdcdc;
+  --secondary: #82868b;
+  --link: #dcdcdc;
+  --placeholder: #82868b;
+  --dropdown-icon: #dcdcdc;
+  --border-color: #dcdcdc;
+  --element-size: 1rem;
+}
+
 html {
   scroll-behavior: smooth !important;
 }
@@ -7,12 +56,12 @@ html {
 }
 
 *::-moz-selection {
-  background-color: $primary;
+  background-color: var(--primary);
   color: white;
 }
 
 *::selection {
-  background-color: $primary;
+  background-color: var(--primary);
   color: white;
 }
 
@@ -36,6 +85,7 @@ body {
   background-position: center;
   background-size: cover;
   font-family: "MuseoSansCyrl", Arial, Helvetica, sans-serif;
+  background-color: var(--background-color);
 }
 
 main {
@@ -45,6 +95,7 @@ main {
   backface-visibility: hidden;
   min-height: calc(100% - 3rem);
   padding: 2rem 2rem 0 2rem;
+  background-color: var(--background-color-main);
 
   @include mq("desktop", max) {
     margin: 1rem;

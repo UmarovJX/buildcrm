@@ -1109,7 +1109,7 @@ export default {
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL +
-            "/orders/client/search?field=" +
+            "/clients/search?field=" +
             this.search_label,
           this.header
         );
@@ -1158,10 +1158,7 @@ export default {
     async reserveClientFull() {
       try {
         const {data} = await this.axios.get(
-          process.env.VUE_APP_URL +
-            "/orders/" +
-            this.apartment.order.id +
-            "/confirm/client",
+          process.env.VUE_APP_URL + "/clients/" + this.apartment.order.id,
           this.header
         );
         this.step = 2;

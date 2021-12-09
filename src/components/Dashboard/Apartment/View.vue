@@ -25,17 +25,14 @@
                     <div>
                       <!-- Объект -->
                       <p class="building__info mt-2 mb-1">
-                        <i style="color: #4C0852" class="far fa-building"></i>
+                        <i class="far fa-building"></i>
                         Объект: {{ getApartment.object.name }},
                         {{ getApartment.building.name }},
                         {{ getApartment.block.name }}
                       </p>
                       <!-- Адрес -->
                       <p class="building__info mt-2 mb-1">
-                        <i
-                          style="color: #4C0852"
-                          class="far fa-map-marker-alt"
-                        ></i>
+                        <i class="far fa-map-marker-alt"></i>
                         Адрес: {{ getApartment.object.address }}
                       </p>
                       <!-- Status -->
@@ -43,7 +40,7 @@
                         class="building__info building__info-for-print d-flex align-items-center"
                       >
                         <p>
-                          <i style="color: #4C0852" class="far fa-spinner"></i>
+                          <i class="far fa-spinner"></i>
                           {{ $t("apartments.view.status") }}:
                         </p>
 
@@ -73,10 +70,7 @@
                         class="building__info mb-3 d-flex align-items-center"
                       >
                         <p>
-                          <i
-                            style="color: #4C0852"
-                            class="far fa-calendar-check"
-                          ></i>
+                          <i class="far fa-calendar-check"></i>
                           Дата завершения строительства :
                         </p>
 
@@ -97,21 +91,21 @@
                       <div class="col-md-4 col-6 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.number") }}:</p>
                         <h5>
-                          <i style="color: #4C0852" class="far fa-building"></i>
+                          <i class="far fa-building"></i>
                           {{ getApartment.number }}
                         </h5>
                       </div>
                       <div class="col-md-4 col-6 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.area") }}:</p>
                         <h5>
-                          <i style="color: #4C0852" class="far fa-expand"></i>
+                          <i class="far fa-expand"></i>
                           {{ getApartment.plan.area }} м²
                         </h5>
                       </div>
                       <div class="col-md-4 col-6 mb-4">
                         <p class="mb-1">{{ $t("apartments.list.balcony") }}:</p>
                         <h5>
-                          <i style="color: #4C0852" class="far fa-inbox"></i>
+                          <i class="far fa-inbox"></i>
                           <span v-if="getApartment.plan.balcony">
                             {{ getApartment.plan.balcony_area }} м²
                           </span>
@@ -124,27 +118,21 @@
                       <div class="col-md-4 col-6 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.rooms") }}:</p>
                         <h5>
-                          <i
-                            style="color: #4C0852"
-                            class="far fa-door-open"
-                          ></i>
+                          <i class="far fa-door-open"></i>
                           {{ getApartment.rooms }}
                         </h5>
                       </div>
                       <div class="col-md-4 col-6 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.floor") }}:</p>
                         <h5>
-                          <i style="color: #4C0852" class="far fa-industry"></i>
+                          <i class="far fa-industry"></i>
                           {{ getApartment.floor }}
                         </h5>
                       </div>
                       <div class="col-md-4 col-6 mb-4">
                         <p class="mb-1">Этажность блока:</p>
                         <h5>
-                          <i
-                            style="color: #4C0852"
-                            class="far fa-align-justify"
-                          ></i>
+                          <i class="far fa-align-justify"></i>
                           {{ getApartment.block.floors }}
                         </h5>
                       </div>
@@ -264,47 +252,28 @@
                         <ul>
                           <li>
                             <a href="https://xonsaroy.uz"
-                              ><i
-                                style="color: #4C0852"
-                                class="far fa-globe"
-                              ></i>
-                              Xonsaroy.uz</a
+                              ><i class="far fa-globe"></i> Xonsaroy.uz</a
                             >
                           </li>
                           <li>
                             <a href="https://www.instagram.com/xonsaroyuz/"
-                              ><i
-                                style="color: #4C0852"
-                                class="fab fa-instagram"
-                              ></i>
-                              Xonsaroyuz</a
+                              ><i class="fab fa-instagram"></i> Xonsaroyuz</a
                             >
                           </li>
                           <li>
                             <a href="https://www.facebook.com/xonsaroyuz"
-                              ><i
-                                style="color: #4C0852"
-                                class="fab fa-facebook"
-                              ></i>
-                              Xonsaroyuz</a
+                              ><i class="fab fa-facebook"></i> Xonsaroyuz</a
                             >
                           </li>
                           <li>
                             <a href="https://t.me/xonsaroyuz"
-                              ><i
-                                style="color: #4C0852"
-                                class="fab fa-telegram"
-                              ></i>
-                              Xonsaroyuz</a
+                              ><i class="fab fa-telegram"></i> Xonsaroyuz</a
                             >
                           </li>
                           <li>
                             <a href="tel:+998555017400"
-                              ><i
-                                style="color: #4C0852"
-                                class="far fa-phone-alt"
-                              ></i>
-                              +998 55 501 74 00</a
+                              ><i class="far fa-phone-alt"></i> +998 55 501 74
+                              00</a
                             >
                           </li>
                         </ul>
@@ -332,6 +301,7 @@
                       flex-md-row flex-column
                     "
                 >
+                  <!-- Печать -->
                   <button
                     class="mr-md-2 mr-0 btn btn-info"
                     type="button"
@@ -339,14 +309,13 @@
                   >
                     <i class="fa fa-print"></i> Печать
                   </button>
+
+                  <!-- cancelReserve -->
                   <b-button
                     v-if="
-                      (getApartment.order.status === 'booked' &&
-                        getApartment.order.user.id === getMe.user.id &&
-                        (getPermission.apartments.root_contract ||
-                          getPermission.apartments.reserve_cancel)) ||
-                        (getMe.role.id === 1 &&
-                          getApartment.order.status === 'booked')
+                      (getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id && (getPermission.apartments.root_contract || getPermission.apartments.reserve_cancel)) || 
+                      (getMe.role.id === 1 && getApartment.order.status === 'booked') || 
+                      getApartment.order.status === 'booked' && getPermission.apartments.root_reserve
                     "
                     type="button"
                     @click="cancelReserve"
@@ -357,6 +326,7 @@
                     {{ $t("apartments.list.cancel_reserve") }}
                   </b-button>
 
+                  <!-- view_client -->
                   <b-link
                     v-if="
                       (getApartment.order.status === 'booked' &&
@@ -372,6 +342,7 @@
                     {{ $t("apartments.list.view_client") }}
                   </b-link>
 
+                  <!-- Reserve -->
                   <b-button
                     class="mr-md-2 mr-0 btn btn-primary ml-1"
                     v-if="
@@ -387,6 +358,7 @@
                     {{ $t("apartments.list.book") }}
                   </b-button>
 
+                  <!-- confirm -->
                   <b-button
                     v-b-modal.modal-agree
                     @click="ConfirmFindUser"
@@ -414,11 +386,8 @@
                     {{ $t("apartments.list.confirm") }}
                   </b-button>
 
-                  <router-link
-                    :to="{
-                      name: 'contracts-view',
-                      params: {id: getApartment.order.id},
-                    }"
+                  <b-link
+                    @click="orderHold([this.$route.params.id])"
                     :class="'btn btn-primary ml-md-1 mr-0 mr-md-2'"
                     v-if="
                       (getPermission.apartments.contract &&
@@ -435,7 +404,7 @@
                   >
                     <i class="far fa-file-signature"></i>
                     {{ $t("apartments.list.contract") }}
-                  </router-link>
+                  </b-link>
                 </div>
               </div>
             </div>
@@ -447,18 +416,6 @@
               isMapActive ? 'map-active' : 'col-md-3 pl-md-0 position-relative'
             "
           >
-            <!-- <button
-              class="rounded-circle toggle-map"
-              @click="isMapActive = !isMapActive"
-            >
-              <i
-                class="fal"
-                :class="
-                  isMapActive ? 'fa-angle-double-right' : 'fa-angle-double-left'
-                "
-              ></i>
-            </button> -->
-
             <yandex-map :coords="coords" zoom="18">
               <ymap-marker
                 :coords="coords"
@@ -582,6 +539,25 @@ export default {
       this.calc = {
         ...data,
       };
+    },
+
+    async orderHold(arr) {
+      await this.axios
+        .post(
+          process.env.VUE_APP_URL + "/orders/hold",
+          {
+            apartments: arr,
+          },
+          this.header
+        )
+        .then((res) => {
+          if (res) {
+            this.$router.push({
+              name: "confirm-apartment",
+              params: {id: res.data.uuid},
+            });
+          }
+        });
     },
 
     momentQuarter(val) {

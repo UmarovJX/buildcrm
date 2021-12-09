@@ -14,14 +14,12 @@ input.my-input,
 .my-form__input,
 .menu__img,
 .menu__name {
-  -webkit-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
 }
 
 .btn.focus,
 .btn:focus {
   outline: 0;
-  -webkit-box-shadow: none;
   box-shadow: none;
 }
 
@@ -58,6 +56,10 @@ button:focus {
   margin-top: 1rem;
   margin-right: 1rem;
   height: 45px;
+  color: white;
+  i {
+    color: white;
+  }
 }
 .btn i,
 .btn span,
@@ -72,9 +74,9 @@ button:focus {
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: $primary !important;
-  border-color: $primary !important;
+  color: #fff !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
 }
 
 .btn-primary:hover {
@@ -136,12 +138,28 @@ button:focus {
   color: #414141 !important;
   background-color: #e7e7e7 !important;
   border-color: #e7e7e7 !important;
+
+  i {
+    color: #414141 !important;
+  }
+}
+.btn-light {
+  color: #414141 !important;
+  background-color: #e7e7e7 !important;
+  border-color: #e7e7e7 !important;
+
+  i {
+    color: #414141 !important;
+  }
 }
 .btn-default:hover {
-  color: #414141;
+  color: #414141 !important;
   background-color: #e7e7e7 !important;
   border-color: #e7e7e7 !important;
   box-shadow: 0 8px 25px -8px #e7e7e7 !important;
+  i {
+    color: #414141 !important;
+  }
 }
 
 .btn-outline-secondary {
@@ -155,4 +173,11 @@ button:focus {
 
 .btn-outline-secondary:hover:not(.disabled):not(:disabled) {
   color: #82868b;
+}
+
+.b-form-datepicker {
+  .btn {
+    margin: 0;
+    padding: 0.375rem 0.75rem !important;
+  }
 }

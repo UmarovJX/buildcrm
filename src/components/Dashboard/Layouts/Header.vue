@@ -42,16 +42,16 @@
       <button
         v-if="
           $route.name !== 'login' &&
-          $route.name !== 'home' &&
-          $route.name !== 'objects' &&
-          $route.name !== 'settings' &&
-          $route.name !== 'users' &&
-          $route.name !== 'roles' &&
-          $route.name !== 'clients' &&
-          $route.name !== 'type_plan' &&
-          $route.name !== 'debtors' &&
-          $route.name !== 'contracts' &&
-          $route.name !== 'companies'
+            $route.name !== 'home' &&
+            $route.name !== 'objects' &&
+            $route.name !== 'settings' &&
+            $route.name !== 'users' &&
+            $route.name !== 'roles' &&
+            $route.name !== 'clients' &&
+            $route.name !== 'type_plan' &&
+            $route.name !== 'debtors' &&
+            $route.name !== 'contracts' &&
+            $route.name !== 'companies'
         "
         class="btn-back d-xl-block d-none"
         @click="$router.go(-1)"
@@ -73,6 +73,10 @@
           </div>
         </div>
 
+        <div class="d-nones">
+          <theme-button />
+        </div>
+
         <div class="dropdown my-dropdown dropdown-user dropleft">
           <button
             type="button"
@@ -85,8 +89,8 @@
                 v-if="getMe.user.avatar"
                 :style="
                   'background-image: url(' +
-                  getMe.user.avatar +
-                  '); border-radius: 50%'
+                    getMe.user.avatar +
+                    '); border-radius: 50%'
                 "
               ></div>
               <div
@@ -94,8 +98,8 @@
                 v-else
                 :style="
                   'background-image: url(' +
-                  require('@/assets/img/no_avatar.png') +
-                  '); border-radius: 50%'
+                    require('@/assets/img/no_avatar.png') +
+                    '); border-radius: 50%'
                 "
               ></div>
 
@@ -210,6 +214,7 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import ThemeButton from "@/components/ThemeButton.vue";
 export default {
   data() {
     return {
@@ -217,8 +222,10 @@ export default {
       app_name: process.env.VUE_APP_NAME,
       isActive: true,
       menuExpanded: false,
+      userTheme: "light-theme",
     };
   },
+  components: {ThemeButton},
 
   async mounted() {
     this.fetchAuth(this);

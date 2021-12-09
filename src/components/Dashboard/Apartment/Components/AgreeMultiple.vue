@@ -22,7 +22,7 @@
             <div class="input-group-append">
               <button
                 class="btn btn-success mt-0 mr-0"
-                @click="Search"
+                @click.prevent="Search"
                 type="button"
               >
                 <i class="fa fa-search"></i> {{ $t("search") }}
@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <form ref="form" @submit.stop.prevent="sendForm" v-if="step === 2">
+      <form ref="form" @submit.stop.prevent="sendForm" v-else-if="step === 2">
         <div class="container px-0 mx-0">
           <div class="row">
             <div
@@ -485,8 +485,11 @@
                   <th scope="col" class="text-right">Цена</th>
                 </tr>
               </thead>
-              <tbody class="m-0 p-0" v-if="getThisApartmentForTable.length>0">
-                <tr v-for="(apartment, index) in getThisApartmentForTable" :key="index">
+              <tbody class="m-0 p-0" v-if="getThisApartmentForTable.length > 0">
+                <tr
+                  v-for="(apartment, index) in getThisApartmentForTable"
+                  :key="index"
+                >
                   <td>
                     {{ apartment.number }}
                   </td>
@@ -1075,7 +1078,7 @@ export default {
         },
       },
       getThisApartment: [],
-      getThisApartmentForTable: []
+      getThisApartmentForTable: [],
     };
   },
 
@@ -1198,7 +1201,7 @@ export default {
       await this.axios
         .get(
           process.env.VUE_APP_URL +
-            "/orders/client/search?field=" +
+            "/clients/search?field=" +
             this.search_label,
           this.header
         )
@@ -1209,15 +1212,15 @@ export default {
             id: res.id,
             first_name: res.first_name ?? {
               lotin: null,
-              kirill: null,
+              kirill: null
             },
             last_name: res.last_name ?? {
               lotin: null,
-              kirill: null,
+              kirill: null
             },
             second_name: res.second_name ?? {
               lotin: null,
-              kirill: null,
+              kirill: null
             },
             passport_series: res.passport_series,
             issued_by_whom: res.issued_by_whom,
@@ -1228,6 +1231,8 @@ export default {
             date_of_issue: res.date_of_issue,
             discount: {id: null},
           };
+          // eslint-disable-next-line no-debugger
+          // debugger;
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
@@ -1449,12 +1454,14 @@ export default {
             const amountApartment = this.getThisApartment[i].discounts.find(
               (val) => val.prepay == this.client.discount.prepay
             ).amount;
-            const totalAmount = parseFloat(amountApartment * this.getThisApartment[i].plan.area)
+            const totalAmount = parseFloat(
+              amountApartment * this.getThisApartment[i].plan.area
+            );
             price.push(parseFloat(totalAmount));
             this.getThisApartmentForTable[i] = {
               number: this.getThisApartment[i].number,
-              price: totalAmount
-            }
+              price: totalAmount,
+            };
           }
           break;
         default:

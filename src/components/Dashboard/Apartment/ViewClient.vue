@@ -60,7 +60,7 @@
           ></b-form-datepicker>
         </b-form-group>
 
-        <div class="float-right">
+        <div class="d-flex justify-content-center">
           <b-button variant="light" @click="resetModal">
             {{ $t("close") }}
           </b-button>

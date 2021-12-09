@@ -141,7 +141,7 @@ export default {
         this.client.apartment_id = this.apartment;
 
         const response = await this.axios.post(
-          process.env.VUE_APP_URL + "/orders/reserve",
+          process.env.VUE_APP_URL + "/booking/" + this.apartment,
           this.client,
           this.header
         );
