@@ -1,6 +1,7 @@
 <template>
   <main>
     <div class="app-content">
+      <!-- Step 1 -->
       <div class="new-object" v-if="false">
         <!-- building info -->
         <div class="container-fluid">
@@ -48,14 +49,15 @@
           </div>
         </div>
       </div>
+      <!-- Step 2 -->
       <div class="new-object p-3" v-if="step === 2">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
-          <form ref="form" @submit.prevent="handleSubmit(sendForm)">
+          <form ref="form" @submit.prevent="handleSubmit(postStore)">
             <div class="row">
               <!-- Изменить дата договора -->
               <div
                 class="col-12 mb-2"
-                v-if="getMe.role.id === 1 || getPermission.contracts.date"
+                v-if="(getMe.role && getMe.role.id === 1) || (getPermission.contracts && getPermission.contracts.date)"
               >
                 <div class="row">
                   <div class="col-md-4">
@@ -528,7 +530,7 @@
               <!-- apartments.agree.type_client -->
               <div
                 class="col-md-4"
-                v-if="getMe.role.id === 1 || getPermission.contracts.friends"
+                v-if="(getMe.role && getMe.role.id === 1) || (getPermission && getPermission.contracts && getPermission.contracts.friends)"
               >
                 <div class="mb-3">
                   <label class="d-block" for="type_client">{{
@@ -537,7 +539,7 @@
                   <select
                     class="form-control"
                     id="type_client"
-                    v-model="type_client"
+                    v-model="client.type_client"
                   >
                     <option value="unknown">Незнакомый</option>
                     <option value="friends">Знакомый</option>
@@ -545,12 +547,8 @@
                 </div>
               </div>
 
-              <div class="col-md-12">
-                <hr />
-              </div>
-
               <!-- apartments.view.variant -->
-              <div class="col-md-4">
+              <!-- <div class="col-md-4">
                 <div class="mb-3">
                   <label class="d-block" for="discounts">{{
                     $t("apartments.view.variant")
@@ -585,10 +583,10 @@
                     </option>
                   </select>
                 </div>
-              </div>
+              </div> -->
 
               <!-- client.discount -->
-              <div
+              <!-- <div
                 class="col-md-12 my-2"
                 v-if="client.discount.id && client.discount.id != 'other'"
               >
@@ -596,14 +594,13 @@
                   :discount="client.discount"
                   :apartment="getApartmentItem"
                 ></DiscountCalc>
-              </div>
-
+              </div> -->
               <div class="col-md-12">
                 <hr />
               </div>
 
               <!-- apartments.agree.first_payment_date -->
-              <div class="col-md-4" v-if="client.discount.id">
+              <div class="col-md-4">
                 <validation-provider
                   :name="$t('apartments.agree.first_payment_date')"
                   :rules="{required: true}"
@@ -631,7 +628,7 @@
               </div>
 
               <!-- apartments.agree.payment_date -->
-              <div class="col-md-4" v-if="!confirm && client.discount.id">
+              <div class="col-md-4">
                 <div class="mb-3">
                   <label class="d-block" for="payment_date">{{
                     $t("apartments.agree.payment_date")
@@ -647,7 +644,7 @@
             </div>
 
             <!-- Комментария -->
-            <div v-if="confirm">
+            <!-- <div v-if="confirm">
               <hr />
               <label>Комментария</label>
               <textarea
@@ -656,10 +653,10 @@
                 v-model="comment"
                 class="form-control"
               ></textarea>
-            </div>
+            </div> -->
 
             <!-- errors alert -->
-            <div class="alert alert-danger mt-3" v-if="error">
+            <!-- <div class="alert alert-danger mt-3" v-if="error">
               <ul>
                 <li v-for="(error, index) in geteErrors" :key="index">
                   <span v-for="msg in error" :key="msg">
@@ -667,21 +664,21 @@
                   </span>
                 </li>
               </ul>
-            </div>
+            </div> -->
 
             <!-- removeBlock -->
             <div
               class="mt-4 d-flex justify-content-end flex-md-row flex-column"
             >
-              <button
+              <!-- <button
                 type="button"
                 class="btn btn-default mr-md-2 mr-0"
                 @click="removeBlock"
               >
                 {{ $t("cancel") }}
-              </button>
+              </button> -->
 
-              <button
+              <!-- <button
                 type="button"
                 class="btn btn-primary mr-0"
                 @click="handleSubmit(onSubmit)"
@@ -689,14 +686,10 @@
               >
                 {{ $t("next") }}
                 <i class="fa fa-chevron-circle-right"></i>
-              </button>
+              </button> -->
 
-              <button
-                v-if="!loading && confirm"
-                type="submit"
-                class="btn btn-success"
-              >
-                {{ $t("create_agree") }}
+              <button v-if="!loading" type="submit" class="btn btn-success">
+                Продолжить
                 <i class="fa fa-file-contract"></i>
               </button>
               <button
@@ -704,13 +697,15 @@
                 type="button"
                 class="btn btn-success"
               >
-                {{ $t("create_agree") }}
+                <!-- {{ $t("create_agree") }} -->
+                Продолжить
                 <i class="fas fa-spinner fa-spin"></i>
               </button>
             </div>
           </form>
         </validation-observer>
       </div>
+      <!-- Step 3 -->
       <div class="container-fluid px-0 mx-0" v-if="step == 3">
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
@@ -910,8 +905,8 @@
 
                             <button
                               v-if="
-                                (getMe.role.id === 1 && !initialPayment.edit) ||
-                                  (getPermission.contracts.monthly &&
+                                ((getMe.role && getMe.role.id) === 1 && !initialPayment.edit) ||
+                                  (getPermission.contracts && getPermission.contracts.monthly &&
                                     !initialPayment.edit)
                               "
                               type="button"
@@ -924,7 +919,7 @@
                             <div v-if="initialPayment.edit">
                               <button
                                 v-if="
-                                  getMe.role.id === 1 ||
+                                  (getMe.role && getMe.role.id) === 1 ||
                                     getPermission.contracts.monthly
                                 "
                                 type="button"
@@ -938,10 +933,10 @@
                             <button
                               v-if="
                                 (index != 0 &&
-                                  getMe.role.id === 1 &&
+                                  getMe.role && getMe.role.id === 1 &&
                                   !month.edit) ||
                                   (index != 0 &&
-                                    getPermission.contracts.monthly &&
+                                    getPermission.contracts && getPermission.contracts.monthly &&
                                     !month.edit)
                               "
                               type="button"
@@ -994,8 +989,8 @@
 
                           <button
                             v-if="
-                              (getMe.role.id === 1 && !month.edit) ||
-                                (getPermission.contracts.monthly && !month.edit)
+                              ((getMe.role && getMe.role.id === 1) && !month.edit) ||
+                                (getPermission.contracts && getPermission.contracts.monthly && !month.edit)
                             "
                             type="button"
                             @click="editMonthlyPayment(index)"
@@ -1007,7 +1002,7 @@
                           <div v-if="month.edit">
                             <button
                               v-if="
-                                getMe.role.id === 1 ||
+                                (getMe.role && getMe.role.id) === 1 ||
                                   getPermission.contracts.monthly
                               "
                               type="button"
@@ -1340,7 +1335,7 @@
 
 <script>
 import {mapGetters, mapActions} from "vuex";
-import DiscountCalc from "./Components/DiscountCalc";
+// import DiscountCalc from "./Components/DiscountCalc";
 import moment from "moment";
 import SuccessAgree from "./Components/SuccessAgree";
 import Discount from "./Components/Discount";
@@ -1351,7 +1346,6 @@ export default {
       step: 2,
       search_label: "",
       client: {
-        id: null,
         first_name: {
           lotin: "",
           kirill: "",
@@ -1366,18 +1360,13 @@ export default {
         },
         passport_series: "",
         issued_by_whom: "",
-        birth_day: null,
+        date_of_issue: null,
         language: "uz",
+        type_client: "unknown",
+        birth_day: null,
         phone: "",
         other_phone: null,
-        date_of_issue: null,
-        discount: {id: null},
-        edit: false,
-        payment_date: null,
-        first_payment_date: null,
       },
-
-      type_client: "unknown",
 
       apartment_edit: {
         price: 0,
@@ -1421,12 +1410,12 @@ export default {
       },
       loading: false,
       isVisible: true,
-      calc: {}
+      calc: {},
     };
   },
 
   components: {
-    DiscountCalc,
+    // DiscountCalc,
     Discount,
     "success-agree": SuccessAgree,
   },
@@ -1443,10 +1432,11 @@ export default {
       "getApartmentOrder",
     ]),
 
-    
-
     getApartmentDiscounts() {
-      if (this.getApartmentItem.object.credit_month != 0) {
+      if (
+        (this.getApartmentItem.object &&
+          this.getApartmentItem.object.credit_month) != 0
+      ) {
         return this.getApartmentItem.discounts;
       }
 
@@ -1454,8 +1444,7 @@ export default {
     },
     getApartmentItem() {
       let val = this.getApartmentOrder;
-      console.log(val);
-      if (val && val.apartments.length == 1) {
+      if (val && val.apartments && val.apartments.length == 1) {
         return val.apartments[0];
       }
       return [];
@@ -1509,11 +1498,11 @@ export default {
       this.apartment_edit.contract_number = this.apartmentInfoItem.contract_number;
     });
 
-    if (this.getApartmentItem.order.id) {
+    if (this.getApartmentItem.order && this.getApartmentItem.order.id) {
       this.reserveClientFull();
     }
 
-    this.month = this.getApartmentItem.object.credit_month;
+    this.month = this.getApartmentItem.object?.credit_month;
   },
 
   methods: {
@@ -1679,6 +1668,45 @@ export default {
       this.confirm = true;
       this.next = false;
     },
+    async postStore() {
+      this.loading = true;
+
+      await this.axios
+        .post(
+          process.env.VUE_APP_URL + "/clients",
+          this.client,
+          this.header
+        )
+        .then((response) => {
+          this.loading = false;
+          if (response) {
+            console.log(response.data);
+            // this.client = {
+            //   ...response.data
+            // }
+            this.onSubmit();
+          }
+        })
+        .catch((error) => {
+          this.loading = false;
+          if (!error.response) {
+            this.toasted("Error: Network Error", "error");
+          } else {
+            if (error.response.status === 403) {
+              this.toasted(error.response.data.message, "error");
+            } else if (error.response.status === 401) {
+              this.toasted(error.response.data, "error");
+            } else if (error.response.status === 500) {
+              this.toasted(error.response.data.message, "error");
+            } else if (error.response.status === 422) {
+              this.error = true;
+              this.geteErrors = error.response.data;
+            } else {
+              this.toasted(error.response.data.message, "error");
+            }
+          }
+        });
+    },
     async sendForm() {
       if (this.client.discount.id === null) return;
       this.$swal({
@@ -1696,8 +1724,6 @@ export default {
           //   formData.append("order_id", this.getApartmentItem.order.id);
 
           formData.append("type", "simple");
-          formData.append("id", this.client.id);
-
           formData.append("first_name[lotin]", this.client.first_name.lotin);
           formData.append("first_name[kirill]", this.client.first_name.kirill);
 

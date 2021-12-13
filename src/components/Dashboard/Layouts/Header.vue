@@ -74,7 +74,7 @@
         </div>
 
         <div class="d-nones">
-          <theme-button />
+          <theme-button :theme="theme" />
         </div>
 
         <div class="dropdown my-dropdown dropdown-user dropleft">
@@ -226,7 +226,12 @@ export default {
     };
   },
   components: {ThemeButton},
-
+  props: {
+    theme: {
+      type: String,
+      default: "",
+    },
+  },
   async mounted() {
     this.fetchAuth(this);
     this.fetchMenu(this);
@@ -253,7 +258,6 @@ export default {
     },
 
     // isActived() {
-    //   console.log(this.isActive);
     //   this.isActive = localStorage.isActive;
     // },
 

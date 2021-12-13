@@ -1,34 +1,20 @@
 import Vue from "vue";
 import App from "./App.vue";
-
 import axios from "axios";
 import VueAxios from "vue-axios";
 import Toasted from "vue-toasted";
 import Vue2Filters from "vue2-filters";
 import VueLazyload from "vue-lazyload";
-
 import router from "./routes";
 import i18n from "./locales";
 import toasted from "./util/toasted";
 import store from "./store";
 import vueMoment from "vue-moment";
-import VueMask from 'v-mask'
-Vue.use(VueMask);
-Vue.use(vueMoment);
-Vue.use(VueLazyload, {
-  preLoad: 1.3,
-  error: require("@/assets/img/no-image.jpg"),
-  loading: require("@/assets/img/loading.gif"),
-  attempt: 1,
-});
-
-import {mapActions, mapGetters} from "vuex";
-
-import "./components";
-
+import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-
+import {mapActions, mapGetters} from "vuex";
+import "./components";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 import {
   ValidationObserver,
@@ -49,7 +35,15 @@ const sweetOptions = {
   cancelButtonColor: "#d33",
 };
 
-Vue.use(VueSweetalert2, sweetOptions);
+Vue.use(VueMask);
+Vue.use(vueMoment);
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: require("@/assets/img/no-image.jpg"),
+  loading: require("@/assets/img/loading.gif"),
+  attempt: 1,
+});
+
 
 Object.keys(rules).forEach((rule) => {
   extend(rule, rules[rule]);
@@ -57,24 +51,19 @@ Object.keys(rules).forEach((rule) => {
 
 localize("ru", ru);
 
-Vue.component("ValidationObserver", ValidationObserver);
-Vue.component("ValidationProvider", ValidationProvider);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
+Vue.use(VueSweetalert2, sweetOptions);
+Vue.component("ValidationObserver", ValidationObserver);
+Vue.component("ValidationProvider", ValidationProvider);
 Vue.use(Vue2Filters);
-
 Vue.mixin(toasted);
-
-// Vue.mixin(getAuth);
-
 Vue.use(VueAxios, axios);
-
 Vue.use(Toasted, {
   theme: "toasted-primary",
   position: "top-right",
   duration: 5000,
 });
-
 // Vue.config.productionTip = false;
 // Vue.prototype.$moment = moment;
 new Vue({
@@ -97,7 +86,6 @@ new Vue({
     let path = this.$router.currentRoute;
 
     if (localStorage.token) {
-      // console.log(localStorage.token);
       let vm = this;
       this.setMe(vm, path);
     } else {

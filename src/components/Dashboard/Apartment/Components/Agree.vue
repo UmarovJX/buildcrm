@@ -1424,7 +1424,6 @@ export default {
     },
 
     getTotalOther() {
-      //  console.log(parseFloat(this.apartment_edit.price))
       return parseFloat(this.apartment_edit.price);
     },
 
@@ -1441,17 +1440,11 @@ export default {
 
     getDebt() {
       // let price = this.getTotal() - this.getPrepay();
-      //console.log(price);
-      // console.log(this.getTotal());
-      // console.log(this.getPrepay());
-
       return this.getTotal() - this.getPrepay();
     },
 
     getTotal() {
       let total_discount = this.getDiscount();
-
-      //console.log(total_discount);
 
       // let total = price * area;
 

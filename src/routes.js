@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import * as Sentry from "@sentry/vue";
-import {Integrations} from "@sentry/tracing";
+// import * as Sentry from "@sentry/vue";
+// import {Integrations} from "@sentry/tracing";
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
@@ -192,19 +192,16 @@ const router = new VueRouter({
   },
 });
 
-Sentry.init({
-  Vue,
-  dsn: "https://b3a6289d3b5846c4b42327c0e3f7ecdb@o1056926.ingest.sentry.io/6043378",
-  integrations: [
-    new Integrations.BrowserTracing({
-      routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: ["localhost", "http://crm.xonsaroy.uz/", /^\//],
-    }),
-  ],
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-});
+// Sentry.init({
+//   Vue,
+//   dsn: "https://b3a6289d3b5846c4b42327c0e3f7ecdb@o1056926.ingest.sentry.io/6043378",
+//   integrations: [
+//     new Integrations.BrowserTracing({
+//       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+//       tracingOrigins: ["localhost", "http://crm.xonsaroy.uz/", /^\//],
+//     }),
+//   ],
+//   tracesSampleRate: 1.0,
+// });
 
 export default router;

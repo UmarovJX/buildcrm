@@ -198,10 +198,8 @@ export default {
     ...mapGetters(["getCurrency"]),
     getApartmentDiscounts() {
       let arr = this.apartment.discounts;
-      // console.log(this.apartment.discounts)
       // if (this.apartment.object.credit_month != 0) {
-        // console.log(12)
-        return arr.sort((a, b) => a.prepay - b.prepay);
+        return arr?.sort((a, b) => a.prepay - b.prepay);
       // } else {
       // }
 
@@ -212,13 +210,11 @@ export default {
     async initialCalc() {
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
-          //console.log
           this.calc.price_for_m2 = this.apartment.price_m2;
         } else {
           this.calc.price_for_m2 = this.getTotalForPercente() / this.apartment.plan.area;
         }
       } else {
-        // console.log(this.discount.amount)
         this.calc.price_for_m2 = this.discount.amount;
       }
       // this.calc.price_for_m2 = this.discount.amount;
@@ -302,7 +298,6 @@ export default {
       let total_discount = this.getDiscount();
       let total = 0;
 
-      //console.log(total_discount)
       switch (this.discount.type) {
         case "fixed":
           if (this.calc.discount_price) {
@@ -328,7 +323,6 @@ export default {
       let total_discount = this.getDiscount();
       let total = 0;
 
-      //console.log(total_discount)
       switch (this.discount.type) {
         case "fixed":
           if (this.calc.discount_price) {

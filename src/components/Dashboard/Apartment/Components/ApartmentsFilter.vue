@@ -11,6 +11,7 @@
       :no-close-on-route-change="true"
     >
       <div class="container">
+        <!-- Номер квартира -->
         <div class="mb-3">
           <label for="tags-separators">Номер квартира: </label>
           <b-form-tags
@@ -26,6 +27,7 @@
           ></b-form-tags>
         </div>
 
+        <!-- Количество комнат -->
         <div class="mb-3">
           <label class="d-block">
             {{ $t("apartments.filter.apartments") }}
@@ -43,6 +45,7 @@
           </div>
         </div>
 
+        <!-- Этаж -->
         <div class="mb-3">
           <label class="d-block">
             {{ $t("apartments.filter.floor") }}
@@ -60,6 +63,7 @@
           </div>
         </div>
 
+        <!-- Блоки -->
         <div class="mb-3">
           <label class="d-block">
             {{ $t("apartments.filter.blocks") }}
@@ -77,6 +81,7 @@
           </div>
         </div>
 
+        <!-- Цена -->
         <div class="mb-3">
           <label class="d-block">{{ $t("apartments.filter.price") }}</label>
           <div class="d-flex justify-content-between align-items-center">
@@ -100,6 +105,7 @@
           </div>
         </div>
 
+        <!-- Площадь -->
         <div class="mb-3">
           <label class="d-block">{{ $t("apartments.filter.area") }}</label>
           <div class="d-flex justify-content-between align-items-center">
@@ -123,6 +129,7 @@
           </div>
         </div>
 
+        <!-- Статус -->
         <div class="mt-4 my-custom-control">
           <div>
             <label class="d-block">{{ $t("apartments.filter.status") }}</label>
@@ -190,26 +197,31 @@
 import {mapActions, mapGetters} from "vuex";
 
 export default {
-  data: () => ({
-    filter: {
-      filtered: false,
-      number: [],
-      rooms: [],
-      floors: [],
-      blocks: [],
-      price_from: null,
-      price_to: null,
-      area_from: null,
-      area_to: null,
-      status: 0,
-      usd: false,
-      page: 1,
+  data() {
+    return {
+      filter: {
+        filtered: false,
+        number: [],
+        rooms: [],
+        floors: [],
+        blocks: [],
+        price_from: null,
+        price_to: null,
+        area_from: null,
+        area_to: null,
+        status: null,
+        usd: false,
+        page: 1,
+      },
+    };
+  },
+  props: {
+    filtered: {
+      type: Object,
     },
-  }),
-
+  },
   watch: {
     "filter.number": function() {
-      // console.log(this.filter.number);
       this.filter.filtered = true;
     },
 
@@ -251,6 +263,89 @@ export default {
   },
 
   mounted() {
+    if (this.filtered.status) {
+      if (this.filtered.number === true) {
+        this.filtered.status = true;
+      } else {
+        this.filtered.status = null;
+      }
+    }
+    if (this.filtered.number) {
+      if (typeof this.filtered.number === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(this.filtered.number);
+        newArr.push(newArrItem);
+        this.filtered.number = newArr;
+      }
+    }
+    if (this.filtered.rooms) {
+      if (typeof this.filtered.rooms === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(this.filtered.rooms);
+        newArr.push(newArrItem);
+        this.filtered.rooms = newArr;
+      }
+    }
+
+    if (this.filtered.floors) {
+      if (typeof this.filtered.floors === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(this.filtered.floors);
+        newArr.push(newArrItem);
+        this.filtered.floors = newArr;
+      }
+    }
+
+    if (this.filtered.blocks) {
+      if (typeof this.filtered.blocks === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(this.filtered.blocks);
+        newArr.push(newArrItem);
+        this.filtered.blocks = newArr;
+      }
+    }
+
+    this.filter.filtered = this.filtered.filtered
+      ? this.filtered.filtered
+      : this.filter.filtered;
+    this.filter.number = this.filtered.number
+      ? this.filtered.number
+      : this.filter.number;
+    this.filter.rooms = this.filtered.rooms
+      ? this.filtered.rooms
+      : this.filter.rooms;
+    this.filter.floors = this.filtered.floors
+      ? this.filtered.floors
+      : this.filter.floors;
+    this.filter.blocks = this.filtered.blocks
+      ? this.filtered.blocks
+      : this.filter.blocks;
+    this.filter.price_from = this.filtered.price_from
+      ? this.filtered.price_from
+      : this.filter.price_from;
+    this.filter.price_to = this.filtered.price_to
+      ? this.filtered.price_to
+      : this.filter.price_to;
+    this.filter.area_from = this.filtered.area_from
+      ? this.filtered.area_from
+      : this.filter.area_from;
+    this.filter.area_to = this.filtered.area_to
+      ? this.filtered.area_to
+      : this.filter.area_to;
+    this.filter.status = this.filtered.status
+      ? this.filtered.status
+      : this.filter.status;
+    this.filter.usd = this.filtered.usd ? this.filtered.usd : this.filter.usd;
+    this.filter.sort_by = this.filtered.sort_by
+      ? this.filtered.sort_by
+      : this.filter.sort_by;
+    this.filter.order_by = this.filtered.order_by
+      ? this.filtered.order_by
+      : this.filter.order_by;
+    this.filter.page = this.filtered.page
+      ? this.filtered.page
+      : this.filter.page;
+
     this.fetchFilterObject(this);
   },
 
@@ -321,7 +416,7 @@ export default {
         price_to: null,
         area_from: null,
         area_to: null,
-        status: 0,
+        status: null,
         usd: false,
         sort_by: null,
         order_by: null,

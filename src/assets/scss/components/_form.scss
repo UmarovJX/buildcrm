@@ -232,7 +232,19 @@ input.my-input:focus,
   }
 }
 
+.b-calendar-grid-body {
+  span:not(.text-dark) {
+    color: #000;
+  }
+}
+
 .dark-theme {
+  .b-calendar-grid-body {
+    span:not(.text-dark) {
+      color: #fff;
+    }
+  }
+
   .table-success,
   .table-success > th,
   .table-success > td {

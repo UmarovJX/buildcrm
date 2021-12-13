@@ -101,14 +101,12 @@ export default {
 
     // getDebt() {
     //   // let price = this.getTotal() - this.getPrepay();
-    //   //console.log(price);
     //   return this.getTotal() - this.getPrepay();
     // },
 
     // getTotal() {
     //   let total_discount = this.getDiscount();
 
-    //   //console.log(total_discount);
 
     //   // let total = price * area;
     //   let total = this.apartment.price / total_discount;

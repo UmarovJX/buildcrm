@@ -1,8 +1,8 @@
 <template>
   <div>
     <b-modal
-      id="modal-create"
-      ref="modal"
+      id="modal-reserve-create"
+      ref="modal-reserve-create"
       :title="$t('apartments.list.book')"
       hide-footer
       @show="resetModal"
@@ -17,7 +17,7 @@
         </ul>
       </b-alert>
 
-      <form ref="form" @submit.stop.prevent="handleSubmit">
+      <form ref="form" @submit.prevent="handleSubmit">
         <b-form-group
           label-cols="4"
           label-cols-lg="2"
@@ -80,7 +80,7 @@
         </b-form-group>
 
         <div class="w-100 d-flex justify-content-center">
-          <b-button variant="light" @click="resetModal">
+          <b-button type="button" variant="light" @click="$bvModal.hide('modal-reserve-create')">
             {{ $t("cancel") }}
           </b-button>
 
@@ -119,14 +119,16 @@ export default {
   }),
 
   methods: {
+    closeModal() {
+      this.$nextTick(() => {
+        this.$bvModal.hide("modal-reserve-create");
+      });
+    },
     resetModal() {
       this.client.first_name = null;
       this.client.last_name = null;
       this.client.phone = null;
       this.client.period_date = null;
-
-      this.$bvModal.hide("modal-create");
-
       this.error = false;
       this.errors = [];
     },
@@ -145,11 +147,9 @@ export default {
           this.client,
           this.header
         );
-
         this.toasted(response.data.message, "success");
-
         this.$nextTick(() => {
-          this.$bvModal.hide("modal-create");
+          this.$bvModal.hide("modal-reserve-create");
         });
 
         this.$emit("CreateReserve", this.client);

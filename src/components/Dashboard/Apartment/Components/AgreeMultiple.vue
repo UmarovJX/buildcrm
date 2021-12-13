@@ -1600,8 +1600,6 @@ export default {
 
       let monthly_amount = (this.getTotal() - total) / months;
 
-      // console.log(monthly_amount);
-
       for (var m = 0; m < this.credit_months.length; m++) {
         if (!this.credit_months[m].edited) {
           // if (monthly_amount > 0)

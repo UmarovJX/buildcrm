@@ -25,12 +25,12 @@
             <div class="row">
               <div
                 class="col-lg-3 col-md-6 mb-md-0 mb-3"
-                v-if="getPermission.objects.view"
+                v-if="getPermission.objects && getPermission.objects.view"
               >
                 <router-link :to="{name: 'objects'}">
                   <div class="card-counter primary">
                     <i class="far fa-building"></i>
-                    <span class="count-numbers">{{
+                    <span class="count-numbers" v-if="getHomeCounts.counts && getHomeCounts">{{
                       getHomeCounts.counts.objects
                     }}</span>
                     <span class="count-name">{{ $t("objects.title") }}</span>
@@ -52,12 +52,12 @@
 
               <div
                 class="col-lg-3 col-md-6 mb-md-0 mb-3"
-                v-if="getPermission.users.view"
+                v-if="getPermission.users && getPermission.users.view"
               >
                 <router-link :to="{name: 'users'}">
                   <div class="card-counter success">
                     <i class="far fa-users"></i>
-                    <span class="count-numbers">{{
+                    <span class="count-numbers" v-if="getHomeCounts.counts">{{
                       getHomeCounts.counts.users
                     }}</span>
                     <span class="count-name">{{ $t("users.title") }}</span>
@@ -75,12 +75,12 @@
 
               <div
                 class="col-lg-3 col-md-6 mb-md-0 mb-3"
-                v-if="getPermission.apartments.view"
+                v-if="getPermission.apartments && getPermission.apartments.view"
               >
                 <router-link :to="{name: 'objects-filter'}">
                   <div class="card-counter apartments">
                     <i class="far fa-home"></i>
-                    <span class="count-numbers">{{
+                    <span class="count-numbers" v-if="getHomeCounts.counts">{{
                       getHomeCounts.counts.apartments
                     }}</span>
                     <span class="count-name">{{

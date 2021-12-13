@@ -872,7 +872,6 @@ export default {
         );
         this.step = 1;
 
-        // console.log(data);
         this.order = data;
       } catch (error) {
         this.toastedWithErrorCode(error);
@@ -1058,10 +1057,6 @@ export default {
       let pay_amount = parseFloat(formValues.pay_amount);
       let amount = this.order.payments[index].amount;
 
-      //   console.log(type)
-      //   console.log(pay_amount)
-      //   console.log(amount)
-
       if (
         (type === "monthly" || type === "debt" || type === "initial_payment") &&
         pay_amount < amount
@@ -1122,8 +1117,6 @@ export default {
                   this.toasted(error.response.data.pay_amount[0], "error");
               }
             });
-
-          //   console.log(initialValue);
         }
 
         return;

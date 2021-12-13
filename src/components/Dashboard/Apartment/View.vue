@@ -13,7 +13,7 @@
                   <div class="col-lg-8 pr-md-0 border-right">
                     <!-- building__img -->
                     <div class="building">
-                      <div class="building__img">
+                      <div class="building__img" v-if="getApartment.plan">
                         <img
                           :data-fancybox="getApartment.plan.image"
                           v-lazy="getApartment.plan.image"
@@ -22,7 +22,7 @@
                       </div>
                     </div>
                     <!-- building__info -->
-                    <div>
+                    <div v-if="getApartment.object">
                       <!-- Объект -->
                       <p class="building__info mt-2 mb-1">
                         <i class="far fa-building"></i>
@@ -52,6 +52,9 @@
                             getApartment.order.status === 'sold' ||
                             getApartment.order.status === 'contract'
                               ? 'text-danger ml-3'
+                              : 'text-success ml-3',
+                            getApartment.order.status === 'hold'
+                              ? 'text-warning ml-3'
                               : 'text-success ml-3',
                           ]"
                         >
@@ -95,14 +98,14 @@
                           {{ getApartment.number }}
                         </h5>
                       </div>
-                      <div class="col-md-4 col-6 mb-4">
+                      <div class="col-md-4 col-6 mb-4" v-if="getApartment.plan">
                         <p class="mb-1">{{ $t("apartments.view.area") }}:</p>
                         <h5>
                           <i class="far fa-expand"></i>
                           {{ getApartment.plan.area }} м²
                         </h5>
                       </div>
-                      <div class="col-md-4 col-6 mb-4">
+                      <div class="col-md-4 col-6 mb-4" v-if="getApartment.plan">
                         <p class="mb-1">{{ $t("apartments.list.balcony") }}:</p>
                         <h5>
                           <i class="far fa-inbox"></i>
@@ -115,7 +118,10 @@
                           </span>
                         </h5>
                       </div>
-                      <div class="col-md-4 col-6 mb-4">
+                      <div
+                        class="col-md-4 col-6 mb-4"
+                        v-if="getApartment.rooms"
+                      >
                         <p class="mb-1">{{ $t("apartments.view.rooms") }}:</p>
                         <h5>
                           <i class="far fa-door-open"></i>
@@ -129,7 +135,10 @@
                           {{ getApartment.floor }}
                         </h5>
                       </div>
-                      <div class="col-md-4 col-6 mb-4">
+                      <div
+                        class="col-md-4 col-6 mb-4"
+                        v-if="getApartment.block"
+                      >
                         <p class="mb-1">Этажность блока:</p>
                         <h5>
                           <i class="far fa-align-justify"></i>
@@ -313,9 +322,19 @@
                   <!-- cancelReserve -->
                   <b-button
                     v-if="
-                      (getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id && (getPermission.apartments.root_contract || getPermission.apartments.reserve_cancel)) || 
-                      (getMe.role.id === 1 && getApartment.order.status === 'booked') || 
-                      getApartment.order.status === 'booked' && getPermission.apartments.root_reserve
+                      (getApartment.order &&
+                        getApartment.order.status === 'booked' &&
+                        getApartment.order.user.id === getMe.user.id &&
+                        getMe.user &&
+                        (getPermission.apartments.root_contract ||
+                          getPermission.apartments.reserve_cancel)) ||
+                        (getMe.role &&
+                          getMe.role.id === 1 &&
+                          getApartment.order &&
+                          getApartment.order.status === 'booked') ||
+                        (getApartment.order &&
+                          getApartment.order.status === 'booked' &&
+                          getPermission.apartments.root_reserve)
                     "
                     type="button"
                     @click="cancelReserve"
@@ -329,13 +348,17 @@
                   <!-- view_client -->
                   <b-link
                     v-if="
-                      (getApartment.order.status === 'booked' &&
+                      (getApartment.order &&
+                        getApartment.order.status === 'booked' &&
                         getApartment.order.user.id === getMe.user.id) ||
-                        (getMe.role.id === 1 &&
+                        (getMe.role &&
+                          getMe.role.id &&
+                          getMe.role.id === 1 &&
+                          getApartment.order &&
                           getApartment.order.status === 'booked')
                     "
                     @click="ReserveInfo(getApartment)"
-                    v-b-modal.modal-view-client
+                    v-b-modal.modal-view-reserved-client
                     class="mr-md-2 mr-0 btn btn-secondary ml-1"
                   >
                     <i class="far fa-eye"></i>
@@ -346,13 +369,15 @@
                   <b-button
                     class="mr-md-2 mr-0 btn btn-primary ml-1"
                     v-if="
-                      getPermission.apartments.reserve &&
+                      getPermission.apartments &&
+                        getPermission.apartments.reserve &&
+                        getApartment.order &&
                         getApartment.order.status === 'available'
                     "
                     @click="
                       [(reserve = true), (apartment_id = getApartment.id)]
                     "
-                    v-b-modal.modal-create
+                    v-b-modal.modal-reserve-create
                   >
                     <i class="far fa-calendar-check"></i>
                     {{ $t("apartments.list.book") }}
@@ -361,23 +386,34 @@
                   <!-- confirm -->
                   <b-button
                     v-b-modal.modal-agree
-                    @click="ConfirmFindUser"
+                    @click="orderHold([getApartment.id])"
                     variant="primary"
                     class="mr-md-2 mr-0 btn btn-primary ml-1"
                     v-if="
-                      ((getApartment.order.status != 'sold' ||
-                        getApartment.order.status != 'contract') &&
+                      (getApartment.order &&
+                        (getApartment.order.status != 'sold' ||
+                          getApartment.order.status != 'contract') &&
+                        getApartment.order &&
                         getApartment.order.status === 'booked' &&
                         getApartment.order.user.id === getMe.user.id &&
+                        getPermission.apartments &&
                         getPermission.apartments.contract) ||
                         (!(
-                          getApartment.order.status == 'sold' ||
-                          getApartment.order.status == 'contract'
+                          (getApartment.order && getApartment.order.status) ==
+                            'sold' ||
+                          (getApartment.order && getApartment.order.status) ==
+                            'contract' ||
+                          (getApartment.order && getApartment.order.status) ==
+                            'hold'
                         ) &&
+                          getPermission.apartments &&
                           getPermission.apartments.root_contract) ||
-                        ((getApartment.order.status != 'sold' ||
-                          getApartment.order.status != 'contract') &&
+                        (getApartment.order &&
+                          (getApartment.order.status != 'sold' ||
+                            getApartment.order.status != 'contract') &&
+                          getApartment.order &&
                           getApartment.order.status === 'available' &&
+                          getPermission.apartments &&
                           getPermission.apartments.contract)
                     "
                   >
@@ -386,24 +422,33 @@
                     {{ $t("apartments.list.confirm") }}
                   </b-button>
 
+                  <!--  Оформить when processing  -->
                   <b-link
-                    @click="orderHold([this.$route.params.id])"
-                    :class="'btn btn-primary ml-md-1 mr-0 mr-md-2'"
                     v-if="
-                      (getPermission.apartments.contract &&
-                        (getApartment.order.status === 'sold' ||
-                          getApartment.order.status === 'contract') &&
-                        getMe.user.id === getApartment.order.user.id) ||
-                        (getPermission.apartments.root_contract &&
-                          (getApartment.order.status === 'sold' ||
-                            getApartment.order.status === 'contract')) ||
-                        (getMe.role.id === 1 &&
-                          (getApartment.order.status === 'sold' ||
-                            getApartment.order.status === 'contract'))
+                      ((((getApartment.order && getApartment.order.status) !=
+                        'sold' ||
+                        (getApartment.order && getApartment.order.status) !=
+                          'contract') &&
+                        getApartment.order && getApartment.order.status === 'booked' &&
+                        getApartment.order.user_id === getMe.user.id &&
+                        getPermission.apartments && getPermission.apartments.contract) ||
+                        (!(
+                          getApartment.order && (getApartment.order.status == 'sold' ||
+                          getApartment.order.status == 'contract'
+                        )) &&
+                          getPermission.apartments &&
+                          getPermission.apartments.root_contract) ||
+                        (getApartment.order && (getApartment.order.status != 'sold' ||
+                          getApartment.order.status != 'contract') &&
+                          getApartment.order.status === 'available' &&
+                          getPermission.apartments && getPermission.apartments.contract)) &&
+                        (getApartment.order && getApartment.order.status) === 'hold'
                     "
+                    @click="goOrderHold([getApartment.order.id])"
+                    class="btn btn-primary ml-md-1 mr-0 mr-md-2"
                   >
-                    <i class="far fa-file-signature"></i>
-                    {{ $t("apartments.list.contract") }}
+                    <i class="far fa-ballot-check"></i>
+                    Продолжить оформление
                   </b-link>
                 </div>
               </div>
@@ -435,7 +480,10 @@
       ></view-client>
 
       <reserve-add
-        v-if="reserve | getPermission.apartments.reserve"
+        v-if="
+          reserve ||
+            (getPermission.apartments && getPermission.apartments.reserve)
+        "
         :apartment="apartment_id"
         @CreateReserve="CreateReserveSuccess"
       ></reserve-add>
@@ -510,7 +558,6 @@ export default {
         price_for_m2: 0,
         total: 0,
       },
-
       isMapActive: false,
     };
   },
@@ -558,6 +605,12 @@ export default {
             });
           }
         });
+    },
+    goOrderHold(order_id) {
+      this.$router.push({
+        name: "confirm-apartment",
+        params: {id: order_id[0]},
+      });
     },
 
     momentQuarter(val) {
@@ -622,7 +675,7 @@ export default {
               this.toasted(response.data.message, "success");
 
               this.$nextTick(() => {
-                this.$bvModal.hide("modal-view-client");
+                this.$bvModal.hide("modal-view-reserved-client");
               });
 
               this.fetchApartment(this);
@@ -665,6 +718,9 @@ export default {
           break;
         case "contract":
           msg = "Ждет оплата";
+          break;
+        case "hold":
+          msg = "Оформляется...";
           break;
         default:
           msg = "Свободен";

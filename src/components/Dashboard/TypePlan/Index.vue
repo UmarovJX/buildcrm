@@ -133,8 +133,6 @@ export default {
 
   mounted() {
     this.fetchObjects(this);
-
-    // console.log(this.getLoading);
   },
 
   methods: {

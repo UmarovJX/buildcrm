@@ -29,6 +29,35 @@ export default {
   actions: {
     async fetchApartments(ctx, vm) {
       ctx.commit("updateLoading", true, {root: true});
+      if (vm.$route.query.status === true) {
+        vm.$route.query.status = true;
+      } else {
+        vm.$route.query.status = null;
+      }
+      if (typeof vm.$route.query.rooms === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(vm.$route.query.rooms);
+        newArr.push(newArrItem);
+        vm.$route.query.rooms = newArr;
+      }
+      if (typeof vm.$route.query.number === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(vm.$route.query.number);
+        newArr.push(newArrItem);
+        vm.$route.query.number = newArr;
+      }
+      if (typeof vm.$route.query.floors === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(vm.$route.query.floors);
+        newArr.push(newArrItem);
+        vm.$route.query.floors = newArr;
+      }
+      if (typeof vm.$route.query.blocks === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(vm.$route.query.blocks);
+        newArr.push(newArrItem);
+        vm.$route.query.blocks = newArr;
+      }
 
       if (vm.$route.name != "apartments") return;
       try {
@@ -39,10 +68,11 @@ export default {
           params: vm.$route.query,
         };
 
-        const {data} = await vm.axios.get(
+        let {data} = await vm.axios.get(
           `${process.env.VUE_APP_URL}/objects/${vm.$route.params.object}/apartments/`,
           header
         );
+
         ctx.commit("updateApartment", data);
         ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
@@ -117,7 +147,6 @@ export default {
           header
         );
         const client = response.data;
-        console.log(client);
         ctx.commit("updateReserveClient", client);
       } catch (error) {
         if (!error.response) {

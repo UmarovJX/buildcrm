@@ -24,6 +24,22 @@ export default {
       userTheme: "light-theme",
     };
   },
+  props: {
+    theme: {
+      type: String,
+      default: "",
+    },
+  },
+  watch: {
+    theme(value) {
+      if (value) {
+        this.userTheme = value;
+      }
+    },
+  },
+  mounted() {
+    this.setTheme(this.theme);
+  },
 
   methods: {
     toggleTheme() {
@@ -44,7 +60,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 input {
   display: none;

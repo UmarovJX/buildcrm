@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header-block></header-block>
+    <header-block :theme="theme"></header-block>
     <router-view></router-view>
   </div>
 </template>
@@ -10,6 +10,7 @@ export default {
   data() {
     return {
       onLine: navigator.onLine,
+      theme: "",
     };
   },
   methods: {
@@ -57,12 +58,14 @@ export default {
   mounted() {
     const initUserTheme = this.getMediaPreference();
     const activeTheme = localStorage.getItem("user-theme");
+    this.theme = activeTheme;
     if (activeTheme === "light-theme") {
       this.setTheme("light-theme");
     } else if (activeTheme === "dark-theme") {
       this.setTheme("dark-theme");
     } else {
       this.setTheme(initUserTheme);
+      this.theme = initUserTheme;
     }
     window.addEventListener("online", this.updateOnlineStatus);
     window.addEventListener("offline", this.updateOnlineStatus);

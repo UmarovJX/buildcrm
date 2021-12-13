@@ -1,13 +1,12 @@
 <template>
   <div>
     <b-modal
-      id="modal-view-client"
-      ref="modal"
+      id="modal-view-reserved-client"
+      ref="modal-view-reserved-client"
       :title="$t('apartments.list.view_client')"
       hide-footer
-      @show="resetModal"
     >
-      <form ref="form" @submit.stop.prevent="handleSubmit">
+      <form ref="form" @submit.prevent="handleSubmit">
         <b-form-group
           label-cols="4"
           label-cols-lg="2"
@@ -17,7 +16,9 @@
           <b-form-input
             id="first_name"
             disabled
-            v-model="getReserveClient.first_name.lotin"
+            :value="
+              getReserveClient.first_name && getReserveClient.first_name.lotin
+            "
           ></b-form-input>
         </b-form-group>
 
@@ -30,7 +31,9 @@
           <b-form-input
             id="last_name"
             disabled
-            v-model="getReserveClient.last_name.lotin"
+            :value="
+              getReserveClient.last_name && getReserveClient.last_name.lotin
+            "
           ></b-form-input>
         </b-form-group>
 
@@ -43,7 +46,7 @@
           <b-form-input
             id="phone"
             disabled
-            v-model="getReserveClient.phone"
+            :value="getReserveClient.phone"
           ></b-form-input>
         </b-form-group>
 
@@ -56,19 +59,19 @@
           <b-form-datepicker
             disabled
             locale="ru"
-            v-model="getReserveClient.booking_date"
+            :value="getReserveClient.booking_date"
           ></b-form-datepicker>
         </b-form-group>
 
         <div class="d-flex justify-content-center">
-          <b-button variant="light" @click="resetModal">
+          <b-button type="button" variant="light" @click="closeModal">
             {{ $t("close") }}
           </b-button>
 
           <b-button
             v-if="
               getPermission.apartments.reserve_cancel ||
-              getPermission.apartments.root_contract
+                getPermission.apartments.root_contract
             "
             type="submit"
             class="ml-1"
@@ -87,14 +90,11 @@
 import {mapGetters} from "vuex";
 export default {
   props: {
-    ClientId: {},
     ApartmentData: {},
   },
 
-  data: function () {
+  data() {
     return {
-      client_id: this.ClientId,
-
       header: {
         headers: {
           Authorization: "Bearer " + localStorage.token,
@@ -108,7 +108,7 @@ export default {
   computed: mapGetters(["getReserveClient", "getPermission"]),
 
   methods: {
-    async handleSubmit() {
+    handleSubmit() {
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text_cancel_reserve"),
@@ -117,47 +117,48 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
       }).then((result) => {
         if (result.value) {
-          this.axios
-            .delete(
-              process.env.VUE_APP_URL +
-                "/orders/" +
-                this.getReserveClient.id +
-                "/reserve",
-              this.header
-            )
-            .then((response) => {
-              this.toasted(response.data.message, "success");
-
-              this.$nextTick(() => {
-                this.$bvModal.hide("modal-view-client");
-              });
-
-              this.$emit("CancelReserve", this.client);
-
-              this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
-            })
-            .catch((error) => {
-              if (!error.response) {
-                this.toasted("Error: Network Error", "error");
-              } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else {
-                  this.error = true;
-                  this.errors = error.response.data.errors;
-                }
-              }
-            });
+          this.sendData();
         }
       });
     },
+    async sendData() {
+      this.axios
+        .delete(
+          process.env.VUE_APP_URL +
+            "/orders/" +
+            this.getReserveClient.id +
+            "/reserve",
+          this.header
+        )
+        .then((response) => {
+          this.toasted(response.data.message, "success");
+          this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
+          this.$emit("CancelReserve", this.client);
+          this.$root.$emit("bv::hide::modal", "modal-view-reserved-client");
+        })
+        .catch((error) => {
+          if (!error.response) {
+            this.toasted("Error: Network Error", "error");
+          } else {
+            if (error.response.status === 403) {
+              this.toasted(error.response.data.message, "error");
+            } else if (error.response.status === 401) {
+              this.toasted(error.response.data.message, "error");
+            } else if (error.response.status === 500) {
+              this.toasted(error.response.data.message, "error");
+            } else {
+              this.error = true;
+              this.errors = error.response.data.errors;
+            }
+          }
+        })
+        .finally(() => {});
+    },
 
-    resetModal() {
-      this.$bvModal.hide("modal-view-client");
+    closeModal() {
+      // this.$bvModal.hide("modal-view-reserved-client");
+      // this.$refs["modal-view-reserved-client"].hide();
+      this.$root.$emit("bv::hide::modal", "modal-view-reserved-client");
       //this.$emit('CloseReserveInfo');
     },
   },
