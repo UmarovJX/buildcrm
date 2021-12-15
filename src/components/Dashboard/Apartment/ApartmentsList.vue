@@ -31,7 +31,7 @@
                 getPermission.apartments &&
                 getPermission.apartments.contract
             "
-            @click="orderHold(this.selected.values)"
+            @click="orderHold(selected.values)"
             variant="success"
             class="btn btn-primary mr-md-2 mr-0 mt-md-0 order-3"
           >

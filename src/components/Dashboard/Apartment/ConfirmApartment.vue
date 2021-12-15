@@ -1,63 +1,18 @@
 <template>
   <main>
     <div class="app-content">
-      <!-- Step 1 -->
-      <div class="new-object" v-if="false">
-        <!-- building info -->
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-2">
-              <div class="building">
-                <div class="building__img">
-                  <img
-                    :data-fancybox="getApartmentItem.plan.image"
-                    v-lazy="getApartmentItem.plan.image"
-                    width="100%"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="building__info mt-md-0 mt-3">
-                <p>
-                  {{ $t("apartments.view.number") }}:
-                  {{ getApartmentItem.number }}
-                </p>
-                <p>
-                  {{ $t("apartments.view.area") }}:
-                  {{ getApartmentItem.plan.area }} м²
-                </p>
-                <p>
-                  {{ $t("apartments.list.balcony") }}:
-                  <span v-if="getApartmentItem.plan.balcony">
-                    {{ getApartmentItem.plan.balcony_area }} м²
-                  </span>
-                  <span v-else>
-                    {{ $t("no") }}
-                  </span>
-                </p>
-                <p>
-                  {{ $t("apartments.view.rooms") }}:
-                  {{ getApartmentItem.rooms }}
-                </p>
-                <p>
-                  {{ $t("apartments.view.floor") }}:
-                  {{ getApartmentItem.floor }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Step 2 -->
-      <div class="new-object p-3" v-if="step === 2">
+      <div class="new-object p-3">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
           <form ref="form" @submit.prevent="handleSubmit(postStore)">
             <div class="row">
               <!-- Изменить дата договора -->
               <div
                 class="col-12 mb-2"
-                v-if="(getMe.role && getMe.role.id === 1) || (getPermission.contracts && getPermission.contracts.date)"
+                v-if="
+                  (getMe.role && getMe.role.id === 1) ||
+                    (getPermission.contracts && getPermission.contracts.date)
+                "
               >
                 <div class="row">
                   <div class="col-md-4">
@@ -530,7 +485,12 @@
               <!-- apartments.agree.type_client -->
               <div
                 class="col-md-4"
-                v-if="(getMe.role && getMe.role.id === 1) || (getPermission && getPermission.contracts && getPermission.contracts.friends)"
+                v-if="
+                  (getMe.role && getMe.role.id === 1) ||
+                    (getPermission &&
+                      getPermission.contracts &&
+                      getPermission.contracts.friends)
+                "
               >
                 <div class="mb-3">
                   <label class="d-block" for="type_client">{{
@@ -706,7 +666,7 @@
         </validation-observer>
       </div>
       <!-- Step 3 -->
-      <div class="container-fluid px-0 mx-0" v-if="step == 3">
+      <div class="container-fluid px-0 mx-0">
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
@@ -729,7 +689,7 @@
                   <div
                     class="mr-2 w-25"
                     v-if="
-                      client.discount.prepay != 100 ||
+                      (client.discount && client.discount.prepay != 100) ||
                         client.discount.prepay < 100
                     "
                   >
@@ -746,6 +706,7 @@
                   <span
                     v-if="
                       month > 0 &&
+                        client.discount &&
                         (client.discount.prepay != 100 ||
                           client.discount.prepay < 100)
                     "
@@ -766,8 +727,9 @@
                 <table
                   class="table"
                   v-if="
-                    client.discount.prepay != 100 ||
-                      client.discount.prepay < 100
+                    client.discount &&
+                      (client.discount.prepay != 100 ||
+                        client.discount.prepay < 100)
                   "
                 >
                   <thead>
@@ -905,8 +867,10 @@
 
                             <button
                               v-if="
-                                ((getMe.role && getMe.role.id) === 1 && !initialPayment.edit) ||
-                                  (getPermission.contracts && getPermission.contracts.monthly &&
+                                ((getMe.role && getMe.role.id) === 1 &&
+                                  !initialPayment.edit) ||
+                                  (getPermission.contracts &&
+                                    getPermission.contracts.monthly &&
                                     !initialPayment.edit)
                               "
                               type="button"
@@ -933,10 +897,12 @@
                             <button
                               v-if="
                                 (index != 0 &&
-                                  getMe.role && getMe.role.id === 1 &&
+                                  getMe.role &&
+                                  getMe.role.id === 1 &&
                                   !month.edit) ||
                                   (index != 0 &&
-                                    getPermission.contracts && getPermission.contracts.monthly &&
+                                    getPermission.contracts &&
+                                    getPermission.contracts.monthly &&
                                     !month.edit)
                               "
                               type="button"
@@ -989,8 +955,12 @@
 
                           <button
                             v-if="
-                              ((getMe.role && getMe.role.id === 1) && !month.edit) ||
-                                (getPermission.contracts && getPermission.contracts.monthly && !month.edit)
+                              (getMe.role &&
+                                getMe.role.id === 1 &&
+                                !month.edit) ||
+                                (getPermission.contracts &&
+                                  getPermission.contracts.monthly &&
+                                  !month.edit)
                             "
                             type="button"
                             @click="editMonthlyPayment(index)"
@@ -1022,11 +992,15 @@
             <!-- sticky sidebar -->
             <div class="col-xl-4 h-auto">
               <div class="sticky-top">
-                <!-- Info -->
+                <!-- Информация клиента -->
                 <div class="new-object p-0">
                   <div v-b-toggle.collapse-info block class="d-flex p-3">
                     <span>Информация клиента</span>
-                    <strong v-if="isVisible" aria-hidden="true" class="ml-auto">
+                    <strong
+                      v-if="isVisibleInfo"
+                      aria-hidden="true"
+                      class="ml-auto"
+                    >
                       <i class="fal fa-chevron-up"></i>
                     </strong>
                     <strong v-else aria-hidden="true" class="ml-auto">
@@ -1035,7 +1009,7 @@
                   </div>
                   <b-collapse
                     id="collapse-info"
-                    v-model="isVisible"
+                    v-model="isVisibleInfo"
                     class="px-3 pb-3"
                   >
                     <table class="table mx-0 mt-2 p-0 my-table-another-variant">
@@ -1093,14 +1067,90 @@
                     </table>
                   </b-collapse>
                 </div>
+
+                <!-- Apartments -->
+                <div class="new-object p-0">
+                  <div v-b-toggle.collapse-apartments block class="d-flex p-3">
+                    <span>Список квартир:</span>
+                    <strong
+                      v-if="isVisibleApartments"
+                      aria-hidden="true"
+                      class="ml-auto"
+                    >
+                      <i class="fal fa-chevron-up"></i>
+                    </strong>
+                    <strong v-else aria-hidden="true" class="ml-auto">
+                      <i class="fal fa-chevron-down"></i>
+                    </strong>
+                  </div>
+                  <b-collapse
+                    id="collapse-apartments"
+                    v-model="isVisibleApartments"
+                    class="px-3 pb-3"
+                  >
+                    <div v-for="(item, index) in allApartments" :key="item.id">
+                      <div class="card px-3 pt-4 pb-4 border mb-3">
+                        
+                        <table class="w-100">
+                          <tbody>
+                            <tr>
+                              <td style="width: 120px"><i style="width: 20px; text-align:center" class="mr-1 far fa-building"></i> № Дома:</td>
+                              <td class="text-left"><span>{{ item.number }}</span></td>
+                            </tr>
+                            <tr>
+                              <td><i style="width: 20px; text-align:center" class="mr-1 far fa-dollar-sign"></i> Цена:</td>
+                              <td>
+                                <ApartmentPrice
+                                  :itemNumber="item.number"
+                                  :itemPrice="item.price"
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <b-collapse :id="'collapse' + index">
+                          <table class="w-100">
+                            <tbody>
+                              <tr>
+                                <td style="width: 120px"><i style="width: 20px; text-align:center" class="mr-1 far fa-expand"></i> Площадь:</td>
+                                <td class="text-left">{{ item.plan.area }} m2</td>
+                              </tr>
+                              <tr>
+                                <td style="width: 120px"><i style="width: 20px; text-align:center" class="mr-1 far fa-inbox"></i> Балкон:</td>
+                                <td class="text-left">{{ item.plan.balcony_area }} m2</td>
+                              </tr>
+                              <tr>
+                                <td style="width: 120px"><i style="width: 20px; text-align:center" class="mr-1 far fa-door-open"></i> Комнат:</td>
+                                <td class="text-left">{{ item.rooms }}</td>
+                              </tr>
+                              <tr>
+                                <td style="width: 120px"><i style="width: 20px; text-align:center" class="mr-1 far fa-industry"></i> Этаж:</td>
+                                <td class="text-left">{{ item.floor }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </b-collapse>
+                        <div class="d-flex justify-content-center" style="position: absolute; left: 50%; transform: translateX(-50%); bottom: -10px">
+                          <b-button style="transform: scale(0.6)" class="m-0 p-0" variant="secondary" v-b-toggle="'collapse' + index" size="sm">
+                            <i class="fa fa-chevron-down"></i>
+                          </b-button>
+                        </div>
+                      </div>
+                    </div>
+                  </b-collapse>
+                </div>
+
+                <!-- Calc -->
                 <div class="new-object p-3">
                   <!-- Calc -->
-                  <Discount
+                  <DiscountMultiple
                     v-if="getApartmentItem"
                     :apartment="getApartmentItem"
                     @getCalData="getCalData"
-                  ></Discount>
+                  ></DiscountMultiple>
                 </div>
+
+                <!-- Payment -->
                 <div class="new-object p-3 d-none">
                   <!--  Цена продажи: -->
                   <div v-if="!edit.price">
@@ -1152,7 +1202,11 @@
                                   disabled
                                   type="text"
                                   :value="
-                                    client.discount.prepay.toFixed(2) + ' %'
+                                    client &&
+                                    client.discount &&
+                                    client.discount.prepay
+                                      ? client.discount.prepay.toFixed(2) + ' %'
+                                      : ''
                                   "
                                 />
                               </div>
@@ -1323,22 +1377,22 @@
     </div>
 
     <!-- success-agree modal -->
-    <success-agree
+    <SuccessAgree
       v-if="
         apartmentInfoItem.status != 'sold' ||
           apartmentInfoItem.status != 'contract'
       "
       :contract="contract"
-    ></success-agree>
+    />
   </main>
 </template>
 
 <script>
 import {mapGetters, mapActions} from "vuex";
-// import DiscountCalc from "./Components/DiscountCalc";
 import moment from "moment";
 import SuccessAgree from "./Components/SuccessAgree";
-import Discount from "./Components/Discount";
+import DiscountMultiple from "./Components/DiscountMultiple";
+import ApartmentPrice from "./Components/ApartmentPrice";
 export default {
   name: "ConfirmApartment",
   data() {
@@ -1366,6 +1420,9 @@ export default {
         birth_day: null,
         phone: "",
         other_phone: null,
+        discount: {
+          prepay: null,
+        },
       },
 
       apartment_edit: {
@@ -1409,15 +1466,17 @@ export default {
         contract_path: null,
       },
       loading: false,
-      isVisible: true,
+      isVisibleInfo: false,
+      isVisibleApartments: false,
       calc: {},
+      allApartments: [],
     };
   },
 
   components: {
-    // DiscountCalc,
-    Discount,
-    "success-agree": SuccessAgree,
+    DiscountMultiple,
+    SuccessAgree,
+    ApartmentPrice,
   },
 
   created() {
@@ -1443,12 +1502,20 @@ export default {
       return [];
     },
     getApartmentItem() {
+      console.log(this.getApartmentOrder);
       let val = this.getApartmentOrder;
       if (val && val.apartments && val.apartments.length == 1) {
         return val.apartments[0];
       }
       return [];
     },
+    // allApartments() {
+    //   let val = this.getApartmentOrder.apartments;
+    //   if (val && val.apartments) {
+    //     return val.apartments;
+    //   }
+    //   return [];
+    // },
     getApartmentMultiple() {
       let val = JSON.parse(localStorage.getItem("order"));
       if (val && val.apartments.length > 0) {
@@ -1495,6 +1562,8 @@ export default {
     this.fetchApartmentOrder(this).then(() => {
       this.backToView();
 
+      this.allApartments = this.getApartmentOrder.apartments;
+
       this.apartment_edit.contract_number = this.apartmentInfoItem.contract_number;
     });
 
@@ -1516,6 +1585,7 @@ export default {
       this.contract = value;
       this.$bvModal.show("modal-success-agree");
     },
+
     CloseAgree() {
       this.confirm = false;
     },
@@ -1672,11 +1742,7 @@ export default {
       this.loading = true;
 
       await this.axios
-        .post(
-          process.env.VUE_APP_URL + "/clients",
-          this.client,
-          this.header
-        )
+        .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
         .then((response) => {
           this.loading = false;
           if (response) {

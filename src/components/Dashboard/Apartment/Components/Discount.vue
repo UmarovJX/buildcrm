@@ -189,6 +189,7 @@ export default {
 
   mounted() {
      setTimeout(() => {
+       console.log(this.getApartmentDiscounts);
       this.discount = this.getApartmentDiscounts[0];
       this.initialCalc()
 
