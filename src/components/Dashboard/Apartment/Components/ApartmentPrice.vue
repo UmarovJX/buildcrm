@@ -4,7 +4,7 @@
       @click="editPrice"
       style="transform: scale(0.6)"
       size="sm"
-      :variant="editable ? 'outline-primary' : 'success'"
+      :variant="editable ? 'primary' : 'success'"
       class="m-0"
       ><i class="fa" :class="editable ? 'fa-edit' : 'fa-save'"></i
     ></b-button>
@@ -14,7 +14,7 @@
       :currency="$t('ye')"
       :precision="2"
       class="py-0 m-0 bg-transparent"
-      :class="editable ? 'border-0' : ''"
+      :class="editable ? 'border-0' : 'border border-secondary'"
       currency-symbol-position="suffix"
       separator="space"
       :disabled="editable"

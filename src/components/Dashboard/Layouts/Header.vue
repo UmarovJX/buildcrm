@@ -86,7 +86,7 @@
             <div class="user d-flex align-items-center">
               <div
                 class="user__img"
-                v-if="getMe.user.avatar"
+                v-if="getMe.user && getMe.user.avatar"
                 :style="
                   'background-image: url(' +
                     getMe.user.avatar +

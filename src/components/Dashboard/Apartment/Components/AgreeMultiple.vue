@@ -1039,8 +1039,8 @@ export default {
         payment_date: null,
         first_payment_date: null,
       },
-
       type_client: "unknown",
+      comment: "",
 
       apartment_edit: {
         price: 0,
@@ -1049,36 +1049,28 @@ export default {
         contract_number: null,
         contract_date: null,
       },
-
-      comment: "",
-
-      month: 6,
-      date_change: false,
-
       initial_payments: [],
-
       confirm: false,
       next: false,
-
+      month: 6,
+      date_change: false,
       edit: {
         price: false,
         monthly: false,
 
         monthly_edited: false,
       },
-
       error: false,
       errors: [],
-
       credit_months: [],
+      getThisApartment: [],
+      getThisApartmentForTable: [],
 
       header: {
         headers: {
           Authorization: "Bearer " + localStorage.token,
         },
       },
-      getThisApartment: [],
-      getThisApartmentForTable: [],
     };
   },
 
@@ -1446,6 +1438,7 @@ export default {
       return;
     },
 
+    // Calc
     getPrice() {
       var price = [];
       switch (this.client.discount.type) {
