@@ -969,10 +969,6 @@ export default {
         .then((response) => {
           this.loading = false;
           if (response) {
-            console.log(response.data);
-            // this.client = {
-            //   ...response.data
-            // }
             this.onSubmit();
           }
         })

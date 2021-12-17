@@ -38,8 +38,6 @@ export default {
   mounted() {
     this.apartmentNumber = parseInt(this.itemNumber);
     this.apartmentPrice = parseInt(this.itemPrice);
-    console.log(this.apartmentNumber);
-    console.log(this.apartmentPrice);
   },
   props: {
     itemNumber: {
@@ -51,7 +49,6 @@ export default {
   },
   methods: {
     editPrice() {
-      console.log(this.apartmentNumber);
       this.editable = !this.editable;
     },
   },

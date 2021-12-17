@@ -572,7 +572,6 @@ export default {
         });
     },
     goOrderHold(order_id) {
-      console.log(order_id);
       this.selected.view = false;
       this.selected.values = [];
       this.selectable = true;
