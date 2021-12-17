@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <!-- Step 2 -->
-      <div class="new-object p-3">
+      <div class="new-object p-3" v-if="step === 2">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
           <form ref="form" @submit.prevent="handleSubmit(postStore)">
             <div class="row">
@@ -576,7 +576,7 @@
         </validation-observer>
       </div>
       <!-- Step 3 -->
-      <div class="container-fluid px-0 mx-0">
+      <div class="container-fluid px-0 mx-0" v-if="step === 3">
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
@@ -1603,6 +1603,7 @@ export default {
       getThisApartmentForTable: [],
       monthly_price: 0,
       calForPrint: {},
+      clientData: {}
     };
   },
 
@@ -1760,6 +1761,7 @@ export default {
         .then((response) => {
           this.loading = false;
           if (response) {
+            this.clientData = response.data
             this.onSubmit();
           }
         })
@@ -1795,10 +1797,10 @@ export default {
         if (result.value) {
           this.loading = true;
           const formData = new FormData();
+          
 
           // if (this.allApartments.order.id)
           //   formData.append("order_id", this.allApartments.order.id);
-
           formData.append("type", "simple");
           formData.append("first_name[lotin]", this.client.first_name.lotin);
           formData.append("first_name[kirill]", this.client.first_name.kirill);
@@ -1824,6 +1826,7 @@ export default {
           formData.append("type_client", this.type_client);
 
           formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
+          formData.append("client_id", this.clientData?.id);
 
           if (
             this.getMe.role.id === 1 ||
@@ -1834,6 +1837,7 @@ export default {
               monthly < this.credit_months.length;
               monthly++
             ) {
+              let date = moment(this.credit_months[monthly].month).format('YYYY-MM-DD')
               formData.append(
                 "monthly[" + monthly + "][edited]",
                 this.credit_months[monthly].edited ? 1 : 0
@@ -1844,7 +1848,7 @@ export default {
               );
               formData.append(
                 "monthly[" + monthly + "][date]",
-                this.credit_months[monthly].month
+                date
               );
             }
           }
@@ -1867,6 +1871,17 @@ export default {
               this.initial_payments[initial_payment].month
             );
           }
+          for (
+            let index = 0;
+            index < this.allApartments.length;
+            index++
+          ) {
+            formData.append("apartments[" + index + "][id]", this.allApartments[index].id);
+            formData.append(
+              "apartments[" + index + "][price]",
+              this.allApartments[index].price
+            );
+          }
 
           formData.append("comment", this.comment);
 
@@ -1885,10 +1900,10 @@ export default {
 
           // if (this.date_change) {
           formData.append("date_change", 1);
-          formData.append(
-            "contract_number",
-            this.apartment_edit.contract_number
-          );
+          // formData.append(
+          //   "contract_number",
+          //   this.apartment_edit.contract_number
+          // );
           formData.append("contract_date", this.apartment_edit.contract_date);
           // }
 
@@ -1897,7 +1912,7 @@ export default {
           }
           this.axios
             .post(
-              process.env.VUE_APP_URL + "/orders/" + this.allApartments.id,
+              process.env.VUE_APP_URL + "/orders/" + this.getApartmentOrder?.uuid,
               formData,
               this.header
             )
