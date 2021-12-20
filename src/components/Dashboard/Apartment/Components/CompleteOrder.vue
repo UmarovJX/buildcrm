@@ -815,7 +815,7 @@ export default {
     backToView() {
       if (this.apartmentInfoItem.status == "contract") {
         this.$router.push({
-          name: "apartments-view",
+          name: "apartment-view",
           params: {id: this.$route.params.id},
         });
       }
@@ -1153,7 +1153,7 @@ export default {
           // this.$emit("CloseAgree");
 
           this.$router.push({
-            name: "apartments-view",
+            name: "apartment-view",
             params: {id: this.$route.params.id},
           });
         }

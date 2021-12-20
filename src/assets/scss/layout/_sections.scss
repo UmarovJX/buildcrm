@@ -38,6 +38,7 @@ table.b-table[aria-busy="true"] {
 .custom-table table tr td {
   padding: 15px 25px;
   vertical-align: middle;
+  border-top: unset;
 }
 
 .custom-table table tbody tr,

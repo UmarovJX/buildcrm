@@ -217,7 +217,7 @@
                   <!--  Подробная информация  -->
                   <router-link
                     :to="{
-                      name: 'apartments-view',
+                      name: 'apartment-view',
                       params: {id: data.item.id},
                     }"
                     :class="'dropdown-item dropdown-item--inside'"
@@ -241,7 +241,7 @@
                   <!-- Подробная информация  -->
                   <router-link
                     :to="{
-                      name: 'apartments-view',
+                      name: 'apartment-view',
                       params: {id: data.item.id},
                     }"
                     :class="'dropdown-item dropdown-item--inside'"
@@ -621,7 +621,7 @@ export default {
     },
     onRowSelected(items) {
       this.$router.push({
-        name: "apartments-view",
+        name: "apartment-view",
         params: {id: items[0].id},
       });
     },

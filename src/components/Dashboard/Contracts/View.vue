@@ -180,7 +180,7 @@
                         <td>
                           <router-link
                             :to="{
-                              name: 'apartments-view',
+                              name: 'apartment-view',
                               params: {id: apartment.id},
                             }"
                             :class="'btn btn-primary btn-sm ml-1'"

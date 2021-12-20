@@ -16,7 +16,7 @@ import Dashboard from "./components/Dashboard/Home";
 import Objects from "./components/Dashboard/Objects/Index";
 import ObjStore from "./components/Dashboard/Objects/Store";
 // import ObjFilter from './components/Dashboard/Objects/Filter';
-import ApartmentList from "./components/Dashboard/Apartment/ApartmentsList";
+import ApartmentsList from "./components/Dashboard/Apartment/ApartmentsList";
 
 // import Managers from './components/Dashboard/Managers/Index';
 // import Accountants from './components/Dashboard/Accountants/Index';
@@ -82,12 +82,6 @@ const routes = [
   // },
 
   {
-    name: "apartments",
-    path: "/objects/:object/apartments",
-    component: ApartmentList,
-  },
-
-  {
     name: "settings",
     path: "/settings",
     component: Settings,
@@ -98,15 +92,19 @@ const routes = [
     path: "/debtors",
     component: Debtors,
   },
-
   {
-    name: "apartments-view",
-    path: "/objects/:object/apartments/:id",
+    name: "apartments",
+    path: "/objects/:object/apartments",
+    component: ApartmentsList,
+  },
+  {
+    name: "apartment-view",
+    path: "/objects/:object/apartment/:id",
     component: ApartmentView,
   },
   {
     name: "confirm-apartment",
-    path: "/orders/:id/checkout",
+    path: "/objects/:object/apartment/:id/order",
     component: ConfirmApartment,
   },
   {

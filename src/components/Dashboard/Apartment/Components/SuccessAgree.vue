@@ -5,7 +5,6 @@
       ref="modal"
       title="Договор успешно создан!"
       hide-footer
-      @hidden="resetModal"
     >
       <div class="my-3">
         <h6>№ договора - {{ contract.contract }}</h6>
@@ -35,7 +34,14 @@
 
 <script>
 export default {
-  props: ["contract"],
+  props: {
+    contract: {
+      type: Object,
+    },
+    apartments: {
+      type: Number,
+    },
+  },
   mounted() {
     this.$root.$on("bv::modal::hide");
   },
@@ -43,18 +49,36 @@ export default {
     resetModal() {
       this.$bvModal.hide("modal-success-agree");
       if (this.$route.name === "confirm-apartment") {
+        // if (this.apartments === 1) {
+        //   this.$router.push({
+        //     name: "apartment-view",
+        //     params: {id: this.$route.params.id},
+        //   });
+        // } else {
+        //   this.$router.push({
+        //     name: "apartments",
+        //   });
+        // }
         this.$router.push({
-          name: "apartments-view",
-          params: {id: this.$route.params.id},
+          name: "apartments",
         });
       }
     },
     goApartment() {
       this.$bvModal.hide("modal-success-agree");
       if (this.$route.name === "confirm-apartment") {
+        // if (this.apartments === 1) {
+        //   this.$router.push({
+        //     name: "apartment-view",
+        //     params: {id: this.$route.params.id},
+        //   });
+        // } else {
+        //   this.$router.push({
+        //     name: "apartments",
+        //   });
+        // }
         this.$router.push({
-          name: "apartments-view",
-          params: {id: this.$route.params.id},
+          name: "apartments",
         });
       }
     },

@@ -125,7 +125,7 @@
 
                     <router-link
                       :to="{
-                        name: 'apartments-view',
+                        name: 'apartment-view',
                         params: {id: client.apartment.id},
                       }"
                       :class="'dropdown-item dropdown-item--inside'"

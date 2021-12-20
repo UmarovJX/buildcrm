@@ -1065,7 +1065,7 @@ export default {
           // this.$emit("CloseAgree");
 
           this.$router.push({
-            name: "apartments-view",
+            name: "apartment-view",
             params: {id: this.$route.params.id},
           });
         }

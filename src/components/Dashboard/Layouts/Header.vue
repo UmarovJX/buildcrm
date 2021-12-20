@@ -104,10 +104,10 @@
               ></div>
 
               <div class="ml-2 d-none d-sm-block">
-                <div class="user__name">
+                <div class="user__name" v-if="getMe.user">
                   {{ getMe.user.firstName }} {{ getMe.user.lastName }}
                 </div>
-                <div class="user__permission">
+                <div class="user__permission" v-if="getMe.role">
                   {{ getName(getMe.role.name) }}
                 </div>
               </div>
