@@ -11,9 +11,15 @@
       </div>
       <div class="d-flex justify-content-between align-items-center">
         <h6 class="mb-0">{{ contract.contract }}.docx</h6>
-        <button @click="goApartment" class="my-download btn btn-link">
+        <!-- <button @click="goApartment" class="my-download btn btn-link">
           <i class="far fa-download"></i> <span>Скачать</span>
-        </button>
+        </button> -->
+        <a
+          @click="goApartment"
+          :href="contract.contract_path"
+          class="my-download btn btn-link"
+          ><i class="far fa-download"></i> <span>Скачать</span></a
+        >
       </div>
 
       <div

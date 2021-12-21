@@ -429,20 +429,26 @@
                         'sold' ||
                         (getApartment.order && getApartment.order.status) !=
                           'contract') &&
-                        getApartment.order && getApartment.order.status === 'booked' &&
+                        getApartment.order &&
+                        getApartment.order.status === 'booked' &&
                         getApartment.order.user_id === getMe.user.id &&
-                        getPermission.apartments && getPermission.apartments.contract) ||
+                        getPermission.apartments &&
+                        getPermission.apartments.contract) ||
                         (!(
-                          getApartment.order && (getApartment.order.status == 'sold' ||
-                          getApartment.order.status == 'contract'
-                        )) &&
+                          getApartment.order &&
+                          (getApartment.order.status == 'sold' ||
+                            getApartment.order.status == 'contract')
+                        ) &&
                           getPermission.apartments &&
                           getPermission.apartments.root_contract) ||
-                        (getApartment.order && (getApartment.order.status != 'sold' ||
-                          getApartment.order.status != 'contract') &&
+                        (getApartment.order &&
+                          (getApartment.order.status != 'sold' ||
+                            getApartment.order.status != 'contract') &&
                           getApartment.order.status === 'available' &&
-                          getPermission.apartments && getPermission.apartments.contract)) &&
-                        (getApartment.order && getApartment.order.status) === 'hold'
+                          getPermission.apartments &&
+                          getPermission.apartments.contract)) &&
+                        (getApartment.order && getApartment.order.status) ===
+                          'hold'
                     "
                     @click="goOrderHold([getApartment.order.id])"
                     class="btn btn-primary ml-md-1 mr-0 mr-md-2"
@@ -450,6 +456,29 @@
                     <i class="far fa-ballot-check"></i>
                     Продолжить оформление
                   </b-link>
+
+                  <router-link
+                    :to="{
+                      name: 'contracts-view',
+                      params: {id: getApartment.order.id},
+                    }"
+                    :class="'btn btn-primary ml-1'"
+                    v-if="
+                      (getPermission.apartments.contract &&
+                        (getApartment.order.status === 'sold' ||
+                          getApartment.order.status === 'contract') &&
+                        getMe.user.id === getApartment.order.user.id) ||
+                        (getPermission.apartments.root_contract &&
+                          (getApartment.order.status === 'sold' ||
+                            getApartment.order.status === 'contract')) ||
+                        (getMe.role.id === 1 &&
+                          (getApartment.order.status === 'sold' ||
+                            getApartment.order.status === 'contract'))
+                    "
+                  >
+                    <i class="far fa-file-signature"></i>
+                    {{ $t("apartments.list.contract") }}
+                  </router-link>
                 </div>
               </div>
             </div>

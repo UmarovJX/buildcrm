@@ -501,7 +501,7 @@
                     id="type_client"
                     v-model="client.type_client"
                   >
-                    <option value="unknown">Незнакомый</option>
+                    <option selected value="unknown">Незнакомый</option>
                     <option value="friends">Знакомый</option>
                   </select>
                 </div>
@@ -1154,24 +1154,53 @@
 
                     <!-- Скидка -->
                     <b-form-group
+                      v-if="allApartments && allApartments.length > 1"
                       class="mb-1"
                       label-cols="12"
                       content-cols="12"
-                      label="Скидка за м2:"
-                      label-for="discound-price"
+                      label="Скидка от общей суммы:"
+                      label-for="total-discound-price"
                     >
                       <vue-numeric
-                        id="discound-price"
-                        v-model="calc.discount_price"
-                        @change="changeDiscount_price"
+                        id="total-discound-price"
+                        v-model="calc.total_discount_price"
+                        @input="changeTotalDiscountPrice"
                         :currency="$t('ye')"
                         :precision="2"
                         class="form-control"
                         currency-symbol-position="suffix"
                         separator="space"
-                        disabled
                       ></vue-numeric>
                     </b-form-group>
+
+                    <b-tabs pills v-else class="mb-1 mt-2">
+                      <b-tab title="Скидка от общей суммы:" active>
+                        <b-card-text>
+                          <vue-numeric
+                            v-model="calc.total_discount_price"
+                            @change="changeTotalDiscountPrice"
+                            :currency="$t('ye')"
+                            :precision="2"
+                            class="form-control mt-1"
+                            currency-symbol-position="suffix"
+                            separator="space"
+                          ></vue-numeric>
+                        </b-card-text>
+                      </b-tab>
+                      <b-tab title="Скидка за м2:">
+                        <b-card-text>
+                          <vue-numeric
+                            v-model="calc.discount_price"
+                            @change="changeDiscountPriceForM2"
+                            :currency="$t('ye')"
+                            :precision="2"
+                            class="form-control mt-1"
+                            currency-symbol-position="suffix"
+                            separator="space"
+                          ></vue-numeric>
+                        </b-card-text>
+                      </b-tab>
+                    </b-tabs>
 
                     <!-- Предоплата -->
                     <div>
@@ -1584,6 +1613,11 @@ export default {
         monthly_edited: false,
       },
 
+      edited: {
+        contract_number: false,
+        monthly: false,
+      },
+
       error: false,
       errors: {},
       geteErrors: [],
@@ -1678,15 +1712,16 @@ export default {
     },
     "calc.total": function(val) {
       if (val) {
-        console.log('calc.total', val);
+        console.log("calc.total", val);
       }
-    }
+    },
   },
 
   mounted() {
     this.fetchApartmentOrder(this).then(() => {
       this.apartment_edit.contract_number = this.apartmentInfoItem.contract_number;
       console.log(this.apartment_edit.contract_number);
+      this.getAllData();
     });
   },
 
@@ -1720,6 +1755,7 @@ export default {
       }
       this.calc.prepay_percente = this.client.discount.prepay;
       this.calc.prepay = this.getPrepay();
+      console.log("prepay", this.calc.prepay);
       this.calc.month = this.allApartments[0].object.credit_month;
       this.month = this.calc.month;
       this.calc.monthly_price = this.getMonths();
@@ -1727,9 +1763,9 @@ export default {
       this.calc.debt = this.getDebt();
       this.calc.total = this.getTotal();
 
-      console.log('in init', this.calc);
+      console.log("in init", this.calc);
     },
-    
+
     successAgree(value) {
       this.contract = value;
       this.$bvModal.show("modal-success-agree");
@@ -1846,32 +1882,10 @@ export default {
         if (result.value) {
           this.loading = true;
           const formData = new FormData();
-
-          // if (this.allApartments.order.id)
-          //   formData.append("order_id", this.allApartments.order.id);
-          formData.append("type", "simple");
-          formData.append("first_name[lotin]", this.client.first_name.lotin);
-          formData.append("first_name[kirill]", this.client.first_name.kirill);
-
-          formData.append("last_name[lotin]", this.client.last_name.lotin);
-          formData.append("last_name[kirill]", this.client.last_name.kirill);
-
-          formData.append("second_name[lotin]", this.client.second_name.lotin);
-          formData.append(
-            "second_name[kirill]",
-            this.client.second_name.kirill
-          );
-
-          formData.append("passport_series", this.client.passport_series);
-          formData.append("issued_by_whom", this.client.issued_by_whom);
-          formData.append("language", this.client.language);
-          formData.append("phone", this.client.phone);
-          formData.append("other_phone", this.client.other_phone);
-          formData.append("date_of_issue", this.client.date_of_issue);
           formData.append("discount_id", this.client.discount.id);
-          formData.append("birth_day", this.client.birth_day);
 
-          formData.append("type_client", this.type_client);
+          if (this.edited.contract_number)
+            formData.append("type_client", this.type_client);
 
           formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
           formData.append("client_id", this.clientData?.id);
@@ -1880,43 +1894,46 @@ export default {
             this.getMe.role.id === 1 ||
             this.getPermission.contracts.monthly
           ) {
-            for (
-              let monthly = 0;
-              monthly < this.credit_months.length;
-              monthly++
-            ) {
-              let date = moment(this.credit_months[monthly].month).format(
-                "YYYY-MM-DD"
-              );
-              formData.append(
-                "monthly[" + monthly + "][edited]",
-                this.credit_months[monthly].edited ? 1 : 0
-              );
-              formData.append(
-                "monthly[" + monthly + "][amount]",
-                this.credit_months[monthly].amount
-              );
-              formData.append("monthly[" + monthly + "][date]", date);
+            if (this.edit.monthly_edited) {
+              for (
+                let monthly = 0;
+                monthly < this.credit_months.length;
+                monthly++
+              ) {
+                let date = moment(this.credit_months[monthly].month).format(
+                  "YYYY-MM-DD"
+                );
+                formData.append(
+                  "monthly[" + monthly + "][edited]",
+                  this.credit_months[monthly].edited ? 1 : 0
+                );
+                formData.append(
+                  "monthly[" + monthly + "][amount]",
+                  this.credit_months[monthly].amount
+                );
+                formData.append("monthly[" + monthly + "][date]", date);
+              }
             }
           }
-
-          for (
-            let initial_payment = 0;
-            initial_payment < this.initial_payments.length;
-            initial_payment++
-          ) {
-            formData.append(
-              "initial_payments[" + initial_payment + "][edited]",
-              this.initial_payments[initial_payment].edited ? 1 : 0
-            );
-            formData.append(
-              "initial_payments[" + initial_payment + "][amount]",
-              this.initial_payments[initial_payment].amount
-            );
-            formData.append(
-              "initial_payments[" + initial_payment + "][date]",
-              this.initial_payments[initial_payment].month
-            );
+          if (this.edit.initial_edited) {
+            for (
+              let initial_payment = 0;
+              initial_payment < this.initial_payments.length;
+              initial_payment++
+            ) {
+              formData.append(
+                "initial_payments[" + initial_payment + "][edited]",
+                this.initial_payments[initial_payment].edited ? 1 : 0
+              );
+              formData.append(
+                "initial_payments[" + initial_payment + "][amount]",
+                this.initial_payments[initial_payment].amount
+              );
+              formData.append(
+                "initial_payments[" + initial_payment + "][date]",
+                this.initial_payments[initial_payment].month
+              );
+            }
           }
           for (let index = 0; index < this.allApartments.length; index++) {
             formData.append(
@@ -1931,28 +1948,13 @@ export default {
 
           formData.append("comment", this.comment);
 
-          if (this.client.discount.id === "other") {
-            formData.append("apartment_price", this.apartment_edit.price);
-            formData.append(
-              "apartment_prepay_price",
-              this.apartment_edit.prepay_price
-            );
-          }
-
           formData.append("first_payment_date", this.client.first_payment_date);
 
           if (this.client.payment_date)
             formData.append("payment_date", this.client.payment_date);
 
-          // if (this.date_change) {
           formData.append("date_change", 1);
-          // formData.append(
-          //   "contract_number",
-          //   this.apartment_edit.contract_number
-          // );
           formData.append("contract_date", this.apartment_edit.contract_date);
-          // }
-
           if (this.step === 3 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);
           }
@@ -2103,10 +2105,7 @@ export default {
 
       if (this.initial_payments.length === 0) {
         let month = parseInt(this.month);
-        let amount =
-          this.client.discount.id === "other" && month === 0
-            ? this.getTotalOther()
-            : this.getPrepay();
+        let amount = month === 0 ? this.getTotalOther() : this.getPrepay();
 
         this.initial_payments.push({
           amount: amount,
@@ -2132,39 +2131,30 @@ export default {
       // this.DataEdited();
       this.edit.price = false;
     },
-    Data() {
-      if (this.client.discount.prepay === 100) return 1;
-
-      return 1 - this.client.discount.amount / 100;
-    },
 
     // Calc
     getPrepay() {
       if (this.client.discount.prepay === 100) return this.getTotal();
 
-      let total_discount = this.Data();
+      let total_discount = this.getDiscount();
 
       let total;
 
-      if (this.client.discount.id === "other")
-        total = this.apartment_edit.price / total_discount;
-      else {
-        switch (this.client.discount.type) {
-          case "fixed":
-            if (this.calc.discount_price) {
-              total =
-                (this.client.discount.amount -
-                  parseFloat(this.calc.discount_price)) *
-                this.planAreas();
-            } else {
-              total = this.getPrice();
-            }
-            break;
-          default:
-            total = this.getTotalForPercente() / total_discount;
-
-            break;
-        }
+      switch (this.client.discount.type) {
+        case "fixed":
+          if (this.calc.discount_price) {
+            total =
+              (this.client.discount.amount -
+                parseFloat(this.calc.discount_price)) *
+              this.planAreas();
+          } else {
+            total = this.getPrice();
+          }
+          break;
+        default:
+          console.log(this.getTotalForPercente(), total_discount);
+          total = this.getTotalForPercente() / total_discount;
+          break;
       }
 
       if (this.initial_payments.length > 1) {
@@ -2186,7 +2176,7 @@ export default {
 
     getDiscount() {
       if (this.client.discount.prepay === 100) return 1;
-
+      console.log(this.client.discount.prepay, this.client.discount.amount);
       return 1 - this.client.discount.amount / 100;
     },
 
@@ -2265,9 +2255,11 @@ export default {
       console.log(this.calc);
     },
 
-    async changeDiscount_price() {
+    async changeDiscountPriceForM2() {
       await this.initialCalc();
     },
+
+    changeTotalDiscountPrice() {},
 
     changeDiscount_month() {
       this.monthly_price = this.getMonths();

@@ -330,8 +330,7 @@ export default {
               (this.discount.amount - parseFloat(this.calc.discount_price)) *
               this.apartment.plan.area;
           } else {
-            total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
-          }
+            total = this.discount.amount * this.apartment.plan.area;}
           break;
         default:
           total = this.apartment.price / total_discount;
