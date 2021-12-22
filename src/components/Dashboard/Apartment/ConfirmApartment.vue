@@ -1003,105 +1003,9 @@
                     v-model="isVisibleApartments"
                     class="px-3 pb-3"
                   >
-                    <div v-for="(item, index) in allApartments" :key="item.id">
-                      <div class="card px-3 pt-4 pb-4 border mb-3">
-                        <table class="w-100">
-                          <tbody>
-                            <tr>
-                              <td style="width: 120px">
-                                <i
-                                  style="width: 20px; text-align:center"
-                                  class="mr-1 far fa-building"
-                                ></i>
-                                № Дома:
-                              </td>
-                              <td class="text-left">
-                                <span>{{ item.number }}</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <i
-                                  style="width: 20px; text-align:center"
-                                  class="mr-1 far fa-dollar-sign"
-                                ></i>
-                                Цена:
-                              </td>
-                              <td>
-                                <ApartmentPrice
-                                  :itemNumber="item.number"
-                                  :itemPrice="item.price"
-                                />
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <b-collapse :id="'collapse' + index">
-                          <table class="w-100">
-                            <tbody>
-                              <tr>
-                                <td style="width: 120px">
-                                  <i
-                                    style="width: 20px; text-align:center"
-                                    class="mr-1 far fa-expand"
-                                  ></i>
-                                  Площадь:
-                                </td>
-                                <td class="text-left">
-                                  {{ item.plan.area }} m2
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width: 120px">
-                                  <i
-                                    style="width: 20px; text-align:center"
-                                    class="mr-1 far fa-inbox"
-                                  ></i>
-                                  Балкон:
-                                </td>
-                                <td class="text-left">
-                                  {{ item.plan.balcony_area }} m2
-                                </td>
-                              </tr>
-                              <tr>
-                                <td style="width: 120px">
-                                  <i
-                                    style="width: 20px; text-align:center"
-                                    class="mr-1 far fa-door-open"
-                                  ></i>
-                                  Комнат:
-                                </td>
-                                <td class="text-left">{{ item.rooms }}</td>
-                              </tr>
-                              <tr>
-                                <td style="width: 120px">
-                                  <i
-                                    style="width: 20px; text-align:center"
-                                    class="mr-1 far fa-industry"
-                                  ></i>
-                                  Этаж:
-                                </td>
-                                <td class="text-left">{{ item.floor }}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </b-collapse>
-                        <div
-                          class="d-flex justify-content-center"
-                          style="position: absolute; left: 50%; transform: translateX(-50%); bottom: -10px"
-                        >
-                          <b-button
-                            style="transform: scale(0.6)"
-                            class="m-0 p-0"
-                            variant="secondary"
-                            v-b-toggle="'collapse' + index"
-                            size="sm"
-                          >
-                            <i class="fa fa-chevron-down"></i>
-                          </b-button>
-                        </div>
-                      </div>
-                    </div>
+                    <QuickViewApartments
+                      :apartments="getThisApartments"
+                    />
                   </b-collapse>
                 </div>
 
@@ -1554,8 +1458,7 @@
 import {mapGetters, mapActions} from "vuex";
 import moment from "moment";
 import SuccessAgree from "./Components/SuccessAgree";
-// import CalcMultiple from "./Components/CalcMultiple";
-import ApartmentPrice from "./Components/ApartmentPrice";
+import QuickViewApartments from "./Components/QuickViewApartments";
 import VueNumeric from "vue-numeric";
 export default {
   name: "ConfirmApartment",
@@ -1579,7 +1482,7 @@ export default {
         },
         passport_series: "",
         issued_by_whom: "",
-        date_of_issue: null,
+        date_of_issue: "",
         language: "uz",
         type_client: "unknown",
         birth_day: null,
@@ -1639,11 +1542,11 @@ export default {
       isVisibleInfo: false,
       isVisibleApartments: true,
       calc: {},
-
       allApartments: [],
       month: 6,
       getThisApartment: [],
       getThisApartmentForTable: [],
+      getThisApartments: [],
       monthly_price: 0,
       clientData: {},
       getApartmentDiscounts: [],
@@ -1651,10 +1554,9 @@ export default {
   },
 
   components: {
-    // CalcMultiple,
     SuccessAgree,
-    ApartmentPrice,
     VueNumeric,
+    QuickViewApartments,
   },
 
   created() {
@@ -1682,21 +1584,17 @@ export default {
       }
       return {};
     },
-    // getApartmentDiscounts() {
-    //   let arr = this.getApartmentOrder[0]?.discounts;
-    //   console.log('arr select', arr?.sort((a, b) => a.prepay - b.prepay));
-    //   return arr?.sort((a, b) => a.prepay - b.prepay);
-    // },
   },
 
   watch: {
     month: function(newVal) {
+      console.log("newVal", newVal);
       this.CreditMonths(newVal);
+      console.log(this.CreditMonths(newVal));
     },
 
     step: function(val) {
       if (val) {
-        console.log(val);
         this.CreditMonths(this.month);
       }
     },
@@ -1710,17 +1608,11 @@ export default {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
-    "calc.total": function(val) {
-      if (val) {
-        console.log("calc.total", val);
-      }
-    },
   },
 
   mounted() {
     this.fetchApartmentOrder(this).then(() => {
       this.apartment_edit.contract_number = this.apartmentInfoItem.contract_number;
-      console.log(this.apartment_edit.contract_number);
       this.getAllData();
     });
   },
@@ -1733,8 +1625,6 @@ export default {
       arr = arr.sort((a, b) => a.prepay - b.prepay);
       this.getApartmentDiscounts = arr;
       this.client.discount = arr[0];
-      console.log(this.getApartmentDiscounts);
-      console.log(this.client.discount);
       this.initialCalc();
     },
     initialCalc() {
@@ -1755,15 +1645,14 @@ export default {
       }
       this.calc.prepay_percente = this.client.discount.prepay;
       this.calc.prepay = this.getPrepay();
-      console.log("prepay", this.calc.prepay);
       this.calc.month = this.allApartments[0].object.credit_month;
       this.month = this.calc.month;
       this.calc.monthly_price = this.getMonths();
       this.monthly_price = this.calc.monthly_price;
       this.calc.debt = this.getDebt();
       this.calc.total = this.getTotal();
-
-      console.log("in init", this.calc);
+      this.CreditMonths(this.month);
+      this.getThisApartments = this.getThisApartmentForTable;
     },
 
     successAgree(value) {
@@ -1935,15 +1824,35 @@ export default {
               );
             }
           }
-          for (let index = 0; index < this.allApartments.length; index++) {
-            formData.append(
-              "apartments[" + index + "][id]",
-              this.allApartments[index].id
-            );
-            formData.append(
-              "apartments[" + index + "][price]",
-              this.allApartments[index].price
-            );
+          if (
+            this.client.discount.type === "percent" &&
+            this.client.discount.prepay === 100
+          ) {
+            for (let index = 0; index < this.allApartments.length; index++) {
+              formData.append(
+                "apartments[" + index + "][id]",
+                this.allApartments[index].id
+              );
+              formData.append(
+                "apartments[" + index + "][price]",
+                this.allApartments[index].price
+              );
+            }
+          } else {
+            for (
+              let index = 0;
+              index < this.getThisApartmentForTable.length;
+              index++
+            ) {
+              formData.append(
+                "apartments[" + index + "][id]",
+                this.getThisApartmentForTable[index].id
+              );
+              formData.append(
+                "apartments[" + index + "][price]",
+                this.getThisApartmentForTable[index].price
+              );
+            }
           }
 
           formData.append("comment", this.comment);
@@ -2076,9 +1985,12 @@ export default {
       } else {
         this.initial_payments.splice(index, 1);
       }
+      this.initialCalc();
     },
 
     editInitialPayment(index) {
+      this.initialCalc();
+
       if (this.initial_payments[index].edit) {
         this.initial_payments[index].edit = false;
 
@@ -2123,11 +2035,13 @@ export default {
       });
 
       this.getPrepay();
+      this.initialCalc();
     },
 
     SaveEditPrices() {
       this.apartment_edit.price = this.getPrice();
       this.getPrepay();
+      this.initialCalc();
       // this.DataEdited();
       this.edit.price = false;
     },
@@ -2152,7 +2066,6 @@ export default {
           }
           break;
         default:
-          console.log(this.getTotalForPercente(), total_discount);
           total = this.getTotalForPercente() / total_discount;
           break;
       }
@@ -2176,7 +2089,6 @@ export default {
 
     getDiscount() {
       if (this.client.discount.prepay === 100) return 1;
-      console.log(this.client.discount.prepay, this.client.discount.amount);
       return 1 - this.client.discount.amount / 100;
     },
 
@@ -2224,7 +2136,14 @@ export default {
             price.push(parseFloat(totalAmount));
             this.getThisApartmentForTable[i] = {
               number: this.allApartments[i].number,
+              id: this.allApartments[i].id,
               price: totalAmount,
+              rooms: this.allApartments[i].rooms,
+              floor: this.allApartments[i].floor,
+              plan: {
+                area: this.allApartments[i].plan.area,
+                balcony_area: this.allApartments[i].plan.balcony_area,
+              },
             };
           }
           break;
@@ -2245,14 +2164,17 @@ export default {
     },
 
     changeDiscount() {
+      /* eslint-disable no-debugger */
+      // debugger;
       this.calc.prepay_percente = this.client.discount?.prepay;
       this.calc.discount_price = 0;
       if (this.client.discount?.prepay === 100) {
         this.calc.price_for_m2 = this.getTotal() / this.planAreas();
       }
       this.initialCalc();
-      console.log(this.client.discount);
-      console.log(this.calc);
+      console.log("getThisApartmentForTable", this.getThisApartmentForTable);
+      this.getThisApartments = [];
+      this.getThisApartments = this.getThisApartmentForTable;
     },
 
     async changeDiscountPriceForM2() {

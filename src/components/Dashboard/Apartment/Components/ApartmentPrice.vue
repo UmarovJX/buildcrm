@@ -10,7 +10,7 @@
     ></b-button>
     <vue-numeric
       id="total"
-      v-model="apartmentPrice"
+      :value="itemPrices"
       :currency="$t('ye')"
       :precision="2"
       class="py-0 m-0 bg-transparent"
@@ -35,16 +35,16 @@ export default {
       editable: true,
     };
   },
-  mounted() {
-    this.apartmentNumber = parseInt(this.itemNumber);
-    this.apartmentPrice = parseInt(this.itemPrice);
-  },
   props: {
-    itemNumber: {
-      type: String,
-    },
-    itemPrice: {
+    item: {
       type: Number,
+    },
+  },
+  computed: {
+    itemPrices: {
+      get: function() {
+        return parseFloat(this.item);
+      },
     },
   },
   methods: {

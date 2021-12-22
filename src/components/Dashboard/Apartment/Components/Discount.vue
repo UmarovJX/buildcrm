@@ -166,7 +166,9 @@ export default {
     VueNumeric,
   },
   props: {
-    apartment: {},
+    apartment: {
+      type: Object
+    },
   },
 
   data() {
@@ -188,18 +190,20 @@ export default {
   },
 
   mounted() {
-     setTimeout(() => {
-      this.discount = this.getApartmentDiscounts[0];
-      this.initialCalc()
-
-    }, 1000);
+    // setTimeout(() => {
+      this.discount = this.getApartmentDiscounts
+        ? this.getApartmentDiscounts[0]
+        : [];
+      this.initialCalc();
+    // }, 1000);
   },
   computed: {
     ...mapGetters(["getCurrency"]),
     getApartmentDiscounts() {
+      console.log(JSON.stringify(this.apartment));
       let arr = this.apartment?.discounts;
       // if (this.apartment.object.credit_month != 0) {
-        return arr?.sort((a, b) => a.prepay - b.prepay);
+      return arr?.sort((a, b) => a.prepay - b.prepay);
       // } else {
       // }
 
@@ -212,7 +216,8 @@ export default {
         if (this.discount.prepay === 100) {
           this.calc.price_for_m2 = this.apartment.price_m2;
         } else {
-          this.calc.price_for_m2 = this.getTotalForPercente() / this.apartment.plan.area;
+          this.calc.price_for_m2 =
+            this.getTotalForPercente() / this.apartment.plan.area;
         }
       } else {
         this.calc.price_for_m2 = this.discount.amount;
@@ -220,7 +225,7 @@ export default {
       // this.calc.price_for_m2 = this.discount.amount;
       this.calc.prepay_percente = this.discount.prepay;
       this.calc.prepay = this.getPrepay();
-      this.calc.month = this.apartment.object.credit_month;
+      this.calc.month = this.apartment?.object?.credit_month;
       this.calc.monthly_price = this.getMonth();
       this.monthly_price = this.calc.monthly_price;
       this.calc.debt = this.getDebt();
@@ -330,7 +335,8 @@ export default {
               (this.discount.amount - parseFloat(this.calc.discount_price)) *
               this.apartment.plan.area;
           } else {
-            total = this.discount.amount * this.apartment.plan.area;}
+            total = this.discount.amount * this.apartment.plan.area;
+          }
           break;
         default:
           total = this.apartment.price / total_discount;

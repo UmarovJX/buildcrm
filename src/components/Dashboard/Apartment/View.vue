@@ -49,10 +49,13 @@
                             getApartment.order === 'booked'
                               ? 'text-warning ml-3'
                               : '',
-                            getApartment.order.status === 'sold' ||
-                            getApartment.order.status === 'contract'
+                            (getApartment.order &&
+                              getApartment.order.status === 'sold') ||
+                            (getApartment.order &&
+                              getApartment.order.status === 'contract')
                               ? 'text-danger ml-3'
                               : 'text-success ml-3',
+                            getApartment.order &&
                             getApartment.order.status === 'hold'
                               ? 'text-warning ml-3'
                               : 'text-success ml-3',
@@ -292,7 +295,7 @@
                   <div class="col-md-4 Calc">
                     <!-- Calc -->
                     <Discount
-                      v-if="getApartment"
+                      v-if="otherGetApartment"
                       :apartment="getApartment"
                       @getCalData="getCalData"
                     ></Discount>
@@ -323,16 +326,23 @@
                   <b-button
                     v-if="
                       (getApartment.order &&
+                        getApartment.order &&
                         getApartment.order.status === 'booked' &&
+                        getApartment.order &&
+                        getApartment.order.user &&
                         getApartment.order.user.id === getMe.user.id &&
                         getMe.user &&
-                        (getPermission.apartments.root_contract ||
+                        ((getPermission.apartments &&
+                          getPermission.apartments.root_contract) ||
                           getPermission.apartments.reserve_cancel)) ||
                         (getMe.role &&
+                          getMe.role &&
                           getMe.role.id === 1 &&
+                          getApartment.order &&
                           getApartment.order &&
                           getApartment.order.status === 'booked') ||
                         (getApartment.order &&
+                          getApartment.order &&
                           getApartment.order.status === 'booked' &&
                           getPermission.apartments.root_reserve)
                     "
@@ -349,11 +359,17 @@
                   <b-link
                     v-if="
                       (getApartment.order &&
+                        getApartment.order &&
                         getApartment.order.status === 'booked' &&
+                        getApartment.order &&
+                        getApartment.order.user &&
                         getApartment.order.user.id === getMe.user.id) ||
                         (getMe.role &&
+                          getMe.role &&
                           getMe.role.id &&
+                          getMe.role &&
                           getMe.role.id === 1 &&
+                          getApartment.order &&
                           getApartment.order &&
                           getApartment.order.status === 'booked')
                     "
@@ -371,6 +387,7 @@
                     v-if="
                       getPermission.apartments &&
                         getPermission.apartments.reserve &&
+                        getApartment.order &&
                         getApartment.order &&
                         getApartment.order.status === 'available'
                     "
@@ -391,11 +408,17 @@
                     class="mr-md-2 mr-0 btn btn-primary ml-1"
                     v-if="
                       (getApartment.order &&
-                        (getApartment.order.status != 'sold' ||
-                          getApartment.order.status != 'contract') &&
+                        ((getApartment.order &&
+                          getApartment.order.status != 'sold') ||
+                          (getApartment.order &&
+                            getApartment.order.status != 'contract')) &&
+                        getApartment.order &&
                         getApartment.order &&
                         getApartment.order.status === 'booked' &&
+                        getApartment.order &&
+                        getApartment.order.user &&
                         getApartment.order.user.id === getMe.user.id &&
+                        getPermission.apartments &&
                         getPermission.apartments &&
                         getPermission.apartments.contract) ||
                         (!(
@@ -407,17 +430,22 @@
                             'hold'
                         ) &&
                           getPermission.apartments &&
+                          getPermission.apartments &&
                           getPermission.apartments.root_contract) ||
                         (getApartment.order &&
-                          (getApartment.order.status != 'sold' ||
-                            getApartment.order.status != 'contract') &&
+                          ((getApartment.order &&
+                            getApartment.order.status != 'sold') ||
+                            (getApartment.order &&
+                              getApartment.order.status != 'contract')) &&
+                          getApartment.order &&
                           getApartment.order &&
                           getApartment.order.status === 'available' &&
+                          getPermission.apartments &&
                           getPermission.apartments &&
                           getPermission.apartments.contract)
                     "
                   >
-                    <!--                    getApartment.order.status != 'contract'  || getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id && getPermission.apartments.contract || getApartment.order.status != 'sold' &&  getPermission.apartments.root_contract || getApartment.order.status === 'available' && getPermission.apartments.contract-->
+                    <!--                    getApartment.order && getApartment.order.status != 'contract'  || getApartment.order && getApartment.order.status === 'booked' && getApartment.order && getApartment.order.user && getApartment.order.user.id === getMe.user.id && getPermission.apartments && getPermission.apartments.contract || getApartment.order && getApartment.order.status != 'sold' &&  getPermission.apartments && getPermission.apartments.root_contract || getApartment.order && getApartment.order.status === 'available' && getPermission.apartments && getPermission.apartments.contract-->
                     <i class="far fa-ballot-check"></i>
                     {{ $t("apartments.list.confirm") }}
                   </b-button>
@@ -430,21 +458,30 @@
                         (getApartment.order && getApartment.order.status) !=
                           'contract') &&
                         getApartment.order &&
+                        getApartment.order &&
                         getApartment.order.status === 'booked' &&
                         getApartment.order.user_id === getMe.user.id &&
+                        getPermission.apartments &&
                         getPermission.apartments &&
                         getPermission.apartments.contract) ||
                         (!(
                           getApartment.order &&
-                          (getApartment.order.status == 'sold' ||
-                            getApartment.order.status == 'contract')
+                          ((getApartment.order &&
+                            getApartment.order.status == 'sold') ||
+                            (getApartment.order &&
+                              getApartment.order.status == 'contract'))
                         ) &&
+                          getPermission.apartments &&
                           getPermission.apartments &&
                           getPermission.apartments.root_contract) ||
                         (getApartment.order &&
-                          (getApartment.order.status != 'sold' ||
-                            getApartment.order.status != 'contract') &&
+                          ((getApartment.order &&
+                            getApartment.order.status != 'sold') ||
+                            (getApartment.order &&
+                              getApartment.order.status != 'contract')) &&
+                          getApartment.order &&
                           getApartment.order.status === 'available' &&
+                          getPermission.apartments &&
                           getPermission.apartments &&
                           getPermission.apartments.contract)) &&
                         (getApartment.order && getApartment.order.status) ===
@@ -464,16 +501,27 @@
                     }"
                     :class="'btn btn-primary ml-1'"
                     v-if="
-                      (getPermission.apartments.contract &&
-                        (getApartment.order.status === 'sold' ||
-                          getApartment.order.status === 'contract') &&
-                        getMe.user.id === getApartment.order.user.id) ||
-                        (getPermission.apartments.root_contract &&
-                          (getApartment.order.status === 'sold' ||
-                            getApartment.order.status === 'contract')) ||
-                        (getMe.role.id === 1 &&
-                          (getApartment.order.status === 'sold' ||
-                            getApartment.order.status === 'contract'))
+                      (getPermission.apartments &&
+                        getPermission.apartments.contract &&
+                        ((getApartment.order &&
+                          getApartment.order.status === 'sold') ||
+                          (getApartment.order &&
+                            getApartment.order.status === 'contract')) &&
+                        getMe.user.id === getApartment.order &&
+                        getApartment.order.user &&
+                        getApartment.order.user.id) ||
+                        (getPermission.apartments &&
+                          getPermission.apartments.root_contract &&
+                          ((getApartment.order &&
+                            getApartment.order.status === 'sold') ||
+                            (getApartment.order &&
+                              getApartment.order.status === 'contract'))) ||
+                        (getMe.role &&
+                          getMe.role.id === 1 &&
+                          ((getApartment.order &&
+                            getApartment.order.status === 'sold') ||
+                            (getApartment.order &&
+                              getApartment.order.status === 'contract')))
                     "
                   >
                     <i class="far fa-file-signature"></i>
@@ -608,6 +656,12 @@ export default {
       "getPermission",
       "getReserveClient",
     ]),
+    otherGetApartment() {
+      if (Object.values(this.getApartment).length) {
+        return this.getApartment;
+      }
+      return null;
+    },
   },
   methods: {
     ...mapActions(["fetchApartment", "fetchReserveClient"]),

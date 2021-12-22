@@ -11,8 +11,8 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                {{ order.company.type.name.kr }} "{{
-                  order.company.name
+                {{ order.company && order.company.type && order.company.type.name ? order.company.type.name.kr : '' }} "{{
+                  order.company ? order.company.name : ''
                 }}"<br />
                 {{ order.company.first_name }} {{ order.company.last_name }}
                 {{ order.company.second_name }} <br />
@@ -53,7 +53,7 @@
                   <button
                     v-if="
                       !edit.type_client &&
-                        (getMe.role.id === 1 || getPermission.contracts.friends)
+                        (getMe.role && getMe.role.id === 1 || getPermission.contracts && getPermission.contracts.friends)
                     "
                     @click="edit.type_client = true"
                     class="btn btn-primary mt-3 mr-0"
@@ -64,7 +64,7 @@
                   <button
                     v-if="
                       edit.type_client &&
-                        (getMe.role.id === 1 || getPermission.contracts.friends)
+                        (getMe.role && getMe.role.id === 1 || getPermission.contracts && getPermission.contracts.friends)
                     "
                     @click="ChangeTypeClient"
                     class="btn btn-success mt-3"
@@ -456,7 +456,7 @@
                           @click="paymentMonthly(index)"
                           v-if="
                             month.type === 'initial_payment' &&
-                              (getMe.role.id === 1 ||
+                              (getMe.role && getMe.role.id === 1 ||
                                 getPermission.debtors.first_payment.accept) &&
                               month.status === 'waiting'
                           "
@@ -469,7 +469,7 @@
                           @click="editMonthly(index)"
                           v-if="
                             month.type === 'initial_payment' &&
-                              (getMe.role.id === 1 ||
+                              (getMe.role && getMe.role.id === 1 ||
                                 getPermission.debtors.first_payment.edit) &&
                               month.status === 'paid'
                           "
@@ -484,7 +484,7 @@
                             (month.type === 'monthly' ||
                               month.type === 'manual' ||
                               month.type === 'debt') &&
-                              (getMe.role.id === 1 ||
+                              (getMe.role && getMe.role.id === 1 ||
                                 getPermission.debtors.monthly.accept) &&
                               month.status === 'waiting'
                           "
@@ -499,7 +499,7 @@
                             (month.type === 'monthly' ||
                               month.type === 'manual' ||
                               month.type === 'debt') &&
-                              (getMe.role.id === 1 ||
+                              (getMe.role && getMe.role.id === 1 ||
                                 getPermission.debtors.monthly.edit) &&
                               month.status === 'paid'
                           "
@@ -512,7 +512,7 @@
                           @click="deleteMonthly(index)"
                           v-if="
                             month.type === 'manual' &&
-                              (getMe.role.id === 1 ||
+                              (getMe.role && getMe.role.id === 1 ||
                                 getPermission.debtors.monthly.edit) &&
                               month.status === 'waiting'
                           "
@@ -753,7 +753,7 @@ export default {
         usd: 0,
       },
 
-      companies: {
+      company: {
         name: null,
         payment_account: null,
         inn: null,
