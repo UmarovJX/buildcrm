@@ -200,7 +200,6 @@ export default {
   computed: {
     ...mapGetters(["getCurrency"]),
     getApartmentDiscounts() {
-      console.log(JSON.stringify(this.apartment));
       let arr = this.apartment?.discounts;
       // if (this.apartment.object.credit_month != 0) {
       return arr?.sort((a, b) => a.prepay - b.prepay);

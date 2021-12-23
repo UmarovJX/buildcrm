@@ -1,8 +1,8 @@
 <template>
   <main>
     <div class="app-content">
-      <!-- Step 2 -->
-      <div class="new-object p-3" v-if="step === 2">
+      <!-- Step 1 -->
+      <div class="new-object p-3" v-if="step === 1">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
           <form ref="form" @submit.prevent="handleSubmit(postStore)">
             <div class="row">
@@ -575,8 +575,9 @@
           </form>
         </validation-observer>
       </div>
-      <!-- Step 3 -->
-      <div class="container-fluid px-0 mx-0" v-if="step === 3">
+
+      <!-- Step 2 -->
+      <div class="container-fluid px-0 mx-0" v-if="step === 2">
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
@@ -1004,7 +1005,11 @@
                     class="px-3 pb-3"
                   >
                     <QuickViewApartments
-                      :apartments="getThisApartments"
+                      v-for="(apartment, index) in getThisApartments"
+                      :key="apartment.id"
+                      :apartment="apartment"
+                      :index="index"
+                      @changedApartmentPrice="changedApartmentPrice"
                     />
                   </b-collapse>
                 </div>
@@ -1056,7 +1061,7 @@
                       ></vue-numeric>
                     </b-form-group>
 
-                    <!-- Скидка -->
+                    <!-- Скидка when apartment count = 1 -->
                     <b-form-group
                       v-if="allApartments && allApartments.length > 1"
                       class="mb-1"
@@ -1077,12 +1082,14 @@
                       ></vue-numeric>
                     </b-form-group>
 
+                    <!-- Скидка от общей суммы | Скидка за м2 -->
                     <b-tabs pills v-else class="mb-1 mt-2">
+                      <!-- Скидка от общей суммы -->
                       <b-tab title="Скидка от общей суммы:" active>
                         <b-card-text>
                           <vue-numeric
                             v-model="calc.total_discount_price"
-                            @change="changeTotalDiscountPrice"
+                            @input="changeTotalDiscountPrice"
                             :currency="$t('ye')"
                             :precision="2"
                             class="form-control mt-1"
@@ -1091,11 +1098,12 @@
                           ></vue-numeric>
                         </b-card-text>
                       </b-tab>
+                      <!-- Скидка за м2 -->
                       <b-tab title="Скидка за м2:">
                         <b-card-text>
                           <vue-numeric
-                            v-model="calc.discount_price"
-                            @change="changeDiscountPriceForM2"
+                            :value="calc.discount_price"
+                            @change="changeDiscountPriceForM2($event)"
                             :currency="$t('ye')"
                             :precision="2"
                             class="form-control mt-1"
@@ -1404,7 +1412,7 @@
                     <button
                       type="button"
                       class="btn btn-secondary mr-0"
-                      @click="[(step = 2), (next = true), (confirm = false)]"
+                      @click="[(step = 1), (next = true), (confirm = false)]"
                     >
                       <i class="fa fa-chevron-circle-left"></i>
                       {{ $t("back") }}
@@ -1465,29 +1473,31 @@ export default {
 
   data() {
     return {
-      step: 2,
+      step: 1,
       search_label: "",
       client: {
         first_name: {
-          lotin: "",
-          kirill: "",
+          lotin: "Test",
+          kirill: "Test",
         },
         last_name: {
-          lotin: "",
-          kirill: "",
+          lotin: "Test",
+          kirill: "tEst",
         },
         second_name: {
-          lotin: "",
-          kirill: "",
+          lotin: "test",
+          kirill: "test",
         },
-        passport_series: "",
-        issued_by_whom: "",
-        date_of_issue: "",
+        passport_series: "ab1234567",
+        issued_by_whom: "1sdvsdv",
+        date_of_issue: "2020-01-01",
         language: "uz",
         type_client: "unknown",
-        birth_day: null,
-        phone: "",
+        birth_day: "1994-01-01",
+        phone: "998913333111",
         other_phone: null,
+        first_payment_date: "2022-01-01",
+        payment_date: "2022-01-01",
         discount: {
           prepay: null,
         },
@@ -1499,7 +1509,7 @@ export default {
         prepay_price: 0,
         percente: 0,
         contract_number: null,
-        contract_date: null,
+        contract_date: "2023-01-01",
       },
 
       comment: "",
@@ -1514,6 +1524,7 @@ export default {
         monthly: false,
 
         monthly_edited: false,
+        apartment_table_edit: false,
       },
 
       edited: {
@@ -1541,9 +1552,12 @@ export default {
       loading: false,
       isVisibleInfo: false,
       isVisibleApartments: true,
-      calc: {},
+      calc: {
+        discount_price: "",
+      },
       allApartments: [],
       month: 6,
+      getThisApartmentsFirstTime: [],
       getThisApartment: [],
       getThisApartmentForTable: [],
       getThisApartments: [],
@@ -1588,9 +1602,7 @@ export default {
 
   watch: {
     month: function(newVal) {
-      console.log("newVal", newVal);
       this.CreditMonths(newVal);
-      console.log(this.CreditMonths(newVal));
     },
 
     step: function(val) {
@@ -1619,42 +1631,6 @@ export default {
 
   methods: {
     ...mapActions(["fetchApartmentOrder"]),
-    getAllData() {
-      this.allApartments = this.getApartmentOrder.apartments;
-      let arr = this.getApartmentOrder.apartments[0].discounts;
-      arr = arr.sort((a, b) => a.prepay - b.prepay);
-      this.getApartmentDiscounts = arr;
-      this.client.discount = arr[0];
-      this.initialCalc();
-    },
-    initialCalc() {
-      if (this.client.discount.type === "percent") {
-        if (this.client.discount.prepay === 100) {
-          let price = 0;
-          let area = 0;
-          for (let index = 0; index < this.allApartments.length; index++) {
-            price += this.allApartments[index]?.price;
-            area += this.allApartments[index]?.plan.area;
-          }
-          this.calc.price_for_m2 = price / area;
-        } else {
-          this.calc.price_for_m2 = this.getTotalForPercente() / this.planAreas;
-        }
-      } else {
-        this.calc.price_for_m2 = this.getPrice() / this.planAreas();
-      }
-      this.calc.prepay_percente = this.client.discount.prepay;
-      this.calc.prepay = this.getPrepay();
-      this.calc.month = this.allApartments[0].object.credit_month;
-      this.month = this.calc.month;
-      this.calc.monthly_price = this.getMonths();
-      this.monthly_price = this.calc.monthly_price;
-      this.calc.debt = this.getDebt();
-      this.calc.total = this.getTotal();
-      this.CreditMonths(this.month);
-      this.getThisApartments = this.getThisApartmentForTable;
-    },
-
     successAgree(value) {
       this.contract = value;
       this.$bvModal.show("modal-success-agree");
@@ -1678,7 +1654,7 @@ export default {
             this.search_label,
           this.header
         );
-        this.step = 2;
+        this.step = 1;
 
         this.client = {
           id: data.id,
@@ -1723,7 +1699,7 @@ export default {
       return dirty || validated ? valid : null;
     },
     onSubmit() {
-      this.step = 3;
+      this.step = 2;
       this.confirm = true;
       this.next = false;
       this.getAllData();
@@ -1864,7 +1840,7 @@ export default {
 
           formData.append("date_change", 1);
           formData.append("contract_date", this.apartment_edit.contract_date);
-          if (this.step === 3 && this.client.discount.prepay != 100) {
+          if (this.step === 1 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);
           }
           this.axios
@@ -1965,100 +1941,97 @@ export default {
       }
     },
 
-    getTotalOther() {
-      return parseFloat(this.apartment_edit.price);
-    },
-
-    DataEdited() {
-      let price = this.apartment_edit.price;
-      let prepay_price = this.apartment_edit.prepay_price;
-
-      let percente = (prepay_price * 100) / price;
-
-      this.client.discount.prepay = percente;
-    },
-
-    deleteInitialPayment(index) {
-      if (this.initial_payments.length === 2) {
-        this.initial_payments.splice(index, 1);
-        this.initial_payments.splice(0, 1);
-      } else {
-        this.initial_payments.splice(index, 1);
-      }
-      this.initialCalc();
-    },
-
-    editInitialPayment(index) {
-      this.initialCalc();
-
-      if (this.initial_payments[index].edit) {
-        this.initial_payments[index].edit = false;
-
-        if (
-          parseFloat(this.initial_payments[index].amount) != this.getMonths()
-        ) {
-          this.edit.initial_edited = true;
-          this.initial_payments[index].edited = true;
-          this.setNewPriceMonthly();
-        }
-
-        return;
-      }
-
-      this.initial_payments[index].edit = true;
-
-      return;
-    },
-
-    addInitialPayment() {
-      let today = this.client.first_payment_date
-        ? new Date(this.client.first_payment_date)
-        : new Date();
-
-      if (this.initial_payments.length === 0) {
-        let month = parseInt(this.month);
-        let amount = month === 0 ? this.getTotalOther() : this.getPrepay();
-
-        this.initial_payments.push({
-          amount: amount,
-          edit: false,
-          edited: false,
-          month: moment(today).format("YYYY-MM-DD"),
-        });
-      }
-
-      this.initial_payments.push({
-        amount: 0,
-        edit: false,
-        edited: false,
-        month: moment(today).format("YYYY-MM-DD"), //today,
-      });
-
-      this.getPrepay();
-      this.initialCalc();
-    },
-
-    SaveEditPrices() {
-      this.apartment_edit.price = this.getPrice();
-      this.getPrepay();
-      this.initialCalc();
-      // this.DataEdited();
-      this.edit.price = false;
-    },
-
     // Calc
+    getAllData() {
+      this.allApartments = this.deepCloneFromApartments(
+        this.getApartmentOrder.apartments
+      );
+      let arr = this.deepCloneFromApartments(
+        this.getApartmentOrder.apartments
+      )[0].discounts;
+      arr = arr.sort((a, b) => a.prepay - b.prepay);
+      this.getApartmentDiscounts = arr;
+      this.client.discount = arr[0];
+      this.initialCalc();
+    },
+    initialCalc() {
+      /* eslint-disable no-debugger */
+      // debugger;
+      if (this.client.discount.type === "percent") {
+        if (this.client.discount.prepay === 100) {
+          let price = 0;
+          let area = 0;
+          for (let index = 0; index < this.allApartments.length; index++) {
+            price += this.allApartments[index]?.price;
+            area += this.allApartments[index]?.plan.area;
+          }
+          this.calc.price_for_m2 = price / area;
+        } else {
+          this.calc.price_for_m2 = this.getTotalForPercente() / this.planAreas();
+        }
+      } else {
+        this.calc.price_for_m2 = this.getPrice() / this.planAreas();
+      }
+      this.calc.prepay_percente = this.client?.discount?.prepay;
+      this.calc.prepay = this.getPrepay();
+      this.calc.month = this.allApartments[0]?.object?.credit_month;
+      this.month = this.calc?.month;
+
+      this.calc.monthly_price = this.getMonths();
+      this.monthly_price = this.calc?.monthly_price;
+      this.calc.debt = this.getDebt();
+      this.calc.total = this.getTotal();
+
+      this.CreditMonths(this.month);
+      this.getThisApartments = this.getThisApartmentForTable;
+
+      console.log(this.calc);
+    },
+    changedApartmentPrice(price, id, edited) {
+      this.edit.apartment_table_edit = edited;
+      this.initialCalc();
+      for (let index = 0; index < this.allApartments.length; index++) {
+        if (id === this.allApartments[index].id) {
+          for (let y = 0; y < this.allApartments[index].discounts.length; y++) {
+            if (
+              this.allApartments[index].discounts[y].prepay ==
+              this.client.discount.prepay
+            ) {
+              this.allApartments[index].discounts[y].amount =
+                price / parseFloat(this.allApartments[index].plan.area);
+            }
+          }
+        }
+      }
+
+      this.initialCalc();
+    },
+    deepCloneFromApartments(obj) {
+      let temp;
+      if (obj === null || typeof obj !== "object") return obj;
+      if (obj instanceof Date) temp = new obj.constructor();
+      else temp = obj.constructor();
+
+      for (let key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          temp[key] = this.deepCloneFromApartments(obj[key]);
+        }
+      }
+      return temp;
+    },
+
     getPrepay() {
       if (this.client.discount.prepay === 100) return this.getTotal();
-
+      // console.log("calc in getPrepay", this.calc);
       let total_discount = this.getDiscount();
 
       let total;
 
       switch (this.client.discount.type) {
         case "fixed":
-          if (this.calc.discount_price) {
+          if (parseFloat(this.calc.discount_price)) {
             total =
-              (this.client.discount.amount -
+              (parseFloat(this.client.discount.amount) -
                 parseFloat(this.calc.discount_price)) *
               this.planAreas();
           } else {
@@ -2086,42 +2059,38 @@ export default {
 
       return (this.client.discount.prepay * total) / 100;
     },
-
     getDiscount() {
+      /* eslint-disable no-debugger */
+      // debugger;
       if (this.client.discount.prepay === 100) return 1;
+
       return 1 - this.client.discount.amount / 100;
     },
-
     getTotal() {
+      /* eslint-disable no-debugger */
+      // debugger;
       let total_discount = this.getDiscount();
       let total = 0;
+      // console.log("calc in getTotal", this.calc);
 
-      if (this.client.discount.id === "other")
-        total = this.apartment_edit.price / total_discount;
-      else {
-        switch (this.client.discount.type) {
-          case "fixed":
-            if (this.calc.discount_price) {
-              total =
-                (this.client.discount.price_for_m2 -
-                  parseFloat(this.calc.discount_price)) *
-                this.planAreas;
-            } else {
-              total = this.getPrice();
-            }
-            break;
-          default:
-            total = this.getPrice() / total_discount;
-            if (this.calc.discount_price) {
-              total -= parseFloat(this.calc.discount_price) * this.planAreas;
-            }
-            break;
-        }
+      switch (this.client.discount.type) {
+        case "fixed":
+          if (parseFloat(this.calc.discount_price)) {
+            total = (this.client.discount.amount - parseFloat(this.calc.discount_price)) * this.planAreas();
+          } else {
+            total = this.getPrice();
+          }
+          break;
+        default:
+          total = this.getPrice() / total_discount;
+          if (parseFloat(this.calc.discount_price)) {
+            total -= parseFloat(this.calc.discount_price) * this.planAreas();
+          }
+          break;
       }
 
       return total;
     },
-
     getPrice() {
       var price = [];
       switch (this.client.discount.type) {
@@ -2144,6 +2113,8 @@ export default {
                 area: this.allApartments[i].plan.area,
                 balcony_area: this.allApartments[i].plan.balcony_area,
               },
+              // if (!this.edit.apartment_table_edit) {
+              //   };
             };
           }
           break;
@@ -2162,44 +2133,12 @@ export default {
       }
       return planAreas;
     },
-
-    changeDiscount() {
-      /* eslint-disable no-debugger */
-      // debugger;
-      this.calc.prepay_percente = this.client.discount?.prepay;
-      this.calc.discount_price = 0;
-      if (this.client.discount?.prepay === 100) {
-        this.calc.price_for_m2 = this.getTotal() / this.planAreas();
-      }
-      this.initialCalc();
-      console.log("getThisApartmentForTable", this.getThisApartmentForTable);
-      this.getThisApartments = [];
-      this.getThisApartments = this.getThisApartmentForTable;
-    },
-
-    async changeDiscountPriceForM2() {
-      await this.initialCalc();
-    },
-
-    changeTotalDiscountPrice() {},
-
-    changeDiscount_month() {
-      this.monthly_price = this.getMonths();
-      this.month = this.calc.month;
-    },
-    changeMonth() {
-      this.monthly_price = this.getMonths();
-      this.calc.month = this.month;
-    },
-
     getMonths() {
       return (this.getTotal() - this.getPrepay()) / this.calc.month;
     },
-
     getDebt() {
       return this.getTotal() - this.getPrepay();
     },
-
     getTotalMultiple() {
       let total_discount = this.getDiscount();
       let price = this.getPrice();
@@ -2220,20 +2159,20 @@ export default {
 
       return total;
     },
-
     getTotalForPercente() {
       let total_discount = this.getDiscount();
+      // console.log("calc in getTotalForPercente", this.calc);
       let total = 0;
       let price = 0;
       switch (this.client.discount.type) {
         case "fixed":
-          if (this.calc.discount_price) {
+          if (parseFloat(this.calc.discount_price)) {
             total =
-              (this.client.discount.amount -
+              (parseFloat(this.client.discount.amount) -
                 parseFloat(this.calc.discount_price)) *
               this.planAreas();
           } else {
-            total = this.getPrice(); //(this.client.discount.amount * this.allApartments.plan.area) / total_discount;
+            total = this.getPrice();
           }
           break;
         default:
@@ -2247,6 +2186,121 @@ export default {
       return total;
     },
 
+    // Calc Events
+    changeDiscount() {
+      this.allApartments = this.deepCloneFromApartments(
+        this.getApartmentOrder.apartments
+      );
+      this.edit.apartment_table_edit = false;
+      this.calc.prepay_percente = this.client.discount?.prepay;
+      this.calc.discount_price = 0;
+      if (this.client.discount?.prepay === 100) {
+        this.calc.price_for_m2 = this.getTotal() / this.planAreas();
+      }
+      this.initialCalc();
+      this.getThisApartments = this.getThisApartmentForTable;
+    },
+    changeDiscountPriceForM2(event) {
+      this.calc.discount_price = parseFloat(event.target.value);
+      this.allApartments = this.deepCloneFromApartments(
+        this.getApartmentOrder.apartments
+      );
+      for (let y = 0; y < this.allApartments[0].discounts.length; y++) {
+        if (
+          this.allApartments[0].discounts[y].prepay ==
+          this.client.discount.prepay
+        ) {
+          this.allApartments[0].discounts[y].amount -= this.calc.discount_price
+        }
+      }
+      this.initialCalc();
+    },
+    changeTotalDiscountPrice() {},
+    changeDiscount_month() {
+      this.monthly_price = this.getMonths();
+      this.month = this.calc.month;
+    },
+    changeMonth() {
+      this.monthly_price = this.getMonths();
+      this.calc.month = this.month;
+    },
+
+    // Table
+    getTotalOther() {
+      return parseFloat(this.apartment_edit.price);
+    },
+    DataEdited() {
+      let price = this.apartment_edit.price;
+      let prepay_price = this.apartment_edit.prepay_price;
+
+      let percente = (prepay_price * 100) / price;
+
+      this.client.discount.prepay = percente;
+    },
+    deleteInitialPayment(index) {
+      if (this.initial_payments.length === 2) {
+        this.initial_payments.splice(index, 1);
+        this.initial_payments.splice(0, 1);
+      } else {
+        this.initial_payments.splice(index, 1);
+      }
+      this.initialCalc();
+    },
+    editInitialPayment(index) {
+      this.initialCalc();
+
+      if (this.initial_payments[index].edit) {
+        this.initial_payments[index].edit = false;
+
+        if (
+          parseFloat(this.initial_payments[index].amount) != this.getMonths()
+        ) {
+          this.edit.initial_edited = true;
+          this.initial_payments[index].edited = true;
+          this.setNewPriceMonthly();
+        }
+
+        return;
+      }
+
+      this.initial_payments[index].edit = true;
+
+      return;
+    },
+    addInitialPayment() {
+      let today = this.client.first_payment_date
+        ? new Date(this.client.first_payment_date)
+        : new Date();
+
+      if (this.initial_payments.length === 0) {
+        let month = parseInt(this.month);
+        let amount = month === 0 ? this.getTotalOther() : this.getPrepay();
+
+        this.initial_payments.push({
+          amount: amount,
+          edit: false,
+          edited: false,
+          month: moment(today).format("YYYY-MM-DD"),
+        });
+      }
+
+      this.initial_payments.push({
+        amount: 0,
+        edit: false,
+        edited: false,
+        month: moment(today).format("YYYY-MM-DD"), //today,
+      });
+
+      this.getPrepay();
+      this.initialCalc();
+    },
+    SaveEditPrices() {
+      this.apartment_edit.price = this.getPrice();
+      this.getPrepay();
+      this.initialCalc();
+      // this.DataEdited();
+      this.edit.price = false;
+    },
     CreditMonths(newVal) {
       let today = this.client.payment_date
         ? new Date(this.client.payment_date)
@@ -2265,7 +2319,6 @@ export default {
         });
       }
     },
-
     editMonthlyPayment(index) {
       if (this.credit_months[index].edit) {
         this.credit_months[index].edit = false;
@@ -2283,7 +2336,6 @@ export default {
 
       return;
     },
-
     setNewPriceMonthly() {
       let total = this.getPrepay();
       let months = 0;
@@ -2308,6 +2360,7 @@ export default {
       }
     },
 
+    // form
     isCyrillic_last_name_kirill(value) {
       this.client.last_name.kirill = this.symbolIsCyrillic(value);
     },

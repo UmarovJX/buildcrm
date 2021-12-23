@@ -10,7 +10,6 @@ export default {
   },
   mutations: {
     updateApartment(state, apartments) {
-      console.log('apartments', JSON.stringify(apartments));
       if (apartments.pagination.current > 1) {
         state.apartments.pagination = apartments.pagination;
         state.apartments.items.push(...apartments.items);
