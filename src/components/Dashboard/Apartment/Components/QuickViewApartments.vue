@@ -116,14 +116,8 @@ export default {
       type: Number,
     },
   },
-  watch: {
-    apartment(val, newVal) {
-      console.log(val, newVal);
-    }
-  },
   methods: {
     apartmentPrice(price, id, edited) { 
-      console.log('in quick view apartment', price, id, edited);
        this.$emit("changedApartmentPrice", price, id, edited);
     }
   }

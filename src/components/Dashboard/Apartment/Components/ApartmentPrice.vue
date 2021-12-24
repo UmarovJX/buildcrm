@@ -75,7 +75,6 @@ export default {
       this.editable = !this.editable;
       this.edited = true
       this.$emit("apartmentPrice", this.apartmentPrice, this.id, this.edited);
-      console.log(this.apartmentPrice);
     },
   },
 };

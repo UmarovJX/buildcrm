@@ -1,0 +1,60 @@
+.flip-card__top,
+.flip-card__bottom,
+.flip-card__back-bottom,
+.flip-card__back::before,
+.flip-card__back::after {
+  background: linear-gradient(118deg, $primary, #8e89f5) !important;
+  border-radius: 4px;
+  color: #fff !important;
+  box-shadow: 0 0 4px 1px rgba(115, 103, 240, 0.7) !important;
+  border-radius: 4px;
+}
+
+.flip-clock__slot {
+  margin-top: 10px;
+  font-size: 16px;
+  display: none !important;
+}
+
+.flip-clock__piece {
+  transform: scale(0.5);
+  margin: -10px -20px !important;
+}
+
+.container.flip-clock {
+  width: 100%;
+  max-width: unset !important;
+  display: flex;
+  padding: 0;
+  @include mq("tablet", min) {
+    justify-content: flex-end;
+  }
+  justify-content: center;
+}
+
+.countdown-timer {
+  z-index: 1111;
+  padding: 0px;
+  border-radius: 4px;
+  background-color: #fff;
+  @include mq("tablet", max) {
+    right: 50%;
+    transform: translate(50%);
+    position: relative;
+    max-width: 100%;
+    margin-bottom: 10px;
+    z-index: 11;
+  }
+  @include mq("tablet", min) {
+    position: absolute;
+    left: 120px;
+    top: -58px;
+  }
+}
+
+.dark-theme {
+  .countdown-timer {
+    box-shadow: 0 4px 10px rgba($dark-secondary, 0.9);
+    background-color: $dark-secondary;
+  }
+}
