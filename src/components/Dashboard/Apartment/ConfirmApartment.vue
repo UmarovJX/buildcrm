@@ -643,16 +643,14 @@
                   rounded
                   shadow-sm
                 "
+                v-if="
+                  (client.discount && client.discount.prepay != 100) ||
+                    client.discount.prepay < 100
+                "
               >
                 <h6 class="mb-0">Таблица ежемесячных платежей:</h6>
                 <div class="d-flex justify-content-end align-items-center">
-                  <div
-                    class="mr-2 w-25"
-                    v-if="
-                      (client.discount && client.discount.prepay != 100) ||
-                        client.discount.prepay < 100
-                    "
-                  >
+                  <div class="mr-2 w-25">
                     <input
                       id="month"
                       class="my-form__input w-100"
@@ -684,14 +682,7 @@
                 </div>
               </div>
               <div class="table-responsive custom-table mt-0">
-                <table
-                  class="table"
-                  v-if="
-                    client.discount &&
-                      (client.discount.prepay != 100 ||
-                        client.discount.prepay < 100)
-                  "
-                >
+                <table class="table">
                   <thead>
                     <tr>
                       <th>
@@ -883,7 +874,14 @@
                         </div>
                       </td>
                     </tr>
-
+                  </tbody>
+                  <tbody
+                    v-if="
+                      client.discount &&
+                        (client.discount.prepay != 100 ||
+                          client.discount.prepay < 100)
+                    "
+                  >
                     <tr v-for="(month, index) in credit_months" :key="index">
                       <td>
                         {{ month.month | moment("DD.MM.YYYY") }}
@@ -1610,14 +1608,12 @@ export default {
         discount_price: "0",
         total_discount_price: "0",
       },
-      allApartments: [],
       month: 6,
-      getThisApartmentsFirstTime: [],
-      getThisApartment: [],
-      getThisApartmentForTable: [],
-      getThisApartments: [],
       monthly_price: 0,
       clientData: {},
+      allApartments: [],
+      getThisApartmentForTable: [],
+      getThisApartments: [],
       getApartmentDiscounts: [],
       expiry_at: null,
       expiry_at2: "2021-12-24 15:00:00",
@@ -1684,9 +1680,6 @@ export default {
     "apartment_edit.prepay_price": function() {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
-    },
-    "edited.contract_number": function(val) {
-      console.log(val);
     },
   },
 
@@ -1957,6 +1950,7 @@ export default {
           }
 
           formData.append("comment", this.comment);
+          formData.append("months", this.month);
 
           formData.append("first_payment_date", this.client.first_payment_date);
 
@@ -1968,11 +1962,6 @@ export default {
           if (this.step === 1 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);
           }
-          console.log(
-            this.edited.contract_number,
-            this.apartment_edit.contract_number,
-            this.apartmentInfoItem.contract_number
-          );
           if (
             this.edited.contract_number &&
             this.apartment_edit.contract_number !==
@@ -2030,7 +2019,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_close"),
       }).then((result) => {
         if (result.value) {
-          this.expiredConfirm()
+          this.expiredConfirm();
         }
       });
     },
@@ -2043,7 +2032,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_close"),
       }).then((result) => {
         if (result.value) {
-          this.expiredConfirm()
+          this.expiredConfirm();
         }
       });
     },
@@ -2211,9 +2200,11 @@ export default {
           break;
         default:
           total = this.getPrice() / total_discount;
-          if (parseFloat(this.calc.discount_price)) {
-            total -= parseFloat(this.calc.discount_price) * this.planAreas();
-          }
+          // if (this.allApartments.length > 1) {
+          //   if (parseFloat(this.calc.discount_price)) {
+          //     total -= parseFloat(this.calc.discount_price) * this.planAreas();
+          //   }
+          // }
           break;
       }
 
@@ -2247,8 +2238,26 @@ export default {
           }
           break;
         default:
-          for (let i = 0; this.allApartments.length > i; i++) {
-            price.push(parseFloat(this.allApartments[i].price));
+          if (this.client.discount.prepay === 100) {
+            console.log(this.allApartments);
+            for (let index = 0; index < this.allApartments.length; index++) {
+              this.getThisApartmentForTable[index] = {
+                number: this.allApartments[index].number,
+                id: this.allApartments[index].id,
+                price: this.allApartments[index].price,
+                rooms: this.allApartments[index].rooms,
+                floor: this.allApartments[index].floor,
+                plan: {
+                  area: this.allApartments[index].plan.area,
+                  balcony_area: this.allApartments[index].plan.balcony_area,
+                },
+              };
+              price.push(parseFloat(this.getThisApartmentForTable[index].price));
+            }
+          } else {
+            for (let i = 0; this.allApartments.length > i; i++) {
+              price.push(parseFloat(this.allApartments[i].price));
+            }
           }
           break;
       }
@@ -2331,7 +2340,6 @@ export default {
     changedApartmentPrice(price, id, edited) {
       this.edit.apartmentsPrice = true;
       this.edit.apartment_table_edit = edited;
-      this.initialCalc();
       for (let index = 0; index < this.allApartments.length; index++) {
         if (id === this.allApartments[index].id) {
           for (let y = 0; y < this.allApartments[index].discounts.length; y++) {
@@ -2339,6 +2347,18 @@ export default {
               this.allApartments[index].discounts[y].prepay ==
               this.client.discount.prepay
             ) {
+              this.calc.discount_price =
+                Math.abs(
+                  this.allApartments[index].discounts[y].amount *
+                    parseFloat(this.allApartments[index].plan.area) -
+                    price
+                ) / parseFloat(this.allApartments[index].plan.area);
+              this.calc.total_discount_price = Math.abs(
+                this.allApartments[index].discounts[y].amount *
+                  parseFloat(this.allApartments[index].plan.area) -
+                  price
+              );
+
               this.allApartments[index].discounts[y].amount =
                 price / parseFloat(this.allApartments[index].plan.area);
             }
@@ -2349,27 +2369,35 @@ export default {
       this.initialCalc();
     },
     changeDiscountPriceForM2(event) {
-      this.calc.total_discount_price = 0;
       this.calc.discount_price = parseFloat(event.target.value);
       if (parseInt(this.calc.discount_price) > 0) {
         this.edit.apartmentsPrice = true;
         this.allApartments = this.deepCloneFromApartments(
           this.getApartmentOrder.apartments
         );
-        for (let y = 0; y < this.allApartments[0].discounts.length; y++) {
-          if (
-            this.allApartments[0].discounts[y].prepay ==
-            this.client.discount.prepay
-          ) {
-            this.allApartments[0].discounts[
-              y
-            ].amount -= this.calc.discount_price;
+        if (this.allApartments.length > 1) {
+          for (let y = 0; y < this.allApartments[0].discounts.length; y++) {
+            if (
+              this.allApartments[0].discounts[y].prepay ==
+              this.client.discount.prepay
+            ) {
+              this.allApartments[0].discounts[
+                y
+              ].amount -= this.calc.discount_price;
+            }
           }
+        } else {
+          this.allApartments[0].price -= this.calc.discount_price * this.planAreas()
+          this.allApartments[0].price_m2 -= this.calc.discount_price
         }
+        this.calc.total_discount_price =
+          this.calc.discount_price *
+          parseFloat(this.allApartments[0].plan.area);
         this.initialCalc();
       } else {
         this.edit.apartmentsPrice = false;
         this.calc.discount_price = 0;
+        this.calc.total_discount_price = 0;
         this.allApartments = this.deepCloneFromApartments(
           this.getApartmentOrder.apartments
         );
@@ -2377,31 +2405,46 @@ export default {
       }
     },
     changeTotalDiscountPrice(event) {
-      this.calc.discount_price = 0;
       this.calc.total_discount_price = parseFloat(event.target.value);
-
-      if (parseInt(this.calc.total_discount_price) > 0) {
+      if (parseFloat(this.calc.total_discount_price) > 0) {
         this.edit.apartmentsPrice = true;
         this.allApartments = this.deepCloneFromApartments(
           this.getApartmentOrder.apartments
         );
-        const average =
-          this.calc.total_discount_price / this.allApartments.length;
-        for (let index = 0; index < this.allApartments.length; index++) {
-          for (let y = 0; y < this.allApartments[index].discounts.length; y++) {
-            if (
-              this.allApartments[index].discounts[y].prepay ==
-              this.client.discount.prepay
-            ) {
-              this.allApartments[index].discounts[y].amount -=
-                average / this.allApartments[index].plan.area;
+
+        if (this.allApartments.length > 1) {
+          const average =
+            this.calc.total_discount_price / this.allApartments.length;
+  
+          for (let index = 0; index < this.allApartments.length; index++) {
+            if (this.client.discount.prepay === 100) {
+              console.log(this.allApartments[index].price, this.allApartments[index].price_m2, average);
+              this.allApartments[index].price -= average
+              this.allApartments[index].price_m2 -= average / this.allApartments[index].plan.area
+            } else {
+              for (let y = 0; y < this.allApartments[index].discounts.length; y++) {
+               if (
+                  this.allApartments[index].discounts[y].prepay ==
+                  this.client.discount.prepay
+                ) {
+                  this.allApartments[index].discounts[y].amount -=
+                    average / this.allApartments[index].plan.area;
+                }
+              }
             }
           }
+        } else {
+          this.allApartments[0].price -= this.calc.total_discount_price
+          this.allApartments[0].price_m2 -= this.calc.total_discount_price / this.planAreas()
         }
+
+        this.calc.discount_price =
+          this.calc.total_discount_price / this.planAreas();
         this.initialCalc();
       } else {
         this.edit.apartmentsPrice = false;
         this.calc.total_discount_price = 0;
+        this.calc.discount_price = 0;
         this.allApartments = this.deepCloneFromApartments(
           this.getApartmentOrder.apartments
         );
