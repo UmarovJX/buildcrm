@@ -1699,7 +1699,7 @@ export default {
       this.expiry_at = expired;
       const time = new Date(current) - new Date(expired);
       if (time > 0) {
-        this.timeElapsedHandler();
+        // this.timeElapsedHandler();
       }
     });
   },
@@ -2200,6 +2200,7 @@ export default {
           break;
         default:
           total = this.getPrice() / total_discount;
+          // console.log(this.getPrice() + ' - ', total_discount + ' = ' + total);
           // if (this.allApartments.length > 1) {
           //   if (parseFloat(this.calc.discount_price)) {
           //     total -= parseFloat(this.calc.discount_price) * this.planAreas();
@@ -2232,8 +2233,6 @@ export default {
                 area: this.allApartments[i].plan.area,
                 balcony_area: this.allApartments[i].plan.balcony_area,
               },
-              // if (!this.edit.apartment_table_edit) {
-              //   };
             };
           }
           break;
@@ -2252,15 +2251,35 @@ export default {
                   balcony_area: this.allApartments[index].plan.balcony_area,
                 },
               };
-              price.push(parseFloat(this.getThisApartmentForTable[index].price));
+              price.push(
+                parseFloat(this.getThisApartmentForTable[index].price)
+              );
             }
           } else {
             for (let i = 0; this.allApartments.length > i; i++) {
-              price.push(parseFloat(this.allApartments[i].price));
+              const amountApartment = this.allApartments[i].discounts.find(
+                (val) => val.prepay == this.client.discount.prepay
+              ).amount;
+              const totalAmount = parseFloat(
+                this.allApartments[i].price_m2 * this.allApartments[i].plan.area / (1 - amountApartment / 100)
+              );
+              price.push(parseFloat(totalAmount));
+              this.getThisApartmentForTable[i] = {
+                number: this.allApartments[i].number,
+                id: this.allApartments[i].id,
+                price: totalAmount,
+                rooms: this.allApartments[i].rooms,
+                floor: this.allApartments[i].floor,
+                plan: {
+                  area: this.allApartments[i].plan.area,
+                  balcony_area: this.allApartments[i].plan.balcony_area,
+                },
+              };
             }
           }
           break;
       }
+      console.log(price);
       return price.reduce((a, b) => a + b, 0);
     },
     planAreas() {
@@ -2312,10 +2331,14 @@ export default {
           }
           break;
         default:
-          for (let index = 0; index < this.allApartments.length; index++) {
-            price += this.allApartments[index]?.price_m2;
+          if (this.client.discount.prepay === 100) {
+            for (let index = 0; index < this.allApartments.length; index++) {
+              price += this.allApartments[index]?.price_m2;
+            }
+            total = price / (total_discount * this.allApartments.length);
+          } else {
+            total = this.getPrice();
           }
-          total = price / (total_discount * this.allApartments.length);
           break;
       }
 
@@ -2387,8 +2410,9 @@ export default {
             }
           }
         } else {
-          this.allApartments[0].price -= this.calc.discount_price * this.planAreas()
-          this.allApartments[0].price_m2 -= this.calc.discount_price
+          this.allApartments[0].price -=
+            this.calc.discount_price * this.planAreas();
+          this.allApartments[0].price_m2 -= this.calc.discount_price;
         }
         this.calc.total_discount_price =
           this.calc.discount_price *
@@ -2415,15 +2439,24 @@ export default {
         if (this.allApartments.length > 1) {
           const average =
             this.calc.total_discount_price / this.allApartments.length;
-  
+
           for (let index = 0; index < this.allApartments.length; index++) {
             if (this.client.discount.prepay === 100) {
-              console.log(this.allApartments[index].price, this.allApartments[index].price_m2, average);
-              this.allApartments[index].price -= average
-              this.allApartments[index].price_m2 -= average / this.allApartments[index].plan.area
+              console.log(
+                this.allApartments[index].price,
+                this.allApartments[index].price_m2,
+                average
+              );
+              this.allApartments[index].price -= average;
+              this.allApartments[index].price_m2 -=
+                average / this.allApartments[index].plan.area;
             } else {
-              for (let y = 0; y < this.allApartments[index].discounts.length; y++) {
-               if (
+              for (
+                let y = 0;
+                y < this.allApartments[index].discounts.length;
+                y++
+              ) {
+                if (
                   this.allApartments[index].discounts[y].prepay ==
                   this.client.discount.prepay
                 ) {
@@ -2434,8 +2467,9 @@ export default {
             }
           }
         } else {
-          this.allApartments[0].price -= this.calc.total_discount_price
-          this.allApartments[0].price_m2 -= this.calc.total_discount_price / this.planAreas()
+          this.allApartments[0].price -= this.calc.total_discount_price;
+          this.allApartments[0].price_m2 -=
+            this.calc.total_discount_price / this.planAreas();
         }
 
         this.calc.discount_price =

@@ -1,6 +1,17 @@
 <template>
   <main>
     <div class="app-content apartment-list-filter">
+      <div>
+        <b-alert variant="warning" class="py-2" show>
+          <div class="alert-body py-0">
+            <span>
+              <b-link to="/objects/unfinished-contracts" v-if="getMe.user">
+                Привет {{ getMe.user.firstName }}, У вас 12 незаконченных оформлений, продолжайте или отмените эти оформления
+              </b-link>
+            </span>
+          </div>
+        </b-alert>
+      </div>
       <div class="d-flex justify-content-between flex-md-row flex-column">
         <div
           class="
@@ -407,7 +418,7 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-
+import {BAlert} from "bootstrap-vue";
 import Filter from "./Components/ApartmentsFilter";
 import ReserveAdd from "./Components/Reserve";
 import EditApartment from "./Components/Edit";
@@ -425,6 +436,7 @@ export default {
     "info-manager-modal": InfoManager,
     "agree-modal": AgreeMultiple,
     "success-agree": SuccessAgree,
+    BAlert,
   },
 
   data() {

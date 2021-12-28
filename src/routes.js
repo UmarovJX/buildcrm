@@ -17,6 +17,7 @@ import Objects from "./components/Dashboard/Objects/Index";
 import ObjStore from "./components/Dashboard/Objects/Store";
 // import ObjFilter from './components/Dashboard/Objects/Filter';
 import ApartmentsList from "./components/Dashboard/Apartment/ApartmentsList";
+import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
 
 // import Managers from './components/Dashboard/Managers/Index';
 // import Accountants from './components/Dashboard/Accountants/Index';
@@ -96,6 +97,11 @@ const routes = [
     name: "apartments",
     path: "/objects/:object/apartments",
     component: ApartmentsList,
+  },
+  {
+    name: "unfinished-contracts",
+    path: "/objects/unfinished-contracts",
+    component: UnfinishedContracts,
   },
   {
     name: "apartment-view",
