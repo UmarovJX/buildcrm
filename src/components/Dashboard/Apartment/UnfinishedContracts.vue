@@ -186,20 +186,18 @@ export default {
       });
     },
     async expiredConfirm(id) {
+      this.getLoading = true;
       try {
         await this.axios
           .delete(process.env.VUE_APP_URL + `/orders/${id}/hold/`, this.header)
-          .then((res) => {
-            // location.reload()
+          .then(() => {
             this.getUnfinishedOrders();
-            if (res.data) {
-              // this.$router.push({
-              //   name: "apartments",
-              // });
-            }
           })
-          .catch();
+          .catch(() => {
+            this.getLoading = false;
+          });
       } catch (error) {
+        this.getLoading = false;
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -227,45 +225,6 @@ export default {
       this.selected.view = false;
       this.selected.values = [];
       this.selectable = true;
-    },
-  },
-  filters: {
-    getStatus(status, buy, book) {
-      let msg;
-
-      switch (status) {
-        case "sold":
-          msg = buy;
-          break;
-        case "booked":
-          msg = "Забронировал до " + book;
-          break;
-        case "contract":
-          msg = buy;
-          break;
-        default:
-          msg = "отказался купить или другое";
-          break;
-      }
-
-      return msg;
-    },
-
-    getStatusOrder(status) {
-      let msg;
-      switch (status) {
-        case "sold":
-          msg = "Продано";
-          break;
-        case "booked":
-          msg = "";
-          break;
-        case "contract":
-          msg = "Оформлен контракт ";
-          break;
-      }
-
-      return msg;
     },
   },
 };

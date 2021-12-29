@@ -6,7 +6,9 @@
           <div class="alert-body py-0">
             <span>
               <b-link to="/objects/unfinished-contracts" v-if="getMe.user">
-                Привет {{ getMe.user.firstName }}, У вас 12 незаконченных оформлений, продолжайте или отмените эти оформления
+                Привет {{ getMe.user.firstName }}, У вас
+                {{ unsfinishedContracts.length }} незаконченных оформлений,
+                продолжайте или отмените эти оформления
               </b-link>
             </span>
           </div>
@@ -337,7 +339,7 @@
           </template>
         </b-table>
 
-        <b-overlay :show="getLoading" no-wrap opacity="0.5">
+        <b-overlay :show="loading" no-wrap opacity="0.5">
           <template #overlay>
             <div class="d-flex justify-content-center w-100">
               <div class="lds-ellipsis">
@@ -442,6 +444,7 @@ export default {
   data() {
     return {
       selectMode: "single",
+      unsfinishedContracts: [],
       selectable: true,
       selected: {
         view: false,
@@ -529,6 +532,7 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
+      loading: true,
     };
   },
 
@@ -540,6 +544,7 @@ export default {
       this.multiSelectOn();
     }
     this.currentPage = Number(this.filter.page);
+    this.loading = this.getLoading;
   },
 
   computed: {
@@ -557,11 +562,27 @@ export default {
   },
   mounted() {
     this.fetchApartments(this);
+    this.getUnfinishedOrders();
+  },
+  watch: {
+    getLoading(val) {
+      this.loading = val;
+    },
   },
 
   methods: {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    async getUnfinishedOrders() {
+      await this.axios
+        .get(process.env.VUE_APP_URL + "/orders/hold", this.header)
+        .then((res) => {
+          if (res) {
+            this.unsfinishedContracts = res.data;
+          }
+        });
+    },
     async orderHold(arr) {
+      this.loading = true;
       await this.axios
         .post(
           process.env.VUE_APP_URL + "/orders/hold",
@@ -571,6 +592,7 @@ export default {
           this.header
         )
         .then((res) => {
+          this.loading = false;
           if (res) {
             // localStorage.setItem("order", JSON.stringify(res.data));
             this.$router.push({

@@ -22,7 +22,6 @@
         sort-icon-left
         :items="getContracts"
         :fields="fields"
-        :busy="getLoading"
         :sort-by.sync="sortBy"
         :tbody-tr-class="rowClass"
         :sort-desc.sync="sortDesc"
@@ -132,6 +131,19 @@
             </div>
           </div>
         </template>
+
+        <b-overlay :show="getLoading" no-wrap opacity="0.5">
+          <template #overlay>
+            <div class="d-flex justify-content-center w-100">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </template>
+        </b-overlay>
       </b-table>
 
       <paginate
@@ -156,11 +168,12 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-
+import {BOverlay} from "bootstrap-vue";
 import SideBarFilter from "./SideBarFilter.vue";
 export default {
   components: {
     SideBarFilter,
+    BOverlay
   },
 
   data() {

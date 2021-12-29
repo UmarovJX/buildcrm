@@ -572,6 +572,18 @@
         @CloseAgree="CloseAgree"
       ></agree-modal>
     </div>
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 9999">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </main>
 </template>
 
@@ -636,6 +648,7 @@ export default {
         total: 0,
       },
       isMapActive: false,
+      getLoading: false,
     };
   },
   async created() {
@@ -672,6 +685,7 @@ export default {
     },
 
     async orderHold(arr) {
+      this.getLoading = true
       await this.axios
         .post(
           process.env.VUE_APP_URL + "/orders/hold",
@@ -681,6 +695,7 @@ export default {
           this.header
         )
         .then((res) => {
+          this.getLoading = false
           if (res) {
             this.$router.push({
               name: "confirm-apartment",

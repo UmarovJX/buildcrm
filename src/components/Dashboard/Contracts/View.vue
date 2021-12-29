@@ -677,6 +677,18 @@
         </div>
       </div>
     </div>
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 9999">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </main>
 </template>
 
@@ -697,7 +709,7 @@ export default {
   data: () => ({
     step: 1,
     add_payment: true,
-
+    getLoading: false,
     payment: {
       view: false,
       data: {
@@ -1193,6 +1205,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
       }).then((result) => {
         if (result.value) {
+          this.getLoading = true
           this.axios
             .post(
               process.env.VUE_APP_URL + "/deals/" + this.order.id,
@@ -1203,7 +1216,7 @@ export default {
             )
             .then(() => {
               this.$router.back(-1);
-
+              this.getLoading = false
               this.$swal(
                 this.$t("sweetAlert.canceled_contract"),
                 "",
@@ -1211,6 +1224,7 @@ export default {
               );
             })
             .catch((error) => {
+              this.getLoading = false
               this.toastedWithErrorCode(error);
             });
         } else {
