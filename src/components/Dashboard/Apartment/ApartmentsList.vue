@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="app-content apartment-list-filter">
-      <div>
+      <div v-if="unsfinishedContracts.length">
         <b-alert variant="warning" class="py-2" show>
           <div class="alert-body py-0">
             <span>
@@ -14,6 +14,7 @@
           </div>
         </b-alert>
       </div>
+
       <div class="d-flex justify-content-between flex-md-row flex-column">
         <div
           class="
@@ -55,8 +56,7 @@
           <button
             v-if="
               selected.view &&
-                getPermission.apartments.contract &&
-                filter.status === true
+                getPermission.apartments.contract
             "
             class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-4"
             @click="multiSelectOff"
@@ -540,9 +540,9 @@ export default {
     this.filter = {
       ...this.$route.query,
     };
-    if (this.filter.status === true) {
-      this.multiSelectOn();
-    }
+    // if (this.filter.status === true) {
+    //   this.multiSelectOn();
+    // }
     this.currentPage = Number(this.filter.page);
     this.loading = this.getLoading;
   },
@@ -619,15 +619,15 @@ export default {
       this.selectable = false;
 
       this.scrollActive = false;
-      this.page = 1;
-      this.filter.page = 1;
-      this.filter.status = true;
-      this.currentPage = this.filter.page;
+      // this.page = 1;
+      // this.filter.page = 1;
+      // this.filter.status = true;
+      // this.currentPage = this.filter.page;
 
-      this.$router.push({
-        name: "apartments",
-        query: this.filter,
-      });
+      // this.$router.push({
+      //   name: "apartments",
+      //   query: this.filter,
+      // });
       this.fetchApartments(this).then(() => {
         const element = document.getElementById("my-table");
         element.scrollIntoView();
@@ -639,15 +639,15 @@ export default {
       this.selectable = true;
 
       this.scrollActive = true;
-      this.page = 1;
-      this.filter.page = 1;
-      this.filter.status = null;
-      this.currentPage = this.filter.page;
+      // this.page = 1;
+      // this.filter.page = 1;
+      // this.filter.status = null;
+      // this.currentPage = this.filter.page;
 
-      this.$router.push({
-        name: "apartments",
-        query: this.filter,
-      });
+      // this.$router.push({
+      //   name: "apartments",
+      //   query: this.filter,
+      // });
       this.fetchApartments(this).then(() => {
         const element = document.getElementById("my-table");
         element.scrollIntoView();
@@ -694,7 +694,6 @@ export default {
         }
       }
     },
-
     async sortingChanged(val) {
       this.scrollActive = false;
       this.filter.filtered = true;

@@ -652,7 +652,10 @@ export default {
     };
   },
   async created() {
-    await this.fetchApartment(this);
+    this.getLoading = true
+    await this.fetchApartment(this).then(() => {
+      this.getLoading = false
+    });
 
     this.coords = [
       this.getApartment.object.location.latitude,

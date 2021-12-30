@@ -1499,7 +1499,7 @@
       </div>
     </div>
     
-    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 9999">
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 9999">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
@@ -1629,7 +1629,6 @@ export default {
       getThisApartments: [],
       getApartmentDiscounts: [],
       expiry_at: null,
-      getLoading: false,
       expiry_at2: "2021-12-24 15:00:00",
     };
   },
@@ -1728,7 +1727,7 @@ export default {
     },
     async expiredConfirm() {
       try {
-        this.getLoading = true;
+        this.loading = true;
         await this.axios
           .delete(
             process.env.VUE_APP_URL +
@@ -1736,14 +1735,14 @@ export default {
             this.header
           )
           .then(() => {
-            this.getLoading = false;
+            this.loading = false;
             this.$router.push({
               name: "apartments",
             });
           })
           .catch();
       } catch (error) {
-        this.getLoading = false;
+        this.loading = false;
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -1772,55 +1771,6 @@ export default {
           name: "apartment-view",
           params: {id: this.$route.params.id},
         });
-      }
-    },
-    async Search() {
-      try {
-        const {data} = await this.axios.get(
-          process.env.VUE_APP_URL +
-            "/clients/search?field=" +
-            this.search_label,
-          this.header
-        );
-        this.step = 1;
-
-        this.client = {
-          id: data.id,
-          first_name: data.first_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          last_name: data.last_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          second_name: data.second_name ?? {
-            lotin: null,
-            kirill: null,
-          },
-          passport_series: data.passport_series,
-          issued_by_whom: data.issued_by_whom,
-          language: data.language,
-          birth_day: data.birth_day,
-          phone: data.phone,
-          other_phone: data.other_phone,
-          date_of_issue: data.date_of_issue,
-          discount: {id: null},
-        };
-      } catch (error) {
-        if (!error.response) {
-          this.toasted("Error: Network Error", "error");
-        } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
-        }
       }
     },
     getValidationState({dirty, validated, valid = null}) {
@@ -2051,6 +2001,7 @@ export default {
     async getClientData() {
       this.search_label = this.client.passport_series;
       if (this.search_label.length == 9) {
+        this.loading = true;
         try {
           const {data} = await this.axios.get(
             process.env.VUE_APP_URL +
@@ -2081,7 +2032,9 @@ export default {
             date_of_issue: data.date_of_issue,
             discount: {id: null},
           };
+          this.loading = false;
         } catch (error) {
+          this.loading = false;
           this.toastedWithErrorCode(error);
         }
       } else {
