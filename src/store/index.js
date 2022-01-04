@@ -33,6 +33,7 @@ import Companies from "./modules/companies";
 import Contracts from "./modules/contract";
 import Debtors from "./modules/debtors";
 import Settings from "./modules/settings";
+import setMe from "./setMe.js";
 
 Vue.use(Vuex);
 
@@ -71,5 +72,6 @@ export default new Vuex.Store({
     Contracts,
     Debtors,
     Settings,
+    setMe,
   },
 });

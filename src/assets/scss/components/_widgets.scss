@@ -590,6 +590,12 @@
   .card {
     color: var(--link);
   }
+
+  .misc-wrapper {
+    * {
+      color: #b6c1e2;
+    }
+  }
 }
 
 .swal2-popup {
