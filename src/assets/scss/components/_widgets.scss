@@ -608,3 +608,38 @@
 .dropdown-item {
   color: var(--link);
 }
+
+.connection-status,
+.status-bar {
+  flex: 0 0 auto;
+}
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 111;
+  height: 45px;
+  color: #fff;
+
+  &.disconnected {
+    height: 45px;
+    background: rgb(232, 48, 48);
+  }
+  &.connected {
+    height: 45px;
+    background: #42b983;
+  }
+}
+
+.banner .vue-ui-icon {
+  margin-right: 16px;
+}
+.vue-ui-icon.medium {
+  width: 18px;
+  height: 18px;
+}

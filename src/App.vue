@@ -1,5 +1,21 @@
 <template>
   <div id="app">
+    <div class="connection-status">
+      <div class="banner">
+        <div class="content disconnected" v-if="connecting == 2">
+          <div class="mr-1">
+            <i class="fal fa-times-circle"></i>
+          </div>
+          <span>Нет подключения к Интернету</span>
+        </div>
+        <div class="content connected" v-if="connecting == 1">
+          <div class="mr-1">
+            <i class="fal fa-check-circle"></i>
+          </div>
+          <span>Подключен к интернету!</span>
+        </div>
+      </div>
+    </div>
     <header-block :theme="theme"></header-block>
     <router-view></router-view>
   </div>
@@ -11,6 +27,7 @@ export default {
     return {
       onLine: navigator.onLine,
       theme: "",
+      connecting: null,
     };
   },
   methods: {
@@ -38,24 +55,30 @@ export default {
     onLine(v) {
       if (v) {
         this.$toasted.clear();
-        this.$toasted.show("Подключен к интернету!", {
-          theme: "toasted-primary",
-          position: "top-right",
-          duration: 5000,
-          type: "success",
-          fitToScreen: true,
-        });
+        this.connecting = 1;
+        setTimeout(() => {
+          this.connecting = null;
+        }, 5000);
+        // this.$toasted.show("Подключен к интернету!", {
+        //   theme: "toasted-primary",
+        //   position: "top-right",
+        //   duration: 5000,
+        //   type: "success",
+        //   fitToScreen: true,
+        // });
       } else {
-        this.$toasted.show("Нет подключения к Интернету", {
-          theme: "toasted-primary",
-          position: "top-right",
-          duration: null,
-          type: "error",
-        });
+        this.connecting = 2;
+        // this.$toasted.show("Нет подключения к Интернету", {
+        //   theme: "toasted-primary",
+        //   position: "top-right",
+        //   duration: null,
+        //   type: "error",
+        // });
       }
     },
   },
   mounted() {
+    console.log(this.onLine);
     const initUserTheme = this.getMediaPreference();
     const activeTheme = localStorage.getItem("user-theme");
     this.theme = activeTheme;
