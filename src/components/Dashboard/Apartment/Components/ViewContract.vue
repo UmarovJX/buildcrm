@@ -53,13 +53,9 @@
                         {{ order.client.second_name }}<br />
                         {{ order.client.passport_series }}<br />
                         {{ order.client.issued_by_whom }}<br />
-                        {{
-                          order.client.date_of_issue | moment("DD.MM.YYYY")
-                        }}
+                        {{ order.client.date_of_issue | moment("DD.MM.YYYY") }}
                         берилган<br />
-                        {{
-                          order.client.birth_day | moment("DD.MM.YYYY")
-                        }}
+                        {{ order.client.birth_day | moment("DD.MM.YYYY") }}
                         тугилган<br />
                         {{ order.client.phone }}<br />
                         {{ order.client.other_phone }}
@@ -128,6 +124,19 @@
         <i class="fa fa-download"></i> Скачать договор
       </a>
     </b-modal>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -186,6 +195,7 @@ export default {
         discount: {id: null},
         edit: false,
       },
+      getLoading: false,
     },
 
     error: false,
@@ -204,6 +214,7 @@ export default {
 
   methods: {
     async fetchOrder() {
+      this.getLoading = true
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL + "/orders/" + this.apartment.order.id,
@@ -250,7 +261,10 @@ export default {
             date_of_issue: data.client.date_of_issue,
           },
         };
+
+        this.getLoading = false
       } catch (error) {
+        this.getLoading = false
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {

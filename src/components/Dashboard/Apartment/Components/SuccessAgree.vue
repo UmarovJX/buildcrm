@@ -35,11 +35,29 @@
         </button>
       </div>
     </b-modal>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      getLoading: false
+    }
+  },
   props: {
     contract: {
       type: Object,

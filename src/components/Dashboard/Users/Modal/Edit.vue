@@ -130,6 +130,19 @@
         </div>
       </form>
     </b-modal>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -149,6 +162,8 @@ export default {
         Authorization: "Bearer " + localStorage.token,
       },
     },
+
+    getLoading: false
   }),
 
   mounted() {},
@@ -176,7 +191,7 @@ export default {
 
     async handleSubmit() {
       this.manager = this.getUser;
-
+      this.getLoading = true
       try {
         const response = await this.axios.put(
           process.env.VUE_APP_URL + "/users/" + this.managerId,
@@ -187,11 +202,13 @@ export default {
         this.toasted(response.data.message, "success");
 
         this.$nextTick(() => {
+          this.getLoading = false
           this.$bvModal.hide("modal-edit");
         });
 
         this.$emit("EditManager", this.manager);
       } catch (error) {
+        this.getLoading = false
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {

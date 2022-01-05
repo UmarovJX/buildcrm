@@ -65,8 +65,8 @@
               v-else
               :style="
                 'background-image: url(' +
-                require('@/assets/img/not-found.png') +
-                ');'
+                  require('@/assets/img/not-found.png') +
+                  ');'
               "
             ></div>
             <div class="object__name">{{ object.name }}</div>
@@ -81,8 +81,8 @@
               class="object__img"
               :style="
                 'background-image: url(' +
-                require('@/assets/img/object__img1.png') +
-                ');'
+                  require('@/assets/img/object__img1.png') +
+                  ');'
               "
             ></div>
             <div class="object__name">{{ object.name }}</div>
@@ -123,6 +123,19 @@
         @UploadLogo="uploadLogo"
         v-if="getPermission.objects.update"
       ></upload-logo>
+
+      <b-overlay :show="getLoading" no-wrap opacity="0.5">
+        <template #overlay>
+          <div class="d-flex justify-content-center w-100">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </template>
+      </b-overlay>
     </div>
   </main>
 </template>
@@ -157,6 +170,8 @@ export default {
       area_from: null,
       area_to: null,
     },
+
+    getLoading: false,
   }),
 
   mounted() {
@@ -174,11 +189,17 @@ export default {
     },
 
     uploadLogo() {
-      this.fetchObjects(this);
+      this.getLoading = true;
+      this.fetchObjects(this).then(() => {
+        this.getLoading = false;
+      });
     },
 
     filterSend() {
-      this.fetchFilterApartments(this);
+      this.getLoading = true;
+      this.fetchFilterApartments(this).then(() => {
+        this.getLoading = false;
+      });
       this.$router.push({name: "objects-filter"});
     },
 
@@ -191,15 +212,19 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
+          this.getLoading = true;
           this.axios
             .delete(process.env.VUE_APP_URL + "/objects/" + object, this.header)
             .then((response) => {
               this.toasted(response.data.message, "success");
-              this.fetchObjects(this);
+              this.fetchObjects(this).then(() => {
+                this.getLoading = false;
+              });
 
               this.$swal(this.$t("sweetAlert.deleted"), "", "success");
             })
             .catch((error) => {
+              this.getLoading = false;
               this.toastedWithErrorCode(error);
             });
         }

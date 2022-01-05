@@ -11,9 +11,12 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                {{ order.company && order.company.type && order.company.type.name ? order.company.type.name.kr : '' }} "{{
-                  order.company ? order.company.name : ''
-                }}"<br />
+                {{
+                  order.company && order.company.type && order.company.type.name
+                    ? order.company.type.name.kr
+                    : ""
+                }}
+                "{{ order.company ? order.company.name : "" }}"<br />
                 {{ order.company.first_name }} {{ order.company.last_name }}
                 {{ order.company.second_name }} <br />
                 р/с: {{ order.company.payment_account }} <br />
@@ -53,7 +56,9 @@
                   <button
                     v-if="
                       !edit.type_client &&
-                        (getMe.role && getMe.role.id === 1 || getPermission.contracts && getPermission.contracts.friends)
+                        ((getMe.role && getMe.role.id === 1) ||
+                          (getPermission.contracts &&
+                            getPermission.contracts.friends))
                     "
                     @click="edit.type_client = true"
                     class="btn btn-primary mt-3 mr-0"
@@ -64,7 +69,9 @@
                   <button
                     v-if="
                       edit.type_client &&
-                        (getMe.role && getMe.role.id === 1 || getPermission.contracts && getPermission.contracts.friends)
+                        ((getMe.role && getMe.role.id === 1) ||
+                          (getPermission.contracts &&
+                            getPermission.contracts.friends))
                     "
                     @click="ChangeTypeClient"
                     class="btn btn-success mt-3"
@@ -456,7 +463,7 @@
                           @click="paymentMonthly(index)"
                           v-if="
                             month.type === 'initial_payment' &&
-                              (getMe.role && getMe.role.id === 1 ||
+                              ((getMe.role && getMe.role.id === 1) ||
                                 getPermission.debtors.first_payment.accept) &&
                               month.status === 'waiting'
                           "
@@ -469,7 +476,7 @@
                           @click="editMonthly(index)"
                           v-if="
                             month.type === 'initial_payment' &&
-                              (getMe.role && getMe.role.id === 1 ||
+                              ((getMe.role && getMe.role.id === 1) ||
                                 getPermission.debtors.first_payment.edit) &&
                               month.status === 'paid'
                           "
@@ -484,7 +491,7 @@
                             (month.type === 'monthly' ||
                               month.type === 'manual' ||
                               month.type === 'debt') &&
-                              (getMe.role && getMe.role.id === 1 ||
+                              ((getMe.role && getMe.role.id === 1) ||
                                 getPermission.debtors.monthly.accept) &&
                               month.status === 'waiting'
                           "
@@ -499,7 +506,7 @@
                             (month.type === 'monthly' ||
                               month.type === 'manual' ||
                               month.type === 'debt') &&
-                              (getMe.role && getMe.role.id === 1 ||
+                              ((getMe.role && getMe.role.id === 1) ||
                                 getPermission.debtors.monthly.edit) &&
                               month.status === 'paid'
                           "
@@ -512,7 +519,7 @@
                           @click="deleteMonthly(index)"
                           v-if="
                             month.type === 'manual' &&
-                              (getMe.role && getMe.role.id === 1 ||
+                              ((getMe.role && getMe.role.id === 1) ||
                                 getPermission.debtors.monthly.edit) &&
                               month.status === 'waiting'
                           "
@@ -826,6 +833,7 @@ export default {
 
   methods: {
     async saveComment() {
+      this.getLoading = true;
       try {
         const {data, status} = await this.axios.post(
           process.env.VUE_APP_URL +
@@ -843,12 +851,15 @@ export default {
           this.order.comments.push(data);
           this.comment_store = false;
         }
+        this.getLoading = false;
       } catch (error) {
+        this.getLoading = false;
         this.toastedWithErrorCode(error);
       }
     },
 
     async CreatePayment() {
+      this.getLoading = true;
       try {
         await this.axios.post(
           process.env.VUE_APP_URL +
@@ -869,14 +880,16 @@ export default {
 
         this.payment.view = false;
         this.fetchOrder();
-
+        this.getLoading = false;
         this.$swal(this.$t("sweetAlert.payment_success_added"), "", "success");
       } catch (error) {
+        this.getLoading = false;
         this.toastedWithErrorCode(error);
       }
     },
 
     async fetchOrder() {
+      this.getLoading = true;
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL + "/orders/" + this.$route.params.id,
@@ -885,12 +898,15 @@ export default {
         this.step = 1;
 
         this.order = data;
+        this.getLoading = false;
       } catch (error) {
+        this.getLoading = false;
         this.toastedWithErrorCode(error);
       }
     },
 
     async ChangeTypeClient() {
+      this.getLoading = true;
       try {
         const {data} = await this.axios.put(
           process.env.VUE_APP_URL +
@@ -904,8 +920,10 @@ export default {
         );
 
         this.edit.type_client = false;
+        this.getLoading = false;
         this.toasted(data.message, "success");
       } catch (error) {
+        this.getLoading = false;
         this.toastedWithErrorCode(error);
       }
     },
@@ -922,14 +940,16 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value || result.value == "") {
+          this.getLoading = true;
           this.axios
             .delete(process.env.VUE_APP_URL + "/debtors/" + id, this.header)
             .then(() => {
               this.fetchOrder();
-
+              this.getLoading = false;
               this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
             })
             .catch((error) => {
+              this.getLoading = false;
               this.toastedWithErrorCode(error);
 
               if (error.response.status === 422) {
@@ -997,6 +1017,7 @@ export default {
           confirmButtonText: this.$t("sweetAlert.debtors.yes"),
         }).then((result) => {
           if (result.value || result.value == "") {
+            this.getLoading = true;
             this.axios
               .put(
                 process.env.VUE_APP_URL + "/debtors/" + id,
@@ -1010,7 +1031,7 @@ export default {
               )
               .then(() => {
                 this.fetchOrder();
-
+                this.getLoading = false;
                 this.$swal(
                   this.$t("sweetAlert.payment_success"),
                   "",
@@ -1018,6 +1039,7 @@ export default {
                 );
               })
               .catch((error) => {
+                this.getLoading = false;
                 this.toastedWithErrorCode(error);
 
                 if (error.response.status === 422) {
@@ -1096,6 +1118,8 @@ export default {
             },
           });
 
+          this.getLoading = true;
+
           this.axios
             .post(
               process.env.VUE_APP_URL + "/debtors/" + id,
@@ -1110,10 +1134,11 @@ export default {
             )
             .then(() => {
               this.fetchOrder();
-
+              this.getLoading = false;
               this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
             })
             .catch((error) => {
+              this.getLoading = false;
               this.toastedWithErrorCode(error);
 
               if (error.response.status === 422) {
@@ -1149,6 +1174,7 @@ export default {
           confirmButtonText: this.$t("sweetAlert.debtors.yes"),
         }).then((result) => {
           if (result.value || result.value == "") {
+            this.getLoading = true
             this.axios
               .post(
                 process.env.VUE_APP_URL + "/debtors/" + id,
@@ -1162,6 +1188,7 @@ export default {
               )
               .then(() => {
                 this.fetchOrder();
+                this.getLoading = false
 
                 this.$swal(
                   this.$t("sweetAlert.payment_success"),
@@ -1170,6 +1197,7 @@ export default {
                 );
               })
               .catch((error) => {
+                this.getLoading = false
                 this.toastedWithErrorCode(error);
 
                 if (error.response.status === 422) {
@@ -1205,7 +1233,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
       }).then((result) => {
         if (result.value) {
-          this.getLoading = true
+          this.getLoading = true;
           this.axios
             .post(
               process.env.VUE_APP_URL + "/deals/" + this.order.id,
@@ -1216,7 +1244,7 @@ export default {
             )
             .then(() => {
               this.$router.back(-1);
-              this.getLoading = false
+              this.getLoading = false;
               this.$swal(
                 this.$t("sweetAlert.canceled_contract"),
                 "",
@@ -1224,7 +1252,7 @@ export default {
               );
             })
             .catch((error) => {
-              this.getLoading = false
+              this.getLoading = false;
               this.toastedWithErrorCode(error);
             });
         } else {

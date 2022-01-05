@@ -441,6 +441,19 @@
         @savePlan="savePlan"
       ></type-plan-create>
     </div>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </main>
 </template>
 
@@ -539,6 +552,7 @@ export default {
 
     step: 1,
     loading: false,
+    getLoading: false,
 
     error: false,
     errors: [],
@@ -570,8 +584,9 @@ export default {
 
     async requestObject() {
       this.loading = true;
-
+      this.getLoading = true
       try {
+        
         if (this.object.id === null) {
           const {data, status} = await this.axios.post(
             process.env.VUE_APP_URL + "/v2/objects/",
@@ -582,6 +597,7 @@ export default {
           if (status === 201 || status === 202) {
             this.step = 2;
             this.loading = false;
+            this.getLoading = false
             this.object = data;
           }
         } else {
@@ -594,11 +610,14 @@ export default {
           if (status === 201 || status === 202) {
             this.step = 2;
             this.loading = false;
+            this.getLoading = false
             this.object = data;
           }
         }
+
       } catch (error) {
         this.loading = false;
+        this.getLoading = false
 
         this.toastedWithErrorCode(error);
 
@@ -646,6 +665,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
+          this.getLoading = true
           this.axios
             .delete(
               process.env.VUE_APP_URL +
@@ -656,11 +676,13 @@ export default {
               this.header
             )
             .then((response) => {
+              this.getLoading = false
               if (response.status === 204) {
                 this.discounts.splice(index, 1);
               }
             })
             .catch((error) => {
+              this.getLoading = false
               this.toastedWithErrorCode(error);
 
               if (error.response.status === 422) {
@@ -705,6 +727,7 @@ export default {
     },
 
     async getObject() {
+      this.getLoading = true
       try {
         const {data, status} = await this.axios.get(
           process.env.VUE_APP_URL + "/v2/objects/" + this.object.id,
@@ -715,7 +738,10 @@ export default {
           this.object = {};
           this.object = data;
         }
+
+        this.getLoading = false
       } catch (error) {
+        this.getLoading = false
         this.toastedWithErrorCode(error);
 
         if (error.response.status === 422) {
@@ -726,6 +752,7 @@ export default {
     },
 
     async getPlans() {
+      this.getLoading = true
       try {
         const {data, status} = await this.axios.get(
           process.env.VUE_APP_URL + "/v2/objects/" + this.object.id + "/plans",
@@ -736,7 +763,10 @@ export default {
           this.plans = [];
           this.plans = data;
         }
+
+        this.getLoading = false
       } catch (error) {
+        this.getLoading = false
         this.toastedWithErrorCode(error);
 
         if (error.response.status === 422) {
@@ -747,6 +777,7 @@ export default {
     },
 
     async getBuildings() {
+      this.getLoading = true
       try {
         const {data, status} = await this.axios.get(
           process.env.VUE_APP_URL +
@@ -760,7 +791,10 @@ export default {
           this.buildings = [];
           this.buildings = data;
         }
+
+        this.getLoading = false
       } catch (error) {
+        this.getLoading = false
         this.toastedWithErrorCode(error);
 
         if (error.response.status === 422) {
@@ -771,6 +805,7 @@ export default {
     },
 
     async getDiscounts() {
+      this.getLoading = true
       try {
         const {data, status} = await this.axios.get(
           process.env.VUE_APP_URL +
@@ -784,7 +819,9 @@ export default {
           this.discounts = [];
           this.discounts = data;
         }
+        this.getLoading = false
       } catch (error) {
+        this.getLoading = false
         this.toastedWithErrorCode(error);
 
         if (error.response.status === 422) {

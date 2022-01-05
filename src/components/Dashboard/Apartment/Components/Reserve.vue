@@ -80,7 +80,11 @@
         </b-form-group>
 
         <div class="w-100 d-flex justify-content-center">
-          <b-button type="button" variant="light" @click="$bvModal.hide('modal-reserve-create')">
+          <b-button
+            type="button"
+            variant="light"
+            @click="$bvModal.hide('modal-reserve-create')"
+          >
             {{ $t("cancel") }}
           </b-button>
 
@@ -91,6 +95,19 @@
         </div>
       </form>
     </b-modal>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -116,6 +133,8 @@ export default {
         Authorization: "Bearer " + localStorage.token,
       },
     },
+
+    getLoading: false
   }),
 
   methods: {
@@ -139,6 +158,7 @@ export default {
     },
 
     async handleSubmit() {
+      this.getLoading = true
       try {
         this.client.apartment_id = this.apartment;
 
@@ -151,9 +171,10 @@ export default {
         this.$nextTick(() => {
           this.$bvModal.hide("modal-reserve-create");
         });
-
+        this.getLoading = false
         this.$emit("CreateReserve", this.client);
       } catch (error) {
+        this.getLoading = false
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {

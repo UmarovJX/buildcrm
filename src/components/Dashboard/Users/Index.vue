@@ -144,6 +144,19 @@
         @EditManager="EditManager"
       ></edit-modal>
     </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </main>
 </template>
 
@@ -202,6 +215,7 @@ export default {
           label: "",
         },
       ],
+      loading: false
     };
   },
 
@@ -262,9 +276,11 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
+          this.loading = true
           this.axios
             .delete(process.env.VUE_APP_URL + "/users/" + user, this.header)
             .then((response) => {
+              this.loading = false
               this.toasted(response.data.message, "success");
               this.fetchUsers(this);
               this.fetchMenu(this);
@@ -272,6 +288,7 @@ export default {
               this.$swal(this.$t("sweetAlert.deleted"), "", "success");
             })
             .catch((error) => {
+              this.loading = false
               if (!error.response) {
                 this.toasted("Error: Network Error", "error");
               } else {

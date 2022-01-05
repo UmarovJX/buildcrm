@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import {mapGetters, mapActions} from "vuex";
 export default {
   data() {
     return {
@@ -30,7 +31,26 @@ export default {
       connecting: null,
     };
   },
+  computed: mapGetters(["getMe"]),
+  created() {
+    if (!localStorage.locale) {
+      localStorage.locale = "ru";
+      this.$i18n.locale = "ru";
+    }
+
+    let path = this.$router.currentRoute;
+
+    if (localStorage.token) {
+      let vm = this;
+      this.setMe(vm, path);
+    } else {
+      if (path.path != "/") {
+        this.$router.push("/");
+      }
+    }
+  },
   methods: {
+    ...mapActions(["setMe"]),
     updateOnlineStatus(e) {
       const {type} = e;
       this.onLine = type === "online";
@@ -78,7 +98,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.onLine);
     const initUserTheme = this.getMediaPreference();
     const activeTheme = localStorage.getItem("user-theme");
     this.theme = activeTheme;

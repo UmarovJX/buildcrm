@@ -929,6 +929,19 @@
         <!--                </button>-->
       </div>
     </b-modal>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -982,6 +995,7 @@ export default {
 
   data: () => ({
     step: 1,
+    getLoading: false,
     search_label: "",
     client: {
       id: null,
@@ -1106,6 +1120,7 @@ export default {
     },
 
     async Search() {
+      this.getLoading = true
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL +
@@ -1138,7 +1153,9 @@ export default {
           date_of_issue: data.date_of_issue,
           discount: {id: null},
         };
+        this.getLoading = false
       } catch (error) {
+        this.getLoading = false
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -1156,6 +1173,7 @@ export default {
     },
 
     async reserveClientFull() {
+      this.getLoading = true
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL + "/clients/" + this.apartment.order.id,
@@ -1176,7 +1194,9 @@ export default {
           date_of_issue: data.date_of_issue,
           discount: {id: null},
         };
+        this.getLoading = false
       } catch (error) {
+        this.getLoading = false
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -1203,6 +1223,7 @@ export default {
         showCancelButton: true,
         confirmButtonText: this.$t("sweetAlert.yes_agree"),
       }).then((result) => {
+        this.getLoading = true
         if (result.value) {
           const formData = new FormData();
 
@@ -1315,6 +1336,7 @@ export default {
               this.header
             )
             .then((response) => {
+              this.getLoading = false
               this.toasted(response.data.message, "success");
 
               this.$bvModal.hide("modal-agree");
@@ -1322,6 +1344,7 @@ export default {
               this.$emit("successAgree", response.data);
             })
             .catch((error) => {
+              this.getLoading = false
               if (!error.response) {
                 this.toasted("Error: Network Error", "error");
               } else {

@@ -8,10 +8,10 @@
       @show="resetModal"
     >
       <b-alert show variant="danger" v-if="error">
-        <ul>
+        <ul class="pl-2 mb-0">
           <li v-for="(error, index) in errors" :key="index">
             <span v-for="msg in error" :key="msg">
-              {{ msg }}
+              {{ index }} - {{ msg }}
             </span>
           </li>
         </ul>
@@ -122,6 +122,19 @@
         </div>
       </form>
     </b-modal>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -138,6 +151,7 @@ export default {
       email: null,
       objects: [],
       role_id: null,
+      getLoading: false,
     },
 
     error: false,
@@ -181,6 +195,7 @@ export default {
     },
 
     async handleSubmit() {
+      this.getLoading = true;
       try {
         const response = await this.axios.post(
           process.env.VUE_APP_URL + "/users",
@@ -191,11 +206,13 @@ export default {
         this.toasted(response.data.message, "success");
 
         this.$nextTick(() => {
+          this.getLoading = false;
           this.$bvModal.hide("modal-create");
         });
 
         this.$emit("CreateManager", this.manager);
       } catch (error) {
+        this.getLoading = false;
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {

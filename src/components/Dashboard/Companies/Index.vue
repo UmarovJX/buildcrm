@@ -110,6 +110,19 @@
       <Create @CreateCompany="CreateCompany"></Create>
       <Update :branch-id="company_id" @UpdateCompany="UpdateCompany"></Update>
     </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </main>
 </template>
 
@@ -168,6 +181,8 @@ export default {
           label: "",
         },
       ],
+
+      loading: false,
     };
   },
 
@@ -181,8 +196,10 @@ export default {
     ...mapActions(["fetchCompanies", "fetchBranch"]),
 
     EditBranch(branch) {
+      this.loading = true;
       this.company_id = branch.id;
       this.fetchBranch(this).then(() => {
+        this.loading = false;
         this.$bvModal.show("modal-update");
       });
     },
@@ -208,12 +225,17 @@ export default {
     },
 
     CreateCompany() {
-      this.fetchCompanies(this);
+      this.loading = true;
+      this.fetchCompanies(this).then(() => {
+        this.loading = false;
+      });
     },
 
     UpdateCompany() {
+      this.loading = true;
       this.fetchCompanies(this).then(() => {
         this.$bvModal.hide("modal-update");
+        this.loading = false;
       });
     },
   },

@@ -652,9 +652,9 @@ export default {
     };
   },
   async created() {
-    this.getLoading = true
+    this.getLoading = true;
     await this.fetchApartment(this).then(() => {
-      this.getLoading = false
+      this.getLoading = false;
     });
 
     this.coords = [
@@ -688,7 +688,7 @@ export default {
     },
 
     async orderHold(arr) {
-      this.getLoading = true
+      this.getLoading = true;
       await this.axios
         .post(
           process.env.VUE_APP_URL + "/orders/hold",
@@ -698,13 +698,16 @@ export default {
           this.header
         )
         .then((res) => {
-          this.getLoading = false
+          this.getLoading = false;
           if (res) {
             this.$router.push({
               name: "confirm-apartment",
               params: {id: res.data.uuid},
             });
           }
+        })
+        .catch(() => {
+          this.getLoading = false;
         });
     },
     goOrderHold(order_id) {
@@ -723,20 +726,29 @@ export default {
     },
 
     ReserveInfo(apartment) {
+      this.getLoading = true;
       this.info_reserve = true;
       this.apartment_preview = apartment;
       this.order_id = apartment.order.id;
-      this.fetchReserveClient(this);
+      this.fetchReserveClient(this).then(() => {
+        this.getLoading = false;
+      });
     },
 
     CreateReserveSuccess() {
-      this.fetchApartment(this);
+      this.getLoading = true;
+      this.fetchApartment(this).then(() => {
+        this.getLoading = false;
+      });
     },
 
     CloseReserveInfo() {
+      this.getLoading = true;
       this.info_reserve = false;
       this.apartment_preview = {};
-      this.fetchApartment(this);
+      this.fetchApartment(this).then(() => {
+        this.getLoading = false;
+      });
     },
 
     ConfirmFindUser() {
@@ -748,7 +760,10 @@ export default {
     },
 
     successAgree(value) {
-      this.fetchApartment(this);
+      this.getLoading = true;
+      this.fetchApartment(this).then(() => {
+        this.getLoading = false;
+      });
       this.contract = value;
       this.$bvModal.show("modal-success-agree");
     },
@@ -764,6 +779,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
       }).then((result) => {
         if (result.value) {
+          this.getLoading = true;
           this.axios
             .delete(
               process.env.VUE_APP_URL +
@@ -773,6 +789,7 @@ export default {
               this.header
             )
             .then((response) => {
+              this.getLoading = false;
               this.toasted(response.data.message, "success");
 
               this.$nextTick(() => {
@@ -784,6 +801,7 @@ export default {
               this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
             })
             .catch((error) => {
+              this.getLoading = false;
               if (!error.response) {
                 this.toasted("Error: Network Error", "error");
               } else {

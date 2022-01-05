@@ -3,14 +3,21 @@
     <div class="app-content apartment-list-filter">
       <div v-if="unsfinishedContracts.length">
         <b-alert variant="warning" class="py-2" show>
-          <div class="alert-body py-0">
+          <div class="alert-body py-0 d-flex w-100 align-items-center justify-content-center">
             <span>
-              <b-link to="/objects/unfinished-contracts" v-if="getMe.user">
-                Привет {{ getMe.user.firstName }}, У вас
-                {{ unsfinishedContracts.length }} незаконченных оформлений,
-                продолжайте или отмените эти оформления
-              </b-link>
+              Привет {{ getMe.user.firstName }}, У вас
+              {{ unsfinishedContracts.length }} незаконченных оформлений,
+              продолжайте или отмените эти оформления
             </span>
+            <b-button
+              variant="info"
+              class="mt-0 mr-0 ml-2 h-auto"
+              to="/objects/unfinished-contracts"
+              v-if="getMe.user"
+              style="padding: 7px 15px !important"
+            >
+              Подробнее
+            </b-button>
           </div>
         </b-alert>
       </div>
@@ -54,10 +61,7 @@
           </b-button>
 
           <button
-            v-if="
-              selected.view &&
-                getPermission.apartments.contract
-            "
+            v-if="selected.view && getPermission.apartments.contract"
             class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-4"
             @click="multiSelectOff"
           >
@@ -420,7 +424,7 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-import {BAlert} from "bootstrap-vue";
+import {BAlert, BButton} from "bootstrap-vue";
 import Filter from "./Components/ApartmentsFilter";
 import ReserveAdd from "./Components/Reserve";
 import EditApartment from "./Components/Edit";
@@ -439,6 +443,7 @@ export default {
     "agree-modal": AgreeMultiple,
     "success-agree": SuccessAgree,
     BAlert,
+    BButton,
   },
 
   data() {
@@ -628,10 +633,10 @@ export default {
       //   name: "apartments",
       //   query: this.filter,
       // });
-      this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table");
-        element.scrollIntoView();
-      });
+      // this.fetchApartments(this).then(() => {
+      //   const element = document.getElementById("my-table");
+      //   element.scrollIntoView();
+      // });
     },
     multiSelectOff() {
       this.selected.view = false;
@@ -648,10 +653,10 @@ export default {
       //   name: "apartments",
       //   query: this.filter,
       // });
-      this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table");
-        element.scrollIntoView();
-      });
+      // this.fetchApartments(this).then(() => {
+      //   const element = document.getElementById("my-table");
+      //   element.scrollIntoView();
+      // });
     },
     onRowSelected(items) {
       this.$router.push({

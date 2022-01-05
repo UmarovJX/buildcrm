@@ -13,7 +13,6 @@ import vueMoment from "vue-moment";
 import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import {mapActions, mapGetters} from "vuex";
 import "./components";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 import {
@@ -72,28 +71,4 @@ new Vue({
   store,
   router,
   render: (h) => h(App),
-
-  computed: mapGetters(["getMe"]),
-
-  created() {
-    this.setMe(this, path);
-
-    if (!localStorage.locale) {
-      localStorage.locale = "ru";
-      this.$i18n.locale = "ru";
-    }
-
-    let path = this.$router.currentRoute;
-
-    if (localStorage.token) {
-      let vm = this;
-      this.setMe(vm, path);
-    } else {
-      if (path.path != "/") {
-        this.$router.push("/");
-      }
-    }
-  },
-
-  methods: mapActions(["setMe"]),
 });

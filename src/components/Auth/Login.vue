@@ -76,7 +76,7 @@ export default {
     info: null,
   }),
 
-  mounted() {
+  created() {
     this.CheckLogin();
   },
 

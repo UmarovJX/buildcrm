@@ -163,6 +163,19 @@
       >
       </paginate>
     </div>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </main>
 </template>
 
@@ -173,7 +186,7 @@ import SideBarFilter from "./SideBarFilter.vue";
 export default {
   components: {
     SideBarFilter,
-    BOverlay
+    BOverlay,
   },
 
   data() {
@@ -224,6 +237,7 @@ export default {
       sortDesc: false,
       page: 1,
       currentPage: 1,
+      loading: false,
     };
   },
   created() {

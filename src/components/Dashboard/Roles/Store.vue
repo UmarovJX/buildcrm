@@ -706,6 +706,19 @@
         </div>
       </div>
     </div>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </main>
 </template>
 
@@ -800,10 +813,13 @@ export default {
         Authorization: "Bearer " + localStorage.token,
       },
     },
+
+    getLoading: false,
   }),
 
   methods: {
     SaveRoles() {
+      this.getLoading = true;
       let data = {
         name: this.role.name,
         permissions: this.role.permissions,
@@ -812,6 +828,7 @@ export default {
       this.axios
         .post(process.env.VUE_APP_URL + "/roles", data, this.header)
         .then((response) => {
+          this.getLoading = false;
           this.toasted(response.data.message, "success");
 
           this.$router.push({name: "roles"});
@@ -819,6 +836,7 @@ export default {
           this.$swal(this.$t("sweetAlert.success_create_role"), "", "success");
         })
         .catch((error) => {
+          this.getLoading = false;
           if (!error.response) {
             this.toasted("Error: Network Error", "error");
           } else {

@@ -587,6 +587,11 @@
 }
 
 .dark-theme {
+  .alert-danger {
+    * {
+      color: #333 !important;
+    }
+  }
   .card {
     color: var(--link);
   }

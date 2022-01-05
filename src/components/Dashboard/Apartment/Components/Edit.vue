@@ -107,6 +107,19 @@
         </div>
       </form>
     </b-modal>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
   </div>
 </template>
 
@@ -134,6 +147,8 @@ export default {
         Authorization: "Bearer " + localStorage.token,
       },
     },
+
+    getLoading: false,
   }),
 
   watch: {
@@ -144,6 +159,7 @@ export default {
 
   methods: {
     async GetInfoApartment() {
+      this.getLoading = true;
       try {
         const {data} = await this.axios.get(
           process.env.VUE_APP_URL + "/apartments/" + this.apartment + "/info",
@@ -153,7 +169,9 @@ export default {
         this.apartment_info = data;
         this.plans = data.plans;
         this.floors = data.floors;
+        this.getLoading = false;
       } catch (error) {
+        this.getLoading = false;
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
@@ -180,6 +198,7 @@ export default {
     },
 
     async handleSubmit() {
+      this.getLoading = true
       try {
         let info = {
           rooms: this.apartment_info.rooms,
@@ -201,8 +220,10 @@ export default {
           this.$bvModal.hide("modal-edit");
         });
 
+        this.getLoading = false
         this.$emit("EditApartment");
       } catch (error) {
+        this.getLoading = false
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
