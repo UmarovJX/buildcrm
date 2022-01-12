@@ -761,10 +761,10 @@ export default {
         query: this.filter,
       });
 
-      // this.fetchApartments(this).then(() => {
-      //   const element = document.getElementById("my-table");
-      //   element.scrollIntoView();
-      // });
+      this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
     },
 
     CreateReserve(id) {
