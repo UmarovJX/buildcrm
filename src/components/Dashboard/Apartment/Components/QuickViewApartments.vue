@@ -24,11 +24,11 @@
           </td>
           <td>
             <ApartmentPrice
-              :item="apartment.price"
-              :area="apartment.plan.area"
-              :id="apartment.id"
+              :apartment="apartment"
               @apartmentPrice="apartmentPrice"
             />
+            <!--              :area="apartment.plan.area"-->
+            <!--              :id="apartment.id"-->
           </td>
         </tr>
       </tbody>
@@ -103,20 +103,25 @@ export default {
   components: {
     ApartmentPrice,
   },
+
   data() {
     return {};
   },
-  props: {
-    apartment: {
-      type: Object,
-    },
-    index: {
-      type: Number,
-    },
+
+  watch: {
+    apartment: function () {
+      console.log("QuickViewApartments change")
+    }
   },
+
+  props: {
+    apartment: {},
+    index: {},
+  },
+
   methods: {
-    apartmentPrice(price, id, edited) {
-      this.$emit("changedApartmentPrice", price, id, edited);
+    apartmentPrice() {
+      this.$emit("changedApartmentPrice", {});
     },
   },
 };

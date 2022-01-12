@@ -18,7 +18,9 @@ export default {
         ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
         vm.toastedWithErrorCode(error);
+        vm.$router.push("/");
       }
+
     },
   },
 

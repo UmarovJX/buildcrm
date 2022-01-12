@@ -743,6 +743,7 @@ export default {
     },
 
     Filtered(event) {
+      this.filter = event;
       this.selected.view = false;
       this.selected.values = [];
       this.selectable = true;
@@ -752,16 +753,18 @@ export default {
       this.page = 1;
       this.filter.page = 1;
       this.currentPage = this.filter.page;
-      this.filter = event;
+
+      console.log(this.filter)
 
       this.$router.push({
         name: "apartments",
         query: this.filter,
       });
-      this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table");
-        element.scrollIntoView();
-      });
+
+      // this.fetchApartments(this).then(() => {
+      //   const element = document.getElementById("my-table");
+      //   element.scrollIntoView();
+      // });
     },
 
     CreateReserve(id) {

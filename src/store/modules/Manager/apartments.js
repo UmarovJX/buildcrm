@@ -60,6 +60,7 @@ export default {
       }
 
       if (vm.$route.name != "apartments") return;
+
       try {
         let header = {
           headers: {
