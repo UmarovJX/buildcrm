@@ -1,5 +1,4 @@
-// import router from "@/routes";
-
+import router from "../../routes";
 export default {
   state: {
     contracts: [],
@@ -28,12 +27,32 @@ export default {
   actions: {
     async fetchContracts(ctx, vm) {
       ctx.commit("updateLoading", true, {root: true});
+
+      if (typeof router.currentRoute.query.object_id === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(router.currentRoute.query.object_id);
+        newArr.push(newArrItem);
+        router.currentRoute.query.object_id = newArr;
+      }
+      if (typeof router.currentRoute.query.apartment_number === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(router.currentRoute.query.apartment_number);
+        newArr.push(newArrItem);
+        router.currentRoute.query.apartment_number = newArr;
+      }
+      if (typeof router.currentRoute.query.date === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(router.currentRoute.query.date);
+        newArr.push(newArrItem);
+        router.currentRoute.query.date = newArr;
+      }
+
       try {
         let header = {
           headers: {
             Authorization: "Bearer " + localStorage.token,
           },
-          params: vm.$route.query,
+          params: router.currentRoute.query,
         };
 
         const {data} = await vm.axios.get(

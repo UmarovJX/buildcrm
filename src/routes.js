@@ -267,7 +267,6 @@ router.beforeEach((to, from, next) => {
           name: "login",
         });
       }
-      console.log(record.meta.requiresAuth);
       let permission = store.state.me;
       setTimeout(() => {
         permission = permission.permission[`${record.meta.requiresAuth}`].view;

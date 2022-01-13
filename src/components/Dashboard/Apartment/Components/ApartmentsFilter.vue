@@ -224,39 +224,30 @@ export default {
     "filter.number": function() {
       this.filter.filtered = true;
     },
-
     "filter.rooms": function() {
       this.filter.filtered = true;
     },
-
     "filter.floors": function() {
       this.filter.filtered = true;
     },
-
     "filter.blocks": function() {
       this.filter.filtered = true;
     },
-
     "filter.price_from": function() {
       this.filter.filtered = true;
     },
-
     "filter.price_to": function() {
       this.filter.filtered = true;
     },
-
     "filter.area_from": function() {
       this.filter.filtered = true;
     },
-
     "filter.area_to": function() {
       this.filter.filtered = true;
     },
-
     "filter.status": function() {
       this.filter.filtered = true;
     },
-
     "filter.usd": function() {
       this.filter.filtered = true;
     },
@@ -393,16 +384,15 @@ export default {
       if (this.$route.query.order_by && this.$route.query) {
         filter.order_by = this.$route.query.order_by;
       }
+      if (this.$route.query.status && this.$route.query) {
+        filter.status = this.$route.query.status;
+      }
 
       this.filter.page = 1;
 
-      if (this.filter.filtered) {
-        this.$emit("Filtered", filter);
-        await this.fetchApartments(this);
-        this.$refs.mySidebar.hide();
-      } else {
-        this.$refs.mySidebar.hide();
-      }
+      this.$emit("filteredForm", filter);
+      // await this.fetchApartments(this);
+      this.$refs.mySidebar.hide();
     },
 
     async filterClear() {
@@ -422,12 +412,12 @@ export default {
         order_by: null,
         page: 1,
       };
-      this.$emit("Filtered", this.filter);
+      this.$emit("filteredForm", this.filter);
       this.$router.push({
         name: "apartments",
         query: {},
       });
-      this.fetchApartments(this);
+      // this.fetchApartments(this);
     },
   },
 };

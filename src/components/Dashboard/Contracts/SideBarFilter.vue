@@ -160,12 +160,62 @@ export default {
     };
   },
 
+  props: {
+    filtered: {
+      type: Object,
+    },
+  },
+
   components: {
     DatePicker,
   },
 
   computed: mapGetters(["getObjects"]),
   mounted() {
+    if (this.filtered.date) {
+      if (typeof this.filtered.date === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(this.filtered.date);
+        newArr.push(newArrItem);
+        this.filtered.date = newArr;
+      }
+    }
+    if (this.filtered.object_id) {
+      if (typeof this.filtered.object_id === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(this.filtered.object_id);
+        newArr.push(newArrItem);
+        this.filtered.object_id = newArr;
+      }
+    }
+
+    if (this.filtered.apartment_number) {
+      if (typeof this.filtered.apartment_number === "string") {
+        const newArr = [];
+        const newArrItem = parseInt(this.filtered.apartment_number);
+        newArr.push(newArrItem);
+        this.filtered.apartment_number = newArr;
+      }
+    }
+
+    this.filter.contract_number = this.filtered.contract_number
+      ? this.filtered.contract_number
+      : this.filter.contract_number;
+    this.filter.full_name = this.filtered.full_name
+      ? this.filtered.full_name
+      : this.filter.full_name;
+    this.filter.phone = this.filtered.phone
+      ? this.filtered.phone
+      : this.filter.phone;
+    this.filter.sort_by = this.filtered.sort_by
+      ? this.filtered.sort_by
+      : this.filter.sort_by;
+    this.filter.order_by = this.filtered.order_by
+      ? this.filtered.order_by
+      : this.filter.order_by;
+    this.filter.page = this.filtered.page
+      ? this.filtered.page
+      : this.filter.page;
     this.fetchObjects(this);
   },
 
@@ -178,7 +228,6 @@ export default {
     },
 
     async filterContractsClear() {
-
       this.filter = {
         contract_number: "",
         object_id: [],

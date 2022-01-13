@@ -8,7 +8,7 @@
       {{ $t("apartments.list.filter") }}
     </button>
 
-    <SideBarFilter @contractsFiltered="contractsFiltered" />
+    <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter" />
 
     <div class="app-content">
       <b-table
@@ -261,7 +261,7 @@ export default {
 
   methods: {
     ...mapActions(["fetchContracts"]),
-    async sortingChanged(val) {
+    sortingChanged(val) {
       this.filter.sort_by = val.sortBy;
       this.filter.order_by = val.sortDesc ? "desc" : "asc";
       this.filter.page = 1;
@@ -271,7 +271,9 @@ export default {
         name: "contracts",
         query: this.filter,
       });
-      await this.fetchContracts(this);
+      setTimeout(() => {
+        this.fetchContracts(this);
+      }, 1000);
     },
 
     async contractsFiltered(event) {
@@ -306,7 +308,11 @@ export default {
         name: "contracts",
         query: filter,
       });
-      await this.fetchContracts(this);
+      const vm = this;
+      setTimeout(() => {
+        this.fetchContracts(vm);
+      }, 1000);
+      // await this.fetchContracts(this);
     },
     rowClass(item, type) {
       if (item && type === "row") {

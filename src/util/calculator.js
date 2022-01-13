@@ -141,11 +141,9 @@ export function getTotalDiscount(apartments, contract) {
         let price = getPrice(apartments, contract)
         let square = getAreaTotal(apartments)
 
-        console.log("PPP " + price);
 
         let now = (parseFloat(price) - parseFloat(contract.discount_amount)) / parseFloat(square);
         let discount = price / square - now
-        console.log(discount);
 
         Vue.set(contract, 'discount_square', discount)
     } else if (parseFloat(contract.discount_square) > 0) {
@@ -180,8 +178,6 @@ export function CreditMonths(apartments, contract) {
 
     let month_amount = getMonth(apartments, contract);
 
-    console.log("CC oo " + month_amount)
-
     for (let i = 0; i < parseInt(contract.month); i++) {
         contract.credit_months.push({
             month: today.setMonth(today.getMonth() + 1),
@@ -213,7 +209,6 @@ export function editedCreditMonths(apartments, contract) {
     }
 
     let monthly_amount = (getTotal(apartments, contract) - total) / months;
-    console.log("Month " + monthly_amount)
 
     for (let m = 0; m < contract.credit_months.length; m++) {
         if (!contract.credit_months[m].edited) {

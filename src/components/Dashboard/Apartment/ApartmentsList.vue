@@ -3,7 +3,9 @@
     <div class="app-content apartment-list-filter">
       <div v-if="unsfinishedContracts.length">
         <b-alert variant="warning" class="py-2" show>
-          <div class="alert-body py-0 d-flex w-100 align-items-center justify-content-center">
+          <div
+            class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
+          >
             <span>
               Привет {{ getMe.user.firstName }}, У вас
               {{ unsfinishedContracts.length }} незаконченных оформлений,
@@ -386,7 +388,7 @@
 
         <filter-form
           v-if="getPermission.apartments && getPermission.apartments.filter"
-          @Filtered="Filtered"
+          @filteredForm="filteredForm"
           :filtered="filter"
         ></filter-form>
 
@@ -699,7 +701,7 @@ export default {
         }
       }
     },
-    async sortingChanged(val) {
+    sortingChanged(val) {
       this.scrollActive = false;
       this.filter.filtered = true;
       this.filter.sort_by = val.sortBy;
@@ -709,10 +711,12 @@ export default {
         name: "apartments",
         query: this.filter,
       });
-      await this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table");
-        element.scrollIntoView();
-      });
+      setTimeout(() => {
+        this.fetchApartments(this).then(() => {
+          const element = document.getElementById("my-table");
+          element.scrollIntoView();
+        });
+      }, 1000);
     },
 
     rowClass(item, type) {
@@ -742,29 +746,25 @@ export default {
       return this.$moment();
     },
 
-    Filtered(event) {
+    async filteredForm(event) {
       this.filter = event;
       this.selected.view = false;
       this.selected.values = [];
       this.selectable = true;
       this.scrollActive = true;
-
-      this.scrollActive = false;
       this.page = 1;
       this.filter.page = 1;
       this.currentPage = this.filter.page;
-
-      console.log(this.filter)
 
       this.$router.push({
         name: "apartments",
         query: this.filter,
       });
 
-      this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table");
-        element.scrollIntoView();
-      });
+      const vm = this;
+      setTimeout(() => {
+        this.fetchApartments(vm);
+      }, 1000);
     },
 
     CreateReserve(id) {

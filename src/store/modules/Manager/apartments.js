@@ -1,3 +1,5 @@
+import router from '../../../routes'
+
 export default {
   state: {
     apartments: {
@@ -28,56 +30,54 @@ export default {
   },
   actions: {
     async fetchApartments(ctx, vm) {
+      /* eslint-disable no-debugger */
+      // debugger;
       ctx.commit("updateLoading", true, {root: true});
-      if (vm.$route.query.status === true) {
-        vm.$route.query.status = true;
-      } else {
-        vm.$route.query.status = null;
-      }
-      if (typeof vm.$route.query.rooms === "string") {
+      
+      if (typeof router.currentRoute.query.rooms === "string") {
         const newArr = [];
-        const newArrItem = parseInt(vm.$route.query.rooms);
+        const newArrItem = parseInt(router.currentRoute.query.rooms);
         newArr.push(newArrItem);
-        vm.$route.query.rooms = newArr;
+        router.currentRoute.query.rooms = newArr;
       }
-      if (typeof vm.$route.query.number === "string") {
+      if (typeof router.currentRoute.query.number === "string") {
         const newArr = [];
-        const newArrItem = parseInt(vm.$route.query.number);
+        const newArrItem = parseInt(router.currentRoute.query.number);
         newArr.push(newArrItem);
-        vm.$route.query.number = newArr;
+        router.currentRoute.query.number = newArr;
       }
-      if (typeof vm.$route.query.floors === "string") {
+      if (typeof router.currentRoute.query.floors === "string") {
         const newArr = [];
-        const newArrItem = parseInt(vm.$route.query.floors);
+        const newArrItem = parseInt(router.currentRoute.query.floors);
         newArr.push(newArrItem);
-        vm.$route.query.floors = newArr;
+        router.currentRoute.query.floors = newArr;
       }
-      if (typeof vm.$route.query.blocks === "string") {
+      if (typeof router.currentRoute.query.blocks === "string") {
         const newArr = [];
-        const newArrItem = parseInt(vm.$route.query.blocks);
+        const newArrItem = parseInt(router.currentRoute.query.blocks);
         newArr.push(newArrItem);
-        vm.$route.query.blocks = newArr;
+        router.currentRoute.query.blocks = newArr;
       }
 
-      if (vm.$route.name != "apartments") return;
+      if (router.currentRoute.name != "apartments") return;
 
       try {
         let header = {
           headers: {
             Authorization: "Bearer " + localStorage.token,
           },
-          params: vm.$route.query,
+          params: router.currentRoute.query,
         };
 
         let {data} = await vm.axios.get(
-          `${process.env.VUE_APP_URL}/objects/${vm.$route.params.object}/apartments/`,
+          `${process.env.VUE_APP_URL}/objects/${router.currentRoute.params.object}/apartments/`,
           header
         );
 
         ctx.commit("updateApartment", data);
         ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
-        vm.toastedWithErrorCode(error);
+        this.toastedWithErrorCode(error);
       }
     },
 
@@ -93,7 +93,7 @@ export default {
         const response = await vm.axios.post(
           process.env.VUE_APP_URL +
             "/objects/" +
-            vm.$route.params.object +
+            router.currentRoute.params.object +
             "/filter?page=" +
             vm.page,
           vm.filter,
@@ -103,7 +103,7 @@ export default {
         ctx.commit("updateApartment", apartments);
         ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
-        vm.toastedWithErrorCode(error);
+        this.toastedWithErrorCode(error);
       }
     },
 
@@ -119,7 +119,7 @@ export default {
         const response = await vm.axios.get(
           process.env.VUE_APP_URL +
             "/objects/" +
-            vm.$route.params.object +
+            router.currentRoute.params.object +
             "/filter",
           header
         );
@@ -130,7 +130,7 @@ export default {
         if (!error.response) {
           vm.toasted("Error: Network Error", "error");
         } else {
-          vm.toastedWithErrorCode(error);
+          this.toastedWithErrorCode(error);
         }
       }
     },
@@ -153,7 +153,7 @@ export default {
         if (!error.response) {
           vm.toasted("Error: Network Error", "error");
         } else {
-          vm.toastedWithErrorCode(error);
+          this.toastedWithErrorCode(error);
         }
       }
     },
