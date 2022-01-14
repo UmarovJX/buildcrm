@@ -48,6 +48,10 @@ export default {
         this.$router.push("/");
       }
     }
+
+    if(!localStorage.getItem("user-theme")) {
+      this.setTheme("light-theme");
+    }
   },
   methods: {
     ...mapActions(["setMe"]),
@@ -98,7 +102,7 @@ export default {
     },
   },
   mounted() {
-    const initUserTheme = this.getMediaPreference();
+    // const initUserTheme = this.getMediaPreference();
     const activeTheme = localStorage.getItem("user-theme");
     this.theme = activeTheme;
     if (activeTheme === "light-theme") {
@@ -106,8 +110,9 @@ export default {
     } else if (activeTheme === "dark-theme") {
       this.setTheme("dark-theme");
     } else {
-      this.setTheme(initUserTheme);
-      this.theme = initUserTheme;
+      // this.setTheme(initUserTheme);
+      // this.theme = initUserTheme;
+      this.setTheme("light-theme");
     }
     window.addEventListener("online", this.updateOnlineStatus);
     window.addEventListener("offline", this.updateOnlineStatus);

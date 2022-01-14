@@ -257,32 +257,32 @@ const router = new VueRouter({
   },
 });
 
-router.beforeEach((to, from, next) => {
-  const login = localStorage.token;
+// router.beforeEach((to, from, next) => {
+//   const login = localStorage.token;
   
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    to.matched.some((record) => {
-      if (!login) {
-        next({
-          name: "login",
-        });
-      }
-      let permission = store.state.me;
-      setTimeout(() => {
-        permission = permission.permission[`${record.meta.requiresAuth}`].view;
-        if (permission) {
-          next();
-        } else {
-          next({
-            name: "not_found",
-          });
-        }
-      }, 500);
-    });
-  } else {
-    next(); // make sure to always call next()!
-  }
-});
+//   if (to.matched.some((record) => record.meta.requiresAuth)) {
+//     to.matched.some((record) => {
+//       if (!login) {
+//         next({
+//           name: "login",
+//         });
+//       }
+//       let permission = store.state.me;
+//       setTimeout(() => {
+//         permission = permission.permission[`${record.meta.requiresAuth}`].view;
+//         if (permission) {
+//           next();
+//         } else {
+//           next({
+//             name: "not_found",
+//           });
+//         }
+//       }, 500);
+//     });
+//   } else {
+//     next(); // make sure to always call next()!
+//   }
+// });
 
 // Sentry.init({
 //   Vue,
