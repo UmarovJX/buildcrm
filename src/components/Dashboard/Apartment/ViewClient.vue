@@ -70,8 +70,7 @@
 
           <b-button
             v-if="
-              getPermission.apartments.reserve_cancel ||
-                getPermission.apartments.root_contract
+              getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id || getMe.role.id === 1 && getApartment.order.status === 'booked' || getApartment.order.status === 'booked' && getPermission.apartments.root_contract
             "
             type="submit"
             class="ml-1"
@@ -105,7 +104,7 @@ export default {
 
   mounted() {},
 
-  computed: mapGetters(["getReserveClient", "getPermission"]),
+  computed: mapGetters(["getReserveClient", "getPermission", 'getApartment', 'getMe']),
 
   methods: {
     handleSubmit() {

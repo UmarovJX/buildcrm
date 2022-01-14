@@ -207,7 +207,7 @@
                   <b-link
                     v-if="
                       (data.item.order.status === 'booked' &&
-                        data.item.order.user_id === getMe.user.id) ||
+                        data.item.order.user.id === getMe.user.id) ||
                         (getPermission.apartments &&
                           getPermission.apartments.root_contract &&
                           data.item.order.status === 'booked')
@@ -221,9 +221,7 @@
 
                   <!--  Информация о менеджера  -->
                   <b-link
-                    v-if="
-                      data.item.order.status === 'booked' &&
-                        data.item.order.user_id != getMe.user.id
+                    v-if="data.item.order.status === 'booked' && data.item.order.user.id !== getMe.user.id
                     "
                     @click="getInfoReserve(data.item)"
                     v-b-modal.modal-view-info-manager
@@ -240,51 +238,13 @@
                       params: {id: data.item.id},
                     }"
                     :class="'dropdown-item dropdown-item--inside'"
-                    v-if="
-                      (getPermission.apartments.view &&
-                        data.item.order.status === 'contract') ||
-                        (getPermission.apartments.view &&
-                          data.item.order.status === 'sold') ||
-                        (!getPermission.apartments.contract &&
-                          getPermission.apartments.view) ||
-                        (data.item.order.status === 'booked' &&
-                          data.item.order.user_id != getMe.user.id) ||
-                        (getPermission.apartments.view &&
-                          data.item.order.status === 'hold')
-                    "
+
                   >
                     <i class="far fa-eye"></i>
                     {{ $t("apartments.list.more") }}
                   </router-link>
 
                   <!-- Подробная информация  -->
-                  <router-link
-                    :to="{
-                      name: 'apartment-view',
-                      params: {id: data.item.id},
-                    }"
-                    :class="'dropdown-item dropdown-item--inside'"
-                    v-else-if="
-                      ((data.item.order.status != 'sold' ||
-                        data.item.order.status != 'contract') &&
-                        data.item.order.status === 'booked' &&
-                        data.item.order.user_id === getMe.user.id &&
-                        getPermission.apartments.contract) ||
-                        (!(
-                          data.item.order.status == 'sold' ||
-                          data.item.order.status == 'contract'
-                        ) &&
-                          getPermission.apartments &&
-                          getPermission.apartments.root_contract) ||
-                        ((data.item.order.status != 'sold' ||
-                          data.item.order.status != 'contract') &&
-                          data.item.order.status === 'available' &&
-                          getPermission.apartments.contract)
-                    "
-                  >
-                    <i class="far fa-eye"></i>
-                    {{ $t("apartments.list.more") }}
-                  </router-link>
 
                   <!--  Оформить -->
                   <b-link
@@ -294,7 +254,7 @@
                       (((data.item.order.status != 'sold' ||
                         data.item.order.status != 'contract') &&
                         data.item.order.status === 'booked' &&
-                        data.item.order.user_id === getMe.user.id &&
+                        data.item.order.user.id === getMe.user.id &&
                         getPermission.apartments.contract) ||
                         (!(
                           data.item.order.status == 'sold' ||

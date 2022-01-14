@@ -325,27 +325,7 @@
                   <!-- cancelReserve -->
                   <b-button
                     v-if="
-                      (getApartment.order &&
-                        getApartment.order &&
-                        getApartment.order.status === 'booked' &&
-                        getApartment.order &&
-                        getApartment.order.user &&
-                        getApartment.order.user.id === getMe.user.id &&
-                        getMe.user &&
-                        ((getPermission.apartments &&
-                          getPermission.apartments.root_contract) ||
-                          getPermission.apartments.reserve_cancel)) ||
-                        (getMe.role &&
-                          getMe.role &&
-                          getMe.role.id === 1 &&
-                          getApartment.order &&
-                          getApartment.order &&
-                          getApartment.order.status === 'booked') ||
-                        (getApartment.order &&
-                          getApartment.order &&
-                          getApartment.order.status === 'booked' &&
-                          getPermission.apartments.root_reserve)
-                    "
+                      getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id || getMe.role.id === 1 && getApartment.order.status === 'booked' || getApartment.order.status === 'booked' && getPermission.apartments.root_contract"
                     type="button"
                     @click="cancelReserve"
                     class="ml-1"
@@ -358,20 +338,7 @@
                   <!-- view_client -->
                   <b-link
                     v-if="
-                      (getApartment.order &&
-                        getApartment.order &&
-                        getApartment.order.status === 'booked' &&
-                        getApartment.order &&
-                        getApartment.order.user &&
-                        getApartment.order.user.id === getMe.user.id) ||
-                        (getMe.role &&
-                          getMe.role &&
-                          getMe.role.id &&
-                          getMe.role &&
-                          getMe.role.id === 1 &&
-                          getApartment.order &&
-                          getApartment.order &&
-                          getApartment.order.status === 'booked')
+                      getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id || getMe.role.id === 1 && getApartment.order.status === 'booked'
                     "
                     @click="ReserveInfo(getApartment)"
                     v-b-modal.modal-view-reserved-client
@@ -710,6 +677,7 @@ export default {
           this.getLoading = false;
         });
     },
+
     goOrderHold(order_id) {
       this.$router.push({
         name: "confirm-apartment",
