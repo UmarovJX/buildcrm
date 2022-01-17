@@ -351,6 +351,7 @@ export default {
         toggle: false,
         monthly: false,
         apartmentsPrice: false,
+        // edit_pri
       },
 
       error: false,
@@ -678,6 +679,20 @@ export default {
 
           formData.append("discount_amount", this.contract.discount_amount);
           // }
+
+          if (this.contract.discount.id === 'other') {
+            for (let index = 0; index < this.apartments.length; index++) {
+              formData.append(
+                  "apartments[" + index + "][id]",
+                  this.apartments[index].id
+              );
+
+              formData.append(
+                  "apartments[" + index + "][price]",
+                  this.apartments[index].price_calc
+              );
+            }
+          }
 
 
           // formData.append("date_change", 1);

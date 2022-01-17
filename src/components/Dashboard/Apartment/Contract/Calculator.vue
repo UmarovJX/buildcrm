@@ -24,6 +24,14 @@
             {{ $t("apartments.view.variant") }}
             {{ index + 1 }} - {{ discount.prepay }}%
           </b-form-select-option>
+
+          <b-form-select-option
+              v-if="getMe.role.id === 1 || getPermission.contracts.other_price"
+              :value="{id: 'other',  type: 'percent', currency: null, amount: 0, prepay: 30}"
+          >
+            {{ $t("apartments.view.other_variant") }}
+          </b-form-select-option>
+
         </b-form-select>
       </b-form-group>
 
@@ -114,7 +122,7 @@
       <!-- Первый взнос -->
       <b-form-group
           class="mb-1"
-          v-if="contract.discount && contract.discount.amount > 0"
+          v-if="contract.discount && contract.discount.amount > 0  || contract.discount.id === 'other'"
           label-cols="12"
           content-cols="12"
           label="Первый взнос: "
@@ -136,7 +144,7 @@
       <!-- Ежемесячный -->
       <b-form-group
           class="mb-1"
-          v-if="contract.discount && contract.discount.amount > 0"
+          v-if="contract.discount && contract.discount.amount > 0 || contract.discount.id === 'other'"
           label-cols="12"
           content-cols="12"
           label="Ежемесячный:"
@@ -144,7 +152,7 @@
       >
         <b-form-input
             id="credit_month"
-            min="1"
+            min="0"
             type="number"
             v-model="contract.month"
             @change="changeDiscountMonth"
@@ -170,7 +178,7 @@
 
       <!-- Остаток -->
       <b-form-group
-          v-if="contract.discount && contract.discount.amount > 0"
+          v-if="contract.discount && contract.discount.amount > 0  || contract.discount.id === 'other'"
           class="mb-1"
           label-cols="12"
           content-cols="12"
@@ -215,6 +223,8 @@
 <script>
 import VueNumeric from "vue-numeric";
 const { getTotal, getMonth, getPrice, getPricePerM2, getPrepay, editedCreditMonths, getDebt, CreditMonths, getTotalDiscount } = require("../../../../util/calculator");
+import { mapGetters } from "vuex";
+import Vue from 'vue';
 
 export default {
   name: "Calculator",
@@ -235,7 +245,8 @@ export default {
 
     'contract.credit_months': {
       handler() {
-        this.InitialCalc();
+        if (parseInt(this.contract.month) > 0)
+          this.InitialCalc();
       },
       deep: true
     },
@@ -245,6 +256,10 @@ export default {
         this.InitialCalc();
       },
       deep: true
+    },
+
+    'contract.month': function () {
+        this.InitialCalc();
     },
 
     // 'contract.discount_amount': function () {
@@ -278,6 +293,13 @@ export default {
     VueNumeric,
   },
 
+  computed: {
+    ...mapGetters([
+      "getPermission",
+      "getMe",
+    ]),
+  },
+
   mounted() {
     // console.log(this.apartments.length)
       this.InitialCalc()
@@ -285,7 +307,7 @@ export default {
 
   methods: {
       InitialCalc() {
-          console.log("EDITED " + this.contract.prepay_edited)
+          // console.log("EDITED " + this.contract.prepay_edited)
           getTotalDiscount(this.apartments, this.contract)
           getPrice(this.apartments, this.contract)
           this.total = getTotal(this.apartments, this.contract)
@@ -312,6 +334,7 @@ export default {
           this.contract.prepay_edited = false;
           this.InitialCalc();
           CreditMonths(this.apartments, this.contract)
+          Vue.set(this.contract, 'discount', this.contract.discount)
           this.$emit("changeDiscount", {})
       },
 

@@ -23,10 +23,10 @@
           v-for="(apartment, index) in apartments"
           :key="apartment.id"
           :apartment="apartment"
+          :contract="contract"
           :index="index"
           @changedApartmentPrice="changedApartmentPrice"
       />
-      <!--          -->
 
     </b-collapse>
   </div>

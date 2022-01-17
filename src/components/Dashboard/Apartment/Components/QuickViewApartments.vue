@@ -25,6 +25,7 @@
           <td>
             <ApartmentPrice
               :apartment="apartment"
+              :contract="contract"
               @apartmentPrice="apartmentPrice"
             />
             <!--              :area="apartment.plan.area"-->
@@ -116,6 +117,7 @@ export default {
 
   props: {
     apartment: {},
+    contract: {},
     index: {},
   },
 

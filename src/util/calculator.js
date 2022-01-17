@@ -60,9 +60,13 @@ export function getPrice(apartments, contract) {
     switch (contract.discount.type) {
         case "fixed":
             for (let i = 0; apartments.length > i; i++) {
-                const amountApartment = apartments[i].discounts.find(
-                    (val) => val.prepay === contract.discount.prepay
-                ).amount;
+                let amountApartment = 0;
+                if (contract.discount.id !== 'other')
+                    amountApartment = apartments[i].discounts.find(
+                        (val) => val.prepay === contract.discount.prepay
+                    ).amount;
+                else
+                    amountApartment = contract.discount.amount;
 
                 // if (contract.discount.id === apartments[i].discount_id && apartments[i].price_current && parseFloat(apartments[i].price_current) !== parseFloat(apartments[i].price_calc)) {
                 //     price.push(parseFloat(apartments[i].price_current));
@@ -71,6 +75,7 @@ export function getPrice(apartments, contract) {
 
                     // Vue.set(apartments[i], 'price_current', totalAmount.toFixed(2))
                     Vue.set(apartments[i], 'price_calc', parseFloat(totalAmount.toFixed(2)))
+                    Vue.set(apartments[i], 'price_edited', false)
                     Vue.set(apartments[i], 'discount_id', contract.discount.id)
 
                     // .price_calc = totalAmount
@@ -88,17 +93,34 @@ export function getPrice(apartments, contract) {
 
                     // Vue.set(apartments[index], 'price_current', apartments[index].price.toFixed(2))
                     Vue.set(apartments[index], 'price_calc', parseFloat(apartments[index].price.toFixed(2)))
+                    Vue.set(apartments[index], 'price_edited', false)
                     Vue.set(apartments[index], 'discount_id', contract.discount.id)
 
                     price.push(parseFloat(apartments[index].price.toFixed(2)));
                 }
             } else {
                 for (let i = 0; apartments.length > i; i++) {
-                    const amountApartment = apartments[i].discounts.find(
-                        (val) => val.prepay === contract.discount.prepay
-                    ).amount;
+                    let amountApartment = 0;
+                    if (contract.discount.id !== 'other')
+                        amountApartment = apartments[i].discounts.find(
+                            (val) => val.prepay === contract.discount.prepay
+                        ).amount;
+                    else
+                        amountApartment = contract.discount.amount;
 
-                    const totalAmount = parseFloat(apartments[i].price_m2) * apartments[i].plan.area / (1 - amountApartment / 100);
+
+                    let totalAmount = 0;
+
+                    // if (contract.discount.id === 'other')
+                    //     Vue.set(apartments[i], 'price_edited', false)
+
+                    if (apartments[i].price_edited)
+                        totalAmount = apartments[i].price_calc
+                    else
+                        totalAmount = parseFloat(apartments[i].price_m2) * apartments[i].plan.area / (1 - amountApartment / 100);
+
+
+
                     // apartments[i].price_calc = totalAmount
 
                     // apartments[i].price_current = totalAmount
@@ -126,9 +148,11 @@ export function getDiscount(apartments, contract) {
 }
 
 export function getMonth(apartments, contract) {
+    if (parseInt(contract.month) === 0) return 0;
+
     return (
         (getTotal(apartments, contract) - getPrepay(apartments, contract)) /
-        parseFloat(contract.month)
+        parseInt(contract.month)
     );
 }
 
@@ -176,21 +200,25 @@ export function CreditMonths(apartments, contract) {
 
     contract.credit_months = [];
 
-    let month_amount = getMonth(apartments, contract);
+    if (parseInt(contract.month) > 0) {
+        let month_amount = getMonth(apartments, contract);
 
-    for (let i = 0; i < parseInt(contract.month); i++) {
-        contract.credit_months.push({
-            month: today.setMonth(today.getMonth() + 1),
-            amount: month_amount,
-            edit: false,
-            edited: false,
-        });
+        for (let i = 0; i < parseInt(contract.month); i++) {
+            contract.credit_months.push({
+                month: today.setMonth(today.getMonth() + 1),
+                amount: month_amount,
+                edit: false,
+                edited: false,
+            });
+        }
     }
 
     return contract;
 }
 
 export function editedCreditMonths(apartments, contract) {
+    if (parseInt(contract.month) === 0) return contract.credit_months = [];
+
     let total = getPrepay(apartments, contract);
     let months = 0;
 
