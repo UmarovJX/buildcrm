@@ -236,12 +236,12 @@ export default {
   },
 
   watch: {
-    // apartments: {
-    //   handler() {
-    //     this.InitialCalc();
-    //   },
-    //   deep: true
-    // },
+    apartments: {
+      handler() {
+        this.InitialCalc();
+      },
+      deep: true
+    },
 
     'contract.credit_months': {
       handler() {
