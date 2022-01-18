@@ -59,7 +59,7 @@ export default {
         router.currentRoute.query.blocks = newArr;
       }
 
-      if (router.currentRoute.name != "apartments") return;
+      if (router.currentRoute.name !== "apartments") return;
 
       try {
         let header = {

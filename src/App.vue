@@ -16,22 +16,26 @@
         </div>
       </div>
     </div>
-    <header-block :theme="theme"></header-block>
+    <header-block v-if="showHeaderContent" :theme="theme"></header-block>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import {mapGetters, mapActions} from "vuex";
+
 export default {
   data() {
     return {
       onLine: navigator.onLine,
       theme: "",
       connecting: null,
+      showHeaderContent: false
     };
   },
-  computed: mapGetters(["getMe"]),
+  computed: {
+    ...mapGetters(["getMe"])
+  },
   created() {
     if (!localStorage.locale) {
       localStorage.locale = "ru";
@@ -39,17 +43,16 @@ export default {
     }
 
     let path = this.$router.currentRoute;
-
     if (localStorage.token) {
       let vm = this;
       this.setMe(vm, path);
     } else {
-      if (path.path != "/") {
+      if (path.path !== "/") {
         this.$router.push("/");
       }
     }
 
-    if(!localStorage.getItem("user-theme")) {
+    if (!localStorage.getItem("user-theme")) {
       this.setTheme("light-theme");
     }
   },
@@ -61,7 +64,7 @@ export default {
     },
     getMediaPreference() {
       const hasDarkPreference = window.matchMedia(
-        "(prefers-color-scheme: dark)"
+          "(prefers-color-scheme: dark)"
       ).matches;
       if (hasDarkPreference) {
         return "dark-theme";
@@ -76,6 +79,15 @@ export default {
     },
   },
   watch: {
+    '$route.name': {
+      handler: function (name) {
+        const unnecessaryRoute = ['login']
+        const indexOfRoute = unnecessaryRoute.findIndex(routeName => routeName === name)
+        this.showHeaderContent= indexOfRoute === -1;
+      },
+      deep: true,
+      immediate: true
+    },
     onLine(v) {
       if (v) {
         this.$toasted.clear();
@@ -124,4 +136,3 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>

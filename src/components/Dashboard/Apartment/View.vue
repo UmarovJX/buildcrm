@@ -564,6 +564,7 @@ import Discount from "./Components/Discount";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 export default {
+  name:'ApartmentView',
   components: {
     "view-client": ViewClient,
     "reserve-add": ReserveAdd,

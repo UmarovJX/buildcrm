@@ -232,13 +232,11 @@ export default {
       default: "",
     },
   },
-  async mounted() {
-    this.fetchAuth(this);
-    this.fetchMenu(this);
-    this.fetchCurrency(this);
+  async created() {
+    await Promise.allSettled([this.fetchAuth(this),this.fetchMenu(this),this.fetchCurrency(this)])
     // this.isActived();
 
-    this.locale = localStorage.locale == "uz" ? false : true;
+    this.locale = localStorage.locale !== "uz";
   },
 
   methods: {

@@ -14,7 +14,7 @@ export default {
         ctx.commit("updateMe", response.data);
         ctx.commit("updatePermissions", response.data);
 
-        if (path.path == "/") {
+        if (path.path === "/") {
           vm.$router.push({path: "/home"});
         }
       } catch (error) {
