@@ -99,9 +99,15 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
-
+// import home from '../../services/home'
 export default {
   data: () => ({}),
+
+  // async created() {
+  //   await home.getHomeInfo().then(response => {
+  //     console.log(response)
+  //   })
+  // },
 
   mounted() {
     this.fetchCounts(this);

@@ -49,9 +49,12 @@
                   />
                 </div>
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center align-items-center">
                   <button type="submit" class="btn btn-primary mr-0 w-100">
-                    {{ $t("auth.login") }}
+                    <span>
+                      {{ $t("auth.login") }}
+                    </span>
+                    <span class="spinner" v-if="loading"></span>
                   </button>
                 </div>
               </div>
@@ -72,50 +75,57 @@ export default {
       email: null,
       password: null,
     },
-
+    loading:false,
     info: null,
   }),
 
   created() {
-    this.CheckLogin();
+    localStorage.token && this.CheckLogin();
   },
 
   methods: {
     ...mapActions(["fetchAuth", "fetchMenu", "setMe"]),
 
     Login() {
+      if(!this.loading){
+        this.authorizationUser()
+      }
+    },
+    authorizationUser(){
+      this.loading = true
       let vm = this;
       let path = this.$router.currentRoute;
-
       this.axios
-        .post(process.env.VUE_APP_URL + "/oauth", this.user)
-        .then((response) => {
-          const token = response.data.access_token;
-          localStorage.token = token;
-          // this.setToken(token);
+          .post(process.env.VUE_APP_URL + "/oauth", this.user)
+          .then((response) => {
+            const token = response.data.access_token;
+            localStorage.token = token;
+            // this.setToken(token);
 
-          this.fetchAuth(this);
-          this.fetchMenu(this);
-          this.setMe(this, path);
+            this.fetchAuth(this);
+            this.fetchMenu(this);
+            this.setMe(this, path);
 
-          vm.toasted(response.data.message, "success");
-          vm.$router.push("/home");
-        })
-        .catch(function(error) {
-          if (!error.response) {
-            vm.toasted("Error: Network Error", "error");
-          } else {
-            if (error.response.status === 403) {
-              vm.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 401) {
-              vm.toasted(error.response.data, "error");
-            } else if (error.response.status === 500) {
-              vm.toasted(error.response.data.message, "error");
+            vm.toasted(response.data.message, "success");
+            vm.$router.push("/home");
+          })
+          .catch(function(error) {
+            if (!error.response) {
+              vm.toasted("Error: Network Error", "error");
             } else {
-              vm.toasted(error.response.data.message, "error");
+              if (error.response.status === 403) {
+                vm.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 401) {
+                vm.toasted(error.response.data, "error");
+              } else if (error.response.status === 500) {
+                vm.toasted(error.response.data.message, "error");
+              } else {
+                vm.toasted(error.response.data.message, "error");
+              }
             }
-          }
-        });
+          }).finally(() => {
+        this.loading = false
+      });
     },
 
     CheckLogin() {
@@ -163,4 +173,24 @@ form {
     }
   }
 }
+
+.spinner {
+  box-sizing: border-box;
+  width: 24px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  border: 2px solid #283046;
+  border-top-color: #fff;
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
 </style>
