@@ -347,15 +347,19 @@ export default {
 
     async Filter() {
       let filter = {};
+
       if (this.filter.number.length > 0) {
         filter.number = this.filter.number;
       }
+
       if (this.filter.rooms.length > 0) {
         filter.rooms = this.filter.rooms;
       }
+
       if (this.filter.floors.length > 0) {
         filter.floors = this.filter.floors;
       }
+
       if (this.filter.blocks.length > 0) {
         filter.blocks = this.filter.blocks;
       }
