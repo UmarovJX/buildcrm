@@ -12,6 +12,7 @@ import store from "./store";
 import vueMoment from "vue-moment";
 import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
+import VueYandexMetrika from 'vue-yandex-metrika'
 import "sweetalert2/dist/sweetalert2.min.css";
 import "./components";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
@@ -63,8 +64,23 @@ Vue.use(Toasted, {
   position: "top-right",
   duration: 5000,
 });
+
 // Vue.config.productionTip = false;
 // Vue.prototype.$moment = moment;
+
+/* YANDEX METRIKA */
+Vue.use(VueYandexMetrika, {
+  id: 86876647,
+  router: router,
+  env: process.env.NODE_ENV,
+  options:{
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+    webvisor: true
+  }
+})
+
 new Vue({
   el: "#app",
   i18n,

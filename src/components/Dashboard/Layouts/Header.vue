@@ -280,7 +280,7 @@ export default {
     },
 
     changeLocale() {
-      if (this.locale == false) {
+      if (this.locale === false) {
         localStorage.locale = "ru";
         this.$i18n.locale = "ru";
       } else {
