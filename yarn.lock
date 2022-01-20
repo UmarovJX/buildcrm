@@ -9114,6 +9114,11 @@ vue-yandex-maps@^0.11.1:
   resolved "https://registry.npmjs.org/vue-yandex-maps/-/vue-yandex-maps-0.11.1.tgz"
   integrity sha512-JSf3uFX7o/PunoVk8SaCrJsjtBOy/66F8BQqAg5bQUhNGs+DquvuyQ9mDV65j7Fz4e2ZPVHYRIePt5BjryyzZA==
 
+vue-yandex-metrika@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/vue-yandex-metrika/-/vue-yandex-metrika-1.8.3.tgz#f27d71f385ae3f20544a4d295865a2e446293c60"
+  integrity sha512-WD/2CPM5NWXg7JdmgfiOq8J5QbidrCDoDAaE0JfE32wceY56ewzERVGnOGS/Tfx+HvarGc+oJsBbZxl/e2BWTA==
+
 vue2-datepicker@^3.9.1:
   version "3.10.2"
   resolved "https://registry.npmjs.org/vue2-datepicker/-/vue2-datepicker-3.10.2.tgz"

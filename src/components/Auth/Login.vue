@@ -1,18 +1,18 @@
 <template>
   <div
-    class="vh-100 d-flex justify-content-center align-items-center flex-column"
+      class="vh-100 d-flex justify-content-center align-items-center flex-column"
   >
     <div class="container">
       <div class="row">
         <div class="col-md-12 mb-5">
           <div class="logo">
             <router-link to="/">
-              <img src="@/assets/img/object__img1.png" alt="logo" />
+              <img src="@/assets/img/object__img1.png" alt="logo"/>
             </router-link>
           </div>
         </div>
         <div
-          class="
+            class="
             col-md-8
             d-none d-md-flex
             justify-content-center
@@ -21,9 +21,9 @@
         >
           <div class="rounded overflow-hidden">
             <img
-              src="@/assets/img/login-img2.svg"
-              alt="login img"
-              class="mw-100"
+                src="@/assets/img/login-img2.svg"
+                alt="login img"
+                class="mw-100"
             />
           </div>
         </div>
@@ -34,23 +34,27 @@
                 <div class="form-group">
                   <label>{{ $t("auth.email") }}</label>
                   <input
-                    type="email"
-                    v-model="user.email"
-                    class="form-control bg-transparent"
+                      type="email"
+                      v-model="user.email"
+                      class="form-control bg-transparent"
                   />
                 </div>
 
                 <div class="form-group">
                   <label>{{ $t("auth.password") }}</label>
                   <input
-                    type="password"
-                    v-model="user.password"
-                    class="form-control bg-transparent"
+                      type="password"
+                      v-model="user.password"
+                      class="form-control bg-transparent"
                   />
                 </div>
 
                 <div class="d-flex justify-content-center align-items-center">
-                  <button type="submit" class="btn btn-primary mr-0 w-100">
+                  <button
+                      type="submit"
+                      class="btn btn-primary mr-0 w-100"
+                      :class="{'button-disabled':loading}"
+                  >
                     <span>
                       {{ $t("auth.login") }}
                     </span>
@@ -75,7 +79,7 @@ export default {
       email: null,
       password: null,
     },
-    loading:false,
+    loading: false,
     info: null,
   }),
 
@@ -87,19 +91,18 @@ export default {
     ...mapActions(["fetchAuth", "fetchMenu", "setMe"]),
 
     Login() {
-      if(!this.loading){
+      if (!this.loading) {
         this.authorizationUser()
       }
     },
-    authorizationUser(){
+    authorizationUser() {
       this.loading = true
       let vm = this;
       let path = this.$router.currentRoute;
       this.axios
           .post(process.env.VUE_APP_URL + "/oauth", this.user)
           .then((response) => {
-            const token = response.data.access_token;
-            localStorage.token = token;
+            localStorage.token = response.data.access_token;
             // this.setToken(token);
 
             this.fetchAuth(this);
@@ -109,7 +112,7 @@ export default {
             vm.toasted(response.data.message, "success");
             vm.$router.push("/home");
           })
-          .catch(function(error) {
+          .catch(function (error) {
             if (!error.response) {
               vm.toasted("Error: Network Error", "error");
             } else {
@@ -138,20 +141,25 @@ export default {
       let vm = this;
 
       this.axios
-        .get(process.env.VUE_APP_URL + "/oauth/me", header)
-        .then(() => {
-          //this.items = response.data;
-          vm.$router.push({name: "home"});
-        })
-        .catch(() => {
-          localStorage.clear();
-        });
+          .get(process.env.VUE_APP_URL + "/oauth/me", header)
+          .then(() => {
+            //this.items = response.data;
+            vm.$router.push({name: "home"});
+          })
+          .catch(() => {
+            localStorage.clear();
+          });
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.button-disabled {
+  cursor: wait !important;
+  opacity: 0.7;
+}
+
 form {
   width: 350px;
 }
@@ -161,11 +169,13 @@ form {
   justify-content: center;
   align-items: center;
 }
+
 @media screen and (max-width: 576px) {
   .container {
     margin-top: -100px;
   }
 }
+
 .dark-theme {
   .login-form {
     label {
