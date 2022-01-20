@@ -107,10 +107,24 @@
             :select-mode="selectMode"
             @row-selected="onRowSelected"
         >
+
+
           <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">{{
-                scope.emptyText
-              }}</span>
+            <span class="d-flex justify-content-center align-items-center">
+              {{ scope.emptyText }}
+            </span>
+          </template>
+
+          <template #cell(lock)="data" class="p-0">
+            <div v-if="!data.item.is_sold" class="table-multi-select">
+              <span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                      d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
+                      fill="#104c91"/>
+                </svg>
+              </span>
+            </div>
           </template>
 
           <template #cell(number)="data" class="p-0">
@@ -153,12 +167,17 @@
           </template>
 
           <template #cell(status)="data">
-            {{
-              data.item.order.status
-                  | getStatus(
-                  $moment(data.item.order.booking_date).format("YYYY.MM.DD")
-                  )
-            }}
+            <span v-if="!data.item.is_sold">
+              {{ $t('not_for_sale') }}
+            </span>
+            <span v-else>
+              {{
+                data.item.order.status
+                    | getStatus(
+                    $moment(data.item.order.booking_date).format("YYYY.MM.DD")
+                    )
+              }}
+            </span>
           </template>
 
           <template #cell(actions)="data">
@@ -173,21 +192,39 @@
                 </button>
 
                 <div class="dropdown-menu">
-                  <!-- Редактировать -->
-                  <b-link
-                      class="dropdown-item dropdown-item--inside"
-                      @click="[(edit = true), (apartment_id = data.item.id)]"
-                      v-if="
-                      getPermission.apartments && getPermission.apartments.edit
-                    "
-                      v-b-modal.modal-edit
-                  >
-                    <i class="far fa-pencil"></i> {{ $t("edit") }}
-                  </b-link>
+                  <template v-if="hasPermission">
+                    <!-- Редактировать -->
+                    <b-link
+                        class="dropdown-item dropdown-item--inside"
+                        @click="[(edit = true), (apartment_id = data.item.id)]"
+                        v-b-modal.modal-edit
+                    >
+                      <i class="far fa-pencil"></i> {{ $t("edit") }}
+                    </b-link>
+
+
+                    <!--        Вернуть к продаже          -->
+                    <b-link
+                        v-if="data.item.is_sold"
+                        @click="toggleApartmentToSale(data.item)"
+                        class="dropdown-item dropdown-item--inside"
+                    >
+                      <i class="far fa-unlock"></i> {{ $t("remove_from_sale") }}
+                    </b-link>
+
+                    <b-link
+                        v-else
+                        @click="toggleApartmentToSale(data.item)"
+                        class="dropdown-item dropdown-item--inside"
+                    >
+                      <i class="far fa-lock"></i> {{ $t("return_to_sale") }}
+                    </b-link>
+                  </template>
 
                   <!--  Забронировать -->
                   <b-link
                       v-if="
+                      data.item.is_sold &&
                       getPermission.apartments &&
                         getPermission.apartments.reserve &&
                         data.item.order.status === 'available'
@@ -342,7 +379,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapMutations, mapGetters} from "vuex";
 import {BAlert, BButton} from "bootstrap-vue";
 import Filter from "./Components/ApartmentsFilter";
 import ReserveAdd from "./Components/Reserve";
@@ -351,6 +388,7 @@ import ViewClient from "./ViewClient";
 import InfoManager from "./InfoManager";
 import AgreeMultiple from "./Components/AgreeMultiple";
 import SuccessAgree from "./Components/SuccessAgree";
+import api from "@/services/api"
 
 export default {
   components: {
@@ -391,6 +429,11 @@ export default {
       manager_apartment: {},
 
       fields: [
+        {
+          key: "lock",
+          label: "",
+          sortable: false,
+        },
         {
           key: "number",
           label: "№ ДОМ",
@@ -469,10 +512,18 @@ export default {
     // }
     this.currentPage = Number(this.filter.page);
     this.loading = this.getLoading;
+
+    this.fetchApartments(this).then(async () => {
+      await console.log(this.getApartments)
+    });
+    this.getUnfinishedOrders();
   },
 
   computed: {
     ...mapGetters(["getApartments", "getPermission", "getMe", "getLoading"]),
+    hasPermission() {
+      return this.getPermission.apartments && this.getPermission.apartments.edit
+    },
     showApartmentsContract() {
       const {getPermission} = this
       const firstOption = getPermission.apartments && getPermission.apartments.contract
@@ -489,10 +540,6 @@ export default {
       return this.getApartments.items;
     },
   },
-  mounted() {
-    this.fetchApartments(this);
-    this.getUnfinishedOrders();
-  },
 
   watch: {
     getLoading(val) {
@@ -502,6 +549,10 @@ export default {
 
   methods: {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    ...mapMutations(['updateSpecificApartment']),
+    statusHold(data) {
+      return data.item.order.status === 'hold'
+    },
     allowViewWhenProcessing(data) {
       const status = data.item.order.status
       const userId = data.item.order?.user_id
@@ -518,13 +569,17 @@ export default {
 
       return (firstOption || secondOption || thirdOption) && status === 'hold'
     },
-    statusHold(data) {
-      return data.item.order.status === 'hold'
-    },
     clientsView(data) {
       const firstOption = data.item.order.status === 'booked' && data.item.order.user.id === this.getMe.user.id
       const secondOption = (this.getPermission.apartments && this.getPermission.apartments.root_contract && data.item.order.status === 'booked')
       return firstOption || secondOption
+    },
+    async toggleApartmentToSale(item) {
+      const id = this.$route.params.object
+      const apartmentUID = item.id
+      await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
+        this.updateSpecificApartment(response.data)
+      })
     },
     async getUnfinishedOrders() {
       await this.axios
@@ -696,7 +751,6 @@ export default {
 
     async filteredForm(event) {
       this.filter = event;
-      console.log(event)
       this.selected.view = false;
       this.selected.values = [];
       this.selectable = true;

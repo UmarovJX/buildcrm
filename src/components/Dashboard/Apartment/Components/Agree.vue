@@ -963,7 +963,7 @@ export default {
     ...mapGetters(["getReserveClient", "getPermission", "getMe"]),
 
     getApartmentDiscounts() {
-      if (this.apartment.object.credit_month != 0) {
+      if (this.apartment.object.credit_month !== 0) {
         return this.apartment.discounts;
       }
 

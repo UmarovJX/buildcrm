@@ -14,20 +14,18 @@ class Core {
     }
 
     post(url, body = {}) {
-        return _axios.post(url, {
+        return _axios.post(url, body,{
             headers: {
                 'Authorization': 'Bearer ' + localStorage.token
-            },
-            body
+            }
         });
     }
 
     put(url, body = {}) {
-        return _axios.put(url, {
+        return _axios.put(url, body,{
             headers: {
                 'Authorization': 'Bearer ' + localStorage.token
-            },
-            body
+            }
         });
     }
 

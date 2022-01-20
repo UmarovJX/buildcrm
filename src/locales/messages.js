@@ -3,6 +3,9 @@ export default {
     home: {
       title: "Главная",
     },
+    not_for_sale:"Hе продается",
+    remove_from_sale:"Убрат из продаж",
+    return_to_sale:"Вернуть к продаже",
     edit: "Редактировать",
     upload_logo: "Загрузить лого",
     add: "Добавить",

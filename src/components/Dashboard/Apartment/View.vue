@@ -15,9 +15,9 @@
                     <div class="building">
                       <div class="building__img" v-if="getApartment.plan">
                         <img
-                          :data-fancybox="getApartment.plan.image"
-                          v-lazy="getApartment.plan.image"
-                          width="100%"
+                            :data-fancybox="getApartment.plan.image"
+                            v-lazy="getApartment.plan.image"
+                            width="100%"
                         />
                       </div>
                     </div>
@@ -37,7 +37,7 @@
                       </p>
                       <!-- Status -->
                       <div
-                        class="building__info building__info-for-print d-flex align-items-center"
+                          class="building__info building__info-for-print d-flex align-items-center"
                       >
                         <p>
                           <i class="far fa-spinner"></i>
@@ -45,7 +45,7 @@
                         </p>
 
                         <div
-                          :class="[
+                            :class="[
                             getApartment.order === 'booked'
                               ? 'text-warning ml-3'
                               : '',
@@ -63,17 +63,17 @@
                         >
                           {{
                             getApartment.order.status
-                              | getStatus(
+                                | getStatus(
                                 $moment(getApartment.order.booking_date).format(
-                                  "DD.MM.YYYY"
+                                    "DD.MM.YYYY"
                                 )
-                              )
+                                )
                           }}
                         </div>
                       </div>
                       <!-- Дата завершения строительства -->
                       <div
-                        class="building__info mb-3 d-flex align-items-center"
+                          class="building__info mb-3 d-flex align-items-center"
                       >
                         <p>
                           <i class="far fa-calendar-check"></i>
@@ -90,7 +90,7 @@
                       </div>
                     </div>
 
-                    <hr />
+                    <hr/>
 
                     <!-- apartment info -->
                     <div class="row">
@@ -122,8 +122,8 @@
                         </h5>
                       </div>
                       <div
-                        class="col-md-4 col-6 mb-4"
-                        v-if="getApartment.rooms"
+                          class="col-md-4 col-6 mb-4"
+                          v-if="getApartment.rooms"
                       >
                         <p class="mb-1">{{ $t("apartments.view.rooms") }}:</p>
                         <h5>
@@ -139,8 +139,8 @@
                         </h5>
                       </div>
                       <div
-                        class="col-md-4 col-6 mb-4"
-                        v-if="getApartment.block"
+                          class="col-md-4 col-6 mb-4"
+                          v-if="getApartment.block"
                       >
                         <p class="mb-1">Этажность блока:</p>
                         <h5>
@@ -152,139 +152,139 @@
 
                     <div class="datas-for-print">
                       <div class="table-for-print">
-                        <hr />
+                        <hr/>
                         <h4>Условия оплаты</h4>
                         <table class="table">
                           <thead class="thead-dark">
-                            <tr>
-                              <th>Вариант оплаты</th>
-                              <th>Цена продажы за м2</th>
-                              <th>Скидка за м2</th>
-                              <th>Итого</th>
-                            </tr>
+                          <tr>
+                            <th>Вариант оплаты</th>
+                            <th>Цена продажы за м2</th>
+                            <th>Скидка за м2</th>
+                            <th>Итого</th>
+                          </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td>{{ calc.prepay_percente }}%</td>
-                              <td>
-                                {{
-                                  calc.price_for_m2
+                          <tr>
+                            <td>{{ calc.prepay_percente }}%</td>
+                            <td>
+                              {{
+                                calc.price_for_m2
                                     | number("0,0.00", {
-                                      thousandsSeparator: " ",
-                                      decimalSeparator: ",",
-                                    })
-                                }}
-                                сум
-                              </td>
-                              <td>
-                                {{
-                                  calc.discount_price
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                              }}
+                              сум
+                            </td>
+                            <td>
+                              {{
+                                calc.discount_price
                                     | number("0,0.00", {
-                                      thousandsSeparator: " ",
-                                      decimalSeparator: ",",
-                                    })
-                                }}
-                                сум
-                              </td>
-                              <td>
-                                {{
-                                  calc.total
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                              }}
+                              сум
+                            </td>
+                            <td>
+                              {{
+                                calc.total
                                     | number("0,0.00", {
-                                      thousandsSeparator: " ",
-                                      decimalSeparator: ",",
-                                    })
-                                }}
-                                сум
-                              </td>
-                            </tr>
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                              }}
+                              сум
+                            </td>
+                          </tr>
                           </tbody>
                         </table>
                       </div>
                       <div
-                        class="table-for-print pt-5"
-                        v-show="calc.prepay_percente !== 100"
+                          class="table-for-print pt-5"
+                          v-show="calc.prepay_percente !== 100"
                       >
                         <table class="table">
                           <thead class="thead-dark">
-                            <tr>
-                              <th>Число</th>
-                              <th>Тип оплаты</th>
-                              <th>Сумма оплаты</th>
-                            </tr>
+                          <tr>
+                            <th>Число</th>
+                            <th>Тип оплаты</th>
+                            <th>Сумма оплаты</th>
+                          </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td>-</td>
-                              <td>Первый взнос</td>
-                              <td>
-                                {{
-                                  calc.prepay
+                          <tr>
+                            <td>-</td>
+                            <td>Первый взнос</td>
+                            <td>
+                              {{
+                                calc.prepay
                                     | number("0,0.00", {
-                                      thousandsSeparator: " ",
-                                      decimalSeparator: ",",
-                                    })
-                                }}
-                                сум
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>{{ calc.month }} месяцев</td>
-                              <td>Ежемесячная</td>
-                              <td>
-                                {{
-                                  calc.monthly_price
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                              }}
+                              сум
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{{ calc.month }} месяцев</td>
+                            <td>Ежемесячная</td>
+                            <td>
+                              {{
+                                calc.monthly_price
                                     | number("0,0.00", {
-                                      thousandsSeparator: " ",
-                                      decimalSeparator: ",",
-                                    })
-                                }}
-                                сум
-                              </td>
-                            </tr>
-                            <tr>
-                              <!-- <td></td> -->
-                              <td colspan="2">Итого</td>
-                              <td>
-                                {{
-                                  calc.total
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                              }}
+                              сум
+                            </td>
+                          </tr>
+                          <tr>
+                            <!-- <td></td> -->
+                            <td colspan="2">Итого</td>
+                            <td>
+                              {{
+                                calc.total
                                     | number("0,0.00", {
-                                      thousandsSeparator: " ",
-                                      decimalSeparator: ",",
-                                    })
-                                }}
-                                сум
-                              </td>
-                            </tr>
+                                  thousandsSeparator: " ",
+                                  decimalSeparator: ",",
+                                })
+                              }}
+                              сум
+                            </td>
+                          </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="socials-for-print">
-                        <hr />
+                        <hr/>
                         <h4>Свяжитесь с нами!</h4>
                         <ul>
                           <li>
                             <a href="https://xonsaroy.uz"
-                              ><i class="far fa-globe"></i> Xonsaroy.uz</a
+                            ><i class="far fa-globe"></i> Xonsaroy.uz</a
                             >
                           </li>
                           <li>
                             <a href="https://www.instagram.com/xonsaroyuz/"
-                              ><i class="fab fa-instagram"></i> Xonsaroyuz</a
+                            ><i class="fab fa-instagram"></i> Xonsaroyuz</a
                             >
                           </li>
                           <li>
                             <a href="https://www.facebook.com/xonsaroyuz"
-                              ><i class="fab fa-facebook"></i> Xonsaroyuz</a
+                            ><i class="fab fa-facebook"></i> Xonsaroyuz</a
                             >
                           </li>
                           <li>
                             <a href="https://t.me/xonsaroyuz"
-                              ><i class="fab fa-telegram"></i> Xonsaroyuz</a
+                            ><i class="fab fa-telegram"></i> Xonsaroyuz</a
                             >
                           </li>
                           <li>
                             <a href="tel:+998555017400"
-                              ><i class="far fa-phone-alt"></i> +998 55 501 74
+                            ><i class="far fa-phone-alt"></i> +998 55 501 74
                               00</a
                             >
                           </li>
@@ -295,9 +295,9 @@
                   <div class="col-md-4 Calc">
                     <!-- Calc -->
                     <Discount
-                      v-if="otherGetApartment"
-                      :apartment="getApartment"
-                      @getCalData="getCalData"
+                        v-if="otherGetApartment"
+                        :apartment="getApartment"
+                        @getCalData="getCalData"
                     ></Discount>
                   </div>
                 </div>
@@ -305,7 +305,7 @@
               <!-- footer-btns -->
               <div class="container-fluid footer-btns">
                 <div
-                  class="
+                    class="
                       mt-3
                       d-flex
                       justify-content-end
@@ -315,21 +315,21 @@
                 >
                   <!-- Печать -->
                   <button
-                    class="mr-md-2 mr-0 btn btn-info"
-                    type="button"
-                    @click="printPage"
+                      class="mr-md-2 mr-0 btn btn-info"
+                      type="button"
+                      @click="printPage"
                   >
                     <i class="fa fa-print"></i> Печать
                   </button>
 
                   <!-- cancelReserve -->
                   <b-button
-                    v-if="
+                      v-if="
                       getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id || getMe.role.id === 1 && getApartment.order.status === 'booked' || getApartment.order.status === 'booked' && getPermission.apartments.root_contract"
-                    type="button"
-                    @click="cancelReserve"
-                    class="ml-1"
-                    variant="light"
+                      type="button"
+                      @click="cancelReserve"
+                      class="ml-1"
+                      variant="light"
                   >
                     <i class="fas fa-eraser"></i>
                     {{ $t("apartments.list.cancel_reserve") }}
@@ -337,43 +337,44 @@
 
                   <!-- view_client -->
                   <b-link
-                    v-if="
+                      v-if="
                       getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id || getMe.role.id === 1 && getApartment.order.status === 'booked'
                     "
-                    @click="ReserveInfo(getApartment)"
-                    v-b-modal.modal-view-reserved-client
-                    class="mr-md-2 mr-0 btn btn-secondary ml-1"
+                      @click="ReserveInfo(getApartment)"
+                      v-b-modal.modal-view-reserved-client
+                      class="mr-md-2 mr-0 btn btn-secondary ml-1"
                   >
                     <i class="far fa-eye"></i>
                     {{ $t("apartments.list.view_client") }}
                   </b-link>
 
-                  <!-- Reserve -->
-                  <b-button
-                    class="mr-md-2 mr-0 btn btn-primary ml-1"
-                    v-if="
+                  <template v-if="getApartment.is_sold">
+                    <!-- Reserve -->
+                    <b-button
+                        class="mr-md-2 mr-0 btn btn-primary ml-1"
+                        v-if="
                       getPermission.apartments &&
                         getPermission.apartments.reserve &&
                         getApartment.order &&
                         getApartment.order &&
                         getApartment.order.status === 'available'
                     "
-                    @click="
+                        @click="
                       [(reserve = true), (apartment_id = getApartment.id)]
                     "
-                    v-b-modal.modal-reserve-create
-                  >
-                    <i class="far fa-calendar-check"></i>
-                    {{ $t("apartments.list.book") }}
-                  </b-button>
+                        v-b-modal.modal-reserve-create
+                    >
+                      <i class="far fa-calendar-check"></i>
+                      {{ $t("apartments.list.book") }}
+                    </b-button>
 
-                  <!-- confirm -->
-                  <b-button
-                    v-b-modal.modal-agree
-                    @click="orderHold([getApartment.id])"
-                    variant="primary"
-                    class="mr-md-2 mr-0 btn btn-primary ml-1"
-                    v-if="
+                    <!-- confirm -->
+                    <b-button
+                        v-b-modal.modal-agree
+                        @click="orderHold([getApartment.id])"
+                        variant="primary"
+                        class="mr-md-2 mr-0 btn btn-primary ml-1"
+                        v-if="
                       (getApartment.order &&
                         ((getApartment.order &&
                           getApartment.order.status != 'sold') ||
@@ -411,15 +412,16 @@
                           getPermission.apartments &&
                           getPermission.apartments.contract)
                     "
-                  >
-                    <!--                    getApartment.order && getApartment.order.status != 'contract'  || getApartment.order && getApartment.order.status === 'booked' && getApartment.order && getApartment.order.user && getApartment.order.user.id === getMe.user.id && getPermission.apartments && getPermission.apartments.contract || getApartment.order && getApartment.order.status != 'sold' &&  getPermission.apartments && getPermission.apartments.root_contract || getApartment.order && getApartment.order.status === 'available' && getPermission.apartments && getPermission.apartments.contract-->
-                    <i class="far fa-ballot-check"></i>
-                    {{ $t("apartments.list.confirm") }}
-                  </b-button>
+                    >
+                      <!--                    getApartment.order && getApartment.order.status != 'contract'  || getApartment.order && getApartment.order.status === 'booked' && getApartment.order && getApartment.order.user && getApartment.order.user.id === getMe.user.id && getPermission.apartments && getPermission.apartments.contract || getApartment.order && getApartment.order.status != 'sold' &&  getPermission.apartments && getPermission.apartments.root_contract || getApartment.order && getApartment.order.status === 'available' && getPermission.apartments && getPermission.apartments.contract-->
+                      <i class="far fa-ballot-check"></i>
+                      {{ $t("apartments.list.confirm") }}
+                    </b-button>
+                  </template>
 
                   <!--  Оформить when processing  -->
                   <b-link
-                    v-if="
+                      v-if="
                       ((((getApartment.order && getApartment.order.status) !=
                         'sold' ||
                         (getApartment.order && getApartment.order.status) !=
@@ -454,20 +456,20 @@
                         (getApartment.order && getApartment.order.status) ===
                           'hold'
                     "
-                    @click="goOrderHold([getApartment.order.id])"
-                    class="btn btn-primary ml-md-1 mr-0 mr-md-2"
+                      @click="goOrderHold([getApartment.order.id])"
+                      class="btn btn-primary ml-md-1 mr-0 mr-md-2"
                   >
                     <i class="far fa-ballot-check"></i>
                     Продолжить оформление
                   </b-link>
 
                   <router-link
-                    :to="{
+                      :to="{
                       name: 'contracts-view',
                       params: {id: getApartment.order.id},
                     }"
-                    :class="'btn btn-primary ml-1'"
-                    v-if="
+                      :class="'btn btn-primary ml-1'"
+                      v-if="
                       (getPermission.apartments &&
                         getPermission.apartments.contract &&
                         ((getApartment.order &&
@@ -500,16 +502,16 @@
           </div>
           <!-- map -->
           <div
-            class="map"
-            :class="
+              class="map"
+              :class="
               isMapActive ? 'map-active' : 'col-md-3 pl-md-0 position-relative'
             "
           >
             <yandex-map :coords="coords" zoom="18">
               <ymap-marker
-                :coords="coords"
-                marker-id="123123"
-                marker-type="placemark"
+                  :coords="coords"
+                  marker-id="123123"
+                  marker-type="placemark"
               >
               </ymap-marker>
             </yandex-map>
@@ -518,25 +520,25 @@
       </div>
 
       <view-client
-        v-if="info_reserve"
-        @CancelReserve="CloseReserveInfo"
-        :apartment-data="apartment_preview"
+          v-if="info_reserve"
+          @CancelReserve="CloseReserveInfo"
+          :apartment-data="apartment_preview"
       ></view-client>
 
       <reserve-add
-        v-if="
+          v-if="
           reserve ||
             (getPermission.apartments && getPermission.apartments.reserve)
         "
-        :apartment="apartment_id"
-        @CreateReserve="CreateReserveSuccess"
+          :apartment="apartment_id"
+          @CreateReserve="CreateReserveSuccess"
       ></reserve-add>
 
       <agree-modal
-        v-if="confirm"
-        :apartment="getApartment"
-        @successAgree="successAgree"
-        @CloseAgree="CloseAgree"
+          v-if="confirm"
+          :apartment="getApartment"
+          @successAgree="successAgree"
+          @CloseAgree="CloseAgree"
       ></agree-modal>
     </div>
     <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 9999">
@@ -563,8 +565,9 @@ import Agree from "./Components/Agree";
 import Discount from "./Components/Discount";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
+
 export default {
-  name:'ApartmentView',
+  name: 'ApartmentView',
   components: {
     "view-client": ViewClient,
     "reserve-add": ReserveAdd,
@@ -621,9 +624,9 @@ export default {
   },
   async created() {
     this.getLoading = true;
-    await this.fetchApartment(this).then(() => {
+    await this.fetchApartment(this).finally(() => {
       this.getLoading = false;
-    });
+    })
 
     this.coords = [
       this.getApartment.object.location.latitude,
@@ -658,25 +661,25 @@ export default {
     async orderHold(arr) {
       this.getLoading = true;
       await this.axios
-        .post(
-          process.env.VUE_APP_URL + "/orders/hold",
-          {
-            apartments: arr,
-          },
-          this.header
-        )
-        .then((res) => {
-          this.getLoading = false;
-          if (res) {
-            this.$router.push({
-              name: "confirm-apartment",
-              params: {id: res.data.uuid},
-            });
-          }
-        })
-        .catch(() => {
-          this.getLoading = false;
-        });
+          .post(
+              process.env.VUE_APP_URL + "/orders/hold",
+              {
+                apartments: arr,
+              },
+              this.header
+          )
+          .then((res) => {
+            this.getLoading = false;
+            if (res) {
+              this.$router.push({
+                name: "confirm-apartment",
+                params: {id: res.data.uuid},
+              });
+            }
+          })
+          .catch(() => {
+            this.getLoading = false;
+          });
     },
 
     goOrderHold(order_id) {
@@ -750,42 +753,42 @@ export default {
         if (result.value) {
           this.getLoading = true;
           this.axios
-            .delete(
-              process.env.VUE_APP_URL +
-                "/orders/" +
-                this.getReserveClient.id +
-                "/reserve",
-              this.header
-            )
-            .then((response) => {
-              this.getLoading = false;
-              this.toasted(response.data.message, "success");
+              .delete(
+                  process.env.VUE_APP_URL +
+                  "/orders/" +
+                  this.getReserveClient.id +
+                  "/reserve",
+                  this.header
+              )
+              .then((response) => {
+                this.getLoading = false;
+                this.toasted(response.data.message, "success");
 
-              this.$nextTick(() => {
-                this.$bvModal.hide("modal-view-reserved-client");
-              });
+                this.$nextTick(() => {
+                  this.$bvModal.hide("modal-view-reserved-client");
+                });
 
-              this.fetchApartment(this);
+                this.fetchApartment(this);
 
-              this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
-            })
-            .catch((error) => {
-              this.getLoading = false;
-              if (!error.response) {
-                this.toasted("Error: Network Error", "error");
-              } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
+                this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
+              })
+              .catch((error) => {
+                this.getLoading = false;
+                if (!error.response) {
+                  this.toasted("Error: Network Error", "error");
                 } else {
-                  this.error = true;
-                  this.errors = error.response.data.errors;
+                  if (error.response.status === 403) {
+                    this.toasted(error.response.data.message, "error");
+                  } else if (error.response.status === 401) {
+                    this.toasted(error.response.data.message, "error");
+                  } else if (error.response.status === 500) {
+                    this.toasted(error.response.data.message, "error");
+                  } else {
+                    this.error = true;
+                    this.errors = error.response.data.errors;
+                  }
                 }
-              }
-            });
+              });
         }
       });
     },
@@ -842,14 +845,17 @@ export default {
     display: none;
   }
 }
+
 .ymap-container {
   height: 100%;
   width: 100%;
 }
+
 @media screen and (min-width: 576px) {
   .map-active {
     position: relative;
     right: 0;
+
     .map-active {
       width: 100%;
       position: absolute;
@@ -864,6 +870,7 @@ export default {
     }
   }
 }
+
 @media screen and (max-width: 576px) {
   map {
     margin-top: 30px;
