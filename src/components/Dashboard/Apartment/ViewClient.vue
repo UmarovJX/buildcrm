@@ -101,11 +101,7 @@ export default {
       },
     };
   },
-
-  mounted() {},
-
   computed: mapGetters(["getReserveClient", "getPermission", 'getApartment', 'getMe']),
-
   methods: {
     handleSubmit() {
       this.$swal({
