@@ -85,7 +85,11 @@
         </button>
       </div>
 
-      <div class="mt-4">
+      <!--  TODO: FILTER SECTION    -->
+      <apartment-list-filter-tabs/>
+      <!--  TODO: END OF FILTER SECTION    -->
+
+      <div>
         <b-table
             ref="apartment-list-table"
             id="my-table"
@@ -115,30 +119,27 @@
             </span>
           </template>
 
-          <template #cell(lock)="data" class="p-0">
-            <div v-if="!data.item.is_sold" class="table-multi-select">
-              <span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                      d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
-                      fill="#104c91"/>
-                </svg>
-              </span>
-            </div>
-          </template>
-
           <template #cell(number)="data" class="p-0">
-            <div class="table-multi-select">
-              <b-form-checkbox
-                  title="Выберите"
-                  v-if="selected.view && data.item.order.status === 'available'"
-                  :id="'checkbox-' + data.item.id"
-                  v-model="selected.values"
-                  :name="'checkbox-' + data.item.id"
-                  :value="data.item.id"
-              ></b-form-checkbox>
-              <span>{{ data.item.number }}</span>
-            </div>
+              <div class="position-relative">
+                <div v-if="!data.item.is_sold" class="apartments__lock">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
+                        fill="#104c91"/>
+                  </svg>
+                </div>
+                <div class="table-multi-select">
+                  <b-form-checkbox
+                      title="Выберите"
+                      v-if="data.item.is_sold && selected.view && data.item.order.status === 'available'"
+                      :id="'checkbox-' + data.item.id"
+                      v-model="selected.values"
+                      :name="'checkbox-' + data.item.id"
+                      :value="data.item.id"
+                  ></b-form-checkbox>
+                  <span>{{ data.item.number }}</span>
+                </div>
+              </div>
           </template>
 
           <template #cell(area)="data">
@@ -205,7 +206,7 @@
 
                     <!--        Вернуть к продаже          -->
                     <b-link
-                        v-if="data.item.is_sold"
+                        v-if="data.item.is_sold && data.item.order.status === 'available'"
                         @click="toggleApartmentToSale(data.item)"
                         class="dropdown-item dropdown-item--inside"
                     >
@@ -213,7 +214,7 @@
                     </b-link>
 
                     <b-link
-                        v-else
+                        v-if="!data.item.is_sold && data.item.order.status === 'available'"
                         @click="toggleApartmentToSale(data.item)"
                         class="dropdown-item dropdown-item--inside"
                     >
@@ -388,6 +389,7 @@ import ViewClient from "./ViewClient";
 import InfoManager from "./InfoManager";
 import AgreeMultiple from "./Components/AgreeMultiple";
 import SuccessAgree from "./Components/SuccessAgree";
+import ApartmentListFilterTabs from "@/components/Dashboard/Apartment/Components/ApartmentListFilterTabs";
 import api from "@/services/api"
 
 export default {
@@ -399,6 +401,7 @@ export default {
     "info-manager-modal": InfoManager,
     "agree-modal": AgreeMultiple,
     "success-agree": SuccessAgree,
+    ApartmentListFilterTabs,
     BAlert,
     BButton,
   },
@@ -429,11 +432,6 @@ export default {
       manager_apartment: {},
 
       fields: [
-        {
-          key: "lock",
-          label: "",
-          sortable: false,
-        },
         {
           key: "number",
           label: "№ ДОМ",
@@ -499,23 +497,26 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
-      loading: true
-    };
+      loading: true,
+    }
   },
 
   created() {
     this.filter = {
       ...this.$route.query,
-    };
-    // if (this.filter.status === true) {
-    //   this.multiSelectOn();
-    // }
+    }
+
+    // const id = this.$route.params.object
+    // api.apartments.getApartmentsList(id)
+    //     .then(response => {
+    //       this.items = response.data.items
+    //       this.pagination = response.data.pagination
+    //     })
+
     this.currentPage = Number(this.filter.page);
     this.loading = this.getLoading;
 
-    this.fetchApartments(this).then(async () => {
-      await console.log(this.getApartments)
-    });
+    this.fetchApartments(this)
     this.getUnfinishedOrders();
   },
 
@@ -865,6 +866,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.apartments__lock{
+  position: absolute;
+  left: -20px;
+  top: 25%;
+  transform: translateY(-30%);
+}
+
 .space-room-button {
   background: #f1f1f1;
   box-shadow: -1px 5px 22px -12px rgba(0, 0, 0, 0.75);
