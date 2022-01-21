@@ -1,245 +1,252 @@
 <template>
   <main>
-      <div class="app-content">
-        <div class="countdown-timer" draggable="true">
-          <flip-countdown
-              :deadline="expiry_at"
-              :showDays="false"
-              :showHours="false"
-              @timeElapsed="timeElapsedHandler"
-          ></flip-countdown>
-        </div>
+    <div class="app-content">
+      <div class="countdown-timer" draggable="true">
+        <flip-countdown
+            :deadline="expiry_at"
+            :showDays="false"
+            :showHours="false"
+            @timeElapsed="timeElapsedHandler"
+        ></flip-countdown>
+      </div>
 
-        <!-- Step 1 -->
-        <div class="new-object p-3" v-if="contract.step === 1">
-          <validation-observer ref="observer" v-slot="{handleSubmit}">
-            <form ref="form" @submit.prevent="handleSubmit(postStore)">
-              <div class="row">
-                <!-- Изменить дата договора -->
-                <div
-                    class="col-12 mb-2"
-                    v-if="
+      <!-- Step 1 -->
+      <div class="new-object p-3" v-if="contract.step === 1">
+        <validation-observer ref="observer" v-slot="{handleSubmit}">
+          <form ref="form" @submit.prevent="handleSubmit(postStore)">
+            <div class="row">
+              <!-- Изменить дата договора -->
+              <div
+                  class="col-12 mb-2"
+                  v-if="
                   (getMe.role && getMe.role.id === 1) ||
                     (getPermission.contracts && getPermission.contracts.date)
                 "
-                >
-                  <div class="row">
-                    <div class="col-md-4">
-                      <div class="row">
-                        <div class="col-10 pr-0">
-                          <validation-provider
-                              :name="`'${$t('apartments.agree.number')}'`"
-                              :rules="{required: true}"
-                              v-slot="validationContext"
-                              class="mb-3"
+              >
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-10 pr-0">
+                        <validation-provider
+                            :name="`'${$t('apartments.agree.number')}'`"
+                            :rules="{required: true}"
+                            v-slot="validationContext"
+                            class="mb-3"
+                        >
+                          <b-form-group
+                              :label="$t('apartments.agree.number')"
+                              label-for="number"
                           >
-                            <b-form-group
-                                :label="$t('apartments.agree.number')"
-                                label-for="number"
-                            >
-                              <b-form-input
-                                  id="number"
-                                  name="number"
-                                  type="text"
-                                  :placeholder="
+                            <b-form-input
+                                id="number"
+                                name="number"
+                                type="text"
+                                :placeholder="
                                 $t('apartments.agree.placeholder.number')
                               "
-                                  v-model="contract.number"
-                                  :state="getValidationState(validationContext)"
-                                  aria-describedby="number-feedback"
-                                  :disabled="!edited.toggle ? true : false"
-                              ></b-form-input>
+                                v-model="contract.number"
+                                :state="getValidationState(validationContext)"
+                                aria-describedby="number-feedback"
+                                :disabled="!edited.toggle ? true : false"
+                            ></b-form-input>
 
-                              <b-form-invalid-feedback id="number-feedback">{{
-                                  validationContext.errors[0]
-                                }}</b-form-invalid-feedback>
-                            </b-form-group>
-                          </validation-provider>
-                        </div>
-                        <div class="col-2 p-0 mt-2">
-                          <b-button
-                              type="button"
-                              v-if="!edited.toggle"
-                              @click="[(edited.toggle = true)]"
-                              variant="primary"
-                              size="sm"
-                              class="mt-4 ml-auto w-100"
-                              style="height: 38px"
-                          >
-                            <i class="fal fa-edit"></i>
-                          </b-button>
-                          <b-button
-                              type="button"
-                              v-else
-                              @click="
+                            <b-form-invalid-feedback id="number-feedback">{{
+                                validationContext.errors[0]
+                              }}
+                            </b-form-invalid-feedback>
+                          </b-form-group>
+                        </validation-provider>
+                      </div>
+                      <div class="col-2 p-0 mt-2">
+                        <b-button
+                            type="button"
+                            v-if="!edited.toggle"
+                            @click="[(edited.toggle = true)]"
+                            variant="primary"
+                            size="sm"
+                            class="mt-4 ml-auto w-100"
+                            style="height: 38px"
+                        >
+                          <i class="fal fa-edit"></i>
+                        </b-button>
+                        <b-button
+                            type="button"
+                            v-else
+                            @click="
                             [
                               (edited.toggle = false),
                               (edited.contract_number = true),
                             ]
                           "
-                              variant="success"
-                              size="sm"
-                              class="mt-4 ml-auto w-100"
-                              style="height: 38px"
-                          >
-                            <i class="fal fa-save"></i>
-                          </b-button>
-                        </div>
+                            variant="success"
+                            size="sm"
+                            class="mt-4 ml-auto w-100"
+                            style="height: 38px"
+                        >
+                          <i class="fal fa-save"></i>
+                        </b-button>
                       </div>
                     </div>
+                  </div>
 
-                    <div class="col-md-4">
-                      <validation-provider
-                          :name="`'${$t('apartments.agree.date_contract')}'`"
-                          :rules="{required: true}"
-                          v-slot="validationContext"
-                          class="mb-3"
+                  <div class="col-md-4">
+                    <validation-provider
+                        :name="`'${$t('apartments.agree.date_contract')}'`"
+                        :rules="{required: true}"
+                        v-slot="validationContext"
+                        class="mb-3"
+                    >
+                      <b-form-group
+                          :label="$t('apartments.agree.date_contract')"
+                          label-for="date"
                       >
-                        <b-form-group
-                            :label="$t('apartments.agree.date_contract')"
-                            label-for="date"
-                        >
-                          <b-form-input
-                              id="date"
-                              name="date"
-                              type="date"
-                              :placeholder="
+                        <b-form-input
+                            id="date"
+                            name="date"
+                            type="date"
+                            :placeholder="
                             $t('apartments.agree.placeholder.date_contract')
                           "
-                              v-model="contract.date"
-                              :state="getValidationState(validationContext)"
-                              aria-describedby="date-feedback"
-                          ></b-form-input>
+                            v-model="contract.date"
+                            :state="getValidationState(validationContext)"
+                            aria-describedby="date-feedback"
+                        ></b-form-input>
 
-                          <b-form-invalid-feedback id="date-feedback">{{
-                              validationContext.errors[0]
-                            }}</b-form-invalid-feedback>
-                        </b-form-group>
-                      </validation-provider>
-                    </div>
+                        <b-form-invalid-feedback id="date-feedback">{{
+                            validationContext.errors[0]
+                          }}
+                        </b-form-invalid-feedback>
+                      </b-form-group>
+                    </validation-provider>
                   </div>
-
-                  <hr />
-                </div> <!-- Изменить дата договора END -->
-
-
-                <!--  client form -->
-                <div class="col-md-12">
-                  <ClientInputConfirm :client="client" @clientSet="ClientSet"></ClientInputConfirm>
                 </div>
 
-                <!-- apartments.agree.first_payment_date -->
-                <div class="col-md-4">
-                  <validation-provider
-                      :name="$t('apartments.agree.first_payment_date')"
-                      :rules="{required: true}"
-                      v-slot="validationContext"
-                      class="mb-3"
+                <hr/>
+              </div> <!-- Изменить дата договора END -->
+
+
+              <!--  client form -->
+              <div class="col-md-12">
+                <ClientInputConfirm :client="client" @clientSet="ClientSet"></ClientInputConfirm>
+              </div>
+
+              <!-- apartments.agree.first_payment_date -->
+              <div class="col-md-4">
+                <validation-provider
+                    :name="$t('apartments.agree.first_payment_date')"
+                    :rules="{required: true}"
+                    v-slot="validationContext"
+                    class="mb-3"
+                >
+                  <b-form-group
+                      :label="$t('apartments.agree.first_payment_date')"
+                      label-for="first_payment_date"
                   >
-                    <b-form-group
-                        :label="$t('apartments.agree.first_payment_date')"
-                        label-for="first_payment_date"
-                    >
-                      <b-form-input
-                          id="first_payment_date"
-                          name="first_payment_date"
-                          type="date"
-                          v-model="contract.first_payment_date"
-                          :state="getValidationState(validationContext)"
-                          aria-describedby="first_payment_date-feedback"
-                      ></b-form-input>
-
-                      <b-form-invalid-feedback id="first_payment_date-feedback">{{
-                          validationContext.errors[0]
-                        }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </validation-provider>
-                </div>
-
-                <!-- apartments.agree.payment_date -->
-                <div class="col-md-4">
-                  <div class="mb-3">
-                    <label class="d-block" for="payment_date">{{
-                        $t("apartments.agree.payment_date")
-                      }}</label>
-                    <input
-                        v-model="contract.payment_date"
-                        id="payment_date"
+                    <b-form-input
+                        id="first_payment_date"
+                        name="first_payment_date"
                         type="date"
-                        class="form-control"
-                    />
-                  </div>
-                </div>
+                        v-model="contract.first_payment_date"
+                        :state="getValidationState(validationContext)"
+                        aria-describedby="first_payment_date-feedback"
+                    ></b-form-input>
 
-              </div> <!-- row end  -->
-
-              <!-- removeBlock -->
-              <div class="mt-4 d-flex justify-content-end flex-md-row flex-column">
-                <button
-                    type="button"
-                    class="btn btn-default mx-md-2"
-                    @click="cancelForm"
-                >
-                  {{ $t("cancel") }}
-                </button>
-                <button v-if="!buttons.loading" type="submit" class="btn btn-success">
-                  Продолжить
-                  <i class="fa fa-file-contract"></i>
-                </button>
-                <button
-                    v-if="buttons.loading && buttons.confirm"
-                    type="button"
-                    class="btn btn-success"
-                >
-                  Продолжить
-                  <i class="fas fa-spinner fa-spin"></i>
-                </button>
-              </div>
-            </form>
-          </validation-observer>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="container-fluid px-0 mx-0" v-if="contract.step === 2">
-          <form ref="form" @submit.stop.prevent="sendForm">
-            <div class="row">
-              <!-- Таблица ежемесячных платежей -->
-              <div class="col-xl-8">
-                  <MonthlyPayments :client="client" :contract="contract" :apartments="apartments" @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
+                    <b-form-invalid-feedback id="first_payment_date-feedback">{{
+                        validationContext.errors[0]
+                      }}
+                    </b-form-invalid-feedback>
+                  </b-form-group>
+                </validation-provider>
               </div>
 
-              <div class="col-xl-4 h-auto">
-                <div class="sticky-top">
-                    <ClientInformation :client="client"></ClientInformation>
-                    <ApartmentsList  :apartments="apartments" :contract="contract" @changePrice="initialCalc"></ApartmentsList>
-                    <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts" @changeDiscount="changeDiscount"></Calculator>
-                    <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract" :discounts="discounts" :buttons="buttons"></Confirm>
+              <!-- apartments.agree.payment_date -->
+              <div class="col-md-4">
+                <div class="mb-3">
+                  <label class="d-block" for="payment_date">{{
+                      $t("apartments.agree.payment_date")
+                    }}</label>
+                  <input
+                      v-model="contract.payment_date"
+                      id="payment_date"
+                      type="date"
+                      class="form-control"
+                  />
                 </div>
               </div>
 
+            </div> <!-- row end  -->
+
+            <!-- removeBlock -->
+            <div class="mt-4 d-flex justify-content-end flex-md-row flex-column">
+              <button
+                  type="button"
+                  class="btn btn-default mx-md-2"
+                  @click="cancelForm"
+              >
+                {{ $t("cancel") }}
+              </button>
+              <button v-if="!buttons.loading" type="submit" class="btn btn-success">
+                Продолжить
+                <i class="fa fa-file-contract"></i>
+              </button>
+              <button
+                  v-if="buttons.loading && buttons.confirm"
+                  type="button"
+                  class="btn btn-success"
+              >
+                Продолжить
+                <i class="fas fa-spinner fa-spin"></i>
+              </button>
             </div>
           </form>
-        </div>
-
+        </validation-observer>
       </div>
 
-      <b-overlay :show="buttons.loading" no-wrap opacity="0.5" style="z-index: 9999">
-        <template #overlay>
-          <div class="d-flex justify-content-center w-100">
-            <div class="lds-ellipsis">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
+      <!-- Step 2 -->
+      <div class="container-fluid px-0 mx-0" v-if="contract.step === 2">
+        <form ref="form" @submit.stop.prevent="sendForm">
+          <div class="row">
+            <!-- Таблица ежемесячных платежей -->
+            <div class="col-xl-8">
+              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments"
+                               @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
             </div>
-          </div>
-        </template>
-      </b-overlay>
 
-      <SuccessAgree
-          :contract="contract"
-          :apartments="apartments.length"
-      />
+            <div class="col-xl-4 h-auto">
+              <div class="sticky-top">
+                <ClientInformation :client="client"></ClientInformation>
+                <ApartmentsList :apartments="apartments" :contract="contract"
+                                @changePrice="initialCalc"></ApartmentsList>
+                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts"
+                            @changeDiscount="changeDiscount"></Calculator>
+                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract"
+                         :discounts="discounts" :buttons="buttons"></Confirm>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <b-overlay :show="buttons.loading" no-wrap opacity="0.5" style="z-index: 9999">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+
+    <SuccessAgree
+        :contract="contract"
+        :apartments="apartments.length"
+    />
 
   </main>
 </template>
@@ -247,7 +254,7 @@
 <script>
 // import moment from "moment";
 
-import { mapGetters, mapActions } from "vuex";
+import {mapGetters, mapActions} from "vuex";
 // import VueNumeric from "vue-numeric";
 import FlipCountdown from "vue2-flip-countdown";
 import SuccessAgree from "./Components/SuccessAgree";
@@ -552,15 +559,15 @@ export default {
                 this.header
             )
             .then(() => {
-              this.loading = false;
               this.$router.push({
                 name: "apartments",
               });
             })
             .catch();
       } catch (error) {
-        this.loading = false;
         this.toastedWithErrorCode(error);
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -716,7 +723,7 @@ export default {
 
 
           // if (this.contract.step === 1 && this.client.discount.prepay !== 100) {
-            // formData.append("months", this.month);
+          // formData.append("months", this.month);
           // }
 
           if (this.edited.contract_number && this.contract.number !== this.order.contract_number) {
@@ -735,14 +742,12 @@ export default {
                   this.header
               )
               .then((response) => {
-                this.buttons.loading = false;
                 this.toasted(response.data.message, "success");
                 this.$bvModal.hide("modal-agree");
                 this.contract = response.data;
                 this.$bvModal.show("modal-success-agree");
               })
               .catch((error) => {
-                this.buttons.loading = false;
                 if (!error.response) {
                   this.toasted("Error: Network Error", "error");
                 } else {
@@ -759,7 +764,9 @@ export default {
                     this.toasted(error.response.data.message, "error");
                   }
                 }
-              });
+              }).finally(() => {
+            this.buttons.loading = false;
+          });
         }
       });
     },

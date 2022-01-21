@@ -14,7 +14,6 @@ export default {
           header
         );
         const objects = response.data;
-        ctx.commit("updateLoading", false, {root: true});
         ctx.commit("updateObjects", objects);
       } catch (error) {
         if (!error.response) {
@@ -30,6 +29,8 @@ export default {
             vm.toasted(error.response.data.message, "error");
           }
         }
+      } finally {
+        ctx.commit("updateLoading", false, {root: true});
       }
     },
 
@@ -48,7 +49,6 @@ export default {
         );
         const roles = response.data;
         ctx.commit("updateRoles", roles);
-        ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
         if (!error.response) {
           vm.toasted("Error: Network Error", "error");
@@ -63,6 +63,8 @@ export default {
             vm.toasted(error.response.data.message, "error");
           }
         }
+      } finally {
+        ctx.commit("updateLoading", false, {root: true});
       }
     },
   },

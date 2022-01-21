@@ -133,6 +133,7 @@
 import {mapActions, mapGetters} from "vuex";
 
 export default {
+  name:'Roles',
   data() {
     return {
       header: {

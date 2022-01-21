@@ -112,6 +112,7 @@
 import {mapGetters, mapActions} from "vuex";
 
 export default {
+  name:"TypePlan",
   data() {
     return {
       manager: {},

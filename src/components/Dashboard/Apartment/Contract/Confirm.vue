@@ -114,27 +114,25 @@ export default {
                 this.header
             )
             .then(() => {
-              this.loading = false;
               this.$router.push({
                 name: "apartments",
               });
             })
             .catch();
       } catch (error) {
-        this.loading = false;
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
+          const status = error.response.status
+          const message = error.response.data.message
+
+          /* CLIENT AND SERVER ERROR */
+          if (status && status >= 400 && status <= 511) {
+            this.toasted(message, 'error')
           }
         }
+      } finally {
+        this.loading = false;
       }
     },
 

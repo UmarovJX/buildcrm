@@ -114,16 +114,14 @@ export default {
           })
           .catch(function (error) {
             if (!error.response) {
-              vm.toasted("Error: Network Error", "error");
+              this.toasted("Error: Network Error", "error");
             } else {
-              if (error.response.status === 403) {
-                vm.toasted(error.response.data.message, "error");
-              } else if (error.response.status === 401) {
-                vm.toasted(error.response.data, "error");
-              } else if (error.response.status === 500) {
-                vm.toasted(error.response.data.message, "error");
-              } else {
-                vm.toasted(error.response.data.message, "error");
+              const status = error.response.status
+              const message = error.response.data.message
+
+              /* CLIENT AND SERVER ERROR */
+              if (status && status >= 400 && status <= 511) {
+                this.toasted(message, 'error')
               }
             }
           }).finally(() => {
