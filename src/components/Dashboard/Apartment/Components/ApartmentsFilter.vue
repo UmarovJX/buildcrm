@@ -135,20 +135,6 @@
             <label class="d-block">{{ $t("apartments.filter.status") }}</label>
           </div>
 
-          <div class="d-flex align-items-center">
-            <div class="custom-control custom-checkbox mr-4">
-              <input
-                  type="checkbox"
-                  class="custom-control-input"
-                  id="status"
-                  value="1"
-                  v-model="filter.status"
-              />
-              <label class="custom-control-label" for="status">{{
-                  $t("apartments.filter.free")
-                }}</label>
-            </div>
-          </div>
 
           <div class="d-flex align-items-center">
             <div class="custom-control custom-checkbox mr-4">

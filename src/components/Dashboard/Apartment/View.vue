@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="app-content print-page">
+    <div v-if="Object.keys(apartment).length" class="app-content print-page">
       <div ref="document" id="printMe" :class="{'map-active': isMapActive}">
         <h3 class="text-center heading-for-print">
           "Xon Saroy" - Уверенный шаг к вашим мечтам!
@@ -13,27 +13,27 @@
                   <div class="col-lg-8 pr-md-0 border-right">
                     <!-- building__img -->
                     <div class="building">
-                      <div class="building__img" v-if="getApartment.plan">
+                      <div class="building__img" v-if="apartment.plan">
                         <img
-                            :data-fancybox="getApartment.plan.image"
-                            v-lazy="getApartment.plan.image"
+                            :data-fancybox="apartment.plan.image"
+                            v-lazy="apartment.plan.image"
                             width="100%"
                         />
                       </div>
                     </div>
                     <!-- building__info -->
-                    <div v-if="getApartment.object">
+                    <div v-if="apartment.object">
                       <!-- Объект -->
                       <p class="building__info mt-2 mb-1">
                         <i class="far fa-building"></i>
-                        Объект: {{ getApartment.object.name }},
-                        {{ getApartment.building.name }},
-                        {{ getApartment.block.name }}
+                        Объект: {{ apartment.object.name }},
+                        {{ apartment.building.name }},
+                        {{ apartment.block.name }}
                       </p>
                       <!-- Адрес -->
                       <p class="building__info mt-2 mb-1">
                         <i class="far fa-map-marker-alt"></i>
-                        Адрес: {{ getApartment.object.address }}
+                        Адрес: {{ apartment.object.address }}
                       </p>
                       <!-- Status -->
                       <div
@@ -46,25 +46,25 @@
 
                         <div
                             :class="[
-                            getApartment.order === 'booked'
+                            apartment.order === 'booked'
                               ? 'text-warning ml-3'
                               : '',
-                            (getApartment.order &&
-                              getApartment.order.status === 'sold') ||
-                            (getApartment.order &&
-                              getApartment.order.status === 'contract')
+                            (apartment.order &&
+                              apartment.order.status === 'sold') ||
+                            (apartment.order &&
+                              apartment.order.status === 'contract')
                               ? 'text-danger ml-3'
                               : 'text-success ml-3',
-                            getApartment.order &&
-                            getApartment.order.status === 'hold'
+                            apartment.order &&
+                            apartment.order.status === 'hold'
                               ? 'text-warning ml-3'
                               : 'text-success ml-3',
                           ]"
                         >
                           {{
-                            getApartment.order.status
+                            apartment.order.status
                                 | getStatus(
-                                $moment(getApartment.order.booking_date).format(
+                                $moment(apartment.order.booking_date).format(
                                     "DD.MM.YYYY"
                                 )
                                 )
@@ -81,9 +81,9 @@
                         </p>
 
                         <div class="ml-3">
-                          {{ momentQuarter(getApartment.object.build_date) }} -
+                          {{ momentQuarter(apartment.object.build_date) }} -
                           четверть
-                          {{ getApartment.object.build_date | moment("YYYY") }}
+                          {{ apartment.object.build_date | moment("YYYY") }}
                           года
                         </div>
                         <!-- первый четверть 2022 года -->
@@ -98,22 +98,22 @@
                         <p class="mb-1">{{ $t("apartments.view.number") }}:</p>
                         <h5>
                           <i class="far fa-building"></i>
-                          {{ getApartment.number }}
+                          {{ apartment.number }}
                         </h5>
                       </div>
-                      <div class="col-md-4 col-6 mb-4" v-if="getApartment.plan">
+                      <div class="col-md-4 col-6 mb-4" v-if="apartment.plan">
                         <p class="mb-1">{{ $t("apartments.view.area") }}:</p>
                         <h5>
                           <i class="far fa-expand"></i>
-                          {{ getApartment.plan.area }} м²
+                          {{ apartment.plan.area }} м²
                         </h5>
                       </div>
-                      <div class="col-md-4 col-6 mb-4" v-if="getApartment.plan">
+                      <div class="col-md-4 col-6 mb-4" v-if="apartment.plan">
                         <p class="mb-1">{{ $t("apartments.list.balcony") }}:</p>
                         <h5>
                           <i class="far fa-inbox"></i>
-                          <span v-if="getApartment.plan.balcony">
-                            {{ getApartment.plan.balcony_area }} м²
+                          <span v-if="apartment.plan.balcony">
+                            {{ apartment.plan.balcony_area }} м²
                           </span>
 
                           <span v-else>
@@ -123,29 +123,29 @@
                       </div>
                       <div
                           class="col-md-4 col-6 mb-4"
-                          v-if="getApartment.rooms"
+                          v-if="apartment.rooms"
                       >
                         <p class="mb-1">{{ $t("apartments.view.rooms") }}:</p>
                         <h5>
                           <i class="far fa-door-open"></i>
-                          {{ getApartment.rooms }}
+                          {{ apartment.rooms }}
                         </h5>
                       </div>
                       <div class="col-md-4 col-6 mb-4">
                         <p class="mb-1">{{ $t("apartments.view.floor") }}:</p>
                         <h5>
                           <i class="far fa-industry"></i>
-                          {{ getApartment.floor }}
+                          {{ apartment.floor }}
                         </h5>
                       </div>
                       <div
                           class="col-md-4 col-6 mb-4"
-                          v-if="getApartment.block"
+                          v-if="apartment.block"
                       >
                         <p class="mb-1">Этажность блока:</p>
                         <h5>
                           <i class="far fa-align-justify"></i>
-                          {{ getApartment.block.floors }}
+                          {{ apartment.block.floors }}
                         </h5>
                       </div>
                     </div>
@@ -296,7 +296,7 @@
                     <!-- Calc -->
                     <Discount
                         v-if="otherGetApartment"
-                        :apartment="getApartment"
+                        :apartment="apartment"
                         @getCalData="getCalData"
                     ></Discount>
                   </div>
@@ -325,7 +325,7 @@
                   <!-- cancelReserve -->
                   <b-button
                       v-if="
-                      getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id || getMe.role.id === 1 && getApartment.order.status === 'booked' || getApartment.order.status === 'booked' && getPermission.apartments.root_contract"
+                      apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id || getMe.role.id === 1 && apartment.order.status === 'booked' || apartment.order.status === 'booked' && getPermission.apartments.root_contract"
                       type="button"
                       @click="cancelReserve"
                       class="ml-1"
@@ -338,9 +338,9 @@
                   <!-- view_client -->
                   <b-link
                       v-if="
-                      getApartment.order.status === 'booked' && getApartment.order.user.id === getMe.user.id || getMe.role.id === 1 && getApartment.order.status === 'booked'
+                      apartment.order.status === 'booked' && apartment.order.user.id === getMe.user.id || getMe.role.id === 1 && apartment.order.status === 'booked'
                     "
-                      @click="ReserveInfo(getApartment)"
+                      @click="ReserveInfo(apartment)"
                       v-b-modal.modal-view-reserved-client
                       class="mr-md-2 mr-0 btn btn-secondary ml-1"
                   >
@@ -348,19 +348,19 @@
                     {{ $t("apartments.list.view_client") }}
                   </b-link>
 
-                  <template v-if="getApartment.is_sold">
+                  <template v-if="apartment.is_sold">
                     <!-- Reserve -->
                     <b-button
                         class="mr-md-2 mr-0 btn btn-primary ml-1"
                         v-if="
-                      getPermission.apartments &&
+                        getPermission.apartments &&
                         getPermission.apartments.reserve &&
-                        getApartment.order &&
-                        getApartment.order &&
-                        getApartment.order.status === 'available'
+                        apartment.order &&
+                        apartment.order &&
+                        apartment.order.status === 'available'
                     "
                         @click="
-                      [(reserve = true), (apartment_id = getApartment.id)]
+                      [(reserve = true), (apartment_id = apartment.id)]
                     "
                         v-b-modal.modal-reserve-create
                     >
@@ -371,49 +371,49 @@
                     <!-- confirm -->
                     <b-button
                         v-b-modal.modal-agree
-                        @click="orderHold([getApartment.id])"
+                        @click="orderHold([apartment.id])"
                         variant="primary"
                         class="mr-md-2 mr-0 btn btn-primary ml-1"
                         v-if="
-                      (getApartment.order &&
-                        ((getApartment.order &&
-                          getApartment.order.status != 'sold') ||
-                          (getApartment.order &&
-                            getApartment.order.status != 'contract')) &&
-                        getApartment.order &&
-                        getApartment.order &&
-                        getApartment.order.status === 'booked' &&
-                        getApartment.order &&
-                        getApartment.order.user &&
-                        getApartment.order.user.id === getMe.user.id &&
+                      (apartment.order &&
+                        ((apartment.order &&
+                          apartment.order.status !== 'sold') ||
+                          (apartment.order &&
+                            apartment.order.status !== 'contract')) &&
+                        apartment.order &&
+                        apartment.order &&
+                        apartment.order.status === 'booked' &&
+                        apartment.order &&
+                        apartment.order.user &&
+                        apartment.order.user.id === getMe.user.id &&
                         getPermission.apartments &&
                         getPermission.apartments &&
                         getPermission.apartments.contract) ||
                         (!(
-                          (getApartment.order && getApartment.order.status) ==
+                          (apartment.order && apartment.order.status) ===
                             'sold' ||
-                          (getApartment.order && getApartment.order.status) ==
+                          (apartment.order && apartment.order.status) ===
                             'contract' ||
-                          (getApartment.order && getApartment.order.status) ==
+                          (apartment.order && apartment.order.status) ===
                             'hold'
                         ) &&
                           getPermission.apartments &&
                           getPermission.apartments &&
                           getPermission.apartments.root_contract) ||
-                        (getApartment.order &&
-                          ((getApartment.order &&
-                            getApartment.order.status != 'sold') ||
-                            (getApartment.order &&
-                              getApartment.order.status != 'contract')) &&
-                          getApartment.order &&
-                          getApartment.order &&
-                          getApartment.order.status === 'available' &&
+                        (apartment.order &&
+                          ((apartment.order &&
+                            apartment.order.status !== 'sold') ||
+                            (apartment.order &&
+                              apartment.order.status !== 'contract')) &&
+                          apartment.order &&
+                          apartment.order &&
+                          apartment.order.status === 'available' &&
                           getPermission.apartments &&
                           getPermission.apartments &&
                           getPermission.apartments.contract)
                     "
                     >
-                      <!--                    getApartment.order && getApartment.order.status != 'contract'  || getApartment.order && getApartment.order.status === 'booked' && getApartment.order && getApartment.order.user && getApartment.order.user.id === getMe.user.id && getPermission.apartments && getPermission.apartments.contract || getApartment.order && getApartment.order.status != 'sold' &&  getPermission.apartments && getPermission.apartments.root_contract || getApartment.order && getApartment.order.status === 'available' && getPermission.apartments && getPermission.apartments.contract-->
+                      <!--                    apartment.order && apartment.order.status != 'contract'  || apartment.order && apartment.order.status === 'booked' && apartment.order && apartment.order.user && apartment.order.user.id === getMe.user.id && getPermission.apartments && getPermission.apartments.contract || apartment.order && apartment.order.status != 'sold' &&  getPermission.apartments && getPermission.apartments.root_contract || apartment.order && apartment.order.status === 'available' && getPermission.apartments && getPermission.apartments.contract-->
                       <i class="far fa-ballot-check"></i>
                       {{ $t("apartments.list.confirm") }}
                     </b-button>
@@ -422,41 +422,41 @@
                   <!--  Оформить when processing  -->
                   <b-link
                       v-if="
-                      ((((getApartment.order && getApartment.order.status) !=
+                      ((((apartment.order && apartment.order.status) !==
                         'sold' ||
-                        (getApartment.order && getApartment.order.status) !=
+                        (apartment.order && apartment.order.status) !==
                           'contract') &&
-                        getApartment.order &&
-                        getApartment.order &&
-                        getApartment.order.status === 'booked' &&
-                        getApartment.order.user_id === getMe.user.id &&
+                        apartment.order &&
+                        apartment.order &&
+                        apartment.order.status === 'booked' &&
+                        apartment.order.user_id === getMe.user.id &&
                         getPermission.apartments &&
                         getPermission.apartments &&
                         getPermission.apartments.contract) ||
                         (!(
-                          getApartment.order &&
-                          ((getApartment.order &&
-                            getApartment.order.status == 'sold') ||
-                            (getApartment.order &&
-                              getApartment.order.status == 'contract'))
+                          apartment.order &&
+                          ((apartment.order &&
+                            apartment.order.status === 'sold') ||
+                            (apartment.order &&
+                              apartment.order.status === 'contract'))
                         ) &&
                           getPermission.apartments &&
                           getPermission.apartments &&
                           getPermission.apartments.root_contract) ||
-                        (getApartment.order &&
-                          ((getApartment.order &&
-                            getApartment.order.status != 'sold') ||
-                            (getApartment.order &&
-                              getApartment.order.status != 'contract')) &&
-                          getApartment.order &&
-                          getApartment.order.status === 'available' &&
+                        (apartment.order &&
+                          ((apartment.order &&
+                            apartment.order.status !== 'sold') ||
+                            (apartment.order &&
+                              apartment.order.status !== 'contract')) &&
+                          apartment.order &&
+                          apartment.order.status === 'available' &&
                           getPermission.apartments &&
                           getPermission.apartments &&
                           getPermission.apartments.contract)) &&
-                        (getApartment.order && getApartment.order.status) ===
+                        (apartment.order && apartment.order.status) ===
                           'hold'
                     "
-                      @click="goOrderHold([getApartment.order.id])"
+                      @click="goOrderHold([apartment.order.id])"
                       class="btn btn-primary ml-md-1 mr-0 mr-md-2"
                   >
                     <i class="far fa-ballot-check"></i>
@@ -466,31 +466,31 @@
                   <router-link
                       :to="{
                       name: 'contracts-view',
-                      params: {id: getApartment.order.id},
+                      params: {id: apartment.order.id},
                     }"
                       :class="'btn btn-primary ml-1'"
                       v-if="
                       (getPermission.apartments &&
                         getPermission.apartments.contract &&
-                        ((getApartment.order &&
-                          getApartment.order.status === 'sold') ||
-                          (getApartment.order &&
-                            getApartment.order.status === 'contract')) &&
-                        getMe.user.id === getApartment.order &&
-                        getApartment.order.user &&
-                        getApartment.order.user.id) ||
+                        ((apartment.order &&
+                          apartment.order.status === 'sold') ||
+                          (apartment.order &&
+                            apartment.order.status === 'contract')) &&
+                        getMe.user.id === apartment.order &&
+                        apartment.order.user &&
+                        apartment.order.user.id) ||
                         (getPermission.apartments &&
                           getPermission.apartments.root_contract &&
-                          ((getApartment.order &&
-                            getApartment.order.status === 'sold') ||
-                            (getApartment.order &&
-                              getApartment.order.status === 'contract'))) ||
+                          ((apartment.order &&
+                            apartment.order.status === 'sold') ||
+                            (apartment.order &&
+                              apartment.order.status === 'contract'))) ||
                         (getMe.role &&
                           getMe.role.id === 1 &&
-                          ((getApartment.order &&
-                            getApartment.order.status === 'sold') ||
-                            (getApartment.order &&
-                              getApartment.order.status === 'contract')))
+                          ((apartment.order &&
+                            apartment.order.status === 'sold') ||
+                            (apartment.order &&
+                              apartment.order.status === 'contract')))
                     "
                   >
                     <i class="far fa-file-signature"></i>
@@ -536,12 +536,12 @@
 
       <agree-modal
           v-if="confirm"
-          :apartment="getApartment"
+          :apartment="apartment"
           @successAgree="successAgree"
           @CloseAgree="CloseAgree"
       ></agree-modal>
     </div>
-    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 9999">
+    <b-overlay :show="getLoading" class="loading-content" no-wrap opacity="0.5" style="z-index: 9999">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
@@ -565,6 +565,7 @@ import Agree from "./Components/Agree";
 import Discount from "./Components/Discount";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
+import api from "@/services/api";
 
 export default {
   name: 'ApartmentView',
@@ -579,6 +580,7 @@ export default {
 
   data() {
     return {
+      apartment: {},
       settings: {
         // apiKey: "65fb39dd-bc0c-4ba6-8a62-96e80a9a9f4f",
         lang: "ru_RU",
@@ -622,36 +624,48 @@ export default {
       getLoading: false,
     };
   },
-  async created() {
-    this.getLoading = true;
-    await this.fetchApartment(this).finally(() => {
-      this.getLoading = false;
-    })
 
-    this.coords = [
-      this.getApartment.object.location.latitude,
-      this.getApartment.object.location.longitude,
-    ];
+  async created() {
+    await this.fetchApartmentView()
   },
   mounted() {
     Fancybox.bind("[data-fancybox]");
   },
   computed: {
     ...mapGetters([
-      "getApartment",
       "getMe",
       "getPermission",
       "getReserveClient",
     ]),
     otherGetApartment() {
-      if (Object.values(this.getApartment).length) {
-        return this.getApartment;
+      if (Object.values(this.apartment).length) {
+        return this.apartment;
       }
       return null;
     },
   },
   methods: {
     ...mapActions(["fetchApartment", "fetchReserveClient"]),
+
+    async fetchApartmentView() {
+      this.getLoading = true
+      const {object, id} = this.$route.params
+      await api.apartments.getApartmentView(object, id)
+          .then(response => {
+            this.apartment = response.data
+            this.setCoordinate()
+          }).catch((error) => {
+            this.toastedWithErrorCode(error)
+          }).finally(() => {
+            this.getLoading = false
+          })
+    },
+
+    setCoordinate() {
+      const {latitude, longitude} = this.apartment.object.location
+      this.coords = [latitude, longitude]
+    },
+
     getCalData(data) {
       this.calc = {
         ...data,
@@ -741,7 +755,7 @@ export default {
     },
 
     async cancelReserve() {
-      this.order_id = this.getApartment.order.id;
+      this.order_id = this.apartment.order.id;
       this.fetchReserveClient(this);
       this.$swal({
         title: this.$t("sweetAlert.title"),
@@ -821,6 +835,13 @@ export default {
 };
 </script>
 <style lang="scss">
+.loading-content{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .building__img img {
   max-height: 100%;
   max-width: 100%;

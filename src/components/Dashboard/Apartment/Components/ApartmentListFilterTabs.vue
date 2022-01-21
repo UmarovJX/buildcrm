@@ -19,11 +19,7 @@ export default {
   name: "ApartmentListFilterTabs",
   emits: ['get-new-content'],
   created() {
-    const {query} = this.$route
-    const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
-    if (hasQueryAndStatus) {
-      this.currentStatus = query.status
-    }
+    this.setCurrentStatus()
   },
   data() {
     return {
@@ -64,6 +60,13 @@ export default {
     getFilteredContent(status) {
       this.currentStatus = status
       this.$emit('get-new-content', status)
+    },
+    setCurrentStatus(){
+      const {query} = this.$route
+      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
+      if (hasQueryAndStatus) {
+        this.currentStatus = query.status
+      }
     }
   }
 }
