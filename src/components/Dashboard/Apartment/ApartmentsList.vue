@@ -518,7 +518,6 @@ export default {
     //       this.items = response.data.items
     //       this.pagination = response.data.pagination
     //     })
-
     this.currentPage = Number(this.filter.page);
     this.loading = this.getLoading;
 

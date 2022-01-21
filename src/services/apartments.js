@@ -6,11 +6,15 @@ class Apartments extends Core {
     }
 
     getApartmentsList(id, status = 'all') {
-        return this.get(`/objects/${id}/apartments`,{
-            query:{
+        return this.get(`/objects/${id}/apartments`, {
+            query: {
                 status
             }
         })
+    }
+
+    getApartmentView(object, id) {
+        return this.get(`/objects/${object}/apartments/${id}`)
     }
 }
 
