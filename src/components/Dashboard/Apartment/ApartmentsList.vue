@@ -86,7 +86,7 @@
       </div>
 
       <!--  TODO: FILTER SECTION    -->
-      <apartment-list-filter-tabs/>
+      <apartment-list-filter-tabs @get-new-content="getFilterTabsContent"/>
       <!--  TODO: END OF FILTER SECTION    -->
 
       <div>
@@ -120,26 +120,32 @@
           </template>
 
           <template #cell(number)="data" class="p-0">
-              <div class="position-relative">
-                <div v-if="!data.item.is_sold" class="apartments__lock">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
-                        fill="#104c91"/>
-                  </svg>
-                </div>
-                <div class="table-multi-select">
-                  <b-form-checkbox
-                      title="Выберите"
-                      v-if="data.item.is_sold && selected.view && data.item.order.status === 'available'"
-                      :id="'checkbox-' + data.item.id"
-                      v-model="selected.values"
-                      :name="'checkbox-' + data.item.id"
-                      :value="data.item.id"
-                  ></b-form-checkbox>
-                  <span>{{ data.item.number }}</span>
-                </div>
+            <div class="position-relative">
+              <div v-if="!data.item.is_sold" class="apartments__lock">
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="svg-lock-button"
+                >
+                  <path
+                      d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
+                  />
+                </svg>
               </div>
+              <div class="table-multi-select">
+                <b-form-checkbox
+                    title="Выберите"
+                    v-if="data.item.is_sold && selected.view && data.item.order.status === 'available'"
+                    :id="'checkbox-' + data.item.id"
+                    v-model="selected.values"
+                    :name="'checkbox-' + data.item.id"
+                    :value="data.item.id"
+                ></b-form-checkbox>
+                <span>{{ data.item.number }}</span>
+              </div>
+            </div>
           </template>
 
           <template #cell(area)="data">
@@ -576,10 +582,11 @@ export default {
       return firstOption || secondOption
     },
     async toggleApartmentToSale(item) {
+      const {status} = this.$route.query
       const id = this.$route.params.object
       const apartmentUID = item.id
       await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
-        this.updateSpecificApartment(response.data)
+        this.updateSpecificApartment({updatingApartment: response.data, status})
       })
     },
     async getUnfinishedOrders() {
@@ -674,6 +681,19 @@ export default {
       this.scrollActive = false;
       this.page = event;
       this.filter.page = Number(this.page);
+      this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+      await this.fetchApartments(this).then(() => {
+        const element = document.getElementById("my-table");
+        element.scrollIntoView();
+      });
+    },
+    async getFilterTabsContent(status) {
+      this.filter.status = status
+      this.scrollActive = false;
+      delete this.filter.page
       this.$router.push({
         name: "apartments",
         query: this.filter,
@@ -866,7 +886,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.apartments__lock{
+.svg-lock-button{
+  fill: var(--dark);
+}
+
+.apartments__lock {
   position: absolute;
   left: -20px;
   top: 25%;

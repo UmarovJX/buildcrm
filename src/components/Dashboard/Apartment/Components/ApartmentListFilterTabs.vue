@@ -4,8 +4,9 @@
       <div
           v-for="{name,status} in filterList"
           :key="status"
+          @click="getFilteredContent(status)"
           class="filter__content-item"
-          :class="[status === 'all' ? 'filter__content-item-active' : '']"
+          :class="[status === currentStatus ? 'filter__content-item-active' : '']"
       >
         <p>{{ name }}</p>
       </div>
@@ -16,9 +17,17 @@
 <script>
 export default {
   name: "ApartmentListFilterTabs",
+  emits: ['get-new-content'],
+  created() {
+    const {query} = this.$route
+    const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
+    if (hasQueryAndStatus) {
+      this.currentStatus = query.status
+    }
+  },
   data() {
     return {
-      currentStatus:'all',
+      currentStatus: 'all',
       filterList: [
         {
           name: 'Все',
@@ -29,28 +38,34 @@ export default {
           status: 'available'
         },
         {
-          name: 'Недоступен',
-          status: 'unavailable'
-        },
-        {
           name: 'Забронирован',
           status: 'booked'
         },
         {
           name: 'Оформлен',
-          status: 'contract'
+          status: 'sold'
         },
         {
-          name: 'На Оплате',
-          status: 'paid'
+          name: 'Недоступен',
+          status: 'unavailable'
         },
-        {
-          name: 'Закрыт',
-          status: 'closed'
-        }
+        // {
+        //   name: 'На Оплате',
+        //   status: 'paid'
+        // },
+        // {
+        //   name: 'Закрыт',
+        //   status: 'closed'
+        // }
       ]
     }
   },
+  methods: {
+    getFilteredContent(status) {
+      this.currentStatus = status
+      this.$emit('get-new-content', status)
+    }
+  }
 }
 </script>
 
@@ -61,8 +76,8 @@ export default {
   align-items: center;
   gap: 2rem;
   margin-top: 16px;
-
-
+  margin-bottom: 8px;
+  color: var(--dark);
   &::before {
     content: '';
     position: absolute;
@@ -77,7 +92,7 @@ export default {
 
   &-item {
     position: relative;
-    transition: all 0.4s ease-in;
+    transition: all 0.1s ease-in;
     display: flex;
     align-items: center;
     padding: 4px;

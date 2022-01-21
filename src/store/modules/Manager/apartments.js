@@ -10,10 +10,15 @@ export default {
         client: {},
     },
     mutations: {
-        updateSpecificApartment(state, updatingApartment) {
+        updateSpecificApartment(state, {updatingApartment, status}) {
+            if (status === 'unavailable') {
+                state.apartments.items.splice(updatingIndex, 1)
+                return
+            }
+
             const updatingIndex = state.apartments.items.findIndex(apartment => apartment.id === updatingApartment.id)
             if (updatingIndex !== -1) {
-                state.apartments.items.splice(updatingIndex,1,updatingApartment)
+                state.apartments.items.splice(updatingIndex, 1, updatingApartment)
             }
         },
         updateApartment(state, apartments) {
