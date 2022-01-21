@@ -85,9 +85,10 @@ export default {
                 );
 
                 ctx.commit("updateApartment", data);
-                ctx.commit("updateLoading", false, {root: true});
             } catch (error) {
-                this.toastedWithErrorCode(error);
+                vm.toastedWithErrorCode(error);
+            } finally {
+                ctx.commit("updateLoading", false, {root: true});
             }
         },
 
@@ -135,13 +136,14 @@ export default {
                 );
                 const floors = response.data;
                 ctx.commit("updateFilter", floors);
-                ctx.commit("updateLoading", false, {root: true});
             } catch (error) {
                 if (!error.response) {
                     vm.toasted("Error: Network Error", "error");
                 } else {
                     this.toastedWithErrorCode(error);
                 }
+            } finally {
+                ctx.commit("updateLoading", false, {root: true});
             }
         },
 

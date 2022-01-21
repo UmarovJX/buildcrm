@@ -51,7 +51,8 @@
 
                             <b-form-invalid-feedback id="number-feedback">{{
                                 validationContext.errors[0]
-                              }}</b-form-invalid-feedback>
+                              }}
+                            </b-form-invalid-feedback>
                           </b-form-group>
                         </validation-provider>
                       </div>
@@ -112,13 +113,14 @@
 
                         <b-form-invalid-feedback id="date-feedback">{{
                             validationContext.errors[0]
-                          }}</b-form-invalid-feedback>
+                          }}
+                        </b-form-invalid-feedback>
                       </b-form-group>
                     </validation-provider>
                   </div>
                 </div>
 
-                <hr />
+                <hr/>
               </div>
 
               <!-- apartments.agree.passport_series -->
@@ -148,7 +150,8 @@
 
                     <b-form-invalid-feedback id="checkout-pasport-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -179,7 +182,8 @@
 
                     <b-form-invalid-feedback id="issue_passport-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -208,7 +212,8 @@
 
                     <b-form-invalid-feedback id="date_of_issue-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -237,13 +242,14 @@
 
                     <b-form-invalid-feedback id="birth_day-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
 
               <div class="col-md-12">
-                <hr />
+                <hr/>
               </div>
 
               <!-- last_name_kirill -->
@@ -276,7 +282,8 @@
 
                     <b-form-invalid-feedback id="last_name_kirill-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -311,7 +318,8 @@
 
                     <b-form-invalid-feedback id="first_name_kirill-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -346,13 +354,14 @@
 
                     <b-form-invalid-feedback id="second_name_kirill-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
 
               <div class="col-md-12">
-                <hr />
+                <hr/>
               </div>
 
               <!-- last_name_lotin -->
@@ -383,7 +392,8 @@
 
                     <b-form-invalid-feedback id="last_name_lotin-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -416,7 +426,8 @@
 
                     <b-form-invalid-feedback id="first_name_lotin-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -451,13 +462,14 @@
 
                     <b-form-invalid-feedback id="second_name_lotin-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
 
               <div class="col-md-12">
-                <hr />
+                <hr/>
               </div>
 
               <!-- client.phone -->
@@ -484,7 +496,8 @@
 
                     <b-form-invalid-feedback id="phone-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -550,7 +563,7 @@
               </div>
 
               <div class="col-md-12">
-                <hr />
+                <hr/>
               </div>
 
               <!-- apartments.agree.first_payment_date -->
@@ -576,7 +589,8 @@
 
                     <b-form-invalid-feedback id="first_payment_date-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -669,7 +683,7 @@
                           client.discount.prepay < 100)
                     "
                   >
-                    {{ month }} месяцев по <br />
+                    {{ month }} месяцев по <br/>
                     {{
                       getMonths()
                           | number("0,0.00", {
@@ -1531,6 +1545,7 @@ import SuccessAgree from "./Components/SuccessAgree";
 import QuickViewApartments from "./Components/QuickViewApartments";
 import VueNumeric from "vue-numeric";
 import FlipCountdown from "vue2-flip-countdown";
+
 export default {
   name: "ConfirmApartment",
 
@@ -1675,22 +1690,22 @@ export default {
   },
 
   watch: {
-    month: function(newVal) {
+    month: function (newVal) {
       this.CreditMonths(newVal);
     },
 
-    step: function(val) {
+    step: function (val) {
       if (val) {
         this.CreditMonths(this.month);
       }
     },
 
-    "apartment_edit.price": function() {
+    "apartment_edit.price": function () {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
 
-    "apartment_edit.prepay_price": function() {
+    "apartment_edit.prepay_price": function () {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
@@ -1740,27 +1755,25 @@ export default {
                 this.header
             )
             .then(() => {
-              this.loading = false;
               this.$router.push({
                 name: "apartments",
               });
             })
             .catch();
       } catch (error) {
-        this.loading = false;
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
+          const status = error.response.status
+          const message = error.response.data.message
+
+          /* CLIENT AND SERVER ERROR */
+          if (status && status >= 400 && status <= 511) {
+            this.toasted(message, 'error')
           }
         }
+      } finally {
+        this.loading = false;
       }
     },
     successAgree(value) {
@@ -1792,14 +1805,12 @@ export default {
       await this.axios
           .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
           .then((response) => {
-            this.loading = false;
             if (response) {
               this.clientData = response.data;
               this.onSubmit();
             }
           })
           .catch((error) => {
-            this.loading = false;
             if (!error.response) {
               this.toasted("Error: Network Error", "error");
             } else {
@@ -1816,6 +1827,8 @@ export default {
                 this.toasted(error.response.data.message, "error");
               }
             }
+          }).finally(() => {
+            this.loading = false;
           });
     },
     async sendForm() {
@@ -1949,14 +1962,12 @@ export default {
                   this.header
               )
               .then((response) => {
-                this.loading = false;
                 this.toasted(response.data.message, "success");
                 this.$bvModal.hide("modal-agree");
                 this.contract = response.data;
                 this.$bvModal.show("modal-success-agree");
               })
               .catch((error) => {
-                this.loading = false;
                 if (!error.response) {
                   this.toasted("Error: Network Error", "error");
                 } else {
@@ -1973,7 +1984,9 @@ export default {
                     this.toasted(error.response.data.message, "error");
                   }
                 }
-              });
+              }).finally(() => {
+            this.loading = false;
+          });
         }
       });
     },
@@ -2873,19 +2886,23 @@ export default {
   color: #a4a4a4;
   opacity: 0.8;
 }
+
 .building__img {
   height: 150px;
 }
+
 .building__info {
   p {
     font-size: 16px;
   }
 }
+
 .table-sm-width {
   @media screen and (max-width: 576px) {
     min-width: 150px;
   }
 }
+
 .sidebar-btns {
   display: flex;
   justify-content: center;

@@ -166,6 +166,7 @@ import Create from "./Modal/Create";
 import Edit from "./Modal/Edit";
 
 export default {
+  name:'Users',
   components: {
     "create-modal": Create,
     "edit-modal": Edit,

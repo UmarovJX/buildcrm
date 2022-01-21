@@ -761,7 +761,6 @@ export default {
                   this.header
               )
               .then((response) => {
-                this.getLoading = false;
                 this.toasted(response.data.message, "success");
 
                 this.$nextTick(() => {
@@ -773,22 +772,20 @@ export default {
                 this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
               })
               .catch((error) => {
-                this.getLoading = false;
                 if (!error.response) {
                   this.toasted("Error: Network Error", "error");
                 } else {
-                  if (error.response.status === 403) {
-                    this.toasted(error.response.data.message, "error");
-                  } else if (error.response.status === 401) {
-                    this.toasted(error.response.data.message, "error");
-                  } else if (error.response.status === 500) {
-                    this.toasted(error.response.data.message, "error");
-                  } else {
-                    this.error = true;
-                    this.errors = error.response.data.errors;
+                  const status = error.response.status
+                  const message = error.response.data.message
+
+                  /* CLIENT AND SERVER ERROR */
+                  if (status && status >= 400 && status <= 511) {
+                    this.toasted(message, 'error')
                   }
                 }
-              });
+              }).finally(() => {
+            this.getLoading = false;
+          });
         }
       });
     },

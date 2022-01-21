@@ -59,7 +59,6 @@ export default {
           process.env.VUE_APP_URL + "/deals",
           header
         );
-        ctx.commit("updateLoading", false, {root: true});
         ctx.commit("updateContract", data.items);
         ctx.commit("updatePagination", data.pagination);
       } catch (error) {
@@ -76,6 +75,8 @@ export default {
             vm.toasted(error.response.data.message, "error");
           }
         }
+      } finally {
+        ctx.commit("updateLoading", false, {root: true});
       }
     },
   },

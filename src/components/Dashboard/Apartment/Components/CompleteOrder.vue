@@ -5,7 +5,7 @@
         <!-- Таблица ежемесячных платежей -->
         <div class="col-xl-8">
           <div
-            class="
+              class="
                   d-flex
                   justify-content-between
                   align-items-center
@@ -20,35 +20,35 @@
             <h6 class="mb-0">Таблица ежемесячных платежей:</h6>
             <div class="d-flex justify-content-end align-items-center">
               <div
-                class="mr-2 w-25"
-                v-if="
+                  class="mr-2 w-25"
+                  v-if="
                   client.discount.prepay != 100 || client.discount.prepay < 100
                 "
               >
                 <!-- <label class="d-block" for="month">Месяцев</label> -->
                 <input
-                  id="month"
-                  class="my-form__input w-100"
-                  type="number"
-                  min="0"
-                  required
-                  v-model="month"
+                    id="month"
+                    class="my-form__input w-100"
+                    type="number"
+                    min="0"
+                    required
+                    v-model="month"
                 />
               </div>
               <span
-                v-if="
+                  v-if="
                   month > 0 &&
                     (client.discount.prepay != 100 ||
                       client.discount.prepay < 100)
                 "
               >
-                {{ month }} месяцев по <br />
+                {{ month }} месяцев по <br/>
                 {{
                   getMonth()
-                    | number("0,0.00", {
-                      thousandsSeparator: " ",
-                      decimalSeparator: ",",
-                    })
+                      | number("0,0.00", {
+                    thousandsSeparator: " ",
+                    decimalSeparator: ",",
+                  })
                 }}
                 {{ $t("ye") }}
               </span>
@@ -56,51 +56,51 @@
           </div>
           <div class="table-responsive custom-table mt-0">
             <table
-              class="table"
-              v-if="
+                class="table"
+                v-if="
                 client.discount.prepay != 100 || client.discount.prepay < 100
               "
             >
               <thead>
-                <tr>
-                  <th>Месяцы</th>
+              <tr>
+                <th>Месяцы</th>
 
-                  <th>Тип</th>
+                <th>Тип</th>
 
-                  <th>Сумма</th>
-                </tr>
+                <th>Сумма</th>
+              </tr>
               </thead>
 
               <tbody>
-                <tr
+              <tr
                   v-if="
                     initial_payments.length === 0 ||
                       initial_payments.length === 1
                   "
-                >
-                  <td>
-                    {{
-                      this.client.first_payment_date
+              >
+                <td>
+                  {{
+                    this.client.first_payment_date
                         ? this.client.first_payment_date
                         : new Date() | moment("DD.MM.YYYY")
-                    }}
-                  </td>
+                  }}
+                </td>
 
-                  <td>Первоначальный взнос</td>
+                <td>Первоначальный взнос</td>
 
-                  <td>
-                    <div
+                <td>
+                  <div
                       class="
                             d-flex
                             justify-content-between
                             align-items-center
                           "
-                    >
+                  >
                       <span class="table-sm-width">
                         {{
                           client.discount.id === "other" && month == 0
-                            ? getTotalOther()
-                            : getPrepay()
+                              ? getTotalOther()
+                              : getPrepay()
                               | number("0,0.00", {
                                 thousandsSeparator: " ",
                                 decimalSeparator: ",",
@@ -109,92 +109,92 @@
                         {{ $t("ye") }}
                       </span>
 
-                      <button
+                    <button
                         class="btn btn-success btn-sm mr-0 mt-0"
                         type="button"
                         @click="addInitialPayment"
-                      >
-                        <i class="fa fa-plus-circle"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                    >
+                      <i class="fa fa-plus-circle"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
 
-                <tr
+              <tr
                   v-else
                   v-for="(initialPayment, index) in initial_payments"
                   :key="'initial' + index"
-                >
-                  <td>
+              >
+                <td>
                     <span v-if="!initialPayment.edit">
                       {{ initialPayment.month | moment("DD.MM.YYYY") }}
                     </span>
 
-                    <div
+                  <div
                       class="col-md-12 float-left"
                       v-if="initialPayment.edit && index != 0"
-                    >
-                      <div class="row">
-                        <input
+                  >
+                    <div class="row">
+                      <input
                           type="date"
                           class="form-control"
                           v-model="initialPayment.month"
-                        />
-                      </div>
+                      />
                     </div>
-                  </td>
+                  </div>
+                </td>
 
-                  <td>Первоначальный взнос</td>
+                <td>Первоначальный взнос</td>
 
-                  <td>
-                    <div
+                <td>
+                  <div
                       class="
                             d-flex
                             justify-content-between
                             align-items-center
                           "
-                    >
+                  >
                       <span v-if="!initialPayment.edit">
                         {{
                           initialPayment.amount
-                            | number("0,0.00", {
-                              thousandsSeparator: " ",
-                              decimalSeparator: ",",
-                            })
+                              | number("0,0.00", {
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
                         }}
                         {{ $t("ye") }}
                       </span>
 
-                      <div
+                    <div
                         class="col-md-4 float-left"
                         v-if="initialPayment.edit"
-                      >
-                        <div class="row">
-                          <input
+                    >
+                      <div class="row">
+                        <input
                             type="text"
                             class="form-control"
                             v-model="initialPayment.amount"
-                          />
-                        </div>
+                        />
                       </div>
+                    </div>
 
-                      <div
+                    <div
                         class="
                               d-flex
                               justify-content-between
                               align-items-center
                             "
-                      >
-                        <button
+                    >
+                      <button
                           class="btn btn-success btn-sm mr-1 mt-0"
                           v-if="index === initial_payments.length - 1"
                           type="button"
                           @click="addInitialPayment"
-                        >
-                          <i class="fa fa-plus-circle"></i>
-                        </button>
+                      >
+                        <i class="fa fa-plus-circle"></i>
+                      </button>
 
-                        <button
+                      <button
                           v-if="
                             ((getMe.role && getMe.role.id) === 1 &&
                               !initialPayment.edit) ||
@@ -205,12 +205,12 @@
                           type="button"
                           @click="editInitialPayment(index)"
                           class="btn btn-sm btn-primary mt-0 mr-1"
-                        >
-                          <i class="fa fa-edit"></i>
-                        </button>
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
 
-                        <div v-if="initialPayment.edit">
-                          <button
+                      <div v-if="initialPayment.edit">
+                        <button
                             v-if="
                               (getMe.role && getMe.role.id) === 1 ||
                                 getPermission.contracts.monthly
@@ -218,12 +218,12 @@
                             type="button"
                             @click="editInitialPayment(index)"
                             class="btn btn-sm btn-success mt-0 mr-1"
-                          >
-                            <i class="fa fa-save"></i>
-                          </button>
-                        </div>
+                        >
+                          <i class="fa fa-save"></i>
+                        </button>
+                      </div>
 
-                        <button
+                      <button
                           v-if="
                             (index != 0 &&
                               getMe.role &&
@@ -237,52 +237,52 @@
                           type="button"
                           @click="deleteInitialPayment(index)"
                           class="btn btn-sm btn-danger mt-0 mr-0"
-                        >
-                          <i class="fa fa-trash"></i>
-                        </button>
-                      </div>
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                </td>
+              </tr>
 
-                <tr v-for="(month, index) in credit_months" :key="index">
-                  <td>
-                    {{ month.month | moment("DD.MM.YYYY") }}
-                  </td>
+              <tr v-for="(month, index) in credit_months" :key="index">
+                <td>
+                  {{ month.month | moment("DD.MM.YYYY") }}
+                </td>
 
-                  <td>Ежемесячно</td>
+                <td>Ежемесячно</td>
 
-                  <td>
-                    <div
+                <td>
+                  <div
                       class="
                             d-flex d-flex
                             justify-content-between
                             align-items-center
                           "
-                    >
+                  >
                       <span v-if="!month.edit">
                         {{
                           month.amount
-                            | number("0,0.00", {
-                              thousandsSeparator: " ",
-                              decimalSeparator: ",",
-                            })
+                              | number("0,0.00", {
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
                         }}
                         {{ $t("ye") }}
                       </span>
 
-                      <div class="col-md-4 float-left" v-if="month.edit">
-                        <div class="row">
-                          <input
+                    <div class="col-md-4 float-left" v-if="month.edit">
+                      <div class="row">
+                        <input
                             type="text"
                             class="form-control"
                             required
                             v-model.number="month.amount"
-                          />
-                        </div>
+                        />
                       </div>
+                    </div>
 
-                      <button
+                    <button
                         v-if="
                           (getMe.role && getMe.role.id === 1 && !month.edit) ||
                             (getPermission.contracts &&
@@ -292,12 +292,12 @@
                         type="button"
                         @click="editMonthlyPayment(index)"
                         class="btn btn-sm btn-primary mr-0 mt-0"
-                      >
-                        <i class="fa fa-edit"></i>
-                      </button>
+                    >
+                      <i class="fa fa-edit"></i>
+                    </button>
 
-                      <div v-if="month.edit">
-                        <button
+                    <div v-if="month.edit">
+                      <button
                           v-if="
                             (getMe.role && getMe.role.id) === 1 ||
                               getPermission.contracts.monthly
@@ -305,13 +305,13 @@
                           type="button"
                           @click="editMonthlyPayment(index)"
                           class="btn btn-sm btn-success mr-0 mt-0"
-                        >
-                          <i class="fa fa-save"></i>
-                        </button>
-                      </div>
+                      >
+                        <i class="fa fa-save"></i>
+                      </button>
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -332,61 +332,61 @@
                 </strong>
               </div>
               <b-collapse
-                id="collapse-info"
-                v-model="isVisible"
-                class="px-3 pb-3"
+                  id="collapse-info"
+                  v-model="isVisible"
+                  class="px-3 pb-3"
               >
                 <table class="table mx-0 mt-2 p-0 my-table-another-variant">
                   <tbody class="m-0 p-0">
-                    <tr>
-                      <td class="px-0 py-2">Номер паспорта</td>
-                      <td class="px-0 py-2 text-right">
-                        {{ client.passport_series }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2">Место выдачи паспорта</td>
-                      <td class="px-0 py-2 text-right">
-                        {{ client.issued_by_whom }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2">Дата выпуска пасспорта</td>
-                      <td class="px-0 py-2 text-right">
-                        {{ client.date_of_issue }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2">Дата рождения</td>
-                      <td class="px-0 py-2 text-right">
-                        {{ client.birth_day }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2">ФИО</td>
-                      <td
+                  <tr>
+                    <td class="px-0 py-2">Номер паспорта</td>
+                    <td class="px-0 py-2 text-right">
+                      {{ client.passport_series }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-0 py-2">Место выдачи паспорта</td>
+                    <td class="px-0 py-2 text-right">
+                      {{ client.issued_by_whom }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-0 py-2">Дата выпуска пасспорта</td>
+                    <td class="px-0 py-2 text-right">
+                      {{ client.date_of_issue }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-0 py-2">Дата рождения</td>
+                    <td class="px-0 py-2 text-right">
+                      {{ client.birth_day }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-0 py-2">ФИО</td>
+                    <td
                         class="px-0 py-2 text-right"
                         :title="
                           `${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`
                         "
-                      >
-                        {{ client.last_name.lotin }}
-                        {{ client.first_name.lotin }}
-                        {{ client.second_name.lotin }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2">Телефон номер</td>
-                      <td class="px-0 py-2 text-right">
-                        {{ client.phone }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="px-0 py-2">Дополнительный номер</td>
-                      <td class="px-0 py-2 text-right">
-                        {{ client.other_phone }}
-                      </td>
-                    </tr>
+                    >
+                      {{ client.last_name.lotin }}
+                      {{ client.first_name.lotin }}
+                      {{ client.second_name.lotin }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-0 py-2">Телефон номер</td>
+                    <td class="px-0 py-2 text-right">
+                      {{ client.phone }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-0 py-2">Дополнительный номер</td>
+                    <td class="px-0 py-2 text-right">
+                      {{ client.other_phone }}
+                    </td>
+                  </tr>
                   </tbody>
                 </table>
               </b-collapse>
@@ -395,9 +395,9 @@
             <!-- Calc -->
             <div class="new-object p-3">
               <Discount
-                v-if="getApartmentItem"
-                :apartment="getApartmentItem"
-                @getCalData="getCalData"
+                  v-if="getApartmentItem"
+                  :apartment="getApartmentItem"
+                  @getCalData="getCalData"
               ></Discount>
             </div>
 
@@ -408,8 +408,8 @@
                   Цена продажи:
                   {{
                     client.discount.id === "other"
-                      ? apartment_edit.price
-                      : getApartmentItem.price
+                        ? apartment_edit.price
+                        : getApartmentItem.price
                         | number("0,0.00", {
                           thousandsSeparator: " ",
                           decimalSeparator: ",",
@@ -424,18 +424,18 @@
                     <div class="col-12">
                       <div class="mb-3" v-if="month > 0">
                         <label
-                          class="d-block h6 font-weight-normal"
-                          for="initial-fee"
-                          >Первоначальный взнос:</label
+                            class="d-block h6 font-weight-normal"
+                            for="initial-fee"
+                        >Первоначальный взнос:</label
                         >
                         <div class="row">
                           <div class="col-md-8">
                             <input
-                              id="initial-fee"
-                              class="my-form__input"
-                              disabled
-                              type="text"
-                              :value="
+                                id="initial-fee"
+                                class="my-form__input"
+                                disabled
+                                type="text"
+                                :value="
                                 client.discount.id === 'other' && month == 0
                                   ? getTotalOther()
                                   : getPrepay()
@@ -448,10 +448,10 @@
                           </div>
                           <div class="col-md-4 pl-md-0 mt-md-0 mt-2">
                             <input
-                              class="my-form__input"
-                              disabled
-                              type="text"
-                              :value="
+                                class="my-form__input"
+                                disabled
+                                type="text"
+                                :value="
                                 client &&
                                 client.discount &&
                                 client.discount.prepay
@@ -464,10 +464,10 @@
                       </div>
 
                       <button
-                        type="button"
-                        v-if="client.discount.id === 'other'"
-                        @click="edit.price = true"
-                        class="btn btn-light mx-auto mb-3"
+                          type="button"
+                          v-if="client.discount.id === 'other'"
+                          @click="edit.price = true"
+                          class="btn btn-light mx-auto mb-3"
                       >
                         <i class="fa fa-edit"></i>
                         {{ $t("apartments.agree.edit_price") }}
@@ -482,16 +482,16 @@
                 <div class="col-12">
                   <div class="mb-3">
                     <label class="d-block" for="initial-fee"
-                      >Цена продажи:</label
+                    >Цена продажи:</label
                     >
                     <div class="row">
                       <div class="col-12">
                         <input
-                          id="initial-price"
-                          class="my-form__input"
-                          step="0.01"
-                          type="number"
-                          v-model="apartment_edit.price"
+                            id="initial-price"
+                            class="my-form__input"
+                            step="0.01"
+                            type="number"
+                            v-model="apartment_edit.price"
                         />
                       </div>
                     </div>
@@ -499,20 +499,20 @@
 
                   <div class="mb-3" v-if="month > 0">
                     <label class="d-block" for="initial-fee"
-                      >Первоначальный взнос:</label
+                    >Первоначальный взнос:</label
                     >
                     <div class="row">
                       <div class="col-md-10">
                         <input
-                          id="initial-fee"
-                          class="my-form__input"
-                          type="number"
-                          step="0.01"
-                          v-model="apartment_edit.prepay_price"
+                            id="initial-fee"
+                            class="my-form__input"
+                            type="number"
+                            step="0.01"
+                            v-model="apartment_edit.prepay_price"
                         />
                       </div>
                       <div
-                        class="
+                          class="
                               col-md-2
                               pl-0
                               d-flex
@@ -528,9 +528,9 @@
                   </div>
 
                   <button
-                    type="button"
-                    @click="edit.price = false"
-                    class="btn btn-primary mx-auto mb-3"
+                      type="button"
+                      @click="edit.price = false"
+                      class="btn btn-primary mx-auto mb-3"
                   >
                     <i class="fa fa-save"></i> {{ $t("save") }}
                   </button>
@@ -539,23 +539,23 @@
 
               <!-- Сумма рассрочки -->
               <table
-                class="table mx-0 p-0 my-0 my-table-another-variant"
-                v-if="month > 0"
+                  class="table mx-0 p-0 my-0 my-table-another-variant"
+                  v-if="month > 0"
               >
                 <tbody class="m-0 p-0">
-                  <tr>
-                    <td class="px-0 py-2">Сумма рассрочки</td>
-                    <td class="px-0 py-2 text-right">
-                      {{
-                        getDebt()
+                <tr>
+                  <td class="px-0 py-2">Сумма рассрочки</td>
+                  <td class="px-0 py-2 text-right">
+                    {{
+                      getDebt()
                           | number("0,0.00", {
-                            thousandsSeparator: " ",
-                            decimalSeparator: ",",
-                          })
-                      }}
-                      {{ $t("ye") }}
-                    </td>
-                  </tr>
+                        thousandsSeparator: " ",
+                        decimalSeparator: ",",
+                      })
+                    }}
+                    {{ $t("ye") }}
+                  </td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -565,10 +565,10 @@
               <div class="d-none">
                 <label>Комментария</label>
                 <textarea
-                  rows="3"
-                  cols="3"
-                  v-model="comment"
-                  class="form-control"
+                    rows="3"
+                    cols="3"
+                    v-model="comment"
+                    class="form-control"
                 ></textarea>
               </div>
 
@@ -587,9 +587,9 @@
               <div class="sidebar-btns">
                 <!-- back -->
                 <button
-                  type="button"
-                  class="btn btn-secondary mr-0"
-                  @click="[(step = 1), (next = true), (confirm = false)]"
+                    type="button"
+                    class="btn btn-secondary mr-0"
+                    @click="[(step = 1), (next = true), (confirm = false)]"
                 >
                   <i class="fa fa-chevron-circle-left"></i>
                   {{ $t("back") }}
@@ -597,18 +597,18 @@
 
                 <!-- cancel -->
                 <button
-                  type="button"
-                  class="btn btn-default mx-md-2"
-                  @click="removeBlock"
+                    type="button"
+                    class="btn btn-default mx-md-2"
+                    @click="removeBlock"
                 >
                   {{ $t("cancel") }}
                 </button>
 
                 <!-- create_agree -->
                 <button
-                  type="submit"
-                  class="btn btn-success mr-0"
-                  v-if="!loading && confirm"
+                    type="submit"
+                    class="btn btn-success mr-0"
+                    v-if="!loading && confirm"
                 >
                   {{ $t("create_agree") }}
                   <i class="fa fa-file-contract"></i>
@@ -616,9 +616,9 @@
 
                 <!-- create_agree loading -->
                 <button
-                  v-if="loading && confirm"
-                  type="button"
-                  class="btn btn-success mr-0"
+                    v-if="loading && confirm"
+                    type="button"
+                    class="btn btn-success mr-0"
                 >
                   {{ $t("create_agree") }}
                   <i class="fas fa-spinner fa-spin"></i>
@@ -635,6 +635,7 @@
 <script>
 import {mapGetters, mapActions} from "vuex";
 import moment from "moment";
+
 export default {
   name: "CompleteOrder",
   data() {
@@ -710,8 +711,7 @@ export default {
     };
   },
 
-  components: {
-  },
+  components: {},
 
   created() {
     this.backToView();
@@ -727,8 +727,8 @@ export default {
 
     getApartmentDiscounts() {
       if (
-        (this.getApartmentItem.object &&
-          this.getApartmentItem.object.credit_month) != 0
+          (this.getApartmentItem.object &&
+              this.getApartmentItem.object.credit_month) != 0
       ) {
         return this.getApartmentItem.discounts;
       }
@@ -765,20 +765,20 @@ export default {
   },
 
   watch: {
-    month: function(newVal) {
+    month: function (newVal) {
       this.CreditMonths(newVal);
     },
 
-    step: function() {
+    step: function () {
       this.CreditMonths(this.month);
     },
 
-    "apartment_edit.price": function() {
+    "apartment_edit.price": function () {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
 
-    "apartment_edit.prepay_price": function() {
+    "apartment_edit.prepay_price": function () {
       this.getDiscountEdited();
       this.CreditMonths(this.month);
     },
@@ -838,15 +838,15 @@ export default {
     },
     addInitialPayment() {
       let today = this.client.first_payment_date
-        ? new Date(this.client.first_payment_date)
-        : new Date();
+          ? new Date(this.client.first_payment_date)
+          : new Date();
 
       if (this.initial_payments.length === 0) {
         let month = parseInt(this.month);
         let amount =
-          this.client.discount.id === "other" && month === 0
-            ? this.getTotalOther()
-            : this.getPrepay();
+            this.client.discount.id === "other" && month === 0
+                ? this.getTotalOther()
+                : this.getPrepay();
 
         this.initial_payments.push({
           amount: amount,
@@ -868,10 +868,10 @@ export default {
     async Search() {
       try {
         const {data} = await this.axios.get(
-          process.env.VUE_APP_URL +
+            process.env.VUE_APP_URL +
             "/clients/search?field=" +
             this.search_label,
-          this.header
+            this.header
         );
         this.step = 1;
 
@@ -917,10 +917,10 @@ export default {
     async reserveClientFull() {
       try {
         const {data} = await this.axios.get(
-          process.env.VUE_APP_URL +
+            process.env.VUE_APP_URL +
             "/clients/" +
             this.getApartmentItem.order.id,
-          this.header
+            this.header
         );
         this.step = 1;
         this.client = {
@@ -965,32 +965,32 @@ export default {
       this.loading = true;
 
       await this.axios
-        .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
-        .then((response) => {
-          this.loading = false;
-          if (response) {
-            this.onSubmit();
-          }
-        })
-        .catch((error) => {
-          this.loading = false;
-          if (!error.response) {
-            this.toasted("Error: Network Error", "error");
-          } else {
-            if (error.response.status === 403) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 401) {
-              this.toasted(error.response.data, "error");
-            } else if (error.response.status === 500) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 422) {
-              this.error = true;
-              this.geteErrors = error.response.data;
-            } else {
-              this.toasted(error.response.data.message, "error");
+          .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
+          .then((response) => {
+            if (response) {
+              this.onSubmit();
             }
-          }
-        });
+          })
+          .catch((error) => {
+            if (!error.response) {
+              this.toasted("Error: Network Error", "error");
+            } else {
+              if (error.response.status === 403) {
+                this.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 401) {
+                this.toasted(error.response.data, "error");
+              } else if (error.response.status === 500) {
+                this.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 422) {
+                this.error = true;
+                this.geteErrors = error.response.data;
+              } else {
+                this.toasted(error.response.data.message, "error");
+              }
+            }
+          }).finally(() => {
+            this.loading = false;
+          });
     },
     async sendForm() {
       if (this.client.discount.id === null) return;
@@ -1017,8 +1017,8 @@ export default {
 
           formData.append("second_name[lotin]", this.client.second_name.lotin);
           formData.append(
-            "second_name[kirill]",
-            this.client.second_name.kirill
+              "second_name[kirill]",
+              this.client.second_name.kirill
           );
 
           formData.append("passport_series", this.client.passport_series);
@@ -1035,45 +1035,45 @@ export default {
           formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
 
           if (
-            this.getMe.role.id === 1 ||
-            this.getPermission.contracts.monthly
+              this.getMe.role.id === 1 ||
+              this.getPermission.contracts.monthly
           ) {
             for (
-              let monthly = 0;
-              monthly < this.credit_months.length;
-              monthly++
+                let monthly = 0;
+                monthly < this.credit_months.length;
+                monthly++
             ) {
               formData.append(
-                "monthly[" + monthly + "][edited]",
-                this.credit_months[monthly].edited ? 1 : 0
+                  "monthly[" + monthly + "][edited]",
+                  this.credit_months[monthly].edited ? 1 : 0
               );
               formData.append(
-                "monthly[" + monthly + "][amount]",
-                this.credit_months[monthly].amount
+                  "monthly[" + monthly + "][amount]",
+                  this.credit_months[monthly].amount
               );
               formData.append(
-                "monthly[" + monthly + "][date]",
-                this.credit_months[monthly].month
+                  "monthly[" + monthly + "][date]",
+                  this.credit_months[monthly].month
               );
             }
           }
 
           for (
-            let initial_payment = 0;
-            initial_payment < this.initial_payments.length;
-            initial_payment++
+              let initial_payment = 0;
+              initial_payment < this.initial_payments.length;
+              initial_payment++
           ) {
             formData.append(
-              "initial_payments[" + initial_payment + "][edited]",
-              this.initial_payments[initial_payment].edited ? 1 : 0
+                "initial_payments[" + initial_payment + "][edited]",
+                this.initial_payments[initial_payment].edited ? 1 : 0
             );
             formData.append(
-              "initial_payments[" + initial_payment + "][amount]",
-              this.initial_payments[initial_payment].amount
+                "initial_payments[" + initial_payment + "][amount]",
+                this.initial_payments[initial_payment].amount
             );
             formData.append(
-              "initial_payments[" + initial_payment + "][date]",
-              this.initial_payments[initial_payment].month
+                "initial_payments[" + initial_payment + "][date]",
+                this.initial_payments[initial_payment].month
             );
           }
 
@@ -1082,8 +1082,8 @@ export default {
           if (this.client.discount.id === "other") {
             formData.append("apartment_price", this.apartment_edit.price);
             formData.append(
-              "apartment_prepay_price",
-              this.apartment_edit.prepay_price
+                "apartment_prepay_price",
+                this.apartment_edit.prepay_price
             );
           }
 
@@ -1095,8 +1095,8 @@ export default {
           // if (this.date_change) {
           formData.append("date_change", 1);
           formData.append(
-            "contract_number",
-            this.apartment_edit.contract_number
+              "contract_number",
+              this.apartment_edit.contract_number
           );
           formData.append("contract_date", this.apartment_edit.contract_date);
           // }
@@ -1105,37 +1105,37 @@ export default {
             formData.append("months", this.month);
           }
           this.axios
-            .post(
-              process.env.VUE_APP_URL + "/orders/" + this.getApartmentItem.id,
-              formData,
-              this.header
-            )
-            .then((response) => {
-              this.loading = false;
-              this.toasted(response.data.message, "success");
-              this.$bvModal.hide("modal-agree");
-              this.contract = response.data;
-              this.$bvModal.show("modal-success-agree");
-            })
-            .catch((error) => {
-              this.loading = false;
-              if (!error.response) {
-                this.toasted("Error: Network Error", "error");
-              } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 422) {
-                  this.error = true;
-                  this.geteErrors = error.response.data;
+              .post(
+                  process.env.VUE_APP_URL + "/orders/" + this.getApartmentItem.id,
+                  formData,
+                  this.header
+              )
+              .then((response) => {
+                this.toasted(response.data.message, "success");
+                this.$bvModal.hide("modal-agree");
+                this.contract = response.data;
+                this.$bvModal.show("modal-success-agree");
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  this.toasted("Error: Network Error", "error");
                 } else {
-                  this.toasted(error.response.data.message, "error");
+                  if (error.response.status === 403) {
+                    this.toasted(error.response.data.message, "error");
+                  } else if (error.response.status === 401) {
+                    this.toasted(error.response.data, "error");
+                  } else if (error.response.status === 500) {
+                    this.toasted(error.response.data.message, "error");
+                  } else if (error.response.status === 422) {
+                    this.error = true;
+                    this.geteErrors = error.response.data;
+                  } else {
+                    this.toasted(error.response.data.message, "error");
+                  }
                 }
-              }
-            });
+              }).finally(() => {
+            this.loading = false;
+          });
         }
       });
     },
@@ -1200,7 +1200,7 @@ export default {
         switch (this.client.discount.type) {
           case "fixed":
             total =
-              this.client.discount.amount * this.getApartmentItem.plan.area;
+                this.client.discount.amount * this.getApartmentItem.plan.area;
             break;
           default:
             total = this.getApartmentItem.price / total_discount;
@@ -1253,7 +1253,7 @@ export default {
         switch (this.client.discount.type) {
           case "fixed":
             total =
-              this.client.discount.amount * this.getApartmentItem.plan.area;
+                this.client.discount.amount * this.getApartmentItem.plan.area;
             break;
           default:
             total = this.getApartmentItem.price / total_discount;
@@ -1265,8 +1265,8 @@ export default {
     },
     CreditMonths(newVal) {
       let today = this.client.payment_date
-        ? new Date(this.client.payment_date)
-        : new Date();
+          ? new Date(this.client.payment_date)
+          : new Date();
 
       this.credit_months = [];
 
@@ -1305,7 +1305,7 @@ export default {
         this.initial_payments[index].edit = false;
 
         if (
-          parseFloat(this.initial_payments[index].amount) != this.getMonth()
+            parseFloat(this.initial_payments[index].amount) != this.getMonth()
         ) {
           this.edit.initial_edited = true;
           this.initial_payments[index].edited = true;
@@ -1344,10 +1344,10 @@ export default {
       if (this.search_label.length == 9) {
         try {
           const {data} = await this.axios.get(
-            process.env.VUE_APP_URL +
+              process.env.VUE_APP_URL +
               "/clients/search?field=" +
               this.search_label,
-            this.header
+              this.header
           );
           this.client = {
             id: data.id,
@@ -1434,8 +1434,8 @@ export default {
 
     symbolIsCyrillic(event) {
       return event
-        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
-        .replace(/(\..*?)\..*/g, "$1");
+          .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
+          .replace(/(\..*?)\..*/g, "$1");
     },
     symbolIsLatin(event) {
       return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
@@ -1483,7 +1483,7 @@ export default {
 
     symbolCyrillicToLatin(word) {
       var answer = "",
-        a = {};
+          a = {};
 
       a["Ё"] = "YO";
       a["Й"] = "I";
@@ -1577,7 +1577,7 @@ export default {
     },
     symbolLatinToCyrillic(word) {
       var answer = "",
-        a = {};
+          a = {};
 
       a["Q"] = "Қ";
       a["q"] = "қ";
@@ -1656,19 +1656,23 @@ export default {
   color: #a4a4a4;
   opacity: 0.8;
 }
+
 .building__img {
   height: 150px;
 }
+
 .building__info {
   p {
     font-size: 16px;
   }
 }
+
 .table-sm-width {
   @media screen and (max-width: 576px) {
     min-width: 150px;
   }
 }
+
 .sidebar-btns {
   display: flex;
   justify-content: center;

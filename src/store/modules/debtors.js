@@ -15,9 +15,10 @@ export default {
         );
         ctx.commit("updateDebtors", data.items);
         ctx.commit("updatePagination", data.pagination);
-        ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
         vm.toastedWithErrorCode(error);
+      } finally {
+        ctx.commit("updateLoading", false, {root: true});
       }
     },
 
@@ -43,9 +44,10 @@ export default {
 
         ctx.commit("updateDebtors", data.items);
         ctx.commit("updatePagination", data.pagination);
-        ctx.commit("updateLoading", false, {root: true});
       } catch (error) {
         vm.toastedWithErrorCode(error);
+      } finally {
+        ctx.commit("updateLoading", false, {root: true});
       }
     },
   },

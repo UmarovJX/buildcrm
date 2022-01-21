@@ -188,7 +188,7 @@ export default {
 
   watch: {
     orderBy: function (newVal) {
-      if (newVal != "all") {
+      if (newVal !== "all") {
         this.fetchDebtorsFilter(this);
       } else {
         if (this.search.length > 0 || this.date.length > 0) {

@@ -831,7 +831,7 @@ export default {
       this.apartment_id = 0;
       this.edit = false;
 
-      this.$router.push({
+      await this.$router.push({
         name: "apartments",
         query: this.filter,
       });

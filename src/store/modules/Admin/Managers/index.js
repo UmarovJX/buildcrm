@@ -7,8 +7,6 @@ export default {
                 const managers = response.data;
 
                 ctx.commit('updateUsers', managers);
-                ctx.commit('updateLoading', false, { root: true });
-
             } catch (error) {
                 if (! error.response) {
                     vm.toasted('Error: Network Error', 'error');
@@ -23,6 +21,9 @@ export default {
                         vm.toasted(error.response.data.message, 'error');
                     }
                 }
+                ctx.commit('updateLoading', false, { root: true });
+            } finally {
+                ctx.commit('updateLoading', false, { root: true });
             }
         },
 

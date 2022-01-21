@@ -3,24 +3,24 @@
     <div class="app-content apartment-list-filter">
       <div class="mt-4">
         <b-table
-          ref="apartment-list-table"
-          id="my-table"
-          class="custom-table"
-          sticky-header
-          borderless
-          show-empty
-          responsive
-          sort-icon-left
-          :items="items"
-          :fields="fields"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
-          :empty-text="$t('no_data')"
+            ref="apartment-list-table"
+            id="my-table"
+            class="custom-table"
+            sticky-header
+            borderless
+            show-empty
+            responsive
+            sort-icon-left
+            :items="items"
+            :fields="fields"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :empty-text="$t('no_data')"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">{{
-              scope.emptyText
-            }}</span>
+                scope.emptyText
+              }}</span>
           </template>
 
           <template #cell(created_by)="data">
@@ -33,16 +33,16 @@
           <template #cell(expiry_at)="data">
             <span>{{
                 $moment(data.item.expiry_at).format("DD.MM.YYYY"),
-            }}</span>
+              }}</span>
           </template>
 
           <template #cell(actions)="data">
             <div class="float-right">
               <div class="dropdown my-dropdown dropleft">
                 <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
+                    type="button"
+                    class="dropdown-toggle"
+                    data-toggle="dropdown"
                 >
                   <i class="far fa-ellipsis-h"></i>
                 </button>
@@ -50,14 +50,14 @@
                 <div class="dropdown-menu">
                   <!--  Продолжить оформление -->
                   <router-link
-                    :to="{
+                      :to="{
                       name: 'confirm-apartment',
                       params: {
                         id: data.item.uuid,
                         object: data.item.apartments[0].object.id,
                       },
                     }"
-                    :class="'dropdown-item dropdown-item--inside'"
+                      :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="far fa-eye"></i>
                     Продолжить оформление
@@ -65,8 +65,8 @@
 
                   <!-- Отменить -->
                   <b-link
-                    class="dropdown-item dropdown-item--inside"
-                    @click="cancelContract(data.item.uuid)"
+                      class="dropdown-item dropdown-item--inside"
+                      @click="cancelContract(data.item.uuid)"
                   >
                     <i class="far fa-trash text-danger"></i> Отменить оформление
                   </b-link>
@@ -161,16 +161,14 @@ export default {
     async getUnfinishedOrders() {
       this.getLoading = true;
       await this.axios
-        .get(process.env.VUE_APP_URL + "/orders/hold", this.header)
-        .then((res) => {
-          if (res) {
-            this.items = res.data;
-          }
-          this.getLoading = false;
-        })
-        .catch(() => {
-          this.getLoading = false;
-        });
+          .get(process.env.VUE_APP_URL + "/orders/hold", this.header)
+          .then((res) => {
+            if (res) {
+              this.items = res.data;
+            }
+          }).finally(() => {
+            this.getLoading = false;
+          });
     },
     cancelContract(id) {
       this.$swal({
@@ -189,13 +187,13 @@ export default {
       this.getLoading = true;
       try {
         await this.axios
-          .delete(process.env.VUE_APP_URL + `/orders/${id}/hold/`, this.header)
-          .then(() => {
-            this.getUnfinishedOrders();
-          })
-          .catch(() => {
-            this.getLoading = false;
-          });
+            .delete(process.env.VUE_APP_URL + `/orders/${id}/hold/`, this.header)
+            .then(() => {
+              this.getUnfinishedOrders();
+            })
+            .catch(() => {
+              this.getLoading = false;
+            });
       } catch (error) {
         this.getLoading = false;
         if (!error.response) {
@@ -241,6 +239,7 @@ table thead th {
   z-index: 1;
   background-color: var(--background-color-nav);
 }
+
 .my-table thead tr th {
   padding-top: 20px;
   padding-bottom: 20px;
