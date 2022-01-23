@@ -52,8 +52,7 @@
 
                             <b-form-invalid-feedback id="number-feedback">{{
                                 validationContext.errors[0]
-                              }}
-                            </b-form-invalid-feedback>
+                              }}</b-form-invalid-feedback>
                           </b-form-group>
                         </validation-provider>
                       </div>
@@ -114,14 +113,13 @@
 
                         <b-form-invalid-feedback id="date-feedback">{{
                             validationContext.errors[0]
-                          }}
-                        </b-form-invalid-feedback>
+                          }}</b-form-invalid-feedback>
                       </b-form-group>
                     </validation-provider>
                   </div>
                 </div>
 
-                <hr/>
+                <hr />
               </div> <!-- Изменить дата договора END -->
 
 
@@ -153,8 +151,7 @@
 
                     <b-form-invalid-feedback id="first_payment_date-feedback">{{
                         validationContext.errors[0]
-                      }}
-                    </b-form-invalid-feedback>
+                      }}</b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -208,19 +205,15 @@
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
             <div class="col-xl-8">
-              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments"
-                               @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
+              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments" @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
             </div>
 
             <div class="col-xl-4 h-auto">
               <div class="sticky-top">
                 <ClientInformation :client="client"></ClientInformation>
-                <ApartmentsList :apartments="apartments" :contract="contract"
-                                @changePrice="initialCalc"></ApartmentsList>
-                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts"
-                            @changeDiscount="changeDiscount"></Calculator>
-                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract"
-                         :discounts="discounts" :buttons="buttons"></Confirm>
+                <ApartmentsList  :apartments="apartments" :contract="contract" @changePrice="initialCalc"></ApartmentsList>
+                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts" @changeDiscount="changeDiscount"></Calculator>
+                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract" :discounts="discounts" :buttons="buttons"></Confirm>
               </div>
             </div>
 
@@ -254,7 +247,7 @@
 <script>
 // import moment from "moment";
 
-import {mapGetters, mapActions} from "vuex";
+import { mapGetters, mapActions } from "vuex";
 // import VueNumeric from "vue-numeric";
 import FlipCountdown from "vue2-flip-countdown";
 import SuccessAgree from "./Components/SuccessAgree";
@@ -437,8 +430,6 @@ export default {
       this.timeElapsedHandler();
     }
 
-    
-
     // this.fetchApartmentOrder(this).then(() => {
     //   this.apartment_edit.contract_number = this.deepCloneFromApartments(
     //       this.apartmentInfoItem.contract_number
@@ -487,7 +478,7 @@ export default {
             console.log(response)
             this.buttons.loading = false;
             if (response) {
-              this.clientData = response.data;
+              this.client = response.data;
               this.onSubmit();
             }
           })
