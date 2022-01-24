@@ -325,9 +325,9 @@ export default {
         step: 1,
         month: 0,
         number: null,
-        date: '2022-01-01',
-        first_payment_date: '2022-01-01',
-        payment_date: '2022-01-01',
+        date: null,
+        first_payment_date: null,
+        payment_date: null,
 
         initial_payments: [],
         monthly_payments: [],
@@ -340,7 +340,8 @@ export default {
         prepay_amount: 0,
         prepay_edited: false,
 
-        comment: null
+        comment: null,
+        edited: 0
       },
 
       calc: {
@@ -435,6 +436,8 @@ export default {
     if (time > 0) {
       this.timeElapsedHandler();
     }
+
+    
 
     // this.fetchApartmentOrder(this).then(() => {
     //   this.apartment_edit.contract_number = this.deepCloneFromApartments(
@@ -595,6 +598,8 @@ export default {
       getDebt(this.apartments, this.contract)
       getPricePerM2(this.apartments, this.contract)
       editedCreditMonths(this.apartments, this.contract)
+      this.contract.edited = this.contract.edited + 1
+      // this.contract.prepay_amount = getPrepay(this.apartments, this.contract)
     },
 
     MonthlyEdit() {
