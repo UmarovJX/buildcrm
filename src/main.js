@@ -81,13 +81,6 @@ Vue.use(VueYandexMetrika, {
   }
 })
 
-/* VUE UI COMPONENT */
-import Vuesax from 'vuesax'
-import 'vuesax/dist/vuesax.css'
-import 'material-icons/iconfont/material-icons.css'
-Vue.use(Vuesax)
-/* END OF VUE UI COMPONENT */
-
 new Vue({
   el: "#app",
   i18n,

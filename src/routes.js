@@ -48,7 +48,7 @@ import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
 
 /* PAGES */
-import UserSettings from "./views/user-settings/UserSettings"
+import UserSettings from "./views/UserSettings"
 
 const routes = [
     {
