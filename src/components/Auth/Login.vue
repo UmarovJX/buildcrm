@@ -110,7 +110,7 @@ export default {
             this.setMe(this, path);
 
             vm.toasted(response.data.message, "success");
-            vm.$router.push("/home");
+            vm.$router.push({name:'home'});
           })
           .catch(function (error) {
             if (!error.response) {

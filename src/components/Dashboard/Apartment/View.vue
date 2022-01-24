@@ -747,7 +747,7 @@ export default {
 
     async cancelReserve() {
       this.order_id = this.apartment.order.id;
-      this.fetchReserveClient(this);
+      await this.fetchReserveClient(this);
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text_cancel_reserve"),

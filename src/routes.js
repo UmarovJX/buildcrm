@@ -7,7 +7,7 @@ import store from "./store";
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch((err) => err);
+    return originalPush.call(this, location).catch((err) => err);
 };
 Vue.use(VueRouter);
 
@@ -46,220 +46,243 @@ import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment"
 import Companies from "./components/Dashboard/Companies/Index";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
+
+/* PAGES */
+import UserSettings from "./views/user-settings/UserSettings"
+
 const routes = [
-  {
-    name: "login",
-    path: "",
-    component: Auth,
-    // meta: {
-    //   guest: true,
+    {
+        path: "/",
+        name: "home",
+        component: Dashboard,
+    },
+
+
+    {
+        path: "/login",
+        name: "login",
+        component: Auth,
+        // meta: {
+        //   guest: true,
+        // },
+    },
+
+
+    {
+        name: "objects",
+        path: "/objects",
+        component: Objects,
+        meta: {
+            requiresAuth: "objects",
+        },
+    },
+
+    {
+        name: "objectsStore",
+        path: "/objects/add",
+        component: ObjStore,
+        meta: {
+            requiresAuth: "objects",
+        },
+    },
+
+    {
+        name: "objectsEdit",
+        path: "/objects/:id/update",
+        component: ObjStore,
+        meta: {
+            requiresAuth: "objects",
+        },
+    },
+
+    {
+        name: "settings",
+        path: "/settings",
+        component: Settings,
+    },
+
+    {
+        path: '/profile',
+        name: 'user-settings',
+        component: UserSettings
+    },
+
+    {
+        name: "debtors",
+        path: "/debtors",
+        component: Debtors,
+        meta: {
+            requiresAuth: "debtors",
+        },
+    },
+    {
+        name: "apartments",
+        path: "/objects/:object/apartments",
+        component: ApartmentsList,
+        meta: {
+            requiresAuth: "apartments",
+        },
+    },
+    {
+        name: "unfinished-contracts",
+        path: "/objects/unfinished-contracts",
+        component: UnfinishedContracts,
+        meta: {
+            requiresAuth: "apartments",
+        },
+    },
+    {
+        name: "apartment-view",
+        path: "/objects/:object/apartment/:id",
+        component: ApartmentView,
+        meta: {
+            requiresAuth: "apartments",
+        },
+    },
+    {
+        name: "confirm-apartment",
+        path: "/objects/:object/apartment/:id/order",
+        component: ConfirmApartment,
+        meta: {
+            requiresAuth: "apartments",
+        },
+    },
+    {
+        name: "users",
+        path: "/users",
+        component: Users,
+        meta: {
+            requiresAuth: "users",
+        },
+    },
+
+    {
+        name: "roles",
+        path: "/roles",
+        component: Roles,
+        meta: {
+            requiresAuth: "roles",
+        },
+    },
+
+    {
+        name: "roles-update",
+        path: "/roles/update/:id",
+        component: RolesUpdate,
+        meta: {
+            requiresAuth: "roles",
+        },
+    },
+
+    {
+        name: "roles-store",
+        path: "/roles/store",
+        component: RolesStore,
+        meta: {
+            requiresAuth: "roles",
+        },
+    },
+
+    {
+        name: "clients",
+        path: "/clients",
+        component: Clients,
+        meta: {
+            requiresAuth: "clients",
+        },
+    },
+
+    {
+        name: "contracts",
+        path: "/contracts",
+        component: Contracts,
+        meta: {
+            requiresAuth: "contracts",
+        },
+    },
+
+    {
+        name: "contracts-view",
+        path: "/contracts/:id",
+        component: ContractsView,
+        meta: {
+            requiresAuth: "contracts",
+        },
+    },
+
+    {
+        name: "type_plan",
+        path: "/type/layouts",
+        component: TypePlan,
+        meta: {
+            requiresAuth: "type_plan",
+        },
+    },
+
+    {
+        name: "type-plan-view",
+        path: "/type/layouts/view/:id",
+        component: TypePlanList,
+        meta: {
+            requiresAuth: "type_plan",
+        },
+    },
+
+    {
+        name: "type-plan-edit",
+        path: "/type/layouts/:object/edit/:id",
+        component: TypePlanEdit,
+        meta: {
+            requiresAuth: "type_plan",
+        },
+    },
+
+    {
+        name: "companies",
+        path: "/companies",
+        component: Companies,
+        meta: {
+            requiresAuth: "companies",
+        },
+    },
+
+    //
+    // {
+    //     name: 'settings',
+    //     path: '/settings',
+    //     component: Clients
     // },
-  },
 
-  {
-    path: "/home",
-    name: "home",
-    component: Dashboard,
-  },
-
-  {
-    name: "objects",
-    path: "/objects",
-    component: Objects,
-    meta: {
-      requiresAuth: "objects",
+    {
+        path: "*",
+        name: "not_found",
+        component: PageNotFound,
     },
-  },
-
-  {
-    name: "objectsStore",
-    path: "/objects/add",
-    component: ObjStore,
-    meta: {
-      requiresAuth: "objects",
-    },
-  },
-
-  {
-    name: "objectsEdit",
-    path: "/objects/:id/update",
-    component: ObjStore,
-    meta: {
-      requiresAuth: "objects",
-    },
-  },
-
-  {
-    name: "settings",
-    path: "/settings",
-    component: Settings,
-  },
-
-  {
-    name: "debtors",
-    path: "/debtors",
-    component: Debtors,
-    meta: {
-      requiresAuth: "debtors",
-    },
-  },
-  {
-    name: "apartments",
-    path: "/objects/:object/apartments",
-    component: ApartmentsList,
-    meta: {
-      requiresAuth: "apartments",
-    },
-  },
-  {
-    name: "unfinished-contracts",
-    path: "/objects/unfinished-contracts",
-    component: UnfinishedContracts,
-    meta: {
-      requiresAuth: "apartments",
-    },
-  },
-  {
-    name: "apartment-view",
-    path: "/objects/:object/apartment/:id",
-    component: ApartmentView,
-    meta: {
-      requiresAuth: "apartments",
-    },
-  },
-  {
-    name: "confirm-apartment",
-    path: "/objects/:object/apartment/:id/order",
-    component: ConfirmApartment,
-    meta: {
-      requiresAuth: "apartments",
-    },
-  },
-  {
-    name: "users",
-    path: "/users",
-    component: Users,
-    meta: {
-      requiresAuth: "users",
-    },
-  },
-
-  {
-    name: "roles",
-    path: "/roles",
-    component: Roles,
-    meta: {
-      requiresAuth: "roles",
-    },
-  },
-
-  {
-    name: "roles-update",
-    path: "/roles/update/:id",
-    component: RolesUpdate,
-    meta: {
-      requiresAuth: "roles",
-    },
-  },
-
-  {
-    name: "roles-store",
-    path: "/roles/store",
-    component: RolesStore,
-    meta: {
-      requiresAuth: "roles",
-    },
-  },
-
-  {
-    name: "clients",
-    path: "/clients",
-    component: Clients,
-    meta: {
-      requiresAuth: "clients",
-    },
-  },
-
-  {
-    name: "contracts",
-    path: "/contracts",
-    component: Contracts,
-    meta: {
-      requiresAuth: "contracts",
-    },
-  },
-
-  {
-    name: "contracts-view",
-    path: "/contracts/:id",
-    component: ContractsView,
-    meta: {
-      requiresAuth: "contracts",
-    },
-  },
-
-  {
-    name: "type_plan",
-    path: "/type/layouts",
-    component: TypePlan,
-    meta: {
-      requiresAuth: "type_plan",
-    },
-  },
-
-  {
-    name: "type-plan-view",
-    path: "/type/layouts/view/:id",
-    component: TypePlanList,
-    meta: {
-      requiresAuth: "type_plan",
-    },
-  },
-
-  {
-    name: "type-plan-edit",
-    path: "/type/layouts/:object/edit/:id",
-    component: TypePlanEdit,
-    meta: {
-      requiresAuth: "type_plan",
-    },
-  },
-
-  {
-    name: "companies",
-    path: "/companies",
-    component: Companies,
-    meta: {
-      requiresAuth: "companies",
-    },
-  },
-
-  //
-  // {
-  //     name: 'settings',
-  //     path: '/settings',
-  //     component: Clients
-  // },
-
-  {
-    path: "*",
-    name: "not_found",
-    component: PageNotFound,
-  },
 ];
 
 const router = new VueRouter({
-  routes: routes,
-  mode: "history",
-  linkActiveClass: "active",
-  scrollBehavior(to, from, savedPosition) {
-    return {x: 0, y: 0};
-  },
+    routes: routes,
+    mode: "history",
+    linkActiveClass: "active",
+    scrollBehavior(to, from, savedPosition) {
+        return {x: 0, y: 0};
+    },
 });
+
+router.beforeEach((to, from, next) => {
+    const AUTH_TOKEN = localStorage.token
+
+    if(to.name === 'login') next()
+
+    if (AUTH_TOKEN)
+        next()
+    else
+        next({name: 'login'})
+})
 
 // router.beforeEach((to, from, next) => {
 //   const login = localStorage.token;
-  
+
 //   if (to.matched.some((record) => record.meta.requiresAuth)) {
 //     to.matched.some((record) => {
 //       if (!login) {
