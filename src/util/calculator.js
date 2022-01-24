@@ -194,9 +194,9 @@ export function getTotalDiscount(apartments, contract) {
 
 
 export function CreditMonths(apartments, contract) {
-    let today = contract.payment_date
-        ? new Date(contract.payment_date)
-        : new Date();
+    let today = contract.payment_date ? new Date(contract.payment_date) : new Date();
+
+    // let today = new Date();
 
     contract.credit_months = [];
 
@@ -204,12 +204,21 @@ export function CreditMonths(apartments, contract) {
         let month_amount = getMonth(apartments, contract);
 
         for (let i = 0; i < parseInt(contract.month); i++) {
-            contract.credit_months.push({
-                month: today.setMonth(today.getMonth() + 1),
-                amount: month_amount,
-                edit: false,
-                edited: false,
-            });
+            if (i === 0) {
+                contract.credit_months.push({
+                    month: today.setMonth(today.getMonth()),
+                    amount: month_amount,
+                    edit: false,
+                    edited: false,
+                });
+            } else {
+                contract.credit_months.push({
+                    month: today.setMonth(today.getMonth() + 1),
+                    amount: month_amount,
+                    edit: false,
+                    edited: false,
+                });
+            }
         }
     }
 
