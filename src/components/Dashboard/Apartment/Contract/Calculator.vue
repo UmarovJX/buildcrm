@@ -15,7 +15,7 @@
             v-model="contract.discount"
             @input="changeDiscount"
         >
-<!--                       -->
+          <!--                       -->
           <b-form-select-option
               v-for="(discount, index) in discounts"
               :value="discount"
@@ -75,7 +75,7 @@
             separator="space"
             @change="changeTotalDiscountPrice"
         ></vue-numeric>
-<!--        @change="changeTotalDiscountPrice($event)"-->
+        <!--        @change="changeTotalDiscountPrice($event)"-->
       </b-form-group>
 
       <!-- Скидка от общей суммы | Скидка за м2 -->
@@ -92,7 +92,7 @@
                 separator="space"
                 @change="changeTotalDiscountPrice"
             ></vue-numeric>
-<!--            -->
+            <!--            -->
 
           </b-card-text>
         </b-tab>
@@ -108,7 +108,7 @@
                 separator="space"
                 @change="changeDiscountPriceForM2"
             ></vue-numeric>
-<!--            @change="changeDiscountPriceForM2($event)"-->
+            <!--            @change="changeDiscountPriceForM2($event)"-->
 
           </b-card-text>
         </b-tab>
@@ -157,7 +157,7 @@
             v-model="contract.month"
             @change="changeDiscountMonth"
         >
-<!--          -->
+          <!--          -->
 
         </b-form-input>
         <vue-numeric
@@ -306,7 +306,7 @@ export default {
 
   mounted() {
     // console.log(this.apartments.length)
-      this.InitialCalc()
+    this.InitialCalc()
   },
 
   methods: {
@@ -342,24 +342,24 @@ export default {
           this.$emit("changeDiscount", {})
       },
 
-      changeDiscountMonth() {
-        this.InitialCalc();
-      },
+    changeDiscountMonth() {
+      this.InitialCalc();
+    },
 
-      changeDiscountPriceForM2() {
-        this.contract.discount_amount = 0;
-        this.InitialCalc()
-      },
+    changeDiscountPriceForM2() {
+      this.contract.discount_amount = 0;
+      this.InitialCalc()
+    },
 
-      changeTotalDiscountPrice() {
-        this.contract.discount_square = 0;
-        this.InitialCalc()
-      },
+    changeTotalDiscountPrice() {
+      this.contract.discount_square = 0;
+      this.InitialCalc()
+    },
 
-      changePrepayAmount() {
-        this.contract.prepay_edited = true;
-        this.InitialCalc();
-      }
+    changePrepayAmount() {
+      this.contract.prepay_edited = true;
+      this.InitialCalc();
+    }
   }
 }
 </script>

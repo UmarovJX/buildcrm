@@ -1,17 +1,17 @@
 <template>
   <div>
     <div class="d-flex justify-content-between align-items-center sticky-top bg-custom-white px-3 py-2 rounded shadow-sm "
-         v-if="(client.discount && client.discount.prepay !== 100) || client.discount.prepay < 100 ">
+         v-if="(contract.discount && contract.discount.prepay !== 100) || contract.discount.prepay < 100 ">
       <h6 class="mb-0">Таблица ежемесячных платежей:</h6>
       <div class="d-flex justify-content-end align-items-center">
         <div class="mr-2 w-25">
           <input id="month" class="my-form__input w-100" type="number" min="0" required
-              v-model="contract.month"
-              @change="changeMonth"
+                 v-model="contract.month"
+                 @change="changeMonth"
                  @click="changeMonth"
           />
         </div>
-        <span v-if="contract.month > 0 && client.discount && (client.discount.prepay !== 100 || client.discount.prepay < 100)">
+        <span v-if="contract.month > 0 && contract.discount && (contract.discount.prepay !== 100 || contract.discount.prepay < 100)">
             {{ contract.month }} месяцев по <br />
             {{ getCalMonth() | number("0,0.00", {thousandsSeparator: " ", decimalSeparator: ",",})  }}
             {{ $t("ye") }}
@@ -99,12 +99,12 @@
 
               <div class="col-md-6 float-left" v-if="initialPayment.edit" >
                 <div class="row">
-<!--                  <input-->
-<!--                      type="text"-->
-<!--                      class="form-control"-->
-<!--                      v-model="initialPayment.amount"-->
-<!--                      min="0"-->
-<!--                  />-->
+                  <!--                  <input-->
+                  <!--                      type="text"-->
+                  <!--                      class="form-control"-->
+                  <!--                      v-model="initialPayment.amount"-->
+                  <!--                      min="0"-->
+                  <!--                  />-->
 
                   <vue-numeric
                       id="prepay_to"
@@ -185,12 +185,12 @@
 
               <div class="col-md-6 float-left" v-if="month.edit">
                 <div class="row">
-<!--                  <input-->
-<!--                      type="text"-->
-<!--                      class="form-control"-->
-<!--                      v-model="month.amount"-->
-<!--                      min="0"-->
-<!--                  />-->
+                  <!--                  <input-->
+                  <!--                      type="text"-->
+                  <!--                      class="form-control"-->
+                  <!--                      v-model="month.amount"-->
+                  <!--                      min="0"-->
+                  <!--                  />-->
 
                   <vue-numeric
                       id="prepay_to"
@@ -296,13 +296,13 @@ export default {
     },
 
     getCalcPrepay() {
-        return getPrepay(this.apartments, this.contract)
+      return getPrepay(this.apartments, this.contract)
     },
 
     initialCalc() {
-        getTotal(this.apartments, this.contract)
-        getPrepay(this.apartments, this.contract)
-        editedCreditMonths(this.apartments, this.contract)
+      getTotal(this.apartments, this.contract)
+      getPrepay(this.apartments, this.contract)
+      editedCreditMonths(this.apartments, this.contract)
     },
 
     editInitialPayment(index) {
