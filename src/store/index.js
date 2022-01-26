@@ -33,13 +33,13 @@ import Companies from "./modules/companies";
 import Contracts from "./modules/contract";
 import Debtors from "./modules/debtors";
 import Settings from "./modules/settings";
-
+import Features from "@/store/modules/Features";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
     Loading,
-
+    Features,
     managers,
     managers_info,
 

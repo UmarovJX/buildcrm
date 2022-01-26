@@ -2,13 +2,13 @@
   <div id="app">
     <div class="connection-status">
       <div class="banner">
-        <div class="content disconnected" v-if="connecting == 2">
+        <div class="content disconnected" v-if="connecting === 2">
           <div class="mr-1">
             <i class="fal fa-times-circle"></i>
           </div>
           <span>Нет подключения к Интернету</span>
         </div>
-        <div class="content connected" v-if="connecting == 1">
+        <div class="content connected" v-if="connecting === 1">
           <div class="mr-1">
             <i class="fal fa-check-circle"></i>
           </div>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
+import {mapGetters, mapActions, mapMutations} from "vuex";
 
 export default {
   data() {
@@ -58,6 +58,7 @@ export default {
   },
   methods: {
     ...mapActions(["setMe"]),
+    ...mapMutations(['setContentTheme']),
     updateOnlineStatus(e) {
       const {type} = e;
       this.onLine = type === "online";
@@ -74,6 +75,7 @@ export default {
     },
     setTheme(theme) {
       localStorage.setItem("user-theme", theme);
+      this.setContentTheme = theme
       this.userTheme = theme;
       document.documentElement.className = theme;
     },

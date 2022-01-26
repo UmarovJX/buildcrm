@@ -1,6 +1,6 @@
 export default {
   actions: {
-    async setMe(ctx, vm, path) {
+    async setMe(ctx, vm) {
       try {
         const response = await vm.axios.get(
           process.env.VUE_APP_URL + "/oauth/me",
@@ -14,9 +14,6 @@ export default {
         ctx.commit("updateMe", response.data);
         ctx.commit("updatePermissions", response.data);
 
-        if (path.path === "/") {
-          vm.$router.push({path: "/home"});
-        }
       } catch (error) {
         if (error.response) {
           vm.toasted(error.response.data.message, "error");

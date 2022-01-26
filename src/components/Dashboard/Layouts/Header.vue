@@ -75,24 +75,13 @@
               data-toggle="dropdown"
           >
             <div class="user d-flex align-items-center">
-              <div
-                  class="user__img"
-                  v-if="getMe.user && getMe.user.avatar"
-                  :style="
-                  'background-image: url(' +
-                    getMe.user.avatar +
-                    '); border-radius: 50%'
-                "
-              ></div>
-              <div
-                  class="user__img"
-                  v-else
-                  :style="
-                  'background-image: url(' +
-                    require('@/assets/img/no_avatar.png') +
-                    '); border-radius: 50%'
-                "
-              ></div>
+              <b-avatar
+                  variant="primary"
+                  :src="getUserAvatarUrl"
+                  :text="getNameSnippet"
+                  size="3rem"
+                  class="avatar-wrapper"
+              ></b-avatar>
 
               <div class="ml-2 d-none d-sm-block">
                 <div class="user__name" v-if="getMe.user">
@@ -231,11 +220,30 @@ export default {
   },
   async created() {
     await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this), this.fetchCurrency(this)])
-    // this.isActived();
-
     this.locale = localStorage.locale !== "uz";
   },
-
+  computed: {
+    ...mapGetters(["getAuth", "getMenus", "getMe", "getCurrency"]),
+    getNameSnippet() {
+      const {firstName, lastName} = this.getMe.user
+      if (firstName !== '' && lastName !== '') {
+        return lastName[0] + firstName[0]
+      }
+      return ''
+    },
+    getUserAvatarUrl() {
+      if (this.getMe.user.avatar) {
+        return process.env.VUE_APP_URL + '/' + this.getMe.user.avatar
+      }
+      return ''
+    },
+    routePermission() {
+      const notUsed = ['login', 'home', 'objects', 'settings', 'users', 'roles', 'clients', 'type_plan', 'debtors', 'contracts', 'companies']
+      const currentRouteName = this.$route.name
+      const result = notUsed.findIndex(name => name === currentRouteName)
+      return result === -1;
+    }
+  },
   methods: {
     ...mapActions([
       "fetchAuth",
@@ -290,18 +298,14 @@ export default {
       // localStorage.isActive = this.isActive == false ? true : false;
       this.isActive = !this.isActive;
     },
-  },
-
-  computed: {
-    ...mapGetters(["getAuth", "getMenus", "getMe", "getCurrency"]),
-    routePermission() {
-      const notUsed = ['login', 'home', 'objects', 'settings', 'users', 'roles', 'clients', 'type_plan', 'debtors', 'contracts', 'companies']
-      const currentRouteName = this.$route.name
-      const result = notUsed.findIndex(name => name === currentRouteName)
-      return result === -1;
-    }
   }
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.avatar-wrapper {
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 50%;
+}
+</style>
