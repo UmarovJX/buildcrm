@@ -225,14 +225,17 @@ export default {
   computed: {
     ...mapGetters(["getAuth", "getMenus", "getMe", "getCurrency"]),
     getNameSnippet() {
-      const {firstName, lastName} = this.getMe.user
-      if (firstName !== '' && lastName !== '') {
-        return lastName[0] + firstName[0]
+      if (this.getMe?.user) {
+        const {firstName, lastName} = this.getMe.user
+        if (firstName !== '' && lastName !== '') {
+          return lastName[0] + firstName[0]
+        }
       }
+
       return ''
     },
     getUserAvatarUrl() {
-      if (this.getMe.user.avatar) {
+      if (this.getMe?.user?.avatar) {
         return process.env.VUE_APP_URL + '/' + this.getMe.user.avatar
       }
       return ''
