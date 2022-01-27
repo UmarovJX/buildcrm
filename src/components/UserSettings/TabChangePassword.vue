@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-overlay :show="loading" rounded="sm">
+    <b-overlay :show="loading" class="overlay__alert" rounded="sm">
       <b-alert
           dismissible
           :variant="responseAlert.variant"
@@ -195,6 +195,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.overlay__alert {
+  max-width: 640px;
+}
+
 .success__alert {
   max-width: 640px;
 }
