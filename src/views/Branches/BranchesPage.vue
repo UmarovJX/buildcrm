@@ -1,0 +1,188 @@
+<template>
+  <main>
+    <div class="app-content">
+      <branches-bread-crumbs/>
+
+      <div class="pt-2">
+        <b-table
+            sticky-header
+            borderless
+            responsive
+            :items="branches"
+            :fields="fields"
+            show-empty
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            sort-icon-left
+            class="custom-table"
+            :empty-text="$t('no_data')"
+        >
+          <template #empty="scope" class="text-center">
+            <span class="d-flex justify-content-center align-items-center">
+              {{ scope.emptyText }}
+            </span>
+          </template>
+
+          <template #table-busy>
+            <div class="d-flex justify-content-center w-100">
+              <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </template>
+
+          <template #cell(name)="data">
+            {{ data.item.name }}
+          </template>
+
+          <template #cell(address)="data">
+            {{ data.item.address }}
+          </template>
+
+          <template #cell(phone)="data">
+            {{ data.item.phone }}
+          </template>
+
+          <template #cell(actions)="data">
+            <div class="float-right">
+              <div
+                  class="dropdown my-dropdown dropleft"
+              >
+                <button
+                    type="button"
+                    class="dropdown-toggle"
+                    data-toggle="dropdown"
+                >
+                  <i class="far fa-ellipsis-h"></i>
+                </button>
+
+                <div
+                    class="dropdown-menu"
+                >
+                  <router-link
+                      :to="{ name: 'edit-branch', params: { id: data.item.id, historyForm:data.item } }"
+                      :class="'dropdown-item dropdown-item--inside'"
+                  >
+                    <span>
+                      <i class="fas fa-pen"></i>
+                    </span>
+                    <span class="ml-2">
+                      {{ $t("edit") }}
+                    </span>
+                  </router-link>
+
+                  <button
+                      class="dropdown-item dropdown-item--inside"
+                      @click="deleteBranch(data.item.id)"
+                  >
+                    <span>
+                      <i class="far fa-trash"></i>
+                    </span>
+                    <span class="ml-2">
+                      {{ $t("delete") }}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </template>
+        </b-table>
+      </div>
+    </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+  </main>
+</template>
+
+<script>
+import api from "@/services/api";
+import BranchesBreadCrumbs from "@/components/Branches/BranchesBreadCrumbs";
+
+export default {
+  name: 'Branches',
+  components: {
+    BranchesBreadCrumbs
+  },
+  data() {
+    return {
+      loading: false,
+      sortBy: "id",
+      sortDesc: false,
+      fields: [
+        {
+          key: "id",
+          label: "#",
+        },
+        {
+          key: "name",
+          label: this.$t("roles.name"),
+        },
+        {
+          key: "address",
+          label: this.$t("address"),
+        },
+        {
+          key: "phone",
+          label: this.$t("clients.phone"),
+        },
+        {
+          key: "users_count",
+          label: this.$t("roles.users"),
+        },
+        {
+          key: "actions",
+          label: '',
+        }
+      ],
+      branches: []
+    }
+  },
+  async created() {
+    await this.getBranchesList()
+  },
+  methods: {
+    async getBranchesList() {
+      this.loading = true
+      await api.branches.getBranchesList()
+          .then((response) => {
+            this.branches = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+    },
+    deleteBranch(id) {
+      this.loading = true
+      api.branches.deleteBranch(id)
+          .then(() => {
+            const findIndex = this.branches.findIndex(branch => branch.id === id)
+            this.branches.splice(findIndex, 1)
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+    }
+  }
+}
+</script>
+

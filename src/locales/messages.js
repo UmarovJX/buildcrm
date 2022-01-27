@@ -8,6 +8,7 @@ export default {
     return_to_sale:"Вернуть к продаже",
     edit: "Редактировать",
     upload_logo: "Загрузить лого",
+    loading:'Пожалуйста подождите...',
     add: "Добавить",
     delete: "Удалить",
     action: "Действия",
@@ -22,6 +23,7 @@ export default {
     yes: "Есть",
     no: "Нет",
     image: "Изображения",
+    address:"address",
     // 'settings': 'Настройки',
     no_data: "Нет данных",
     logout: "Выйти",
@@ -452,6 +454,20 @@ export default {
     settings: {
       title: "Настройки",
     },
+
+    branches:{
+      name:'Филиал',
+      branch_name:'Название филиала',
+      branch_address:'Адрес филиала',
+      branch_phone:'Номер телефона филиала ',
+      branch_manager:'Менеджер филиала',
+      manager_first_name:'Имя менеджера',
+      manager_last_name:'Фамилия менеджера',
+      manager_second_name:'Отчество менеджера',
+      manager_phone_number:'Номер телефона менеджера',
+      manager_email:'Почта менеджера',
+      manager_avatar:'Аватар менеджера',
+    }
   },
   uz: {
     home: "Bosh sahifa",
