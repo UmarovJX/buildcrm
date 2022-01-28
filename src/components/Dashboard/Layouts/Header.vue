@@ -133,10 +133,12 @@
       <div class="navbar-header">
         <ul>
           <li class="mr-auto">
-            <router-link to="/home" class="d-flex align-items-center"
-            ><span class="brand-logo"
-            ><img src="@/assets/img/object__img1.png" alt="Xonsaroy"
-            /></span>
+            <router-link
+                :to="{name:'home'}"
+                class="d-flex align-items-center">
+              <span class="brand-logo">
+                <img src="@/assets/img/object__img1.png" alt="Xonsaroy" />
+              </span>
               <h2 class="brand-text ml-1">CRM</h2>
             </router-link>
           </li>
@@ -189,6 +191,14 @@
             </div>
             <div class="menu__count" v-if="item.count > 0">
               {{ item.count }}
+            </div>
+          </router-link>
+        </li>
+        <li class="menu__item">
+          <router-link :to="{name: 'branches'}">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="menu__name">
+              {{ $t('branches.name') }}
             </div>
           </router-link>
         </li>
@@ -310,5 +320,9 @@ export default {
   background-color: #ffffff;
   border: 1px solid #ced4da;
   border-radius: 50%;
+}
+
+.branches__icon {
+  fill: var(--dark);
 }
 </style>

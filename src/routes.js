@@ -39,16 +39,17 @@ import RolesStore from "./components/Dashboard/Roles/Store";
 import TypePlan from "./components/Dashboard/TypePlan/Index";
 import TypePlanList from "./components/Dashboard/TypePlan/List";
 import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
-//
-//
+
 import ApartmentView from "./components/Dashboard/Apartment/View";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
-
 /* PAGES */
 import UserSettings from "./views/UserSettings"
+import Branches from "@/views/Branches/BranchesPage";
+import CreateBranchPage from "@/views/Branches/CreateBranchPage";
+import EditBranchContent from "@/views/Branches/EditBranchContent";
 
 const routes = [
     {
@@ -246,6 +247,24 @@ const routes = [
         },
     },
 
+    {
+        name: 'branches',
+        path: '/branches',
+        component: Branches
+    },
+
+    {
+        name: 'create-branch',
+        path: '/create-branch',
+        component: CreateBranchPage
+    },
+
+    {
+        name: 'edit-branch',
+        path: '/edit-branch/:id',
+        component: EditBranchContent
+    },
+
     //
     // {
     //     name: 'settings',
@@ -272,7 +291,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     const AUTH_TOKEN = localStorage.token
 
-    if(to.name === 'login') next()
+    if (to.name === 'login') next()
 
     if (AUTH_TOKEN)
         next()

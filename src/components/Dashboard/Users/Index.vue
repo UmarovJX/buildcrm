@@ -59,9 +59,8 @@
           :empty-text="$t('no_data')"
         >
           <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">{{
-              scope.emptyText
-            }}</span>
+            <span class="d-flex justify-content-center align-items-center">
+              {{scope.emptyText}}</span>
           </template>
 
           <template #table-busy>
