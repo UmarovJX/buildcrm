@@ -721,20 +721,14 @@ export default {
       });
     },
 
-    CreateReserveSuccess() {
-      this.getLoading = true;
-      this.fetchApartment(this).then(() => {
-        this.getLoading = false;
-      });
+    async CreateReserveSuccess() {
+      await this.fetchApartmentView()
     },
 
-    CloseReserveInfo() {
-      this.getLoading = true;
+    async CloseReserveInfo() {
       this.info_reserve = false;
       this.apartment_preview = {};
-      this.fetchApartment(this).then(() => {
-        this.getLoading = false;
-      });
+      await this.fetchApartmentView()
     },
 
     ConfirmFindUser() {
@@ -745,18 +739,15 @@ export default {
       this.confirm = false;
     },
 
-    successAgree(value) {
-      this.getLoading = true;
-      this.fetchApartment(this).then(() => {
-        this.getLoading = false;
-      });
+    async successAgree(value) {
+      await this.fetchApartmentView()
       this.contract = value;
       this.$bvModal.show("modal-success-agree");
     },
 
     async cancelReserve() {
       this.order_id = this.apartment.order.id;
-      this.fetchReserveClient(this);
+      await this.fetchReserveClient(this);
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text_cancel_reserve"),
@@ -781,7 +772,7 @@ export default {
                   this.$bvModal.hide("modal-view-reserved-client");
                 });
 
-                this.fetchApartment(this);
+                this.fetchApartmentView();
 
                 this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
               })

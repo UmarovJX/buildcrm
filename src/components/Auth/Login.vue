@@ -29,40 +29,46 @@
         </div>
         <div class="col-md-4">
           <div class="d-flex justify-content-center align-items-center h-100">
-            <form method="post" @submit.prevent="Login" class="login-form">
-              <div class="form">
-                <div class="form-group">
-                  <label>{{ $t("auth.email") }}</label>
-                  <input
-                      type="email"
-                      v-model="user.email"
-                      class="form-control bg-transparent"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>{{ $t("auth.password") }}</label>
-                  <input
-                      type="password"
-                      v-model="user.password"
-                      class="form-control bg-transparent"
-                  />
-                </div>
-
-                <div class="d-flex justify-content-center align-items-center">
-                  <button
-                      type="submit"
-                      class="btn btn-primary mr-0 w-100"
-                      :class="{'button-disabled':loading}"
+            <ValidationObserver v-slot="{ handleSubmit }">
+              <form
+                  @submit.prevent="handleSubmit(Login)"
+                  class="login-form"
+              >
+                <div class="form">
+                  <ValidationProvider
+                      v-for="{type,name,rules,id,label,placeholder,bind} in loginSchema"
+                      :key="name+id"
+                      :name="name"
+                      :rules="rules"
+                      v-slot="{ errors }"
                   >
+
+                    <div class="form-group">
+                      <label>{{ label }}</label>
+                      <input
+                          :type="type"
+                          v-model="user[bind]"
+                          class="form-control bg-transparent"
+                          :placeholder="placeholder"
+                      />
+                      <span class="error__provider">{{ errors[0] }}</span>
+                    </div>
+                  </ValidationProvider>
+                    <div class="d-flex justify-content-center align-items-center">
+                      <button
+                          type="submit"
+                          class="btn btn-primary mr-0 w-100"
+                          :class="{'button-disabled':loading}"
+                      >
                     <span>
                       {{ $t("auth.login") }}
                     </span>
-                    <span class="spinner" v-if="loading"></span>
-                  </button>
+                        <span class="spinner" v-if="loading"></span>
+                      </button>
+                    </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </ValidationObserver>
           </div>
         </div>
       </div>
@@ -74,14 +80,36 @@
 import {mapActions} from "vuex";
 
 export default {
-  data: () => ({
-    user: {
-      email: null,
-      password: null,
-    },
-    loading: false,
-    info: null,
-  }),
+  data() {
+    return {
+      loginSchema: [
+        {
+          type: 'email',
+          name: 'Прежний пароль',
+          rules: 'required|min:5',
+          label: this.$t('auth.email'),
+          bind: 'email',
+          placeholder: '',
+          id: 'email'
+        },
+        {
+          type: 'password',
+          name: 'Прежний пароль',
+          rules: 'required|min:3',
+          label: this.$t('auth.password'),
+          bind: 'password',
+          placeholder: '',
+          id: 'password'
+        },
+      ],
+      user: {
+        email: null,
+        password: null,
+      },
+      loading: false,
+      info: null,
+    }
+  },
 
   created() {
     localStorage.token && this.CheckLogin();
@@ -110,7 +138,7 @@ export default {
             this.setMe(this, path);
 
             vm.toasted(response.data.message, "success");
-            vm.$router.push("/home");
+            vm.$router.push({name: 'home'});
           })
           .catch(function (error) {
             if (!error.response) {
@@ -156,6 +184,11 @@ export default {
 .button-disabled {
   cursor: wait !important;
   opacity: 0.7;
+}
+
+.error__provider {
+  color: red;
+  font-size: 12px;
 }
 
 form {

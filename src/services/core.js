@@ -10,23 +10,24 @@ class Core {
                 'Authorization': 'Bearer ' + localStorage.token
             },
             body
-        });
+        }).catch((error) => Promise.reject(error))
     }
 
-    post(url, body = {}) {
-        return _axios.post(url, body,{
+    post(url, body = {}, config) {
+        return _axios.post(url, body, {
+            ...config,
             headers: {
                 'Authorization': 'Bearer ' + localStorage.token
             }
-        });
+        }).catch((error) => Promise.reject(error))
     }
 
     put(url, body = {}) {
-        return _axios.put(url, body,{
+        return _axios.put(url, body, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.token
             }
-        });
+        }).catch((error) => Promise.reject(error))
     }
 
     delete(url, body = {}) {
@@ -35,7 +36,7 @@ class Core {
                 'Authorization': 'Bearer ' + localStorage.token
             },
             body
-        });
+        }).catch((error) => Promise.reject(error))
     }
 }
 

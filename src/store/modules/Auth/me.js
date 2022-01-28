@@ -1,65 +1,62 @@
 export default {
-  actions: {
-    async setMe(ctx, vm, path) {
-      try {
-        const response = await vm.axios.get(
-          process.env.VUE_APP_URL + "/oauth/me",
-          {
-            headers: {
-              Authorization: "Bearer " + localStorage.token,
-            },
-          }
-        );
+    actions: {
+        async setMe(ctx, vm, path = '') {
+            try {
+                const response = await vm.axios.get(
+                    process.env.VUE_APP_URL + "/oauth/me",
+                    {
+                        headers: {
+                            Authorization: "Bearer " + localStorage.token,
+                        },
+                    }
+                );
 
-        ctx.commit("updateMe", response.data);
-        ctx.commit("updatePermissions", response.data);
+                ctx.commit("updateMe", response.data);
+                ctx.commit("updatePermissions", response.data);
+                return path
+            } catch (error) {
+                if (error.response) {
+                    vm.toasted(error.response.data.message, "error");
+                }
+            }
+        },
 
-        if (path.path === "/") {
-          vm.$router.push({path: "/home"});
-        }
-      } catch (error) {
-        if (error.response) {
-          vm.toasted(error.response.data.message, "error");
-        }
-      }
+        nullMe(ctx) {
+            ctx.commit("updateMe", {});
+            ctx.commit("nullPermissions");
+        },
     },
 
-    nullMe(ctx) {
-      ctx.commit("updateMe", {});
-      ctx.commit("nullPermissions");
-    },
-  },
+    mutations: {
+        updateMe(state, me) {
+            state.me = me;
+        },
 
-  mutations: {
-    updateMe(state, me) {
-      state.me = me;
-    },
+        updateLocale(state, locale) {
+            state.locale = locale;
+        },
 
-    updateLocale(state, locale) {
-      state.locale = locale;
-    },
+        updatePermissions(state, me) {
+            state.permission = me.role.permissions;
+        },
 
-    updatePermissions(state, me) {
-      state.permission = me.role.permissions;
-    },
-
-    nullPermissions(state) {
-      state.permission = {};
-    },
-  },
-
-  state: {
-    me: {},
-    permission: {},
-  },
-
-  getters: {
-    getMe(state) {
-      return state.me;
+        nullPermissions(state) {
+            state.permission = {};
+        },
     },
 
-    getPermission(state) {
-      return state.permission;
+    state: {
+        me: {},
+        permission: {},
     },
-  },
+
+    getters: {
+        getMe(state) {
+            return state.me;
+        },
+
+        getPermission(state) {
+            return state.permission;
+        },
+    },
 };

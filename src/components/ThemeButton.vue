@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import {mapMutations} from "vuex";
+
 export default {
   data() {
     return {
@@ -42,12 +44,15 @@ export default {
   },
 
   methods: {
+    ...mapMutations(['setContentTheme']),
     toggleTheme() {
       const activeTheme = localStorage.getItem("user-theme");
       if (activeTheme === "light-theme") {
         this.setTheme("dark-theme");
+        this.setContentTheme('dark-theme')
       } else {
         this.setTheme("light-theme");
+        this.setContentTheme('light-theme')
       }
     },
 
