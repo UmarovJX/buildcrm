@@ -1,11 +1,11 @@
 <template>
   <div>
     <b-modal
-      id="modal-create"
-      ref="modal"
-      :title="$t('add')"
-      hide-footer
-      @show="resetModal"
+        id="modal-create"
+        ref="modal"
+        :title="$t('add')"
+        hide-footer
+        @show="resetModal"
     >
       <b-alert show variant="danger" v-if="error">
         <ul class="pl-2 mb-0">
@@ -19,62 +19,62 @@
 
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.first_name')"
-          label-for="first_name"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.first_name')"
+            label-for="first_name"
         >
           <b-form-input
-            id="first_name"
-            v-model="manager.first_name"
+              id="first_name"
+              v-model="manager.first_name"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.last_name')"
-          label-for="last_name"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.last_name')"
+            label-for="last_name"
         >
           <b-form-input
-            id="last_name"
-            v-model="manager.last_name"
+              id="last_name"
+              v-model="manager.last_name"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.phone')"
-          label-for="phone"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.phone')"
+            label-for="phone"
         >
           <b-form-input id="phone" v-model="manager.phone"></b-form-input>
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.email')"
-          label-for="email"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.email')"
+            label-for="email"
         >
           <b-form-input
-            type="email"
-            v-model="manager.email"
-            id="email"
+              type="email"
+              v-model="manager.email"
+              id="email"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.role')"
-          label-for="roles"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.role')"
+            label-for="roles"
         >
           <b-form-select v-model="manager.role_id" id="roles" class="mb-3">
             <b-form-select-option
-              v-for="(role, index) in getRoles"
-              :key="index"
-              :value="role.id"
+                v-for="(role, index) in getRoles"
+                :key="index"
+                :value="role.id"
             >
               {{ getName(role.name) }}
             </b-form-select-option>
@@ -82,32 +82,49 @@
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.password')"
-          label-for="password"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('branches.name')"
+            label-for="branches"
+        >
+          <b-form-select v-model="manager.branch_id" id="branches" class="mb-3">
+            <b-form-select-option
+                v-for="(branch, index) in branches"
+                :key="index"
+                :value="branch.id"
+            >
+              {{ branch.name }}
+            </b-form-select-option>
+          </b-form-select>
+        </b-form-group>
+
+        <b-form-group
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.password')"
+            label-for="password"
         >
           <b-form-input
-            type="password"
-            min="5"
-            v-model="manager.password"
-            id="password"
+              type="password"
+              min="5"
+              v-model="manager.password"
+              id="password"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('objects.title')"
-          label-for="objects"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('objects.title')"
+            label-for="objects"
         >
           <b-form-checkbox-group
-            v-model="manager.objects"
-            :options="getObjects"
-            class="mb-3"
-            value-field="id"
-            text-field="name"
-            switches
+              v-model="manager.objects"
+              :options="getObjects"
+              class="mb-3"
+              value-field="id"
+              text-field="name"
+              switches
           ></b-form-checkbox-group>
         </b-form-group>
 
@@ -140,6 +157,7 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
   data: () => ({
@@ -152,8 +170,9 @@ export default {
       objects: [],
       role_id: null,
       getLoading: false,
+      branch_id: null
     },
-
+    branches: [],
     error: false,
     errors: [],
 
@@ -166,6 +185,10 @@ export default {
 
   computed: mapGetters(["getObjects", "getRoles"]),
 
+  async created() {
+    await this.getBranchesList()
+  },
+
   mounted() {
     this.fetchObjects(this);
     this.fetchRoles(this);
@@ -173,7 +196,15 @@ export default {
 
   methods: {
     ...mapActions(["fetchObjects", "fetchRoles"]),
-
+    async getBranchesList() {
+      await api.branches.getBranchesList()
+          .then((response) => {
+            this.branches = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     resetModal() {
       this.manager.first_name = null;
       this.manager.last_name = null;
@@ -198,9 +229,9 @@ export default {
       this.getLoading = true;
       try {
         const response = await this.axios.post(
-          process.env.VUE_APP_URL + "/users",
-          this.manager,
-          this.header
+            process.env.VUE_APP_URL + "/users",
+            this.manager,
+            this.header
         );
 
         this.toasted(response.data.message, "success");
@@ -255,4 +286,3 @@ export default {
 };
 </script>
 
-<style scoped></style>
