@@ -166,7 +166,7 @@
             <div class="card-header" :id="'headingOne' + index">
               <h2 class="mb-0">
                 <button
-                  class="btn btn-link btn-block text-left"
+                  class="btn btn-link btn-block text-left apartment__list"
                   type="button"
                   data-toggle="collapse"
                   :data-target="'#collapseOne' + index"
@@ -804,4 +804,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.apartment__list{
+  color: var(--object-color) !important;
+}
+</style>
