@@ -10,7 +10,7 @@
           <template #title>
             <span class="d-flex align-items-center">
                 <base-user-account-icon :extra-class="activeTabIconColor(0)"/>
-                <span class="ml-2">Профиль</span>
+                <span class="ml-2">{{ $t('profile') }}</span>
             </span>
           </template>
           <tab-user-me/>
@@ -19,7 +19,7 @@
           <template #title>
             <span class="d-flex align-items-center">
                 <base-user-password-icon :extra-class="activeTabIconColor(1)"/>
-                <span class="ml-2">Изменить пароль</span>
+                <span class="ml-2">{{ $t('edit_password') }}</span>
             </span>
           </template>
           <tab-change-password/>

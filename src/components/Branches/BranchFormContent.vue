@@ -229,7 +229,4 @@ export default {
   height: 38px;
 }
 
-.custom-file-input:lang(en) ~ .custom-file-label::after {
-  content: 'kms';
-}
 </style>

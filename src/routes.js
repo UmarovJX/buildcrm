@@ -50,7 +50,7 @@ import UserSettings from "./views/UserSettings"
 import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
-
+import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 const routes = [
     {
         path: "/",
@@ -95,6 +95,16 @@ const routes = [
             requiresAuth: "objects",
         },
     },
+
+    {
+        name: "object-deal-template",
+        path: "/objects/:id/deal-template",
+        component: DealDocsTemplate,
+        meta: {
+            requiresAuth: "objects",
+        },
+    },
+
 
     {
         name: "settings",
