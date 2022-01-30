@@ -317,9 +317,9 @@ export default {
 
 <style lang="scss" scoped>
 .avatar-wrapper {
-  background-color: #ffffff;
-  border: 1px solid #ced4da;
+  background-color: darkorchid;
   border-radius: 50%;
+  box-shadow: 0.5px 0.5px -1px 0 rgba(0,0,0,0.75);
 }
 
 .branches__icon {
