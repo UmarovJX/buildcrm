@@ -49,6 +49,25 @@
               </b-input-group>
               <span class="error__provider">{{ errors[0] }}</span>
             </ValidationProvider>
+
+            <ValidationProvider
+                v-if="managersOption.length"
+                name="select-related-user"
+                rules="required"
+                v-slot="{ errors }"
+                class="mt-3 validation__provider"
+            >
+              <label for="select-managers"> Менеджер </label>
+              <b-form-select
+                  id="select-managers"
+                  v-model="form.managerId"
+                  :options="managersOption"
+              ></b-form-select>
+              <span class="error__provider">
+                {{ errors[0] }}
+              </span>
+            </ValidationProvider>
+
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
                 {{ submitButtonText }}
@@ -68,7 +87,7 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
   name: "BranchFormContent",
@@ -93,9 +112,11 @@ export default {
   emits: ['submit-form', 'make-default-count-down', 'change-count-down'],
   data() {
     return {
+      managersList: [],
       form: {
         branchName: '',
         branchAddress: '',
+        managerId: null,
         branchPhone: null
       },
       providerSchema: [
@@ -136,38 +157,62 @@ export default {
     }
   },
   computed: {
+    managersOption() {
+      const managers = this.managersList
+      if (managers.length) {
+        return this.managersList.map((manager) => {
+          return {
+            value: manager.id,
+            text: manager.last_name + ' ' + manager.first_name
+          }
+        })
+      }
+
+      return []
+    },
     hiddenArea() {
       return this.loading ? 'true' : null
-    },
-    ...mapGetters({
-      me: 'getMe'
-    })
+    }
+  },
+  async created() {
+    await this.getManagersList()
   },
   mounted() {
     this.setHistoryField()
   },
   methods: {
+    async getManagersList() {
+      await api.user.getUsersList()
+          .then(response => {
+            this.managersList = response.data
+            this.form.managerId = this.managersList[0].id
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     setHistoryField() {
       const hasHistory = this.$route.params?.historyForm && Object.keys(this.$route.params?.historyForm).length > 0
       if (hasHistory) {
-        const {name,address,phone} = this.$route.params.historyForm
+        const {name, address, phone, manager} = this.$route.params.historyForm
         this.form = {
           ...this.form,
           ...{
             branchName: name,
             branchAddress: address,
-            branchPhone: phone
+            branchPhone: phone,
+            managerId: manager.id
           }
         }
       }
     },
     async submitNewBranch() {
-      const {branchName, branchAddress, branchPhone} = this.form
+      const {branchName, branchAddress, branchPhone, managerId} = this.form
       const data = {
         name: branchName,
         address: branchAddress,
         phone: branchPhone,
-        manager_id: this.me.user.id
+        manager_id: managerId
       }
       this.$emit('submit-form', data)
     },

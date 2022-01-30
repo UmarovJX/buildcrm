@@ -168,14 +168,15 @@
             </div>
           </div>
           <div class="card-footer d-flex">
-            <button
+            <b-button
               type="button"
               v-if="step === 2"
               @click="step = 1"
               class="btn mr-1"
+              variant="danger"
             >
               <i class="fa fa-arrow-alt-circle-left"></i> {{ $t("back") }}
-            </button>
+            </b-button>
 
             <button
               type="button"
@@ -246,9 +247,9 @@
             </button>
           </div>
           <div class="card-footer d-flex">
-            <button type="button" @click="step = 2" class="btn mr-1">
+            <b-button variant="danger" type="button" @click="step = 2" class="btn mr-1">
               <i class="fa fa-arrow-alt-circle-left"></i> {{ $t("back") }}
-            </button>
+            </b-button>
 
             <button
               type="button"
@@ -392,9 +393,9 @@
             </div>
           </div>
           <div class="card-footer d-flex">
-            <button type="button" @click="step = 3" class="btn mr-1">
+            <b-button variant="danger" type="button" @click="step = 3" class="btn mr-1">
               <i class="fa fa-arrow-alt-circle-left"></i> {{ $t("back") }}
-            </button>
+            </b-button>
 
             <button
               type="button"

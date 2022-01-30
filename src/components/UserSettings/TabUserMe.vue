@@ -1,5 +1,5 @@
 <template>
-  <div class="user__content new-object">
+  <div class="user__content">
     <div class="avatar__content">
       <div class="avatar__content-icon">
         <template v-if="loadingProgress">
@@ -35,9 +35,6 @@
           </div>
           <!--          <b-button @click="removeAvatar" class="remove__button" variant="danger">Remove</b-button>-->
         </div>
-        <span>
-          Allowed JPG, GIF or PNG. Max size of 800kB
-        </span>
       </div>
     </div>
     <ValidationObserver v-slot="{ handleSubmit }">
@@ -56,15 +53,16 @@
               :type="type"
               :id="id"
               :placeholder="placeholder"
+              disabled
           >
           </b-form-input>
           <span class="error__provider">{{ errors[0] }}</span>
         </ValidationProvider>
 
-        <div class="buttons">
-          <b-button type="submit" variant="outline-primary" class="submit__button">Сохранить изменения</b-button>
-          <!--          <b-button type="button" variant="danger" class="remove__button">Remove</b-button>-->
-        </div>
+        <!--        <div class="buttons">-->
+        <!--          <b-button type="submit" variant="outline-primary" class="submit__button">Сохранить изменения</b-button>-->
+        <!--          &lt;!&ndash;          <b-button type="button" variant="danger" class="remove__button">Remove</b-button>&ndash;&gt;-->
+        <!--        </div>-->
       </form>
     </ValidationObserver>
     <base-loading-content :loading="loading"/>
@@ -204,7 +202,7 @@ export default {
     },
     async removeAvatar() {
       const form = new FormData()
-      form.append('avatar', '')
+      form.append('avatar', 'null')
 
       const config = {
         headers: {
@@ -341,9 +339,9 @@ button {
 }
 
 .avatar-wrapper {
-  background-color: #ffffff;
-  border: 1px solid #ced4da;
+  background-color: darkorchid;
   border-radius: 50%;
+  box-shadow: 0.5px 0.5px -1px 0 rgba(0,0,0,0.75);
 }
 
 .active-loading {
