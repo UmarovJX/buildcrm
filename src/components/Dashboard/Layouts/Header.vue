@@ -194,14 +194,14 @@
             </div>
           </router-link>
         </li>
-        <li class="menu__item">
-          <router-link :to="{name: 'branches'}">
-            <i class="fas fa-map-marker-alt"></i>
-            <div class="menu__name">
-              {{ $t('branches.name') }}
-            </div>
-          </router-link>
-        </li>
+        <!--        <li class="menu__item">-->
+        <!--          <router-link :to="{name: 'branches'}">-->
+        <!--            <i class="fas fa-map-marker-alt"></i>-->
+        <!--            <div class="menu__name">-->
+        <!--              {{ $t('branches.name') }}-->
+        <!--            </div>-->
+        <!--          </router-link>-->
+        <!--        </li>-->
       </ul>
     </div>
   </div>
