@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <div
-        class="
+          class="
           d-flex
           justify-content-between
           align-items-center
@@ -10,7 +10,7 @@
         "
       >
         <div
-          class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
+            class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
         >
           <h1 class="title__big my-0">
             {{ $t("users.title") }}
@@ -34,9 +34,9 @@
         </div>
 
         <b-link
-          v-if="getPermission.users.create"
-          class="btn btn-primary mr-0 mt-md-0"
-          v-b-modal.modal-create
+            v-if="getPermission.users.create"
+            class="btn btn-primary mr-0 mt-md-0"
+            v-b-modal.modal-create
         >
           <i class="fal fa-plus mr-2"></i>
           {{ $t("add") }}
@@ -45,22 +45,22 @@
 
       <div class="pt-2">
         <b-table
-          sticky-header
-          borderless
-          responsive
-          :items="getUsers"
-          :fields="fields"
-          :busy="getLoading"
-          show-empty
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
-          sort-icon-left
-          class="custom-table"
-          :empty-text="$t('no_data')"
+            sticky-header
+            borderless
+            responsive
+            :items="getUsers"
+            :fields="fields"
+            :busy="getLoading"
+            show-empty
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            sort-icon-left
+            class="custom-table"
+            :empty-text="$t('no_data')"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">
-              {{scope.emptyText}}</span>
+              {{ scope.emptyText }}</span>
           </template>
 
           <template #table-busy>
@@ -91,38 +91,38 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
-                class="dropdown my-dropdown dropleft"
-                v-if="data.item.id != getMe.user.id"
+                  class="dropdown my-dropdown dropleft"
+                  v-if="data.item.id != getMe.user.id"
               >
                 <!--user.role.id != 1 &&-->
                 <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
+                    type="button"
+                    class="dropdown-toggle"
+                    data-toggle="dropdown"
                 >
                   <i class="far fa-ellipsis-h"></i>
                 </button>
 
                 <div
-                  class="dropdown-menu"
-                  v-if="
+                    class="dropdown-menu"
+                    v-if="
                     getPermission.users.update || getPermission.users.delete
                   "
                 >
                   <b-button
-                    v-if="getPermission.users.update"
-                    @click="clickManager(data.item.id)"
-                    class="dropdown-item dropdown-item--inside"
-                    v-b-modal.modal-edit
+                      v-if="getPermission.users.update"
+                      @click="clickManager(data)"
+                      class="dropdown-item dropdown-item--inside"
+                      v-b-modal.modal-edit
                   >
                     <i class="fas fa-pen"></i>
                     {{ $t("edit") }}
                   </b-button>
 
                   <b-button
-                    class="dropdown-item dropdown-item--inside"
-                    v-if="getPermission.users.delete"
-                    @click="Delete(data.item.id)"
+                      class="dropdown-item dropdown-item--inside"
+                      v-if="getPermission.users.delete"
+                      @click="Delete(data.item.id)"
                   >
                     <i class="far fa-trash"></i> {{ $t("delete") }}
                   </b-button>
@@ -134,13 +134,14 @@
       </div>
 
       <create-modal
-        v-if="getPermission.users.create"
-        @CreateManager="CreateManager"
+          v-if="getPermission.users.create"
+          @CreateManager="CreateManager"
       ></create-modal>
       <edit-modal
-        v-if="getPermission.users.update"
-        :manager-id="manager_id"
-        @EditManager="EditManager"
+          v-if="getPermission.users.update"
+          :manager-id="manager_id"
+          :edit-history-context="editHistoryContext"
+          @EditManager="EditManager(item)"
       ></edit-modal>
     </div>
 
@@ -165,7 +166,7 @@ import Create from "./Modal/Create";
 import Edit from "./Modal/Edit";
 
 export default {
-  name:'Users',
+  name: 'Users',
   components: {
     "create-modal": Create,
     "edit-modal": Edit,
@@ -174,8 +175,10 @@ export default {
   data() {
     return {
       manager: {},
-      manager_id: null,
-
+      manager_id: 0,
+      editHistoryContext: {
+        id:0
+      },
       header: {
         headers: {
           Authorization: "Bearer " + localStorage.token,
@@ -242,8 +245,9 @@ export default {
       this.fetchUsers(this);
     },
 
-    clickManager(id) {
-      this.manager_id = id;
+    clickManager(data) {
+      this.manager_id = data.item.id;
+      this.editHistoryContext = data.item
       this.fetchUser(this);
     },
 
@@ -278,23 +282,23 @@ export default {
         if (result.value) {
           this.loading = true
           this.axios
-            .delete(process.env.VUE_APP_URL + "/users/" + user, this.header)
-            .then((response) => {
-              this.loading = false
-              this.toasted(response.data.message, "success");
-              this.fetchUsers(this);
-              this.fetchMenu(this);
+              .delete(process.env.VUE_APP_URL + "/users/" + user, this.header)
+              .then((response) => {
+                this.loading = false
+                this.toasted(response.data.message, "success");
+                this.fetchUsers(this);
+                this.fetchMenu(this);
 
-              this.$swal(this.$t("sweetAlert.deleted"), "", "success");
-            })
-            .catch((error) => {
-              this.loading = false
-              if (!error.response) {
-                this.toasted("Error: Network Error", "error");
-              } else {
-                this.toasted(error.response.data.error, "error");
-              }
-            });
+                this.$swal(this.$t("sweetAlert.deleted"), "", "success");
+              })
+              .catch((error) => {
+                this.loading = false
+                if (!error.response) {
+                  this.toasted("Error: Network Error", "error");
+                } else {
+                  this.toasted(error.response.data.error, "error");
+                }
+              });
         }
       });
     },
