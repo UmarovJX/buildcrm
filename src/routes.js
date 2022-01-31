@@ -53,7 +53,7 @@ import EditBranchContent from "@/views/Branches/EditBranchContent";
 
 const routes = [
     {
-        path: "/",
+        path: "/home",
         name: "home",
         component: Dashboard,
     },
