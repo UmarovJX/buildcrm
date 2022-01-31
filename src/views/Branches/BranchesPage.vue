@@ -63,7 +63,10 @@
                     class="dropdown-menu"
                 >
                   <router-link
-                      :to="{ name: 'edit-branch', params: { id: data.item.id, historyForm:data.item } }"
+                      :to="{
+                        name: 'edit-branch',
+                        params: { id: data.item.id, historyForm:data.item, }
+                      }"
                       :class="'dropdown-item dropdown-item--inside'"
                   >
                     <span>

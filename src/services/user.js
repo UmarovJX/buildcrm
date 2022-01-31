@@ -5,12 +5,16 @@ class User extends Core {
         return this.get('/oauth/me')
     }
 
-    updateUserAvatar(data,config) {
-        return this.post('users/me', data,config)
+    updateUserAvatar(data, config) {
+        return this.post('users/me', data, config)
     }
 
-    updateUserPassword(data){
-        return this.put('users/me',data)
+    updateUserPassword(data) {
+        return this.put('users/me', data)
+    }
+
+    getUsersList() {
+        return this.get('users')
     }
 }
 
