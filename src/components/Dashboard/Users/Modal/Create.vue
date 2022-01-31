@@ -169,9 +169,9 @@ export default {
       email: null,
       objects: [],
       role_id: null,
-      getLoading: false,
       branch_id: null
     },
+    getLoading: false,
     branches: [],
     error: false,
     errors: [],
@@ -191,15 +191,21 @@ export default {
 
   mounted() {
     this.fetchObjects(this);
-    this.fetchRoles(this);
+    this.fetchRoles(this).then(async () => {
+      await this.initManagerRole()
+    })
   },
 
   methods: {
     ...mapActions(["fetchObjects", "fetchRoles"]),
+    initManagerRole() {
+      this.manager.role_id = this.getRoles[0].id
+    },
     async getBranchesList() {
       await api.branches.getBranchesList()
           .then((response) => {
             this.branches = response.data
+            this.manager.branch_id = response.data[0].id
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
@@ -242,6 +248,7 @@ export default {
         });
 
         this.$emit("CreateManager", this.manager);
+        this.resetFormProperties()
       } catch (error) {
         this.getLoading = false;
         if (!error.response) {
@@ -259,6 +266,19 @@ export default {
           } else {
             this.toasted(error.response.data.message, "error");
           }
+        }
+      }
+    },
+
+    resetFormProperties() {
+      for (let key of Object.keys(this.manager)) {
+        const property = this.manager[key]
+        const isArray = Array.isArray(property)
+        const notResetKeys = ['branch_id','role_id'].findIndex(property => property === key)
+        if (isArray) {
+          this.manager[key] = []
+        } else if(notResetKeys === -1){
+          this.manager[key] = null
         }
       }
     },

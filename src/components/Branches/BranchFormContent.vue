@@ -177,15 +177,12 @@ export default {
   async created() {
     await this.getManagersList()
   },
-  mounted() {
-    this.setHistoryField()
-  },
   methods: {
     async getManagersList() {
       await api.user.getUsersList()
           .then(response => {
             this.managersList = response.data
-            this.form.managerId = this.managersList[0].id
+            this.setHistoryField()
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
@@ -204,6 +201,8 @@ export default {
             managerId: manager.id
           }
         }
+      } else {
+        this.form.managerId = this.managersList[0].id
       }
     },
     async submitNewBranch() {

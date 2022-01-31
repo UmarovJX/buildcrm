@@ -61,7 +61,6 @@
 
         <!--  SELECT TYPE  -->
         <b-form-group
-            v-if="showPaymentTypeOption"
             label-cols="6"
             label-cols-lg="3"
             :label="$t('payment_type')"
@@ -116,15 +115,21 @@
         </b-button>
 
         <b-overlay
-            :show="loading"
             rounded
             opacity="0.6"
             spinner-small
             spinner-variant="primary"
             class="d-inline-block"
         >
-          <b-button type="submit" @click="submitNewDocs" class="submit__button" variant="success">
-            <i class="fas fa-save"></i> {{ $t("save") }}
+          <b-button
+              type="submit"
+              @click="submitNewDocs"
+              class="submit__button"
+              variant="success"
+          >
+            <i class="fas fa-save" v-if="!loading"></i>
+            <span>{{ $t("save") }}</span>
+            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
           </b-button>
         </b-overlay>
       </div>
@@ -137,6 +142,7 @@ import api from "@/services/api";
 
 export default {
   name: "CreateDealDocsTemplate",
+  emits:['update-content'],
   data() {
     return {
       loading: false,
@@ -150,7 +156,7 @@ export default {
       },
       categoryOptions: [
         {value: 'sale', text: this.$t('objects.sale')},
-        {value: 'booking', text: this.$t('objects.booking')}
+        {value: 'reserve', text: this.$t('objects.booking')}
       ],
       typeOptions: [
         {value: 'full', text: this.$t('full')},
@@ -162,33 +168,35 @@ export default {
       ]
     }
   },
-  computed: {
-    showPaymentTypeOption() {
-      return this.form.category === 'sale'
-    }
-  },
   methods: {
     async submitNewDocs() {
-      const validation = await this.$refs['validation-observer'].validate()
-      if (validation) {
-        const data = Object.assign({}, this.form)
-        const form = new FormData()
-        for (let [key, value] of Object.entries(data)) {
-          if (data[key] === null && key !== 'main') {
-            delete data[key]
-          } else {
-            form.append(key, value)
+      if (!this.loading) {
+        this.loading = true
+        const validation = await this.$refs['validation-observer'].validate()
+        if (validation) {
+          const data = Object.assign({}, this.form)
+          const form = new FormData()
+          for (let [key, value] of Object.entries(data)) {
+            if (data[key] === null && key !== 'main') {
+              delete data[key]
+            } else {
+              form.append(key, value)
+            }
           }
-        }
 
-        const {id} = this.$route.params
-        await api.objects.addNewContract({id, form})
-            .then((response) => {
-              console.log(response)
-            })
-            .catch((error) => {
-              console.log(error)
-            })
+          const {id} = this.$route.params
+          await api.objects.addNewContract({id, form})
+              .then(() => {
+                this.$refs["creation-content"].hide()
+                this.$emit('update-content')
+              })
+              .catch((error) => {
+                console.log(error)
+              })
+              .finally(() => {
+                this.loading = false
+              })
+        }
       }
     }
   }

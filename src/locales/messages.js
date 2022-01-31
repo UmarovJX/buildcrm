@@ -39,6 +39,8 @@ export default {
         monthly: 'Ежемесячно',
         payment_type:'Способ оплаты',
         created_at:'Время создания',
+        reservation:'Бронирование',
+        free_of_charge:'Без первоначального платежа',
 
         auth: {
             email: "E-mail",

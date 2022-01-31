@@ -53,7 +53,7 @@ import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 const routes = [
     {
-        path: "/",
+        path: "/home",
         name: "home",
         component: Dashboard,
     },
@@ -271,11 +271,10 @@ const routes = [
 
     {
         name: 'edit-branch',
-        path: 'branches/:id/update',
+        path: '/branches/:id/update',
         component: EditBranchContent
     },
 
-    //
     // {
     //     name: 'settings',
     //     path: '/settings',
