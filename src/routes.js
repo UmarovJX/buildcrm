@@ -255,13 +255,13 @@ const routes = [
 
     {
         name: 'create-branch',
-        path: '/create-branch',
+        path: '/branches/create',
         component: CreateBranchPage
     },
 
     {
         name: 'edit-branch',
-        path: '/edit-branch/:id',
+        path: 'branches/:id/update',
         component: EditBranchContent
     },
 
