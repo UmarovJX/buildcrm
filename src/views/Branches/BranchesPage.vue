@@ -38,6 +38,10 @@
             {{ data.item.name }}
           </template>
 
+          <template #cell(manager)="data">
+            {{ getFullName(data.item) }}
+          </template>
+
           <template #cell(address)="data">
             {{ data.item.address }}
           </template>
@@ -139,6 +143,10 @@ export default {
           label: this.$t("address"),
         },
         {
+          key: "manager",
+          label: this.$t("roles.manager")
+        },
+        {
           key: "phone",
           label: this.$t("clients.phone"),
         },
@@ -184,6 +192,10 @@ export default {
           .finally(() => {
             this.loading = false
           })
+    },
+    getFullName(item) {
+      const {last_name, first_name} = item.manager
+      return last_name + ' ' + first_name
     }
   }
 }
