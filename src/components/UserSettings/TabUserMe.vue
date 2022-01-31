@@ -35,9 +35,6 @@
           </div>
           <!--          <b-button @click="removeAvatar" class="remove__button" variant="danger">Remove</b-button>-->
         </div>
-        <span>
-          Allowed JPG, GIF or PNG. Max size of 800kB
-        </span>
       </div>
     </div>
     <ValidationObserver v-slot="{ handleSubmit }">
