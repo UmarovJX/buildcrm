@@ -82,6 +82,23 @@
         </b-form-group>
 
         <b-form-group
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('branches.name')"
+            label-for="branches"
+        >
+          <b-form-select v-model="manager.branch_id" id="branches" class="mb-3">
+            <b-form-select-option
+                v-for="(branch, index) in branches"
+                :key="index"
+                :value="branch.id"
+            >
+              {{ branch.name }}
+            </b-form-select-option>
+          </b-form-select>
+        </b-form-group>
+
+        <b-form-group
           label-cols="4"
           label-cols-lg="2"
           :label="$t('user.password')"
@@ -148,13 +165,14 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import api from "@/services/api";
 export default {
   props: ["managerId"],
 
   data: () => ({
     error: false,
     errors: [],
-
+    branches:[],
     manager: {},
 
     header: {
@@ -166,13 +184,23 @@ export default {
     getLoading: false
   }),
 
-  mounted() {},
+  async created() {
+    await this.getBranchesList()
+  },
 
   computed: mapGetters(["getObjects", "getUser", "getRoles"]),
 
   methods: {
     ...mapActions(["nullManager"]),
-
+    async getBranchesList() {
+      await api.branches.getBranchesList()
+          .then((response) => {
+            this.branches = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     resetModal() {
       this.$bvModal.hide("modal-edit");
 
