@@ -313,7 +313,7 @@ export default {
             credit_month: "Месяц на рассрочку",
             deal_file: 'Файл контракта',
             select_category: 'Выбрать категорию',
-            sale: 'Распродажа',
+            sale: 'Продажа',
             booking: 'Бронирование',
             make_it_main_contract: 'Сделать основным договором',
 

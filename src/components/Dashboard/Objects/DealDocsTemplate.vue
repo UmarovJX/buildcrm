@@ -228,12 +228,13 @@ export default {
     downloadDocumentURl(url) {
       return process.env.VUE_APP_URL + '/' + url
     },
-    deleteBranch(id) {
+    deleteBranch(contractId) {
       this.loading = true
-      api.branches.deleteBranch(id)
+      const objectId = this.$route.params.id
+      api.objects.deleteContract({objectId, contractId})
           .then(() => {
-            const findIndex = this.branches.findIndex(branch => branch.id === id)
-            this.branches.splice(findIndex, 1)
+            const findIndex = this.deals.findIndex(deal => deal.id === contractId)
+            this.deals.splice(findIndex, 1)
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)

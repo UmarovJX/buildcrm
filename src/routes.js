@@ -98,7 +98,7 @@ const routes = [
 
     {
         name: "object-deal-template",
-        path: "/objects/:id/deal-template",
+        path: "/objects/:id/contracts",
         component: DealDocsTemplate,
         meta: {
             requiresAuth: "objects",

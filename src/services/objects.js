@@ -8,6 +8,10 @@ class Objects extends Core {
     addNewContract({id, form}) {
         return this.post(`objects/${id}/contract/`, form)
     }
+
+    deleteContract({objectId, contractId}) {
+        return this.delete(`objects/${objectId}/contract/${contractId}`)
+    }
 }
 
 export default new Objects()
