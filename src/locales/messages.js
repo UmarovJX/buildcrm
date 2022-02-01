@@ -139,7 +139,7 @@ export default {
       admin: "Администратор",
       manager: "Менеджер",
       accountant: "Бухалтер",
-    },
+    } ,
 
     clients: {
       title: "База клиентов",
