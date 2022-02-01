@@ -294,7 +294,10 @@ router.beforeEach((to, from, next) => {
     if (to.name === 'login') next()
 
     if (AUTH_TOKEN)
-        next()
+        if(to.path === '/')
+            next({name:'home'})
+        else
+            next()
     else
         next({name: 'login'})
 })
