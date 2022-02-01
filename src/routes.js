@@ -261,11 +261,10 @@ const routes = [
 
     {
         name: 'edit-branch',
-        path: 'branches/:id/update',
+        path: '/branches/:id/update',
         component: EditBranchContent
     },
 
-    //
     // {
     //     name: 'settings',
     //     path: '/settings',
