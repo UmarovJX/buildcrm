@@ -61,6 +61,7 @@
 
         <!--  SELECT TYPE  -->
         <b-form-group
+            v-if="showPaymentType"
             label-cols="6"
             label-cols-lg="3"
             :label="$t('payment_type')"
@@ -142,7 +143,7 @@ import api from "@/services/api";
 
 export default {
   name: "CreateDealDocsTemplate",
-  emits:['update-content'],
+  emits: ['update-content'],
   data() {
     return {
       loading: false,
@@ -156,7 +157,8 @@ export default {
       },
       categoryOptions: [
         {value: 'sale', text: this.$t('objects.sale')},
-        {value: 'reserve', text: this.$t('objects.booking')}
+        {value: 'reserve', text: this.$t('objects.booking')},
+        // {value: 'not_initial', text: this.$t('free_of_charge')}
       ],
       typeOptions: [
         {value: 'full', text: this.$t('full')},
@@ -168,10 +170,14 @@ export default {
       ]
     }
   },
+  computed: {
+    showPaymentType() {
+      return this.form.category !== 'not_initial'
+    }
+  },
   methods: {
     async submitNewDocs() {
       if (!this.loading) {
-        this.loading = true
         const validation = await this.$refs['validation-observer'].validate()
         if (validation) {
           const data = Object.assign({}, this.form)
@@ -184,6 +190,7 @@ export default {
             }
           }
 
+          this.loading = true
           const {id} = this.$route.params
           await api.objects.addNewContract({id, form})
               .then(() => {

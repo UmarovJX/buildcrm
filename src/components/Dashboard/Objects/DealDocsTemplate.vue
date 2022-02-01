@@ -32,7 +32,7 @@
     </div>
 
     <!-- Creation Modal   -->
-    <create-deal-docs-template @update-content="getDealTemplateList"></create-deal-docs-template>
+    <create-deal-docs-template @update-content="getDealTemplateList" />
 
     <!--  Loading Content  -->
     <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
