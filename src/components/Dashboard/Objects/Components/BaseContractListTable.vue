@@ -31,7 +31,15 @@
     </template>
 
     <template #cell(type)="data">
-      {{ data.item.type }}
+      <span v-if="data.item.type === 'full'">
+        {{ $t('full') }}
+      </span>
+      <span v-else-if="data.item.type === 'monthly'">
+        {{ $t('monthly') }}
+      </span>
+      <span v-else>
+        {{ data.item.type }}
+      </span>
     </template>
 
     <template #cell(category)="data">

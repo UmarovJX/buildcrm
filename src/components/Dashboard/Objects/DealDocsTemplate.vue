@@ -16,8 +16,8 @@
 
       <!--   Contract List    -->
       <b-card no-body class="mt-3">
-        <b-tabs pills card active-nav-item-class="active__contract__tab">
-          <b-tab :title="$t('objects.sale')" active>
+        <b-tabs v-model="contractTabs" pills card active-nav-item-class="active__contract__tab">
+          <b-tab :title="$t('objects.sale')">
             <base-contract-list-table :contracts="saleContracts"/>
           </b-tab>
           <b-tab :title="$t('free_of_charge')">
@@ -32,7 +32,7 @@
     </div>
 
     <!-- Creation Modal   -->
-    <create-deal-docs-template @update-content="getDealTemplateList" />
+    <create-deal-docs-template @update-content="updateContent"/>
 
     <!--  Loading Content  -->
     <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
@@ -65,14 +65,14 @@ export default {
   data() {
     return {
       loading: false,
-      contracts: []
+      contracts: [],
+      contractTabs: 0
     }
   },
   computed: {
     saleContracts() {
       return this.contracts.filter(contract => {
-        // 'sale'
-        return contract.category === null
+        return contract.category === 'sale'
       })
     },
     notInitialContracts() {
@@ -90,6 +90,16 @@ export default {
     await this.getDealTemplateList()
   },
   methods: {
+    updateContent({category}) {
+      if (category === 'sale')
+        this.contractTabs = 0
+      else if (category === 'reserve')
+        this.contractTabs = 1
+      else if (category === 'not_initial')
+        this.contractTabs = 2
+
+      this.getDealTemplateList()
+    },
     async getDealTemplateList() {
       this.loading = true
       const {id} = this.$route.params

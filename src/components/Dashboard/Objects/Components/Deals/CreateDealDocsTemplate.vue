@@ -25,6 +25,7 @@
             <b-form-file
                 id="form_file"
                 v-model="form.file"
+                value="File"
                 placeholder="Choose a file or drop it here..."
                 drop-placeholder="Drop file here..."
             ></b-form-file>
@@ -129,7 +130,7 @@
               variant="success"
           >
             <i class="fas fa-save" v-if="!loading"></i>
-            <span>{{ $t("save") }}</span>
+            <span class="save__button">{{ $t("save") }}</span>
             <i v-if="loading" class="fas fa-spinner fa-spin"></i>
           </b-button>
         </b-overlay>
@@ -195,15 +196,29 @@ export default {
           await api.objects.addNewContract({id, form})
               .then(() => {
                 this.$refs["creation-content"].hide()
-                this.$emit('update-content')
+                this.$emit('update-content', {category: this.form.category})
+                this.setInitialPropertyForm()
               })
               .catch((error) => {
-                console.log(error)
+                this.toastedWithErrorCode(error)
               })
               .finally(() => {
                 this.loading = false
               })
         }
+      }
+    },
+    setInitialPropertyForm() {
+      for (let key of Object.keys(this.form)) {
+        const property = this.form[key]
+        const makeNullProperties = ['type,category']
+        const findIndex = makeNullProperties.findIndex(nullProperty => nullProperty === property)
+        if (findIndex !== -1)
+          this.form[key] = null
+        else if (key === 'language')
+          this.form[key] = 'uz'
+        if (key === 'main')
+          this.form[key] = 0
       }
     }
   }
@@ -217,6 +232,10 @@ export default {
 
 .cancel__button {
   margin: 0 1rem 0 0 !important;
+}
+
+.save__button {
+  color: white;
 }
 
 .error__provider {
