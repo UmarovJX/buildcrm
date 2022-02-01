@@ -51,6 +51,7 @@ import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
+
 const routes = [
     {
         path: "/home",
@@ -304,7 +305,10 @@ router.beforeEach((to, from, next) => {
     if (to.name === 'login') next()
 
     if (AUTH_TOKEN)
-        next()
+        if (to.path === '/')
+            next({name: 'home'})
+        else
+            next()
     else
         next({name: 'login'})
 })
