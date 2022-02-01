@@ -37,10 +37,10 @@ export default {
         category: 'Категория',
         full: 'Полный',
         monthly: 'Ежемесячно',
-        payment_type:'Способ оплаты',
-        created_at:'Время создания',
-        reservation:'Бронирование',
-        free_of_charge:'Без первоначального платежа',
+        payment_type: 'Способ оплаты',
+        created_at: 'Время создания',
+        reservation: 'Бронирование',
+        free_of_charge: 'Без первоначального платежа',
 
         auth: {
             email: "E-mail",
@@ -451,7 +451,10 @@ export default {
             password: "Пароль",
             email: "Э-маил",
             role: "Роль",
-            phone_number: "Телефонный номер"
+            phone_number: "Телефонный номер",
+            validation_last_password: 'Cтарый пароль неверен!',
+            validation_password: 'Пароль должен содержать не менее 8 символов!',
+            validation_confirm_password: 'Подтверждение пароля должно совпадать с новым паролем'
         },
 
         users: {
@@ -492,6 +495,12 @@ export default {
     },
     uz: {
         home: "Bosh sahifa",
+
+        user: {
+            validation_last_password: 'Eski parol noto’g’ri terilgan!',
+            validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
+            validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
+        },
 
         roles: {
             admin: "Rais buva",

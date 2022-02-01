@@ -36,12 +36,12 @@
               <b-input-group>
                 <template #append>
                   <b-input-group-text @click="toggleInputType(index)" class="toggle__password__view">
-                <span v-if="type === 'password'">
-                <img src="@/assets/icons/no-preview-aye.svg" alt="no-preview-aye.svg">
-              </span>
+                    <span v-if="type === 'password'">
+                      <img src="@/assets/icons/no-preview-aye.svg" alt="no-preview-aye.svg">
+                    </span>
                     <span v-else>
-                <img src="@/assets/icons/preview-aye.svg" alt="preview-aye.svg">
-              </span>
+                      <img src="@/assets/icons/preview-aye.svg" alt="preview-aye.svg">
+                    </span>
                   </b-input-group-text>
                 </template>
                 <b-form-input
@@ -52,7 +52,7 @@
                 >
                 </b-form-input>
               </b-input-group>
-              <span class="error__provider">{{ errors[0] }}</span>
+              <span class="error__provider" v-if="errors[0]">{{ $t('user.validation_password') }}</span>
             </ValidationProvider>
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
@@ -100,7 +100,11 @@ export default {
           label: 'Прежний пароль',
           bind: 'oldPassword',
           placeholder: 'Прежний пароль',
-          id: 'oldPassword'
+          id: 'oldPassword',
+          validationError: {
+            show: false,
+            message: this.$t('')
+          }
         },
         {
           type: 'password',
@@ -120,9 +124,13 @@ export default {
           label: 'Повторите новый пароль',
           bind: 'repeatedPassword',
           placeholder: 'Повторите новый пароль',
-          id: 'repeatedPassword'
+          id: 'repeatedPassword',
+          errorForm: {
+            show: false,
+            message: ''
+          }
         }
-      ]
+      ],
     }
   },
   computed: {
@@ -134,39 +142,44 @@ export default {
     submitNewPassword() {
       this.loading = true
       const {oldPassword, newPassword, repeatedPassword} = this.form
-      const data = {
-        old_password: oldPassword,
-        password: newPassword,
-        password_confirmation: repeatedPassword
+      if (newPassword === repeatedPassword) {
+        const data = {
+          old_password: oldPassword,
+          password: newPassword,
+          password_confirmation: repeatedPassword
+        }
+        api.user.updateUserPassword(data)
+            .then(() => {
+              this.responseAlert.variant = 'success'
+              this.responseAlert.message = 'Ваш пароль был обновлен'
+              this.$refs['validation-observer'].reset()
+              this.makeFormDefault()
+              this.showResponseAlert()
+            })
+            .catch((error) => {
+              const {status, data} = error.response
+
+              if (status === 403 && data.hasOwnProperty('message')) {
+                this.responseAlert.variant = 'danger'
+                this.responseAlert.message = data.message
+                this.showResponseAlert()
+              }
+
+              if (status === 422 && data.hasOwnProperty('password')) {
+                this.responseAlert.variant = 'danger'
+                this.responseAlert.message = data.password[0]
+                this.showResponseAlert()
+              }
+            })
+            .finally(() => {
+              this.loading = false
+            })
+      } else {
+        this.showConfirmationError()
       }
-      api.user.updateUserPassword(data)
-          .then(() => {
-            this.responseAlert.variant = 'success'
-            this.responseAlert.message = 'Ваш пароль был обновлен'
-            this.$refs['validation-observer'].reset()
-            this.makeFormDefault()
-            this.showResponseAlert()
-          })
-          .catch((error) => {
-            const {status, data} = error.response
-
-            if (status === 403) {
-              this.responseAlert.variant = 'danger'
-              this.responseAlert.message = data.message
-              this.showResponseAlert()
-            }
-
-            if (status === 422) {
-              const values = Object.values(data)
-              this.responseAlert.variant = 'danger'
-              this.responseAlert.message = values[0][0]
-              this.showResponseAlert()
-            }
-          })
-          .finally(() => {
-            this.loading = false
-          })
-
+    },
+    showConfirmationError(){
+      this.providerSchema.errorForm.message = this.$t('validation_confirm_password')
     },
     toggleInputType(index) {
       const currentType = this.providerSchema[index].type
@@ -212,6 +225,8 @@ export default {
   }
 
   .error__provider {
+    display: block;
+    margin-top: 8px;
     color: red;
   }
 
