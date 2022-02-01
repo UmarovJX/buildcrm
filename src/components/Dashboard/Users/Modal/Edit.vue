@@ -232,7 +232,7 @@ export default {
       const length = Object.keys(this.editHistoryContext).length > 1
       if (length) {
         const {first_name, last_name, phone, email, branch, role, objects} = this.editHistoryContext
-        this.manager.object_ids = objects.map(object => object.id)
+        this.manager.objects = objects.map(object => object.id)
         this.manager.first_name = first_name
         this.manager.last_name = last_name
         this.manager.phone = phone
