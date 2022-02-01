@@ -124,13 +124,9 @@ export default {
           label: 'Повторите новый пароль',
           bind: 'repeatedPassword',
           placeholder: 'Повторите новый пароль',
-          id: 'repeatedPassword',
-          errorForm: {
-            show: false,
-            message: ''
-          }
+          id: 'repeatedPassword'
         }
-      ],
+      ]
     }
   },
   computed: {
@@ -142,44 +138,39 @@ export default {
     submitNewPassword() {
       this.loading = true
       const {oldPassword, newPassword, repeatedPassword} = this.form
-      if (newPassword === repeatedPassword) {
-        const data = {
-          old_password: oldPassword,
-          password: newPassword,
-          password_confirmation: repeatedPassword
-        }
-        api.user.updateUserPassword(data)
-            .then(() => {
-              this.responseAlert.variant = 'success'
-              this.responseAlert.message = 'Ваш пароль был обновлен'
-              this.$refs['validation-observer'].reset()
-              this.makeFormDefault()
-              this.showResponseAlert()
-            })
-            .catch((error) => {
-              const {status, data} = error.response
-
-              if (status === 403 && data.hasOwnProperty('message')) {
-                this.responseAlert.variant = 'danger'
-                this.responseAlert.message = data.message
-                this.showResponseAlert()
-              }
-
-              if (status === 422 && data.hasOwnProperty('password')) {
-                this.responseAlert.variant = 'danger'
-                this.responseAlert.message = data.password[0]
-                this.showResponseAlert()
-              }
-            })
-            .finally(() => {
-              this.loading = false
-            })
-      } else {
-        this.showConfirmationError()
+      const data = {
+        old_password: oldPassword,
+        password: newPassword,
+        password_confirmation: repeatedPassword
       }
-    },
-    showConfirmationError(){
-      this.providerSchema.errorForm.message = this.$t('validation_confirm_password')
+      api.user.updateUserPassword(data)
+          .then(() => {
+            this.responseAlert.variant = 'success'
+            this.responseAlert.message = 'Ваш пароль был обновлен'
+            this.$refs['validation-observer'].reset()
+            this.makeFormDefault()
+            this.showResponseAlert()
+          })
+          .catch((error) => {
+            const {status, data} = error.response
+
+            if (status === 403 && data.hasOwnProperty('message')) {
+              this.responseAlert.variant = 'danger'
+              this.responseAlert.message = data.message
+              this.showResponseAlert()
+            }
+
+            if (status === 422) {
+              const values = Object.values(data)
+              this.responseAlert.variant = 'danger'
+              this.responseAlert.message = values[0][0]
+              this.showResponseAlert()
+            }
+          })
+          .finally(() => {
+            this.loading = false
+          })
+
     },
     toggleInputType(index) {
       const currentType = this.providerSchema[index].type
