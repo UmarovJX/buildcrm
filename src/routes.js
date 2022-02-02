@@ -50,6 +50,7 @@ import UserSettings from "./views/UserSettings"
 import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
+import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 
 const routes = [
     {
@@ -95,6 +96,16 @@ const routes = [
             requiresAuth: "objects",
         },
     },
+
+    {
+        name: "object-deal-template",
+        path: "/objects/:id/contracts",
+        component: DealDocsTemplate,
+        meta: {
+            requiresAuth: "objects",
+        },
+    },
+
 
     {
         name: "settings",
@@ -294,8 +305,8 @@ router.beforeEach((to, from, next) => {
     if (to.name === 'login') next()
 
     if (AUTH_TOKEN)
-        if(to.path === '/')
-            next({name:'home'})
+        if (to.path === '/')
+            next({name: 'home'})
         else
             next()
     else

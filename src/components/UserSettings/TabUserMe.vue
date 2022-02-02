@@ -87,37 +87,37 @@ export default {
         {
           id: 'username',
           type: 'text',
-          name: 'Имя',
+          name: this.$t('user.first_name'),
           rules: 'required|alpha',
           bind: 'firstName',
-          placeholder: 'Имя',
+          placeholder: this.$t('user.first_name'),
           extraClass: 'validation__provider'
         },
         {
           id: 'lastname',
           type: 'text',
-          name: 'Фамилия',
+          name: this.$t('user.last_name'),
           rules: 'required|alpha',
           bind: 'lastName',
-          placeholder: 'Фамилия',
+          placeholder: this.$t('user.last_name'),
           extraClass: 'validation__provider'
         },
         {
           id: 'phoneNumber',
           type: 'tel',
-          name: 'Телефонный номер',
+          name: this.$t('user.phone_number'),
           rules: 'required|digits:12',
           bind: 'phone',
-          placeholder: 'Телефонный номер',
+          placeholder: this.$t('user.phone_number'),
           extraClass: 'validation__provider'
         },
         {
           id: 'email',
           type: 'email',
-          name: 'Email',
+          name: this.$t('user.email'),
           rules: 'required|email',
           bind: 'email',
-          placeholder: 'Email',
+          placeholder: this.$t('user.email'),
           extraClass: 'validation__provider'
         }
       ],

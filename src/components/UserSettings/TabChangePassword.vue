@@ -36,12 +36,12 @@
               <b-input-group>
                 <template #append>
                   <b-input-group-text @click="toggleInputType(index)" class="toggle__password__view">
-                <span v-if="type === 'password'">
-                <img src="@/assets/icons/no-preview-aye.svg" alt="no-preview-aye.svg">
-              </span>
+                    <span v-if="type === 'password'">
+                      <img src="@/assets/icons/no-preview-aye.svg" alt="no-preview-aye.svg">
+                    </span>
                     <span v-else>
-                <img src="@/assets/icons/preview-aye.svg" alt="preview-aye.svg">
-              </span>
+                      <img src="@/assets/icons/preview-aye.svg" alt="preview-aye.svg">
+                    </span>
                   </b-input-group-text>
                 </template>
                 <b-form-input
@@ -52,7 +52,7 @@
                 >
                 </b-form-input>
               </b-input-group>
-              <span class="error__provider">{{ errors[0] }}</span>
+              <span class="error__provider" v-if="errors[0]">{{ $t('user.validation_password') }}</span>
             </ValidationProvider>
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
@@ -100,7 +100,11 @@ export default {
           label: 'Прежний пароль',
           bind: 'oldPassword',
           placeholder: 'Прежний пароль',
-          id: 'oldPassword'
+          id: 'oldPassword',
+          validationError: {
+            show: false,
+            message: this.$t('')
+          }
         },
         {
           type: 'password',
@@ -150,7 +154,7 @@ export default {
           .catch((error) => {
             const {status, data} = error.response
 
-            if (status === 403) {
+            if (status === 403 && data.hasOwnProperty('message')) {
               this.responseAlert.variant = 'danger'
               this.responseAlert.message = data.message
               this.showResponseAlert()
@@ -212,6 +216,8 @@ export default {
   }
 
   .error__provider {
+    display: block;
+    margin-top: 8px;
     color: red;
   }
 
