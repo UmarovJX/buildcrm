@@ -24,7 +24,7 @@
               @submit.prevent="handleSubmit(submitNewPassword)"
           >
             <ValidationProvider
-                v-for="({type,name,rules,extraClass,id,label,placeholder,bind},index) in providerSchema"
+                v-for="({type,name,rules,extraClass,id,label,placeholder,bind,validationError},index) in providerSchema"
                 :key="name+id"
                 :name="name"
                 :rules="rules"
@@ -53,6 +53,7 @@
                 </b-form-input>
               </b-input-group>
               <span class="error__provider" v-if="errors[0]">{{ $t('user.validation_password') }}</span>
+              <span class="error__provider" v-if="validationError.show">{{ validationError.message }}</span>
             </ValidationProvider>
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
@@ -103,7 +104,7 @@ export default {
           id: 'oldPassword',
           validationError: {
             show: false,
-            message: this.$t('')
+            message: this.$t('user.validation_last_password')
           }
         },
         {
@@ -114,7 +115,11 @@ export default {
           label: 'Новый пароль',
           bind: 'newPassword',
           placeholder: 'Новый пароль',
-          id: 'newPassword'
+          id: 'newPassword',
+          validationError: {
+            show: false,
+            message: ''
+          }
         },
         {
           type: 'password',
@@ -124,10 +129,31 @@ export default {
           label: 'Повторите новый пароль',
           bind: 'repeatedPassword',
           placeholder: 'Повторите новый пароль',
-          id: 'repeatedPassword'
+          id: 'repeatedPassword',
+          validationError: {
+            show: false,
+            message: this.$t('user.validation_confirm_password')
+          }
         }
       ]
     }
+  },
+  watch: {
+    'form.oldPassword'(){
+      this.toggleConfirmationError({show: false, id: 'oldPassword'})
+    },
+    'form.newPassword'(newPassword) {
+      if (newPassword === this.form.repeatedPassword)
+        this.toggleConfirmationError({show: false, id: 'repeatedPassword'})
+    },
+    'form.repeatedPassword'(confirmPassword) {
+      if (confirmPassword === this.form.newPassword)
+        this.toggleConfirmationError({show: false, id: 'repeatedPassword'})
+      else if (confirmPassword.length >= this.form.newPassword.length)
+        this.toggleConfirmationError({show: true, id: 'repeatedPassword'})
+      else
+        this.toggleConfirmationError({show: false, id: 'repeatedPassword'})
+    },
   },
   computed: {
     hiddenArea() {
@@ -136,6 +162,13 @@ export default {
   },
   methods: {
     submitNewPassword() {
+      const {newPassword, repeatedPassword} = this.form
+      if (newPassword === repeatedPassword)
+        this.updateUserPassword()
+      else
+        this.toggleConfirmationError({show: true, id: 'repeatedPassword'})
+    },
+    updateUserPassword() {
       this.loading = true
       const {oldPassword, newPassword, repeatedPassword} = this.form
       const data = {
@@ -158,6 +191,7 @@ export default {
               this.responseAlert.variant = 'danger'
               this.responseAlert.message = data.message
               this.showResponseAlert()
+              this.toggleConfirmationError({show: true, id: 'oldPassword'})
             }
 
             if (status === 422) {
@@ -170,7 +204,12 @@ export default {
           .finally(() => {
             this.loading = false
           })
-
+    },
+    toggleConfirmationError({show, id}) {
+      /* FIND REPEATED PASSWORD SCHEMA INDEX */
+      const findIndex = this.providerSchema.findIndex(provider => provider.id === id)
+      const validationError = this.providerSchema[findIndex].validationError
+      validationError.show = show
     },
     toggleInputType(index) {
       const currentType = this.providerSchema[index].type
