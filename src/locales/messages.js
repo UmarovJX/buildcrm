@@ -41,6 +41,7 @@ export default {
         created_at: 'Время создания',
         reservation: 'Бронирование',
         free_of_charge: 'Без первоначального платежа',
+        more_info: 'Подробная информация',
 
         auth: {
             email: "E-mail",
@@ -427,6 +428,7 @@ export default {
             yes_cancel_reserve: "Да, отменить",
             canceled_reserve: "Бронь отменена",
             success_create_role: "Роль успешно создано",
+            success_create_company: "Компания успешно создано",
             success_update_role: "Роль успешно редактировано",
             are_you_sure_delete_role:
                 "Если удалите роль вы должны назначить новый ролей пользователем",

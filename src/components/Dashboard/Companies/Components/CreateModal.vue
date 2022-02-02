@@ -1,207 +1,247 @@
 <template>
   <div>
     <b-modal
-      id="modal-create"
-      ref="modal"
-      :title="$t('add')"
-      hide-footer
-      @show="resetModal"
+        id="modal-create"
+        ref="modal"
+        size="lg"
+        :title="$t('add')"
+        hide-footer
+        @show="resetModal"
     >
-      <b-alert show variant="danger" v-if="error">
-        <ul>
-          <li v-for="(error, index) in errors" :key="index">
-            <span v-for="msg in error" :key="msg">
-              {{ msg }}
-            </span>
-          </li>
-        </ul>
-      </b-alert>
-
-      <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group :label="$t('companies.type')" label-for="roles">
-          <b-form-select v-model="company.type_id" id="roles">
-            <b-form-select-option value="0">
-              {{ $t("companies.type_enter") }}
-            </b-form-select-option>
-
-            <b-form-select-option
-              v-for="(type, index) in getBranchTypes"
-              :key="index"
-              :value="type.id"
+      <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
+        <form ref="form" @submit.stop.prevent="handleSubmit(submitNewCompany)">
+          <ValidationProvider
+              name="roles"
+              rules="required"
+              v-slot="{ errors }"
+          >
+            <b-form-group
+                class="mb-2"
+                :label="$t('companies.type')"
             >
-              {{ getName(type.name) }}
-            </b-form-select-option>
-          </b-form-select>
-        </b-form-group>
+              <b-form-select
+                  class="mb-2"
+                  id="roles"
+                  :label-for="$t('companies.type')"
+                  :name="$t('companies.type')"
+                  v-model="company.type_id"
+                  :options="typeOptions"
+              >
+                <template #first>
+                  <b-form-select-option
+                      :value="0"
+                      disabled
+                  >
+                    {{ $t("companies.type_enter") }}
+                  </b-form-select-option>
+                </template>
+              </b-form-select>
+            </b-form-group>
+            <span class="error__provider" v-if="errors[0]">
+              {{ errors[0] }}
+            </span>
+          </ValidationProvider>
 
-        <b-form-group :label="$t('companies.name')" label-for="name">
-          <b-form-input id="name" v-model="company.name"></b-form-input>
-        </b-form-group>
+          <ValidationProvider
+              v-for="{label,labelFor,bind,mask,rules} in providerSchema"
+              :key="label + labelFor"
+              :name="label"
+              :rules="rules"
+              v-slot="{ errors }"
+          >
+            <b-form-group class="mb-2" :label="label" :label-for="labelFor">
+              <b-form-input :id="labelFor" v-mask="mask" v-model="company[bind]"/>
+            </b-form-group>
+            <span class="error__provider" v-if="errors[0]">
+              {{ errors[0] }}
+            </span>
+          </ValidationProvider>
 
-        <b-form-group
-          :label="$t('companies.payment_account')"
-          label-for="payment_account"
-        >
-          <b-form-input
-            id="payment_account"
-            v-model="company.payment_account"
-          ></b-form-input>
-        </b-form-group>
+          <div class="d-flex justify-content-end pb-4">
+            <b-button variant="light" @click="resetModal">
+              {{ $t("cancel") }}
+            </b-button>
 
-        <b-form-group :label="$t('companies.inn')" label-for="inn">
-          <b-form-input id="inn" v-model="company.inn"></b-form-input>
-        </b-form-group>
-
-        <b-form-group :label="$t('companies.mfo')" label-for="mfo">
-          <b-form-input id="mfo" v-model="company.mfo"></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          :label="$t('companies.first_name')"
-          label-for="first_name"
-        >
-          <b-form-input
-            id="first_name"
-            v-model="company.first_name"
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group :label="$t('companies.last_name')" label-for="last_name">
-          <b-form-input
-            id="last_name"
-            v-model="company.last_name"
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          :label="$t('companies.second_name')"
-          label-for="second_name"
-        >
-          <b-form-input
-            id="second_name"
-            v-model="company.second_name"
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group :label="$t('companies.phone')" label-for="phone">
-          <b-form-input id="phone" v-model="company.phone"></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          :label="$t('companies.other_phone')"
-          label-for="other_phone"
-        >
-          <b-form-input
-            id="other_phone"
-            v-model="company.other_phone"
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          :label="$t('companies.bank_name') + ' Ru'"
-          label-for="bank_name_ru"
-        >
-          <b-form-input
-            id="bank_name_ru"
-            v-model="company.bank_name.ru"
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          :label="$t('companies.bank_name') + ' Uz'"
-          label-for="bank_name_uz"
-        >
-          <b-form-input
-            id="bank_name_uz"
-            v-model="company.bank_name.uz"
-          ></b-form-input>
-        </b-form-group>
-
-        <div class="d-flex justify-content-center pb-4">
-          <b-button variant="light" @click="resetModal">
-            {{ $t("cancel") }}
-          </b-button>
-
-          <b-button type="submit" class="ml-1" variant="success">
-            <i class="fas fa-save"></i> {{ $t("save") }}
-          </b-button>
-        </div>
-      </form>
+            <b-button
+                type="submit"
+                class="ml-1 mr-0"
+                variant="success"
+            >
+              <i class="fas fa-save" v-if="!loading"></i>
+              <span class="save__button">{{ $t("save") }}</span>
+              <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+            </b-button>
+          </div>
+        </form>
+      </ValidationObserver>
     </b-modal>
   </div>
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
+  name: 'CreationCompanyModal',
+  emits: ['created-new-company'],
   data() {
     return {
+      maskText: '',
+      loading: false,
+      companyTypes: [],
       company: {
         first_name: null,
         last_name: null,
         second_name: null,
-
         payment_account: null,
         name: null,
         inn: null,
         mfo: null,
-        bank_name: {
-          ru: null,
-          uz: null,
-        },
         phone: null,
         other_phone: null,
-
         type_id: null,
+        bank_name_ru: null,
+        bank_name_uz: null
       },
-
-      error: false,
-      errors: [],
-
-      header: {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
+      providerSchema: [
+        {
+          mask:'',
+          type: 'text',
+          bind: 'name',
+          labelFor: 'name',
+          rules: 'required|min:2',
+          label: this.$t('companies.name')
         },
-      },
-    };
+        {
+          mask:'',
+          type: 'text',
+          bind: 'payment_account',
+          labelFor: 'payment_account',
+          rules: 'required|min:2',
+          label: this.$t('companies.payment_account')
+        },
+        {
+          mask:'',
+          type: 'text',
+          bind: 'inn',
+          labelFor: 'inn',
+          rules: 'required|min:2',
+          label: this.$t('companies.inn')
+        },
+        {
+          mask:'',
+          type: 'text',
+          bind: 'mfo',
+          labelFor: 'mfo',
+          rules: 'required|min:2',
+          label: this.$t('companies.mfo')
+        },
+        {
+          mask:'',
+          type: 'text',
+          bind: 'first_name',
+          labelFor: 'first_name',
+          rules: 'required|min:2',
+          label: this.$t('companies.first_name')
+        },
+        {
+          mask:'',
+          type: 'text',
+          bind: 'last_name',
+          labelFor: 'last_name',
+          rules: 'required|min:2',
+          label: this.$t('companies.last_name')
+        },
+        {
+          mask:'',
+          type: 'text',
+          bind: 'second_name',
+          labelFor: 'second_name',
+          rules: 'required|min:2',
+          label: this.$t('companies.second_name')
+        },
+        {
+          mask:'############',
+          type: 'tel',
+          bind: 'phone',
+          labelFor: 'phone',
+          rules: 'required|min:2',
+          label: this.$t('companies.phone')
+        },
+        {
+          mask:'############',
+          type: 'tel',
+          bind: 'other_phone',
+          labelFor: 'other_phone',
+          rules: 'required|min:2',
+          label: this.$t('companies.other_phone')
+        },
+        {
+          mask:'',
+          type: 'text',
+          bind: 'bank_name_ru',
+          labelFor: 'bank_name_ru',
+          rules: 'required|min:2',
+          label: this.$t('companies.bank_name') + ' Ru'
+        },
+        {
+          mask:'',
+          type: 'text',
+          bind: 'bank_name_uz',
+          labelFor: 'bank_name_uz',
+          rules: 'required|min:2',
+          label: this.$t('companies.bank_name') + ' Uz'
+        },
+      ]
+    }
   },
 
-  computed: mapGetters(["getBranchTypes"]),
+  computed: {
+    typeOptions() {
+      return this.companyTypes.map(({id: value, name}) => {
+        let text = name.ru
+        if (localStorage.locale) {
+          text = name[localStorage.locale]
+        }
+        return {
+          value,
+          text
+        }
+      })
+    }
+  },
 
-  mounted() {
-    this.fetchBranchTypes(this);
+  async created() {
+    await this.fetchCompanyType()
   },
 
   methods: {
-    ...mapActions(["fetchBranchTypes"]),
-
+    fetchCompanyType() {
+      api.companies.getCompanyType()
+          .then(response => {
+            this.companyTypes = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     resetModal() {
       this.company = {
+        inn: null,
+        mfo: null,
+        name: null,
+        phone: null,
+        type_id: 0,
+        other_phone: null,
         first_name: null,
         last_name: null,
         second_name: null,
-
         payment_account: null,
-        name: null,
-        inn: null,
-        mfo: null,
-        bank_name: {
-          ru: null,
-          uz: null,
-        },
+        bank_name_ru: null,
+        bank_name_uz: null
+      }
 
-        phone: null,
-        other_phone: null,
-        type_id: 0,
-      };
-
-      this.$bvModal.hide("modal-create");
-
-      this.error = false;
-      this.errors = [];
-
-      this.objects = [];
+      this.$bvModal.hide("modal-create")
     },
 
     handleOk(bvModalEvt) {
@@ -209,62 +249,45 @@ export default {
       this.handleSubmit();
     },
 
-    async handleSubmit() {
-      try {
-        const response = await this.axios.post(
-          process.env.VUE_APP_URL + "/companies",
-          this.company,
-          this.header
-        );
+    async submitNewCompany() {
+      this.loading = true
 
-        this.toasted(response.data.message, "success");
-
-        this.$nextTick(() => {
-          this.$bvModal.hide("modal-create");
-        });
-
-        this.$emit("CreateCompany", this.company);
-      } catch (error) {
-        if (!error.response) {
-          this.toasted("Error: Network Error", "error");
-        } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 422) {
-            this.error = true;
-            this.errors = error.response.data;
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
-        }
-      }
-    },
-
-    getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
-
-      if (locale) {
-        switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
-        }
-      } else {
-        value = name.ru;
+      const {bank_name_ru, bank_name_uz} = this.company
+      const bank_name = {
+        uz: bank_name_uz,
+        ru: bank_name_ru
       }
 
-      return value;
-    },
-  },
-};
+      const form = Object.assign({bank_name}, this.company)
+      delete form.bank_name_ru
+      delete form.bank_name_uz
+
+      await api.companies.createNewCompany(this.company)
+          .then((response) => {
+            const {message} = response.data
+            this.$bvModal.hide("modal-create")
+            this.$emit("created-new-company", {message})
+            this.resetModal()
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+    }
+  }
+}
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.error__provider {
+  color: red;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.save__button {
+  color: white;
+}
+</style>

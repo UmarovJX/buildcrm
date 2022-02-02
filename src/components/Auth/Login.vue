@@ -54,18 +54,18 @@
                       <span class="error__provider">{{ errors[0] }}</span>
                     </div>
                   </ValidationProvider>
-                    <div class="d-flex justify-content-center align-items-center">
-                      <button
-                          type="submit"
-                          class="btn btn-primary mr-0 w-100"
-                          :class="{'button-disabled':loading}"
-                      >
+                  <div class="d-flex justify-content-center align-items-center">
+                    <button
+                        type="submit"
+                        class="btn btn-primary mr-0 w-100"
+                        :class="{'button-disabled':loading}"
+                    >
                     <span>
                       {{ $t("auth.login") }}
                     </span>
-                        <span class="spinner" v-if="loading"></span>
-                      </button>
-                    </div>
+                      <span class="spinner" v-if="loading"></span>
+                    </button>
+                  </div>
                 </div>
               </form>
             </ValidationObserver>
@@ -80,6 +80,7 @@
 import {mapActions} from "vuex";
 
 export default {
+  name:'AppLogin',
   data() {
     return {
       loginSchema: [
@@ -137,19 +138,25 @@ export default {
             this.fetchMenu(this);
             this.setMe(this, path);
 
-            vm.toasted(response.data.message, "success");
+            vm.$toasted.show(response.data.message, {
+              type:'success'
+            })
             vm.$router.push({name: 'home'});
           })
-          .catch(function (error) {
+          .catch((error) => {
             if (!error.response) {
-              this.toasted("Error: Network Error", "error");
+              this.$toasted.show("Error: Network Error", {
+                type: 'error'
+              })
             } else {
               const status = error.response.status
               const message = error.response.data.message
 
               /* CLIENT AND SERVER ERROR */
               if (status && status >= 400 && status <= 511) {
-                this.toasted(message, 'error')
+                this.$toasted.show(message, {
+                  type: 'error'
+                })
               }
             }
           }).finally(() => {
