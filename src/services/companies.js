@@ -5,12 +5,20 @@ class Companies extends Core {
         return this.get('/companies')
     }
 
-    getCompanyType(){
+    getCompanyType() {
         return this.get('companies/types')
     }
 
-    createNewCompany(newCompany){
-        return this.post('companies',newCompany)
+    updateCompany(company) {
+        return this.put(`companies/${company.id}`, company)
+    }
+
+    deleteCompany(id){
+        return this.delete(`companies/${id}`)
+    }
+
+    createNewCompany(newCompany) {
+        return this.post('companies', newCompany)
     }
 }
 

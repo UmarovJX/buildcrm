@@ -14,9 +14,9 @@
       :empty-text="$t('no_data')"
   >
     <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">
-              {{ scope.emptyText }}
-            </span>
+      <span class="d-flex justify-content-center align-items-center">
+        {{ scope.emptyText }}
+      </span>
     </template>
 
     <template #table-busy>
@@ -31,14 +31,8 @@
     </template>
 
     <template #cell(type)="data">
-      <span v-if="data.item.type === 'full'">
-        {{ $t('full') }}
-      </span>
-      <span v-else-if="data.item.type === 'monthly'">
-        {{ $t('monthly') }}
-      </span>
-      <span v-else>
-        {{ data.item.type }}
+      <span>
+        {{ getCategoryName(data.item.type) }}
       </span>
     </template>
 
@@ -55,9 +49,9 @@
     </template>
 
     <template #cell(main)="data">
-            <span class="star__icon" v-if="data.item.main">
-              <i class="fas fa-check-double"></i>
-            </span>
+      <span class="star__icon" v-if="data.item.main">
+        <i class="fas fa-check-double"></i>
+      </span>
     </template>
 
     <template #cell(actions)="data">
@@ -79,6 +73,8 @@
             <a
                 href="#"
                 class="dropdown-item dropdown-item--inside"
+                v-if="!data.item.main"
+                @click="makeItMain(data.item.id)"
             >
               <span>
                 <i class="fas fa-pen"></i>
@@ -127,10 +123,11 @@ export default {
       required: true
     }
   },
+  emits: ['update-content'],
   data() {
     return {
-      sortBy: "id",
-      sortDesc: false,
+      sortBy: "main",
+      sortDesc: true,
       loading: false,
       fields: [
         {
@@ -167,6 +164,9 @@ export default {
     }
   },
   methods: {
+    getCategoryName(type) {
+      return this.$t(`${type}`)
+    },
     downloadDocumentURl(url) {
       return process.env.VUE_APP_URL + '/' + url
     },
@@ -188,6 +188,16 @@ export default {
         return `0${time}`
       }
       return time
+    },
+    makeItMain(contractId) {
+      const {id: objectId} = this.$route.params
+      api.objects.makeContractPrimary({objectId, contractId})
+          .then(() => {
+            this.$emit('update-content')
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
     },
     async deleteContract(contractId) {
       this.loading = true

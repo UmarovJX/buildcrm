@@ -37,6 +37,7 @@ export default {
         category: 'Категория',
         full: 'Полный',
         monthly: 'Ежемесячно',
+        without_initial: 'Без первоначального платежа',
         payment_type: 'Способ оплаты',
         created_at: 'Время создания',
         reservation: 'Бронирование',
@@ -179,7 +180,6 @@ export default {
             first_name: "Имя директора",
             last_name: "Фамилия директора",
             second_name: "Отчество директора",
-
             type_enter: "Выберите тип",
             branch_enter: "Выберите компания",
         },
@@ -429,6 +429,7 @@ export default {
             canceled_reserve: "Бронь отменена",
             success_create_role: "Роль успешно создано",
             success_create_company: "Компания успешно создано",
+            success_update_company: "Компания успешно редактировано",
             success_update_role: "Роль успешно редактировано",
             are_you_sure_delete_role:
                 "Если удалите роль вы должны назначить новый ролей пользователем",

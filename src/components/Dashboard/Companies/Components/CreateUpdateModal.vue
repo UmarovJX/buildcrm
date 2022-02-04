@@ -2,14 +2,14 @@
   <div>
     <b-modal
         id="modal-create"
-        ref="modal"
+        ref="creation-modal"
         size="lg"
-        :title="$t('add')"
+        :title="modalProperties.title"
         hide-footer
         @show="resetModal"
     >
       <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
-        <form ref="form" @submit.stop.prevent="handleSubmit(submitNewCompany)">
+        <form ref="form" @submit.stop.prevent="handleSubmit(submitForm)">
           <ValidationProvider
               name="roles"
               rules="required"
@@ -83,29 +83,36 @@ import api from "@/services/api";
 
 export default {
   name: 'CreationCompanyModal',
-  emits: ['created-new-company'],
+  emits: ['updated-company', 'created-new-company'],
+  props: {
+    historyEditInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    modalProperties: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       maskText: '',
       loading: false,
       companyTypes: [],
+      createPosition: true,
       company: {
+        inn: null,
         first_name: null,
         last_name: null,
         second_name: null,
-        payment_account: null,
         name: null,
-        inn: null,
-        mfo: null,
         phone: null,
         other_phone: null,
-        type_id: null,
-        bank_name_ru: null,
-        bank_name_uz: null
+        type_id: 0,
       },
       providerSchema: [
         {
-          mask:'',
+          mask: '',
           type: 'text',
           bind: 'name',
           labelFor: 'name',
@@ -113,15 +120,7 @@ export default {
           label: this.$t('companies.name')
         },
         {
-          mask:'',
-          type: 'text',
-          bind: 'payment_account',
-          labelFor: 'payment_account',
-          rules: 'required|min:2',
-          label: this.$t('companies.payment_account')
-        },
-        {
-          mask:'',
+          mask: '',
           type: 'text',
           bind: 'inn',
           labelFor: 'inn',
@@ -129,15 +128,7 @@ export default {
           label: this.$t('companies.inn')
         },
         {
-          mask:'',
-          type: 'text',
-          bind: 'mfo',
-          labelFor: 'mfo',
-          rules: 'required|min:2',
-          label: this.$t('companies.mfo')
-        },
-        {
-          mask:'',
+          mask: '',
           type: 'text',
           bind: 'first_name',
           labelFor: 'first_name',
@@ -145,7 +136,7 @@ export default {
           label: this.$t('companies.first_name')
         },
         {
-          mask:'',
+          mask: '',
           type: 'text',
           bind: 'last_name',
           labelFor: 'last_name',
@@ -153,7 +144,7 @@ export default {
           label: this.$t('companies.last_name')
         },
         {
-          mask:'',
+          mask: '',
           type: 'text',
           bind: 'second_name',
           labelFor: 'second_name',
@@ -161,7 +152,7 @@ export default {
           label: this.$t('companies.second_name')
         },
         {
-          mask:'############',
+          mask: '############',
           type: 'tel',
           bind: 'phone',
           labelFor: 'phone',
@@ -169,30 +160,23 @@ export default {
           label: this.$t('companies.phone')
         },
         {
-          mask:'############',
+          mask: '############',
           type: 'tel',
           bind: 'other_phone',
           labelFor: 'other_phone',
           rules: 'required|min:2',
           label: this.$t('companies.other_phone')
-        },
-        {
-          mask:'',
-          type: 'text',
-          bind: 'bank_name_ru',
-          labelFor: 'bank_name_ru',
-          rules: 'required|min:2',
-          label: this.$t('companies.bank_name') + ' Ru'
-        },
-        {
-          mask:'',
-          type: 'text',
-          bind: 'bank_name_uz',
-          labelFor: 'bank_name_uz',
-          rules: 'required|min:2',
-          label: this.$t('companies.bank_name') + ' Uz'
-        },
+        }
       ]
+    }
+  },
+
+  watch: {
+    historyEditInfo(historyData) {
+      const hasProperties = Object.keys(historyData).length > 0
+      if (hasProperties) {
+        this.setFormProperties()
+      }
     }
   },
 
@@ -225,20 +209,17 @@ export default {
             this.toastedWithErrorCode(error)
           })
     },
+
     resetModal() {
       this.company = {
+        type_id: 0,
         inn: null,
-        mfo: null,
         name: null,
         phone: null,
-        type_id: 0,
-        other_phone: null,
-        first_name: null,
         last_name: null,
         second_name: null,
-        payment_account: null,
-        bank_name_ru: null,
-        bank_name_uz: null
+        other_phone: null,
+        first_name: null
       }
 
       this.$bvModal.hide("modal-create")
@@ -249,24 +230,62 @@ export default {
       this.handleSubmit();
     },
 
-    async submitNewCompany() {
+    setFormProperties() {
+      this.createPosition = false
+      const {id, name, phone, type, inn} = this.historyEditInfo
+      this.company = {...this.company, id, inn, name, phone, type_id: type.id}
+    },
+
+    submitForm() {
+      /*
+
+          const {bank_name_ru, bank_name_uz} = this.company
+          const bank_name = {
+            uz: bank_name_uz,
+            ru: bank_name_ru
+          }
+
+      */
+
+      const form = Object.assign({/*bank_name*/}, this.company)
+
+      /*
+
+        delete form.bank_name_ru
+        delete form.bank_name_uz
+
+      */
+
+      const {position} = this.modalProperties
+
+      if (position === 'create')
+        this.saveNewCompany(form)
+      else
+        this.updateCurrentCompany(form)
+    },
+    async saveNewCompany(form) {
       this.loading = true
-
-      const {bank_name_ru, bank_name_uz} = this.company
-      const bank_name = {
-        uz: bank_name_uz,
-        ru: bank_name_ru
-      }
-
-      const form = Object.assign({bank_name}, this.company)
-      delete form.bank_name_ru
-      delete form.bank_name_uz
-
-      await api.companies.createNewCompany(this.company)
+      await api.companies.createNewCompany(form)
           .then((response) => {
             const {message} = response.data
             this.$bvModal.hide("modal-create")
             this.$emit("created-new-company", {message})
+            this.resetModal()
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+    },
+    async updateCurrentCompany(form) {
+      this.loading = true
+      await api.companies.updateCompany(form)
+          .then((response) => {
+            const {message} = response.data
+            this.$bvModal.hide("modal-create")
+            this.$emit("updated-company", {message})
             this.resetModal()
           })
           .catch((error) => {
