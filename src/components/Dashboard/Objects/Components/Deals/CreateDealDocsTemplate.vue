@@ -159,11 +159,11 @@ export default {
       categoryOptions: [
         {value: 'sale', text: this.$t('objects.sale')},
         {value: 'reserve', text: this.$t('objects.booking')},
-        // {value: 'not_initial', text: this.$t('free_of_charge')}
       ],
       typeOptions: [
         {value: 'full', text: this.$t('full')},
-        {value: 'monthly', text: this.$t('monthly')}
+        {value: 'monthly', text: this.$t('monthly')},
+        {value: 'without_initial', text: this.$t('without_initial')}
       ],
       options: [
         {text: 'uz', value: 'uz'},
@@ -173,7 +173,9 @@ export default {
   },
   computed: {
     showPaymentType() {
-      return this.form.category !== 'not_initial'
+      const notShow = ['reserve']
+      const index = notShow.findIndex(ctyType => ctyType === this.form.category)
+      return index === -1
     }
   },
   methods: {
@@ -183,6 +185,11 @@ export default {
         if (validation) {
           const data = Object.assign({}, this.form)
           const form = new FormData()
+
+          if (data.category === 'reserve') {
+            delete data.type
+          }
+
           for (let [key, value] of Object.entries(data)) {
             if (data[key] === null && key !== 'main') {
               delete data[key]

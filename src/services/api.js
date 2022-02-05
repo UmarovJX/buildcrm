@@ -2,9 +2,11 @@ import apartments from "@/services/apartments";
 import branches from "@/services/branches";
 import objects from "@/services/objects";
 import user from "@/services/user"
+import companies from "@/services/companies";
 export default {
-    apartments,
-    branches,
+    user,
     objects,
-    user
+    branches,
+    companies,
+    apartments,
 }

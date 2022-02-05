@@ -18,14 +18,14 @@
       <b-card no-body class="mt-3">
         <b-tabs v-model="contractTabs" pills card active-nav-item-class="active__contract__tab">
           <b-tab :title="$t('objects.sale')">
-            <base-contract-list-table :contracts="saleContracts"/>
-          </b-tab>
-          <b-tab :title="$t('free_of_charge')">
-            <base-contract-list-table :contracts="notInitialContracts"/>
+            <base-contract-list-table @update-content="getDealTemplateList" :contracts="saleContracts"/>
           </b-tab>
           <b-tab :title="$t('reservation')">
-            <base-contract-list-table :contracts="reserveContracts"/>
+            <base-contract-list-table @update-content="getDealTemplateList" :contracts="reserveContracts"/>
           </b-tab>
+          <!--          <b-tab :title="$t('free_of_charge')">-->
+          <!--            <base-contract-list-table :contracts="notInitialContracts"/>-->
+          <!--          </b-tab>-->
         </b-tabs>
       </b-card>
 
@@ -72,7 +72,7 @@ export default {
   computed: {
     saleContracts() {
       return this.contracts.filter(contract => {
-        return contract.category === 'sale'
+        return contract.category === 'sale' || contract.category === 'not_initial'
       })
     },
     notInitialContracts() {
