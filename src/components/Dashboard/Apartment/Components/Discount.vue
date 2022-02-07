@@ -4,7 +4,7 @@
       class="mb-1"
       label-cols="12"
       content-cols="12"
-      :label="$t('apartments.agree.placeholder.enter_discount')"
+      :label="$t('apartments.view.enter_discount')"
       label-for="discounts"
     >
       <b-form-select id="discounts" v-model="discount" @change="changeDiscount">
@@ -24,7 +24,7 @@
       class="mb-1"
       label-cols="12"
       content-cols="12"
-      label="Цена продажы за м2:"
+      :label="$t('apartments.view.price_for_m2')"
       label-for="price"
     >
       <vue-numeric
@@ -44,7 +44,7 @@
       class="mb-1"
       label-cols="12"
       content-cols="12"
-      label="Скидка за м2:"
+      :label="$t('apartments.view.discount_per_m2')"
       label-for="discound-price"
     >
       <vue-numeric
@@ -61,7 +61,7 @@
 
     <!-- Предоплата -->
     <div>
-      Предоплата: <span> {{ calc.prepay_percente }}%</span>
+      {{ $t('apartments.view.prepayment') }}: <span> {{ calc.prepay_percente }}%</span>
     </div>
 
     <!-- Первый взнос -->
@@ -140,7 +140,7 @@
       class="mb-1"
       label-cols="12"
       content-cols="12"
-      label="Итого: "
+      :label="$t('apartments.view.total')"
       label-for="total"
     >
       <vue-numeric

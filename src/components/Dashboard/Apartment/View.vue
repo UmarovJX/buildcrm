@@ -26,14 +26,14 @@
                       <!-- Объект -->
                       <p class="building__info mt-2 mb-1">
                         <i class="far fa-building"></i>
-                        Объект: {{ apartment.object.name }},
+                        {{ $t("apartments.view.object") }}: {{ apartment.object.name }},
                         {{ apartment.building.name }},
                         {{ apartment.block.name }}
                       </p>
                       <!-- Адрес -->
                       <p class="building__info mt-2 mb-1">
                         <i class="far fa-map-marker-alt"></i>
-                        Адрес: {{ apartment.object.address }}
+                        {{ $t("apartments.view.address") }}: {{ apartment.object.address }}
                       </p>
                       <!-- Status -->
                       <div
@@ -77,7 +77,7 @@
                       >
                         <p>
                           <i class="far fa-calendar-check"></i>
-                          Дата завершения строительства :
+                          {{ $t("apartments.view.completion_date") }}:
                         </p>
 
                         <div class="ml-3">
@@ -142,7 +142,7 @@
                           class="col-md-4 col-6 mb-4"
                           v-if="apartment.block"
                       >
-                        <p class="mb-1">Этажность блока:</p>
+                        <p class="mb-1">{{ $t("apartments.view.number_of_blocks") }}:</p>
                         <h5>
                           <i class="far fa-align-justify"></i>
                           {{ apartment.block.floors }}
@@ -319,7 +319,7 @@
                       type="button"
                       @click="printPage"
                   >
-                    <i class="fa fa-print"></i> Печать
+                    <i class="fa fa-print"></i> {{ $t('apartments.view.print') }}
                   </button>
 
                   <!-- cancelReserve -->

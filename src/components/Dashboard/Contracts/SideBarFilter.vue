@@ -11,20 +11,20 @@
   >
     <div class="container">
       <!-- Номер контракта -->
-      <label for="contract-number">Номер контракта: </label>
+      <label for="contract-number">{{ $t("apartments.filter.contract_number") }}: </label>
       <div class="mb-3">
         <input
           id="contract-number"
           class="my-form__input"
           type="text"
           v-model="filter.contract_number"
-          placeholder="Номер контракта"
+          :placeholder="$t('apartments.filter.contract_number')"
         />
       </div>
 
       <!-- Объект -->
       <div class="mb-3">
-        <label for="object-number">Объект: </label>
+        <label for="object-number">{{ $t("apartments.view.object") }}: </label>
         <!-- fetchObjects -->
         <select
           id="status"
@@ -43,9 +43,9 @@
         </select>
       </div>
 
-      <!-- Номер квартира -->
+      <!-- Номер квартиры -->
       <div class="mb-3">
-        <label for="apartment-number">Номер квартира: </label>
+        <label for="apartment-number">{{ $t("apartments.filter.apartment_number") }}: </label>
         <b-form-tags
           input-id="apartment-number"
           v-model="filter.apartment_number"
@@ -55,7 +55,7 @@
           inputType="tel"
           addButtonVariant="primary"
           addButtonText="+"
-          placeholder="Номер квартира"
+          :placeholder="$t('apartments.filter.apartment_number')"
         ></b-form-tags>
       </div>
 
@@ -77,31 +77,31 @@
 
       <!-- Номер телефона -->
       <div class="mb-3">
-        <label for="phone-number">Номер телефона: </label>
+        <label for="phone-number">{{ $t('apartments.agree.phone') }}: </label>
         <input
           id="phone-number"
           class="my-form__input"
           type="tel"
           v-model="filter.phone"
-          placeholder="Номер телефона"
+          :placeholder="$t('apartments.agree.phone')"
         />
       </div>
 
       <!-- Ф.И.О -->
       <div class="mb-3">
-        <label for="full_name">Ф.И.О: </label>
+        <label for="full_name">{{ $t('contracts.f_i_o') }}: </label>
         <input
           id="full_name"
           class="my-form__input"
           type="tel"
           v-model="filter.full_name"
-          placeholder="Ф.И.О"
+          :placeholder="$t('contracts.f_i_o')"
         />
       </div>
 
       <!-- Фильтр по дате -->
       <div class="mb-3">
-        <label for="filter-by-date">Фильтр по дате: </label>
+        <label for="filter-by-date">{{ $t('contracts.filter_with_date') }}: </label>
         <date-picker
           id="filter-by-date"
           v-model="filter.date"
@@ -132,7 +132,7 @@
           @click="contractsFilter"
         >
           <i class="far fa-sliders-h mr-2"></i>
-          Фильтровать</b-button
+          {{ $t("apartments.filter.filter_btn") }}</b-button
         >
       </div>
     </template>

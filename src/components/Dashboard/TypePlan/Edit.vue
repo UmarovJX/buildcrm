@@ -165,7 +165,7 @@
               "
             >
               <button type="submit" class="btn btn-primary mr-0">
-                <i class="fa fa-save"></i> Сохранить
+                <i class="fa fa-save"></i> {{ $t("contracts.view.save_btn") }}
               </button>
             </div>
           </div>

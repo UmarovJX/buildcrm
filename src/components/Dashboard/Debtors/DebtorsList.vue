@@ -47,9 +47,9 @@
                 v-model="orderBy"
                 aria-label="Default select example"
               >
-                <option selected value="all">Все</option>
-                <option value="expired">Просроченные</option>
-                <option value="friends">Знакомые</option>
+                <option selected value="all">{{ $t('apartments.tab_names.all') }}</option>
+                <option value="expired">{{ $t('debtors.overdue') }}</option>
+                <option value="friends">{{ $t('debtors.familiars') }}</option>
               </select>
             </div>
             <div
@@ -220,32 +220,32 @@ export default {
       fields: [
         {
           key: "order",
-          label: "№ ДОГОВОРА",
+          label: this.$t('debtors.contract_number'),
           sortable: true,
         },
         {
           key: "client",
-          label: "ИМЯ КЛИЕНТА",
+          label: this.$t('debtors.client_name'),
           sortable: true,
         },
         {
           key: "client.phone",
-          label: "ТЕЛЕФОН",
+          label: this.$t('debtors.client_number'),
         },
         {
           key: "order.friends",
-          label: "ТИП КЛИЕНТА",
+          label: this.$t('debtors.client_type'),
           sortable: true,
           formatter: (value) => this.getTypeClient(value),
         },
         {
           key: "amount",
-          label: "СУММА",
+          label: this.$t('contracts.view.sum'),
           sortable: true,
         },
         {
           key: "date_payment",
-          label: "ДАТА",
+          label: this.$t('clients.date'),
           sortable: true,
         },
         {

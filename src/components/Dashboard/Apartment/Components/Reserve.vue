@@ -160,19 +160,21 @@ export default {
     async handleSubmit() {
       this.getLoading = true
       try {
-        this.client.apartment_id = this.apartment;
+        delete this.client.apartment_id
+        this.client.apartments = [this.apartment];
 
         const response = await this.axios.post(
-          process.env.VUE_APP_URL + "/booking/" + this.apartment,
+          process.env.VUE_APP_URL + "/booking/apartments",
           this.client,
           this.header
         );
+
         this.toasted(response.data.message, "success");
-        this.$nextTick(() => {
-          this.$bvModal.hide("modal-reserve-create");
-        });
+        this.$bvModal.hide("modal-reserve-create");
         this.getLoading = false
         this.$emit("CreateReserve", this.client);
+        const {contract_path} = response.data
+        this.downloadContract(contract_path)
       } catch (error) {
         this.getLoading = false
         if (!error.response) {
@@ -189,6 +191,12 @@ export default {
           }
         }
       }
+    },
+    downloadContract(url){
+      const a = document.createElement('a')
+      a.href = url
+      a.click()
+      document.body.removeChild(a)
     },
   },
 };

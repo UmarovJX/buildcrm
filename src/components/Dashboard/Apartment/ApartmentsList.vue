@@ -58,9 +58,18 @@
             {{ $t("apartments.list.contract_all") }}
           </b-button>
 
+          <b-button
+              v-b-modal.booking-creation-modal
+              v-if="bookingPermission"
+              class="mr-md-2 mr-0 mt-md-0 btn btn-primary order-4 booking__button"
+          >
+            <i class="far fa-calendar-check"></i>
+            {{ $t("objects.booking") }}
+          </b-button>
+
           <button
               v-if="selected.view && getPermission.apartments.contract"
-              class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-4"
+              class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-5"
               @click="multiSelectOff"
           >
             <i class="far fa-redo"></i> {{ $t("apartments.list.reset") }}
@@ -382,19 +391,21 @@
         <success-agree :contract="contract"></success-agree>
       </div>
     </div>
+    <apartments-booking-modal @set-client-data="bookSelectedApartments"></apartments-booking-modal>
   </main>
 </template>
 
 <script>
 import {mapActions, mapMutations, mapGetters} from "vuex";
 import {BAlert, BButton} from "bootstrap-vue";
-import Filter from "./Components/ApartmentsFilter";
-import ReserveAdd from "./Components/Reserve";
-import EditApartment from "./Components/Edit";
 import ViewClient from "./ViewClient";
 import InfoManager from "./InfoManager";
-import AgreeMultiple from "./Components/AgreeMultiple";
+import ReserveAdd from "./Components/Reserve";
+import EditApartment from "./Components/Edit";
+import Filter from "./Components/ApartmentsFilter";
 import SuccessAgree from "./Components/SuccessAgree";
+import AgreeMultiple from "./Components/AgreeMultiple";
+import ApartmentsBookingModal from "@/components/Dashboard/Apartment/Components/ApartmentsBookingModal";
 import ApartmentListFilterTabs from "@/components/Dashboard/Apartment/Components/ApartmentListFilterTabs";
 import api from "@/services/api"
 
@@ -408,6 +419,7 @@ export default {
     "agree-modal": AgreeMultiple,
     "success-agree": SuccessAgree,
     ApartmentListFilterTabs,
+    ApartmentsBookingModal,
     BAlert,
     BButton,
   },
@@ -440,7 +452,7 @@ export default {
       fields: [
         {
           key: "number",
-          label: "№ ДОМ",
+          label: this.$t('apartments.list.number'),
           sortable: true,
         },
         // {
@@ -454,37 +466,37 @@ export default {
         // },
         {
           key: "rooms",
-          label: "КОМНАТ",
+          label: this.$t('apartments.list.rooms'),
           sortable: true,
         },
         {
           key: "floor",
-          label: "ЭТАЖ",
+          label: this.$t('apartments.list.floor'),
           sortable: true,
         },
         {
           key: "entrance",
-          label: "ПОДЪЕЗД",
+          label: this.$t('apartments.list.entrance'),
           sortable: true,
         },
         {
           key: "area",
-          label: "ПЛОЩАД",
+          label: this.$t('apartments.list.area'),
           sortable: true,
         },
         {
           key: "balcony",
-          label: "БАЛКОН",
+          label: this.$t('apartments.list.balcony'),
           sortable: true,
         },
         {
           key: "price",
-          label: "ЦЕНА",
+          label: this.$t('apartments.list.price'),
           sortable: true,
         },
         {
           key: "status",
-          label: "СТАТУС",
+          label: this.$t('apartments.list.status'),
         },
         {
           key: "actions",
@@ -527,6 +539,10 @@ export default {
 
   computed: {
     ...mapGetters(["getApartments", "getPermission", "getMe", "getLoading"]),
+    bookingPermission() {
+      return this.selected.view && this.selected.values.length > 1
+          && this.getPermission.apartments && this.getPermission.apartments.contract
+    },
     hasPermission() {
       return this.getPermission.apartments && this.getPermission.apartments.edit
     },
@@ -556,6 +572,45 @@ export default {
   methods: {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
     ...mapMutations(['updateSpecificApartment']),
+    bookSelectedApartments(client) {
+      const {values: apartments} = this.selected
+      const form = Object.assign({}, {...client, apartments})
+      delete form.apartment_id
+      this.loading = true
+      api.apartments.bookingApartments(form)
+          .then(async (response) => {
+            const {contract_path} = response.data
+            await this.showSuccessResponse()
+            await this.updateContent()
+            await this.multiSelectOff()
+            await this.downloadContract(contract_path)
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+    },
+    downloadContract(url){
+      const a = document.createElement('a')
+      a.href = url
+      a.click()
+      document.body.removeChild(a)
+    },
+    showSuccessResponse() {
+      this.$swal({
+        title: this.$t('booked'),
+        text: '',
+        icon: "success",
+        showCancelButton: false,
+        confirmButtonText: this.$t("next"),
+      })
+    },
+    updateContent() {
+      this.fetchApartments(this)
+      this.getUnfinishedOrders()
+    },
     statusHold(data) {
       return data.item.order.status === 'hold'
     },
@@ -633,8 +688,7 @@ export default {
     },
     multiSelectOn() {
       this.selected.view = true;
-      this.selectable = false;
-
+      this.selectable = true;
       this.scrollActive = false;
       // this.page = 1;
       // this.filter.page = 1;
@@ -885,7 +939,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.svg-lock-button{
+.booking__button {
+  background-color: #fab005 !important;
+}
+
+.svg-lock-button {
   fill: var(--dark);
 }
 
