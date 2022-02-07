@@ -29,14 +29,14 @@
         </div>
         <div class="col-md-4">
           <div class="d-flex justify-content-center align-items-center h-100">
-            <ValidationObserver v-slot="{ handleSubmit }">
+            <ValidationObserver ref="validation-observer">
               <form
-                  @submit.prevent="handleSubmit(Login)"
+                  @submit.prevent="submittedForm"
                   class="login-form"
               >
                 <div class="form">
                   <ValidationProvider
-                      v-for="{type,name,rules,id,label,placeholder,bind} in loginSchema"
+                      v-for="{type,name,rules,id,label,placeholder,bind,schemaError} in loginSchema"
                       :key="name+id"
                       :name="name"
                       :rules="rules"
@@ -51,7 +51,12 @@
                           class="form-control bg-transparent"
                           :placeholder="placeholder"
                       />
-                      <span class="error__provider">{{ errors[0] }}</span>
+                      <span
+                          v-if="schemaError.show && errors[0]"
+                          class="error__provider"
+                      >
+                        {{ schemaError.text }}
+                      </span>
                     </div>
                   </ValidationProvider>
                   <div class="d-flex justify-content-center align-items-center">
@@ -80,27 +85,35 @@
 import {mapActions} from "vuex";
 
 export default {
-  name:'AppLogin',
+  name: 'AppLogin',
   data() {
     return {
       loginSchema: [
         {
           type: 'email',
           name: 'Прежний пароль',
-          rules: 'required|min:5',
+          rules: 'required|email',
           label: this.$t('auth.email'),
           bind: 'email',
           placeholder: '',
-          id: 'email'
+          id: 'email',
+          schemaError: {
+            show: false,
+            text: this.$t('auth.validation_email')
+          }
         },
         {
           type: 'password',
           name: 'Прежний пароль',
-          rules: 'required|min:3',
+          rules: 'required|min:8',
           label: this.$t('auth.password'),
           bind: 'password',
           placeholder: '',
-          id: 'password'
+          id: 'password',
+          schemaError: {
+            show: false,
+            text: this.$t('auth.validation_password')
+          }
         },
       ],
       user: {
@@ -109,6 +122,16 @@ export default {
       },
       loading: false,
       info: null,
+      submitted: false,
+    }
+  },
+
+  watch: {
+    'user.email'() {
+      this.loginSchema[0].schemaError.show = false
+    },
+    'user.password'() {
+      this.loginSchema[1].schemaError.show = false
     }
   },
 
@@ -118,7 +141,16 @@ export default {
 
   methods: {
     ...mapActions(["fetchAuth", "fetchMenu", "setMe"]),
-
+    async submittedForm() {
+      const validation = await this.$refs['validation-observer'].validate()
+      if (validation) {
+        this.Login()
+      } else {
+        for (let key in this.loginSchema) {
+          this.loginSchema[key].schemaError.show = true
+        }
+      }
+    },
     Login() {
       if (!this.loading) {
         this.authorizationUser()
@@ -139,7 +171,7 @@ export default {
             this.setMe(this, path);
 
             vm.$toasted.show(response.data.message, {
-              type:'success'
+              type: 'success'
             })
             vm.$router.push({name: 'home'});
           })

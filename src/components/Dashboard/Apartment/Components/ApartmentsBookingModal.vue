@@ -1,11 +1,11 @@
 <template>
   <div>
     <b-modal
-      id="modal-reserve-create"
-      ref="modal-reserve-create"
-      :title="$t('apartments.list.book')"
-      hide-footer
-      @show="resetModal"
+        id="booking-creation-modal"
+        ref="booking-creation-modal"
+        :title="$t('apartments.list.book')"
+        hide-footer
+        @show="resetModal"
     >
       <b-alert show variant="danger" v-if="error">
         <ul>
@@ -17,36 +17,36 @@
         </ul>
       </b-alert>
 
-      <form ref="form" @submit.prevent="handleSubmit">
+      <form ref="form" @submit.prevent="submitForm">
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.first_name')"
-          label-for="first_name"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.first_name')"
+            label-for="first_name"
         >
           <b-form-input
-            id="first_name"
-            v-model="client.first_name"
+              id="first_name"
+              v-model="client.first_name"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.last_name')"
-          label-for="last_name"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.last_name')"
+            label-for="last_name"
         >
           <b-form-input
-            id="last_name"
-            v-model="client.last_name"
+              id="last_name"
+              v-model="client.last_name"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          :label="$t('user.phone')"
-          label-for="phone"
+            label-cols="4"
+            label-cols-lg="2"
+            :label="$t('user.phone')"
+            label-for="phone"
         >
           <b-form-input id="phone" v-model="client.phone"></b-form-input>
         </b-form-group>
@@ -57,9 +57,9 @@
           </label>
           <div class="bv-no-focus-ring col">
             <select
-              class="form-control"
-              id="language"
-              v-model="client.language"
+                class="form-control"
+                id="language"
+                v-model="client.language"
             >
               <option value="uz">Узбекский</option>
               <option value="ru">Русский</option>
@@ -68,22 +68,22 @@
         </div>
 
         <b-form-group
-          label-cols="4"
-          label-cols-lg="4"
-          :label="$t('apartments.list.period_date')"
-          label-for="period_date"
+            label-cols="4"
+            label-cols-lg="4"
+            :label="$t('apartments.list.period_date')"
+            label-for="period_date"
         >
           <b-form-datepicker
-            v-model="client.period_date"
-            locale="ru"
+              v-model="client.period_date"
+              locale="ru"
           ></b-form-datepicker>
         </b-form-group>
 
         <div class="w-100 d-flex justify-content-center">
           <b-button
-            type="button"
-            variant="light"
-            @click="$bvModal.hide('modal-reserve-create')"
+              type="button"
+              variant="light"
+              @click="$bvModal.hide('booking-creation-modal')"
           >
             {{ $t("cancel") }}
           </b-button>
@@ -113,8 +113,8 @@
 
 <script>
 export default {
-  props: ["apartment"],
-
+  name: 'ApartmentsBookingModal',
+  emits: ['set-client-data'],
   data: () => ({
     client: {
       first_name: null,
@@ -124,24 +124,16 @@ export default {
       apartment_id: null,
       language: "uz",
     },
-
     error: false,
     errors: [],
-
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
-      },
-    },
-
     getLoading: false
   }),
 
   methods: {
     closeModal() {
       this.$nextTick(() => {
-        this.$bvModal.hide("modal-reserve-create");
-      });
+        this.$bvModal.hide("booking-creation-modal");
+      })
     },
     resetModal() {
       this.client.first_name = null;
@@ -153,46 +145,14 @@ export default {
     },
 
     handleOk(bvModalEvt) {
-      bvModalEvt.preventDefault();
-      this.handleSubmit();
+      bvModalEvt.preventDefault()
     },
 
-    async handleSubmit() {
-      this.getLoading = true
-      try {
-        delete this.client.apartment_id
-        this.client.apartments = [this.apartment];
-
-        const response = await this.axios.post(
-          process.env.VUE_APP_URL + "/booking/apartments",
-          this.client,
-          this.header
-        );
-        this.toasted(response.data.message, "success");
-        this.$nextTick(() => {
-          this.$bvModal.hide("modal-reserve-create");
-        });
-        this.getLoading = false
-        this.$emit("CreateReserve", this.client);
-      } catch (error) {
-        this.getLoading = false
-        if (!error.response) {
-          this.toasted("Error: Network Error", "error");
-        } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 422) {
-            this.error = true;
-            this.errors = error.response.data;
-          } else {
-            this.error = true;
-            this.errors = error.response.data;
-          }
-        }
-      }
-    },
-  },
-};
+    submitForm() {
+      this.$refs['booking-creation-modal'].hide()
+      this.$emit('set-client-data', this.client)
+    }
+  }
+}
 </script>
 
-<style scoped></style>

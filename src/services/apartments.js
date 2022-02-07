@@ -16,6 +16,10 @@ class Apartments extends Core {
     getApartmentView(object, id) {
         return this.get(`/objects/${object}/apartments/${id}`)
     }
+
+    bookingApartments(body){
+        return this.post('booking/apartments',body)
+    }
 }
 
 export default new Apartments()

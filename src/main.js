@@ -17,12 +17,12 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import "./components";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 import {
-    ValidationObserver,
-    ValidationProvider,
-    extend,
-    localize,
+    ValidationObserver, ValidationProvider, extend, localize,
 } from "vee-validate";
-import ru from "vee-validate/dist/locale/ru.json";
+
+import ru from './locales/ru/warns'
+import uz from './locales/uz/warns'
+
 import * as rules from "vee-validate/dist/rules";
 
 import "bootstrap/dist/css/bootstrap.css";
@@ -32,17 +32,13 @@ import "@/assets/scss/main.scss";
 Vue.config.devtools = true;
 
 const sweetOptions = {
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
+    confirmButtonColor: "#3085d6", cancelButtonColor: "#d33",
 };
 
 Vue.use(VueMask);
 Vue.use(vueMoment);
 Vue.use(VueLazyload, {
-    preLoad: 1.3,
-    error: require("@/assets/img/no-image.jpg"),
-    loading: require("@/assets/img/loading.gif"),
-    attempt: 1,
+    preLoad: 1.3, error: require("@/assets/img/no-image.jpg"), loading: require("@/assets/img/loading.gif"), attempt: 1,
 });
 
 
@@ -50,7 +46,7 @@ Object.keys(rules).forEach((rule) => {
     extend(rule, rules[rule]);
 });
 
-localize("ru", ru);
+localize({ru, uz});
 
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
@@ -61,10 +57,7 @@ Vue.use(Vue2Filters);
 Vue.mixin(toasted);
 Vue.use(VueAxios, axios);
 Vue.use(Toasted, {
-    iconPack: 'custom-class',
-    theme: "toasted-primary",
-    position: "top-right",
-    duration: 5000,
+    iconPack: 'custom-class', theme: "toasted-primary", position: "top-right", duration: 5000,
 });
 
 // Vue.config.productionTip = false;
@@ -72,21 +65,11 @@ Vue.use(Toasted, {
 
 /* YANDEX METRIKA */
 Vue.use(VueYandexMetrika, {
-    id: 86876647,
-    router: router,
-    env: process.env.NODE_ENV,
-    options: {
-        clickmap: true,
-        trackLinks: true,
-        accurateTrackBounce: true,
-        webvisor: true
+    id: 86876647, router: router, env: process.env.NODE_ENV, options: {
+        clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true
     }
 })
 
 new Vue({
-    el: "#app",
-    i18n,
-    store,
-    router,
-    render: (h) => h(App),
+    el: "#app", i18n, store, router, render: (h) => h(App),
 });
