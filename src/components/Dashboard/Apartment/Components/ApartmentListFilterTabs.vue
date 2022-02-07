@@ -26,23 +26,23 @@ export default {
       currentStatus: 'all',
       filterList: [
         {
-          name: 'Все',
+          name: this.$t('apartments.tab_names.all'),
           status: 'all'
         },
         {
-          name: 'Доступный',
+          name: this.$t('apartments.tab_names.available'),
           status: 'available'
         },
         {
-          name: 'Забронирован',
+          name: this.$t('apartments.tab_names.booked'),
           status: 'booked'
         },
         {
-          name: 'Оформлен',
+          name: this.$t('apartments.tab_names.sold'),
           status: 'sold'
         },
         {
-          name: 'Недоступен',
+          name: this.$t('apartments.tab_names.unavailable'),
           status: 'unavailable'
         },
         // {

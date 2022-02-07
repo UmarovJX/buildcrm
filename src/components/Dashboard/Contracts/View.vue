@@ -49,8 +49,8 @@
                     :disabled="!edit.type_client"
                     v-model="order.friends"
                   >
-                    <option value="unknown">Незнакомый</option>
-                    <option value="friends">Знакомый</option>
+                    <option value="unknown">{{ $t("contracts.view.unfamiliar") }}</option>
+                    <option value="friends">{{ $t("contracts.view.familiar") }}</option>
                   </select>
 
                   <button
@@ -63,7 +63,7 @@
                     @click="edit.type_client = true"
                     class="btn btn-primary mt-3 mr-0"
                   >
-                    <i class="fa fa-edit"></i> Редактировать тип
+                    <i class="fa fa-edit"></i> {{ $t("contracts.view.edit_type") }}
                   </button>
 
                   <button
@@ -76,7 +76,7 @@
                     @click="ChangeTypeClient"
                     class="btn btn-success mt-3"
                   >
-                    <i class="fa fa-save"></i> Сохранить
+                    <i class="fa fa-save"></i> {{ $t("contracts.view.save_btn") }}
                   </button>
                 </div>
               </div>
@@ -208,7 +208,7 @@
                     <thead class="table-dark">
                       <tr>
                         <th colspan="2">
-                          Тариф
+                          {{ $t('contracts.view.tariff') }}
                         </th>
                       </tr>
                     </thead>
@@ -225,7 +225,7 @@
 
                       <tr>
                         <td width="240">
-                          Курс доллара
+                          {{ $t('contracts.view.dollar_rate') }}
                         </td>
                         <td>
                           {{
@@ -250,7 +250,7 @@
 
                       <tr>
                         <td width="240">
-                          Первоначальный взнос
+                          {{ $t('contracts.view.initial_fee') }}
                         </td>
                         <td>
                           {{
@@ -266,7 +266,7 @@
 
                       <tr>
                         <td width="240">
-                          Цена квартиру
+                          {{ $t('contracts.view.apartment_price') }}
                         </td>
                         <td>
                           {{
@@ -282,7 +282,7 @@
 
                       <tr>
                         <td width="240">
-                          Остаток
+                          {{ $t('contracts.view.remainder') }}
                         </td>
                         <td>
                           {{
@@ -312,7 +312,7 @@
                     variant="primary"
                     class="mb-3"
                   >
-                    <i class="fa fa-plus-circle"></i> Добавить платеж
+                    <i class="fa fa-plus-circle"></i> {{ $t('contracts.view.add_payment') }}
                   </b-button>
                 </div>
 
@@ -326,7 +326,7 @@
                       <div class="card-body">
                         <div class="mb-3">
                           <label for="date" class="form-label"
-                            >Расписание</label
+                            >{{ $t('contracts.view.schedule') }}</label
                           >
                           <input
                             type="date"
@@ -339,7 +339,7 @@
                         </div>
 
                         <div class="mb-3">
-                          <label for="amount" class="form-label">Сумма</label>
+                          <label for="amount" class="form-label">{{ $t('contracts.view.sum') }}</label>
                           <input
                             type="number"
                             class="form-control"
@@ -354,7 +354,7 @@
 
                       <div class="card-footer d-flex">
                         <button type="submit" class="btn btn-success">
-                          <i class="fa fa-save"></i> Сохранить
+                          <i class="fa fa-save"></i> {{ $t('contracts.view.save_btn') }}
                         </button>
 
                         <button
@@ -362,7 +362,7 @@
                           class="btn ml-1"
                           @click="payment.view = !payment.view"
                         >
-                          Отменить
+                          {{ $t('contracts.view.cancel_btn') }}
                         </button>
                       </div>
                     </form>
@@ -376,35 +376,35 @@
                   <thead class="table-dark">
                     <tr>
                       <th width="50">
-                        Расписание
+                        {{ $t('contracts.view.schedule') }}
                       </th>
 
                       <th class="text-center">
-                        Тип
+                        {{ $t('contracts.view.type') }}
                       </th>
 
                       <th class="text-center">
-                        Статус
+                        {{ $t('apartments.list.status') }}
                       </th>
 
                       <th>
-                        Комментария
+                        {{ $t('contracts.view.comment') }}
                       </th>
 
                       <th>
-                        Тип оплаты
+                        {{ $t('contracts.view.payment_type') }}
                       </th>
 
                       <th>
-                        Дата оплата
+                        {{ $t('contracts.view.payment_date') }}
                       </th>
 
                       <th>
-                        Сумма оплаты
+                        {{ $t('contracts.view.payment_sum') }}
                       </th>
 
                       <th class="text-center">
-                        Сумма
+                        {{ $t('contracts.view.sum') }}
                       </th>
                     </tr>
                   </thead>
@@ -540,7 +540,7 @@
                       <td class="text-center"></td>
 
                       <td class="text-center">
-                        Оплачено:
+                        {{ $t('contracts.view.paid') }}:
                         {{
                           order.paid_total
                             | number("0,0.00", {
@@ -552,7 +552,7 @@
                       </td>
 
                       <td class="text-center">
-                        Итого:
+                        {{ $t('apartments.view.total') }}:
                         {{
                           order.transaction_price
                             | number("0,0.00", {
@@ -568,13 +568,13 @@
 
                 <div class="col-md-12">
                   <h3>
-                    Комментарии
+                    {{ $t('contracts.view.comments') }}
                   </h3>
                   <div
                     class="alert alert-info"
                     v-if="order.comments.length === 0"
                   >
-                    <i class="fa fa-info-circle"></i> Пока нету комментариев
+                    <i class="fa fa-info-circle"></i> {{ $t('contracts.view.no_comment') }}
                   </div>
                   <ul class="timeline" v-if="order.comments.length > 0">
                     <li
@@ -631,7 +631,7 @@
                     aria-expanded="false"
                     aria-controls="collapseComment"
                   >
-                    <i class="fa fa-plus-square"></i> Добавить комментарий
+                    <i class="fa fa-plus-square"></i> {{ $t('contracts.view.add_comment') }}
                   </button>
 
                   <div
@@ -640,7 +640,7 @@
                     v-if="comment_store"
                   >
                     <form @submit.stop.prevent="saveComment">
-                      <label>Комментария</label>
+                      <label>{{ $t('contracts.view.comment') }}</label>
                       <textarea
                         name="comment"
                         v-model="comment"
@@ -654,7 +654,7 @@
                         class="btn btn-warning mt-2 waves-effect waves-light"
                         type="submit"
                       >
-                        <i class="fa fa-save"></i> Сохранить
+                        <i class="fa fa-save"></i> {{ $t('contracts.view.save_btn') }}
                       </button>
                     </form>
                   </div>
@@ -669,7 +669,7 @@
               class="btn btn-success "
               v-if="order.status === 'contract' || order.status === 'sold'"
             >
-              <i class="fa fa-download"></i> Скачать договор
+              <i class="fa fa-download"></i> {{ $t('contracts.view.download_contract') }}
             </a>
 
             <button
@@ -678,7 +678,7 @@
               class="btn btn-danger float-right"
               v-if="order.status === 'contract'"
             >
-              <i class="fa fa-minus-circle"></i> Отменить договор
+              <i class="fa fa-minus-circle"></i> {{ $t('contracts.view.cancel_contract') }}
             </button>
           </div>
         </div>
@@ -1066,6 +1066,9 @@ export default {
       const {value: formValues} = await this.$swal({
         title: this.$t("sweetAlert.debtors.payment_info"),
         icon: "question",
+        buttons:{
+          cancel:this.$t('contracts.view.cancel_btn'),
+        },
         showCancelButton: true,
         html:
           '<input id="deb-payment" type="number" placeholder="10000" value="' +
@@ -1073,10 +1076,10 @@ export default {
           '" max="' +
           this.order.payments[index].amount +
           '" step="100" class="form-control">' +
-          '<label for="date-payment" class="float-left mt-3">Дата оплаты</label>' +
+          `<label for="date-payment" class="float-left mt-3">${this.$t('contracts.view.payment_date')}</label>` +
           '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
-          '<label for="type_payment" class="float-left mt-3">Тип оплаты</label>' +
-          '<select id="type_payment" class="form-control"><option value="cash">Наличный</option><option value="transfer">Перечисления</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">Другое</option></select>',
+          `<label for="type_payment" class="float-left mt-3">${this.$t('contracts.view.payment_date')}</label>` +
+          `<select id="type_payment" class="form-control"><option value="cash">${this.$t('contracts.view.payment_by_cash')}</option><option value="transfer">${this.$t('contracts.view.payment_transaction')}</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">${this.$t('contracts.view.payment_other')}</option></select>`,
         confirmButtonText: this.$t("sweetAlert.debtors.next"),
         preConfirm: () => {
           return {

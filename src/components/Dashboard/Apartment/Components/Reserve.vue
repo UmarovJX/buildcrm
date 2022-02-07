@@ -168,12 +168,13 @@ export default {
           this.client,
           this.header
         );
+
         this.toasted(response.data.message, "success");
-        this.$nextTick(() => {
-          this.$bvModal.hide("modal-reserve-create");
-        });
+        this.$bvModal.hide("modal-reserve-create");
         this.getLoading = false
         this.$emit("CreateReserve", this.client);
+        const {contract_path} = response.data
+        this.downloadContract(contract_path)
       } catch (error) {
         this.getLoading = false
         if (!error.response) {
@@ -190,6 +191,12 @@ export default {
           }
         }
       }
+    },
+    downloadContract(url){
+      const a = document.createElement('a')
+      a.href = url
+      a.click()
+      document.body.removeChild(a)
     },
   },
 };

@@ -149,20 +149,20 @@ export default {
         },
         {
           key: "image",
-          label: "ПЛАНИРОВОКА",
+          label: this.$t('type_plan.title'),
           image: true,
         },
         {
           key: "name",
-          label: "НАЗВАНИЯ",
+          label: this.$t('type_plan.name'),
         },
         {
           key: "area",
-          label: "Площадь",
+          label: this.$t('type_plan.area'),
         },
         {
           key: "balcony_area",
-          label: "БАЛКОН",
+          label: this.$t('type_plan.balcony'),
         },
         {
           key: "actions",

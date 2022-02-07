@@ -199,32 +199,32 @@ export default {
         },
         {
           key: "client",
-          label: "ИМЯ КЛИЕНТА",
+          label: this.$t('contracts.client_name'),
           // sortable: true,
         },
         {
           key: "client.phone",
-          label: "ТЕЛЕФОН",
+          label: this.$t('contracts.client_phone'),
           formatter: (value) => "+" + value,
         },
         {
           key: "price",
-          label: "СТОИМОСТЬ",
+          label: this.$t('contracts.price'),
           sortable: true,
         },
         {
           key: "object.name",
-          label: "ОБЪЕКТ",
+          label: this.$t('contracts.object'),
         },
         {
           key: "status",
-          label: "СТАТУС",
+          label: this.$t('apartments.list.status'),
           // sortable: true,
           formatter: (value) => this.getStatusOrder(value),
         },
         {
           key: "date",
-          label: "ДАТА",
+          label: this.$t('clients.date'),
           sortable: true,
         },
         {

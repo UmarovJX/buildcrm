@@ -452,7 +452,7 @@ export default {
       fields: [
         {
           key: "number",
-          label: "№ ДОМ",
+          label: this.$t('apartments.list.number'),
           sortable: true,
         },
         // {
@@ -466,37 +466,37 @@ export default {
         // },
         {
           key: "rooms",
-          label: "КОМНАТ",
+          label: this.$t('apartments.list.rooms'),
           sortable: true,
         },
         {
           key: "floor",
-          label: "ЭТАЖ",
+          label: this.$t('apartments.list.floor'),
           sortable: true,
         },
         {
           key: "entrance",
-          label: "ПОДЪЕЗД",
+          label: this.$t('apartments.list.entrance'),
           sortable: true,
         },
         {
           key: "area",
-          label: "ПЛОЩАД",
+          label: this.$t('apartments.list.area'),
           sortable: true,
         },
         {
           key: "balcony",
-          label: "БАЛКОН",
+          label: this.$t('apartments.list.balcony'),
           sortable: true,
         },
         {
           key: "price",
-          label: "ЦЕНА",
+          label: this.$t('apartments.list.price'),
           sortable: true,
         },
         {
           key: "status",
-          label: "СТАТУС",
+          label: this.$t('apartments.list.status'),
         },
         {
           key: "actions",
@@ -578,10 +578,12 @@ export default {
       delete form.apartment_id
       this.loading = true
       api.apartments.bookingApartments(form)
-          .then(() => {
-            this.showSuccessResponse()
-            this.updateContent()
-            this.multiSelectOff()
+          .then(async (response) => {
+            const {contract_path} = response.data
+            await this.showSuccessResponse()
+            await this.updateContent()
+            await this.multiSelectOff()
+            await this.downloadContract(contract_path)
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
@@ -589,6 +591,12 @@ export default {
           .finally(() => {
             this.loading = false
           })
+    },
+    downloadContract(url){
+      const a = document.createElement('a')
+      a.href = url
+      a.click()
+      document.body.removeChild(a)
     },
     showSuccessResponse() {
       this.$swal({
@@ -717,8 +725,6 @@ export default {
       // });
     },
     onRowSelected(items) {
-      console.log(this.selected)
-      console.log(items)
       this.$router.push({
         name: "apartment-view",
         params: {id: items[0].id},

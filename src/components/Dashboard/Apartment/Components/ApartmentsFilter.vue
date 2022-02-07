@@ -13,7 +13,7 @@
       <div class="container">
         <!-- Номер квартира -->
         <div class="mb-3">
-          <label for="tags-separators">Номер квартира: </label>
+          <label for="tags-separators">{{ $t("apartments.filter.apartment_number") }}: </label>
           <b-form-tags
               input-id="tags-separators"
               v-model="filter.number"
@@ -23,7 +23,7 @@
               inputType="tel"
               addButtonVariant="primary"
               addButtonText="+"
-              placeholder="Номер квартира"
+              :placeholder="$t('apartments.filter.apartment_number')"
           ></b-form-tags>
         </div>
 
@@ -171,7 +171,7 @@
               @click="Filter"
           >
             <i class="far fa-sliders-h mr-2"></i>
-            Фильтровать
+            {{ $t("apartments.filter.filter_btn") }}
           </b-button
           >
         </div>
