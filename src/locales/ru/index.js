@@ -333,6 +333,14 @@ export default {
                 enter_discount: "Выберите вариант оплаты",
             },
         },
+
+        tab_names: {
+            all: "Все", //asd
+            available: "Доступный", //asd
+            booked: "Забронирован", //asd
+            sold: "Оформлен", //asd
+            unavailable: "Недоступен", //asd
+        },
     },
 
     type_plan: {
