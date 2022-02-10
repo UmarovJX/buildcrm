@@ -48,7 +48,7 @@
           @click="$router.go(-1)"
       >
         <i class="fal fa-arrow-left mr-2"></i>
-        <span>Назад</span>
+        <span>{{ $t('go_back') }}</span>
       </button>
 
       <div class="ml-auto d-flex justify-content-center align-items-center">
@@ -137,7 +137,7 @@
                 :to="{name:'home'}"
                 class="d-flex align-items-center">
               <span class="brand-logo">
-                <img src="@/assets/img/object__img1.png" alt="Xonsaroy" />
+                <img src="@/assets/img/object__img1.png" alt="Xonsaroy"/>
               </span>
               <h2 class="brand-text ml-1">CRM</h2>
             </router-link>
@@ -300,10 +300,10 @@ export default {
     changeLocale() {
       if (this.locale === false) {
         localStorage.locale = "ru";
-        this.$i18n.locale = "ru";
+        this.$root.$i18n.locale = "ru";
       } else {
         localStorage.locale = "uz";
-        this.$i18n.locale = "uz";
+        this.$root.$i18n.locale = "uz";
       }
     },
 
@@ -319,7 +319,7 @@ export default {
 .avatar-wrapper {
   background-color: darkorchid;
   border-radius: 50%;
-  box-shadow: 0.5px 0.5px -1px 0 rgba(0,0,0,0.75);
+  box-shadow: 0.5px 0.5px -1px 0 rgba(0, 0, 0, 0.75);
 }
 
 .branches__icon {

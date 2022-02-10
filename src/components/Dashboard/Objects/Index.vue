@@ -36,6 +36,17 @@
                   <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}
                 </router-link>
 
+                <router-link
+                    v-if="getPermission.objects.view"
+                    :to="{name:'objects-promo',params:{id:object.id}}"
+                    :class="'dropdown-item'"
+                >
+                  <i class="fas fa-gift"></i>
+                  <span>
+                    {{ $t('promo.promos') }}
+                  </span>
+                </router-link>
+
                 <b-link
                     class="dropdown-item"
                     v-if="getPermission.objects.update"

@@ -12,20 +12,24 @@
           </router-link>
         </li>
 
-        <li
-            v-for="{ routeName,textContent } in breadCrumbs"
-            :key="routeName+textContent"
-            class="breadcrumb-item"
-        >
-          <router-link :to="{ name:routeName }">
-            {{ textContent }}
-          </router-link>
-        </li>
+        <template>
+          <li
+              v-for="{ routeName,textContent } in breadCrumbs"
+              :key="routeName+textContent"
+              class="breadcrumb-item"
+          >
+            <router-link :to="{ name:routeName }">
+              {{ textContent }}
+            </router-link>
+          </li>
+        </template>
 
-        <li class="breadcrumb-item active">
+
+        <li v-if="activeContent" class="breadcrumb-item active">
           {{ activeContent }}
         </li>
       </ul>
+
       <slot name="extra-content"/>
     </div>
   </div>
@@ -42,7 +46,13 @@ export default {
     activeContent: {
       type: String,
       required: true
+    },
+  },
+  computed: {
+    showBreadCrumbList() {
+      return this.breadCrumbs.length > 0
     }
   }
+
 }
 </script>

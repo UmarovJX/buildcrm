@@ -14,7 +14,7 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
-    booked:'Band qilindi',
+    booked: 'Band qilindi',
     not_for_sale: "Sotilmaydi",
     remove_from_sale: "Sotuvdan olib tashlash",
     return_to_sale: "Sotuvga qaytarish",
@@ -48,11 +48,39 @@ export default {
     category: 'Kategoriya',
     full: "To'liqligicha",
     monthly: "Oylik",
+    month: 'Oy',
     payment_type: "To'lov sharti",
     created_at: "Yaratilgan vaqti",
     reservation: 'Band qilish',
     free_of_charge: "Boshlang'ich to'lovsiz",
     without_initial: "Boshlang'ich to'lovsiz",
+    go_back: 'Orqaga',
+    activate: 'Faollashtirish',
+    deactivate: "O'chirish",
+    monthly_payment: "Oylik to'lov",
+
+    promo: {
+        name: 'Aksiya',
+        promos: 'Aksiyalar',
+        table_name: 'Nomi',
+        blocks: 'Binolar',
+        floors: 'Qavatlar',
+        creation_title: 'Aksiya yaratish',
+        modal_input_text_label: 'Aksiya nomi',
+        date_of_start_title: 'Aksiyaning boshlanish kuni',
+        date_of_end_title: 'Aksiyaning tugash kuni',
+        date_of_start_label: 'Aksiya shu kundan boshlab amal qiladi',
+        date_of_end_label: 'Aksiya shu kungacha amal qiladi',
+        select_block: 'Bino (larni) tanlang',
+        select_floor_plan: 'Binodagi qavat, xonadon rejasi yoki xonadon uchun aksiya belgilang',
+        select_price: 'Aksiya narxi (m2 uchun)',
+        select_type: 'Aksiya turini tanlang',
+        select_sum: "So'm",
+        select_by_floor: "Qavatlar bo'yicha",
+        select_by_apartment: "Xonadon bo'yicha",
+        select_by_plan: "Xonadon rejasi bo'yicha",
+        add_price: "Narx qo'shish"
+    },
 
     auth: {
         email: "E-mail",
@@ -107,7 +135,8 @@ export default {
             cancel_contract: "Shartnomani bekor qilish", // asd
             payment_by_cash: "Naqd pul", // asd
             payment_transaction: "Pul ko'chirish orqali", // asd
-            payment_other: "Boshqa to'lov turi", // asd
+            payment_other: "Boshqa to'lov turi", // asd,
+            initial_payment: "Birinchi to'lov", // asd
         },
 
     },

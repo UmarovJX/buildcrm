@@ -2,7 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
-    booked:'Забронировать',
+    booked: 'Забронировать',
     not_for_sale: "Hе продается",
     remove_from_sale: "Снять с продажи",
     return_to_sale: "Вернуть к продаже",
@@ -36,13 +36,42 @@ export default {
     category: 'Категория',
     full: 'Полный',
     monthly: 'Ежемесячно',
+    month: 'Месяцев',
     without_initial: 'Без первоначального платежа',
     payment_type: 'Способ оплаты',
     created_at: 'Время создания',
     reservation: 'Бронирование',
     free_of_charge: 'Без первоначальной оплаты',
     more_info: 'Подробная информация',
+    activate: 'Активировать',
+    deactivate: "Деактивировать",
+    monthly_payment: 'Ежемесячный платеж',
 
+    promo: {
+        name: 'Акция',
+        promos: 'Акции',
+        table_name: 'Название',
+        blocks: 'Блоки',
+        floors: 'Этажи',
+        creation_title: 'Создание акции',
+        modal_input_text_label: 'Название акции',
+        date_of_start_title: 'Дата начала акции',
+        date_of_end_title: 'Акция действует до',
+        date_of_start_label: 'Скидка будет действовать с этой даты',
+        date_of_end_label: 'Срок акции истекает в этой дате',
+        select_block: 'Выберите блок(и)',
+        select_floor_plan: 'Выберите этажи, планировки или квартиры в блоках',
+        select_price: 'Цена в акции (за м2)',
+        select_type: 'Выберите тип акции',
+        select_sum: 'В суммах',
+        select_by_floor:'По этажам',
+        select_by_apartment: 'По квартиры',
+        select_by_plan: 'По планировки',
+        add_price: 'Добавить цену'
+    },
+
+    promos: 'Акции',
+    go_back: 'Назад',
     auth: {
         email: "E-mail",
         password: "Пароль",
@@ -95,6 +124,7 @@ export default {
             payment_by_cash: "Наличный", // asd
             payment_transaction: "Перечисление", // asd
             payment_other: "Другое", // asd
+            initial_payment: 'Первый взнос', // asd
         },
     },
 

@@ -1,17 +1,17 @@
 <template>
   <div class="object-calculator">
     <b-form-group
-      class="mb-1"
-      label-cols="12"
-      content-cols="12"
-      :label="$t('apartments.view.enter_discount')"
-      label-for="discounts"
+        class="mb-1"
+        label-cols="12"
+        content-cols="12"
+        :label="$t('apartments.view.enter_discount')"
+        label-for="discounts"
     >
       <b-form-select id="discounts" v-model="discount" @change="changeDiscount">
         <b-form-select-option
-          v-for="(discount, index) in getApartmentDiscounts"
-          :value="discount"
-          :key="'discounts' + index"
+            v-for="(discount, index) in getApartmentDiscounts"
+            :value="discount"
+            :key="'discounts' + index"
         >
           {{ $t("apartments.view.variant") }}
           {{ index + 1 }} - {{ discount.prepay }}%
@@ -21,41 +21,41 @@
 
     <!-- Цена продажы за м2 -->
     <b-form-group
-      class="mb-1"
-      label-cols="12"
-      content-cols="12"
-      :label="$t('apartments.view.price_for_m2')"
-      label-for="price"
+        class="mb-1"
+        label-cols="12"
+        content-cols="12"
+        :label="$t('apartments.view.price_for_m2')"
+        label-for="price"
     >
       <vue-numeric
-        id="price"
-        v-model="calc.price_for_m2"
-        :currency="$t('ye')"
-        :precision="2"
-        class="form-control"
-        currency-symbol-position="suffix"
-        separator="space"
-        disabled
+          id="price"
+          v-model="calc.price_for_m2"
+          :currency="$t('ye')"
+          :precision="2"
+          class="form-control"
+          currency-symbol-position="suffix"
+          separator="space"
+          disabled
       ></vue-numeric>
     </b-form-group>
 
     <!-- Скидка -->
     <b-form-group
-      class="mb-1"
-      label-cols="12"
-      content-cols="12"
-      :label="$t('apartments.view.discount_per_m2')"
-      label-for="discound-price"
+        class="mb-1"
+        label-cols="12"
+        content-cols="12"
+        :label="$t('apartments.view.discount_per_m2')"
+        label-for="discound-price"
     >
       <vue-numeric
-        id="discound-price"
-        v-model="calc.discount_price"
-        @change="changeDiscount_price"
-        :currency="$t('ye')"
-        :precision="2"
-        class="form-control"
-        currency-symbol-position="suffix"
-        separator="space"
+          id="discound-price"
+          v-model="calc.discount_price"
+          @change="changeDiscount_price"
+          :currency="$t('ye')"
+          :precision="2"
+          class="form-control"
+          currency-symbol-position="suffix"
+          separator="space"
       ></vue-numeric>
     </b-form-group>
 
@@ -66,92 +66,92 @@
 
     <!-- Первый взнос -->
     <b-form-group
-      class="mb-1"
-      v-if="discount.amount > 0"
-      label-cols="12"
-      content-cols="12"
-      label="Первый взнос: "
-      label-for="prepay_to"
+        class="mb-1"
+        v-if="discount.amount > 0"
+        label-cols="12"
+        content-cols="12"
+        :label="$t('contracts.view.initial_payment')"
+        label-for="prepay_to"
     >
       <vue-numeric
-        id="prepay_to"
-        v-model="calc.prepay"
-        class="form-control"
-        :currency="$t('ye')"
-        :precision="2"
-        currency-symbol-position="suffix"
-        disabled
-        separator="space"
+          id="prepay_to"
+          v-model="calc.prepay"
+          class="form-control"
+          :currency="$t('ye')"
+          :precision="2"
+          currency-symbol-position="suffix"
+          disabled
+          separator="space"
       ></vue-numeric>
     </b-form-group>
 
     <!-- Ежемесячный -->
     <b-form-group
-      class="mb-1"
-      v-if="discount.amount > 0"
-      label-cols="12"
-      content-cols="12"
-      label="Ежемесячный:"
-      label-for="credit_month"
+        class="mb-1"
+        v-if="discount.amount > 0"
+        label-cols="12"
+        content-cols="12"
+        :label="$t('monthly_payment')"
+        label-for="credit_month"
     >
       <b-form-input
-        id="credit_month"
-        @change="changeDiscount_month"
-        v-model="calc.month"
+          id="credit_month"
+          @change="changeDiscount_month"
+          v-model="calc.month"
       >
       </b-form-input>
       <vue-numeric
-        id="credit_price_for_month"
-        v-model="monthly_price"
-        class="form-control mt-2"
-        :currency="$t('ye')"
-        :precision="2"
-        currency-symbol-position="suffix"
-        separator="space"
-        disabled
-        read-only-class="true"
+          id="credit_price_for_month"
+          v-model="monthly_price"
+          class="form-control mt-2"
+          :currency="$t('ye')"
+          :precision="2"
+          currency-symbol-position="suffix"
+          separator="space"
+          disabled
+          read-only-class="true"
       ></vue-numeric>
-      <span style="position: absolute; right: 20px; top: 6px">месяцев</span>
+      <span style="position: absolute; right: 20px; top: 6px">{{ $t('month') }}</span>
     </b-form-group>
 
     <!-- Остаток -->
     <b-form-group
-      v-if="discount.amount > 0"
-      class="mb-1"
-      label-cols="12"
-      content-cols="12"
-      label="Остаток: "
-      label-for="debt"
+        v-if="discount.amount > 0"
+        class="mb-1"
+        label-cols="12"
+        content-cols="12"
+        :label="$t('contracts.view.remainder')"
+        label-for="debt"
     >
       <vue-numeric
-        id="debt"
-        v-model="calc.debt"
-        :currency="$t('ye')"
-        :precision="2"
-        class="form-control"
-        currency-symbol-position="suffix"
-        separator="space"
-        disabled
+          id="debt"
+          v-model="calc.debt"
+          :currency="$t('ye')"
+          :precision="2"
+          class="form-control"
+          currency-symbol-position="suffix"
+          separator="space"
+          disabled
       ></vue-numeric>
     </b-form-group>
 
     <!-- Итого -->
     <b-form-group
-      class="mb-1"
-      label-cols="12"
-      content-cols="12"
-      :label="$t('apartments.view.total')"
-      label-for="total"
+        class="mb-1"
+        label-cols="12"
+        content-cols="12"
+        :label="$t('apartments.view.total')"
+        label-for="total"
     >
       <vue-numeric
-        id="total"
-        v-model="calc.total"
-        :currency="$t('ye')"
-        :precision="2"
-        class="form-control"
-        currency-symbol-position="suffix"
-        separator="space"
-        disabled
+          id="total"
+          v-model="calc.total"
+          :currency="$t('ye')"
+          :precision="2"
+          class="form-control"
+          currency-symbol-position="suffix"
+          separator="space"
+          disabled
       ></vue-numeric>
     </b-form-group>
   </div>
@@ -160,6 +160,7 @@
 <script>
 import VueNumeric from "vue-numeric";
 import {mapGetters} from "vuex";
+
 export default {
   name: "Discount",
   components: {
@@ -191,10 +192,10 @@ export default {
 
   mounted() {
     // setTimeout(() => {
-      this.discount = this.getApartmentDiscounts
+    this.discount = this.getApartmentDiscounts
         ? this.getApartmentDiscounts[0]
         : [];
-      this.initialCalc();
+    this.initialCalc();
     // }, 1000);
   },
   computed: {
@@ -216,7 +217,7 @@ export default {
           this.calc.price_for_m2 = this.apartment.price_m2;
         } else {
           this.calc.price_for_m2 =
-            this.getTotalForPercente() / this.apartment.plan.area;
+              this.getTotalForPercente() / this.apartment.plan.area;
         }
       } else {
         this.calc.price_for_m2 = this.discount.amount;
@@ -273,8 +274,8 @@ export default {
         case "fixed":
           if (this.calc.discount_price) {
             total =
-              (this.discount.amount - parseFloat(this.calc.discount_price)) *
-              this.apartment.plan.area;
+                (this.discount.amount - parseFloat(this.calc.discount_price)) *
+                this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
@@ -306,8 +307,8 @@ export default {
         case "fixed":
           if (this.calc.discount_price) {
             total =
-              (this.discount.amount - parseFloat(this.calc.discount_price)) *
-              this.apartment.plan.area;
+                (this.discount.amount - parseFloat(this.calc.discount_price)) *
+                this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
@@ -316,7 +317,7 @@ export default {
           total = this.apartment.price / total_discount;
           if (this.calc.discount_price) {
             total -=
-              parseFloat(this.calc.discount_price) * this.apartment.plan.area;
+                parseFloat(this.calc.discount_price) * this.apartment.plan.area;
           }
           break;
       }
@@ -331,8 +332,8 @@ export default {
         case "fixed":
           if (this.calc.discount_price) {
             total =
-              (this.discount.amount - parseFloat(this.calc.discount_price)) *
-              this.apartment.plan.area;
+                (this.discount.amount - parseFloat(this.calc.discount_price)) *
+                this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area;
           }
