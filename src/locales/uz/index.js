@@ -56,8 +56,10 @@ export default {
     without_initial: "Boshlang'ich to'lovsiz",
     go_back: 'Orqaga',
     activate: 'Faollashtirish',
-    deactivate: "O'chirish",
+    deactivate: "disable",
     monthly_payment: "Oylik to'lov",
+    sum_text: "So'm",
+    usd_text: 'Usd',
 
     promo: {
         name: 'Aksiya',
@@ -79,7 +81,10 @@ export default {
         select_by_floor: "Qavatlar bo'yicha",
         select_by_apartment: "Xonadon bo'yicha",
         select_by_plan: "Xonadon rejasi bo'yicha",
-        add_price: "Narx qo'shish"
+        add_price: "Narx qo'shish",
+        warn_before_delete: "Aksiyani oʻchirib tashlamoqchimisiz?",
+        successfully_deleted: "Aksiya muvaffaqiyatli o'chirildi",
+        successfully_created:'Aksiya muvaffaqiyatli yaratildi'
     },
 
     auth: {

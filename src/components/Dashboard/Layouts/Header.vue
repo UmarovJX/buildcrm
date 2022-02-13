@@ -208,6 +208,7 @@
 </template>
 
 <script>
+import {localeChanged} from 'vee-validate'
 import {mapActions, mapGetters} from "vuex";
 import ThemeButton from "@/components/ThemeButton.vue";
 
@@ -301,9 +302,11 @@ export default {
       if (this.locale === false) {
         localStorage.locale = "ru";
         this.$root.$i18n.locale = "ru";
+        localeChanged()
       } else {
         localStorage.locale = "uz";
         this.$root.$i18n.locale = "uz";
+        localeChanged()
       }
     },
 

@@ -1,51 +1,127 @@
 <template>
-  <div>
-    <!--  Date Inputs  -->
-    <promo-date-interface/>
+  <b-modal
+      size="xl"
+      id="promoCreationModal"
+      :title="$t('promo.creation_title')"
+  >
+    <b-overlay :show="loading" rounded="sm">
+      <div>
+        <!--  Date Inputs  -->
+        <promo-date-interface ref="promo-date-interface"/>
 
-    <!--  Block Selection  -->
-    <div class="col-6 p-0 pr-2 mb-4">
-      <label for="selection-block">{{ $t('promo.select_block') }}</label>
-      <multiselect
-          id="selection-block"
-          v-model="form.blocks"
-          tag-placeholder="Add this as new tag"
-          :placeholder="$t('promo.select_block')"
-          label="name"
-          track-by="code"
-          :options="blockOptions"
-          :multiple="true"
-          :taggable="true"
-      ></multiselect>
-    </div>
+        <!--  Block Selection  -->
+        <ValidationProvider
+            :name="building.name"
+            tag="div"
+            class="col-6 p-0 pr-2 mb-4"
+            rules="required"
+            ref="block-selection-provider"
+            v-slot="{ errors }"
+        >
+          <label for="selection-block">
+            {{ building.name }}
+          </label>
+          <multiselect
+              id="selection-block"
+              v-model="selectedBlocks"
+              tag-placeholder="Add this as new tag"
+              class="mb-2"
+              :placeholder="$t('promo.select_block')"
+              label="name"
+              track-by="id"
+              :options="blockOptions"
+              :multiple="true"
+              :taggable="true"
+              :searchable="false"
+          ></multiselect>
 
-    <!-- Dropdown Plan   -->
-    <p v-if="hasBlocks">{{ $t('promo.select_floor_plan') }}</p>
-    <promo-accordion
-        v-for="block in form.blocks"
-        :key="block.code"
-        :block="block"
-        @add-extra-content="addExtraContent(block.code)"
-    />
-  </div>
+          <span class="error__provider" v-if="errors[0]">
+              {{ errors[0] }}
+          </span>
+        </ValidationProvider>
+
+        <!-- Dropdown Plan   -->
+        <p v-if="hasBlocks">{{ $t('promo.select_floor_plan') }}</p>
+        <promo-accordion
+            v-for="(block,index) in selectedBlocks"
+            :key="block.id"
+            :block="{...block,index}"
+            @save-accordion-content="saveSpecificContent"
+            :ref="`blocks-id-${block.id}`"
+        />
+      </div>
+
+      <template #overlay>
+        <div class="text-center">
+          <b-icon icon="stopwatch" font-scale="3" animation="cylon"></b-icon>
+          <p id="cancel-label">Please wait...</p>
+        </div>
+      </template>
+    </b-overlay>
+
+    <template #modal-footer="{ cancel }">
+      <div class="d-flex justify-content-end">
+        <b-button
+            variant="danger"
+            class="mt-0"
+            @click="cancel()"
+        >
+          {{ $t('close') }}
+        </b-button>
+        <b-overlay
+            :show="loading"
+            rounded
+            opacity="0.6"
+            spinner-small
+            spinner-variant="primary"
+            class="d-inline-block"
+        >
+          <b-button
+              class="ml-2 mt-0"
+              variant="primary"
+              @click="formValidation"
+              :disabled="loading && readyForSubmit"
+          >
+            {{ $t('save') }}
+          </b-button>
+        </b-overlay>
+      </div>
+    </template>
+  </b-modal>
 </template>
 
 <script>
-import PromoDateInterface from "@/components/Dashboard/Objects/Components/Promo/PromoDateInterface";
 import PromoAccordion from "@/components/Dashboard/Objects/Components/Promo/PromoAccordion";
+import PromoDateInterface from "@/components/Dashboard/Objects/Components/Promo/PromoDateInterface";
+import api from "@/services/api";
+import {mapMutations} from "vuex";
 
 export default {
   name: 'PromoCreationContent',
   components: {
-    PromoDateInterface,
-    PromoAccordion
+    PromoAccordion,
+    PromoDateInterface
   },
+  emits: ['successfully-created','error-on-creation'],
   data() {
     return {
       form: {
+        name: {},
+        start_date: '',
+        end_date: '',
         blocks: []
       },
-      blockOptions: []
+      building: {
+        name: this.$t('promo.select_block')
+      },
+      loading: false,
+      readyForSubmit: false,
+      blockOptions: [],
+      selectedBlocks: [],
+      errors: {
+        block: '',
+        currentBlockIndex: null
+      }
     }
   },
   async created() {
@@ -53,101 +129,83 @@ export default {
   },
   computed: {
     hasBlocks() {
-      return this.form.blocks.length > 0
+      return this.selectedBlocks.length > 0
     }
   },
   methods: {
-    fetchBlockOptions() {
-      this.blockOptions = [
-        {
-          name: 'Block A',
-          code: 1,
-          plans: [
-            {
-              priceBy: 'Sum',
-              priceByValue: 600,
-              promoType: "Qavatlar bo'yicha",
-              promoBlocks: [
-                {index: 1},
-                {index: 2},
-                {index: 3}
-              ]
-            },
-            {
-              priceBy: 'Sum',
-              priceByValue: 600,
-              promoType: "Qavatlar bo'yicha",
-              promoBlocks: [
-                {index: 1},
-                {index: 2},
-                {index: 3}
-              ]
-            }
-          ]
-        },
-        {
-          name: 'Block B',
-          code: 2,
-          plans: [
-            {
-              priceBy: 'Dollar ($)',
-              priceByValue: 800,
-              promoType: "Qavatlar bo'yicha",
-              promoBlocks: [
-                {index: 1},
-                {index: 2},
-                {index: 3}
-              ]
-            }
-          ]
-        },
-        {
-          name: 'Block C',
-          code: 3,
-          plans: [
-            {
-              priceBy: 'Dollar ($)',
-              priceByValue: 800,
-              promoType: "Qavatlar bo'yicha",
-              promoBlocks: [
-                {index: 1},
-                {index: 2},
-                {index: 3}
-              ]
-            }
-          ]
-        },
-        {
-          name: 'Block D',
-          code: 4,
-          plans: [
-            {
-              priceBy: 'Dollar ($)',
-              priceByValue: 800,
-              promoType: "Qavatlar bo'yicha",
-              promoBlocks: [
-                {index: 1},
-                {index: 2},
-                {index: 3}
-              ]
-            }
-          ]
-        }
-      ]
+    ...mapMutations(['mutateFormButton']),
+    async fetchBlockOptions() {
+      const {id} = this.$route.params
+      await api.objects.fetchObjectBlocks(id)
+          .then(response => {
+            this.blockOptions = response.data
+          })
     },
-    addExtraContent(code) {
-      const findIndex = this.form.blocks.findIndex(block => block.code === code)
+    saveSpecificContent({id, types}) {
+      const {blocks} = this.form
+      const findIndex = blocks.findIndex(block => block.id === id)
 
       if (findIndex !== -1) {
-        const newContent = {
-          priceBy: 'Dollar ($)',
-          priceByValue: 0,
-          promoType: "Qavatlar bo'yicha",
-          promoBlocks: []
+        this.form.blocks[findIndex].types = types
+      } else {
+        this.form.blocks.push({id, types})
+      }
+
+      this.enableSubmitButton()
+    },
+    enableSubmitButton() {
+      this.readyForSubmit = true
+    },
+    async checkBlocksValidation() {
+      const {selectedBlocks} = this
+
+      if (selectedBlocks.length) {
+        const promiseResults = []
+
+        for (const block of selectedBlocks) {
+          const ref = `blocks-id-${block.id}`
+          const accordionComponent = this.$refs[ref][0]
+          const validations = await accordionComponent.validationObserverAvailable()
+          const validation = await validations
+          promiseResults.push(validation)
+          if (!validation)
+            accordionComponent.highlightError()
         }
 
-        this.form.blocks[findIndex].plans.push(newContent)
+        return promiseResults.every(result => result)
       }
+
+      return false
+    },
+    async formValidation() {
+      this.mutateFormButton()
+      const validation = await this.$refs['block-selection-provider'].validate()
+      const dateInterface = this.$refs['promo-date-interface']
+      const dates = await dateInterface.getValidDates()
+      const checkBlocks = await this.checkBlocksValidation()
+      const readyToSubmit = validation.valid && dates.valid && await checkBlocks
+      readyToSubmit && await this.submitFormData()
+    },
+    async submitFormData() {
+      this.toggleLoading()
+      const {id} = this.$route.params
+      const dateInterface = this.$refs['promo-date-interface']
+      const dates = await dateInterface.getValidDates()
+      const form = {...this.form, ...dates.form}
+      await api.objects.createObjectPromo({id, form})
+          .then(() => {
+            this.$emit('successfully-created')
+          })
+          .catch((error) => {
+            this.$emit('error-on-creation',error)
+          })
+          .finally(() => {
+            this.toggleLoading()
+            this.$bvModal.hide('promoCreationModal')
+          })
+    },
+    toggleLoading() {
+      this.loading = !this.loading
     }
   }
 }

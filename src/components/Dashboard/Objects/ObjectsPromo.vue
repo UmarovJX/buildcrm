@@ -14,31 +14,22 @@
         </button>
       </template>
     </base-bread-crumb>
-    <promo-list-content :promos="promos"/>
-    <b-modal
-        size="xl"
-        id="promoCreationModal"
-        :title="$t('promo.creation_title')"
-    >
-      <!--  Modal Main Content    -->
-      <promo-creation-content/>
 
-      <template #modal-footer="{ cancel, hide }">
-        <div class="d-flex justify-content-end">
-          <b-button variant="danger" @click="cancel()">
-            {{ $t('close') }}
-          </b-button>
-          <b-button class="ml-2" variant="primary" @click="hide('forget')">
-            {{ $t('save') }}
-          </b-button>
-        </div>
-      </template>
-    </b-modal>
+    <!--  List Of Promos  -->
+    <promo-list-content :promos="promos" @update-content="fetchPromoData(false)"/>
+
+    <!--  Modal Main Content    -->
+    <promo-creation-content @successfully-created="successfullyCreated" @error-on-creation="errorOnCreation"/>
+
+    <!--  Loading Content  -->
+    <base-loading-content :loading="loading"/>
   </main>
 </template>
 
 <script>
+import api from '@/services/api'
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import BaseLoadingContent from "@/components/BaseLoadingContent";
 import PromoListContent from "@/components/Dashboard/Objects/Components/Promo/PromoListContent";
 import PromoCreationContent from "@/components/Dashboard/Objects/Components/Promo/PromoCreationContent";
 
@@ -46,12 +37,14 @@ export default {
   name: "ObjectsPromo",
   components: {
     BaseBreadCrumb,
+    BaseLoadingContent,
     PromoListContent,
     PromoCreationContent
   },
   data() {
     return {
-      promos: []
+      promos: [],
+      loading: false
     }
   },
   computed: {
@@ -71,30 +64,49 @@ export default {
     await this.fetchPromoData()
   },
   methods: {
-    fetchPromoData() {
-      this.promos = [
-        {
-          id: 1,
-          name: 'Bahorgi Aksiya',
-          blocks: 'Blok:A,B,D',
-          floors: '16 qavat, 18 qavat'
-        },
-        {
-          id: 2,
-          name: 'Yozgi Aksiya',
-          blocks: 'Blok:C,G,B',
-          floors: '8 qavat, 20 qavat'
-        },
-        {
-          id: 3,
-          name: 'Tungi Aksiya',
-          blocks: 'Blok:C,G,B',
-          floors: '8 qavat, 20 qavat'
-        }
-      ]
+    async fetchPromoData(showLoading = true) {
+      const {id} = this.$route.params
+
+      if (showLoading) {
+        this.startLoading()
+      }
+
+      await api.objects.fetchObjectPromos(id)
+          .then(response => {
+            this.promos = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            if (showLoading) {
+              this.finishLoading()
+            }
+          })
+    },
+    startLoading() {
+      this.loading = true
+    },
+    finishLoading() {
+      this.loading = false
     },
     addNewPromo() {
       this.$bvModal.show('promoCreationModal')
+    },
+    async successfullyCreated() {
+      this.showSuccessResponse()
+      await this.fetchPromoData(false)
+    },
+    showSuccessResponse() {
+      this.$swal({
+        text: '',
+        icon: "success",
+        showCancelButton: false,
+        title: this.$t('promo.successfully_created'),
+      })
+    },
+    errorOnCreation(error) {
+      this.toastedWithErrorCode(error)
     }
   }
 }

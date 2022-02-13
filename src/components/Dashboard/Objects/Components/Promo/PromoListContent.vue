@@ -2,17 +2,39 @@
   <div>
     <b-table
         sticky-header
-        borderless
         responsive
+        show-empty
+        borderless
+        sort-icon-left
         :items="promos"
         :fields="fields"
-        show-empty
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
-        sort-icon-left
-        class="custom-table"
         :empty-text="$t('no_data')"
+        :busy="loading"
+        class="custom-table"
     >
+
+      <!-- INDEX COLUMN -->
+      <template #cell(index)="data">
+        <span
+            class="mr-2"
+            :class="getCircleClassByStatus(data.item.status)"
+        >
+          <i class="fas fa-circle"></i>
+        </span>
+
+        <span>
+          {{ data.index + 1 }}
+        </span>
+      </template>
+
+      <!-- FLOORS COLUMN -->
+      <template #cell(floors)="data">
+        <span v-if="data.item.blocks.length">
+          {{ sumFloorsCount(data.item.blocks) }}
+        </span>
+      </template>
 
       <!--   ACTION   -->
       <template #cell(actions)="data">
@@ -31,8 +53,9 @@
             <div class="dropdown-menu" v-if="hasPermission">
 
               <b-button
-                  v-if="permission.objects.update"
+                  v-if="permission.objects.update && !data.item.status"
                   class="dropdown-item dropdown-item--inside"
+                  @click="activatePromo(data.item)"
               >
                 <i class="fas fa-check"></i>
                 {{ $t("activate") }}
@@ -49,7 +72,7 @@
               </b-button>
 
               <b-button
-                  v-if="permission.objects.update"
+                  v-if="permission.objects.update && data.item.status"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deactivatePromo(data.item)"
               >
@@ -76,6 +99,7 @@
 
 <script>
 import {mapGetters} from "vuex";
+import api from '@/services/api'
 
 export default {
   name: 'PromoListContent',
@@ -85,10 +109,12 @@ export default {
       required: true
     }
   },
+  emits: ['update-content'],
   data() {
     return {
       sortBy: "id",
-      sortDesc: false
+      sortDesc: false,
+      loading: false
     }
   },
   computed: {
@@ -101,20 +127,31 @@ export default {
     fields() {
       return [
         {
-          key: "id",
-          label: "#",
+          key: "index",
+          label: "#"
         },
         {
           key: "name",
           label: this.$t("promo.name"),
+          formatter: (name) => name[localStorage.locale]
         },
         {
           key: "blocks",
           label: this.$t("promo.blocks"),
+          formatter: (blocks) => {
+            let names = ''
+            blocks.forEach((current, index, arr) => {
+              names += current.block.name
+              if (arr.length - 1 > index) {
+                names += ' , '
+              }
+            })
+            return names
+          }
         },
         {
           key: "floors",
-          label: this.$t("promo.floors"),
+          label: this.$t("promo.floors")
         },
         {
           key: "actions",
@@ -124,15 +161,94 @@ export default {
     }
   },
   methods: {
+    sumFloorsCount: (blocks) => blocks.reduce((acc, current) => acc + current.block.floors, 0),
     editPromoItem() {
 
     },
-    deactivatePromo() {
-
+    async activatePromo(item) {
+      this.toggleLoading()
+      const promoId = item.uuid
+      const {id: objectId} = this.$route.params
+      const context = {objectId, promoId, type: 'enable'}
+      await api.objects.changeObjectPromoActivation(context)
+          .then(() => {
+            this.$emit('update-content')
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.toggleLoading()
+          })
     },
-    deletePromoItem() {
-
+    async deactivatePromo(item) {
+      this.toggleLoading()
+      const promoId = item.uuid
+      const {id: objectId} = this.$route.params
+      const context = {objectId, promoId, type: 'disable'}
+      await api.objects.changeObjectPromoActivation(context)
+          .then(() => {
+            this.$emit('update-content')
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.toggleLoading()
+          })
+    },
+    async deletePromoItem(item) {
+      const result = await this.showWarnBeforeDelete()
+      if (result.isConfirmed) {
+        const {id: objectId} = this.$route.params
+        const uuId = item.uuid
+        await api.objects.deleteObjectPromo({objectId, uuId})
+            .then(() => {
+              this.showSuccessResponse()
+              this.$emit('update-content')
+            })
+            .catch(error => {
+              this.toastedWithErrorCode(error)
+            })
+      }
+    },
+    showWarnBeforeDelete() {
+      return this.$swal({
+        text: '',
+        icon: "warning",
+        showCancelButton: true,
+        title: this.$t('promo.warn_before_delete'),
+        confirmButtonText: this.$t("sweetAlert.yes_agree")
+      })
+    },
+    showSuccessResponse() {
+      this.$swal({
+        icon: "success",
+        showCancelButton: false,
+        title: this.$t('promo.successfully_deleted'),
+      })
+    },
+    toggleLoading() {
+      this.loading = !this.loading
+    },
+    getCircleClassByStatus(status) {
+      if (status === 1)
+        return 'active__dot-class'
+      else
+        return 'not__active__dot-class'
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.active__dot-class {
+  color: #20c997;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.not__active__dot-class {
+  color: #ffc107;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+</style>

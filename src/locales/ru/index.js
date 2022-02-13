@@ -46,6 +46,8 @@ export default {
     activate: 'Активировать',
     deactivate: "Деактивировать",
     monthly_payment: 'Ежемесячный платеж',
+    sum_text: 'В суммах',
+    usd_text: 'В долларах',
 
     promo: {
         name: 'Акция',
@@ -64,10 +66,13 @@ export default {
         select_price: 'Цена в акции (за м2)',
         select_type: 'Выберите тип акции',
         select_sum: 'В суммах',
-        select_by_floor:'По этажам',
+        select_by_floor: 'По этажам',
         select_by_apartment: 'По квартиры',
         select_by_plan: 'По планировки',
-        add_price: 'Добавить цену'
+        add_price: 'Добавить цену',
+        warn_before_delete: "Вы дейстительно  хотите удалить акцию",
+        successfully_deleted: "Акция успешно удалена",
+        successfully_created:'Акция успешно создана'
     },
 
     promos: 'Акции',
