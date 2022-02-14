@@ -1,0 +1,29 @@
+.multiselect__parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .multiselect__tags {
+    border: none;
+    border-radius: 0;
+    min-width: 8rem;
+    min-height: 2rem;
+
+    .multiselect__single {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4px;
+      background-color: transparent;
+    }
+  }
+
+  .multiselect__placeholder {
+    margin-bottom: 0;
+  }
+}
+
+.multiselect__parent__border {
+  border-right: 1px solid rgb(206, 212, 218);
+  padding: 0;
+}

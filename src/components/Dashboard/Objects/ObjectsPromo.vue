@@ -1,0 +1,113 @@
+<template>
+  <main>
+    <base-bread-crumb
+        :bread-crumbs="breadCrumbs"
+        :active-content="activeContent"
+    >
+      <template #extra-content>
+        <button
+            class="btn btn-primary mr-0 mt-md-0"
+            @click="addNewPromo"
+        >
+          <i class="fal fa-plus mr-2"></i>
+          {{ $t("add") }}
+        </button>
+      </template>
+    </base-bread-crumb>
+
+    <!--  List Of Promos  -->
+    <promo-list-content :promos="promos" @update-content="fetchPromoData(false)"/>
+
+    <!--  Modal Main Content    -->
+    <promo-creation-content @successfully-created="successfullyCreated" @error-on-creation="errorOnCreation"/>
+
+    <!--  Loading Content  -->
+    <base-loading-content :loading="loading"/>
+  </main>
+</template>
+
+<script>
+import api from '@/services/api'
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import BaseLoadingContent from "@/components/BaseLoadingContent";
+import PromoListContent from "@/components/Dashboard/Objects/Components/Promo/PromoListContent";
+import PromoCreationContent from "@/components/Dashboard/Objects/Components/Promo/PromoCreationContent";
+
+export default {
+  name: "ObjectsPromo",
+  components: {
+    BaseBreadCrumb,
+    BaseLoadingContent,
+    PromoListContent,
+    PromoCreationContent
+  },
+  data() {
+    return {
+      promos: [],
+      loading: false
+    }
+  },
+  computed: {
+    activeContent() {
+      return this.$t('list')
+    },
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'objects-promo',
+          textContent: this.$t('promo.promos')
+        }
+      ]
+    }
+  },
+  async created() {
+    await this.fetchPromoData()
+  },
+  methods: {
+    async fetchPromoData(showLoading = true) {
+      const {id} = this.$route.params
+
+      if (showLoading) {
+        this.startLoading()
+      }
+
+      await api.objects.fetchObjectPromos(id)
+          .then(response => {
+            this.promos = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            if (showLoading) {
+              this.finishLoading()
+            }
+          })
+    },
+    startLoading() {
+      this.loading = true
+    },
+    finishLoading() {
+      this.loading = false
+    },
+    addNewPromo() {
+      this.$bvModal.show('promoCreationModal')
+    },
+    async successfullyCreated() {
+      this.showSuccessResponse()
+      await this.fetchPromoData(false)
+    },
+    showSuccessResponse() {
+      this.$swal({
+        text: '',
+        icon: "success",
+        showCancelButton: false,
+        title: this.$t('promo.successfully_created'),
+      })
+    },
+    errorOnCreation(error) {
+      this.toastedWithErrorCode(error)
+    }
+  }
+}
+</script>

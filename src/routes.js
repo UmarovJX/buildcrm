@@ -51,7 +51,7 @@ import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
-
+import ObjectsPromo from "@/components/Dashboard/Objects/ObjectsPromo";
 const routes = [
     {
         path: "/home",
@@ -95,6 +95,15 @@ const routes = [
         meta: {
             requiresAuth: "objects",
         },
+    },
+
+    {
+        name: "objects-promo",
+        path: "/objects/:id/promo",
+        component: ObjectsPromo,
+        meta: {
+            requiresAuth: "objects",
+        }
     },
 
     {
@@ -255,7 +264,7 @@ const routes = [
         component: Companies,
         meta: {
             requiresAuth: "companies",
-        },
+        }
     },
 
     {

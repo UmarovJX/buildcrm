@@ -4,6 +4,11 @@
   color: white;
 }
 
+.btn-green-bg {
+  background-color: #41b883;
+  color: white !important;
+}
+
 a,
 a:hover,
 .my-btn,
@@ -46,8 +51,8 @@ button:focus {
   font-size: 1rem;
   line-height: 1;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background 0s,
-    border 0s, -webkit-box-shadow 0.15s ease-in-out !important;
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background 0s,
+  border 0s, -webkit-box-shadow 0.15s ease-in-out !important;
   text-transform: none;
 
   display: flex !important;
@@ -57,10 +62,12 @@ button:focus {
   margin-right: 1rem;
   height: 45px;
   color: white;
+
   i {
     color: white;
   }
 }
+
 .btn i,
 .btn span,
 .btn svg,
@@ -90,6 +97,7 @@ button:focus {
   color: #fff;
   background-color: #45a85c !important;
   border-color: #45a85c !important;
+
   svg * {
     color: white !important;
   }
@@ -107,6 +115,7 @@ button:focus {
   background-color: #82868b !important;
   border-color: #82868b !important;
 }
+
 .btn-secondary:not(.dropdown-item):hover {
   color: #fff;
   background-color: #82868b !important;
@@ -119,6 +128,7 @@ button:focus {
   background-color: #ff9f43 !important;
   border-color: #ff9f43 !important;
 }
+
 .btn-warning:hover {
   color: #fff;
   background-color: #ff9f43 !important;
@@ -131,12 +141,14 @@ button:focus {
   background-color: #138496 !important;
   border-color: #138496 !important;
 }
+
 .btn-info:hover {
   color: #fff;
   background-color: #138496 !important;
   border-color: #138496 !important;
   box-shadow: 0 8px 25px -8px #138496 !important;
 }
+
 .btn-default {
   color: #414141 !important;
   background-color: #e7e7e7 !important;
@@ -146,6 +158,7 @@ button:focus {
     color: #414141 !important;
   }
 }
+
 .btn-light {
   color: #414141 !important;
   background-color: #e7e7e7 !important;
@@ -155,11 +168,13 @@ button:focus {
     color: #414141 !important;
   }
 }
+
 .btn-default:hover {
   color: #414141 !important;
   background-color: #e7e7e7 !important;
   border-color: #e7e7e7 !important;
   box-shadow: 0 8px 25px -8px #e7e7e7 !important;
+
   i {
     color: #414141 !important;
   }
@@ -188,6 +203,7 @@ button:focus {
       margin: 0 !important;
     }
   }
+
   & > .btn {
     margin: 0 !important;
   }

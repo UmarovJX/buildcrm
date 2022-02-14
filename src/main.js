@@ -15,15 +15,9 @@ import VueSweetalert2 from "vue-sweetalert2";
 import VueYandexMetrika from 'vue-yandex-metrika'
 import "sweetalert2/dist/sweetalert2.min.css";
 import "./components";
+// import "./util/validation"
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
-import {
-    ValidationObserver, ValidationProvider, extend, localize,
-} from "vee-validate";
 
-import ru from './locales/ru/warns'
-import uz from './locales/uz/warns'
-
-import * as rules from "vee-validate/dist/rules";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
@@ -34,6 +28,24 @@ Vue.config.devtools = true;
 const sweetOptions = {
     confirmButtonColor: "#3085d6", cancelButtonColor: "#d33",
 };
+import {
+    ValidationObserver, ValidationProvider, extend, localize,
+} from "vee-validate"
+
+import ru from './locales/ru/warns/index.json'
+import uz from './locales/uz/warns/index.json'
+
+import * as rules from "vee-validate/dist/rules"
+
+localize({ru, uz})
+localize(localStorage.locale)
+
+Object.keys(rules).forEach((rule) => {
+    extend(rule, rules[rule]);
+})
+
+Vue.component("ValidationObserver", ValidationObserver)
+Vue.component("ValidationProvider", ValidationProvider)
 
 Vue.use(VueMask);
 Vue.use(vueMoment);
@@ -41,18 +53,9 @@ Vue.use(VueLazyload, {
     preLoad: 1.3, error: require("@/assets/img/no-image.jpg"), loading: require("@/assets/img/loading.gif"), attempt: 1,
 });
 
-
-Object.keys(rules).forEach((rule) => {
-    extend(rule, rules[rule]);
-});
-
-localize({ru, uz});
-
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(VueSweetalert2, sweetOptions);
-Vue.component("ValidationObserver", ValidationObserver);
-Vue.component("ValidationProvider", ValidationProvider);
 Vue.use(Vue2Filters);
 Vue.mixin(toasted);
 Vue.use(VueAxios, axios);
