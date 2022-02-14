@@ -38,7 +38,10 @@ import uz from './locales/uz/warns/index.json'
 import * as rules from "vee-validate/dist/rules"
 
 localize({ru, uz})
-localize(localStorage.locale)
+
+const localeLang = localStorage.locale ? localStorage.locale : 'ru'
+
+localize(localeLang)
 
 Object.keys(rules).forEach((rule) => {
     extend(rule, rules[rule]);

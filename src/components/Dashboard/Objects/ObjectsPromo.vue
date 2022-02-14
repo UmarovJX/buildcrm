@@ -16,10 +16,17 @@
     </base-bread-crumb>
 
     <!--  List Of Promos  -->
-    <promo-list-content :promos="promos" @update-content="fetchPromoData(false)"/>
+    <promo-list-content
+        :promos="promos"
+        @update-content="fetchPromoData(false)"
+        @edit-promo-item="editPromoItem"
+    />
 
     <!--  Modal Main Content    -->
-    <promo-creation-content @successfully-created="successfullyCreated" @error-on-creation="errorOnCreation"/>
+    <promo-creation-content
+        @successfully-created="successfullyCreated"
+        @error-on-creation="errorOnCreation"
+    />
 
     <!--  Loading Content  -->
     <base-loading-content :loading="loading"/>
@@ -44,7 +51,8 @@ export default {
   data() {
     return {
       promos: [],
-      loading: false
+      loading: false,
+      itemHistory: {}
     }
   },
   computed: {
@@ -91,6 +99,11 @@ export default {
       this.loading = false
     },
     addNewPromo() {
+      this.itemHistory = {}
+      this.$bvModal.show('promoCreationModal')
+    },
+    editPromoItem(item) {
+      this.itemHistory = item
       this.$bvModal.show('promoCreationModal')
     },
     async successfullyCreated() {
