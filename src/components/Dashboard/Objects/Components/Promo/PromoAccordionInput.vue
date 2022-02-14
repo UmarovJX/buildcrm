@@ -36,8 +36,8 @@
               v-model="form.priceByValue"
               class="plan__group-input"
               placeholder="000"
-              v-mask="'### ### ### ### ### ### ###'"
               @focus="removePriceError"
+              v-mask="'### ### ### ### ### ### ###'"
           />
         </ValidationProvider>
 
@@ -54,46 +54,57 @@
         {{ $t('promo.select_type') }}
       </label>
 
-      <div
-          class="row m-0 select__type__promo mb-2"
-          id="select-type-promo"
-      >
-        <div class="col-4 multiselect__parent multiselect__parent__border">
-          <multiselect
-              v-model="form.promoType"
-              :options="typeOptions"
-              :searchable="false"
-              :show-labels="false"
-              label="name"
-              :placeholder="$t('promo.select_by_floor')"
-          ></multiselect>
+      <div class="d-flex">
+        <div
+            class="row m-0 select__type__promo mb-2 col-11"
+            id="select-type-promo"
+        >
+          <div class="col-4 multiselect__parent multiselect__parent__border">
+            <multiselect
+                v-model="form.promoType"
+                :options="typeOptions"
+                :searchable="false"
+                :show-labels="false"
+                label="name"
+                :placeholder="$t('promo.select_by_floor')"
+            ></multiselect>
+          </div>
+
+          <ValidationProvider
+              :name="provider.promoType.name"
+              rules="required"
+              v-slot="{ errors }"
+              ref="promo-type-provider"
+              class="col-8 multiselect__parent"
+              tag="div"
+          >
+            <multiselect
+                id="selection-block"
+                v-model="form.blocks"
+                tag-placeholder="Add this as new tag"
+                :placeholder="$t('promo.select_block')"
+                :options="selectionContentTypes"
+                :label="selectionContentLabel"
+                :track-by="selectionContentTrack"
+                :multiple="true"
+                :searchable="false"
+            ></multiselect>
+          </ValidationProvider>
         </div>
 
-        <ValidationProvider
-            :name="provider.promoType.name"
-            rules="required"
-            v-slot="{ errors }"
-            ref="promo-type-provider"
-            class="col-8 multiselect__parent"
-            tag="div"
+        <!--   DELETE BUTTON     -->
+        <div
+            @click="deleteAccordionInput"
+            v-if="showDeletedButton"
+            class="col-1 d-flex justify-content-center align-items-center delete__button"
         >
-          <multiselect
-              id="selection-block"
-              v-model="form.blocks"
-              tag-placeholder="Add this as new tag"
-              :placeholder="$t('promo.select_block')"
-              :options="selectionContentTypes"
-              :label="selectionContentLabel"
-              :multiple="true"
-              :searchable="false"
-          ></multiselect>
-        </ValidationProvider>
-
+          <i class="fal fa-times-circle"></i>
+        </div>
       </div>
 
       <span class="error__provider" v-if="errors.typeError">
           {{ errors.typeError }}
-        </span>
+      </span>
     </div>
   </div>
 </template>
@@ -112,15 +123,28 @@ export default {
     index: {
       type: Number,
       require: true
+    },
+    promoIndex: {
+      type: Object,
+      require: true
+    },
+    startTime: {
+      type: Number,
+      require: true
     }
   },
-  emits: ['set-form-values', 'user-focused-the-accordion'],
+  emits: ['set-form-values', 'user-focused-the-accordion', 'delete-inputs-collection'],
   created() {
-    this.setPromoTypeToFloors()
+    if (this.promoIndex.hasOwnProperty('type')) {
+      this.setUpHistoryValues()
+    } else {
+      this.setPromoTypeToFloors()
+    }
   },
   data() {
     return {
       selectionContentLabel: '',
+      selectionContentTrack: '',
       selectionContentTypes: [],
       provider: {
         price: {
@@ -150,8 +174,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      togglePromoSubmitButton: 'togglePromoSubmitButton'
+      togglePromoSubmitButton: 'togglePromoSubmitButton',
+      getEditHistoryContext: 'getEditHistoryContext'
     }),
+    showDeletedButton() {
+      return this.startTime !== this.promoIndex.id
+    },
     typeOptions() {
       return [
         {
@@ -198,11 +226,13 @@ export default {
       this.setInputValues()
     },
     'form.priceBy.value'() {
+      this.setInputValues()
       this.userFocusedAccordion()
     },
-    'form.promoType'() {
+    'form.promoType.type'() {
       this.userFocusedAccordion()
       this.setPromosOption()
+      this.setInputValues()
     }
   },
   methods: {
@@ -214,6 +244,31 @@ export default {
     },
     userFocusedAccordion() {
       this.$emit('user-focused-the-accordion')
+    },
+    setUpHistoryValues() {
+      const {type} = this.promoIndex
+      this.form.priceBy = this.sumOptions.find(option => option.value === type.currency_type)
+      this.form.priceByValue = type.price
+      this.form.promoType = this.typeOptions.find(typeOption => typeOption.type === type.items[0].type)
+      if (type.items[0].type === 'floor') {
+        this.setPromoBlocksHistory()
+      } else {
+        this.fetchPromoType()
+      }
+
+    },
+    setPromoBlocksHistory() {
+      this.selectionContentTypes = this.block.floors
+      const {type} = this.promoIndex
+      const blocksId = type.items.map(item => item.value)
+      const iterationBlock = []
+      this.block.floors.forEach(floor => {
+        const hasHistory = blocksId.find(blockId => blockId === floor)
+        if (hasHistory) {
+          iterationBlock.push(floor)
+        }
+      })
+      this.form.blocks = iterationBlock
     },
     async showWarningMessage() {
       await this.$refs['price-provider'].validate()
@@ -232,20 +287,19 @@ export default {
             }
           })
     },
-    setInputValues() {
-      const satisfyValidation = this.satisfyValidation()
-      if (satisfyValidation) {
-        const {form, index} = this
-        const snipSpace = form.priceByValue?.split(' ').join('')
-        const price = parseFloat(snipSpace)
-        const type = {
-          price,
-          type: form.promoType.type,
-          currency_type: form.priceBy.value,
-          values: this.getPromoValuesByType()
-        }
-        this.$emit('set-form-values', {type, index})
+    async setInputValues() {
+      // const satisfyValidation = await this.satisfyValidation()
+      // console.log(satisfyValidation)
+      const {form, index} = this
+      const snipSpace = form.priceByValue?.split(' ').join('')
+      const price = parseFloat(snipSpace)
+      const type = {
+        price,
+        type: form.promoType.type,
+        currency_type: form.priceBy.value,
+        values: this.getPromoValuesByType()
       }
+      this.$emit('set-form-values', {type, index})
     },
     async satisfyValidation() {
       const priceValidation = async () => {
@@ -278,7 +332,8 @@ export default {
             })
       }
 
-      const [priceValidator, promoTypeValidator] = await Promise.all([priceValidation, promoTypeValidation])
+      const [priceValidator, promoTypeValidator] =
+          await Promise.all([priceValidation(), promoTypeValidation()])
 
       return priceValidator && promoTypeValidator
     },
@@ -312,10 +367,10 @@ export default {
 
       if (type === 'plan') {
         this.selectionContentLabel = 'name'
-      }
-
-      if (type === 'apartment') {
+        this.selectionContentTrack = 'id'
+      } else if (type === 'apartment') {
         this.selectionContentLabel = 'number'
+        this.selectionContentTrack = 'id'
       }
 
       this.makeDefaultFormBlocks()
@@ -323,10 +378,30 @@ export default {
       await api.objects.fetchObjectBlockByType({blockId, objectId, type})
           .then(response => {
             this.selectionContentTypes = response.data
+            const hasHistory = this.promoIndex.hasOwnProperty('type')
+            if (hasHistory) {
+              this.setHistoryContent()
+            }
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
           })
+    },
+    setHistoryContent() {
+      const {type} = this.promoIndex
+      const blocksId = type.items.map(item => item.value)
+      const loopPackage = []
+      blocksId.forEach(blockId => {
+        const hasHistory = this.selectionContentTypes.find(contentType => contentType.id === blockId)
+        if (hasHistory) {
+          loopPackage.push(hasHistory)
+        }
+      })
+
+      this.form.blocks = loopPackage
+    },
+    deleteAccordionInput() {
+      this.$emit('delete-inputs-collection')
     },
     makeDefaultFormBlocks() {
       this.form.blocks = []
@@ -364,6 +439,22 @@ export default {
 .select_wrapper {
   padding: 0.1rem;
   border-right: 1px solid rgb(206, 212, 218);
+}
+
+.delete__button {
+  cursor: pointer;
+  padding-bottom: 12px;
+  margin-left: 0.5rem;
+
+  i {
+    color: red;
+    font-size: 28px;
+    transition: font-size ease-in;
+
+    &:hover {
+      font-size: 24px;
+    }
+  }
 }
 
 .error__provider {

@@ -84,7 +84,8 @@ export default {
         add_price: "Narx qo'shish",
         warn_before_delete: "Aksiyani oʻchirib tashlamoqchimisiz?",
         successfully_deleted: "Aksiya muvaffaqiyatli o'chirildi",
-        successfully_created:'Aksiya muvaffaqiyatli yaratildi'
+        successfully_created:'Aksiya muvaffaqiyatli yaratildi',
+        edit_title:'Aksiyani tahrirlash',
     },
 
     auth: {

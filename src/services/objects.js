@@ -37,6 +37,10 @@ class Objects extends Core {
         return this.post(`objects/${id}/promo`, form)
     }
 
+    updateObjectPromo({id, promoId, form}) {
+        return this.put(`objects/${id}/promo/${promoId}`, form)
+    }
+
     changeObjectPromoActivation({objectId, promoId, type}) {
         return this.put(`objects/${objectId}/promo/${promoId}/${type}`)
     }

@@ -35,6 +35,7 @@
 
 <script>
 import api from '@/services/api'
+import {mapMutations} from "vuex";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import BaseLoadingContent from "@/components/BaseLoadingContent";
 import PromoListContent from "@/components/Dashboard/Objects/Components/Promo/PromoListContent";
@@ -51,8 +52,7 @@ export default {
   data() {
     return {
       promos: [],
-      loading: false,
-      itemHistory: {}
+      loading: false
     }
   },
   computed: {
@@ -72,6 +72,9 @@ export default {
     await this.fetchPromoData()
   },
   methods: {
+    ...mapMutations({
+      changeEditHistory: 'changeEditHistory'
+    }),
     async fetchPromoData(showLoading = true) {
       const {id} = this.$route.params
 
@@ -99,11 +102,11 @@ export default {
       this.loading = false
     },
     addNewPromo() {
-      this.itemHistory = {}
+      this.changeEditHistory({})
       this.$bvModal.show('promoCreationModal')
     },
     editPromoItem(item) {
-      this.itemHistory = item
+      this.changeEditHistory(item)
       this.$bvModal.show('promoCreationModal')
     },
     async successfullyCreated() {

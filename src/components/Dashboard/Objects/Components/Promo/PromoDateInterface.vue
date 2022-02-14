@@ -160,6 +160,8 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: "PromoDateInterface",
   data() {
@@ -183,6 +185,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['getEditHistoryContext']),
     formNameRuTextLabel() {
       return this.$t('promo.modal_input_text_label') + ' (Рус) '
     },
@@ -197,6 +200,52 @@ export default {
     }
   },
   methods: {
+    setUpHistoryContext() {
+      this.setHistoryName()
+      this.setStartDate()
+      this.setStartedTime()
+      this.setEndDate()
+      this.setEndTime()
+    },
+    setHistoryName() {
+      const {name} = this.getEditHistoryContext
+      this.form.name_ru = name.ru
+      this.form.name_uz = name.uz
+    },
+    setStartDate() {
+      const {start_date} = this.getEditHistoryContext
+      const date = new Date(start_date)
+      const year = date.getFullYear()
+      const baseMonth = date.getMonth() + 1
+      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+      this.form.start_date = `${year}-${month}-${day}`
+    },
+    setStartedTime() {
+      const {start_date} = this.getEditHistoryContext
+      const date = new Date(start_date)
+      const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+      const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+      const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+      this.form.start_time = `${hours}:${minutes}:${seconds}`
+    },
+    setEndDate() {
+      const {end_date} = this.getEditHistoryContext
+      const date = new Date(end_date)
+      const year = date.getFullYear()
+      const baseMonth = date.getMonth() + 1
+      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+      this.form.end_date = `${year}-${month}-${day}`
+    },
+    setEndTime() {
+      const {end_date} = this.getEditHistoryContext
+      const date = new Date(end_date)
+      const seconds = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+      const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+      const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+      this.form.end_time = `${hours}:${minutes}:${seconds}`
+    },
     async getValidDates() {
       const valid = await this.$refs['promo-observer'].validate()
       if (valid) {
