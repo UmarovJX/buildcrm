@@ -65,6 +65,7 @@
             variant="danger"
             class="mt-0"
             @click="cancel()"
+            :disabled="loading"
         >
           {{ $t('close') }}
         </b-button>

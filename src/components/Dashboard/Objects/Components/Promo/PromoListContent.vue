@@ -109,7 +109,7 @@ export default {
       required: true
     }
   },
-  emits: ['update-content'],
+  emits: ['update-content','edit-promo-item'],
   data() {
     return {
       sortBy: "id",
@@ -162,8 +162,8 @@ export default {
   },
   methods: {
     sumFloorsCount: (blocks) => blocks.reduce((acc, current) => acc + current.block.floors, 0),
-    editPromoItem() {
-
+    editPromoItem(item) {
+      this.$emit('edit-promo-item',item)
     },
     async activatePromo(item) {
       this.toggleLoading()
