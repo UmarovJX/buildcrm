@@ -85,6 +85,7 @@ export default {
         warn_before_delete: "Aksiyani oʻchirib tashlamoqchimisiz?",
         successfully_deleted: "Aksiya muvaffaqiyatli o'chirildi",
         successfully_created:'Aksiya muvaffaqiyatli yaratildi',
+        successfully_edited:'Aksiya yangilandi',
         edit_title:'Aksiyani tahrirlash',
     },
 

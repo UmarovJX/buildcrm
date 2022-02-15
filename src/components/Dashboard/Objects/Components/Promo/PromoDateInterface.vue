@@ -237,6 +237,7 @@ export default {
       const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
       const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
       this.form.end_date = `${year}-${month}-${day}`
+
     },
     setEndTime() {
       const {end_date} = this.getEditHistoryContext

@@ -28,7 +28,8 @@
               @set-form-values="saveFormValues"
               @user-focused-the-accordion="removeHighlightedError"
               @delete-inputs-collection="deleteInputsCollection(index)"
-              :ref="`${block.id}-promo-accordion-${index}`"
+              @change-block-list="changeBlockList"
+              :ref="`promo-accordion-${promoIndex.id}`"
           />
         </ValidationObserver>
 
@@ -47,6 +48,7 @@
 <script>
 import PromoAccordionInput from "@/components/Dashboard/Objects/Components/Promo/PromoAccordionInput";
 import {mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
   name: "PromoAccordion",
@@ -59,7 +61,8 @@ export default {
       required: true
     }
   },
-  created() {
+  async created() {
+    await this.getAllBlocksType()
     this.setUpInputHistory()
     if (this.block.index === 0) {
       setTimeout(() => {
@@ -70,11 +73,49 @@ export default {
   emits: ['save-accordion-content', 'warn-error-found'],
   data() {
     const startTime = new Date().getTime()
+
+    const typeOptions = [
+      {
+        type: 'floor',
+        name: this.$t('promo.select_by_floor')
+      },
+      {
+        type: 'apartment',
+        name: this.$t('promo.select_by_apartment')
+      },
+      {
+        type: 'plan',
+        name: this.$t('promo.select_by_plan')
+      }
+    ]
+
+    const sumOptions = [
+      {
+        name: this.$t('sum_text'),
+        value: 'sum'
+      },
+      {
+        name: this.$t('usd_text'),
+        value: 'usd'
+      }
+    ]
+
+    const accordionInput = {
+      id: startTime,
+      typeOptions,
+      sumOptions,
+      blockList: this.block.floors || []
+    }
+
     return {
       startTime,
+      sumOptions,
+      typeOptions,
       visible: false,
-      promoInputIndex: [{id: startTime}],
       types: [],
+      plansList: [],
+      apartmentsList: [],
+      promoInputIndex: [accordionInput],
       error: {
         full: false
       }
@@ -87,9 +128,102 @@ export default {
     toggleAccordion() {
       this.visible = !this.visible
     },
+    changeBlockList({type, id}) {
+      const findIndex = this.promoInputIndex.find(promoIndex => promoIndex.id === id)
+      switch (type) {
+        case 'apartment': {
+          this.promoInputIndex[findIndex].blockList = this.apartmentsList
+          break
+        }
+
+        case 'plan': {
+          this.promoInputIndex[findIndex].blockList = this.plansList
+          break
+        }
+
+        default: {
+          this.promoInputIndex[findIndex].blockList = this.block.floors
+        }
+      }
+    },
     addExtraContent() {
       const id = new Date().getTime()
-      this.promoInputIndex.push({id})
+      const olderFormsField = []
+      const blocks = []
+      this.promoInputIndex.forEach(promoInput => {
+        const ref = `promo-accordion-${promoInput.id}`
+        const component = this.$refs[ref][0]
+        olderFormsField.push(component.form)
+        const form = component.form
+        // const currencyType = form.priceByValue.value
+        // const currencyValue = form.priceByValue
+        const promoType = form.promoType.type
+        const formBlocks = form.blocks
+
+        if (blocks.length) {
+          const findIndex = this.blocks.findIndex(block => block.type === promoType)
+          if (findIndex !== -1) {
+            blocks[findIndex].values.push(...formBlocks)
+          } else {
+            blocks.push({type: promoType, values: formBlocks})
+          }
+        } else if (formBlocks.length) {
+          blocks.push({type: promoType, values: formBlocks})
+        }
+      })
+
+      // sumOptions, typeOptions,
+      const floorBlock = blocks.filter(({type, values}) => {
+        return type === 'floor' && values.length
+      })
+
+      let blockList = []
+
+      if (floorBlock.length) {
+        const floorValues = floorBlock.values
+        this.block.floors.forEach(floorBlock => {
+          const index = floorValues.findIndex(floor => floor === floorBlock)
+          if (index === -1) {
+            blockList.push(floorBlock)
+          }
+        })
+      } else {
+        blockList = this.block.floors
+      }
+
+      const accordionInput = {
+        id,
+        blockList,
+        typeOptions: this.typeOptions,
+        sumOptions: this.sumOptions,
+      }
+
+      this.promoIndex.push(accordionInput)
+
+
+      // console.log(blocks)
+
+      // blocks: [],
+      //     priceByValue: '',
+      //     priceBy: {
+      //   name: this.$t('sum_text'),
+      //       value: 'sum'
+      // },
+      // promoType: {
+      //   type: 'floor',
+      //       name: this.$t('promo.select_by_floor')
+      // }
+
+      // olderFormsField.forEach(form => {
+      //   const currencyType = form.priceByValue.value
+      //   const currencyValue = form.priceByValue
+      //   const promoType = this.form.promoType.type
+      //   const blocks = this.selectedBlocks
+      //
+      //
+      // })
+
+      // this.promoInputIndex.push({id})
     },
     deleteInputsCollection(index) {
       const findIndex = this.promoInputIndex.findIndex(promoIndex => promoIndex.id === index)
@@ -113,14 +247,28 @@ export default {
     async validationObserverAvailable() {
       return await this.$refs['accordion-input-observer'].validate()
     },
+    getAllBlocksType() {
+      this.fetchBlocks('apartment', 'apartmentsList')
+      this.fetchBlocks('plan', 'plansList')
+    },
+    async fetchBlocks(type, initialValue) {
+      const blockId = this.block.id
+      const objectId = this.$route.params.id
+      await api.objects.fetchObjectBlockByType({blockId, objectId, type})
+          .then(response => {
+            this[initialValue] = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     setUpInputHistory() {
       const length = Object.keys(this.getEditHistoryContext).length
       if (length) {
         const {blocks} = this.getEditHistoryContext
-        const findBelongsBlock = blocks.find(block => block.block.id = this.block.id)
+        const findBelongsBlock = blocks.find(block => block.block.id === this.block.id)
         if (findBelongsBlock) {
           const {types} = findBelongsBlock
-
           if (types.length) {
             this.promoInputIndex = []
           }

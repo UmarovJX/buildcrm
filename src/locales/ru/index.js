@@ -73,7 +73,8 @@ export default {
         add_price: 'Добавить цену',
         warn_before_delete: "Вы дейстительно  хотите удалить акцию",
         successfully_deleted: "Акция успешно удалена",
-        successfully_created:'Акция успешно создана'
+        successfully_created:'Акция успешно создана',
+        successfully_edited:'Акция обновлена',
     },
 
     promos: 'Акции',

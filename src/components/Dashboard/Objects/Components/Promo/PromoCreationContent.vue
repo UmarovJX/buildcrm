@@ -105,7 +105,7 @@ export default {
     PromoAccordion,
     PromoDateInterface
   },
-  emits: ['successfully-created', 'error-on-creation'],
+  emits: ['successfully-created', 'error-on-creation', 'successfully-edited'],
   data() {
     return {
       form: {
@@ -128,23 +128,27 @@ export default {
     }
   },
   async created() {
-    await this.fetchBlockOptions()
+    if (!this.hasHistory) {
+      await this.fetchBlockOptions()
+    }
   },
   computed: {
     ...mapGetters(['getEditHistoryContext']),
     modalTitle() {
-      const hasProperty = Object.keys(this.getEditHistoryContext).length > 0
-      if (hasProperty) {
+      if (this.hasHistory) {
         return this.$t('promo.edit_title')
       }
       return this.$t('promo.creation_title')
     },
     hasBlocks() {
       return this.selectedBlocks.length > 0
+    },
+    hasHistory() {
+      return Object.keys(this.getEditHistoryContext).length > 0
     }
   },
   methods: {
-    ...mapMutations(['mutateFormButton']),
+    ...mapMutations(['mutateFormButton', 'updateCreationSelectedBlocks']),
     async fetchBlockOptions() {
       const {id} = this.$route.params
       await api.objects.fetchObjectBlocks(id)
@@ -160,6 +164,8 @@ export default {
       } else {
         this.form.blocks.push({id, types})
       }
+
+      this.updateCreationSelectedBlocks(this.form.blocks)
 
       this.enableSubmitButton()
     },
@@ -213,7 +219,7 @@ export default {
       const form = {...this.form, ...dates.form}
       await api.objects.updateObjectPromo({id, promoId, form})
           .then(() => {
-            this.$emit('successfully-created')
+            this.$emit('successfully-edited')
           })
           .catch((error) => {
             this.$emit('error-on-creation', error)
@@ -251,20 +257,24 @@ export default {
         this.$refs['promo-date-interface'].setUpHistoryContext()
       }
     },
-    setSelectedHistoryBlocks() {
-      const {blocks: historyBlocks} = this.getEditHistoryContext
+    async setSelectedHistoryBlocks() {
+      await this.fetchBlockOptions()
+          .then(() => {
+            const {blocks: historyBlocks} = this.getEditHistoryContext
 
-      const comparedBlocks = []
+            const comparedBlocks = []
 
-      historyBlocks.forEach(historyBlock => {
-        const {id} = historyBlock.block
-        const equalBlock = this.blockOptions.find(blockOption => blockOption.id === id)
-        if (equalBlock) {
-          comparedBlocks.push(equalBlock)
-        }
-      })
+            historyBlocks.forEach(historyBlock => {
+              const {id} = historyBlock.block
+              const equalBlock = this.blockOptions.find(blockOption => blockOption.id === id)
+              if (equalBlock) {
+                const findBlock = Object.assign({}, equalBlock)
+                comparedBlocks.push(findBlock)
+              }
+            })
 
-      this.selectedBlocks = comparedBlocks
+            this.selectedBlocks = comparedBlocks
+          })
     },
     closeCreationModal() {
       this.end_date = ''

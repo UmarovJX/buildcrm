@@ -3,7 +3,8 @@ export default {
 
     state: {
         promoFormButtonClicked: false,
-        editHistoryContext: {}
+        editHistoryContext: {},
+        creationSelectedBlocks: []
     },
 
     mutations: {
@@ -12,11 +13,15 @@ export default {
         },
         changeEditHistory(state, currentHistory) {
             state.editHistoryContext = currentHistory
+        },
+        updateCreationSelectedBlocks(state, updatingValue) {
+            state.creationSelectedBlocks = updatingValue
         }
     },
 
     getters: {
         togglePromoSubmitButton: (state) => state.promoFormButtonClicked,
-        getEditHistoryContext: (state) => state.editHistoryContext
+        getEditHistoryContext: (state) => state.editHistoryContext,
+        getSelectedBlocks: (state) => state.creationSelectedBlocks,
     }
 };

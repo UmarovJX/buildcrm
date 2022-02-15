@@ -25,6 +25,7 @@
     <!--  Modal Main Content    -->
     <promo-creation-content
         @successfully-created="successfullyCreated"
+        @successfully-edited="successfullyEdited"
         @error-on-creation="errorOnCreation"
     />
 
@@ -52,7 +53,8 @@ export default {
   data() {
     return {
       promos: [],
-      loading: false
+      loading: false,
+      promoUsage: []
     }
   },
   computed: {
@@ -110,15 +112,21 @@ export default {
       this.$bvModal.show('promoCreationModal')
     },
     async successfullyCreated() {
-      this.showSuccessResponse()
+      const title = this.$t('promo.successfully_created')
+      this.showSuccessResponse(title)
       await this.fetchPromoData(false)
     },
-    showSuccessResponse() {
+    async successfullyEdited() {
+      const title = this.$t('promo.successfully_edited')
+      this.showSuccessResponse(title)
+      await this.fetchPromoData(false)
+    },
+    showSuccessResponse(title) {
       this.$swal({
         text: '',
         icon: "success",
         showCancelButton: false,
-        title: this.$t('promo.successfully_created'),
+        title
       })
     },
     errorOnCreation(error) {

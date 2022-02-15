@@ -15,7 +15,7 @@
             <div class="select_wrapper">
               <multiselect
                   v-model="form.priceBy"
-                  :options="sumOptions"
+                  :options="promoIndex.sumOptions"
                   :searchable="false"
                   :show-labels="false"
                   label="name"
@@ -62,7 +62,7 @@
           <div class="col-4 multiselect__parent multiselect__parent__border">
             <multiselect
                 v-model="form.promoType"
-                :options="typeOptions"
+                :options="promoIndex.typeOptions"
                 :searchable="false"
                 :show-labels="false"
                 label="name"
@@ -83,7 +83,7 @@
                 v-model="form.blocks"
                 tag-placeholder="Add this as new tag"
                 :placeholder="$t('promo.select_block')"
-                :options="selectionContentTypes"
+                :options="promoIndex.blockList"
                 :label="selectionContentLabel"
                 :track-by="selectionContentTrack"
                 :multiple="true"
@@ -110,7 +110,6 @@
 </template>
 
 <script>
-import api from "@/services/api";
 import {mapGetters} from 'vuex'
 
 export default {
@@ -133,7 +132,12 @@ export default {
       require: true
     }
   },
-  emits: ['set-form-values', 'user-focused-the-accordion', 'delete-inputs-collection'],
+  emits: [
+    'set-form-values',
+    'user-focused-the-accordion',
+    'delete-inputs-collection',
+    'change-block-list'
+  ],
   created() {
     if (this.promoIndex.hasOwnProperty('type')) {
       this.setUpHistoryValues()
@@ -145,7 +149,6 @@ export default {
     return {
       selectionContentLabel: '',
       selectionContentTrack: '',
-      selectionContentTypes: [],
       provider: {
         price: {
           name: this.$t('promo.select_price')
@@ -157,57 +160,34 @@ export default {
       form: {
         blocks: [],
         priceByValue: '',
-        priceBy: {
-          name: this.$t('sum_text'),
-          value: 'sum'
-        },
-        promoType: {
-          type: 'floor',
-          name: this.$t('promo.select_by_floor')
-        }
+        priceBy: this.promoIndex.sumOptions[0],
+        promoType: this.promoIndex.typeOptions[0],
       },
       errors: {
         priceError: '',
         typeError: ''
-      }
+      },
+      selectionPackage: [],
     }
   },
   computed: {
     ...mapGetters({
       togglePromoSubmitButton: 'togglePromoSubmitButton',
-      getEditHistoryContext: 'getEditHistoryContext'
+      getEditHistoryContext: 'getEditHistoryContext',
+      getSelectedBlocks: 'getSelectedBlocks'
     }),
+    formattedPrice() {
+      const snipSpace = this.form.priceByValue?.split(' ').join('')
+
+      if (snipSpace) {
+        return parseFloat(snipSpace)
+      }
+
+      return 0
+    },
     showDeletedButton() {
       return this.startTime !== this.promoIndex.id
     },
-    typeOptions() {
-      return [
-        {
-          type: 'floor',
-          name: this.$t('promo.select_by_floor')
-        },
-        {
-          type: 'apartment',
-          name: this.$t('promo.select_by_apartment')
-        },
-        {
-          type: 'plan',
-          name: this.$t('promo.select_by_plan')
-        },
-      ]
-    },
-    sumOptions() {
-      return [
-        {
-          name: this.$t('sum_text'),
-          value: 'sum'
-        },
-        {
-          name: this.$t('usd_text'),
-          value: 'usd'
-        }
-      ]
-    }
   },
   watch: {
     togglePromoSubmitButton() {
@@ -247,18 +227,17 @@ export default {
     },
     setUpHistoryValues() {
       const {type} = this.promoIndex
-      this.form.priceBy = this.sumOptions.find(option => option.value === type.currency_type)
+      this.form.priceBy = this.promoIndex.sumOptions.find(option => option.value === type.currency_type)
       this.form.priceByValue = type.price
-      this.form.promoType = this.typeOptions.find(typeOption => typeOption.type === type.items[0].type)
+      this.form.promoType = this.promoInputIndex.typeOptions.find(typeOption => typeOption.type === type.items[0].type)
       if (type.items[0].type === 'floor') {
         this.setPromoBlocksHistory()
       } else {
-        this.fetchPromoType()
+        this.setPromosOption()
       }
-
     },
     setPromoBlocksHistory() {
-      this.selectionContentTypes = this.block.floors
+      this.$emit('change-block-list', 'floor')
       const {type} = this.promoIndex
       const blocksId = type.items.map(item => item.value)
       const iterationBlock = []
@@ -288,18 +267,138 @@ export default {
           })
     },
     async setInputValues() {
-      // const satisfyValidation = await this.satisfyValidation()
-      // console.log(satisfyValidation)
+      /*
+        const satisfyValidation = await this.satisfyValidation()
+        console.log(satisfyValidation)
+      */
+
+      /*this.removeSelectedOptions()*/
+
       const {form, index} = this
-      const snipSpace = form.priceByValue?.split(' ').join('')
-      const price = parseFloat(snipSpace)
+
       const type = {
-        price,
+        price: this.formattedPrice,
         type: form.promoType.type,
         currency_type: form.priceBy.value,
         values: this.getPromoValuesByType()
       }
       this.$emit('set-form-values', {type, index})
+    },
+    removeSelectedOptions() {
+      const findRelatingBlocks = this.getSelectedBlocks.find(selectedBlock => selectedBlock.id === this.block.id)
+
+      if (findRelatingBlocks) {
+        const {form} = this
+        // const formBlocks = form.blocks
+        const currencyValue = this.formattedPrice
+        const currencyType = form.priceBy.value
+        const promoType = form.promoType.type
+        const {types} = findRelatingBlocks
+
+        types.forEach(({currency_type, price, type, values}) => {
+          const sameCurrencyType = currency_type === currencyType
+          const sameCurrencyPrice = price === currencyValue
+          const sameType = promoType === type
+
+          if (sameCurrencyType) {
+
+            if (sameCurrencyPrice) {
+              const findIndex = this.promoInputIndex.typeOptions.findIndex(typeOption => typeOption.type === type)
+
+              if (findIndex !== -1) {
+                this.promoInputIndex.typeOptions.splice(findIndex, 1)
+              }
+
+            } else {
+
+              if (sameType) {
+
+                if (type === 'floor') {
+                  values.forEach(value => {
+                    const findIndex = this.selectionContentTypes.findIndex(contentType => contentType === value)
+                    if (findIndex !== -1) {
+                      this.removeSelectedBlockType(findIndex)
+                    }
+                  })
+                } else {
+                  values.forEach(value => {
+                    const findIndex = this.selectionContentTypes.findIndex(contentType => contentType.id === value)
+                    if (findIndex !== -1) {
+                      this.removeSelectedBlockType(findIndex)
+                    }
+                  })
+                }
+
+              }
+
+            }
+          }
+
+        })
+      }
+    },
+    removeSelectedBlockType(index) {
+      this.selectionContentTypes.splice(index, 1)
+    },
+    getPromoValuesByType() {
+      const {type} = this.form.promoType
+
+      if (type === 'floor') {
+        return this.form.blocks.map(block => parseInt(block))
+      }
+
+      if (type === 'apartment' || type === 'plan') {
+        return this.form.blocks.map(block => parseInt(block.id))
+      }
+
+    },
+    setPromoTypeToFloors() {
+      this.selectionContentLabel = ''
+      this.$emit('change-block-list', 'floor')
+      this.makeDefaultFormBlocks()
+    },
+    setPromosOption() {
+      const type = this.form.promoType.type
+      const id = this.promoIndex.id
+      this.selectionContentTrack = 'id'
+
+      this.$emit('change-block-list', {type, id})
+      this.makeDefaultFormBlocks()
+
+      if (type === 'plan') {
+        this.selectionContentLabel = 'name'
+      } else if (type === 'apartment') {
+        this.selectionContentLabel = 'number'
+      }
+
+      const hasHistory = this.promoIndex.hasOwnProperty('type')
+      if (hasHistory) {
+        this.setHistoryContent()
+      }
+    },
+    setHistoryContent() {
+      if (type === 'plan') {
+        this.selectionContentLabel = 'name'
+      } else if (type === 'apartment') {
+        this.selectionContentLabel = 'number'
+      }
+      const {type} = this.promoIndex
+      const blocksId = type.items.map(item => item.value)
+      const loopPackage = []
+      blocksId.forEach(blockId => {
+        const hasHistory = this.promoIndex.blockList.find(contentType => contentType.id === blockId)
+        if (hasHistory) {
+          loopPackage.push(hasHistory)
+        }
+      })
+
+      this.form.blocks = loopPackage
+    },
+    deleteAccordionInput() {
+      this.$emit('delete-inputs-collection')
+    },
+    makeDefaultFormBlocks() {
+      this.form.blocks = []
     },
     async satisfyValidation() {
       const priceValidation = async () => {
@@ -337,75 +436,6 @@ export default {
 
       return priceValidator && promoTypeValidator
     },
-    getPromoValuesByType() {
-      const {type} = this.form.promoType
-
-      if (type === 'floor') {
-        return this.form.blocks.map(block => parseInt(block))
-      }
-
-      if (type === 'apartment' || type === 'plan') {
-        return this.form.blocks.map(block => parseInt(block.id))
-      }
-
-    },
-    setPromosOption() {
-      if (this.form.promoType.type === 'floor')
-        this.setPromoTypeToFloors()
-      else
-        this.fetchPromoType()
-    },
-    setPromoTypeToFloors() {
-      this.selectionContentLabel = ''
-      this.selectionContentTypes = this.block.floors
-      this.makeDefaultFormBlocks()
-    },
-    async fetchPromoType() {
-      const blockId = this.block.id
-      const objectId = this.$route.params.id
-      const type = this.form.promoType.type
-
-      if (type === 'plan') {
-        this.selectionContentLabel = 'name'
-        this.selectionContentTrack = 'id'
-      } else if (type === 'apartment') {
-        this.selectionContentLabel = 'number'
-        this.selectionContentTrack = 'id'
-      }
-
-      this.makeDefaultFormBlocks()
-
-      await api.objects.fetchObjectBlockByType({blockId, objectId, type})
-          .then(response => {
-            this.selectionContentTypes = response.data
-            const hasHistory = this.promoIndex.hasOwnProperty('type')
-            if (hasHistory) {
-              this.setHistoryContent()
-            }
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-    },
-    setHistoryContent() {
-      const {type} = this.promoIndex
-      const blocksId = type.items.map(item => item.value)
-      const loopPackage = []
-      blocksId.forEach(blockId => {
-        const hasHistory = this.selectionContentTypes.find(contentType => contentType.id === blockId)
-        if (hasHistory) {
-          loopPackage.push(hasHistory)
-        }
-      })
-
-      this.form.blocks = loopPackage
-    },
-    deleteAccordionInput() {
-      this.$emit('delete-inputs-collection')
-    },
-    makeDefaultFormBlocks() {
-      this.form.blocks = []
-    }
   }
 }
 </script>
