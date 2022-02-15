@@ -133,7 +133,10 @@ export default {
         {
           key: "name",
           label: this.$t("promo.name"),
-          formatter: (name) => name[localStorage.locale]
+          formatter: (name) => {
+            const locale = localStorage.locale ? localStorage.locale : 'ru'
+            return name[locale]
+          }
         },
         {
           key: "blocks",

@@ -19,12 +19,15 @@
       <b-collapse v-model="visible" role="tabpanel">
         <ValidationObserver ref="accordion-input-observer" class="flex w-100">
           <promo-accordion-input
-              v-for="index in promoInputIndex"
-              :index="index"
+              v-for="(promoIndex,index) of promoInputIndex"
               :key="index"
               :block="block"
+              :index="index"
+              :promo-index="promoIndex"
+              :start-time="startTime"
               @set-form-values="saveFormValues"
               @user-focused-the-accordion="removeHighlightedError"
+              @delete-inputs-collection="deleteInputsCollection(index)"
               :ref="`${block.id}-promo-accordion-${index}`"
           />
         </ValidationObserver>
@@ -43,6 +46,7 @@
 
 <script>
 import PromoAccordionInput from "@/components/Dashboard/Objects/Components/Promo/PromoAccordionInput";
+import {mapGetters} from "vuex";
 
 export default {
   name: "PromoAccordion",
@@ -56,6 +60,7 @@ export default {
     }
   },
   created() {
+    this.setUpInputHistory()
     if (this.block.index === 0) {
       setTimeout(() => {
         this.visible = true
@@ -64,25 +69,37 @@ export default {
   },
   emits: ['save-accordion-content', 'warn-error-found'],
   data() {
+    const startTime = new Date().getTime()
     return {
+      startTime,
       visible: false,
-      promoInputIndex: 1,
+      promoInputIndex: [{id: startTime}],
       types: [],
       error: {
         full: false
       }
     }
   },
+  computed: {
+    ...mapGetters(['getEditHistoryContext'])
+  },
   methods: {
     toggleAccordion() {
       this.visible = !this.visible
     },
     addExtraContent() {
-      this.promoInputIndex++
+      const id = new Date().getTime()
+      this.promoInputIndex.push({id})
+    },
+    deleteInputsCollection(index) {
+      const findIndex = this.promoInputIndex.findIndex(promoIndex => promoIndex.id === index)
+      this.promoInputIndex.splice(findIndex, 1)
+      this.types.splice(index, 1)
+      const send = {id: this.block.id, types: this.types}
+      this.$emit('save-accordion-content', send)
     },
     saveFormValues({index, type}) {
-      const position = index - 1
-      this.types[position] = type
+      this.types[index] = type
       const send = {id: this.block.id, types: this.types}
       this.$emit('save-accordion-content', send)
     },
@@ -95,6 +112,29 @@ export default {
     },
     async validationObserverAvailable() {
       return await this.$refs['accordion-input-observer'].validate()
+    },
+    setUpInputHistory() {
+      const length = Object.keys(this.getEditHistoryContext).length
+      if (length) {
+        const {blocks} = this.getEditHistoryContext
+        const findBelongsBlock = blocks.find(block => block.block.id = this.block.id)
+        if (findBelongsBlock) {
+          const {types} = findBelongsBlock
+
+          if (types.length) {
+            this.promoInputIndex = []
+          }
+
+          for (let i = 0; i < types.length; i++) {
+            const id = new Date().getTime() + i
+            if (i === 0) {
+              this.startTime = id
+            }
+            const newPromoInput = {type: types[i], id}
+            this.promoInputIndex.push(newPromoInput)
+          }
+        }
+      }
     }
   }
 }

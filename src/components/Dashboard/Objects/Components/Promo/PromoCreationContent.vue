@@ -2,7 +2,9 @@
   <b-modal
       size="xl"
       id="promoCreationModal"
-      :title="$t('promo.creation_title')"
+      :title="modalTitle"
+      @hidden="closeCreationModal"
+      @shown="showCreationModal"
   >
     <b-overlay :show="loading" rounded="sm">
       <div>
@@ -95,7 +97,7 @@
 import PromoAccordion from "@/components/Dashboard/Objects/Components/Promo/PromoAccordion";
 import PromoDateInterface from "@/components/Dashboard/Objects/Components/Promo/PromoDateInterface";
 import api from "@/services/api";
-import {mapMutations} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 
 export default {
   name: 'PromoCreationContent',
@@ -103,7 +105,7 @@ export default {
     PromoAccordion,
     PromoDateInterface
   },
-  emits: ['successfully-created','error-on-creation'],
+  emits: ['successfully-created', 'error-on-creation'],
   data() {
     return {
       form: {
@@ -129,6 +131,14 @@ export default {
     await this.fetchBlockOptions()
   },
   computed: {
+    ...mapGetters(['getEditHistoryContext']),
+    modalTitle() {
+      const hasProperty = Object.keys(this.getEditHistoryContext).length > 0
+      if (hasProperty) {
+        return this.$t('promo.edit_title')
+      }
+      return this.$t('promo.creation_title')
+    },
     hasBlocks() {
       return this.selectedBlocks.length > 0
     }
@@ -145,7 +155,6 @@ export default {
     saveSpecificContent({id, types}) {
       const {blocks} = this.form
       const findIndex = blocks.findIndex(block => block.id === id)
-
       if (findIndex !== -1) {
         this.form.blocks[findIndex].types = types
       } else {
@@ -185,7 +194,34 @@ export default {
       const dates = await dateInterface.getValidDates()
       const checkBlocks = await this.checkBlocksValidation()
       const readyToSubmit = validation.valid && dates.valid && await checkBlocks
-      readyToSubmit && await this.submitFormData()
+
+      const positionHistory = Object.keys(this.getEditHistoryContext).length > 0
+
+      if (positionHistory) {
+        readyToSubmit && await this.updatePromo()
+      } else {
+        readyToSubmit && await this.submitFormData()
+      }
+
+    },
+    async updatePromo() {
+      const {uuid: promoId} = this.getEditHistoryContext
+      this.toggleLoading()
+      const {id} = this.$route.params
+      const dateInterface = this.$refs['promo-date-interface']
+      const dates = await dateInterface.getValidDates()
+      const form = {...this.form, ...dates.form}
+      await api.objects.updateObjectPromo({id, promoId, form})
+          .then(() => {
+            this.$emit('successfully-created')
+          })
+          .catch((error) => {
+            this.$emit('error-on-creation', error)
+          })
+          .finally(() => {
+            this.toggleLoading()
+            this.$bvModal.hide('promoCreationModal')
+          })
     },
     async submitFormData() {
       this.toggleLoading()
@@ -198,7 +234,7 @@ export default {
             this.$emit('successfully-created')
           })
           .catch((error) => {
-            this.$emit('error-on-creation',error)
+            this.$emit('error-on-creation', error)
           })
           .finally(() => {
             this.toggleLoading()
@@ -207,6 +243,35 @@ export default {
     },
     toggleLoading() {
       this.loading = !this.loading
+    },
+    showCreationModal() {
+      const length = Object.keys(this.getEditHistoryContext).length
+      if (length) {
+        this.setSelectedHistoryBlocks()
+        this.$refs['promo-date-interface'].setUpHistoryContext()
+      }
+    },
+    setSelectedHistoryBlocks() {
+      const {blocks: historyBlocks} = this.getEditHistoryContext
+
+      const comparedBlocks = []
+
+      historyBlocks.forEach(historyBlock => {
+        const {id} = historyBlock.block
+        const equalBlock = this.blockOptions.find(blockOption => blockOption.id === id)
+        if (equalBlock) {
+          comparedBlocks.push(equalBlock)
+        }
+      })
+
+      this.selectedBlocks = comparedBlocks
+    },
+    closeCreationModal() {
+      this.end_date = ''
+      this.form.name = {}
+      this.form.blocks = []
+      this.selectedBlocks = []
+      this.form.start_date = ''
     }
   }
 }

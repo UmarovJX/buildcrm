@@ -56,6 +56,7 @@ export default {
         blocks: 'Блоки',
         floors: 'Этажи',
         creation_title: 'Создание акции',
+        edit_title:'Редактировать акции',
         modal_input_text_label: 'Название акции',
         date_of_start_title: 'Дата начала акции',
         date_of_end_title: 'Акция действует до',
