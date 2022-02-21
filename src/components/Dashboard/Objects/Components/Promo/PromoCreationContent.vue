@@ -3,55 +3,35 @@
       size="xl"
       id="promoCreationModal"
       :title="modalTitle"
-      @hidden="closeCreationModal"
+      @hidden="closedModal"
       @shown="showCreationModal"
+      :no-close-on-backdrop="true"
+      :hide-header-close="true"
+      :no-close-on-esc="true"
   >
     <b-overlay :show="loading" rounded="sm">
-      <div>
-        <!--  Date Inputs  -->
-        <promo-date-interface ref="promo-date-interface"/>
+      <ValidationObserver ref="accordion-input-observer" class="flex w-100">
+        <div>
+          <!--  Date Inputs  -->
+          <promo-date-interface ref="promo-date-interface"/>
 
-        <!--  Block Selection  -->
-        <ValidationProvider
-            :name="building.name"
-            tag="div"
-            class="col-6 p-0 pr-2 mb-4"
-            rules="required"
-            ref="block-selection-provider"
-            v-slot="{ errors }"
-        >
-          <label for="selection-block">
-            {{ building.name }}
-          </label>
-          <multiselect
-              id="selection-block"
-              v-model="selectedBlocks"
-              tag-placeholder="Add this as new tag"
-              class="mb-2"
-              :placeholder="$t('promo.select_block')"
-              label="name"
-              track-by="id"
-              :options="blockOptions"
-              :multiple="true"
-              :taggable="true"
-              :searchable="false"
-          ></multiselect>
+          <!--   Prepay Lists     -->
+          <promo-prepay-content
+              v-for="prepay in prepaysList"
+              :key="prepay.prepayId"
+              :prepay="prepay"
+              :block-options="blockOptions"
+              @delete-prepay-content="deletePrepayContent"
+          />
 
-          <span class="error__provider" v-if="errors[0]">
-              {{ errors[0] }}
-          </span>
-        </ValidationProvider>
-
-        <!-- Dropdown Plan   -->
-        <p v-if="hasBlocks">{{ $t('promo.select_floor_plan') }}</p>
-        <promo-accordion
-            v-for="(block,index) in selectedBlocks"
-            :key="block.id"
-            :block="{...block,index}"
-            @save-accordion-content="saveSpecificContent"
-            :ref="`blocks-id-${block.id}`"
-        />
-      </div>
+          <!--   Prepayment Input     -->
+          <promo-prepay-input
+              @add-prepay-content="addPrepayContent"
+              :prepaysListLength="prepaysList.length"
+              ref="prepay-input"
+          />
+        </div>
+      </ValidationObserver>
 
       <template #overlay>
         <div class="text-center">
@@ -61,12 +41,12 @@
       </template>
     </b-overlay>
 
-    <template #modal-footer="{ cancel }">
+    <template #modal-footer>
       <div class="d-flex justify-content-end">
         <b-button
             variant="danger"
-            class="mt-0"
-            @click="cancel()"
+            class="mt-0 mr-4"
+            @click="closeCreationModal"
             :disabled="loading"
         >
           {{ $t('close') }}
@@ -80,7 +60,7 @@
             class="d-inline-block"
         >
           <b-button
-              class="ml-2 mt-0"
+              class="mt-0 mr-0"
               variant="primary"
               @click="formValidation"
               :disabled="loading && readyForSubmit"
@@ -94,33 +74,26 @@
 </template>
 
 <script>
-import PromoAccordion from "@/components/Dashboard/Objects/Components/Promo/PromoAccordion";
-import PromoDateInterface from "@/components/Dashboard/Objects/Components/Promo/PromoDateInterface";
 import api from "@/services/api";
 import {mapGetters, mapMutations} from "vuex";
+import PromoPrepayContent from "@/components/Dashboard/Objects/Components/Promo/PromoPrepayContent";
+import PromoDateInterface from "@/components/Dashboard/Objects/Components/Promo/PromoDateInterface";
+import PromoPrepayInput from "@/components/Dashboard/Objects/Components/Promo/PromoPrepayInput";
 
 export default {
   name: 'PromoCreationContent',
   components: {
-    PromoAccordion,
-    PromoDateInterface
+    PromoPrepayInput,
+    PromoDateInterface,
+    PromoPrepayContent
   },
   emits: ['successfully-created', 'error-on-creation', 'successfully-edited'],
   data() {
     return {
-      form: {
-        name: {},
-        start_date: '',
-        end_date: '',
-        blocks: []
-      },
-      building: {
-        name: this.$t('promo.select_block')
-      },
       loading: false,
       readyForSubmit: false,
       blockOptions: [],
-      selectedBlocks: [],
+      prepaysList: [],
       errors: {
         block: '',
         currentBlockIndex: null
@@ -133,22 +106,24 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getEditHistoryContext']),
+    ...mapGetters(['getEditHistoryContext', 'getSelectedBlocks']),
     modalTitle() {
       if (this.hasHistory) {
         return this.$t('promo.edit_title')
       }
       return this.$t('promo.creation_title')
     },
-    hasBlocks() {
-      return this.selectedBlocks.length > 0
-    },
     hasHistory() {
       return Object.keys(this.getEditHistoryContext).length > 0
     }
   },
   methods: {
-    ...mapMutations(['mutateFormButton', 'updateCreationSelectedBlocks']),
+    ...mapMutations([
+      'mutateFormButton',
+      'setUpSelectedBlocks',
+      'deletePromoCreationBlock',
+      'makeDefaultCreationSelectedBlocks',
+    ]),
     async fetchBlockOptions() {
       const {id} = this.$route.params
       await api.objects.fetchObjectBlocks(id)
@@ -156,59 +131,27 @@ export default {
             this.blockOptions = response.data
           })
     },
-    saveSpecificContent({id, types}) {
-      const {blocks} = this.form
-      const findIndex = blocks.findIndex(block => block.id === id)
-      if (findIndex !== -1) {
-        this.form.blocks[findIndex].types = types
-      } else {
-        this.form.blocks.push({id, types})
-      }
-
-      this.updateCreationSelectedBlocks(this.form.blocks)
-
-      this.enableSubmitButton()
-    },
-    enableSubmitButton() {
-      this.readyForSubmit = true
-    },
-    async checkBlocksValidation() {
-      const {selectedBlocks} = this
-
-      if (selectedBlocks.length) {
-        const promiseResults = []
-
-        for (const block of selectedBlocks) {
-          const ref = `blocks-id-${block.id}`
-          const accordionComponent = this.$refs[ref][0]
-          const validations = await accordionComponent.validationObserverAvailable()
-          const validation = await validations
-          promiseResults.push(validation)
-          if (!validation)
-            accordionComponent.highlightError()
+    addPrepayContent(prepayValue) {
+      const prepayInputComponent = this.$refs['prepay-input']
+      if (this.prepaysList.length) {
+        const hasValueBefore = this.prepaysList.find(prepay => prepay.prepayValue === prepayValue)
+        if (hasValueBefore) {
+          prepayInputComponent.showWarningForSameValue()
+          return
         }
-
-        return promiseResults.every(result => result)
       }
 
-      return false
+      const prepayId = new Date().getTime()
+      const prepayAddition = {prepayId, prepayValue}
+      this.prepaysList.push(prepayAddition)
+      prepayInputComponent.resetContent()
     },
-    async formValidation() {
-      this.mutateFormButton()
-      const validation = await this.$refs['block-selection-provider'].validate()
-      const dateInterface = this.$refs['promo-date-interface']
-      const dates = await dateInterface.getValidDates()
-      const checkBlocks = await this.checkBlocksValidation()
-      const readyToSubmit = validation.valid && dates.valid && await checkBlocks
-
-      const positionHistory = Object.keys(this.getEditHistoryContext).length > 0
-
-      if (positionHistory) {
-        readyToSubmit && await this.updatePromo()
-      } else {
-        readyToSubmit && await this.submitFormData()
+    deletePrepayContent({id, prepay}) {
+      const currentIndex = this.prepaysList.findIndex(prepayList => prepayList.prepayId === id)
+      if (currentIndex !== -1) {
+        this.prepaysList.splice(currentIndex, 1)
+        this.deletePromoCreationBlock(prepay)
       }
-
     },
     async updatePromo() {
       const {uuid: promoId} = this.getEditHistoryContext
@@ -216,7 +159,25 @@ export default {
       const {id} = this.$route.params
       const dateInterface = this.$refs['promo-date-interface']
       const dates = await dateInterface.getValidDates()
-      const form = {...this.form, ...dates.form}
+
+      const blocks = this.getSelectedBlocks.map((block) => {
+        const {id, types} = block
+        let discount = {
+          prepay: block.prepay,
+          id: null
+        }
+        const hasOwnDiscount = block.hasOwnProperty('discount')
+        if (hasOwnDiscount) {
+          discount = block.discount
+        }
+        return {
+          id,
+          types,
+          discount
+        }
+      })
+
+      const form = {blocks, ...dates.form}
       await api.objects.updateObjectPromo({id, promoId, form})
           .then(() => {
             this.$emit('successfully-edited')
@@ -234,7 +195,21 @@ export default {
       const {id} = this.$route.params
       const dateInterface = this.$refs['promo-date-interface']
       const dates = await dateInterface.getValidDates()
-      const form = {...this.form, ...dates.form}
+
+      const blocks = this.getSelectedBlocks.map((block) => {
+        const {id, types} = block
+        let discount = {
+          prepay: block.prepay,
+          id: null
+        }
+        return {
+          id,
+          types,
+          discount
+        }
+      })
+
+      const form = {blocks, ...dates.form}
       await api.objects.createObjectPromo({id, form})
           .then(() => {
             this.$emit('successfully-created')
@@ -260,28 +235,81 @@ export default {
     async setSelectedHistoryBlocks() {
       await this.fetchBlockOptions()
           .then(() => {
-            const {blocks: historyBlocks} = this.getEditHistoryContext
+            let {blocks: historyList} = this.getEditHistoryContext
 
-            const comparedBlocks = []
+            for (let i = 0; i < historyList.length; i++) {
+              const currentList = historyList[i]
+              const {discount} = currentList
+              const hasInPackage = this.prepaysList.findIndex(loopPackage => loopPackage.prepayValue === discount.prepay)
+              if (hasInPackage !== -1) {
+                this.prepaysList[hasInPackage].historyContext.push(currentList)
+              } else {
+                const prepayId = new Date().getTime() + i
 
-            historyBlocks.forEach(historyBlock => {
-              const {id} = historyBlock.block
-              const equalBlock = this.blockOptions.find(blockOption => blockOption.id === id)
-              if (equalBlock) {
-                const findBlock = Object.assign({}, equalBlock)
-                comparedBlocks.push(findBlock)
+                const additionPackage = {
+                  prepayId,
+                  prepayValue: discount.prepay,
+                  historyContext: [currentList]
+                }
+
+                this.prepaysList.push(additionPackage)
+              }
+            }
+
+            const filterForSubmit = historyList.map(({discount, block, types: rowTypes}) => {
+              const types = rowTypes.map(({currency_type, price, items}) => {
+                const values = items.map(item => item.value)
+                const type = items[0].type
+                return {
+                  currency_type, price, type, values
+                }
+              })
+
+              return {
+                id: block.id, types, discount
               }
             })
 
-            this.selectedBlocks = comparedBlocks
+            this.setUpSelectedBlocks(filterForSubmit)
           })
     },
+    async validationObserverAvailable() {
+      this.$refs["prepay-input"].activateEmptyError()
+      const compareMileStone = this.$refs['promo-date-interface'].compareMileStone()
+      const observerValidation = await this.$refs['accordion-input-observer'].validate()
+      return observerValidation && compareMileStone && this.prepaysList.length
+    },
+    async formValidation() {
+      const valid = await this.validationObserverAvailable()
+      this.mutateFormButton()
+
+      if (valid) {
+        const positionHistory = Object.keys(this.getEditHistoryContext).length > 0
+        if (positionHistory)
+          await this.updatePromo()
+        else
+          await this.submitFormData()
+
+      }
+    },
+    closedModal() {
+      this.prepaysList = []
+      this.makeDefaultCreationSelectedBlocks()
+    },
     closeCreationModal() {
-      this.end_date = ''
-      this.form.name = {}
-      this.form.blocks = []
-      this.selectedBlocks = []
-      this.form.start_date = ''
+      this.$swal({
+        title: this.$t("promo.alert_before_close_title"),
+        text: '',
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: this.$t("yes"),
+        cancelButtonText: this.$t('no')
+      }).then((result) => {
+        if (result.value) {
+          this.$bvModal.hide('promoCreationModal')
+        }
+      })
+
     }
   }
 }

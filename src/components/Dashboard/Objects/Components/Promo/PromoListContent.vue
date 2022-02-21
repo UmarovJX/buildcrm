@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-2">
     <b-table
         sticky-header
         responsive
@@ -30,11 +30,11 @@
       </template>
 
       <!-- FLOORS COLUMN -->
-      <template #cell(floors)="data">
-        <span v-if="data.item.blocks.length">
-          {{ sumFloorsCount(data.item.blocks) }}
-        </span>
-      </template>
+      <!--      <template #cell(floors)="data">-->
+      <!--        <span v-if="data.item.blocks.length">-->
+      <!--          {{ sumFloorsCount(data.item.blocks) }}-->
+      <!--        </span>-->
+      <!--      </template>-->
 
       <!--   ACTION   -->
       <template #cell(actions)="data">
@@ -152,10 +152,10 @@ export default {
             return names
           }
         },
-        {
+        /*{
           key: "floors",
           label: this.$t("promo.floors")
-        },
+        },*/
         {
           key: "actions",
           label: "",

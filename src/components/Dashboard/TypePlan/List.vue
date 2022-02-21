@@ -165,6 +165,10 @@ export default {
           label: this.$t('type_plan.balcony'),
         },
         {
+          key: "apartments_count",
+          label: this.$t("apartments_count")
+        },
+        {
           key: "actions",
           label: "",
         },

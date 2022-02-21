@@ -14,6 +14,9 @@
             :key="'discounts' + index"
         >
           {{ $t("apartments.view.variant") }}
+          <span v-if="discount.type === 'promo'">
+            ({{ $t('promo.by_promo') }})
+          </span>
           {{ index + 1 }} - {{ discount.prepay }}%
         </b-form-select-option>
       </b-form-select>
@@ -271,6 +274,7 @@ export default {
       let total = 0;
 
       switch (this.discount.type) {
+        case "promo":
         case "fixed":
           if (this.calc.discount_price) {
             total =
@@ -291,10 +295,15 @@ export default {
     getDiscount() {
       if (this.discount.prepay === 100) return 1;
 
-      return 1 - this.discount.amount / 100;
+      return 1 - this.discount.prepay / 100
+
+      /*return 1 - this.discount.amount / 100;*/
     },
     getMonth() {
-      return (this.getTotal() - this.getPrepay()) / this.calc.month;
+      if (this.calc.month) {
+        return (this.getTotal() - this.getPrepay()) / this.calc.month;
+      }
+      return 0
     },
     getDebt() {
       return this.getTotal() - this.getPrepay();
@@ -304,6 +313,7 @@ export default {
       let total = 0;
 
       switch (this.discount.type) {
+        case 'promo':
         case "fixed":
           if (this.calc.discount_price) {
             total =

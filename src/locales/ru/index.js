@@ -48,6 +48,7 @@ export default {
     monthly_payment: 'Ежемесячный платеж',
     sum_text: 'В суммах',
     usd_text: 'В долларах',
+    apartments_count: "Количество квартир",
 
     promo: {
         name: 'Акция',
@@ -56,7 +57,7 @@ export default {
         blocks: 'Блоки',
         floors: 'Этажи',
         creation_title: 'Создание акции',
-        edit_title:'Редактировать акции',
+        edit_title: 'Редактировать акции',
         modal_input_text_label: 'Название акции',
         date_of_start_title: 'Дата начала акции',
         date_of_end_title: 'Акция действует до',
@@ -73,8 +74,13 @@ export default {
         add_price: 'Добавить цену',
         warn_before_delete: "Вы дейстительно  хотите удалить акцию",
         successfully_deleted: "Акция успешно удалена",
-        successfully_created:'Акция успешно создана',
-        successfully_edited:'Акция обновлена',
+        successfully_created: 'Акция успешно создана',
+        successfully_edited: 'Акция обновлена',
+        alert_before_close_title: 'Вы действительно хотите закрыть это окно?',
+        alert_before_close_no: "Нет",
+        by_promo: "По акции",
+        in_promo: 'В акции',
+        promo_rate: 'Тариф',
     },
 
     promos: 'Акции',
@@ -328,7 +334,7 @@ export default {
             discount_per_m2: "Скидка за м2:", // asd
             prepayment: "Предоплата", // asd
             total: "Итого", // asd
-            print: "Печатать" // asd
+            print: "Печатать", // asd
         },
 
         agree: {
@@ -376,7 +382,8 @@ export default {
             available: "Доступный", //asd
             booked: "Забронирован", //asd
             sold: "Оформлен", //asd
-            unavailable: "Недоступен", //asd
+            unavailable: "Недоступен", //asd,
+            promo: 'Акция'
         },
     },
 

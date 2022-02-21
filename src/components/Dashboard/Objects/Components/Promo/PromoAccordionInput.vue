@@ -14,8 +14,10 @@
           <div class="multiselect__parent multiselect__parent__border">
             <div class="select_wrapper">
               <multiselect
-                  v-model="form.priceBy"
+                  v-model="promoPriceOptionsBinding"
+                  @select="selectPriceType"
                   :options="promoIndex.sumOptions"
+                  :hide-selected="true"
                   :searchable="false"
                   :show-labels="false"
                   label="name"
@@ -26,19 +28,21 @@
 
         <ValidationProvider
             :name="provider.price.name"
-            rules="required"
+            rules="required|min:3"
             v-slot="{ errors }"
             ref="price-provider"
             class="d-flex justify-content-center align-items-center"
         >
-
-          <input
+          <vue-numeric
               v-model="form.priceByValue"
               class="plan__group-input"
+              :precision="2"
+              :minus="false"
+              currency-symbol-position="suffix"
+              separator="space"
               placeholder="000"
               @focus="removePriceError"
-              v-mask="'### ### ### ### ### ### ###'"
-          />
+          ></vue-numeric>
         </ValidationProvider>
 
       </b-input-group>
@@ -47,6 +51,7 @@
           {{ errors.priceError }}
         </span>
     </div>
+
 
     <!--    SECOND SECTION      -->
     <div class="plan__group col-12 p-0 col-xl-7">
@@ -61,10 +66,12 @@
         >
           <div class="col-4 multiselect__parent multiselect__parent__border">
             <multiselect
-                v-model="form.promoType"
                 :options="promoIndex.typeOptions"
+                v-model="promoTypeOptionsBinding"
                 :searchable="false"
                 :show-labels="false"
+                :hide-selected="true"
+                @select="selectPromoType"
                 label="name"
                 :placeholder="$t('promo.select_by_floor')"
             ></multiselect>
@@ -88,6 +95,7 @@
                 :track-by="selectionContentTrack"
                 :multiple="true"
                 :searchable="false"
+                :hide-selected="true"
             ></multiselect>
           </ValidationProvider>
         </div>
@@ -111,9 +119,13 @@
 
 <script>
 import {mapGetters} from 'vuex'
+import VueNumeric from "vue-numeric";
 
 export default {
-  name: "PriceAndTypeSelectionContent",
+  name: "PromoAccordionInput",
+  components: {
+    VueNumeric
+  },
   props: {
     block: {
       type: Object,
@@ -138,17 +150,39 @@ export default {
     'delete-inputs-collection',
     'change-block-list'
   ],
-  created() {
-    if (this.promoIndex.hasOwnProperty('type')) {
-      this.setUpHistoryValues()
-    } else {
-      this.setPromoTypeToFloors()
-    }
-  },
   data() {
+    let promoType = this.promoIndex.typeOptions[0]
+    let priceBy = this.promoIndex.sumOptions[0]
+    const hasHistoryValues = this.promoIndex.hasOwnProperty('historyProperties')
+    let historyValues = []
+    let priceByValue = ''
+    if (hasHistoryValues) {
+      const {
+        historyValues: values,
+        currencyType,
+        blockType,
+        price,
+      } = this.promoIndex.historyProperties
+
+      priceByValue = price
+      historyValues = values
+      priceBy = this.promoIndex.sumOptions.find(typeOption => typeOption.value === currencyType)
+
+      const selectedHistoryType = this.promoIndex.typeOptions.find(typeOption => typeOption.type === blockType)
+      if (selectedHistoryType) {
+        promoType = selectedHistoryType
+      }
+    }
+
+    const form = {
+      blocks: historyValues,
+      priceByValue,
+      priceBy,
+      promoType,
+    }
+
     return {
-      selectionContentLabel: '',
-      selectionContentTrack: '',
+      form,
       provider: {
         price: {
           name: this.$t('promo.select_price')
@@ -157,12 +191,8 @@ export default {
           name: this.$t('promo.select_type')
         }
       },
-      form: {
-        blocks: [],
-        priceByValue: '',
-        priceBy: this.promoIndex.sumOptions[0],
-        promoType: this.promoIndex.typeOptions[0],
-      },
+      promoTypeOptionsBinding: promoType,
+      promoPriceOptionsBinding: priceBy,
       errors: {
         priceError: '',
         typeError: ''
@@ -176,18 +206,31 @@ export default {
       getEditHistoryContext: 'getEditHistoryContext',
       getSelectedBlocks: 'getSelectedBlocks'
     }),
-    formattedPrice() {
-      const snipSpace = this.form.priceByValue?.split(' ').join('')
-
-      if (snipSpace) {
-        return parseFloat(snipSpace)
-      }
-
-      return 0
-    },
     showDeletedButton() {
       return this.startTime !== this.promoIndex.id
     },
+    selectionContentLabel() {
+      const type = this.form.promoType.type
+
+      if (type === 'plan') {
+        return 'name'
+      }
+
+      if (type === 'apartment') {
+        return 'number'
+      }
+
+      return ''
+    },
+    selectionContentTrack() {
+      const type = this.form.promoType.type
+
+      if (type === 'floor') {
+        return ''
+      }
+
+      return 'id'
+    }
   },
   watch: {
     togglePromoSubmitButton() {
@@ -225,19 +268,15 @@ export default {
     userFocusedAccordion() {
       this.$emit('user-focused-the-accordion')
     },
-    setUpHistoryValues() {
-      const {type} = this.promoIndex
-      this.form.priceBy = this.promoIndex.sumOptions.find(option => option.value === type.currency_type)
-      this.form.priceByValue = type.price
-      this.form.promoType = this.promoInputIndex.typeOptions.find(typeOption => typeOption.type === type.items[0].type)
-      if (type.items[0].type === 'floor') {
-        this.setPromoBlocksHistory()
-      } else {
-        this.setPromosOption()
-      }
+    selectPriceType(priceBy) {
+      this.form.priceBy = priceBy
+    },
+    selectPromoType(selectedOption) {
+      this.form.promoType = selectedOption
     },
     setPromoBlocksHistory() {
-      this.$emit('change-block-list', 'floor')
+      const id = this.promoIndex.id
+      this.$emit('change-block-list', {type: 'floor', id})
       const {type} = this.promoIndex
       const blocksId = type.items.map(item => item.value)
       const iterationBlock = []
@@ -267,78 +306,15 @@ export default {
           })
     },
     async setInputValues() {
-      /*
-        const satisfyValidation = await this.satisfyValidation()
-        console.log(satisfyValidation)
-      */
-
-      /*this.removeSelectedOptions()*/
-
-      const {form, index} = this
+      const {form, index, promoIndex} = this
 
       const type = {
-        price: this.formattedPrice,
+        price: form.priceByValue,
         type: form.promoType.type,
         currency_type: form.priceBy.value,
         values: this.getPromoValuesByType()
       }
-      this.$emit('set-form-values', {type, index})
-    },
-    removeSelectedOptions() {
-      const findRelatingBlocks = this.getSelectedBlocks.find(selectedBlock => selectedBlock.id === this.block.id)
-
-      if (findRelatingBlocks) {
-        const {form} = this
-        // const formBlocks = form.blocks
-        const currencyValue = this.formattedPrice
-        const currencyType = form.priceBy.value
-        const promoType = form.promoType.type
-        const {types} = findRelatingBlocks
-
-        types.forEach(({currency_type, price, type, values}) => {
-          const sameCurrencyType = currency_type === currencyType
-          const sameCurrencyPrice = price === currencyValue
-          const sameType = promoType === type
-
-          if (sameCurrencyType) {
-
-            if (sameCurrencyPrice) {
-              const findIndex = this.promoInputIndex.typeOptions.findIndex(typeOption => typeOption.type === type)
-
-              if (findIndex !== -1) {
-                this.promoInputIndex.typeOptions.splice(findIndex, 1)
-              }
-
-            } else {
-
-              if (sameType) {
-
-                if (type === 'floor') {
-                  values.forEach(value => {
-                    const findIndex = this.selectionContentTypes.findIndex(contentType => contentType === value)
-                    if (findIndex !== -1) {
-                      this.removeSelectedBlockType(findIndex)
-                    }
-                  })
-                } else {
-                  values.forEach(value => {
-                    const findIndex = this.selectionContentTypes.findIndex(contentType => contentType.id === value)
-                    if (findIndex !== -1) {
-                      this.removeSelectedBlockType(findIndex)
-                    }
-                  })
-                }
-
-              }
-
-            }
-          }
-
-        })
-      }
-    },
-    removeSelectedBlockType(index) {
-      this.selectionContentTypes.splice(index, 1)
+      this.$emit('set-form-values', {type, index, blockId: promoIndex.id})
     },
     getPromoValuesByType() {
       const {type} = this.form.promoType
@@ -352,24 +328,12 @@ export default {
       }
 
     },
-    setPromoTypeToFloors() {
-      this.selectionContentLabel = ''
-      this.$emit('change-block-list', 'floor')
-      this.makeDefaultFormBlocks()
-    },
     setPromosOption() {
       const type = this.form.promoType.type
       const id = this.promoIndex.id
-      this.selectionContentTrack = 'id'
 
       this.$emit('change-block-list', {type, id})
       this.makeDefaultFormBlocks()
-
-      if (type === 'plan') {
-        this.selectionContentLabel = 'name'
-      } else if (type === 'apartment') {
-        this.selectionContentLabel = 'number'
-      }
 
       const hasHistory = this.promoIndex.hasOwnProperty('type')
       if (hasHistory) {
@@ -395,47 +359,12 @@ export default {
       this.form.blocks = loopPackage
     },
     deleteAccordionInput() {
-      this.$emit('delete-inputs-collection')
+      const {promoIndex, index} = this
+      this.$emit('delete-inputs-collection', {id: promoIndex.id, index})
     },
     makeDefaultFormBlocks() {
       this.form.blocks = []
-    },
-    async satisfyValidation() {
-      const priceValidation = async () => {
-        await this.$refs['price-provider'].validate()
-            .then(() => {
-              const {errors: priceError} = this.$refs['price-provider']
-
-              if (priceError.length) {
-                this.errors.priceError = priceError[0]
-                return false
-              }
-
-              this.errors.priceError = ''
-              return true
-            })
-      }
-
-      const promoTypeValidation = async () => {
-        await this.$refs['promo-type-provider'].validate()
-            .then(() => {
-              const {errors: promoTypeError} = this.$refs['promo-type-provider']
-
-              if (promoTypeError.length) {
-                this.errors.typeError = promoTypeError[0]
-                return false
-              }
-
-              this.errors.typeError = ''
-              return true
-            })
-      }
-
-      const [priceValidator, promoTypeValidator] =
-          await Promise.all([priceValidation(), promoTypeValidation()])
-
-      return priceValidator && promoTypeValidator
-    },
+    }
   }
 }
 </script>

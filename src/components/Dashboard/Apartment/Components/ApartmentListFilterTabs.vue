@@ -23,8 +23,12 @@ export default {
   },
   data() {
     return {
-      currentStatus: 'all',
-      filterList: [
+      currentStatus: 'all'
+    }
+  },
+  computed: {
+    filterList() {
+      return [
         {
           name: this.$t('apartments.tab_names.all'),
           status: 'all'
@@ -38,21 +42,17 @@ export default {
           status: 'booked'
         },
         {
+          name: this.$t('apartments.tab_names.promo'),
+          status: 'promo'
+        },
+        {
           name: this.$t('apartments.tab_names.sold'),
           status: 'sold'
         },
         {
           name: this.$t('apartments.tab_names.unavailable'),
           status: 'unavailable'
-        },
-        // {
-        //   name: 'На Оплате',
-        //   status: 'paid'
-        // },
-        // {
-        //   name: 'Закрыт',
-        //   status: 'closed'
-        // }
+        }
       ]
     }
   },
@@ -61,7 +61,7 @@ export default {
       this.currentStatus = status
       this.$emit('get-new-content', status)
     },
-    setCurrentStatus(){
+    setCurrentStatus() {
       const {query} = this.$route
       const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
       if (hasQueryAndStatus) {
@@ -81,6 +81,7 @@ export default {
   margin-top: 16px;
   margin-bottom: 8px;
   color: var(--dark);
+
   &::before {
     content: '';
     position: absolute;

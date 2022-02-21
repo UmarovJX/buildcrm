@@ -23,7 +23,7 @@
   --object-color: #000;
   --element-size: 1rem;
   --btn-green-color: #000;
-  --content-border-color: 2px solid rgba(0, 0, 0, .3);
+  --content-border-color: 1px solid rgba(0, 0, 0, .15);
 }
 
 /* Define styles for the root window with dark - mode preference */
@@ -50,7 +50,7 @@
   --border-color: #dcdcdc;
   --element-size: 1rem;
   --btn-green-color: #fff;
-  --content-border-color: 2px solid #ced4da;
+  --content-border-color: 1px solid #ced4da;
 }
 
 html {

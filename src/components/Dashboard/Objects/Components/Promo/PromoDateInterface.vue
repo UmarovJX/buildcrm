@@ -151,6 +151,9 @@
             <span class="error__provider" v-if="errors[0]">
               {{ errors[0] }}
             </span>
+            <span class="error__provider" v-else-if="error.smallTime.show">
+              {{ error.smallTime.message }}
+            </span>
           </ValidationProvider>
         </div>
       </div>
@@ -181,6 +184,12 @@ export default {
         end: {
           labelNoTimeSelected: ''
         }
+      },
+      error: {
+        smallTime: {
+          show: false,
+          message: "Aksiyaning tugallanish kuni boshlanish kunidan katta bo'lishi kerak"
+        }
       }
     }
   },
@@ -199,7 +208,33 @@ export default {
       return this.$t('promo.date_of_end_title')
     }
   },
+  watch: {
+    'form.start_date'() {
+      this.compareMileStone()
+    },
+    'form.end_date'() {
+      this.compareMileStone()
+    }
+  },
   methods: {
+    compareMileStone() {
+      const dayInMilliseconds = 24 * 60 * 60 * 1000
+      const {start_date, end_date} = this.form
+      if (start_date !== '' && end_date !== '') {
+        const startDateInTime = new Date(start_date).getTime()
+        const endDateInTime = new Date(end_date).getTime()
+        const distinct = endDateInTime - startDateInTime
+        if (distinct >= dayInMilliseconds) {
+          this.error.smallTime.show = false
+          return true
+        } else {
+          this.error.smallTime.show = true
+          return false
+        }
+      }
+
+      return true
+    },
     setUpHistoryContext() {
       this.setHistoryName()
       this.setStartDate()
@@ -250,12 +285,13 @@ export default {
     async getValidDates() {
       const valid = await this.$refs['promo-observer'].validate()
       if (valid) {
-
         const {name_ru, name_uz, start_date, end_date, start_time, end_time} = this.form
+        const start = start_date + ' ' + start_time
+        const end = end_date + ' ' + end_time
 
         const form = {
-          start_date: start_date + ' ' + start_time,
-          end_date: end_date + ' ' + end_time,
+          start_date: start,
+          end_date: end,
           name: {
             uz: name_uz,
             ru: name_ru
@@ -278,10 +314,6 @@ export default {
 
 <style lang="scss">
 .promo__creation__modal {
-  //.col__content {
-  //  margin-right: 72px;
-  //}
-
   .btn {
     margin: 0 !important;
   }

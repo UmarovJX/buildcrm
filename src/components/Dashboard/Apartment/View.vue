@@ -29,6 +29,10 @@
                         {{ $t("apartments.view.object") }}: {{ apartment.object.name }},
                         {{ apartment.building.name }},
                         {{ apartment.block.name }}
+
+                        <span class="promo__marker" v-if="hasPromo">
+                          {{ $t('promo.in_promo') }}
+                        </span>
                       </p>
                       <!-- Адрес -->
                       <p class="building__info mt-2 mb-1">
@@ -62,12 +66,7 @@
                           ]"
                         >
                           {{
-                            apartment.order.status
-                                | getStatus(
-                                $moment(apartment.order.booking_date).format(
-                                    "DD.MM.YYYY"
-                                )
-                                )
+                            apartment.order.status | getStatus($moment(apartment.order.booking_date).format("DD.MM.YYYY"))
                           }}
                         </div>
                       </div>
@@ -284,9 +283,10 @@
                           </li>
                           <li>
                             <a href="tel:+998555017400"
-                            ><i class="far fa-phone-alt"></i> +998 55 501 74
-                              00</a
                             >
+                              <i class="far fa-phone-alt"></i>
+                              +998 55 501 74 00
+                            </a>
                           </li>
                         </ul>
                       </div>
@@ -643,6 +643,9 @@ export default {
       }
       return null;
     },
+    hasPromo() {
+      return this.apartment.discounts.some((discount) => discount.type === 'promo')
+    }
   },
   methods: {
     ...mapActions(["fetchApartment", "fetchReserveClient"]),
@@ -826,7 +829,15 @@ export default {
 };
 </script>
 <style lang="scss">
-.loading-content{
+.building__info .promo__marker {
+  margin-left: 0.5rem;
+  border-radius: 1rem;
+  color: #28a745;
+  background-color: rgba(#28a745, .2);
+  padding: 0.25rem 2rem;
+}
+
+.loading-content {
   height: 100vh;
   display: flex;
   justify-content: center;
