@@ -128,6 +128,12 @@
             </span>
           </template>
 
+          <!--          <template #cell(is_promo)="data" class="text-center">-->
+          <!--            <span v-if="data.item.is_promo">-->
+          <!--              <i class="fal fa-gift"></i>-->
+          <!--            </span>-->
+          <!--          </template>-->
+
           <template #cell(number)="data" class="p-0">
             <div class="position-relative">
               <div v-if="!data.item.is_sold" class="apartments__lock">
@@ -463,6 +469,11 @@ export default {
         // {
         //   key: "block.name",
         //   label: "КОРПУС",
+        // },
+        // {
+        //   key: "is_promo",
+        //   label: this.$t('promo.in_promo'),
+        //   sortable: true,
         // },
         {
           key: "rooms",

@@ -60,6 +60,7 @@ export default {
     monthly_payment: "Oylik to'lov",
     sum_text: "So'm",
     usd_text: 'Usd',
+    apartments_count: "Xonadonlar soni",
 
     promo: {
         name: 'Aksiya',
@@ -84,8 +85,14 @@ export default {
         add_price: "Narx qo'shish",
         warn_before_delete: "Aksiyani oʻchirib tashlamoqchimisiz?",
         successfully_deleted: "Aksiya muvaffaqiyatli o'chirildi",
-        successfully_created:'Aksiya muvaffaqiyatli yaratildi',
-        edit_title:'Aksiyani tahrirlash',
+        successfully_created: 'Aksiya muvaffaqiyatli yaratildi',
+        successfully_edited: 'Aksiya yangilandi',
+        edit_title: 'Aksiyani tahrirlash',
+        alert_before_close_title: 'Rostdan ham yopmoqchimisiz ?',
+        alert_before_close_no: "Yo'q",
+        by_promo: "Aksiya bo'yicha",
+        in_promo:'Aktsiyalarda',
+        promo_rate: 'Tarif',
     },
 
     auth: {
@@ -105,9 +112,7 @@ export default {
     },
 
     contracts: {
-        title: "Shartnomalar",
-        download: "Shartnomani yuklab olish",
-        f_i_o: 'F.I.SH', // asd
+        title: "Shartnomalar", download: "Shartnomani yuklab olish", f_i_o: 'F.I.SH', // asd
         filter_with_date: "Sana bo'yicha filtrlash", // asd
         client_name: 'Foydalanuvchi ismi', // asd
         client_phone: 'Telefon raqami', // asd
@@ -148,9 +153,7 @@ export default {
     },
 
     roles: {
-        title: "Rollar",
-        name: "Nomi",
-        users: "Foydalanuvchilar",
+        title: "Rollar", name: "Nomi", users: "Foydalanuvchilar",
 
         permissions: {
             name_uz: "Rolning nomi (UZ)",
@@ -271,10 +274,8 @@ export default {
             filter: "Filtr",
             apartments: "Xonadonlar",
             contract: "Shartnoma",
-
             entrance: "Kirish qismi",
             balcony: "Balkon",
-
             period_date: "Band qilish muddati",
             more: "To'liq ma'lumot",
             cancel_contract: "Shartnomani bekor qilish",
@@ -282,7 +283,6 @@ export default {
             view_client: "Mijoz ma'lumotlarini ko'rish",
             cancel_reserve: "Xonadonni bandlikdan chiqarish",
             view_manager: "Menedjer haqida ma'lumot",
-
             price_sold: "Sotilgan narxi",
         },
 
@@ -324,7 +324,7 @@ export default {
             discount_per_m2: "м2 uchun chegirma:", // asd
             prepayment: "Oldindan to'lov", // asd
             total: "Jami", // asd
-            print: "Chop etish" // asd
+            print: "Chop etish",// asd
         },
 
         agree: {
@@ -372,6 +372,7 @@ export default {
             booked: "Band qilingan", //asd
             sold: "Sotilgan", //asd
             unavailable: "Mavjud emas", //asd
+            promo:'Aksiya',
         },
     },
 
@@ -388,8 +389,7 @@ export default {
     },
 
     debtors: {
-        title: "Qarzdorlar",
-        overdue: "Muddati o'tgan", // asd
+        title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
         familiars: "Tanishlar", // asd
         contract_number: "№ shartnoma", // asd
         client_name: "mijoz ismi", // asd

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-2">
     <b-table
         sticky-header
         responsive
@@ -30,11 +30,11 @@
       </template>
 
       <!-- FLOORS COLUMN -->
-      <template #cell(floors)="data">
-        <span v-if="data.item.blocks.length">
-          {{ sumFloorsCount(data.item.blocks) }}
-        </span>
-      </template>
+      <!--      <template #cell(floors)="data">-->
+      <!--        <span v-if="data.item.blocks.length">-->
+      <!--          {{ sumFloorsCount(data.item.blocks) }}-->
+      <!--        </span>-->
+      <!--      </template>-->
 
       <!--   ACTION   -->
       <template #cell(actions)="data">
@@ -109,10 +109,10 @@ export default {
       required: true
     }
   },
-  emits: ['update-content','edit-promo-item'],
+  emits: ['update-content', 'edit-promo-item'],
   data() {
     return {
-      sortBy: "id",
+      sortBy: "index",
       sortDesc: false,
       loading: false
     }
@@ -152,10 +152,10 @@ export default {
             return names
           }
         },
-        {
+        /*{
           key: "floors",
           label: this.$t("promo.floors")
-        },
+        },*/
         {
           key: "actions",
           label: "",
@@ -166,7 +166,7 @@ export default {
   methods: {
     sumFloorsCount: (blocks) => blocks.reduce((acc, current) => acc + current.block.floors, 0),
     editPromoItem(item) {
-      this.$emit('edit-promo-item',item)
+      this.$emit('edit-promo-item', item)
     },
     async activatePromo(item) {
       this.toggleLoading()
