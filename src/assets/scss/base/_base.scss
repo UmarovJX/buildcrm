@@ -20,8 +20,10 @@
   --placeholder: #969696;
   --dropdown-icon: #55547a;
   --border-color: #22222233;
-  --object-color:#000;
+  --object-color: #000;
   --element-size: 1rem;
+  --btn-green-color: #000;
+  --content-border-color: 1px solid rgba(0, 0, 0, .15);
 }
 
 /* Define styles for the root window with dark - mode preference */
@@ -31,7 +33,7 @@
   --background-color-navbar: #283046;
   --background-color-dropdown: #10163a;
   --background-color-main: transparent;
-  --object-color:#fff;
+  --object-color: #fff;
   --white: #3b4253;
   --plus-icon: #fff;
   --primary: #7367f0;
@@ -47,6 +49,8 @@
   --dropdown-icon: #dcdcdc;
   --border-color: #dcdcdc;
   --element-size: 1rem;
+  --btn-green-color: #fff;
+  --content-border-color: 1px solid #ced4da;
 }
 
 html {

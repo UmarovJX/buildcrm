@@ -14,7 +14,7 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
-    booked:'Band qilindi',
+    booked: 'Band qilindi',
     not_for_sale: "Sotilmaydi",
     remove_from_sale: "Sotuvdan olib tashlash",
     return_to_sale: "Sotuvga qaytarish",
@@ -48,11 +48,52 @@ export default {
     category: 'Kategoriya',
     full: "To'liqligicha",
     monthly: "Oylik",
+    month: 'Oy',
     payment_type: "To'lov sharti",
     created_at: "Yaratilgan vaqti",
     reservation: 'Band qilish',
     free_of_charge: "Boshlang'ich to'lovsiz",
     without_initial: "Boshlang'ich to'lovsiz",
+    go_back: 'Orqaga',
+    activate: 'Faollashtirish',
+    deactivate: "disable",
+    monthly_payment: "Oylik to'lov",
+    sum_text: "So'm",
+    usd_text: 'Usd',
+    apartments_count: "Xonadonlar soni",
+
+    promo: {
+        name: 'Aksiya',
+        promos: 'Aksiyalar',
+        table_name: 'Nomi',
+        blocks: 'Binolar',
+        floors: 'Qavatlar',
+        creation_title: 'Aksiya yaratish',
+        modal_input_text_label: 'Aksiya nomi',
+        date_of_start_title: 'Aksiyaning boshlanish kuni',
+        date_of_end_title: 'Aksiyaning tugash kuni',
+        date_of_start_label: 'Aksiya shu kundan boshlab amal qiladi',
+        date_of_end_label: 'Aksiya shu kungacha amal qiladi',
+        select_block: 'Bino (larni) tanlang',
+        select_floor_plan: 'Binodagi qavat, xonadon rejasi yoki xonadon uchun aksiya belgilang',
+        select_price: 'Aksiya narxi (m2 uchun)',
+        select_type: 'Aksiya turini tanlang',
+        select_sum: "So'm",
+        select_by_floor: "Qavatlar bo'yicha",
+        select_by_apartment: "Xonadon bo'yicha",
+        select_by_plan: "Xonadon rejasi bo'yicha",
+        add_price: "Narx qo'shish",
+        warn_before_delete: "Aksiyani oʻchirib tashlamoqchimisiz?",
+        successfully_deleted: "Aksiya muvaffaqiyatli o'chirildi",
+        successfully_created: 'Aksiya muvaffaqiyatli yaratildi',
+        successfully_edited: 'Aksiya yangilandi',
+        edit_title: 'Aksiyani tahrirlash',
+        alert_before_close_title: 'Rostdan ham yopmoqchimisiz ?',
+        alert_before_close_no: "Yo'q",
+        by_promo: "Aksiya bo'yicha",
+        in_promo:'Aktsiyalarda',
+        promo_rate: 'Tarif',
+    },
 
     auth: {
         email: "E-mail",
@@ -71,9 +112,7 @@ export default {
     },
 
     contracts: {
-        title: "Shartnomalar",
-        download: "Shartnomani yuklab olish",
-        f_i_o: 'F.I.SH', // asd
+        title: "Shartnomalar", download: "Shartnomani yuklab olish", f_i_o: 'F.I.SH', // asd
         filter_with_date: "Sana bo'yicha filtrlash", // asd
         client_name: 'Foydalanuvchi ismi', // asd
         client_phone: 'Telefon raqami', // asd
@@ -107,15 +146,14 @@ export default {
             cancel_contract: "Shartnomani bekor qilish", // asd
             payment_by_cash: "Naqd pul", // asd
             payment_transaction: "Pul ko'chirish orqali", // asd
-            payment_other: "Boshqa to'lov turi", // asd
+            payment_other: "Boshqa to'lov turi", // asd,
+            initial_payment: "Birinchi to'lov", // asd
         },
 
     },
 
     roles: {
-        title: "Rollar",
-        name: "Nomi",
-        users: "Foydalanuvchilar",
+        title: "Rollar", name: "Nomi", users: "Foydalanuvchilar",
 
         permissions: {
             name_uz: "Rolning nomi (UZ)",
@@ -236,10 +274,8 @@ export default {
             filter: "Filtr",
             apartments: "Xonadonlar",
             contract: "Shartnoma",
-
             entrance: "Kirish qismi",
             balcony: "Balkon",
-
             period_date: "Band qilish muddati",
             more: "To'liq ma'lumot",
             cancel_contract: "Shartnomani bekor qilish",
@@ -247,7 +283,6 @@ export default {
             view_client: "Mijoz ma'lumotlarini ko'rish",
             cancel_reserve: "Xonadonni bandlikdan chiqarish",
             view_manager: "Menedjer haqida ma'lumot",
-
             price_sold: "Sotilgan narxi",
         },
 
@@ -289,7 +324,7 @@ export default {
             discount_per_m2: "м2 uchun chegirma:", // asd
             prepayment: "Oldindan to'lov", // asd
             total: "Jami", // asd
-            print: "Chop etish" // asd
+            print: "Chop etish",// asd
         },
 
         agree: {
@@ -337,6 +372,7 @@ export default {
             booked: "Band qilingan", //asd
             sold: "Sotilgan", //asd
             unavailable: "Mavjud emas", //asd
+            promo:'Aksiya',
         },
     },
 
@@ -353,8 +389,7 @@ export default {
     },
 
     debtors: {
-        title: "Qarzdorlar",
-        overdue: "Muddati o'tgan", // asd
+        title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
         familiars: "Tanishlar", // asd
         contract_number: "№ shartnoma", // asd
         client_name: "mijoz ismi", // asd

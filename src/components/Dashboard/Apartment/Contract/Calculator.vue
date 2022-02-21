@@ -22,6 +22,9 @@
               :key="'discount-' + index"
           >
             {{ $t("apartments.view.variant") }}
+            <span v-if="discount.type === 'promo'">
+            ({{ $t('promo.by_promo') }})
+          </span>
             {{ index + 1 }} - {{ discount.prepay }}%
           </b-form-select-option>
 

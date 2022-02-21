@@ -159,9 +159,9 @@
               <!-- apartments.agree.payment_date -->
               <div class="col-md-4">
                 <div class="mb-3">
-                  <label class="d-block" for="payment_date">{{
-                      $t("apartments.agree.payment_date")
-                    }}</label>
+                  <label class="d-block" for="payment_date">
+                    {{$t("apartments.agree.payment_date") }}
+                  </label>
                   <input
                       v-model="contract.payment_date"
                       id="payment_date"
@@ -216,7 +216,6 @@
                 <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract" :discounts="discounts" :buttons="buttons"></Confirm>
               </div>
             </div>
-
           </div>
         </form>
       </div>
@@ -246,13 +245,11 @@
 
 <script>
 // import moment from "moment";
-
-import { mapGetters, mapActions } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 // import VueNumeric from "vue-numeric";
 import FlipCountdown from "vue2-flip-countdown";
 import SuccessAgree from "./Components/SuccessAgree";
 // import QuickViewApartments from "./Components/QuickViewApartments";
-
 import ClientInputConfirm from "./Components/ClientInputConfirm";
 import MonthlyPayments from "./Contract/MonthlyPayments";
 import ClientInformation from "./Contract/ClientInformation";
@@ -261,14 +258,14 @@ import Calculator from "./Contract/Calculator";
 import Confirm from "./Contract/Confirm";
 
 import {
-  getTotal,
-  getPrepay,
-  getDiscount,
+  editedCreditMonths,
   getDebt,
-  getPricePerM2,
+  getDiscount,
+  getPrepay,
   getPrice,
-  editedCreditMonths
-} from "../../../util/calculator";
+  getPricePerM2,
+  getTotal
+} from "@/util/calculator";
 import moment from "moment";
 // import moment from "moment";
 
@@ -402,11 +399,9 @@ export default {
   created() {
     this.backToView();
 
-    const expired = this.$moment(this.getApartmentOrder.expiry_at)
+    this.expiry_at = this.$moment(this.getApartmentOrder.expiry_at)
         .utcOffset("+0500")
         .format("YYYY-MM-DD H:mm:ss");
-
-    this.expiry_at = expired;
   },
 
   async mounted() {

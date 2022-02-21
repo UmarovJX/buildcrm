@@ -3,13 +3,14 @@ import Vue from 'vue'
 export function getPrepay(apartments, contract) {
     if (contract.discount.prepay === 100) return getTotal(apartments, contract);
 
-    if (parseInt(contract.month) === 0 ) return getTotal(apartments, contract)
+    if (parseInt(contract.month) === 0) return getTotal(apartments, contract)
 
     let total_discount = getDiscount(apartments, contract);
 
     let total;
 
     switch (contract.discount.type) {
+        case "promo":
         case "fixed":
             // if (parseFloat(this.calc.discount_price)) {
             //     total =
@@ -17,7 +18,7 @@ export function getPrepay(apartments, contract) {
             //             parseFloat(this.calc.discount_price)) *
             //         getAreaTotal(apartments, contract);
             // } else {
-                total = getTotal(apartments, contract);
+            total = getTotal(apartments, contract);
             // }
             break;
         default:
@@ -58,6 +59,7 @@ export function getPricePerM2(apartments, contract) {
 export function getPrice(apartments, contract) {
     let price = [];
     switch (contract.discount.type) {
+        case "promo":
         case "fixed":
             for (let i = 0; apartments.length > i; i++) {
                 let amountApartment = 0;
@@ -71,16 +73,16 @@ export function getPrice(apartments, contract) {
                 // if (contract.discount.id === apartments[i].discount_id && apartments[i].price_current && parseFloat(apartments[i].price_current) !== parseFloat(apartments[i].price_calc)) {
                 //     price.push(parseFloat(apartments[i].price_current));
                 // } else {
-                    const totalAmount = parseFloat(amountApartment) * apartments[i].plan.area;
+                const totalAmount = parseFloat(amountApartment) * apartments[i].plan.area;
 
-                    // Vue.set(apartments[i], 'price_current', totalAmount.toFixed(2))
-                    Vue.set(apartments[i], 'price_calc', parseFloat(totalAmount.toFixed(2)))
-                    Vue.set(apartments[i], 'price_edited', false)
-                    Vue.set(apartments[i], 'discount_id', contract.discount.id)
+                // Vue.set(apartments[i], 'price_current', totalAmount.toFixed(2))
+                Vue.set(apartments[i], 'price_calc', parseFloat(totalAmount.toFixed(2)))
+                Vue.set(apartments[i], 'price_edited', false)
+                Vue.set(apartments[i], 'discount_id', contract.discount.id)
 
-                    // .price_calc = totalAmount
-                    // apartments[i].price_current = totalAmount
-                    price.push(parseFloat(totalAmount.toFixed(2)));
+                // .price_calc = totalAmount
+                // apartments[i].price_current = totalAmount
+                price.push(parseFloat(totalAmount.toFixed(2)));
                 // }
             }
             break;
@@ -120,7 +122,6 @@ export function getPrice(apartments, contract) {
                         totalAmount = parseFloat(apartments[i].price_m2) * apartments[i].plan.area / (1 - amountApartment / 100);
 
 
-
                     // apartments[i].price_calc = totalAmount
 
                     // apartments[i].price_current = totalAmount
@@ -137,12 +138,15 @@ export function getPrice(apartments, contract) {
             break;
     }
 
-    let total = price.reduce((a, b) => a + b, 0);
-    return total
+    return price.reduce((a, b) => a + b, 0)
 }
 
 export function getDiscount(apartments, contract) {
     if (contract.discount.prepay === 100) return 1;
+
+    if (contract.discount.type === 'promo') {
+        return 1 - contract.discount.prepay / 100;
+    }
 
     return 1 - contract.discount.amount / 100;
 }
@@ -259,9 +263,10 @@ export function editedCreditMonths(apartments, contract) {
 
 export function getTotal(apartments, contract) {
     let total_discount = getDiscount(apartments, contract);
-    let total = 0;
+    let total;
 
     switch (contract.discount.type) {
+        case "promo":
         case "fixed":
             // if (parseFloat(contract.discount_amount) > 0) {
             //     total = (this.client.discount.amount - parseFloat(this.calc.discount_price)) * this.planAreas();
@@ -299,7 +304,7 @@ export function getTotalForPercent(apartments, contract) {
             //             parseFloat(this.calc.discount_price)) *
             //         this.planAreas();
             // } else {
-                total = getPrice(apartments, contract);
+            total = getPrice(apartments, contract);
             // }
             break;
         default:

@@ -36,6 +36,28 @@
                   <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}
                 </router-link>
 
+                <router-link
+                    v-if="getPermission.objects.view"
+                    :to="{name:'objects-promo',params:{id:object.id}}"
+                    :class="'dropdown-item'"
+                >
+                  <i class="fas fa-gift"></i>
+                  <span>
+                    {{ $t('promo.promos') }}
+                  </span>
+                </router-link>
+
+                <router-link
+                    v-if="getPermission.type_plan.view"
+                    :to="{name:'type-plan-view',params:{id:object.id}}"
+                    :class="'dropdown-item'"
+                >
+                  <i class="fal fa-credit-card"></i>
+                  <span>
+                    {{ $t("type_plan.title") }}
+                  </span>
+                </router-link>
+
                 <b-link
                     class="dropdown-item"
                     v-if="getPermission.objects.update"
@@ -153,6 +175,7 @@ import {mapGetters, mapActions} from "vuex";
 import UploadLogo from "./Components/UploadLogo";
 
 export default {
+  name: 'Objects',
   components: {
     // 'filter-form': Filter,
     "upload-logo": UploadLogo,
