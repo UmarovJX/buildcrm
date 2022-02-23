@@ -14,6 +14,12 @@ export default {
         setUpSelectedBlocks(state, blocks) {
             state.creationSelectedBlocks = blocks
         },
+        updatePromoValue(state, {next, prev}) {
+            const findIndex = state.creationSelectedBlocks.findIndex(selectedBlock => selectedBlock.discount.prepay === prev)
+            if (findIndex !== -1) {
+                state.creationSelectedBlocks[findIndex].discount.prepay = parseFloat(next)
+            }
+        },
         mutateFormButton(state) {
             state.promoFormButtonClicked = !state.promoFormButtonClicked
         },
@@ -21,15 +27,15 @@ export default {
             state.editHistoryContext = currentHistory
         },
         updateCreationSelectedBlocks(state, updatingValue) {
-            const {id, prepay} = updatingValue
+            const {id, discount} = updatingValue
             if (state.creationSelectedBlocks.length) {
                 const findIndex = state.creationSelectedBlocks.findIndex(selectedBlock => {
-                    return selectedBlock.id === id && selectedBlock.prepay === prepay
+                    return selectedBlock.id === id && selectedBlock.discount.prepay === discount.prepay
                 })
 
                 if (findIndex !== -1) {
                     state.creationSelectedBlocks = state.creationSelectedBlocks.map(selectedBlock => {
-                        if (selectedBlock.id === id && selectedBlock.prepay === prepay) {
+                        if (selectedBlock.id === id && selectedBlock.discount.prepay === discount.prepay) {
                             return updatingValue
                         }
 
@@ -44,7 +50,7 @@ export default {
             }
         },
         deletePromoCreationBlock(state, prepay) {
-            state.creationSelectedBlocks = state.creationSelectedBlocks.filter(selectedBlock => selectedBlock.prepay !== prepay)
+            state.creationSelectedBlocks = state.creationSelectedBlocks.filter(selectedBlock => selectedBlock.discount.prepay !== prepay)
         }
     },
 
