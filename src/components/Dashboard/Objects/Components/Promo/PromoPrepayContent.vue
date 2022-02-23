@@ -74,6 +74,7 @@
         :key="block.name"
         :block="{...block,index}"
         :prepay="form.prepay"
+        :prepay-id="form.prepayId"
         @save-accordion-content="saveSpecificContent"
     />
 
@@ -109,7 +110,8 @@ export default {
     return {
       form: {
         blocks: [],
-        prepay: parseFloat(this.prepay.prepayValue)
+        prepay: parseFloat(this.prepay.prepayValue),
+        prepayId: parseFloat(this.prepay.prepayId)
       },
       building: {
         name: this.$t('promo.select_block')
@@ -125,6 +127,9 @@ export default {
   watch: {
     selectedBlocks() {
       this.updateFormTypes()
+    },
+    'form.prepay'() {
+      this.updatePrepay()
     }
   },
   created() {
@@ -150,6 +155,17 @@ export default {
       }
 
       this.updateCreationSelectedBlocks({id, prepay, types})
+    },
+    updatePrepay() {
+      // const {blocks, prepay} = this.form
+      // const findIndex = blocks.findIndex(block => block.id === id)
+      // if (findIndex !== -1) {
+      //   this.form.blocks[findIndex].types = types
+      // } else {
+      //   this.form.blocks.push({id, prepay, types})
+      // }
+      //
+      // this.updateCreationSelectedBlocks({id, prepay, types})
     },
     updateFormTypes() {
       const ids = this.selectedBlocks.map(selectedBlock => selectedBlock.id)
