@@ -241,7 +241,7 @@ export default {
     async changeDiscount() {
       this.calc.prepay_percente = this.discount.prepay;
       this.calc.discount_price = 0;
-      if (this.discount.type === "fixed") {
+      if (this.discount.type === "fixed" || this.discount.type === "promo") {
         await this.initialCalc();
       } else if (this.discount.prepay === 100) {
         this.calc.total = this.apartment.price;

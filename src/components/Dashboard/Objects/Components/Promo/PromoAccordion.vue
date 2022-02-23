@@ -17,7 +17,6 @@
     </b-card-header>
     <b-card-body class="p-0" :class="{ 'accordion__body':visible }">
       <b-collapse v-model="visible" role="tabpanel">
-
         <promo-accordion-input
             v-for="(promoIndex,index) of promoInputIndex"
             :key="promoIndex.id"
@@ -31,7 +30,6 @@
             @change-block-list="changeBlockList"
             :ref="`promo-accordion-${promoIndex.id}`"
         />
-
         <!--   Add Button     -->
         <button
             class="btn btn-green-bg mr-0 mt-md-0 addition__button"
@@ -210,8 +208,8 @@ export default {
       this.removeSelectedApartments(id)
     },
     sortByTypes({type: currentType}) {
-      const globalTypes = this.getSelectedBlocks.filter(({id}) => {
-        return id === this.block.id
+      const globalTypes = this.getSelectedBlocks.filter(({id, prepay}) => {
+        return id === this.block.id && prepay === this.prepay
       }).map(({types}) => types)
 
       let sortType = []

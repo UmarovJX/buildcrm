@@ -63,18 +63,23 @@ export function getPrice(apartments, contract) {
         case "fixed":
             for (let i = 0; apartments.length > i; i++) {
                 let amountApartment = 0;
-                if (contract.discount.id !== 'other')
-                    amountApartment = apartments[i].discounts.find(
-                        (val) => val.prepay === contract.discount.prepay
-                    ).amount;
-                else
+                if (contract.discount.id !== 'other') {
+                    const {prepay,type} = contract.discount
+                    if (type === 'promo') {
+                        amountApartment = apartments[i].discounts.find(
+                            (val) => val.type === type && val.prepay === prepay
+                        ).amount;
+                    } else {
+                        amountApartment = apartments[i].discounts.find(
+                            (val) => val.prepay === contract.discount.prepay
+                        ).amount;
+                    }
+                } else
                     amountApartment = contract.discount.amount;
-
                 // if (contract.discount.id === apartments[i].discount_id && apartments[i].price_current && parseFloat(apartments[i].price_current) !== parseFloat(apartments[i].price_calc)) {
                 //     price.push(parseFloat(apartments[i].price_current));
                 // } else {
                 const totalAmount = parseFloat(amountApartment) * apartments[i].plan.area;
-
                 // Vue.set(apartments[i], 'price_current', totalAmount.toFixed(2))
                 Vue.set(apartments[i], 'price_calc', parseFloat(totalAmount.toFixed(2)))
                 Vue.set(apartments[i], 'price_edited', false)
