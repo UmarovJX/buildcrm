@@ -60,10 +60,6 @@ export default {
     prepay: {
       type: Number,
       required: true
-    },
-    prepayId: {
-      type: Number,
-      required: true
     }
   },
   async created() {

@@ -215,7 +215,6 @@ export default {
   },
   methods: {
     async initialCalc() {
-      console.log('kms',this.calc.price_for_m2)
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
           this.calc.price_for_m2 = this.apartment.price_m2;

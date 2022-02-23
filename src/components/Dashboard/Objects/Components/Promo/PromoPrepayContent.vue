@@ -74,7 +74,6 @@
         :key="block.name"
         :block="{...block,index}"
         :prepay="form.prepay"
-        :prepay-id="form.prepayId"
         @save-accordion-content="saveSpecificContent"
     />
 
@@ -111,7 +110,8 @@ export default {
       form: {
         blocks: [],
         prepay: parseFloat(this.prepay.prepayValue),
-        prepayId: parseFloat(this.prepay.prepayId)
+        prepayId: parseFloat(this.prepay.prepayId),
+        prepayUnique: null
       },
       building: {
         name: this.$t('promo.select_block')
@@ -128,8 +128,8 @@ export default {
     selectedBlocks() {
       this.updateFormTypes()
     },
-    'form.prepay'() {
-      this.updatePrepay()
+    'form.prepay'(next, prev) {
+      this.updatePrepay(next, prev)
     }
   },
   created() {
@@ -139,7 +139,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['updateCreationSelectedBlocks']),
+    ...mapMutations(['updateCreationSelectedBlocks', 'updatePromoValue']),
     idGenerator(id) {
       return id + String.fromCharCode(Math.floor(Math.random() * 26) + 97)
           + Math.random().toString(16).slice(2)
@@ -154,9 +154,15 @@ export default {
         this.form.blocks.push({id, prepay, types})
       }
 
-      this.updateCreationSelectedBlocks({id, prepay, types})
+      const discount = {
+        prepay: this.form.prepay,
+        id: this.form.prepayUnique
+      }
+
+      this.updateCreationSelectedBlocks({id, discount, types})
     },
     updatePrepay() {
+      // this.updatePromoValue({next, prev})
       // const {blocks, prepay} = this.form
       // const findIndex = blocks.findIndex(block => block.id === id)
       // if (findIndex !== -1) {
@@ -186,7 +192,7 @@ export default {
     },
     setUpHistoryProperties() {
       const {historyContext} = this.prepay
-
+      this.form.prepayUnique = historyContext[0].discount.id
       const comparedBlocks = []
 
       historyContext.forEach(historyBlock => {

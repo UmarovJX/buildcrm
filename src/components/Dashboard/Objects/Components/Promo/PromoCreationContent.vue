@@ -196,20 +196,20 @@ export default {
       const dateInterface = this.$refs['promo-date-interface']
       const dates = await dateInterface.getValidDates()
 
-      const blocks = this.getSelectedBlocks.map((block) => {
-        const {id, types} = block
-        let discount = {
-          prepay: block.prepay,
-          id: null
-        }
-        return {
-          id,
-          types,
-          discount
-        }
-      })
+      // const blocks = this.getSelectedBlocks.map((block) => {
+      //   const {id, types} = block
+      //   let discount = {
+      //     prepay: block.prepay,
+      //     id: null
+      //   }
+      //   return {
+      //     id,
+      //     types,
+      //     discount
+      //   }
+      // })
 
-      const form = {blocks, ...dates.form}
+      const form = {blocks: this.getSelectedBlocks, ...dates.form}
       await api.objects.createObjectPromo({id, form})
           .then(() => {
             this.$emit('successfully-created')
@@ -242,6 +242,10 @@ export default {
               const {discount} = currentList
               const hasInPackage = this.prepaysList.findIndex(loopPackage => loopPackage.prepayValue === discount.prepay)
               if (hasInPackage !== -1) {
+                // const hasHistoryBlock = this.prepaysList[hasInPackage].historyContext.findIndex(historyBlock => historyBlock.block.id === currentList.block.id)
+                // if(hasHistoryBlock !== -1){
+                //   this.prepaysList[hasInPackage].historyContext[hasHistoryBlock].types.push(...currentList.types)
+                // }
                 this.prepaysList[hasInPackage].historyContext.push(currentList)
               } else {
                 const prepayId = new Date().getTime() + i
