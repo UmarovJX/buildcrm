@@ -416,7 +416,10 @@ export default {
         make_it_main_contract: 'Asosiy shartnoma qilib belgilash',
 
         deal_template: {
-            name: 'Shartoma andozasi', type: 'Turi', main: 'Asosiy',
+            name: 'Shartoma andozasi',
+            type: 'Turi',
+            main: 'Asosiy',
+            title:"Shartnoma shablonlari ro'yxati"
         },
 
         create: {
