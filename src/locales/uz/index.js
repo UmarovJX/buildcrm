@@ -564,6 +564,7 @@ export default {
     },
 
     branches: {
+        title:'Filiallar',
         name: 'Filial',
         branch_name: 'Filial nomi',
         branch_address: 'Filial manzili',

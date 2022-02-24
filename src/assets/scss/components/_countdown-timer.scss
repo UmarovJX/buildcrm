@@ -52,6 +52,20 @@
   }
 }
 
+
+@media screen and (min-width: 1000px){
+  .countdown-timer{
+    top: -73px;
+  }
+}
+
+@media screen and (min-width: 1245px){
+  .countdown-timer{
+    left: 32px;
+    top: -58px;
+  }
+}
+
 .dark-theme {
   .countdown-timer {
     box-shadow: 0 4px 10px rgba($dark-secondary, 0.9);

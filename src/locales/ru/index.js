@@ -583,6 +583,7 @@ export default {
     },
 
     branches: {
+        title:'Филиалы',
         name: 'Филиал',
         branch_name: 'Название филиала',
         branch_address: 'Адрес филиала',
