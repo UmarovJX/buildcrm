@@ -49,6 +49,7 @@ export default {
     sum_text: 'В суммах',
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
+    contract_file_not_found:'Файл контракта не найдено',
 
     promo: {
         name: 'Акция',

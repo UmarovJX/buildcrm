@@ -61,6 +61,7 @@ export default {
     sum_text: "So'm",
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
+    contract_file_not_found:'Kontrakt fayl topilmadi',
 
     promo: {
         name: 'Aksiya',

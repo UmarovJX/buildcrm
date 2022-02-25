@@ -25,13 +25,14 @@
 import {mapGetters, mapActions, mapMutations} from "vuex";
 
 export default {
+  name: 'App',
   data() {
     return {
       onLine: navigator.onLine,
       theme: "",
       connecting: null,
       showHeaderContent: false
-    };
+    }
   },
   computed: {
     ...mapGetters(["getMe"])
@@ -85,7 +86,7 @@ export default {
       handler: function (name) {
         const unnecessaryRoute = ['login']
         const indexOfRoute = unnecessaryRoute.findIndex(routeName => routeName === name)
-        this.showHeaderContent= indexOfRoute === -1;
+        this.showHeaderContent = indexOfRoute === -1;
       },
       deep: true,
       immediate: true
