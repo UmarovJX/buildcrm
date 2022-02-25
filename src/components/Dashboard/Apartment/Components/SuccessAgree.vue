@@ -1,10 +1,10 @@
 <template>
   <div>
     <b-modal
-      id="modal-success-agree"
-      ref="modal"
-      title="Договор успешно создан!"
-      hide-footer
+        id="modal-success-agree"
+        ref="modal"
+        title="Договор успешно создан!"
+        hide-footer
     >
       <div class="my-3">
         <h6>№ договора - {{ contract.contract }}</h6>
@@ -15,15 +15,15 @@
           <i class="far fa-download"></i> <span>Скачать</span>
         </button> -->
         <a
-          @click="goApartment"
-          :href="contract.contract_path"
-          class="my-download btn btn-link"
-          ><i class="far fa-download"></i> <span>Скачать</span></a
+            href="#"
+            @click="downloadContractLink"
+            class="my-download btn btn-link"
+        ><i class="far fa-download"></i> <span>Скачать</span></a
         >
       </div>
 
       <div
-        class="
+          class="
           mt-4
           d-flex
           justify-content-md-start justify-content-center
@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import api from "@/services/api";
+
 export default {
   data() {
     return {
@@ -70,6 +72,22 @@ export default {
     this.$root.$on("bv::modal::hide");
   },
   methods: {
+    downloadContractLink() {
+      const {id} = this.$route.params
+      api.contract.downloadContract(id)
+          .then(() => {
+            window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`)
+          })
+          .catch(() => {
+            const message = `${this.$t('contract_file_not_found')}`
+            this.$toasted.show(message, {
+              type: 'error'
+            })
+          })
+          .finally(() => {
+            this.goApartment()
+          })
+    },
     resetModal() {
       this.$bvModal.hide("modal-success-agree");
       if (this.$route.name === "confirm-apartment") {
@@ -89,6 +107,7 @@ export default {
       }
     },
     goApartment() {
+
       this.$bvModal.hide("modal-success-agree");
       if (this.$route.name === "confirm-apartment") {
         // if (this.apartments === 1) {

@@ -19,6 +19,10 @@
       </span>
     </template>
 
+    <template #cell(index)="data">
+      {{ data.index + 1 }}
+    </template>
+
     <template #table-busy>
       <div class="d-flex justify-content-center w-100">
         <div class="lds-ellipsis">
@@ -131,7 +135,7 @@ export default {
       loading: false,
       fields: [
         {
-          key: "id",
+          key: "index",
           label: "#",
         },
         {
@@ -206,6 +210,7 @@ export default {
           .then(() => {
             const findIndex = this.contracts.findIndex(contract => contract.id === contractId)
             this.contracts.splice(findIndex, 1)
+            this.$emit('update-content')
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)

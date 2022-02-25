@@ -61,6 +61,7 @@ export default {
     sum_text: "So'm",
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
+    contract_file_not_found:'Kontrakt fayl topilmadi',
 
     promo: {
         name: 'Aksiya',
@@ -416,7 +417,10 @@ export default {
         make_it_main_contract: 'Asosiy shartnoma qilib belgilash',
 
         deal_template: {
-            name: 'Shartoma andozasi', type: 'Turi', main: 'Asosiy',
+            name: 'Shartoma andozasi',
+            type: 'Turi',
+            main: 'Asosiy',
+            title:"Shartnoma shablonlari ro'yxati"
         },
 
         create: {
@@ -564,6 +568,7 @@ export default {
     },
 
     branches: {
+        title:'Filiallar',
         name: 'Filial',
         branch_name: 'Filial nomi',
         branch_address: 'Filial manzili',

@@ -1,6 +1,15 @@
 <template>
   <main>
     <div class="app-content">
+      <div class="go__back__button">
+        <button
+            class="btn-back d-block"
+            @click="goBackToLastStep"
+        >
+          <i class="fal fa-arrow-left mr-2"></i>
+          <span>{{ $t('go_back') }}</span>
+        </button>
+      </div>
       <div class="countdown-timer" draggable="true">
         <flip-countdown
             :deadline="expiry_at"
@@ -52,7 +61,8 @@
 
                             <b-form-invalid-feedback id="number-feedback">{{
                                 validationContext.errors[0]
-                              }}</b-form-invalid-feedback>
+                              }}
+                            </b-form-invalid-feedback>
                           </b-form-group>
                         </validation-provider>
                       </div>
@@ -113,13 +123,14 @@
 
                         <b-form-invalid-feedback id="date-feedback">{{
                             validationContext.errors[0]
-                          }}</b-form-invalid-feedback>
+                          }}
+                        </b-form-invalid-feedback>
                       </b-form-group>
                     </validation-provider>
                   </div>
                 </div>
 
-                <hr />
+                <hr/>
               </div> <!-- Изменить дата договора END -->
 
 
@@ -151,7 +162,8 @@
 
                     <b-form-invalid-feedback id="first_payment_date-feedback">{{
                         validationContext.errors[0]
-                      }}</b-form-invalid-feedback>
+                      }}
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
               </div>
@@ -160,7 +172,7 @@
               <div class="col-md-4">
                 <div class="mb-3">
                   <label class="d-block" for="payment_date">
-                    {{$t("apartments.agree.payment_date") }}
+                    {{ $t("apartments.agree.payment_date") }}
                   </label>
                   <input
                       v-model="contract.payment_date"
@@ -205,15 +217,19 @@
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
             <div class="col-xl-8">
-              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments" @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
+              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments"
+                               @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
             </div>
 
             <div class="col-xl-4 h-auto">
               <div class="sticky-top">
                 <ClientInformation :client="client"></ClientInformation>
-                <ApartmentsList  :apartments="apartments" :contract="contract" @changePrice="initialCalc"></ApartmentsList>
-                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts" @changeDiscount="changeDiscount"></Calculator>
-                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract" :discounts="discounts" :buttons="buttons"></Confirm>
+                <ApartmentsList :apartments="apartments" :contract="contract"
+                                @changePrice="initialCalc"></ApartmentsList>
+                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts"
+                            @changeDiscount="changeDiscount"></Calculator>
+                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract"
+                         :discounts="discounts" :buttons="buttons"></Confirm>
               </div>
             </div>
           </div>
@@ -451,6 +467,16 @@ export default {
       // }
     },
 
+    goBackToLastStep() {
+      if (this.contract.step === 1) {
+        this.$router.go(-1)
+      }
+
+      if (this.contract.step === 2) {
+        this.contract.step = 1
+      }
+    },
+
     deepClone(obj) {
       let temp;
       if (obj === null || typeof obj !== "object") return obj;
@@ -466,14 +492,17 @@ export default {
     },
 
     async postStore() {
+      console.log('this.client', this.client)
       this.buttons.loading = true;
       await this.axios
           .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
           .then((response) => {
-            console.log(response)
             this.buttons.loading = false;
             if (response) {
-              this.client = response.data;
+              this.client = {
+                ...response.data,
+                type_client: 'unknown'
+              }
               this.onSubmit();
             }
           })

@@ -252,7 +252,7 @@ export default {
       return ''
     },
     routePermission() {
-      const notUsed = ['login', 'home', 'objects', 'settings', 'users', 'roles', 'clients', 'type_plan', 'debtors', 'contracts', 'companies']
+      const notUsed = ['confirm-apartment', 'login', 'home', 'objects', 'settings', 'users', 'roles', 'clients', 'type_plan', 'debtors', 'contracts', 'companies']
       const currentRouteName = this.$route.name
       const result = notUsed.findIndex(name => name === currentRouteName)
       return result === -1;

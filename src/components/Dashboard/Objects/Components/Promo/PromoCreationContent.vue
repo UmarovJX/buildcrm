@@ -134,7 +134,7 @@ export default {
     addPrepayContent(prepayValue) {
       const prepayInputComponent = this.$refs['prepay-input']
       if (this.prepaysList.length) {
-        const hasValueBefore = this.prepaysList.find(prepay => prepay.prepayValue === prepayValue)
+        const hasValueBefore = this.prepaysList.find(prepay => parseFloat(prepay.prepayValue) === parseFloat(prepayValue))
         if (hasValueBefore) {
           prepayInputComponent.showWarningForSameValue()
           return
@@ -163,13 +163,16 @@ export default {
       const blocks = this.getSelectedBlocks.map((block) => {
         const {id, types} = block
         let discount = {
-          prepay: block.prepay,
+          prepay: block.discount.prepay,
           id: null
         }
+
         const hasOwnDiscount = block.hasOwnProperty('discount')
+
         if (hasOwnDiscount) {
-          discount = block.discount
+          discount.id = block.discount.id
         }
+
         return {
           id,
           types,
@@ -209,7 +212,15 @@ export default {
       //   }
       // })
 
-      const form = {blocks: this.getSelectedBlocks, ...dates.form}
+      const blocks = this.getSelectedBlocks.map(({id, types, discount}) => {
+        return {
+          id,
+          types,
+          discount
+        }
+      })
+
+      const form = {blocks, ...dates.form}
       await api.objects.createObjectPromo({id, form})
           .then(() => {
             this.$emit('successfully-created')
@@ -261,6 +272,8 @@ export default {
             }
 
             const filterForSubmit = historyList.map(({discount, block, types: rowTypes}) => {
+              const prepayId = this.prepaysList.find(list => list.prepayValue === discount.prepay).prepayId
+
               const types = rowTypes.map(({currency_type, price, items}) => {
                 const values = items.map(item => item.value)
                 const type = items[0].type
@@ -270,7 +283,7 @@ export default {
               })
 
               return {
-                id: block.id, types, discount
+                id: block.id, types, discount, prepayId
               }
             })
 

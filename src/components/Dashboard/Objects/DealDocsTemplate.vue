@@ -1,18 +1,22 @@
 <template>
   <main>
     <div class="app-content">
-
+      <base-bread-crumb
+          :bread-crumbs="breadCrumbs"
+          :active-content="activeContent"
+      >
+        <template #extra-content>
+          <b-button
+              v-b-modal.creation-content
+              class="button__new__contract"
+              variant="primary"
+          >
+            <i class="fal fa-plus mr-2"></i>
+            {{ $t("add") }}
+          </b-button>
+        </template>
+      </base-bread-crumb>
       <!--   Add New Contract    -->
-      <div class="d-flex justify-content-end">
-        <b-button
-            v-b-modal.creation-content
-            class="button__new__contract"
-            variant="primary"
-        >
-          <i class="fal fa-plus mr-2"></i>
-          {{ $t("add") }}
-        </b-button>
-      </div>
 
       <!--   Contract List    -->
       <b-card no-body class="mt-3">
@@ -53,14 +57,16 @@
 
 <script>
 import api from "@/services/api";
-import CreateDealDocsTemplate from "@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate";
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import BaseContractListTable from "@/components/Dashboard/Objects/Components/BaseContractListTable";
+import CreateDealDocsTemplate from "@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate";
 
 export default {
   name: 'DealDocsTemplate',
   components: {
-    CreateDealDocsTemplate,
-    BaseContractListTable
+    BaseBreadCrumb,
+    BaseContractListTable,
+    CreateDealDocsTemplate
   },
   data() {
     return {
@@ -70,6 +76,17 @@ export default {
     }
   },
   computed: {
+    activeContent() {
+      return this.$t('objects.deal_template.title')
+    },
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'object-deal-template',
+          textContent: this.$t('objects.deal_template.name')
+        }
+      ]
+    },
     saleContracts() {
       return this.contracts.filter(contract => {
         return contract.category === 'sale' || contract.category === 'not_initial'

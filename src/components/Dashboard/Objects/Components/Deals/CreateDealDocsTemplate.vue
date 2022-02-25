@@ -13,7 +13,7 @@
         <!--  FILE UPLOAD  -->
         <ValidationProvider
             rules="required"
-            :name="$t('objects.deal_file')"
+            :name="`${$t('objects.deal_file')}`"
             v-slot="{errors}"
         >
           <b-form-group
@@ -36,7 +36,7 @@
         <!--  SELECT CATEGORY  -->
         <ValidationProvider
             rules="required"
-            :name="$t('objects.select_category')"
+            :name="`${$t('objects.select_category')}`"
             v-slot="{errors}"
         >
           <b-form-group
@@ -100,7 +100,7 @@
             <b-form-radio-group
                 size="lg"
                 id="radio-group-1"
-                v-model="selected"
+                v-model="form.language"
                 :options="options"
                 :aria-describedby="ariaDescribedby"
                 name="radio-options"
@@ -218,7 +218,7 @@ export default {
     setInitialPropertyForm() {
       for (let key of Object.keys(this.form)) {
         const property = this.form[key]
-        const makeNullProperties = ['type,category']
+        const makeNullProperties = ['type', 'category']
         const findIndex = makeNullProperties.findIndex(nullProperty => nullProperty === property)
         if (findIndex !== -1)
           this.form[key] = null
