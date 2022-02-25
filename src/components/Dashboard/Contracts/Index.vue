@@ -1,37 +1,37 @@
 <template>
   <main>
     <button
-      class="btn btn-primary mt-0 mr-0 ml-auto"
-      v-b-toggle.contracts-list-filter
+        class="btn btn-primary mt-0 mr-0 ml-auto"
+        v-b-toggle.contracts-list-filter
     >
       <i class="far fa-sliders-h mr-2"></i>
       {{ $t("apartments.list.filter") }}
     </button>
 
-    <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter" />
+    <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter"/>
 
     <div class="app-content">
       <b-table
-        ref="contracts-table"
-        id="contracts-table"
-        class="custom-table"
-        sticky-header
-        borderless
-        responsive
-        show-empty
-        sort-icon-left
-        :items="getContracts"
-        :fields="fields"
-        :sort-by.sync="sortBy"
-        :tbody-tr-class="rowClass"
-        :sort-desc.sync="sortDesc"
-        :empty-text="$t('no_data')"
-        @sort-changed="sortingChanged"
+          ref="contracts-table"
+          id="contracts-table"
+          class="custom-table"
+          sticky-header
+          borderless
+          responsive
+          show-empty
+          sort-icon-left
+          :items="getContracts"
+          :fields="fields"
+          :sort-by.sync="sortBy"
+          :tbody-tr-class="rowClass"
+          :sort-desc.sync="sortDesc"
+          :empty-text="$t('no_data')"
+          @sort-changed="sortingChanged"
       >
         <template #empty="scope" class="text-center">
           <span class="d-flex justify-content-center align-items-center">{{
-            scope.emptyText
-          }}</span>
+              scope.emptyText
+            }}</span>
         </template>
 
         <template #table-busy>
@@ -56,26 +56,26 @@
         <template #cell(client)="data">
           {{
             data.value.first_name.kirill
-              ? data.value.first_name.kirill
-              : data.value.first_name.lotin
+                ? data.value.first_name.kirill
+                : data.value.first_name.lotin
           }}
           {{
             data.value.last_name.kirill
-              ? data.value.last_name.kirill
-              : data.value.last_name.lotin
+                ? data.value.last_name.kirill
+                : data.value.last_name.lotin
           }}
           {{
             data.value.second_name && data.value.second_name.kirill
-              ? data.value.second_name.kirill
-              : ""
+                ? data.value.second_name.kirill
+                : ""
           }}
         </template>
 
         <template #cell(price)="data">
           {{
             data.item.status === "booked"
-              ? 0
-              : data.item.transaction_price
+                ? 0
+                : data.item.transaction_price
                 | number("0,0.00", {
                   thousandsSeparator: " ",
                   decimalSeparator: ",",
@@ -86,43 +86,48 @@
 
         <template #cell(date)="data">
           <span v-if="data.item.status === 'cancelled'">{{
-            data.item.status | getStatus("", "")
-          }}</span>
+              data.item.status | getStatus("", "")
+            }}</span>
           <span v-else>{{
-            data.item.status
-              | getStatus(
-                $moment(data.item.contract_date).format("DD.MM.YYYY"),
-                $moment(data.item.booking_date).format("DD.MM.YYYY")
-              )
-          }}</span>
+              data.item.status
+                  | getStatus(
+                  $moment(data.item.contract_date).format("DD.MM.YYYY"),
+                  $moment(data.item.booking_date).format("DD.MM.YYYY")
+                  )
+            }}</span>
         </template>
 
         <template #cell(actions)="data">
           <div class="float-right">
             <div class="dropdown my-dropdown dropleft">
               <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
+                  type="button"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
               >
                 <i class="far fa-ellipsis-h"></i>
               </button>
               <div class="dropdown-menu">
                 <a
-                  class="dropdown-item dropdown-item--inside"
-                  v-if="
+                    class="dropdown-item dropdown-item--inside"
+                    v-if="
                     data.item.status === 'contract' ||
                       data.item.status === 'sold'
                   "
-                  :href="data.item.contract_path"
+                    href="#"
+                    @click="downloadContractLink(data.item.id)"
                 >
                   <i class="fa fa-download"></i>
                   {{ $t("contracts.download") }}
                 </a>
 
+                <!--                    :href="downloadContractLink(data.item.id)"-->
+                <!--                    target="_blank"-->
+                <!--                    download-->
+
                 <router-link
-                  :to="{name: 'contracts-view', params: {id: data.item.id}}"
-                  :class="'dropdown-item dropdown-item--inside'"
+                    :to="{name: 'contracts-view', params: {id: data.item.id}}"
+                    :class="'dropdown-item dropdown-item--inside'"
                 >
                   <i class="far fa-eye"></i>
                   {{ $t("apartments.list.more") }}
@@ -147,19 +152,19 @@
       </b-table>
 
       <paginate
-        v-if="getPagination"
-        :pageCount="getPagination"
-        :clickHandler="PageCallBack"
-        :prevText="`<i class='fa fa-chevron-left'></i>`"
-        :nextText="`<i class='fa fa-chevron-right'></i>`"
-        :container-class="'pagination'"
-        :page-class="'page-item'"
-        :page-link-class="'page-link'"
-        :next-class="'page-item'"
-        :prev-class="'page-item'"
-        :prev-link-class="'page-link'"
-        :next-link-class="'page-link'"
-        v-model="currentPage"
+          v-if="getPagination"
+          :pageCount="getPagination"
+          :clickHandler="PageCallBack"
+          :prevText="`<i class='fa fa-chevron-left'></i>`"
+          :nextText="`<i class='fa fa-chevron-right'></i>`"
+          :container-class="'pagination'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :next-class="'page-item'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-link-class="'page-link'"
+          v-model="currentPage"
       >
       </paginate>
     </div>
@@ -183,6 +188,8 @@
 import {mapActions, mapGetters} from "vuex";
 import {BOverlay} from "bootstrap-vue";
 import SideBarFilter from "./SideBarFilter.vue";
+import api from "@/services/api";
+
 export default {
   components: {
     SideBarFilter,
@@ -261,6 +268,15 @@ export default {
 
   methods: {
     ...mapActions(["fetchContracts"]),
+    downloadContractLink(id) {
+      api.contract.downloadContract(id)
+          .then(() => {
+            window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`)
+          })
+          .catch(() => {
+            return '#'
+          })
+    },
     sortingChanged(val) {
       this.filter.sort_by = val.sortBy;
       this.filter.order_by = val.sortDesc ? "desc" : "asc";

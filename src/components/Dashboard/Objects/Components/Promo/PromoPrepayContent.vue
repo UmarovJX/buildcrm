@@ -128,8 +128,8 @@ export default {
     selectedBlocks() {
       this.updateFormTypes()
     },
-    'form.prepay'(next, prev) {
-      this.updatePrepay(next, prev)
+    'form.prepay'(next) {
+      this.updatePromoValue({next:parseFloat(next), prepayId: this.form.prepayId})
     }
   },
   created() {
@@ -156,22 +156,10 @@ export default {
 
       const discount = {
         prepay: this.form.prepay,
-        id: this.form.prepayUnique
+        id: this.form.prepayUnique,
       }
 
-      this.updateCreationSelectedBlocks({id, discount, types})
-    },
-    updatePrepay() {
-      // this.updatePromoValue({next, prev})
-      // const {blocks, prepay} = this.form
-      // const findIndex = blocks.findIndex(block => block.id === id)
-      // if (findIndex !== -1) {
-      //   this.form.blocks[findIndex].types = types
-      // } else {
-      //   this.form.blocks.push({id, prepay, types})
-      // }
-      //
-      // this.updateCreationSelectedBlocks({id, prepay, types})
+      this.updateCreationSelectedBlocks({id, discount, types, prepayId: this.form.prepayId})
     },
     updateFormTypes() {
       const ids = this.selectedBlocks.map(selectedBlock => selectedBlock.id)

@@ -1,19 +1,26 @@
 <template>
   <div>
-    <div class="d-flex justify-content-between align-items-center sticky-top bg-custom-white px-3 py-2 rounded shadow-sm "
-         v-if="(contract.discount && contract.discount.prepay !== 100) || contract.discount.prepay < 100 ">
+    <div
+        class="d-flex justify-content-between align-items-center sticky-top bg-custom-white px-3 py-2 rounded shadow-sm "
+        v-if="(contract.discount && contract.discount.prepay !== 100) || contract.discount.prepay < 100 ">
       <h6 class="mb-0">Таблица ежемесячных платежей:</h6>
       <div class="d-flex justify-content-end align-items-center">
         <div class="mr-2 w-25">
-          <input id="month" class="my-form__input w-100" type="number" min="0" required
-                 v-model="contract.month"
-                 @change="changeMonth"
-                 @click="changeMonth"
+          <input
+              id="month"
+              class="my-form__input w-100"
+              type="number"
+              min="0"
+              required
+              v-model="contract.month"
+              @change="changeMonth"
+              @click="changeMonth"
           />
         </div>
-        <span v-if="contract.month > 0 && contract.discount && (contract.discount.prepay !== 100 || contract.discount.prepay < 100)">
-            {{ contract.month }} месяцев по <br />
-            {{ getCalMonth() | number("0,0.00", {thousandsSeparator: " ", decimalSeparator: ",",})  }}
+        <span
+            v-if="contract.month > 0 && contract.discount && (contract.discount.prepay !== 100 || contract.discount.prepay < 100)">
+            {{ contract.month }} месяцев по <br/>
+            {{ getCalMonth() | number("0,0.00", {thousandsSeparator: " ", decimalSeparator: ",",}) }}
             {{ $t("ye") }}
         </span>
       </div>
@@ -38,9 +45,11 @@
         </thead>
 
         <tbody>
-        <tr v-if="contract.initial_payments.length === 0 || contract.initial_payments.length === 1" >
+        <tr v-if="contract.initial_payments.length === 0 || contract.initial_payments.length === 1">
           <td>
-            {{ this.contract.first_payment_date ? this.contract.first_payment_date : new Date() | moment("DD.MM.YYYY") }}
+            {{
+              this.contract.first_payment_date ? this.contract.first_payment_date : new Date() | moment("DD.MM.YYYY")
+            }}
           </td>
 
           <td>
@@ -48,9 +57,9 @@
           </td>
 
           <td>
-            <div class="d-flex justify-content-between align-items-center" >
+            <div class="d-flex justify-content-between align-items-center">
               <span class="table-sm-width">
-                {{ getCalcPrepay() | number("0,0.00", { thousandsSeparator: " ", decimalSeparator: ",", }) }}
+                {{ getCalcPrepay() | number("0,0.00", {thousandsSeparator: " ", decimalSeparator: ",",}) }}
                 {{ $t("ye") }}
               </span>
 
@@ -65,7 +74,7 @@
           </td>
         </tr>
 
-        <tr  v-else v-for="(initialPayment, index) in contract.initial_payments" :key="'initial' + index" >
+        <tr v-else v-for="(initialPayment, index) in contract.initial_payments" :key="'initial' + index">
           <td>
             <span v-if="!initialPayment.edit">
               {{ initialPayment.month | moment("DD.MM.YYYY") }}
@@ -93,11 +102,11 @@
           <td>
             <div class=" d-flex justify-content-between align-items-center">
                 <span v-if="!initialPayment.edit">
-                  {{ initialPayment.amount | number("0,0.00", { thousandsSeparator: " ", decimalSeparator: ",", }) }}
+                  {{ initialPayment.amount | number("0,0.00", {thousandsSeparator: " ", decimalSeparator: ",",}) }}
                   {{ $t("ye") }}
                 </span>
 
-              <div class="col-md-6 float-left" v-if="initialPayment.edit" >
+              <div class="col-md-6 float-left" v-if="initialPayment.edit">
                 <div class="row">
                   <!--                  <input-->
                   <!--                      type="text"-->
@@ -118,12 +127,12 @@
                 </div>
               </div>
 
-              <div class=" d-flex justify-content-between align-items-center " >
+              <div class=" d-flex justify-content-between align-items-center ">
                 <button
                     class="btn btn-success btn-sm mr-1 mt-0"
                     v-if="index === contract.initial_payments.length - 1"
                     type="button"
-                    @click="addInitialPayment" >
+                    @click="addInitialPayment">
                   <i class="fa fa-plus-circle"></i>
                 </button>
 
@@ -171,7 +180,7 @@
           </td>
 
           <td>
-            <div class="d-flex d-flex justify-content-between align-items-center"  >
+            <div class="d-flex d-flex justify-content-between align-items-center">
                 <span v-if="!month.edit">
                   {{
                     month.amount
@@ -238,10 +247,10 @@
 import VueNumeric from "vue-numeric";
 
 import moment from "moment";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 // import * as Calc from "../../../../util/calculator";
-const { getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal } = require("../../../../util/calculator");
+const {getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal} = require("../../../../util/calculator");
 
 export default {
   name: "MonthlyPayments",

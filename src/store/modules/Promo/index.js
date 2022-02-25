@@ -14,8 +14,8 @@ export default {
         setUpSelectedBlocks(state, blocks) {
             state.creationSelectedBlocks = blocks
         },
-        updatePromoValue(state, {next, prev}) {
-            const findIndex = state.creationSelectedBlocks.findIndex(selectedBlock => selectedBlock.discount.prepay === prev)
+        updatePromoValue(state, {next, prepayId}) {
+            const findIndex = state.creationSelectedBlocks.findIndex(selectedBlock => selectedBlock.prepayId === prepayId)
             if (findIndex !== -1) {
                 state.creationSelectedBlocks[findIndex].discount.prepay = parseFloat(next)
             }
