@@ -492,13 +492,17 @@ export default {
     },
 
     async postStore() {
+      console.log('this.client', this.client)
       this.buttons.loading = true;
       await this.axios
           .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
           .then((response) => {
             this.buttons.loading = false;
             if (response) {
-              this.client = response.data;
+              this.client = {
+                ...response.data,
+                type_client: 'unknown'
+              }
               this.onSubmit();
             }
           })
