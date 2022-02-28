@@ -69,7 +69,7 @@
 
           <button
               v-if="selected.view && getPermission.apartments.contract"
-              class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-5"
+              class="btn btn-warning mr-md-2 mr-0 mt-md-0 order-2"
               @click="multiSelectOff"
           >
             <i class="far fa-redo"></i> {{ $t("apartments.list.reset") }}
