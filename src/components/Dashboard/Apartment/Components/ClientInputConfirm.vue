@@ -27,7 +27,8 @@
 
           <b-form-invalid-feedback id="checkout-pasport-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -58,7 +59,8 @@
 
           <b-form-invalid-feedback id="issue_passport-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -87,7 +89,8 @@
 
           <b-form-invalid-feedback id="date_of_issue-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -116,13 +119,14 @@
 
           <b-form-invalid-feedback id="birth_day-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
     <!-- last_name_kirill -->
@@ -151,7 +155,8 @@
 
           <b-form-invalid-feedback id="last_name_kirill-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -182,7 +187,8 @@
 
           <b-form-invalid-feedback id="first_name_kirill-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -213,13 +219,14 @@
 
           <b-form-invalid-feedback id="second_name_kirill-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
     <!-- last_name_lotin -->
@@ -248,7 +255,8 @@
 
           <b-form-invalid-feedback id="last_name_lotin-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -279,7 +287,8 @@
 
           <b-form-invalid-feedback id="first_name_lotin-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -310,13 +319,14 @@
 
           <b-form-invalid-feedback id="second_name_lotin-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
     <!-- client.phone -->
@@ -335,15 +345,17 @@
               id="phone"
               name="phone"
               type="tel"
+              v-mask="maskForPhoneNumber"
               :placeholder="$t('apartments.agree.placeholder.phone')"
-              v-model="client.phone"
+              v-model="clientPhoneNumber"
               :state="getValidationState(validationContext)"
               aria-describedby="phone-feedback"
           ></b-form-input>
 
           <b-form-invalid-feedback id="phone-feedback">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -351,17 +363,17 @@
     <!-- client.other_phone -->
     <div class="col-md-4">
       <div class="mb-3">
-          <label class="d-block" for="other_phone">{{
-              $t("apartments.agree.other_phone")
-            }}</label>
-          <input
-              class="my-form__input form-control"
-              type="tel"
-              :placeholder="$t('apartments.agree.placeholder.other_phone')"
-              v-model="client.other_phone"
-              id="other_phone"
-
-          />
+        <label class="d-block" for="other_phone">{{
+            $t("apartments.agree.other_phone")
+          }}</label>
+        <input
+            class="my-form__input form-control"
+            type="tel"
+            :placeholder="$t('apartments.agree.placeholder.other_phone')"
+            v-model="clientOtherPhoneNumber"
+            id="other_phone"
+            v-mask="maskForPhoneNumber"
+        />
       </div>
     </div>
 
@@ -408,23 +420,17 @@
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ClientInputConfirm",
-
-  watch: {
-    client: function () {
-      this.$emit('clientSet', this.client)
-    },
-  },
 
   computed: {
     ...mapGetters([
@@ -445,6 +451,21 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
+      maskForPhoneNumber: `+998 ## ### ## ##`,
+      clientPhoneNumber: this.client.phone,
+      clientOtherPhoneNumber: this.client.other_phone
+    }
+  },
+
+  watch: {
+    client: function () {
+      this.$emit('clientSet', this.client)
+    },
+    clientPhoneNumber(phone) {
+      this.client.phone = phone.replace(/\s/g, '')
+    },
+    clientOtherPhoneNumber(phone) {
+      this.client.other_phone = phone.replace(/\s/g, '')
     }
   },
 
@@ -502,13 +523,13 @@ export default {
     isCyrillic(type, value) {
       switch (type) {
         case 'first_name':
-          this.client.first_name.kirill =  this.symbolIsCyrillic(value);
+          this.client.first_name.kirill = this.symbolIsCyrillic(value);
           break;
         case 'last_name':
-          this.client.last_name.kirill =  this.symbolIsCyrillic(value);
+          this.client.last_name.kirill = this.symbolIsCyrillic(value);
           break;
         case 'second_name':
-          this.client.second_name.kirill =  this.symbolIsCyrillic(value);
+          this.client.second_name.kirill = this.symbolIsCyrillic(value);
           break;
       }
     },
@@ -516,13 +537,13 @@ export default {
     isLatin(type, value) {
       switch (type) {
         case 'first_name':
-          this.client.first_name.lotin =  this.symbolIsLatin(value);
+          this.client.first_name.lotin = this.symbolIsLatin(value);
           break;
         case 'last_name':
-          this.client.last_name.lotin =  this.symbolIsLatin(value);
+          this.client.last_name.lotin = this.symbolIsLatin(value);
           break;
         case 'second_name':
-          this.client.second_name.lotin =  this.symbolIsLatin(value);
+          this.client.second_name.lotin = this.symbolIsLatin(value);
           break;
       }
     },
