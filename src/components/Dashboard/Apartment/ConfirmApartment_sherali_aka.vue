@@ -1110,7 +1110,7 @@
                         label="Цена продажы за м2:"
                         label-for="price"
                     >
-                      <vue-numeric
+                      <base-numeric-input
                           id="price"
                           v-model="calc.price_for_m2"
                           :currency="$t('ye')"
@@ -1119,7 +1119,7 @@
                           currency-symbol-position="suffix"
                           separator="space"
                           disabled
-                      ></vue-numeric>
+                      ></base-numeric-input>
                     </b-form-group>
 
                     <!-- Скидка when apartment count = 1 -->
@@ -1131,7 +1131,7 @@
                         label="Скидка от общей суммы:"
                         label-for="total-discound-price"
                     >
-                      <vue-numeric
+                      <base-numeric-input
                           id="total-discound-price"
                           :value="calc.total_discount_price"
                           @change="changeTotalDiscountPrice($event)"
@@ -1140,7 +1140,7 @@
                           class="form-control"
                           currency-symbol-position="suffix"
                           separator="space"
-                      ></vue-numeric>
+                      ></base-numeric-input>
                     </b-form-group>
 
                     <!-- Скидка от общей суммы | Скидка за м2 -->
@@ -1148,7 +1148,7 @@
                       <!-- Скидка от общей суммы -->
                       <b-tab title="Скидка от общей суммы:" active>
                         <b-card-text>
-                          <vue-numeric
+                          <base-numeric-input
                               :value="calc.total_discount_price"
                               @change="changeTotalDiscountPrice($event)"
                               :currency="$t('ye')"
@@ -1156,13 +1156,13 @@
                               class="form-control mt-1"
                               currency-symbol-position="suffix"
                               separator="space"
-                          ></vue-numeric>
+                          ></base-numeric-input>
                         </b-card-text>
                       </b-tab>
                       <!-- Скидка за м2 -->
                       <b-tab title="Скидка за м2:">
                         <b-card-text>
-                          <vue-numeric
+                          <base-numeric-input
                               :value="calc.discount_price"
                               @change="changeDiscountPriceForM2($event)"
                               :currency="$t('ye')"
@@ -1170,7 +1170,7 @@
                               class="form-control mt-1"
                               currency-symbol-position="suffix"
                               separator="space"
-                          ></vue-numeric>
+                          ></base-numeric-input>
                         </b-card-text>
                       </b-tab>
                     </b-tabs>
@@ -1189,7 +1189,7 @@
                         label="Первый взнос: "
                         label-for="prepay_to"
                     >
-                      <vue-numeric
+                      <base-numeric-input
                           id="prepay_to"
                           v-model="calc.prepay"
                           class="form-control"
@@ -1198,7 +1198,7 @@
                           currency-symbol-position="suffix"
                           separator="space"
                           disabled
-                      ></vue-numeric>
+                      ></base-numeric-input>
                     </b-form-group>
 
                     <!-- Ежемесячный -->
@@ -1218,7 +1218,7 @@
                           v-model="calc.month"
                       >
                       </b-form-input>
-                      <vue-numeric
+                      <base-numeric-input
                           id="credit_price_for_month"
                           v-model="monthly_price"
                           class="form-control mt-2"
@@ -1228,7 +1228,7 @@
                           separator="space"
                           disabled
                           read-only-class="true"
-                      ></vue-numeric>
+                      ></base-numeric-input>
                       <span style="position: absolute; right: 40px; top: 6px"
                       >месяцев</span
                       >
@@ -1243,7 +1243,7 @@
                         label="Остаток: "
                         label-for="debt"
                     >
-                      <vue-numeric
+                      <base-numeric-input
                           id="debt"
                           v-model="calc.debt"
                           :currency="$t('ye')"
@@ -1252,7 +1252,7 @@
                           currency-symbol-position="suffix"
                           separator="space"
                           disabled
-                      ></vue-numeric>
+                      ></base-numeric-input>
                     </b-form-group>
 
                     <!-- Итого -->
@@ -1263,7 +1263,7 @@
                         label="Итого: "
                         label-for="total"
                     >
-                      <vue-numeric
+                      <base-numeric-input
                           id="total"
                           v-model="calc.total"
                           :currency="$t('ye')"
@@ -1272,7 +1272,7 @@
                           currency-symbol-position="suffix"
                           separator="space"
                           disabled
-                      ></vue-numeric>
+                      ></base-numeric-input>
                     </b-form-group>
                   </div>
                 </div>
@@ -1543,9 +1543,8 @@ import {mapGetters, mapActions} from "vuex";
 import moment from "moment";
 import SuccessAgree from "./Components/SuccessAgree";
 import QuickViewApartments from "./Components/QuickViewApartments";
-import VueNumeric from "vue-numeric";
 import FlipCountdown from "vue2-flip-countdown";
-
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 export default {
   name: "ConfirmApartment",
 
@@ -1650,9 +1649,9 @@ export default {
 
   components: {
     SuccessAgree,
-    VueNumeric,
     QuickViewApartments,
     FlipCountdown,
+    BaseNumericInput
   },
 
   created() {

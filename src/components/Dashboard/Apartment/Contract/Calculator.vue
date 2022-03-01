@@ -46,7 +46,7 @@
           label="Цена продажы за м2:"
           label-for="price"
       >
-        <vue-numeric
+        <base-numeric-input
             id="price"
             v-model="per_square"
             :currency="$t('ye')"
@@ -55,7 +55,7 @@
             currency-symbol-position="suffix"
             separator="space"
             disabled
-        ></vue-numeric>
+        ></base-numeric-input>
       </b-form-group>
 
       <!-- Скидка when apartment count = 1 -->
@@ -67,17 +67,16 @@
           label="Скидка от общей суммы:"
           label-for="total-discound-price"
       >
-        <vue-numeric
+        <base-numeric-input
             id="total-discound-price"
             v-model="contract.discount_amount"
-
             :currency="$t('ye')"
             :precision="2"
             class="form-control"
             currency-symbol-position="suffix"
             separator="space"
             @change="changeTotalDiscountPrice"
-        ></vue-numeric>
+        ></base-numeric-input>
         <!--        @change="changeTotalDiscountPrice($event)"-->
       </b-form-group>
 
@@ -86,7 +85,7 @@
         <!-- Скидка от общей суммы -->
         <b-tab title="Скидка от общей суммы:" active>
           <b-card-text>
-            <vue-numeric
+            <base-numeric-input
                 v-model="contract.discount_amount"
                 :currency="$t('ye')"
                 :precision="2"
@@ -94,7 +93,7 @@
                 currency-symbol-position="suffix"
                 separator="space"
                 @change="changeTotalDiscountPrice"
-            ></vue-numeric>
+            ></base-numeric-input>
             <!--            -->
 
           </b-card-text>
@@ -102,7 +101,7 @@
         <!-- Скидка за м2 -->
         <b-tab title="Скидка за м2:">
           <b-card-text>
-            <vue-numeric
+            <base-numeric-input
                 v-model="contract.discount_square"
                 :currency="$t('ye')"
                 :precision="2"
@@ -110,7 +109,7 @@
                 currency-symbol-position="suffix"
                 separator="space"
                 @change="changeDiscountPriceForM2"
-            ></vue-numeric>
+            ></base-numeric-input>
             <!--            @change="changeDiscountPriceForM2($event)"-->
 
           </b-card-text>
@@ -131,7 +130,7 @@
           label="Первый взнос: "
           label-for="prepay_to"
       >
-        <vue-numeric
+        <base-numeric-input
             id="prepay_to"
             v-model="contract.prepay_amount"
             class="form-control"
@@ -140,7 +139,7 @@
             currency-symbol-position="suffix"
             separator="space"
             @change="changePrepayAmount($event)"
-        ></vue-numeric>
+        ></base-numeric-input>
       </b-form-group>
 
 
@@ -163,7 +162,7 @@
           <!--          -->
 
         </b-form-input>
-        <vue-numeric
+        <base-numeric-input
             id="credit_price_for_month"
             v-model="monthly"
             class="form-control mt-2"
@@ -173,7 +172,7 @@
             separator="space"
             disabled
             read-only-class="true"
-        ></vue-numeric>
+        ></base-numeric-input>
         <span style="position: absolute; right: 40px; top: 6px"
         >месяцев</span
         >
@@ -188,7 +187,7 @@
           label="Остаток: "
           label-for="debt"
       >
-        <vue-numeric
+        <base-numeric-input
             id="debt"
             v-model="calc.debt"
             :currency="$t('ye')"
@@ -197,7 +196,7 @@
             currency-symbol-position="suffix"
             separator="space"
             disabled
-        ></vue-numeric>
+        ></base-numeric-input>
       </b-form-group>
 
       <!-- Итого -->
@@ -208,7 +207,7 @@
           label="Итого: "
           label-for="total"
       >
-        <vue-numeric
+        <base-numeric-input
             id="total"
             v-model="total"
             :currency="$t('ye')"
@@ -217,20 +216,23 @@
             currency-symbol-position="suffix"
             separator="space"
             disabled
-        ></vue-numeric>
+        ></base-numeric-input>
       </b-form-group>
     </div>
   </div>
 </template>
 
 <script>
-import VueNumeric from "vue-numeric";
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 const { getTotal, getMonth, getPrice, getPricePerM2, getPrepay, editedCreditMonths, getDebt, CreditMonths, getTotalDiscount } = require("../../../../util/calculator");
 import { mapGetters } from "vuex";
 import Vue from 'vue';
 
 export default {
   name: "Calculator",
+  components: {
+    BaseNumericInput,
+  },
   props: {
     client: {},
     apartments: {},
@@ -294,10 +296,6 @@ export default {
         prepay: false
       }
     }
-  },
-
-  components: {
-    VueNumeric,
   },
 
   computed: {

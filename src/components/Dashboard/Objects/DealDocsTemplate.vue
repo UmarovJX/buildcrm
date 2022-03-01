@@ -22,10 +22,20 @@
       <b-card no-body class="mt-3">
         <b-tabs v-model="contractTabs" pills card active-nav-item-class="active__contract__tab">
           <b-tab :title="$t('objects.sale')">
-            <base-contract-list-table @update-content="getDealTemplateList" :contracts="saleContracts"/>
+            <base-contract-list-table
+                @update-loading="updateLoading"
+                @update-content="getDealTemplateList"
+                :contracts="saleContracts"
+                type="sale"
+            />
           </b-tab>
           <b-tab :title="$t('reservation')">
-            <base-contract-list-table @update-content="getDealTemplateList" :contracts="reserveContracts"/>
+            <base-contract-list-table
+                @update-loading="updateLoading"
+                @update-content="getDealTemplateList"
+                :contracts="reserveContracts"
+                type="reservation"
+            />
           </b-tab>
           <!--          <b-tab :title="$t('free_of_charge')">-->
           <!--            <base-contract-list-table :contracts="notInitialContracts"/>-->
@@ -72,24 +82,23 @@ export default {
     return {
       loading: false,
       contracts: [],
-      contractTabs: 0
+      contractTabs: 0,
+      objectName: '',
+      breadCrumbs: [
+        {
+          routeName: 'object-deal-template',
+          textContent: this.$t('objects.deal_template.name')
+        }
+      ]
     }
   },
   computed: {
     activeContent() {
       return this.$t('objects.deal_template.title')
     },
-    breadCrumbs() {
-      return [
-        {
-          routeName: 'object-deal-template',
-          textContent: this.$t('objects.deal_template.name')
-        }
-      ]
-    },
     saleContracts() {
       return this.contracts.filter(contract => {
-        return contract.category === 'sale' || contract.category === 'not_initial'
+        return contract.category === 'sale' || contract.category === 'not_initial' || contract.category === 'not_initial'
       })
     },
     notInitialContracts() {
@@ -107,6 +116,9 @@ export default {
     await this.getDealTemplateList()
   },
   methods: {
+    updateLoading(loadingValue) {
+      this.loading = loadingValue
+    },
     updateContent({category}) {
       if (category === 'sale')
         this.contractTabs = 0
@@ -122,7 +134,18 @@ export default {
       const {id} = this.$route.params
       await api.objects.getDealTemplateList(id)
           .then((response) => {
-            this.contracts = response.data
+            this.contracts = response.data.data
+            const objectCrumb = {
+              routeName: 'apartments',
+              textContent: response.data.object_name,
+              params: {
+                object: this.$route.params.id
+              }
+            }
+            const hasApartmentLink = this.breadCrumbs.findIndex(breadcrumb => breadcrumb.routeName === 'apartments')
+            if (hasApartmentLink === -1) {
+              this.breadCrumbs.unshift(objectCrumb)
+            }
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)

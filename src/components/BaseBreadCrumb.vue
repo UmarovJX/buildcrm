@@ -14,11 +14,11 @@
 
         <template>
           <li
-              v-for="{ routeName,textContent } in breadCrumbs"
+              v-for="{ routeName,textContent, params } in breadCrumbs"
               :key="routeName+textContent"
               class="breadcrumb-item"
           >
-            <router-link :to="{ name:routeName }">
+            <router-link :to="{ name:routeName,params }">
               {{ textContent }}
             </router-link>
           </li>

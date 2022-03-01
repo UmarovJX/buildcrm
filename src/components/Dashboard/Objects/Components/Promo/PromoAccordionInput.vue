@@ -33,7 +33,7 @@
             ref="price-provider"
             class="d-flex justify-content-center align-items-center"
         >
-          <vue-numeric
+          <base-numeric-input
               v-model="form.priceByValue"
               class="plan__group-input"
               :precision="2"
@@ -42,7 +42,7 @@
               separator="space"
               placeholder="000"
               @focus="removePriceError"
-          ></vue-numeric>
+          ></base-numeric-input>
         </ValidationProvider>
 
       </b-input-group>
@@ -119,12 +119,11 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import VueNumeric from "vue-numeric";
-
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 export default {
   name: "PromoAccordionInput",
   components: {
-    VueNumeric
+    BaseNumericInput
   },
   props: {
     block: {

@@ -61,7 +61,7 @@ export default {
     sum_text: "So'm",
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
-    contract_file_not_found:'Kontrakt fayl topilmadi',
+    contract_file_not_found: 'Kontrakt fayl topilmadi',
 
     promo: {
         name: 'Aksiya',
@@ -92,7 +92,7 @@ export default {
         alert_before_close_title: 'Rostdan ham yopmoqchimisiz ?',
         alert_before_close_no: "Yo'q",
         by_promo: "Aksiya bo'yicha",
-        in_promo:'Aktsiyalarda',
+        in_promo: 'Aktsiyalarda',
         promo_rate: 'Tarif',
     },
 
@@ -373,7 +373,7 @@ export default {
             booked: "Band qilingan", //asd
             sold: "Sotilgan", //asd
             unavailable: "Mavjud emas", //asd
-            promo:'Aksiya',
+            promo: 'Aksiya',
         },
     },
 
@@ -420,7 +420,8 @@ export default {
             name: 'Shartoma andozasi',
             type: 'Turi',
             main: 'Asosiy',
-            title:"Shartnoma shablonlari ro'yxati"
+            title: "Shartnoma shablonlari ro'yxati",
+            warning_message: 'Siz barcha asosiy shartnomalarni tanlamadingiz! Iltimos, barcha asosiy shartnomalarni tanlang!'
         },
 
         create: {
@@ -568,7 +569,7 @@ export default {
     },
 
     branches: {
-        title:'Filiallar',
+        title: 'Filiallar',
         name: 'Filial',
         branch_name: 'Filial nomi',
         branch_address: 'Filial manzili',

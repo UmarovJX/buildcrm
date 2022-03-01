@@ -115,7 +115,7 @@
                   <!--                      min="0"-->
                   <!--                  />-->
 
-                  <vue-numeric
+                  <base-numeric-input
                       id="prepay_to"
                       v-model="initialPayment.amount"
                       class="form-control"
@@ -123,7 +123,7 @@
                       :precision="2"
                       currency-symbol-position="suffix"
                       separator="space"
-                  ></vue-numeric>
+                  ></base-numeric-input>
                 </div>
               </div>
 
@@ -201,7 +201,7 @@
                   <!--                      min="0"-->
                   <!--                  />-->
 
-                  <vue-numeric
+                  <base-numeric-input
                       id="prepay_to"
                       v-model="month.amount"
                       class="form-control"
@@ -209,7 +209,7 @@
                       :precision="2"
                       currency-symbol-position="suffix"
                       separator="space"
-                  ></vue-numeric>
+                  ></base-numeric-input>
 
                 </div>
               </div>
@@ -244,8 +244,7 @@
 </template>
 
 <script>
-import VueNumeric from "vue-numeric";
-
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import moment from "moment";
 import {mapGetters} from "vuex";
 
@@ -254,6 +253,10 @@ const {getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal} = requir
 
 export default {
   name: "MonthlyPayments",
+
+  components: {
+    BaseNumericInput
+  },
 
   props: {
     apartments: {},
@@ -273,10 +276,6 @@ export default {
 
   mounted() {
     CreditMonths(this.apartments, this.contract)
-  },
-
-  components: {
-    VueNumeric,
   },
 
   computed: {

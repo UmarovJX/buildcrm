@@ -30,16 +30,17 @@
         :label="$t('apartments.view.price_for_m2')"
         label-for="price"
     >
-      <vue-numeric
+      <base-numeric-input
           id="price"
           v-model="calc.price_for_m2"
           :currency="$t('ye')"
           :precision="2"
+          decimal-separator=","
           class="form-control"
           currency-symbol-position="suffix"
           separator="space"
           disabled
-      ></vue-numeric>
+      ></base-numeric-input>
     </b-form-group>
 
     <!-- Скидка -->
@@ -50,7 +51,7 @@
         :label="$t('apartments.view.discount_per_m2')"
         label-for="discound-price"
     >
-      <vue-numeric
+      <base-numeric-input
           id="discound-price"
           v-model="calc.discount_price"
           @change="changeDiscount_price"
@@ -59,7 +60,7 @@
           class="form-control"
           currency-symbol-position="suffix"
           separator="space"
-      ></vue-numeric>
+      ></base-numeric-input>
     </b-form-group>
 
     <!-- Предоплата -->
@@ -76,16 +77,16 @@
         :label="$t('contracts.view.initial_payment')"
         label-for="prepay_to"
     >
-      <vue-numeric
+      <base-numeric-input
           id="prepay_to"
           v-model="calc.prepay"
           class="form-control"
           :currency="$t('ye')"
           :precision="2"
           currency-symbol-position="suffix"
-          disabled
           separator="space"
-      ></vue-numeric>
+          disabled
+      ></base-numeric-input>
     </b-form-group>
 
     <!-- Ежемесячный -->
@@ -103,7 +104,7 @@
           v-model="calc.month"
       >
       </b-form-input>
-      <vue-numeric
+      <base-numeric-input
           id="credit_price_for_month"
           v-model="monthly_price"
           class="form-control mt-2"
@@ -111,9 +112,9 @@
           :precision="2"
           currency-symbol-position="suffix"
           separator="space"
-          disabled
           read-only-class="true"
-      ></vue-numeric>
+          disabled
+      ></base-numeric-input>
       <span style="position: absolute; right: 20px; top: 6px">{{ $t('month') }}</span>
     </b-form-group>
 
@@ -126,7 +127,7 @@
         :label="$t('contracts.view.remainder')"
         label-for="debt"
     >
-      <vue-numeric
+      <base-numeric-input
           id="debt"
           v-model="calc.debt"
           :currency="$t('ye')"
@@ -135,7 +136,7 @@
           currency-symbol-position="suffix"
           separator="space"
           disabled
-      ></vue-numeric>
+      ></base-numeric-input>
     </b-form-group>
 
     <!-- Итого -->
@@ -146,7 +147,7 @@
         :label="$t('apartments.view.total')"
         label-for="total"
     >
-      <vue-numeric
+      <base-numeric-input
           id="total"
           v-model="calc.total"
           :currency="$t('ye')"
@@ -155,19 +156,19 @@
           currency-symbol-position="suffix"
           separator="space"
           disabled
-      ></vue-numeric>
+      ></base-numeric-input>
     </b-form-group>
   </div>
 </template>
 
 <script>
-import VueNumeric from "vue-numeric";
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import {mapGetters} from "vuex";
 
 export default {
   name: "Discount",
   components: {
-    VueNumeric,
+    BaseNumericInput
   },
   props: {
     apartment: {
@@ -213,6 +214,7 @@ export default {
       // return [];
     },
   },
+
   methods: {
     async initialCalc() {
       if (this.discount.type === "percent") {

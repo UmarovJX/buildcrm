@@ -49,7 +49,7 @@ export default {
     sum_text: 'В суммах',
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
-    contract_file_not_found:'Файл контракта не найдено',
+    contract_file_not_found: 'Файл контракта не найдено',
 
     promo: {
         name: 'Акция',
@@ -161,7 +161,7 @@ export default {
                 create: "Разрешить создать объект",
                 update: "Разрешить редактировать объект",
                 delete: "Разрешить удалять объектов",
-                apartments: "Разрешить видеть список квартир",
+                apartments: "Разрешить видеть список квартир"
             },
 
             users: {
@@ -425,7 +425,8 @@ export default {
             name: 'Шаблон договора',
             type: 'Тип',
             main: 'Главный',
-            title:"Список шаблонов договоров"
+            title: "Список шаблонов договоров",
+            warning_message: 'Вы не выбрали основные договоры! Пожалуйста выберите все основные договоры!'
         },
 
         create: {
@@ -585,7 +586,7 @@ export default {
     },
 
     branches: {
-        title:'Филиалы',
+        title: 'Филиалы',
         name: 'Филиал',
         branch_name: 'Название филиала',
         branch_address: 'Адрес филиала',

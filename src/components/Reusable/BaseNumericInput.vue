@@ -134,7 +134,7 @@ export default {
     value: {
       type: [Number, String],
       default: 0,
-      required: true
+      required: false
     },
 
     /**
@@ -173,7 +173,8 @@ export default {
   },
 
   data: () => ({
-    amount: ''
+    amount: '',
+    startTyping: false
   }),
 
   computed: {
@@ -225,39 +226,9 @@ export default {
   },
 
   watch: {
-    amount(newValue) {
-      if (newValue) {
-        const findDecimalIndex = newValue.indexOf(',')
-        if (findDecimalIndex !== -1) {
-          const decimalSide = newValue.slice(findDecimalIndex + 1)
-          const numberSide = newValue.slice(0, findDecimalIndex)
-          const formattingValue = accounting.formatMoney(this.unformat(numberSide), {
-            symbol: this.currency,
-            format: this.symbolPosition,
-            precision: 0,
-            decimal: this.decimalSeparatorSymbol,
-            thousand: this.thousandSeparatorSymbol
-          })
-
-          const formattedValue = formattingValue + ',' + decimalSide
-          if (newValue !== formattedValue) {
-            this.amount = formattedValue
-          }
-        } else {
-          const formattingValue = accounting.formatMoney(this.valueNumber, {
-            symbol: this.currency,
-            format: this.symbolPosition,
-            precision: 0,
-            decimal: this.decimalSeparatorSymbol,
-            thousand: this.thousandSeparatorSymbol
-          })
-          if (newValue !== formattingValue) {
-            this.amount = formattingValue
-          }
-        }
-      }
+    amount() {
+      this.startTyping && this.formatAmount()
     },
-
     /**
      * Watch for value change from other input with same v-model.
      * @param {Number} newValue
@@ -324,6 +295,39 @@ export default {
   },
 
   methods: {
+    formatAmount() {
+      let newValue = this.amount
+
+      const findDecimalSeparator = newValue.indexOf(',')
+      const unFormatValue = accounting.unformat(newValue, this.decimalSeparatorSymbol)
+
+      let formattingValue = this.formatWithoutSeparator(unFormatValue).slice(0, -1)
+      if (findDecimalSeparator !== -1) {
+        let decimalSide = newValue.slice(findDecimalSeparator)
+        let wholeSide = newValue.slice(0, findDecimalSeparator)
+        const unFormatWholeSide = accounting.unformat(wholeSide)
+        if (decimalSide.length > 1) {
+          const lastValueOfDecimalSide = parseInt(decimalSide[decimalSide.length - 1])
+          if (isNaN(lastValueOfDecimalSide) || typeof lastValueOfDecimalSide !== "number") {
+            decimalSide = decimalSide.slice(0, -1)
+          }
+        }
+
+        const dotRegex = /,/gi
+        const matchDots = decimalSide.match(dotRegex)
+        if (matchDots.length > 1) {
+          decimalSide = decimalSide.slice(0, -1)
+        }
+
+        formattingValue = this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1) + decimalSide
+      }
+
+      if (newValue !== formattingValue) {
+        this.amount = formattingValue
+      }
+    },
+
+
     /**
      * Handle change event.
      * @param {Object} e
@@ -337,7 +341,9 @@ export default {
      */
     onBlurHandler(e) {
       this.$emit('blur', e)
-      this.amount = this.format(this.valueNumber)
+      this.startTyping = false
+      const unFormatAmount = this.unformat(this.amount)
+      this.amount = this.format(unFormatAmount)
     },
 
     /**
@@ -346,24 +352,40 @@ export default {
      */
     onFocusHandler(e) {
       this.$emit('focus', e)
-      if (this.valueNumber === 0) {
-        this.amount = null
-      } else {
-        this.amount = accounting.formatMoney(this.valueNumber, {
-          symbol: '',
-          format: '%v',
-          thousand: '',
-          decimal: this.decimalSeparatorSymbol,
-          precision: Number(this.precision)
-        })
+      this.startTyping = true
+      const usd = `${this.$t('usd')}`
+      const ye = `${this.$t('ye')}`
+
+      const symbolUsdIndex = this.amount.indexOf(usd)
+      const symbolSumIndex = this.amount.indexOf(ye)
+
+      if (symbolUsdIndex !== -1) {
+        this.amount = this.amount.slice(0, symbolUsdIndex)
       }
+
+      if (symbolSumIndex !== -1) {
+        this.amount = this.amount.slice(0, symbolSumIndex)
+      }
+      // if (this.valueNumber === 0) {
+      //   this.amount = null
+      // } else {
+      //   this.amount = accounting.formatMoney(this.valueNumber, {
+      //     symbol: '',
+      //     format: '%v',
+      //     thousand: '',
+      //     decimal: this.decimalSeparatorSymbol,
+      //     precision: Number(this.precision)
+      //   })
+      // }
     },
 
     /**
      * Handle input event.
      */
     onInputHandler() {
-      this.process(this.amountNumber)
+      // this.process(this.amountNumber)
+      const output = this.unformat(this.amount)
+      this.$emit('input', output)
     },
 
     /**
@@ -399,6 +421,26 @@ export default {
         precision: Number(this.precision),
         decimal: this.decimalSeparatorSymbol,
         thousand: this.thousandSeparatorSymbol
+      })
+    },
+
+    formatWithoutSeparator(value) {
+      return accounting.formatMoney(value, {
+        symbol: '',
+        format: this.symbolPosition,
+        precision: 0,
+        decimal: this.decimalSeparatorSymbol,
+        thousand: this.thousandSeparatorSymbol
+      })
+    },
+
+    formatDecimalSide(value) {
+      return accounting.formatMoney(value, {
+        symbol: this.currency,
+        format: this.symbolPosition,
+        precision: 0,
+        decimal: 0,
+        thousand: 0
       })
     },
 
