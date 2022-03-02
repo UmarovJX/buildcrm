@@ -415,6 +415,7 @@ export default {
         sale: 'Sotuv',
         booking: 'Band qilish',
         make_it_main_contract: 'Asosiy shartnoma qilib belgilash',
+        unfinished_contract: 'Tugallanmagan shartnomalar',
 
         deal_template: {
             name: 'Shartoma andozasi',

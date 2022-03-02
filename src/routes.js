@@ -52,6 +52,7 @@ import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import ObjectsPromo from "@/components/Dashboard/Objects/ObjectsPromo";
+
 const routes = [
     {
         path: "/home",

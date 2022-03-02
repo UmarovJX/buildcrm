@@ -420,7 +420,7 @@ export default {
         sale: 'Продажа',
         booking: 'Бронирование',
         make_it_main_contract: 'Сделать основным договором',
-
+        unfinished_contract:'Незавершенный контракт',
         deal_template: {
             name: 'Шаблон договора',
             type: 'Тип',

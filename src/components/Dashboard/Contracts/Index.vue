@@ -1,12 +1,19 @@
 <template>
   <main>
-    <button
-        class="btn btn-primary mt-0 mr-0 ml-auto"
-        v-b-toggle.contracts-list-filter
+    <base-bread-crumb
+        :active-content="activeContent"
     >
-      <i class="far fa-sliders-h mr-2"></i>
-      {{ $t("apartments.list.filter") }}
-    </button>
+      <template #extra-content>
+        <button
+            class="btn btn-primary mt-0 mr-0 ml-auto"
+            v-b-toggle.contracts-list-filter
+        >
+          <i class="far fa-sliders-h mr-2"></i>
+          {{ $t("apartments.list.filter") }}
+        </button>
+      </template>
+    </base-bread-crumb>
+
 
     <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter"/>
 
@@ -188,11 +195,13 @@
 import {mapActions, mapGetters} from "vuex";
 import {BOverlay} from "bootstrap-vue";
 import SideBarFilter from "./SideBarFilter.vue";
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 
 export default {
   components: {
     SideBarFilter,
+    BaseBreadCrumb,
     BOverlay,
   },
 
@@ -260,6 +269,9 @@ export default {
         return this.getPaginationContracts.total;
       }
       return 1;
+    },
+    activeContent() {
+      return this.$t('contracts.title')
     },
   },
   mounted() {

@@ -19,6 +19,13 @@
         ></flip-countdown>
       </div>
 
+      <base-bread-crumb
+          :bread-crumbs="breadCrumbs"
+          :active-content="activeContent"
+          class="mb-4"
+      >
+      </base-bread-crumb>
+
       <!-- Step 1 -->
       <div class="new-object p-3" v-if="contract.step === 1">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
@@ -270,6 +277,7 @@ import ClientInputConfirm from "./Components/ClientInputConfirm";
 import MonthlyPayments from "./Contract/MonthlyPayments";
 import ClientInformation from "./Contract/ClientInformation";
 import ApartmentsList from "./Contract/ApartmentsList";
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import Calculator from "./Contract/Calculator";
 import Confirm from "./Contract/Confirm";
 
@@ -287,6 +295,19 @@ import moment from "moment";
 
 export default {
   name: "ConfirmApartment",
+
+  components: {
+    // VueNumeric,
+    SuccessAgree,
+    FlipCountdown,
+    ClientInputConfirm,
+    MonthlyPayments,
+    ClientInformation,
+    ApartmentsList,
+    BaseBreadCrumb,
+    Calculator,
+    Confirm,
+  },
 
   data() {
     return {
@@ -374,18 +395,6 @@ export default {
     }
   },
 
-  components: {
-    // VueNumeric,
-    SuccessAgree,
-    FlipCountdown,
-    ClientInputConfirm,
-    MonthlyPayments,
-    ClientInformation,
-    ApartmentsList,
-    Calculator,
-    Confirm,
-  },
-
   computed: {
     ...mapGetters([
       "getReserveClient",
@@ -393,7 +402,34 @@ export default {
       "getMe",
       "getApartmentOrder",
     ]),
-
+    objectName(){
+      if(this.order.apartments?.length){
+        return this.order.apartments[0].object.name
+      }
+      return '';
+    },
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'objects',
+          textContent: this.$t('objects.title')
+        },
+        {
+          routeName: 'apartments',
+          textContent: this.objectName,
+          params: {
+            object: this.$route.params.object
+          }
+        },
+        {
+          routeName:'',
+          textContent: this.$t('objects.create.apartment')
+        },
+      ]
+    },
+    activeContent() {
+      return this.$t('objects.booking')
+    },
     // apartmentInfoItem() {
     //   let val = this.getApartmentOrder;
     //   if (val) {

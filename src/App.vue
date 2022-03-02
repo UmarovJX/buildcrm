@@ -38,6 +38,7 @@ export default {
     ...mapGetters(["getMe"])
   },
   created() {
+    console.log(this.$route)
     if (!localStorage.locale) {
       localStorage.locale = "ru";
       this.$i18n.locale = "ru";

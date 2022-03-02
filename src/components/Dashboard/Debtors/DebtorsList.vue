@@ -1,6 +1,12 @@
 <template>
   <main>
     <div class="app-content">
+      <base-bread-crumb
+          :active-content="activeContent"
+          class="mb-4"
+      >
+      </base-bread-crumb>
+
       <div class="row">
         <div class="col-md-5">
           <form action="" class="my-form float-left w-100">
@@ -176,13 +182,14 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 // import ViewClient from '../Apartment/ViewClient';
-
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 
 export default {
   components: {
     DatePicker,
+    BaseBreadCrumb
     // 'view-client': ViewClient
   },
 
@@ -269,6 +276,9 @@ export default {
         return this.getPaginationDebtors.total;
       }
       return 1;
+    },
+    activeContent() {
+      return this.$t('debtors.title')
     },
   },
 

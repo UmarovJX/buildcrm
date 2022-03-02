@@ -1,6 +1,12 @@
 <template>
   <main>
     <div class="app-content apartment-list-filter">
+      <base-bread-crumb
+          :bread-crumbs="breadCrumbs"
+          :active-content="activeContent"
+          class="mb-4"
+      ></base-bread-crumb>
+
       <div v-if="unsfinishedContracts.length">
         <b-alert variant="warning" class="py-2" show>
           <div
@@ -413,6 +419,7 @@ import SuccessAgree from "./Components/SuccessAgree";
 import AgreeMultiple from "./Components/AgreeMultiple";
 import ApartmentsBookingModal from "@/components/Dashboard/Apartment/Components/ApartmentsBookingModal";
 import ApartmentListFilterTabs from "@/components/Dashboard/Apartment/Components/ApartmentListFilterTabs";
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api"
 
 export default {
@@ -426,6 +433,7 @@ export default {
     "success-agree": SuccessAgree,
     ApartmentListFilterTabs,
     ApartmentsBookingModal,
+    BaseBreadCrumb,
     BAlert,
     BButton,
   },
@@ -572,6 +580,31 @@ export default {
     items() {
       return this.getApartments.items;
     },
+    objectName() {
+      if (this.items.length) {
+        return this.items[0].object.name
+      }
+
+      return ''
+    },
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'objects',
+          textContent: this.$t('objects.title')
+        },
+        {
+          routeName: 'apartments',
+          textContent: this.objectName,
+          params: {
+            object: this.$route.params.object
+          }
+        }
+      ]
+    },
+    activeContent() {
+      return this.$t('objects.apartments')
+    },
   },
 
   watch: {
@@ -603,7 +636,7 @@ export default {
             this.loading = false
           })
     },
-    downloadContract(url){
+    downloadContract(url) {
       const a = document.createElement('a')
       a.href = url
       a.click()

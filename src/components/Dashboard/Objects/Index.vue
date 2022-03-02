@@ -1,7 +1,12 @@
 <template>
   <main>
     <div class="app-content">
-      <div class="object">
+      <base-bread-crumb
+          :active-content="activeContent"
+      >
+      </base-bread-crumb>
+
+      <div class="object mt-4">
         <div
             class="object__item object__item--manager"
             v-for="(object, index) in getObjects"
@@ -173,12 +178,14 @@
 import {mapGetters, mapActions} from "vuex";
 // import Filter from './Components/Filter/Index';
 import UploadLogo from "./Components/UploadLogo";
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 
 export default {
   name: 'Objects',
   components: {
     // 'filter-form': Filter,
     "upload-logo": UploadLogo,
+    BaseBreadCrumb
   },
 
   data: () => ({
@@ -209,7 +216,12 @@ export default {
     //this.fetchApartmentsRooms(this);
   },
 
-  computed: mapGetters(["getObjects", "getPermission"]),
+  computed: {
+    ...mapGetters(["getObjects", "getPermission"]),
+    activeContent() {
+      return this.$t('objects.title')
+    }
+  },
 
   methods: {
     ...mapActions(["fetchObjects"]),
