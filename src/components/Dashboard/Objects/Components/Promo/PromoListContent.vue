@@ -144,9 +144,13 @@ export default {
           formatter: (blocks) => {
             let names = ''
             blocks.forEach((current, index, arr) => {
-              names += current.block.name
-              if (arr.length - 1 > index) {
-                names += ' , '
+              const arraysBeforeIndex = arr.slice(0, index)
+              const hasBefore = arraysBeforeIndex.findIndex(arr => arr.block.id === current.block.id)
+              if (hasBefore === -1) {
+                names += current.block.name
+                if (index < arr.length - 1) {
+                  names += ' , '
+                }
               }
             })
             return names

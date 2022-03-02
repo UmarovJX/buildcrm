@@ -36,12 +36,12 @@
           <base-numeric-input
               v-model="form.priceByValue"
               class="plan__group-input"
+              @focus="removePriceError"
               :precision="2"
-              :minus="false"
+              decimal-separator=","
+              :currency="inputPrefixSymbol"
               currency-symbol-position="suffix"
               separator="space"
-              placeholder="000"
-              @focus="removePriceError"
           ></base-numeric-input>
         </ValidationProvider>
 
@@ -120,6 +120,7 @@
 <script>
 import {mapGetters} from 'vuex'
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
+
 export default {
   name: "PromoAccordionInput",
   components: {
@@ -205,6 +206,14 @@ export default {
       getEditHistoryContext: 'getEditHistoryContext',
       getSelectedBlocks: 'getSelectedBlocks'
     }),
+    inputPrefixSymbol() {
+      const {value} = this.promoPriceOptionsBinding
+      if (value === 'usd') {
+        return this.$t('usd')
+      }
+
+      return this.$t('ye')
+    },
     showDeletedButton() {
       return this.startTime !== this.promoIndex.id
     },

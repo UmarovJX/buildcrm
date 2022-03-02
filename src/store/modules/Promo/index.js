@@ -51,6 +51,9 @@ export default {
         },
         deletePromoCreationBlock(state, prepay) {
             state.creationSelectedBlocks = state.creationSelectedBlocks.filter(selectedBlock => selectedBlock.discount.prepay !== prepay)
+        },
+        deleteRemovedBlock(state, id) {
+            state.creationSelectedBlocks = state.creationSelectedBlocks.filter(creationBlock => creationBlock.id !== id)
         }
     },
 
