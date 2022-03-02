@@ -244,13 +244,16 @@ export default {
     togglePromoSubmitButton() {
       this.showWarningMessage()
     },
-    'form.blocks'(last) {
-      if (last.length) {
-        this.removePromoBlocksError()
-      }
+    'form.blocks': {
+      handler(last) {
+        if (last.length) {
+          this.removePromoBlocksError()
+        }
 
-      this.userFocusedAccordion()
-      this.setInputValues()
+        this.userFocusedAccordion()
+        this.setInputValues()
+      },
+      immediate: true
     },
     'form.priceByValue'() {
       this.userFocusedAccordion()

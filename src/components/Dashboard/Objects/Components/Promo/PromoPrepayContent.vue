@@ -176,7 +176,7 @@ export default {
       this.$emit('delete-prepay-content', {id, prepay: prepayValue})
     },
     removedSelectedBlock(removedBlock) {
-      this.deleteRemovedBlock(removedBlock.id)
+      this.deleteRemovedBlock({prepayId: this.form.prepayId, id: removedBlock.id})
     },
     blockSelectionError(error) {
       const id = this.prepay.prepayId

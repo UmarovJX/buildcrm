@@ -287,8 +287,11 @@ export default {
     updateApartments() {
       this.promoInputIndex = this.promoInputIndex.map((promoIndex) => {
         const ref = `promo-accordion-${promoIndex.id}`
-        const accordionInput = this.$refs[ref][0]
-        const ownBlockList = accordionInput.form.blocks
+        let ownBlockList = []
+        if (this.$refs[ref]) {
+          const accordionInput = this.$refs[ref][0]
+          ownBlockList = accordionInput.form.blocks
+        }
 
         if (promoIndex.blockType === 'floor') {
           promoIndex.blockList = [...ownBlockList, ...this.notSelectedFloorValues()]
@@ -304,8 +307,11 @@ export default {
     removeSelectedApartments(blockId) {
       this.promoInputIndex = this.promoInputIndex.map((promoIndex) => {
         const ref = `promo-accordion-${promoIndex.id}`
-        const accordionInput = this.$refs[ref][0]
-        const ownBlockList = accordionInput.form.blocks
+        let ownBlockList = []
+        if (this.$refs[ref]) {
+          const accordionInput = this.$refs[ref][0]
+          ownBlockList = accordionInput.form.blocks
+        }
 
         if (promoIndex?.id !== blockId) {
           if (promoIndex.blockType === 'floor') {
