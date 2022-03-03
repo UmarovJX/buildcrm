@@ -598,5 +598,13 @@ export default {
         manager_phone_number: 'Номер телефона менеджера',
         manager_email: 'Почта менеджера',
         manager_avatar: 'Аватар менеджера',
+    },
+
+    filter_names:{
+        all:'Все',
+        booked: "Забронирован",
+        sold:'Оформлен',
+        in_payment:'На оплате',
+        archive:'Закрыт'
     }
 }

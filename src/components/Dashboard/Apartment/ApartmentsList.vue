@@ -101,7 +101,11 @@
       </div>
 
       <!--  TODO: FILTER SECTION    -->
-      <apartment-list-filter-tabs @get-new-content="getFilterTabsContent"/>
+      <base-filter-tabs-content
+          @get-new-content="getFilterTabsContent"
+          :filter-tab-list="filterTabList"
+      />
+
       <!--  TODO: END OF FILTER SECTION    -->
 
       <div>
@@ -403,7 +407,7 @@
         <success-agree :contract="contract"></success-agree>
       </div>
     </div>
-    <apartments-booking-modal @set-client-data="bookSelectedApartments"></apartments-booking-modal>
+    <apartments-booking-modal @set-client-data="bookSelectedApartments" />
   </main>
 </template>
 
@@ -418,7 +422,7 @@ import Filter from "./Components/ApartmentsFilter";
 import SuccessAgree from "./Components/SuccessAgree";
 import AgreeMultiple from "./Components/AgreeMultiple";
 import ApartmentsBookingModal from "@/components/Dashboard/Apartment/Components/ApartmentsBookingModal";
-import ApartmentListFilterTabs from "@/components/Dashboard/Apartment/Components/ApartmentListFilterTabs";
+import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api"
 
@@ -431,8 +435,8 @@ export default {
     "info-manager-modal": InfoManager,
     "agree-modal": AgreeMultiple,
     "success-agree": SuccessAgree,
-    ApartmentListFilterTabs,
     ApartmentsBookingModal,
+    BaseFilterTabsContent,
     BaseBreadCrumb,
     BAlert,
     BButton,
@@ -579,6 +583,34 @@ export default {
     },
     items() {
       return this.getApartments.items;
+    },
+    filterTabList() {
+      return [
+        {
+          name: this.$t('apartments.tab_names.all'),
+          status: 'all'
+        },
+        {
+          name: this.$t('apartments.tab_names.available'),
+          status: 'available'
+        },
+        {
+          name: this.$t('apartments.tab_names.booked'),
+          status: 'booked'
+        },
+        {
+          name: this.$t('apartments.tab_names.promo'),
+          status: 'promo'
+        },
+        {
+          name: this.$t('apartments.tab_names.sold'),
+          status: 'sold'
+        },
+        {
+          name: this.$t('apartments.tab_names.unavailable'),
+          status: 'unavailable'
+        }
+      ]
     },
     objectName() {
       if (this.items.length) {

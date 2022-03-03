@@ -14,10 +14,10 @@ class Core {
 
     post(url, body = {}, config) {
         return _axios.post(url, body, {
-            ...config,
             headers: {
                 'Authorization': 'Bearer ' + localStorage.token
-            }
+            },
+            ...config
         }).catch((error) => Promise.reject(error))
     }
 

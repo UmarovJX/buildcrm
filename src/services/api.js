@@ -8,8 +8,8 @@ import contract from "@/services/contract";
 export default {
     user,
     objects,
+    contract,
     branches,
     companies,
     apartments,
-    contract
 }

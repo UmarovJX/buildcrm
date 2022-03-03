@@ -582,5 +582,13 @@ export default {
         manager_phone_number: 'Menedjerning telefon raqami',
         manager_email: 'Menedjerning elektron pochtasi',
         manager_avatar: 'Menedjerning profil surati',
+    },
+
+    filter_names:{
+        all:'Barchasi',
+        booked: 'Band qilingan',
+        sold:'Sotilgan',
+        in_payment:"To'lovda",
+        archive:'Arxiv'
     }
 }

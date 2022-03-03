@@ -14,9 +14,13 @@
       </template>
     </base-bread-crumb>
 
-
     <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter"/>
 
+    <base-filter-tabs-content
+        :filter-tab-list="filterTabList"
+        @get-new-content="getFilterTabsContent"
+    />
+    
     <div class="app-content">
       <b-table
           ref="contracts-table"
@@ -36,9 +40,8 @@
           @sort-changed="sortingChanged"
       >
         <template #empty="scope" class="text-center">
-          <span class="d-flex justify-content-center align-items-center">{{
-              scope.emptyText
-            }}</span>
+          <span class="d-flex justify-content-center align-items-center">
+            {{ scope.emptyText }}</span>
         </template>
 
         <template #table-busy>
@@ -61,11 +64,7 @@
         </template>
 
         <template #cell(client)="data">
-          {{
-            data.value.first_name.kirill
-                ? data.value.first_name.kirill
-                : data.value.first_name.lotin
-          }}
+          {{ data.value.first_name.kirill ? data.value.first_name.kirill : data.value.first_name.lotin }}
           {{
             data.value.last_name.kirill
                 ? data.value.last_name.kirill
@@ -92,9 +91,11 @@
         </template>
 
         <template #cell(date)="data">
-          <span v-if="data.item.status === 'cancelled'">{{
+          <span v-if="data.item.status === 'cancelled'">
+            {{
               data.item.status | getStatus("", "")
-            }}</span>
+            }}
+          </span>
           <span v-else>{{
               data.item.status
                   | getStatus(
@@ -192,16 +193,19 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
 import {BOverlay} from "bootstrap-vue";
+import {mapActions, mapGetters} from "vuex";
 import SideBarFilter from "./SideBarFilter.vue";
+import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 
 export default {
+  name: 'Contracts',
   components: {
-    SideBarFilter,
+    BaseFilterTabsContent,
     BaseBreadCrumb,
+    SideBarFilter,
     BOverlay,
   },
 
@@ -254,7 +258,7 @@ export default {
       page: 1,
       currentPage: 1,
       loading: false,
-    };
+    }
   },
   created() {
     this.filter = {
@@ -264,6 +268,30 @@ export default {
   },
   computed: {
     ...mapGetters(["getContracts", "getLoading", "getPaginationContracts"]),
+    filterTabList() {
+      return [
+        {
+          name: this.$t('filter_names.all'),
+          status: 'all'
+        },
+        {
+          name: this.$t('filter_names.booked'),
+          status: 'booked'
+        },
+        {
+          name: this.$t('filter_names.sold'),
+          status: 'sold'
+        },
+        {
+          name: this.$t('filter_names.in_payment'),
+          status: 'in_payment'
+        },
+        {
+          name: this.$t('filter_names.archive'),
+          status: 'archive'
+        }
+      ]
+    },
     getPagination() {
       if (this.getPaginationContracts.total) {
         return this.getPaginationContracts.total;
@@ -280,6 +308,9 @@ export default {
 
   methods: {
     ...mapActions(["fetchContracts"]),
+    getFilterTabsContent(status){
+      console.log(status)
+    },
     downloadContractLink(id) {
       api.contract.downloadContract(id)
           .then(() => {
@@ -303,7 +334,6 @@ export default {
         this.fetchContracts(this);
       }, 1000);
     },
-
     async contractsFiltered(event) {
       this.filter = event;
       let filter = {};
@@ -354,7 +384,6 @@ export default {
         return null;
       }
     },
-
     async PageCallBack(pageNum) {
       this.page = pageNum;
       this.filter.page = Number(this.page);
