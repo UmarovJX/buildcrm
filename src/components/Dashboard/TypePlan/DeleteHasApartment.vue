@@ -44,6 +44,9 @@
             <!--                  style="cursor: pointer; object-fit: contain"-->
             <!--              />-->
             <!--            </picture>-->
+            <span v-if="plan.name" class="mx-4">
+              {{ plan.name }}
+            </span>
             <span class="mx-4">
               {{ $t('apartments.list.area') }} : {{ plan.area }}
             </span>
