@@ -50,6 +50,7 @@ export default {
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
     contract_file_not_found: 'Файл контракта не найдено',
+    validation_warning_to_bottom: 'Одно из полей заполнена неправильно, пожалуйста проверьте все поля еще раз!',
 
     promo: {
         name: 'Акция',
@@ -398,8 +399,8 @@ export default {
         plan: "Планировка",
         plans: "Все планировки",
         list: "Список планировок",
-        plan_required:"Вам необходимо выбрать проект квартиры",
-        delete_title:"Вам нужно перейти на другой план, который имеет {apartments_count} квартир в этом плане квартир."
+        plan_required: "Вам необходимо выбрать проект квартиры",
+        delete_title: "Вам нужно перейти на другой план, который имеет {apartments_count} квартир в этом плане квартир."
     },
 
     debtors: {
@@ -422,7 +423,7 @@ export default {
         sale: 'Продажа',
         booking: 'Бронирование',
         make_it_main_contract: 'Сделать основным договором',
-        unfinished_contract:'Незавершенный контракт',
+        unfinished_contract: 'Незавершенный контракт',
         deal_template: {
             name: 'Шаблон договора',
             type: 'Тип',
@@ -602,11 +603,11 @@ export default {
         manager_avatar: 'Аватар менеджера',
     },
 
-    filter_names:{
-        all:'Все',
+    filter_names: {
+        all: 'Все',
         booked: "Забронирован",
-        sold:'Оформлен',
-        in_payment:'На оплате',
-        archive:'Закрыт'
+        sold: 'Оформлен',
+        in_payment: 'На оплате',
+        archive: 'Закрыт'
     }
 }

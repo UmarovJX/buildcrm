@@ -62,6 +62,7 @@ export default {
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
     contract_file_not_found: 'Kontrakt fayl topilmadi',
+    validation_warning_to_bottom: "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
 
     promo: {
         name: 'Aksiya',
@@ -387,8 +388,8 @@ export default {
         plan: "Xonadon rejasi",
         plans: "Barcha xonadon rejalari",
         list: "Xonadon rejalari ro'yxati",
-        plan_required:"Xonadon loyihasini tanlashingiz shart",
-        delete_title:"Bu xonadon rejasida {apartments_count} ta kvartira mavjud boshqa rejaga o'tkazishingiz kerak"
+        plan_required: "Xonadon loyihasini tanlashingiz shart",
+        delete_title: "Bu xonadon rejasida {apartments_count} ta kvartira mavjud boshqa rejaga o'tkazishingiz kerak"
     },
     debtors: {
         title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
@@ -585,11 +586,11 @@ export default {
         manager_avatar: 'Menedjerning profil surati',
     },
 
-    filter_names:{
-        all:'Barchasi',
+    filter_names: {
+        all: 'Barchasi',
         booked: 'Band qilingan',
-        sold:'Sotilgan',
-        in_payment:"To'lovda",
-        archive:'Arxiv'
+        sold: 'Sotilgan',
+        in_payment: "To'lovda",
+        archive: 'Arxiv'
     }
 }

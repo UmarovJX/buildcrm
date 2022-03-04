@@ -119,6 +119,7 @@
                   <button
                       class="dropdown-item dropdown-item--inside"
                       @click="deleteTypePlan(data.item)"
+                      v-if="getPermission.type_plan.update"
                   >
                     <span>
                       <i class="far fa-trash"></i>

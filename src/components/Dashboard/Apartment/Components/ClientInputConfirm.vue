@@ -17,6 +17,7 @@
               name="checkout-pasport"
               type="text"
               @change="getClientData"
+              @focus="userFocused"
               :placeholder="
                         $t('apartments.agree.placeholder.passport_series')
                       "
@@ -25,9 +26,8 @@
               aria-describedby="checkout-pasport-feedback"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="checkout-pasport-feedback">{{
-              validationContext.errors[0]
-            }}
+          <b-form-invalid-feedback id="checkout-pasport-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -55,11 +55,11 @@
               v-model="client.issued_by_whom"
               :state="getValidationState(validationContext)"
               aria-describedby="issue_passport-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="issue_passport-feedback">{{
-              validationContext.errors[0]
-            }}
+          <b-form-invalid-feedback id="issue_passport-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -85,11 +85,11 @@
               v-model="client.date_of_issue"
               :state="getValidationState(validationContext)"
               aria-describedby="date_of_issue-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="date_of_issue-feedback">{{
-              validationContext.errors[0]
-            }}
+          <b-form-invalid-feedback id="date_of_issue-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -115,11 +115,11 @@
               v-model="client.birth_day"
               :state="getValidationState(validationContext)"
               aria-describedby="birth_day-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="birth_day-feedback">{{
-              validationContext.errors[0]
-            }}
+          <b-form-invalid-feedback id="birth_day-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
@@ -151,9 +151,10 @@
               @change="textToLatin('last_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="last_name_kirill-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="last_name_kirill-feedback">{{
+          <b-form-invalid-feedback id="last_name_kirill-feedback" class="error__provider">{{
               validationContext.errors[0]
             }}
           </b-form-invalid-feedback>
@@ -183,9 +184,10 @@
               @change="textToLatin('first_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="first_name_kirill-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="first_name_kirill-feedback">{{
+          <b-form-invalid-feedback id="first_name_kirill-feedback" class="error__provider">{{
               validationContext.errors[0]
             }}
           </b-form-invalid-feedback>
@@ -215,9 +217,10 @@
               @change="textToLatin('second_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="second_name_kirill-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="second_name_kirill-feedback">{{
+          <b-form-invalid-feedback id="second_name_kirill-feedback" class="error__provider">{{
               validationContext.errors[0]
             }}
           </b-form-invalid-feedback>
@@ -251,9 +254,10 @@
               @change="textToCyrillic('last_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="last_name_lotin-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="last_name_lotin-feedback">{{
+          <b-form-invalid-feedback id="last_name_lotin-feedback" class="error__provider">{{
               validationContext.errors[0]
             }}
           </b-form-invalid-feedback>
@@ -283,9 +287,10 @@
               @change="textToCyrillic('first_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="first_name_lotin-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="first_name_lotin-feedback">{{
+          <b-form-invalid-feedback id="first_name_lotin-feedback" class="error__provider">{{
               validationContext.errors[0]
             }}
           </b-form-invalid-feedback>
@@ -315,9 +320,10 @@
               @change="textToCyrillic('second_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="second_name_lotin-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="second_name_lotin-feedback">{{
+          <b-form-invalid-feedback id="second_name_lotin-feedback" class="error__provider">{{
               validationContext.errors[0]
             }}
           </b-form-invalid-feedback>
@@ -350,9 +356,10 @@
               v-model="clientPhoneNumber"
               :state="getValidationState(validationContext)"
               aria-describedby="phone-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="phone-feedback">{{
+          <b-form-invalid-feedback id="phone-feedback" class="error__provider">{{
               validationContext.errors[0]
             }}
           </b-form-invalid-feedback>
@@ -373,6 +380,7 @@
             v-model="clientOtherPhoneNumber"
             id="other_phone"
             v-mask="maskForPhoneNumber"
+            @focus="userFocused"
         />
       </div>
     </div>
@@ -431,7 +439,7 @@ import {mapGetters} from "vuex";
 
 export default {
   name: "ClientInputConfirm",
-
+  emits:['focus'],
   computed: {
     ...mapGetters([
       "getReserveClient",
@@ -470,6 +478,9 @@ export default {
   },
 
   methods: {
+    userFocused() {
+      this.$emit('focus')
+    },
     async getClientData() {
       if (this.client.passport_series.length === 9) {
         this.loading = true;
@@ -814,5 +825,9 @@ export default {
 </script>
 
 <style scoped>
-
+.error__provider {
+  color: red;
+  display: block;
+  font-size: 14px;
+}
 </style>
