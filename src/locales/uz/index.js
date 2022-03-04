@@ -387,9 +387,9 @@ export default {
         plan: "Xonadon rejasi",
         plans: "Barcha xonadon rejalari",
         list: "Xonadon rejalari ro'yxati",
-        plan_required:"Xonadon loyihasini tanlashingiz shart"
+        plan_required:"Xonadon loyihasini tanlashingiz shart",
+        delete_title:"Bu xonadon rejasida {apartments_count} ta kvartira mavjud boshqa rejaga o'tkazishingiz kerak"
     },
-
     debtors: {
         title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
         familiars: "Tanishlar", // asd

@@ -7,7 +7,15 @@
       id="delete-plan-modal"
   >
     <b-overlay :show="showLoading" rounded="sm">
-      <p>Bu xonadon rejasida {{ removePlan.apartments_count }} kvartira mavjud, boshqa rejaga o'tkazishingiz kerak</p>
+      <b-alert variant="danger" class="py-2 mb-0" show>
+        <div
+            class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
+        >
+          <span>
+            {{ $t('type_plan.delete_title', {apartments_count: apartmentsCount}) }}
+          </span>
+        </div>
+      </b-alert>
       <b-form-group
           v-slot="{ ariaDescribedby }"
       >
@@ -115,6 +123,11 @@ export default {
         show: false,
         message: this.$t('type_plan.plan_required')
       }
+    }
+  },
+  computed: {
+    apartmentsCount() {
+      return this.removePlan.apartments_count
     }
   },
   watch: {
