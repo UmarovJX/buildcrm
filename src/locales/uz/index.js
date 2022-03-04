@@ -387,6 +387,7 @@ export default {
         plan: "Xonadon rejasi",
         plans: "Barcha xonadon rejalari",
         list: "Xonadon rejalari ro'yxati",
+        plan_required:"Xonadon loyihasini tanlashingiz shart"
     },
 
     debtors: {

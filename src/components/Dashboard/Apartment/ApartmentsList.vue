@@ -105,7 +105,6 @@
           @get-new-content="getFilterTabsContent"
           :filter-tab-list="filterTabList"
       />
-
       <!--  TODO: END OF FILTER SECTION    -->
 
       <div>

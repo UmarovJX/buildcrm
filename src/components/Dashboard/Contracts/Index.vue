@@ -263,8 +263,8 @@ export default {
   created() {
     this.filter = {
       ...this.$route.query,
-    };
-    this.currentPage = Number(this.filter.page);
+    }
+    this.currentPage = Number(this.filter.page)
   },
   computed: {
     ...mapGetters(["getContracts", "getLoading", "getPaginationContracts"]),
@@ -451,7 +451,7 @@ export default {
       return msg;
     },
   },
-};
+}
 </script>
 
 <style>
