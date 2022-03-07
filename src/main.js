@@ -71,7 +71,7 @@ Vue.use(Toasted, {
 
 /* YANDEX METRIKA */
 Vue.use(VueYandexMetrika, {
-    id: 86876647, router: router, env: process.env.NODE_ENV, options: {
+    id: 86876647, router, env: process.env.NODE_ENV, options: {
         clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true
     }
 })

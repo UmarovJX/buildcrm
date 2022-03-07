@@ -50,7 +50,11 @@ export default {
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
     contract_file_not_found: 'Файл контракта не найдено',
+    instruction: "Инструкция",
     validation_warning_to_bottom: 'Одно из полей заполнена неправильно, пожалуйста проверьте все поля еще раз!',
+    new_name: 'Новое название',
+    meaning: 'Значение',
+    example_by_2: "Примеры(по 2)",
 
     promo: {
         name: 'Акция',

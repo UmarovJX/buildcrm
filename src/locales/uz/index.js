@@ -62,7 +62,11 @@ export default {
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
     contract_file_not_found: 'Kontrakt fayl topilmadi',
+    instruction:"Ko'rsatma",
     validation_warning_to_bottom: "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
+    new_name:'Yangi nom',
+    meaning:'Manosi',
+    example_by_2:'Misol',
 
     promo: {
         name: 'Aksiya',

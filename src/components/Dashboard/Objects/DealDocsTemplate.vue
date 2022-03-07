@@ -6,14 +6,24 @@
           :active-content="activeContent"
       >
         <template #extra-content>
-          <b-button
-              v-b-modal.creation-content
-              class="button__new__contract"
-              variant="primary"
-          >
-            <i class="fal fa-plus mr-2"></i>
-            {{ $t("add") }}
-          </b-button>
+          <div class="d-flex justify-content-end">
+            <b-button
+                v-b-modal.instructions-content
+                class="button__new__contract"
+                variant="info"
+            >
+              <i class="far fa-info-circle mr-2"></i>
+              <span>{{ $t('instruction') }}</span>
+            </b-button>
+            <b-button
+                v-b-modal.creation-content
+                class="button__new__contract"
+                variant="primary"
+            >
+              <i class="fal fa-plus mr-2"></i>
+              {{ $t("add") }}
+            </b-button>
+          </div>
         </template>
       </base-bread-crumb>
       <!--   Add New Contract    -->
@@ -48,6 +58,9 @@
     <!-- Creation Modal   -->
     <create-deal-docs-template @update-content="updateContent"/>
 
+    <!--  Instructions Modal  -->
+    <instructions-modal/>
+
     <!--  Loading Content  -->
     <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
       <template #overlay>
@@ -68,6 +81,7 @@
 <script>
 import api from "@/services/api";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import InstructionsModal from "@/components/Dashboard/Objects/Components/DealDocsTemplate/InstructionsModal";
 import BaseContractListTable from "@/components/Dashboard/Objects/Components/BaseContractListTable";
 import CreateDealDocsTemplate from "@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate";
 
@@ -75,6 +89,7 @@ export default {
   name: 'DealDocsTemplate',
   components: {
     BaseBreadCrumb,
+    InstructionsModal,
     BaseContractListTable,
     CreateDealDocsTemplate
   },
