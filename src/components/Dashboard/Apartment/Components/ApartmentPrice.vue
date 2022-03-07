@@ -21,7 +21,7 @@
       ><i class="fa" :class="editable ? 'fa-save' : 'fa-edit'"></i
     ></b-button>
 
-    <vue-numeric
+    <base-numeric-input
       id="total"
       v-model.number="apartment.price_calc"
       :currency="$t('ye')"
@@ -32,16 +32,16 @@
       separator="space"
       :disabled="!editable"
       :minus="false"
-    ></vue-numeric>
+    ></base-numeric-input>
   </div>
 </template>
 
 <script>
-import VueNumeric from "vue-numeric";
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import Vue from 'vue'
 export default {
   components: {
-    VueNumeric,
+    BaseNumericInput,
   },
 
   watch: {

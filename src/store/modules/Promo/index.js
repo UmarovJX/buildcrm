@@ -51,6 +51,12 @@ export default {
         },
         deletePromoCreationBlock(state, prepay) {
             state.creationSelectedBlocks = state.creationSelectedBlocks.filter(selectedBlock => selectedBlock.discount.prepay !== prepay)
+        },
+        deleteRemovedBlock(state, {prepayId, id}) {
+            const findIndex = state.creationSelectedBlocks.findIndex(creationBlock => {
+                return creationBlock.id === id && creationBlock.prepayId === prepayId
+            })
+            state.creationSelectedBlocks.splice(findIndex, 1)
         }
     },
 

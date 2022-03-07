@@ -1,6 +1,11 @@
 <template>
   <main>
     <div class="app-content apartment-list-filter">
+      <base-bread-crumb
+          :bread-crumbs="breadCrumbs"
+          :active-content="activeContent"
+      >
+      </base-bread-crumb>
       <div class="mt-4">
         <b-table
             ref="apartment-list-table"
@@ -100,10 +105,11 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 // import SuccessAgree from "./Components/SuccessAgree";
-
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 export default {
   components: {
     // "success-agree": SuccessAgree,
+    BaseBreadCrumb
   },
 
   data() {
@@ -151,6 +157,17 @@ export default {
 
   computed: {
     ...mapGetters(["getApartments", "getPermission", "getMe"]),
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'objects',
+          textContent: this.$t('objects.title')
+        }
+      ]
+    },
+    activeContent() {
+      return this.$t('objects.unfinished_contract')
+    },
   },
   mounted() {
     this.getUnfinishedOrders();

@@ -48,12 +48,13 @@
         {{ building.name }}
       </label>
       <multiselect
-          id="selection-block"
           v-model="selectedBlocks"
+          @remove="removedSelectedBlock"
+          id="selection-block"
           tag-placeholder="Add this as new tag"
           class="mb-2"
-          :placeholder="$t('promo.select_block')"
           label="name"
+          :placeholder="$t('promo.select_block')"
           track-by="id"
           :options="blockOptions"
           :multiple="true"
@@ -129,7 +130,7 @@ export default {
       this.updateFormTypes()
     },
     'form.prepay'(next) {
-      this.updatePromoValue({next:parseFloat(next), prepayId: this.form.prepayId})
+      this.updatePromoValue({next: parseFloat(next), prepayId: this.form.prepayId})
     }
   },
   created() {
@@ -139,7 +140,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['updateCreationSelectedBlocks', 'updatePromoValue']),
+    ...mapMutations(['updateCreationSelectedBlocks', 'updatePromoValue', 'deleteRemovedBlock']),
     idGenerator(id) {
       return id + String.fromCharCode(Math.floor(Math.random() * 26) + 97)
           + Math.random().toString(16).slice(2)
@@ -173,6 +174,9 @@ export default {
       const id = prepay.prepayId
       const prepayValue = form.prepay
       this.$emit('delete-prepay-content', {id, prepay: prepayValue})
+    },
+    removedSelectedBlock(removedBlock) {
+      this.deleteRemovedBlock({prepayId: this.form.prepayId, id: removedBlock.id})
     },
     blockSelectionError(error) {
       const id = this.prepay.prepayId

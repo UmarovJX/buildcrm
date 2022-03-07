@@ -1,5 +1,11 @@
 <template>
   <main class="app-content">
+    <base-bread-crumb
+        :active-content="activeContent"
+        class="mb-4"
+    >
+    </base-bread-crumb>
+
     <b-card no-body>
       <b-tabs
           v-model="tabIndex"
@@ -35,14 +41,15 @@ import TabUserMe from "@/components/UserSettings/TabUserMe";
 import TabChangePassword from "@/components/UserSettings/TabChangePassword";
 import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
-
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 export default {
   name: 'UserSettings',
   components: {
     TabUserMe,
+    BaseBreadCrumb,
     TabChangePassword,
     BaseUserAccountIcon,
-    BaseUserPasswordIcon
+    BaseUserPasswordIcon,
   },
   data() {
     return {
@@ -52,7 +59,10 @@ export default {
   computed: {
     ...mapGetters({
       theme: 'getTheme'
-    })
+    }),
+    activeContent() {
+      return this.$t('profile')
+    },
   },
   methods: {
     activeTabIconColor(index) {

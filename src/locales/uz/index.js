@@ -61,7 +61,12 @@ export default {
     sum_text: "So'm",
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
-    contract_file_not_found:'Kontrakt fayl topilmadi',
+    contract_file_not_found: 'Kontrakt fayl topilmadi',
+    instruction:"Ko'rsatma",
+    validation_warning_to_bottom: "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
+    new_name:'Yangi nom',
+    meaning:'Manosi',
+    example_by_2:'Misol',
 
     promo: {
         name: 'Aksiya',
@@ -92,7 +97,7 @@ export default {
         alert_before_close_title: 'Rostdan ham yopmoqchimisiz ?',
         alert_before_close_no: "Yo'q",
         by_promo: "Aksiya bo'yicha",
-        in_promo:'Aktsiyalarda',
+        in_promo: 'Aktsiyalarda',
         promo_rate: 'Tarif',
     },
 
@@ -373,7 +378,7 @@ export default {
             booked: "Band qilingan", //asd
             sold: "Sotilgan", //asd
             unavailable: "Mavjud emas", //asd
-            promo:'Aksiya',
+            promo: 'Aksiya',
         },
     },
 
@@ -387,8 +392,9 @@ export default {
         plan: "Xonadon rejasi",
         plans: "Barcha xonadon rejalari",
         list: "Xonadon rejalari ro'yxati",
+        plan_required: "Xonadon loyihasini tanlashingiz shart",
+        delete_title: "Bu xonadon rejasida {apartments_count} ta kvartira mavjud boshqa rejaga o'tkazishingiz kerak"
     },
-
     debtors: {
         title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
         familiars: "Tanishlar", // asd
@@ -415,12 +421,14 @@ export default {
         sale: 'Sotuv',
         booking: 'Band qilish',
         make_it_main_contract: 'Asosiy shartnoma qilib belgilash',
+        unfinished_contract: 'Tugallanmagan shartnomalar',
 
         deal_template: {
             name: 'Shartoma andozasi',
             type: 'Turi',
             main: 'Asosiy',
-            title:"Shartnoma shablonlari ro'yxati"
+            title: "Shartnoma shablonlari ro'yxati",
+            warning_message: 'Siz barcha asosiy shartnomalarni tanlamadingiz! Iltimos, barcha asosiy shartnomalarni tanlang!'
         },
 
         create: {
@@ -568,7 +576,7 @@ export default {
     },
 
     branches: {
-        title:'Filiallar',
+        title: 'Filiallar',
         name: 'Filial',
         branch_name: 'Filial nomi',
         branch_address: 'Filial manzili',
@@ -580,5 +588,13 @@ export default {
         manager_phone_number: 'Menedjerning telefon raqami',
         manager_email: 'Menedjerning elektron pochtasi',
         manager_avatar: 'Menedjerning profil surati',
+    },
+
+    filter_names: {
+        all: 'Barchasi',
+        booked: 'Band qilingan',
+        sold: 'Sotilgan',
+        in_payment: "To'lovda",
+        archive: 'Arxiv'
     }
 }

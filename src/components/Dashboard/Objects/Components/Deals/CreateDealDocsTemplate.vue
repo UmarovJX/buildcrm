@@ -154,7 +154,7 @@ export default {
         type: null,
         language: 'uz',
         category: null,
-        main: 0
+        main: 1
       },
       categoryOptions: [
         {value: 'sale', text: this.$t('objects.sale')},
@@ -216,17 +216,11 @@ export default {
       }
     },
     setInitialPropertyForm() {
-      for (let key of Object.keys(this.form)) {
-        const property = this.form[key]
-        const makeNullProperties = ['type', 'category']
-        const findIndex = makeNullProperties.findIndex(nullProperty => nullProperty === property)
-        if (findIndex !== -1)
-          this.form[key] = null
-        else if (key === 'language')
-          this.form[key] = 'uz'
-        if (key === 'main')
-          this.form[key] = 0
-      }
+      this.form.file = null
+      this.form.type = null
+      this.form.category = null
+      this.form.language = 'uz'
+      this.form.main = 0
     }
   }
 }

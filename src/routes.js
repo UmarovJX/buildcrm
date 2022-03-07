@@ -9,6 +9,7 @@ const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
     return originalPush.call(this, location).catch((err) => err);
 };
+
 Vue.use(VueRouter);
 
 import Auth from "./components/Auth/Login";
@@ -52,6 +53,7 @@ import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import ObjectsPromo from "@/components/Dashboard/Objects/ObjectsPromo";
+
 const routes = [
     {
         path: "/home",

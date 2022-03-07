@@ -1,6 +1,12 @@
 <template>
   <main>
     <div class="app-content">
+      <base-bread-crumb
+          :bread-crumbs="breadCrumbs"
+          :active-content="activeContent"
+          class="mb-4"
+      >
+      </base-bread-crumb>
       <div class="card">
         <div class="card-content">
           <div class="card-header">
@@ -13,68 +19,68 @@
               <div class="col-md-6">
                 {{
                   order.company && order.company.type && order.company.type.name
-                    ? order.company.type.name.kr
-                    : ""
+                      ? order.company.type.name.kr
+                      : ""
                 }}
-                "{{ order.company ? order.company.name : "" }}"<br />
+                "{{ order.company ? order.company.name : "" }}"<br/>
                 {{ order.company.first_name }} {{ order.company.last_name }}
-                {{ order.company.second_name }} <br />
-                р/с: {{ order.company.payment_account }} <br />
+                {{ order.company.second_name }} <br/>
+                р/с: {{ order.company.payment_account }} <br/>
                 ИНН: {{ order.company.inn }}, МФО: {{ order.company.mfo }}
-                <br />
+                <br/>
               </div>
 
               <div class="col-md-6 text-right">
                 {{ order.client.first_name.kirill }}
                 {{ order.client.last_name.kirill }}
-                {{ order.client.second_name.kirill }}<br />
-                {{ order.client.passport_series }}<br />
-                {{ order.client.issued_by_whom }}<br />
+                {{ order.client.second_name.kirill }}<br/>
+                {{ order.client.passport_series }}<br/>
+                {{ order.client.issued_by_whom }}<br/>
                 {{ order.client.date_of_issue | moment("DD.MM.YYYY") }}
-                берилган<br />
+                берилган<br/>
                 {{ order.client.birth_day | moment("DD.MM.YYYY") }}
-                тугилган<br />
-                +{{ order.client.phone }}<br />
-                +{{ order.client.other_phone }}<br />
+                тугилган<br/>
+                +{{ order.client.phone }}<br/>
+                +{{ order.client.other_phone }}<br/>
 
                 <div
-                  class="mb-3 ml-auto col-md-5 d-flex justify-content-end flex-column"
+                    class="mb-3 ml-auto col-md-5 d-flex justify-content-end flex-column"
                 >
                   <label class="d-block" for="type_client">{{
-                    $t("apartments.agree.type_client")
-                  }}</label>
+                      $t("apartments.agree.type_client")
+                    }}</label>
                   <select
-                    class="form-control"
-                    id="type_client"
-                    :disabled="!edit.type_client"
-                    v-model="order.friends"
+                      class="form-control"
+                      id="type_client"
+                      :disabled="!edit.type_client"
+                      v-model="order.friends"
                   >
                     <option value="unknown">{{ $t("contracts.view.unfamiliar") }}</option>
                     <option value="friends">{{ $t("contracts.view.familiar") }}</option>
                   </select>
 
                   <button
-                    v-if="
+                      v-if="
                       !edit.type_client &&
                         ((getMe.role && getMe.role.id === 1) ||
                           (getPermission.contracts &&
                             getPermission.contracts.friends))
                     "
-                    @click="edit.type_client = true"
-                    class="btn btn-primary mt-3 mr-0"
+                      @click="edit.type_client = true"
+                      class="btn btn-primary mt-3 mr-0"
                   >
                     <i class="fa fa-edit"></i> {{ $t("contracts.view.edit_type") }}
                   </button>
 
                   <button
-                    v-if="
+                      v-if="
                       edit.type_client &&
                         ((getMe.role && getMe.role.id === 1) ||
                           (getPermission.contracts &&
                             getPermission.contracts.friends))
                     "
-                    @click="ChangeTypeClient"
-                    class="btn btn-success mt-3"
+                      @click="ChangeTypeClient"
+                      class="btn btn-success mt-3"
                   >
                     <i class="fa fa-save"></i> {{ $t("contracts.view.save_btn") }}
                   </button>
@@ -85,216 +91,216 @@
                 <div class="table-responsive">
                   <table class="table table-striped">
                     <thead class="table-dark">
-                      <tr>
-                        <th scope="col" width="50">
-                          {{ $t("apartments.list.number") }}
-                        </th>
-                        <th scope="col">{{ $t("apartments.list.object") }}</th>
-                        <th scope="col">
-                          {{ $t("apartments.list.building") }}
-                        </th>
-                        <th scope="col">{{ $t("apartments.list.block") }}</th>
-                        <th scope="col" class="text-center">
-                          {{ $t("apartments.list.rooms") }}
-                        </th>
-                        <th scope="col" class="text-center">
-                          {{ $t("apartments.list.floor") }}
-                        </th>
-                        <th scope="col" class="text-center">
-                          {{ $t("apartments.list.entrance") }}
-                        </th>
-                        <th scope="col" class="text-center">
-                          {{ $t("apartments.list.area") }}
-                        </th>
-                        <th scope="col" class="text-center">
-                          {{ $t("apartments.list.balcony") }}
-                        </th>
-                        <th scope="col">{{ $t("apartments.list.price") }}</th>
-                        <th scope="col">
-                          {{ $t("apartments.list.price_sold") }}
-                        </th>
-                        <th scope="col"></th>
-                      </tr>
+                    <tr>
+                      <th scope="col" width="50">
+                        {{ $t("apartments.list.number") }}
+                      </th>
+                      <th scope="col">{{ $t("apartments.list.object") }}</th>
+                      <th scope="col">
+                        {{ $t("apartments.list.building") }}
+                      </th>
+                      <th scope="col">{{ $t("apartments.list.block") }}</th>
+                      <th scope="col" class="text-center">
+                        {{ $t("apartments.list.rooms") }}
+                      </th>
+                      <th scope="col" class="text-center">
+                        {{ $t("apartments.list.floor") }}
+                      </th>
+                      <th scope="col" class="text-center">
+                        {{ $t("apartments.list.entrance") }}
+                      </th>
+                      <th scope="col" class="text-center">
+                        {{ $t("apartments.list.area") }}
+                      </th>
+                      <th scope="col" class="text-center">
+                        {{ $t("apartments.list.balcony") }}
+                      </th>
+                      <th scope="col">{{ $t("apartments.list.price") }}</th>
+                      <th scope="col">
+                        {{ $t("apartments.list.price_sold") }}
+                      </th>
+                      <th scope="col"></th>
+                    </tr>
                     </thead>
 
                     <tbody>
-                      <tr
+                    <tr
                         v-for="(apartment, index) in order.apartments"
                         :key="index"
-                      >
-                        <td scope="row">
-                          {{ apartment.number }}
-                        </td>
-                        <td>
-                          {{ apartment.object.name }}
-                        </td>
+                    >
+                      <td scope="row">
+                        {{ apartment.number }}
+                      </td>
+                      <td>
+                        {{ apartment.object.name }}
+                      </td>
 
-                        <td>
-                          {{ apartment.building.name }}
-                        </td>
+                      <td>
+                        {{ apartment.building.name }}
+                      </td>
 
-                        <td>
-                          {{ apartment.block.name }}
-                        </td>
+                      <td>
+                        {{ apartment.block.name }}
+                      </td>
 
-                        <td class="text-center">
-                          {{ apartment.rooms }}
-                        </td>
+                      <td class="text-center">
+                        {{ apartment.rooms }}
+                      </td>
 
-                        <td class="text-center">
-                          {{ apartment.floor }}
-                        </td>
+                      <td class="text-center">
+                        {{ apartment.floor }}
+                      </td>
 
-                        <td class="text-center">
-                          {{ apartment.entrance }}
-                        </td>
+                      <td class="text-center">
+                        {{ apartment.entrance }}
+                      </td>
 
-                        <td class="text-center">
-                          {{ apartment.plan.area }} м²
-                        </td>
+                      <td class="text-center">
+                        {{ apartment.plan.area }} м²
+                      </td>
 
-                        <td class="text-center">
+                      <td class="text-center">
                           <span v-if="apartment.plan.balcony">
                             {{ apartment.plan.balcony_area }} м²
                           </span>
-                          <span v-else>
+                        <span v-else>
                             {{ $t("no") }}
                           </span>
-                        </td>
+                      </td>
 
-                        <td>
-                          {{
-                            apartment.price
+                      <td>
+                        {{
+                          apartment.price
                               | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                          }}
-                          {{ $t("ye") }}
-                        </td>
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
+                        }}
+                        {{ $t("ye") }}
+                      </td>
 
-                        <td>
-                          {{
-                            apartment.price_sold
+                      <td>
+                        {{
+                          apartment.price_sold
                               | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                          }}
-                          {{ $t("ye") }}
-                        </td>
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
+                        }}
+                        {{ $t("ye") }}
+                      </td>
 
-                        <td>
-                          <router-link
+                      <td>
+                        <router-link
                             :to="{
                               name: 'apartment-view',
                               params: {id: apartment.id},
                             }"
                             :class="'btn btn-primary btn-sm ml-1'"
-                          >
-                            <i class="far fa-eye"></i>
-                          </router-link>
-                        </td>
-                      </tr>
+                        >
+                          <i class="far fa-eye"></i>
+                        </router-link>
+                      </td>
+                    </tr>
                     </tbody>
                   </table>
 
                   <table
-                    class="table table-striped"
-                    v-if="
+                      class="table table-striped"
+                      v-if="
                       order.status === 'contract' || order.status === 'sold'
                     "
                   >
                     <thead class="table-dark">
-                      <tr>
-                        <th colspan="2">
-                          {{ $t('contracts.view.tariff') }}
-                        </th>
-                      </tr>
+                    <tr>
+                      <th colspan="2">
+                        {{ $t('contracts.view.tariff') }}
+                      </th>
+                    </tr>
                     </thead>
 
                     <tbody>
-                      <!--                                    <tr>-->
-                      <!--                                        <td width="240">-->
-                      <!--                                            Цена продажи-->
-                      <!--                                        </td>-->
-                      <!--                                        <td>-->
-                      <!--                                            {{ order.apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}-->
-                      <!--                                        </td>-->
-                      <!--                                    </tr>-->
+                    <!--                                    <tr>-->
+                    <!--                                        <td width="240">-->
+                    <!--                                            Цена продажи-->
+                    <!--                                        </td>-->
+                    <!--                                        <td>-->
+                    <!--                                            {{ order.apartment.price | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}-->
+                    <!--                                        </td>-->
+                    <!--                                    </tr>-->
 
-                      <tr>
-                        <td width="240">
-                          {{ $t('contracts.view.dollar_rate') }}
-                        </td>
-                        <td>
-                          {{
-                            order.currency.usd
+                    <tr>
+                      <td width="240">
+                        {{ $t('contracts.view.dollar_rate') }}
+                      </td>
+                      <td>
+                        {{
+                          order.currency.usd
                               | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                          }}
-                          {{ $t("ye") }}
-                        </td>
-                      </tr>
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
+                        }}
+                        {{ $t("ye") }}
+                      </td>
+                    </tr>
 
-                      <!--                                    <tr>-->
-                      <!--                                        <td width="240">-->
-                      <!--                                            Скидка-->
-                      <!--                                        </td>-->
-                      <!--                                        <td>-->
-                      <!--                                            {{ order.discount.discount }} %-->
-                      <!--                                        </td>-->
-                      <!--                                    </tr>-->
+                    <!--                                    <tr>-->
+                    <!--                                        <td width="240">-->
+                    <!--                                            Скидка-->
+                    <!--                                        </td>-->
+                    <!--                                        <td>-->
+                    <!--                                            {{ order.discount.discount }} %-->
+                    <!--                                        </td>-->
+                    <!--                                    </tr>-->
 
-                      <tr>
-                        <td width="240">
-                          {{ $t('contracts.view.initial_fee') }}
-                        </td>
-                        <td>
-                          {{
-                            order.initial_payment
+                    <tr>
+                      <td width="240">
+                        {{ $t('contracts.view.initial_fee') }}
+                      </td>
+                      <td>
+                        {{
+                          order.initial_payment
                               | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                          }}
-                          {{ $t("ye") }}
-                        </td>
-                      </tr>
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
+                        }}
+                        {{ $t("ye") }}
+                      </td>
+                    </tr>
 
-                      <tr>
-                        <td width="240">
-                          {{ $t('contracts.view.apartment_price') }}
-                        </td>
-                        <td>
-                          {{
-                            order.transaction_price
+                    <tr>
+                      <td width="240">
+                        {{ $t('contracts.view.apartment_price') }}
+                      </td>
+                      <td>
+                        {{
+                          order.transaction_price
                               | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                          }}
-                          {{ $t("ye") }}
-                        </td>
-                      </tr>
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
+                        }}
+                        {{ $t("ye") }}
+                      </td>
+                    </tr>
 
-                      <tr>
-                        <td width="240">
-                          {{ $t('contracts.view.remainder') }}
-                        </td>
-                        <td>
-                          {{
-                            (order.transaction_price - order.initial_payment)
+                    <tr>
+                      <td width="240">
+                        {{ $t('contracts.view.remainder') }}
+                      </td>
+                      <td>
+                        {{
+                          (order.transaction_price - order.initial_payment)
                               | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                          }}
-                          {{ $t("ye") }}
-                        </td>
-                      </tr>
+                            thousandsSeparator: " ",
+                            decimalSeparator: ",",
+                          })
+                        }}
+                        {{ $t("ye") }}
+                      </td>
+                    </tr>
                     </tbody>
                   </table>
                 </div>
@@ -305,49 +311,49 @@
 
                 <div class="d-flex justify-content-end">
                   <b-button
-                    :class="payment.view ? null : 'collapsed'"
-                    :aria-expanded="payment.view ? 'true' : 'false'"
-                    aria-controls="collapse-4"
-                    @click="payment.view = !payment.view"
-                    variant="primary"
-                    class="mb-3"
+                      :class="payment.view ? null : 'collapsed'"
+                      :aria-expanded="payment.view ? 'true' : 'false'"
+                      aria-controls="collapse-4"
+                      @click="payment.view = !payment.view"
+                      variant="primary"
+                      class="mb-3"
                   >
                     <i class="fa fa-plus-circle"></i> {{ $t('contracts.view.add_payment') }}
                   </b-button>
                 </div>
 
                 <b-collapse
-                  id="collapse-4"
-                  v-model="payment.view"
-                  class="mb-3 w-100 float-left"
+                    id="collapse-4"
+                    v-model="payment.view"
+                    class="mb-3 w-100 float-left"
                 >
                   <div class="card">
                     <form @submit.prevent="CreatePayment">
                       <div class="card-body">
                         <div class="mb-3">
                           <label for="date" class="form-label"
-                            >{{ $t('contracts.view.schedule') }}</label
+                          >{{ $t('contracts.view.schedule') }}</label
                           >
                           <input
-                            type="date"
-                            class="form-control"
-                            v-model="payment.data.date"
-                            id="date"
-                            placeholder=""
-                            required
+                              type="date"
+                              class="form-control"
+                              v-model="payment.data.date"
+                              id="date"
+                              placeholder=""
+                              required
                           />
                         </div>
 
                         <div class="mb-3">
                           <label for="amount" class="form-label">{{ $t('contracts.view.sum') }}</label>
                           <input
-                            type="number"
-                            class="form-control"
-                            v-model="payment.data.amount"
-                            min="1"
-                            id="amount"
-                            required
-                            placeholder=""
+                              type="number"
+                              class="form-control"
+                              v-model="payment.data.amount"
+                              min="1"
+                              id="amount"
+                              required
+                              placeholder=""
                           />
                         </div>
                       </div>
@@ -358,9 +364,9 @@
                         </button>
 
                         <button
-                          type="button"
-                          class="btn ml-1"
-                          @click="payment.view = !payment.view"
+                            type="button"
+                            class="btn ml-1"
+                            @click="payment.view = !payment.view"
                         >
                           {{ $t('contracts.view.cancel_btn') }}
                         </button>
@@ -370,95 +376,95 @@
                 </b-collapse>
 
                 <table
-                  class="table table-striped"
-                  v-if="order.status === 'contract' || order.status === 'sold'"
+                    class="table table-striped"
+                    v-if="order.status === 'contract' || order.status === 'sold'"
                 >
                   <thead class="table-dark">
-                    <tr>
-                      <th width="50">
-                        {{ $t('contracts.view.schedule') }}
-                      </th>
+                  <tr>
+                    <th width="50">
+                      {{ $t('contracts.view.schedule') }}
+                    </th>
 
-                      <th class="text-center">
-                        {{ $t('contracts.view.type') }}
-                      </th>
+                    <th class="text-center">
+                      {{ $t('contracts.view.type') }}
+                    </th>
 
-                      <th class="text-center">
-                        {{ $t('apartments.list.status') }}
-                      </th>
+                    <th class="text-center">
+                      {{ $t('apartments.list.status') }}
+                    </th>
 
-                      <th>
-                        {{ $t('contracts.view.comment') }}
-                      </th>
+                    <th>
+                      {{ $t('contracts.view.comment') }}
+                    </th>
 
-                      <th>
-                        {{ $t('contracts.view.payment_type') }}
-                      </th>
+                    <th>
+                      {{ $t('contracts.view.payment_type') }}
+                    </th>
 
-                      <th>
-                        {{ $t('contracts.view.payment_date') }}
-                      </th>
+                    <th>
+                      {{ $t('contracts.view.payment_date') }}
+                    </th>
 
-                      <th>
-                        {{ $t('contracts.view.payment_sum') }}
-                      </th>
+                    <th>
+                      {{ $t('contracts.view.payment_sum') }}
+                    </th>
 
-                      <th class="text-center">
-                        {{ $t('contracts.view.sum') }}
-                      </th>
-                    </tr>
+                    <th class="text-center">
+                      {{ $t('contracts.view.sum') }}
+                    </th>
+                  </tr>
                   </thead>
 
                   <tbody>
-                    <tr v-for="(month, index) in order.payments" :key="index">
-                      <td>
-                        {{ month.date_payment | moment("DD.MM.YYYY") }}
-                      </td>
+                  <tr v-for="(month, index) in order.payments" :key="index">
+                    <td>
+                      {{ month.date_payment | moment("DD.MM.YYYY") }}
+                    </td>
 
-                      <td class="text-center">
-                        {{ month.type | getType }}
-                      </td>
+                    <td class="text-center">
+                      {{ month.type | getType }}
+                    </td>
 
-                      <td class="text-center">
-                        {{ getStatusPayment(month) }}
-                      </td>
+                    <td class="text-center">
+                      {{ getStatusPayment(month) }}
+                    </td>
 
-                      <td>
-                        {{ month.comment }}
-                      </td>
+                    <td>
+                      {{ month.comment }}
+                    </td>
 
-                      <td>
-                        {{ month.type_payments | getPaymentType }}
-                      </td>
+                    <td>
+                      {{ month.type_payments | getPaymentType }}
+                    </td>
 
-                      <td>
-                        {{ month.date_paid | moment("DD.MM.YYYY") }}
-                      </td>
+                    <td>
+                      {{ month.date_paid | moment("DD.MM.YYYY") }}
+                    </td>
 
-                      <td>
+                    <td>
                         <span v-if="month.amount_paid">
                           {{
                             month.amount_paid
-                              | number("0,0.00", {
-                                thousandsSeparator: " ",
-                                decimalSeparator: ",",
-                              })
-                          }}
-                          {{ $t("ye") }}
-                        </span>
-                      </td>
-
-                      <td class="text-center">
-                        {{
-                          month.amount
-                            | number("0,0.00", {
+                                | number("0,0.00", {
                               thousandsSeparator: " ",
                               decimalSeparator: ",",
                             })
-                        }}
-                        {{ $t("ye") }}
+                          }}
+                          {{ $t("ye") }}
+                        </span>
+                    </td>
 
-                        <button
+                    <td class="text-center">
+                      {{
+                        month.amount
+                            | number("0,0.00", {
+                          thousandsSeparator: " ",
+                          decimalSeparator: ",",
+                        })
+                      }}
+                      {{ $t("ye") }}
+
+                      <button
                           class="btn badge-danger btn-sm float-right"
                           @click="paymentMonthly(index)"
                           v-if="
@@ -467,11 +473,11 @@
                                 getPermission.debtors.first_payment.accept) &&
                               month.status === 'waiting'
                           "
-                        >
-                          <i class="far fa-wallet"></i>
-                        </button>
+                      >
+                        <i class="far fa-wallet"></i>
+                      </button>
 
-                        <button
+                      <button
                           class="btn btn-primary btn-sm float-right"
                           @click="editMonthly(index)"
                           v-if="
@@ -480,11 +486,11 @@
                                 getPermission.debtors.first_payment.edit) &&
                               month.status === 'paid'
                           "
-                        >
-                          <i class="far fa-edit"></i>
-                        </button>
+                      >
+                        <i class="far fa-edit"></i>
+                      </button>
 
-                        <button
+                      <button
                           class="btn badge-danger btn-sm float-right ml-2"
                           @click="paymentMonthly(index)"
                           v-if="
@@ -495,11 +501,11 @@
                                 getPermission.debtors.monthly.accept) &&
                               month.status === 'waiting'
                           "
-                        >
-                          <i class="far fa-wallet"></i>
-                        </button>
+                      >
+                        <i class="far fa-wallet"></i>
+                      </button>
 
-                        <button
+                      <button
                           class="btn btn-primary btn-sm float-right"
                           @click="editMonthly(index)"
                           v-if="
@@ -510,11 +516,11 @@
                                 getPermission.debtors.monthly.edit) &&
                               month.status === 'paid'
                           "
-                        >
-                          <i class="far fa-edit"></i>
-                        </button>
+                      >
+                        <i class="far fa-edit"></i>
+                      </button>
 
-                        <button
+                      <button
                           class="btn btn-sm float-right"
                           @click="deleteMonthly(index)"
                           v-if="
@@ -523,46 +529,46 @@
                                 getPermission.debtors.monthly.edit) &&
                               month.status === 'waiting'
                           "
-                        >
-                          <i class="far fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
+                      >
+                        <i class="far fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
 
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
 
-                      <td></td>
+                    <td></td>
 
-                      <td class="text-center"></td>
+                    <td class="text-center"></td>
 
-                      <td class="text-center">
-                        {{ $t('contracts.view.paid') }}:
-                        {{
-                          order.paid_total
+                    <td class="text-center">
+                      {{ $t('contracts.view.paid') }}:
+                      {{
+                        order.paid_total
                             | number("0,0.00", {
-                              thousandsSeparator: " ",
-                              decimalSeparator: ",",
-                            })
-                        }}
-                        {{ $t("ye") }}
-                      </td>
+                          thousandsSeparator: " ",
+                          decimalSeparator: ",",
+                        })
+                      }}
+                      {{ $t("ye") }}
+                    </td>
 
-                      <td class="text-center">
-                        {{ $t('apartments.view.total') }}:
-                        {{
-                          order.transaction_price
+                    <td class="text-center">
+                      {{ $t('apartments.view.total') }}:
+                      {{
+                        order.transaction_price
                             | number("0,0.00", {
-                              thousandsSeparator: " ",
-                              decimalSeparator: ",",
-                            })
-                        }}
-                        {{ $t("ye") }}
-                      </td>
-                    </tr>
+                          thousandsSeparator: " ",
+                          decimalSeparator: ",",
+                        })
+                      }}
+                      {{ $t("ye") }}
+                    </td>
+                  </tr>
                   </tbody>
                 </table>
 
@@ -571,20 +577,20 @@
                     {{ $t('contracts.view.comments') }}
                   </h3>
                   <div
-                    class="alert alert-info"
-                    v-if="order.comments.length === 0"
+                      class="alert alert-info"
+                      v-if="order.comments.length === 0"
                   >
                     <i class="fa fa-info-circle"></i> {{ $t('contracts.view.no_comment') }}
                   </div>
                   <ul class="timeline" v-if="order.comments.length > 0">
                     <li
-                      class="timeline-inverted"
-                      v-for="(comment, index) in order.comments"
-                      :key="index"
+                        class="timeline-inverted"
+                        v-for="(comment, index) in order.comments"
+                        :key="index"
                     >
                       <div
-                        class="timeline-badge"
-                        :class="[
+                          class="timeline-badge"
+                          :class="[
                           comment.type === 'bought' ? 'success' : 'primary',
                           comment.type === 'cancelled_contract'
                             ? 'danger'
@@ -592,26 +598,26 @@
                         ]"
                       >
                         <i
-                          class="fa fa-comment"
-                          v-if="comment.type === 'comment'"
+                            class="fa fa-comment"
+                            v-if="comment.type === 'comment'"
                         ></i>
                         <i
-                          class="fa fa-shopping-cart"
-                          v-if="comment.type === 'bought'"
+                            class="fa fa-shopping-cart"
+                            v-if="comment.type === 'bought'"
                         ></i>
                         <i
-                          class="fa fa-archive"
-                          v-if="comment.type === 'cancelled_contract'"
+                            class="fa fa-archive"
+                            v-if="comment.type === 'cancelled_contract'"
                         ></i>
                       </div>
                       <div class="timeline-panel">
                         <div
-                          class="timeline-body"
-                          v-html="comment.comment"
+                            class="timeline-body"
+                            v-html="comment.comment"
                         ></div>
 
                         <small
-                          >Пользователь: {{ comment.user.first_name }}
+                        >Пользователь: {{ comment.user.first_name }}
                           {{ comment.user.last_name }} | Дата:
                           {{
                             comment.created_at | moment("HH:mm, DD.MM.YYYY")
@@ -622,37 +628,37 @@
                   </ul>
 
                   <button
-                    type="button"
-                    class="btn btn-light"
-                    @click="comment_store = true"
-                    data-toggle="collapse"
-                    href="#collapseComment"
-                    role="button"
-                    aria-expanded="false"
-                    aria-controls="collapseComment"
+                      type="button"
+                      class="btn btn-light"
+                      @click="comment_store = true"
+                      data-toggle="collapse"
+                      href="#collapseComment"
+                      role="button"
+                      aria-expanded="false"
+                      aria-controls="collapseComment"
                   >
                     <i class="fa fa-plus-square"></i> {{ $t('contracts.view.add_comment') }}
                   </button>
 
                   <div
-                    class="collapse mt-2"
-                    id="collapseComment"
-                    v-if="comment_store"
+                      class="collapse mt-2"
+                      id="collapseComment"
+                      v-if="comment_store"
                   >
                     <form @submit.stop.prevent="saveComment">
                       <label>{{ $t('contracts.view.comment') }}</label>
                       <textarea
-                        name="comment"
-                        v-model="comment"
-                        id=""
-                        class="form-control"
-                        cols="3"
-                        rows="3"
+                          name="comment"
+                          v-model="comment"
+                          id=""
+                          class="form-control"
+                          cols="3"
+                          rows="3"
                       ></textarea>
 
                       <button
-                        class="btn btn-warning mt-2 waves-effect waves-light"
-                        type="submit"
+                          class="btn btn-warning mt-2 waves-effect waves-light"
+                          type="submit"
                       >
                         <i class="fa fa-save"></i> {{ $t('contracts.view.save_btn') }}
                       </button>
@@ -665,18 +671,18 @@
 
           <div class="card-footer justify-content-center">
             <a
-              :href="order.contract_path"
-              class="btn btn-success "
-              v-if="order.status === 'contract' || order.status === 'sold'"
+                :href="order.contract_path"
+                class="btn btn-success "
+                v-if="order.status === 'contract' || order.status === 'sold'"
             >
               <i class="fa fa-download"></i> {{ $t('contracts.view.download_contract') }}
             </a>
 
             <button
-              type="button"
-              @click="cancelOrder"
-              class="btn btn-danger float-right"
-              v-if="order.status === 'contract'"
+                type="button"
+                @click="cancelOrder"
+                class="btn btn-danger float-right"
+                v-if="order.status === 'contract'"
             >
               <i class="fa fa-minus-circle"></i> {{ $t('contracts.view.cancel_contract') }}
             </button>
@@ -701,16 +707,18 @@
 
 <script>
 // import Discount from './Discount'
-
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import {mapGetters} from "vuex";
 
 export default {
-  props: {
-    apartment: {},
-  },
+  name: 'ContractsView',
 
   components: {
-    // Discount
+    BaseBreadCrumb
+  },
+
+  props: {
+    apartment: {},
   },
 
   data: () => ({
@@ -829,21 +837,34 @@ export default {
     this.fetchOrder();
   },
 
-  computed: mapGetters(["getMe", "getPermission"]),
+  computed: {
+    ...mapGetters(["getMe", "getPermission"]),
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'contracts',
+          textContent: this.$t('contracts.title')
+        },
+      ]
+    },
+    activeContent() {
+      return this.$t('view')
+    },
+  },
 
   methods: {
     async saveComment() {
       this.getLoading = true;
       try {
         const {data, status} = await this.axios.post(
-          process.env.VUE_APP_URL +
+            process.env.VUE_APP_URL +
             "/orders/" +
             this.$route.params.id +
             "/comment",
-          {
-            comment: this.comment,
-          },
-          this.header
+            {
+              comment: this.comment,
+            },
+            this.header
         );
 
         if (status === 201) {
@@ -862,15 +883,15 @@ export default {
       this.getLoading = true;
       try {
         await this.axios.post(
-          process.env.VUE_APP_URL +
+            process.env.VUE_APP_URL +
             "/debtors/payment/" +
             this.$route.params.id +
             "/store",
-          {
-            date: this.payment.data.date,
-            amount: this.payment.data.amount,
-          },
-          this.header
+            {
+              date: this.payment.data.date,
+              amount: this.payment.data.amount,
+            },
+            this.header
         );
 
         this.payment.data = {
@@ -892,8 +913,8 @@ export default {
       this.getLoading = true;
       try {
         const {data} = await this.axios.get(
-          process.env.VUE_APP_URL + "/orders/" + this.$route.params.id,
-          this.header
+            process.env.VUE_APP_URL + "/orders/" + this.$route.params.id,
+            this.header
         );
         this.step = 1;
 
@@ -909,14 +930,14 @@ export default {
       this.getLoading = true;
       try {
         const {data} = await this.axios.put(
-          process.env.VUE_APP_URL +
+            process.env.VUE_APP_URL +
             "/orders/" +
             this.$route.params.id +
             "/client",
-          {
-            friends: this.order.friends,
-          },
-          this.header
+            {
+              friends: this.order.friends,
+            },
+            this.header
         );
 
         this.edit.type_client = false;
@@ -942,29 +963,29 @@ export default {
         if (result.value || result.value == "") {
           this.getLoading = true;
           this.axios
-            .delete(process.env.VUE_APP_URL + "/debtors/" + id, this.header)
-            .then(() => {
-              this.fetchOrder();
-              this.getLoading = false;
-              this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
-            })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
+              .delete(process.env.VUE_APP_URL + "/debtors/" + id, this.header)
+              .then(() => {
+                this.fetchOrder();
+                this.getLoading = false;
+                this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
+              })
+              .catch((error) => {
+                this.getLoading = false;
+                this.toastedWithErrorCode(error);
 
-              if (error.response.status === 422) {
-                if (
-                  error.response.data.date_payment &&
-                  error.response.data.date_payment.length > 0
-                )
-                  this.toasted(error.response.data.date_payment[0], "error");
-                if (
-                  error.response.data.pay_amount &&
-                  error.response.data.pay_amount.length > 0
-                )
-                  this.toasted(error.response.data.pay_amount[0], "error");
-              }
-            });
+                if (error.response.status === 422) {
+                  if (
+                      error.response.data.date_payment &&
+                      error.response.data.date_payment.length > 0
+                  )
+                    this.toasted(error.response.data.date_payment[0], "error");
+                  if (
+                      error.response.data.pay_amount &&
+                      error.response.data.pay_amount.length > 0
+                  )
+                    this.toasted(error.response.data.pay_amount[0], "error");
+                }
+              });
         }
       });
     },
@@ -977,21 +998,21 @@ export default {
         icon: "question",
         showCancelButton: true,
         html:
-          '<input id="deb-payment" type="number" placeholder="10000" value="' +
-          this.order.payments[index].amount_paid +
-          '" max="' +
-          this.order.payments[index].amount +
-          '" step="100" class="form-control">' +
-          '<label for="date-payment" class="float-left mt-3">Дата оплаты</label>' +
-          '<input id="date-payment" type="date" placeholder="Дата оплаты" value="' +
-          this.order.payments[index].date_paid +
-          '" required class="form-control mt-2">' +
-          '<label for="type_payment" class="float-left mt-3">Тип оплаты</label>' +
-          '<select id="type_payment" class="form-control" ruqired><option value="' +
-          this.order.payments[index].type_payments +
-          '">' +
-          this.order.payments[index].type_payments +
-          '</option><option value="cash">Наличный</option><option value="transfer">Перечисления</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">Другое</option></select>',
+            '<input id="deb-payment" type="number" placeholder="10000" value="' +
+            this.order.payments[index].amount_paid +
+            '" max="' +
+            this.order.payments[index].amount +
+            '" step="100" class="form-control">' +
+            '<label for="date-payment" class="float-left mt-3">Дата оплаты</label>' +
+            '<input id="date-payment" type="date" placeholder="Дата оплаты" value="' +
+            this.order.payments[index].date_paid +
+            '" required class="form-control mt-2">' +
+            '<label for="type_payment" class="float-left mt-3">Тип оплаты</label>' +
+            '<select id="type_payment" class="form-control" ruqired><option value="' +
+            this.order.payments[index].type_payments +
+            '">' +
+            this.order.payments[index].type_payments +
+            '</option><option value="cash">Наличный</option><option value="transfer">Перечисления</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">Другое</option></select>',
         confirmButtonText: this.$t("sweetAlert.debtors.next"),
         preConfirm: () => {
           return {
@@ -1019,42 +1040,42 @@ export default {
           if (result.value || result.value == "") {
             this.getLoading = true;
             this.axios
-              .put(
-                process.env.VUE_APP_URL + "/debtors/" + id,
-                {
-                  date_paid: formValues.date_payment,
-                  amount_paid: formValues.pay_amount,
-                  type_payment: formValues.type_payment,
-                  comment: result.value,
-                },
-                this.header
-              )
-              .then(() => {
-                this.fetchOrder();
-                this.getLoading = false;
-                this.$swal(
-                  this.$t("sweetAlert.payment_success"),
-                  "",
-                  "success"
-                );
-              })
-              .catch((error) => {
-                this.getLoading = false;
-                this.toastedWithErrorCode(error);
+                .put(
+                    process.env.VUE_APP_URL + "/debtors/" + id,
+                    {
+                      date_paid: formValues.date_payment,
+                      amount_paid: formValues.pay_amount,
+                      type_payment: formValues.type_payment,
+                      comment: result.value,
+                    },
+                    this.header
+                )
+                .then(() => {
+                  this.fetchOrder();
+                  this.getLoading = false;
+                  this.$swal(
+                      this.$t("sweetAlert.payment_success"),
+                      "",
+                      "success"
+                  );
+                })
+                .catch((error) => {
+                  this.getLoading = false;
+                  this.toastedWithErrorCode(error);
 
-                if (error.response.status === 422) {
-                  if (
-                    error.response.data.date_payment &&
-                    error.response.data.date_payment.length > 0
-                  )
-                    this.toasted(error.response.data.date_payment[0], "error");
-                  if (
-                    error.response.data.pay_amount &&
-                    error.response.data.pay_amount.length > 0
-                  )
-                    this.toasted(error.response.data.pay_amount[0], "error");
-                }
-              });
+                  if (error.response.status === 422) {
+                    if (
+                        error.response.data.date_payment &&
+                        error.response.data.date_payment.length > 0
+                    )
+                      this.toasted(error.response.data.date_payment[0], "error");
+                    if (
+                        error.response.data.pay_amount &&
+                        error.response.data.pay_amount.length > 0
+                    )
+                      this.toasted(error.response.data.pay_amount[0], "error");
+                  }
+                });
           }
         });
       }
@@ -1066,20 +1087,20 @@ export default {
       const {value: formValues} = await this.$swal({
         title: this.$t("sweetAlert.debtors.payment_info"),
         icon: "question",
-        buttons:{
-          cancel:this.$t('contracts.view.cancel_btn'),
+        buttons: {
+          cancel: this.$t('contracts.view.cancel_btn'),
         },
         showCancelButton: true,
         html:
-          '<input id="deb-payment" type="number" placeholder="10000" value="' +
-          this.order.payments[index].amount +
-          '" max="' +
-          this.order.payments[index].amount +
-          '" step="100" class="form-control">' +
-          `<label for="date-payment" class="float-left mt-3">${this.$t('contracts.view.payment_date')}</label>` +
-          '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
-          `<label for="type_payment" class="float-left mt-3">${this.$t('contracts.view.payment_date')}</label>` +
-          `<select id="type_payment" class="form-control"><option value="cash">${this.$t('contracts.view.payment_by_cash')}</option><option value="transfer">${this.$t('contracts.view.payment_transaction')}</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">${this.$t('contracts.view.payment_other')}</option></select>`,
+            '<input id="deb-payment" type="number" placeholder="10000" value="' +
+            this.order.payments[index].amount +
+            '" max="' +
+            this.order.payments[index].amount +
+            '" step="100" class="form-control">' +
+            `<label for="date-payment" class="float-left mt-3">${this.$t('contracts.view.payment_date')}</label>` +
+            '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
+            `<label for="type_payment" class="float-left mt-3">${this.$t('contracts.view.payment_date')}</label>` +
+            `<select id="type_payment" class="form-control"><option value="cash">${this.$t('contracts.view.payment_by_cash')}</option><option value="transfer">${this.$t('contracts.view.payment_transaction')}</option><option value="payme">Payme</option><option value="click">Click</option><option value="other">${this.$t('contracts.view.payment_other')}</option></select>`,
         confirmButtonText: this.$t("sweetAlert.debtors.next"),
         preConfirm: () => {
           return {
@@ -1095,8 +1116,8 @@ export default {
       let amount = this.order.payments[index].amount;
 
       if (
-        (type === "monthly" || type === "debt" || type === "initial_payment") &&
-        pay_amount < amount
+          (type === "monthly" || type === "debt" || type === "initial_payment") &&
+          pay_amount < amount
       ) {
         if (formValues) {
           const {value: initialValue} = await this.$swal({
@@ -1105,17 +1126,17 @@ export default {
             icon: "warning",
             showCancelButton: true,
             html:
-              '<label for="date-payment" class="float-left mt-3">Дата следующей оплаты</label>' +
-              '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
-              '<label for="comment" class="float-left mt-3">Комментария</label>' +
-              '<textarea id="comment" class="form-control" rows="3"></textarea>',
+                '<label for="date-payment" class="float-left mt-3">Дата следующей оплаты</label>' +
+                '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
+                '<label for="comment" class="float-left mt-3">Комментария</label>' +
+                '<textarea id="comment" class="form-control" rows="3"></textarea>',
 
             confirmButtonText: this.$t("sweetAlert.debtors.yes"),
 
             preConfirm: () => {
               return {
                 next_payment_date: document.getElementById("date-payment")
-                  .value,
+                    .value,
                 comment: document.getElementById("comment").value,
               };
             },
@@ -1124,39 +1145,39 @@ export default {
           this.getLoading = true;
 
           this.axios
-            .post(
-              process.env.VUE_APP_URL + "/debtors/" + id,
-              {
-                date_paid: formValues.date_payment,
-                amount_paid: formValues.pay_amount,
-                type_payment: formValues.type_payment,
-                comment: initialValue.comment,
-                next_payment_date: initialValue.next_payment_date,
-              },
-              this.header
-            )
-            .then(() => {
-              this.fetchOrder();
-              this.getLoading = false;
-              this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
-            })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
+              .post(
+                  process.env.VUE_APP_URL + "/debtors/" + id,
+                  {
+                    date_paid: formValues.date_payment,
+                    amount_paid: formValues.pay_amount,
+                    type_payment: formValues.type_payment,
+                    comment: initialValue.comment,
+                    next_payment_date: initialValue.next_payment_date,
+                  },
+                  this.header
+              )
+              .then(() => {
+                this.fetchOrder();
+                this.getLoading = false;
+                this.$swal(this.$t("sweetAlert.payment_success"), "", "success");
+              })
+              .catch((error) => {
+                this.getLoading = false;
+                this.toastedWithErrorCode(error);
 
-              if (error.response.status === 422) {
-                if (
-                  error.response.data.date_payment &&
-                  error.response.data.date_payment.length > 0
-                )
-                  this.toasted(error.response.data.date_payment[0], "error");
-                if (
-                  error.response.data.pay_amount &&
-                  error.response.data.pay_amount.length > 0
-                )
-                  this.toasted(error.response.data.pay_amount[0], "error");
-              }
-            });
+                if (error.response.status === 422) {
+                  if (
+                      error.response.data.date_payment &&
+                      error.response.data.date_payment.length > 0
+                  )
+                    this.toasted(error.response.data.date_payment[0], "error");
+                  if (
+                      error.response.data.pay_amount &&
+                      error.response.data.pay_amount.length > 0
+                  )
+                    this.toasted(error.response.data.pay_amount[0], "error");
+                }
+              });
         }
 
         return;
@@ -1179,43 +1200,43 @@ export default {
           if (result.value || result.value == "") {
             this.getLoading = true
             this.axios
-              .post(
-                process.env.VUE_APP_URL + "/debtors/" + id,
-                {
-                  date_paid: formValues.date_payment,
-                  amount_paid: formValues.pay_amount,
-                  type_payment: formValues.type_payment,
-                  comment: result.value,
-                },
-                this.header
-              )
-              .then(() => {
-                this.fetchOrder();
-                this.getLoading = false
+                .post(
+                    process.env.VUE_APP_URL + "/debtors/" + id,
+                    {
+                      date_paid: formValues.date_payment,
+                      amount_paid: formValues.pay_amount,
+                      type_payment: formValues.type_payment,
+                      comment: result.value,
+                    },
+                    this.header
+                )
+                .then(() => {
+                  this.fetchOrder();
+                  this.getLoading = false
 
-                this.$swal(
-                  this.$t("sweetAlert.payment_success"),
-                  "",
-                  "success"
-                );
-              })
-              .catch((error) => {
-                this.getLoading = false
-                this.toastedWithErrorCode(error);
+                  this.$swal(
+                      this.$t("sweetAlert.payment_success"),
+                      "",
+                      "success"
+                  );
+                })
+                .catch((error) => {
+                  this.getLoading = false
+                  this.toastedWithErrorCode(error);
 
-                if (error.response.status === 422) {
-                  if (
-                    error.response.data.date_payment &&
-                    error.response.data.date_payment.length > 0
-                  )
-                    this.toasted(error.response.data.date_payment[0], "error");
-                  if (
-                    error.response.data.pay_amount &&
-                    error.response.data.pay_amount.length > 0
-                  )
-                    this.toasted(error.response.data.pay_amount[0], "error");
-                }
-              });
+                  if (error.response.status === 422) {
+                    if (
+                        error.response.data.date_payment &&
+                        error.response.data.date_payment.length > 0
+                    )
+                      this.toasted(error.response.data.date_payment[0], "error");
+                    if (
+                        error.response.data.pay_amount &&
+                        error.response.data.pay_amount.length > 0
+                    )
+                      this.toasted(error.response.data.pay_amount[0], "error");
+                  }
+                });
           }
         });
       }
@@ -1238,26 +1259,26 @@ export default {
         if (result.value) {
           this.getLoading = true;
           this.axios
-            .post(
-              process.env.VUE_APP_URL + "/deals/" + this.order.id,
-              {
-                comment: result.value,
-              },
-              this.header
-            )
-            .then(() => {
-              this.$router.back(-1);
-              this.getLoading = false;
-              this.$swal(
-                this.$t("sweetAlert.canceled_contract"),
-                "",
-                "success"
-              );
-            })
-            .catch((error) => {
-              this.getLoading = false;
-              this.toastedWithErrorCode(error);
-            });
+              .post(
+                  process.env.VUE_APP_URL + "/deals/" + this.order.id,
+                  {
+                    comment: result.value,
+                  },
+                  this.header
+              )
+              .then(() => {
+                this.$router.back(-1);
+                this.getLoading = false;
+                this.$swal(
+                    this.$t("sweetAlert.canceled_contract"),
+                    "",
+                    "success"
+                );
+              })
+              .catch((error) => {
+                this.getLoading = false;
+                this.toastedWithErrorCode(error);
+              });
         } else {
           this.toasted("Напишите причину расторгнуть договор", "error");
         }

@@ -33,16 +33,16 @@
             ref="price-provider"
             class="d-flex justify-content-center align-items-center"
         >
-          <vue-numeric
+          <base-numeric-input
               v-model="form.priceByValue"
               class="plan__group-input"
+              @focus="removePriceError"
               :precision="2"
-              :minus="false"
+              decimal-separator=","
+              :currency="inputPrefixSymbol"
               currency-symbol-position="suffix"
               separator="space"
-              placeholder="000"
-              @focus="removePriceError"
-          ></vue-numeric>
+          ></base-numeric-input>
         </ValidationProvider>
 
       </b-input-group>
@@ -119,12 +119,12 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import VueNumeric from "vue-numeric";
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 
 export default {
   name: "PromoAccordionInput",
   components: {
-    VueNumeric
+    BaseNumericInput
   },
   props: {
     block: {
@@ -206,6 +206,14 @@ export default {
       getEditHistoryContext: 'getEditHistoryContext',
       getSelectedBlocks: 'getSelectedBlocks'
     }),
+    inputPrefixSymbol() {
+      const {value} = this.promoPriceOptionsBinding
+      if (value === 'usd') {
+        return this.$t('usd')
+      }
+
+      return this.$t('ye')
+    },
     showDeletedButton() {
       return this.startTime !== this.promoIndex.id
     },
@@ -236,13 +244,16 @@ export default {
     togglePromoSubmitButton() {
       this.showWarningMessage()
     },
-    'form.blocks'(last) {
-      if (last.length) {
-        this.removePromoBlocksError()
-      }
+    'form.blocks': {
+      handler(last) {
+        if (last.length) {
+          this.removePromoBlocksError()
+        }
 
-      this.userFocusedAccordion()
-      this.setInputValues()
+        this.userFocusedAccordion()
+        this.setInputValues()
+      },
+      immediate: true
     },
     'form.priceByValue'() {
       this.userFocusedAccordion()

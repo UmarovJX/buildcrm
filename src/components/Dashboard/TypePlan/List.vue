@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <div
-        class="
+          class="
           d-flex
           justify-content-between
           align-items-center
@@ -14,7 +14,7 @@
         "
       >
         <div
-          class="
+            class="
             d-flex
             w-100
             align-items-center
@@ -53,20 +53,19 @@
 
       <div class="mt-4">
         <b-table
-          sticky-header
-          borderless
-          responsive
-          :items="getPlan.plans"
-          :fields="fields"
-          :busy="getLoading"
-          show-empty
-          class="custom-table"
-          :empty-text="$t('no_data')"
+            sticky-header
+            show-empty
+            borderless
+            responsive
+            :items="getPlan.plans"
+            :empty-text="$t('no_data')"
+            :fields="fields"
+            :busy="showLoading"
+            class="custom-table"
         >
           <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">{{
-              scope.emptyText
-            }}</span>
+            <span class="d-flex justify-content-center align-items-center">
+              {{ scope.emptyText }}</span>
           </template>
           <template #table-busy>
             <div class="d-flex justify-content-center w-100">
@@ -81,12 +80,12 @@
 
           <template #cell(image)="data">
             <img
-              style="cursor: pointer; object-fit: contain"
-              :data-fancybox="data.value"
-              v-lazy="data.value"
-              width="150"
-              height="100"
-              fluid
+                style="cursor: pointer; object-fit: contain"
+                :data-fancybox="data.value"
+                v-lazy="data.value"
+                width="150"
+                height="100"
+                fluid
             />
           </template>
 
@@ -97,24 +96,37 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
-                class="dropdown my-dropdown dropleft"
-                v-if="getPermission.type_plan.update"
+                  class="dropdown my-dropdown dropleft"
+                  v-if="getPermission.type_plan.update"
               >
                 <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
+                    type="button"
+                    class="dropdown-toggle"
+                    data-toggle="dropdown"
                 >
                   <i class="far fa-ellipsis-h"></i>
                 </button>
 
                 <div class="dropdown-menu">
                   <button
-                    class="dropdown-item dropdown-item--inside"
-                    @click="edit(data.item.id)"
+                      class="dropdown-item dropdown-item--inside"
+                      @click="edit(data.item.id)"
                   >
                     <i class="fas fa-pen"></i>
                     {{ $t("edit") }}
+                  </button>
+
+                  <button
+                      class="dropdown-item dropdown-item--inside"
+                      @click="deleteTypePlan(data.item)"
+                      v-if="getPermission.type_plan.update"
+                  >
+                    <span>
+                      <i class="far fa-trash"></i>
+                    </span>
+                    <span class="ml-3">
+                      {{ $t("delete") }}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -122,21 +134,35 @@
           </template>
         </b-table>
       </div>
+
+      <delete-has-apartment
+          ref="delete-plan-modal"
+          :plan-list="deletePlan.plans"
+          :remove-plan="deletePlan.removePlan"
+          @successfully-updated="successfullyDeletePlan"
+          @close-delete-modal="closeDeletePlanModal"
+      />
     </div>
   </main>
 </template>
 
 <script>
-import {mapGetters, mapActions} from "vuex";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
+import {mapGetters, mapActions} from "vuex";
+import api from "@/services/api";
+import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
 
 export default {
+  name: 'TypePlanList',
+  components: {
+    DeleteHasApartment
+  },
   data() {
     return {
+      showLoading: false,
       manager: {},
       manager_id: null,
-
       header: {
         headers: {
           Authorization: "Bearer " + localStorage.token,
@@ -173,27 +199,71 @@ export default {
           label: "",
         },
       ],
-    };
+      deletePlan: {
+        plans: [],
+        message: '',
+        removePlan: {}
+      }
+    }
   },
-
   computed: mapGetters(["getPlan", "getLoading", "getPermission"]),
-
   mounted() {
     this.fetchPlans(this);
     Fancybox.bind("[data-fancybox]");
   },
-
   methods: {
     ...mapActions(["fetchPlans"]),
+    async deleteTypePlan(item) {
+      const objectId = this.$route.params.id
+      const {apartments_count, id: planId} = item
+      if (apartments_count) {
+        this.showLoading = true
+        const response = await api.plans.deletePlanWhenHasApartment(objectId, planId)
+            .then(() => ({}))
+            .catch((error) => error.response)
+            .finally(() => {
+              this.showLoading = false
+            })
 
+        const hadResponse = Object.keys(response).length
+        if (hadResponse) {
+          const {plans, message} = response.data
+          this.deletePlan.plans = plans
+          this.deletePlan.message = message
+          this.deletePlan.removePlan = item
+          this.$bvModal.show('delete-plan-modal')
+        }
+      } else {
+        this.showLoading = true
+        api.plans.deletePlan(objectId, planId)
+            .then(() => {
+              this.successfullyDeletePlan()
+            })
+            .catch((error) => {
+              this.toastedWithErrorCode(error)
+            })
+            .finally(() => {
+              this.showLoading = false
+            })
+      }
+    },
+    successfullyDeletePlan() {
+      this.closeDeletePlanModal()
+      const message = `${this.$t("sweetAlert.deleted")}`
+      this.$swal(message, "", "success")
+      this.fetchPlans(this)
+    },
+    closeDeletePlanModal() {
+      this.$bvModal.hide('delete-plan-modal')
+    },
     edit(id) {
       this.$router.push({
         name: "type-plan-edit",
         params: {object: this.getPlan.id, id: id},
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style></style>

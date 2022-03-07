@@ -49,7 +49,12 @@ export default {
     sum_text: 'В суммах',
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
-    contract_file_not_found:'Файл контракта не найдено',
+    contract_file_not_found: 'Файл контракта не найдено',
+    instruction: "Инструкция",
+    validation_warning_to_bottom: 'Одно из полей заполнена неправильно, пожалуйста проверьте все поля еще раз!',
+    new_name: 'Новое название',
+    meaning: 'Значение',
+    example_by_2: "Примеры(по 2)",
 
     promo: {
         name: 'Акция',
@@ -161,7 +166,7 @@ export default {
                 create: "Разрешить создать объект",
                 update: "Разрешить редактировать объект",
                 delete: "Разрешить удалять объектов",
-                apartments: "Разрешить видеть список квартир",
+                apartments: "Разрешить видеть список квартир"
             },
 
             users: {
@@ -398,6 +403,8 @@ export default {
         plan: "Планировка",
         plans: "Все планировки",
         list: "Список планировок",
+        plan_required: "Вам необходимо выбрать проект квартиры",
+        delete_title: "Вам нужно перейти на другой план, который имеет {apartments_count} квартир в этом плане квартир."
     },
 
     debtors: {
@@ -420,12 +427,13 @@ export default {
         sale: 'Продажа',
         booking: 'Бронирование',
         make_it_main_contract: 'Сделать основным договором',
-
+        unfinished_contract: 'Незавершенный контракт',
         deal_template: {
             name: 'Шаблон договора',
             type: 'Тип',
             main: 'Главный',
-            title:"Список шаблонов договоров"
+            title: "Список шаблонов договоров",
+            warning_message: 'Вы не выбрали основные договоры! Пожалуйста выберите все основные договоры!'
         },
 
         create: {
@@ -585,7 +593,7 @@ export default {
     },
 
     branches: {
-        title:'Филиалы',
+        title: 'Филиалы',
         name: 'Филиал',
         branch_name: 'Название филиала',
         branch_address: 'Адрес филиала',
@@ -597,5 +605,13 @@ export default {
         manager_phone_number: 'Номер телефона менеджера',
         manager_email: 'Почта менеджера',
         manager_avatar: 'Аватар менеджера',
+    },
+
+    filter_names: {
+        all: 'Все',
+        booked: "Забронирован",
+        sold: 'Оформлен',
+        in_payment: 'На оплате',
+        archive: 'Закрыт'
     }
 }

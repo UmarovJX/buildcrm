@@ -19,10 +19,17 @@
         ></flip-countdown>
       </div>
 
+      <base-bread-crumb
+          :bread-crumbs="breadCrumbs"
+          :active-content="activeContent"
+          class="mb-4"
+      >
+      </base-bread-crumb>
+
       <!-- Step 1 -->
       <div class="new-object p-3" v-if="contract.step === 1">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
-          <form ref="form" @submit.prevent="handleSubmit(postStore)">
+          <form ref="form" @submit.prevent="handleSubmit(postStore);showValidationMessage()">
             <div class="row">
               <!-- Изменить дата договора -->
               <div
@@ -57,11 +64,11 @@
                                 :state="getValidationState(validationContext)"
                                 aria-describedby="number-feedback"
                                 :disabled="!edited.toggle ? true : false"
+                                @focus="userFocused"
                             ></b-form-input>
 
-                            <b-form-invalid-feedback id="number-feedback">{{
-                                validationContext.errors[0]
-                              }}
+                            <b-form-invalid-feedback class="error__provider" id="number-feedback">
+                              {{ validationContext.errors[0] }}
                             </b-form-invalid-feedback>
                           </b-form-group>
                         </validation-provider>
@@ -119,11 +126,11 @@
                             v-model="contract.date"
                             :state="getValidationState(validationContext)"
                             aria-describedby="date-feedback"
+                            @focus="userFocused"
                         ></b-form-input>
 
-                        <b-form-invalid-feedback id="date-feedback">{{
-                            validationContext.errors[0]
-                          }}
+                        <b-form-invalid-feedback id="date-feedback" class="error__provider">
+                          {{ validationContext.errors[0] }}
                         </b-form-invalid-feedback>
                       </b-form-group>
                     </validation-provider>
@@ -136,7 +143,11 @@
 
               <!--  client form -->
               <div class="col-md-12">
-                <ClientInputConfirm :client="client" @clientSet="ClientSet"></ClientInputConfirm>
+                <ClientInputConfirm
+                    :client="client"
+                    @clientSet="ClientSet"
+                    @focus="userFocused"
+                ></ClientInputConfirm>
               </div>
 
               <!-- apartments.agree.first_payment_date -->
@@ -158,11 +169,11 @@
                         v-model="contract.first_payment_date"
                         :state="getValidationState(validationContext)"
                         aria-describedby="first_payment_date-feedback"
+                        @focus="userFocused"
                     ></b-form-input>
 
-                    <b-form-invalid-feedback id="first_payment_date-feedback">{{
-                        validationContext.errors[0]
-                      }}
+                    <b-form-invalid-feedback id="first_payment_date-feedback" class="error__provider">
+                      {{ validationContext.errors[0] }}
                     </b-form-invalid-feedback>
                   </b-form-group>
                 </validation-provider>
@@ -179,11 +190,15 @@
                       id="payment_date"
                       type="date"
                       class="form-control"
+                      @focus="userFocused"
                   />
                 </div>
               </div>
 
-            </div> <!-- row end  -->
+            </div>
+            <!-- row end  -->
+
+            <base-validation-bottom-warning v-if="hasValidationError"/>
 
             <!-- removeBlock -->
             <div class="mt-4 d-flex justify-content-end flex-md-row flex-column">
@@ -270,6 +285,8 @@ import ClientInputConfirm from "./Components/ClientInputConfirm";
 import MonthlyPayments from "./Contract/MonthlyPayments";
 import ClientInformation from "./Contract/ClientInformation";
 import ApartmentsList from "./Contract/ApartmentsList";
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
 import Calculator from "./Contract/Calculator";
 import Confirm from "./Contract/Confirm";
 
@@ -288,11 +305,25 @@ import moment from "moment";
 export default {
   name: "ConfirmApartment",
 
+  components: {
+    // VueNumeric,
+    BaseValidationBottomWarning,
+    FlipCountdown,
+    ClientInputConfirm,
+    SuccessAgree,
+    MonthlyPayments,
+    ClientInformation,
+    ApartmentsList,
+    BaseBreadCrumb,
+    Calculator,
+    Confirm,
+  },
+
   data() {
     return {
       expiry_at: null,
       order: {},
-
+      hasValidationError: false,
       apartments: [],
       discounts: [],
 
@@ -374,18 +405,6 @@ export default {
     }
   },
 
-  components: {
-    // VueNumeric,
-    SuccessAgree,
-    FlipCountdown,
-    ClientInputConfirm,
-    MonthlyPayments,
-    ClientInformation,
-    ApartmentsList,
-    Calculator,
-    Confirm,
-  },
-
   computed: {
     ...mapGetters([
       "getReserveClient",
@@ -393,7 +412,34 @@ export default {
       "getMe",
       "getApartmentOrder",
     ]),
-
+    objectName() {
+      if (this.order.apartments?.length) {
+        return this.order.apartments[0].object.name
+      }
+      return '';
+    },
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'objects',
+          textContent: this.$t('objects.title')
+        },
+        {
+          routeName: 'apartments',
+          textContent: this.objectName,
+          params: {
+            object: this.$route.params.object
+          }
+        },
+        {
+          routeName: '',
+          textContent: this.$t('objects.create.apartment')
+        },
+      ]
+    },
+    activeContent() {
+      return this.$t('objects.booking')
+    },
     // apartmentInfoItem() {
     //   let val = this.getApartmentOrder;
     //   if (val) {
@@ -458,6 +504,15 @@ export default {
   methods: {
     ...mapActions(["fetchApartmentOrder"]),
 
+    async showValidationMessage() {
+      const validate = await this.$refs.observer.validate()
+      this.hasValidationError = !validate
+    },
+
+    userFocused() {
+      this.hasValidationError = false
+    },
+
     backToView() {
       // if (this.apartmentInfoItem.status == "contract") {
       //   this.$router.push({
@@ -492,7 +547,6 @@ export default {
     },
 
     async postStore() {
-      console.log('this.client', this.client)
       this.buttons.loading = true;
       await this.axios
           .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
@@ -798,5 +852,9 @@ export default {
 </script>
 
 <style scoped>
-
+.error__provider {
+  color: red;
+  display: block;
+  font-size: 14px;
+}
 </style>

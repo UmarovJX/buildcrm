@@ -1,119 +1,129 @@
 <template>
-  <b-table
-      sticky-header
-      borderless
-      responsive
-      :items="contracts"
-      :fields="fields"
-      :busy="loading"
-      show-empty
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      sort-icon-left
-      class="custom-table"
-      :empty-text="$t('no_data')"
-  >
-    <template #empty="scope" class="text-center">
+  <div>
+    <b-alert v-if="showUnselectWarning" variant="danger" class="py-2 mb-0" show>
+      <div
+          class="alert-body py-0 d-flex w-100 align-items-center justify-content-center"
+      >
+            <span>
+              {{ $t('objects.deal_template.warning_message') }}
+            </span>
+      </div>
+    </b-alert>
+    <b-table
+        sticky-header
+        borderless
+        responsive
+        :items="contracts"
+        :fields="fields"
+        show-empty
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        sort-icon-left
+        class="custom-table"
+        :empty-text="$t('no_data')"
+    >
+      <template #empty="scope" class="text-center">
       <span class="d-flex justify-content-center align-items-center">
         {{ scope.emptyText }}
       </span>
-    </template>
+      </template>
 
-    <template #cell(index)="data">
-      {{ data.index + 1 }}
-    </template>
+      <template #cell(index)="data">
+        {{ data.index + 1 }}
+      </template>
 
-    <template #table-busy>
-      <div class="d-flex justify-content-center w-100">
-        <div class="lds-ellipsis">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+      <template #table-busy>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
         </div>
-      </div>
-    </template>
+      </template>
 
-    <template #cell(type)="data">
+      <template #cell(type)="data">
       <span>
         {{ getCategoryName(data.item.type) }}
       </span>
-    </template>
+      </template>
 
-    <template #cell(category)="data">
-      {{ data.item.category }}
-    </template>
+      <template #cell(category)="data">
+        {{ data.item.category }}
+      </template>
 
-    <template #cell(language)="data">
-      {{ data.item.language }}
-    </template>
+      <template #cell(language)="data">
+        {{ data.item.language }}
+      </template>
 
-    <template #cell(created)="data">
-      {{ dayFormatter(data.item.created_at) }}
-    </template>
+      <template #cell(created)="data">
+        {{ dayFormatter(data.item.created_at) }}
+      </template>
 
-    <template #cell(main)="data">
+      <template #cell(main)="data">
       <span class="star__icon" v-if="data.item.main">
         <i class="fas fa-check-double"></i>
       </span>
-    </template>
+      </template>
 
-    <template #cell(actions)="data">
-      <div class="float-right">
-        <div
-            class="dropdown my-dropdown dropleft"
-        >
-          <button
-              type="button"
-              class="dropdown-toggle"
-              data-toggle="dropdown"
-          >
-            <i class="far fa-ellipsis-h"></i>
-          </button>
-
+      <template #cell(actions)="data">
+        <div class="float-right">
           <div
-              class="dropdown-menu"
+              class="dropdown my-dropdown dropleft"
           >
-            <a
-                href="#"
-                class="dropdown-item dropdown-item--inside"
-                v-if="!data.item.main"
-                @click="makeItMain(data.item.id)"
+            <button
+                type="button"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
             >
+              <i class="far fa-ellipsis-h"></i>
+            </button>
+
+            <div
+                class="dropdown-menu"
+            >
+              <a
+                  href="#"
+                  class="dropdown-item dropdown-item--inside"
+                  v-if="!data.item.main"
+                  @click="makeItMain(data.item.id)"
+              >
               <span>
                 <i class="fas fa-pen"></i>
               </span>
-              <span class="ml-2">
+                <span class="ml-2">
                       {{ $t("objects.make_it_main_contract") }}
               </span>
-            </a>
+              </a>
 
-            <a
-                class="dropdown-item dropdown-item--inside"
-                :href="downloadDocumentURl(data.item.path)"
-            >
+              <a
+                  class="dropdown-item dropdown-item--inside"
+                  :href="downloadDocumentURl(data.item.path)"
+              >
               <span class="download__icon">
                 <i class="fas fa-download"></i>
               </span>
-              <span class="ml-2">{{ $t('contracts.download') }}</span>
-            </a>
+                <span class="ml-2">{{ $t('contracts.download') }}</span>
+              </a>
 
-            <a href="#"
-               class="dropdown-item dropdown-item--inside"
-               @click="deleteContract(data.item.id)"
-            >
+              <a href="#"
+                 class="dropdown-item dropdown-item--inside"
+                 @click="deleteContract(data.item.id)"
+              >
               <span>
                 <i class="far fa-trash"></i>
               </span>
-              <span class="ml-3">
+                <span class="ml-3">
                 {{ $t("delete") }}
               </span>
-            </a>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-  </b-table>
+      </template>
+    </b-table>
+  </div>
 </template>
 
 <script>
@@ -125,14 +135,18 @@ export default {
     contracts: {
       type: Array,
       required: true
+    },
+    type: {
+      type: String,
+      required: true
     }
   },
-  emits: ['update-content'],
+  emits: ['update-content','update-loading'],
   data() {
     return {
       sortBy: "main",
       sortDesc: true,
-      loading: false,
+      showLoading: false,
       fields: [
         {
           key: "index",
@@ -167,6 +181,25 @@ export default {
       ]
     }
   },
+  computed: {
+    showUnselectWarning() {
+      const count = this.contracts.filter(contract => contract.main)
+      if (this.type === 'sale') {
+        return count.length < 3
+      }
+
+      if (this.type === 'reservation') {
+        return count.length < 1
+      }
+
+      return 0
+    }
+  },
+  watch: {
+    showLoading(value) {
+      this.$emit('update-loading', value)
+    }
+  },
   methods: {
     getCategoryName(type) {
       return this.$t(`${type}`)
@@ -195,6 +228,7 @@ export default {
     },
     makeItMain(contractId) {
       const {id: objectId} = this.$route.params
+      this.showLoading = true
       api.objects.makeContractPrimary({objectId, contractId})
           .then(() => {
             this.$emit('update-content')
@@ -202,9 +236,12 @@ export default {
           .catch((error) => {
             this.toastedWithErrorCode(error)
           })
+          .finally(() => {
+            this.showLoading = false
+          })
     },
     async deleteContract(contractId) {
-      this.loading = true
+      this.showLoading = false
       const objectId = this.$route.params.id
       await api.objects.deleteContract({objectId, contractId})
           .then(() => {
@@ -216,7 +253,7 @@ export default {
             this.toastedWithErrorCode(error)
           })
           .finally(() => {
-            this.loading = false
+            this.showLoading = false
           })
     }
   }

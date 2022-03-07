@@ -17,6 +17,7 @@
               name="checkout-pasport"
               type="text"
               @change="getClientData"
+              @focus="userFocused"
               :placeholder="
                         $t('apartments.agree.placeholder.passport_series')
                       "
@@ -25,9 +26,9 @@
               aria-describedby="checkout-pasport-feedback"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="checkout-pasport-feedback">{{
-              validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+          <b-form-invalid-feedback id="checkout-pasport-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -54,11 +55,12 @@
               v-model="client.issued_by_whom"
               :state="getValidationState(validationContext)"
               aria-describedby="issue_passport-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="issue_passport-feedback">{{
-              validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+          <b-form-invalid-feedback id="issue_passport-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -83,11 +85,12 @@
               v-model="client.date_of_issue"
               :state="getValidationState(validationContext)"
               aria-describedby="date_of_issue-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="date_of_issue-feedback">{{
-              validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+          <b-form-invalid-feedback id="date_of_issue-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -112,17 +115,18 @@
               v-model="client.birth_day"
               :state="getValidationState(validationContext)"
               aria-describedby="birth_day-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="birth_day-feedback">{{
-              validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+          <b-form-invalid-feedback id="birth_day-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
     <!-- last_name_kirill -->
@@ -147,11 +151,13 @@
               @change="textToLatin('last_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="last_name_kirill-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="last_name_kirill-feedback">{{
+          <b-form-invalid-feedback id="last_name_kirill-feedback" class="error__provider">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -178,11 +184,13 @@
               @change="textToLatin('first_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="first_name_kirill-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="first_name_kirill-feedback">{{
+          <b-form-invalid-feedback id="first_name_kirill-feedback" class="error__provider">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -209,17 +217,19 @@
               @change="textToLatin('second_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="second_name_kirill-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="second_name_kirill-feedback">{{
+          <b-form-invalid-feedback id="second_name_kirill-feedback" class="error__provider">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
     <!-- last_name_lotin -->
@@ -244,11 +254,13 @@
               @change="textToCyrillic('last_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="last_name_lotin-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="last_name_lotin-feedback">{{
+          <b-form-invalid-feedback id="last_name_lotin-feedback" class="error__provider">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -275,11 +287,13 @@
               @change="textToCyrillic('first_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="first_name_lotin-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="first_name_lotin-feedback">{{
+          <b-form-invalid-feedback id="first_name_lotin-feedback" class="error__provider">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -306,17 +320,19 @@
               @change="textToCyrillic('second_name', $event)"
               :state="getValidationState(validationContext)"
               aria-describedby="second_name_lotin-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="second_name_lotin-feedback">{{
+          <b-form-invalid-feedback id="second_name_lotin-feedback" class="error__provider">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
     <!-- client.phone -->
@@ -335,15 +351,18 @@
               id="phone"
               name="phone"
               type="tel"
+              v-mask="maskForPhoneNumber"
               :placeholder="$t('apartments.agree.placeholder.phone')"
-              v-model="client.phone"
+              v-model="clientPhoneNumber"
               :state="getValidationState(validationContext)"
               aria-describedby="phone-feedback"
+              @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="phone-feedback">{{
+          <b-form-invalid-feedback id="phone-feedback" class="error__provider">{{
               validationContext.errors[0]
-            }}</b-form-invalid-feedback>
+            }}
+          </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
     </div>
@@ -351,17 +370,18 @@
     <!-- client.other_phone -->
     <div class="col-md-4">
       <div class="mb-3">
-          <label class="d-block" for="other_phone">{{
-              $t("apartments.agree.other_phone")
-            }}</label>
-          <input
-              class="my-form__input form-control"
-              type="tel"
-              :placeholder="$t('apartments.agree.placeholder.other_phone')"
-              v-model="client.other_phone"
-              id="other_phone"
-
-          />
+        <label class="d-block" for="other_phone">{{
+            $t("apartments.agree.other_phone")
+          }}</label>
+        <input
+            class="my-form__input form-control"
+            type="tel"
+            :placeholder="$t('apartments.agree.placeholder.other_phone')"
+            v-model="clientOtherPhoneNumber"
+            id="other_phone"
+            v-mask="maskForPhoneNumber"
+            @focus="userFocused"
+        />
       </div>
     </div>
 
@@ -408,24 +428,18 @@
     </div>
 
     <div class="col-md-12">
-      <hr />
+      <hr/>
     </div>
 
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ClientInputConfirm",
-
-  watch: {
-    client: function () {
-      this.$emit('clientSet', this.client)
-    },
-  },
-
+  emits:['focus'],
   computed: {
     ...mapGetters([
       "getReserveClient",
@@ -445,10 +459,28 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
+      maskForPhoneNumber: `+998 ## ### ## ##`,
+      clientPhoneNumber: this.client.phone,
+      clientOtherPhoneNumber: this.client.other_phone
+    }
+  },
+
+  watch: {
+    client: function () {
+      this.$emit('clientSet', this.client)
+    },
+    clientPhoneNumber(phone) {
+      this.client.phone = phone.replace(/\s/g, '')
+    },
+    clientOtherPhoneNumber(phone) {
+      this.client.other_phone = phone.replace(/\s/g, '')
     }
   },
 
   methods: {
+    userFocused() {
+      this.$emit('focus')
+    },
     async getClientData() {
       if (this.client.passport_series.length === 9) {
         this.loading = true;
@@ -502,13 +534,13 @@ export default {
     isCyrillic(type, value) {
       switch (type) {
         case 'first_name':
-          this.client.first_name.kirill =  this.symbolIsCyrillic(value);
+          this.client.first_name.kirill = this.symbolIsCyrillic(value);
           break;
         case 'last_name':
-          this.client.last_name.kirill =  this.symbolIsCyrillic(value);
+          this.client.last_name.kirill = this.symbolIsCyrillic(value);
           break;
         case 'second_name':
-          this.client.second_name.kirill =  this.symbolIsCyrillic(value);
+          this.client.second_name.kirill = this.symbolIsCyrillic(value);
           break;
       }
     },
@@ -516,13 +548,13 @@ export default {
     isLatin(type, value) {
       switch (type) {
         case 'first_name':
-          this.client.first_name.lotin =  this.symbolIsLatin(value);
+          this.client.first_name.lotin = this.symbolIsLatin(value);
           break;
         case 'last_name':
-          this.client.last_name.lotin =  this.symbolIsLatin(value);
+          this.client.last_name.lotin = this.symbolIsLatin(value);
           break;
         case 'second_name':
-          this.client.second_name.lotin =  this.symbolIsLatin(value);
+          this.client.second_name.lotin = this.symbolIsLatin(value);
           break;
       }
     },
@@ -793,5 +825,9 @@ export default {
 </script>
 
 <style scoped>
-
+.error__provider {
+  color: red;
+  display: block;
+  font-size: 14px;
+}
 </style>

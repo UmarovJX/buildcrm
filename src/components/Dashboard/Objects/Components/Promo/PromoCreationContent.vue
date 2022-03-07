@@ -79,7 +79,6 @@ import {mapGetters, mapMutations} from "vuex";
 import PromoPrepayContent from "@/components/Dashboard/Objects/Components/Promo/PromoPrepayContent";
 import PromoDateInterface from "@/components/Dashboard/Objects/Components/Promo/PromoDateInterface";
 import PromoPrepayInput from "@/components/Dashboard/Objects/Components/Promo/PromoPrepayInput";
-
 export default {
   name: 'PromoCreationContent',
   components: {

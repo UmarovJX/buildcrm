@@ -1,6 +1,13 @@
 <template>
   <main>
     <div v-if="Object.keys(apartment).length" class="app-content print-page">
+      <base-bread-crumb
+          :bread-crumbs="breadCrumbs"
+          :active-content="activeContent"
+          class="mb-4"
+      >
+      </base-bread-crumb>
+
       <div ref="document" id="printMe" :class="{'map-active': isMapActive}">
         <h3 class="text-center heading-for-print">
           "Xon Saroy" - Уверенный шаг к вашим мечтам!
@@ -563,6 +570,7 @@ import ViewClient from "./ViewClient";
 import ReserveAdd from "./Components/Reserve";
 import Agree from "./Components/Agree";
 import Discount from "./Components/Discount";
+import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import api from "@/services/api";
@@ -573,7 +581,8 @@ export default {
     "view-client": ViewClient,
     "reserve-add": ReserveAdd,
     "agree-modal": Agree,
-    Discount: Discount,
+    Discount,
+    BaseBreadCrumb,
     yandexMap,
     ymapMarker,
   },
@@ -637,6 +646,24 @@ export default {
       "getPermission",
       "getReserveClient",
     ]),
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'objects',
+          textContent: this.$t('objects.title')
+        },
+        {
+          routeName: 'apartments',
+          textContent: this.apartment.object.name,
+          params: {
+            object: this.apartment.object.id
+          }
+        }
+      ]
+    },
+    activeContent() {
+      return this.$t('objects.create.apartment')
+    },
     otherGetApartment() {
       if (Object.values(this.apartment).length) {
         return this.apartment;

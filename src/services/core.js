@@ -1,41 +1,22 @@
-import axios from "axios";
-
-const _axios = axios.create({baseURL: process.env.VUE_APP_URL});
+import _axios from "@/services/instance";
 
 class Core {
-    get(url, body = {}) {
-        return _axios.get(url, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.token
-            },
-            body
-        }).catch((error) => Promise.reject(error))
+    get(url) {
+        return _axios.get(url).catch((error) => Promise.reject(error))
     }
 
     post(url, body = {}, config) {
         return _axios.post(url, body, {
-            ...config,
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.token
-            }
+            ...config
         }).catch((error) => Promise.reject(error))
     }
 
     put(url, body = {}) {
-        return _axios.put(url, body, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.token
-            }
-        }).catch((error) => Promise.reject(error))
+        return _axios.put(url, body).catch((error) => Promise.reject(error))
     }
 
-    delete(url, body = {}) {
-        return _axios.delete(url, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.token
-            },
-            body
-        }).catch((error) => Promise.reject(error))
+    delete(url) {
+        return _axios.delete(url).catch((error) => Promise.reject(error))
     }
 }
 
