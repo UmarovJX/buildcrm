@@ -123,10 +123,9 @@ export default {
 
 <style>
 .card-counter {
-  box-shadow: 2px 2px 10px #dadada;
+  /*box-shadow: 2px 2px 10px #dadada;*/
   padding: 25px 16px;
   background-color: var(--background-color-nav);
-
   height: 200px;
   transition: 0.3s linear all;
   border-radius: 0.428rem;

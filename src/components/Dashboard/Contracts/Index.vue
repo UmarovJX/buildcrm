@@ -16,10 +16,10 @@
 
     <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter"/>
 
-    <base-filter-tabs-content
-        :filter-tab-list="filterTabList"
-        @get-new-content="getFilterTabsContent"
-    />
+    <!--    <base-filter-tabs-content-->
+    <!--        :filter-tab-list="filterTabList"-->
+    <!--        @get-new-content="getFilterTabsContent"-->
+    <!--    />-->
     
     <div class="app-content">
       <b-table
@@ -196,14 +196,14 @@
 import {BOverlay} from "bootstrap-vue";
 import {mapActions, mapGetters} from "vuex";
 import SideBarFilter from "./SideBarFilter.vue";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
+// import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 
 export default {
   name: 'Contracts',
   components: {
-    BaseFilterTabsContent,
+    // BaseFilterTabsContent,
     BaseBreadCrumb,
     SideBarFilter,
     BOverlay,
