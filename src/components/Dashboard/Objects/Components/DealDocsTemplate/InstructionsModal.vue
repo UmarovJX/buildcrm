@@ -79,20 +79,8 @@ export default {
       ['${prepay_percent}', 'процент первоначальной оплаты', '30, 25(знак % есть в договоре)'],
     ]
 
-    const firstColumn = this.$t('new_name')
-    const secondColumn = this.$t('meaning')
-    const thirdColumn = this.$t('example_by_2')
-
-    const items = rawItems.map(item => {
-      const gap = {}
-      gap[firstColumn] = item[0]
-      gap[secondColumn] = item[1]
-      gap[thirdColumn] = item[2]
-      return gap
-    })
-
     return {
-      items
+      rawItems
     }
   },
   computed: {
@@ -107,6 +95,15 @@ export default {
     },
     fields() {
       return [this.newName, this.meaning, this.example]
+    },
+    items() {
+      return this.rawItems.map(item => {
+        const gap = {}
+        gap[this.newName] = item[0]
+        gap[this.meaning] = item[1]
+        gap[this.example] = item[2]
+        return gap
+      })
     }
   },
   methods: {
