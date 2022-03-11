@@ -62,11 +62,15 @@ export default {
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
     contract_file_not_found: 'Kontrakt fayl topilmadi',
-    instruction:"Ko'rsatma",
+    instruction: "Ko'rsatma",
     validation_warning_to_bottom: "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
-    new_name:'Yangi nom',
-    meaning:'Manosi',
-    example_by_2:'Misol',
+    new_name: 'Yangi nom',
+    meaning: 'Manosi',
+    example_by_2: 'Misol',
+    payment_schedule: "To'lov jadvali",
+    object_details: 'Obyekt tafsilotlari',
+    client_details: 'Foydalanuvchi malumotlari',
+    contract_details: 'Shartnoma tafsilotlari',
 
     promo: {
         name: 'Aksiya',
@@ -395,6 +399,7 @@ export default {
         plan_required: "Xonadon loyihasini tanlashingiz shart",
         delete_title: "Bu xonadon rejasida {apartments_count} ta kvartira mavjud boshqa rejaga o'tkazishingiz kerak"
     },
+
     debtors: {
         title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
         familiars: "Tanishlar", // asd
