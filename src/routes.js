@@ -21,7 +21,9 @@ import ObjStore from "./components/Dashboard/Objects/Store";
 // import ObjFilter from './components/Dashboard/Objects/Filter';
 import ApartmentsList from "./components/Dashboard/Apartment/ApartmentsList";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
-
+import ContractTab2        from "@/components/Dashboard/Contracts/component/ContractTab2"
+import ContractTab3        from "@/components/Dashboard/Contracts/component/ContractTab3"
+import ContractTab4        from "@/components/Dashboard/Contracts/component/ContractTab4"
 // import Managers from './components/Dashboard/Managers/Index';
 // import Accountants from './components/Dashboard/Accountants/Index';
 // import Cashiers from './components/Dashboard/Cashiers/Index';
@@ -228,6 +230,33 @@ const routes = [
         name: "contracts-view",
         path: "/contracts/:id",
         component: ContractsView,
+        meta: {
+            requiresAuth: "contracts",
+        },
+    },
+
+    {
+        name: "contracts-tab-2",
+        path: "/contracts-tab-2",
+        component: ContractTab2,
+        meta: {
+            requiresAuth: "contracts",
+        },
+    },
+
+    {
+        name: "contracts-tab-3",
+        path: "/contracts-tab-3",
+        component: ContractTab3,
+        meta: {
+            requiresAuth: "contracts",
+        },
+    },
+
+    {
+        name: "contracts-tab-4",
+        path: "/contracts-tab-4",
+        component: ContractTab4,
         meta: {
             requiresAuth: "contracts",
         },
