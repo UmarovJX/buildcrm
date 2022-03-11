@@ -9,6 +9,11 @@
       </base-bread-crumb>
       <div class="card">
         <div class="card-content">
+          <router-link
+              :to="{name:'contracts-view-clone'}"
+          >
+            clone view
+          </router-link>
           <div class="card-header">
             <h5 class="card-title">
               {{ $t("apartments.list.contract") }} #: {{ order.contract }}
@@ -735,7 +740,6 @@ export default {
 
     order: {
       id: null,
-
       contract: null,
       friends: "unknown",
       contract_path: null,

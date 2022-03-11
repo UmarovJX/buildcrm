@@ -21,7 +21,7 @@
           style="float: right;margin-right: 0"
           @click="hideModal"
       >
-        {{ $t("cancel") }}
+        {{ $t("close") }}
       </b-button>
     </div>
   </b-modal>
@@ -113,7 +113,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>

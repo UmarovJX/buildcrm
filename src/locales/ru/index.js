@@ -55,6 +55,11 @@ export default {
     new_name: 'Новое название',
     meaning: 'Значение',
     example_by_2: "Примеры(по 2)",
+    payment_schedule:'График оплаты',
+    object_details:'Детали объекта',
+    client_details:'Детали клиента',
+    contract_details:'Детали договора',
+
 
     promo: {
         name: 'Акция',
@@ -409,6 +414,12 @@ export default {
 
     debtors: {
         title: "Должники",
+        overdue: "Просроченные", // asd
+        familiars: "Знакомые", // asd
+        contract_number: "№ договора", // asd
+        client_name: "имя клиента", // asd
+        client_number: "номер телефона", // asd
+        client_type: "тип клиента", // asd
     },
 
     backup: {
