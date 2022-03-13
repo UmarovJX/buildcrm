@@ -33,8 +33,16 @@
           :bordered="false"
           :striped="false"
           thead-class="payment__schedule__thead"
+          tbody-class="payment__schedule__tbody"
           class="payment__schedule-table"
       >
+        <template #cell(price)="data">
+          {{ data.item.price }} сум
+        </template>
+
+        <template #cell(paid)="data">
+          {{ data.item.paid }} сум
+        </template>
       </b-table>
     </div>
     <base-loading-content :loading="showLoading"/>
@@ -43,7 +51,7 @@
 
 <script>
 import api from "@/services/api";
-import {formatToPrice} from '@/util/reusable'
+import {formatDateWithDot, formatToPrice} from '@/util/reusable'
 import BaseLoadingContent from "@/components/BaseLoadingContent";
 import BaseArrowRight     from "@/components/icons/BaseArrowRightIcon";
 import CurrencyChart      from "@/components/Dashboard/Contracts/components/CurrencyChart";
@@ -117,7 +125,7 @@ export default {
 
       const progress = () => {
         if (initial_payment) {
-          return paidInitialPayment / initial_payment * 100
+          return (paidInitialPayment / initial_payment * 100).toFixed()
         }
         return 0
       }
@@ -140,7 +148,7 @@ export default {
 
       const progress = () => {
         if (fullMonthlyPrice) {
-          return paidMonthlyPayment / fullMonthlyPrice * 100
+          return (paidMonthlyPayment / fullMonthlyPrice * 100).toFixed()
         }
         return 0
       }
@@ -160,22 +168,51 @@ export default {
       return []
     },
     scheduleFields() {
-      return ['Расписание', 'Сумма', 'Тип', 'Оплачено', 'Статус']
+      return [
+        {
+          key: 'schedule',
+          label: 'Расписание',
+        },
+        {
+          key: 'price',
+          label: 'Сумма'
+        },
+        {
+          key: 'type',
+          label: 'Тип'
+        },
+        {
+          key: 'paid',
+          label: 'Оплачено'
+        },
+        {
+          key: 'status',
+          label: 'Статус'
+        }
+      ]
     },
     scheduleItems() {
-      const items = [
-        ['09.09.21', '700 000 000 сум', 'Первоначальный', '700 000 000 сум', 'Оплачено']
-      ]
+      if (this.order) {
+        return this.order.payments.map((payment) => {
+          const {date_payment, amount, type, amount_paid, status} = payment
+          const schedule = formatDateWithDot(date_payment)
+          let typeContext = this.$t('initial_payment')
 
-      return items.map(item => {
-        const gap = {}
-        gap['Расписание'] = item[0]
-        gap['Сумма'] = item[1]
-        gap['Тип'] = item[2]
-        gap['Оплачено'] = item[3]
-        gap['Статус'] = item[4]
-        return gap
-      })
+          if (type === 'monthly') {
+            typeContext = this.$t('monthly_pay')
+          }
+
+          const paid = amount_paid ? amount_paid : 0
+          return {
+            paid,
+            status,
+            schedule,
+            type: typeContext,
+            price: formatToPrice(amount),
+          }
+        })
+      }
+      return []
     }
   },
   async created() {
@@ -264,12 +301,35 @@ export default {
 
 ::v-deep .payment__schedule__thead {
   color: var(--gray-400);
-  border-top: 1px solid red;
+  border-top: 2px solid white;
 
   th {
     padding: 20px 16px;
     letter-spacing: 1px;
     text-transform: uppercase;
+    border-bottom: 2px solid var(--gray-200);
+
+    &:nth-child(3) {
+      border-right: 2px solid var(--gray-200);
+    }
+  }
+}
+
+::v-deep .payment__schedule__tbody {
+  color: var(--gray-600);
+  font-size: 16px;
+  line-height: 22px;
+
+  tr:nth-last-child(1) {
+    border-bottom: 2px solid var(--gray-200);
+  }
+
+  td {
+    padding: 20px 16px;
+  }
+
+  td:nth-child(3) {
+    border-right: 2px solid var(--gray-200);
   }
 }
 </style>

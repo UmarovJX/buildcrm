@@ -3,3 +3,12 @@ export function formatToPrice(rawPrice) {
     const price = dollarUSLocale.format(parseInt(rawPrice))
     return price.toLocaleString().replace(/,/g, '  ')
 }
+
+export function formatDateWithDot(rawDate) {
+    const date = new Date(rawDate)
+    const year = date.getFullYear()
+    const baseMonth = date.getMonth() + 1
+    const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+    return `${day}.${month}.${year}`
+}

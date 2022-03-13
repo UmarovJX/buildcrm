@@ -71,6 +71,8 @@ export default {
     object_details: 'Obyekt tafsilotlari',
     client_details: 'Foydalanuvchi malumotlari',
     contract_details: 'Shartnoma tafsilotlari',
+    initial_payment: 'Первоначальный',
+    monthly_pay: 'Ежемесячный',
 
     promo: {
         name: 'Aksiya',

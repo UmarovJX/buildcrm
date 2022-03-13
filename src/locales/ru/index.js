@@ -46,6 +46,8 @@ export default {
     activate: 'Активировать',
     deactivate: "Деактивировать",
     monthly_payment: 'Ежемесячный платеж',
+    initial_payment: 'Первоначальный',
+    monthly_pay: 'Ежемесячный',
     sum_text: 'В суммах',
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
@@ -55,10 +57,10 @@ export default {
     new_name: 'Новое название',
     meaning: 'Значение',
     example_by_2: "Примеры(по 2)",
-    payment_schedule:'График оплаты',
-    object_details:'Детали объекта',
-    client_details:'Детали клиента',
-    contract_details:'Детали договора',
+    payment_schedule: 'График оплаты',
+    object_details: 'Детали объекта',
+    client_details: 'Детали клиента',
+    contract_details: 'Детали договора',
 
 
     promo: {
