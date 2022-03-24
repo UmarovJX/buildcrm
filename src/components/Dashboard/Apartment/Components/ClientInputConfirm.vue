@@ -436,6 +436,7 @@
 
 <script>
 import {mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
   name: "ClientInputConfirm",
@@ -485,12 +486,7 @@ export default {
       if (this.client.passport_series.length === 9) {
         this.loading = true;
         try {
-          const {data} = await this.axios.get(
-              process.env.VUE_APP_URL +
-              "/clients/search?field=" +
-              this.client.passport_series,
-              this.header
-          );
+          const {data} = await api.clients.fetchClientData(this.client.passport_series)
           this.client = {
             id: data.id,
             first_name: data.first_name ?? {

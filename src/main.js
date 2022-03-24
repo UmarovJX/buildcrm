@@ -1,6 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
-import axios from "axios";
+import axios from "axios"
 import VueAxios from "vue-axios";
 import Toasted from "vue-toasted";
 import Vue2Filters from "vue2-filters";
@@ -17,8 +17,6 @@ import "sweetalert2/dist/sweetalert2.min.css";
 import "./components";
 // import "./util/validation"
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
-
-
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@/assets/scss/main.scss";
@@ -53,7 +51,9 @@ Vue.component("ValidationProvider", ValidationProvider)
 Vue.use(VueMask);
 Vue.use(vueMoment);
 Vue.use(VueLazyload, {
-    preLoad: 1.3, error: require("@/assets/img/no-image.jpg"), loading: require("@/assets/img/loading.gif"), attempt: 1,
+    preLoad: 1.3, error: require("@/assets/img/no-image.jpg"),
+    loading: require("@/assets/img/loading.gif"), 
+    attempt: 1
 });
 
 Vue.use(BootstrapVue);

@@ -45,7 +45,7 @@ export default {
     }
 
     let path = this.$router.currentRoute;
-    if (localStorage.token) {
+    if (localStorage.getItem('auth__access__token')) {
       let vm = this;
       this.setMe(vm, path);
     } else {

@@ -21,9 +21,6 @@ import ObjStore from "./components/Dashboard/Objects/Store";
 // import ObjFilter from './components/Dashboard/Objects/Filter';
 import ApartmentsList from "./components/Dashboard/Apartment/ApartmentsList";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
-import ContractTab2        from "@/components/Dashboard/Contracts/component/ContractTab2"
-import ContractTab3        from "@/components/Dashboard/Contracts/component/ContractTab3"
-import ContractTab4        from "@/components/Dashboard/Contracts/component/ContractTab4"
 // import Managers from './components/Dashboard/Managers/Index';
 // import Accountants from './components/Dashboard/Accountants/Index';
 // import Cashiers from './components/Dashboard/Cashiers/Index';
@@ -56,6 +53,7 @@ import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import ObjectsPromo from "@/components/Dashboard/Objects/ObjectsPromo";
 import CloneView from "@/components/Dashboard/Contracts/CloneView";
+
 const routes = [
     {
         path: "/home",
@@ -245,27 +243,9 @@ const routes = [
     },
 
     {
-        name: "contracts-tab-2",
-        path: "/contracts-tab-2",
-        component: ContractTab2,
-        meta: {
-            requiresAuth: "contracts",
-        },
-    },
-
-    {
-        name: "contracts-tab-3",
-        path: "/contracts-tab-3",
-        component: ContractTab3,
-        meta: {
-            requiresAuth: "contracts",
-        },
-    },
-
-    {
-        name: "contracts-tab-4",
-        path: "/contracts-tab-4",
-        component: ContractTab4,
+        name: "contracts-view-clone",
+        path: "/contracts/:id/clone",
+        component: CloneView,
         meta: {
             requiresAuth: "contracts",
         },
@@ -349,17 +329,16 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const AUTH_TOKEN = localStorage.token
-
-    if (to.name === 'login') next()
+    const AUTH_TOKEN = localStorage.getItem('auth__access__token')
+    if (to.name === 'login') return next()
 
     if (AUTH_TOKEN)
         if (to.path === '/')
-            next({name: 'home'})
+            return next({name: 'home'})
         else
-            next()
+            return next()
     else
-        next({name: 'login'})
+        return next({name: 'login'})
 })
 
 // router.beforeEach((to, from, next) => {

@@ -70,7 +70,6 @@
 </template>
 
 <script>
-import axios from "axios"
 import api from "@/services/api";
 import Compressor from "compressorjs";
 import BaseLoadingContent from "@/components/BaseLoadingContent";
@@ -204,14 +203,7 @@ export default {
       const form = new FormData()
       form.append('avatar', 'null')
 
-      const config = {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.token
-        }
-      }
-
-      const _axios = axios.create({baseURL: process.env.VUE_APP_URL});
-      await _axios.post('users/me', form, config)
+      await api.user.updateUserAvatar(form)
           .catch((error) => {
             this.toastedWithErrorCode(error)
           })
@@ -221,20 +213,18 @@ export default {
       form.append('avatar', this.backendAvatar)
 
       const config = {
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.token
-        },
         onUploadProgress: (progressEvent) => {
           this.loadingProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         }
       }
 
-      const _axios = axios.create({baseURL: process.env.VUE_APP_URL});
-      await _axios.post('users/me', form, config)
+      // const _axios = axios.create({baseURL: process.env.VUE_APP_URL});
+      // await _axios.post('users/me', form, config)
+      await api.user.updateUserAvatar(form, config)
           .catch((error) => {
             this.toastedWithErrorCode(error)
           }).finally(() => {
-            this.updateUserData({axios})
+            this.updateUserData(this, this.$route.path)
           })
     },
     makeProgressDefault() {
@@ -341,7 +331,7 @@ button {
 .avatar-wrapper {
   background-color: darkorchid;
   border-radius: 50%;
-  box-shadow: 0.5px 0.5px -1px 0 rgba(0,0,0,0.75);
+  box-shadow: 0.5px 0.5px -1px 0 rgba(0, 0, 0, 0.75);
 }
 
 .active-loading {

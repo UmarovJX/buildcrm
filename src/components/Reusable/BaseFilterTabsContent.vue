@@ -62,17 +62,17 @@ export default {
   color: var(--dark);
 
 
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    bottom: 0;
-    width: 100%;
-    height: 6px;
-    background: #cccccc;
-    //border-top-left-radius: 3px;
-    //border-top-right-radius: 3px;
-  }
+  //&::before {
+  //content: '';
+  //position: absolute;
+  //z-index: -1;
+  //bottom: 0;
+  //width: 100%;
+  //height: 6px;
+  //background: red;
+  //border-top-left-radius: 3px;
+  //border-top-right-radius: 3px;
+  //}
 
   &-item {
     position: relative;

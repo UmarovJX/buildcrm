@@ -1,88 +1,42 @@
 const CryptoJS = require("crypto-js");
 
-// encryption secret key, ideally should be an environment variable
-const secret = "secret";
-
-// expiry duration in milliseconds, ensure you calculate the expiry in milliseconds
-const expiryDuration = 1680000;
-
-// encrypt data
-const encrypt = (data) => {
+const secret = 'secret'
+export const encrypt = (data) => {
     if (data != null) {
-        return CryptoJS.AES.encrypt(
-            JSON.stringify(data),
-            secret
-        ).toString();
+        return CryptoJS.AES.encrypt(JSON.stringify(data), secret).toString();
     }
     return null;
 };
 
-// decrypt encrypted data
-const decrypt = ciphertext => {
+export const decrypt = ciphertext => {
     try {
-        if (
-            ciphertext != null &&
-            ciphertext !== "null"
-        ) {
+        if (ciphertext != null && ciphertext !== "null") {
             let bytes = CryptoJS.AES.decrypt(ciphertext.toString(), secret);
             let decrypted = bytes.toString(CryptoJS.enc.Utf8);
             return JSON.parse(decrypted);
         }
-        return null;
+        return null
     } catch (e) {
-        return null;
+        return null
     }
 };
 
-// store in localStorage
-const store = (key,value) => {
-    return localStorage.setItem(key,value);
-};
+export const setLocalVar = (key, value) => {
+    return localStorage.setItem(key, value)
+}
 
-// read from localstorage
-const read = (key) => {
-    return localStorage.getItem(key);
-};
+export const getLocalVar = (key) => {
+    return localStorage.getItem(key)
+}
 
-// get new expiry
-const getExpiry = () => {
-    return (new Date().getTime() + expiryDuration);
-};
+export const removeLocalVar = (key) => {
+    return localStorage.removeItem(key)
+}
 
-// check if expired
-const isExpired = (expiry) => {
-    return (new Date().getTime() > parseInt(expiry, 10));
-};
+export const setSessionVar = (key, value) => {
+    return sessionStorage.setItem(key, value)
+}
 
-// Encrypt and store with time expiry functionality
-const storeExpiry = (key, value, expiry = false) => {
-    const encryptedData = encrypt(value);
-    if (expiry === true) {
-        const encryptedExpiry = encrypt(getExpiry());
-        store(`${key}.e`,encryptedExpiry);
-    }
-    return store(key,encryptedData);
-};
-
-// decrypt and read with time expiry functionality
-const readExpiry = key => {
-    const expiryData = decrypt(read(`${key}.e`));
-    const data = decrypt(read(key));
-    if (data != null) {
-        if (data && isExpired(expiryData)) {
-            return { response: data, expired: true };
-        }
-        if (data && !isExpired(expiryData)) {
-            return { response: data, expired: false };
-        }
-    }
-    return {response: null, expired: true};
-};
-
-// reset localstorage
-const clear = () => {
-    localStorage.clear();
-    return null;
-};
-
-module.exports = { encrypt, decrypt, clear, storeExpiry, readExpiry, read, store };
+export const getSessionVar = (key) => {
+    return sessionStorage.getItem(key)
+}

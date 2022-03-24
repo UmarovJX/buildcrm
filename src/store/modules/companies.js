@@ -1,20 +1,16 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async fetchCompanies(ctx, vm) {
-            ctx.commit('updateLoading', true, { root: true });
+            ctx.commit('updateLoading', true, {root: true});
             try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/companies', header);
+                const response = await api.companies.getCompaniesList()
                 const companies = response.data;
                 ctx.commit('updateCompanies', companies);
-                ctx.commit('updateLoading', false, { root: true });
+                ctx.commit('updateLoading', false, {root: true});
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
                     if (error.response.status === 403) {
@@ -32,17 +28,11 @@ export default {
 
         async fetchBranch(ctx, vm) {
             try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/companies/' + vm.company_id , header);
+                const response = await api.companies.getCompanyBranch(vm.company_id)
                 const branch = response.data;
                 ctx.commit('updateBranch', branch);
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
                     if (error.response.status === 403) {
@@ -60,17 +50,11 @@ export default {
 
         async fetchBranchTypes(ctx, vm) {
             try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/companies/types', header);
+                const response = await api.companies.getCompanyType()
                 const types = response.data;
                 ctx.commit('updateBranchTypes', types);
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
                     if (error.response.status === 403) {

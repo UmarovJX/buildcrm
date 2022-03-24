@@ -179,6 +179,7 @@ import {mapGetters, mapActions} from "vuex";
 // import Filter from './Components/Filter/Index';
 import UploadLogo from "./Components/UploadLogo";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import api from "@/services/api";
 
 export default {
   name: 'Objects',
@@ -255,8 +256,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.getLoading = true;
-          this.axios
-              .delete(process.env.VUE_APP_URL + "/objects/" + object, this.header)
+          api.objects.deleteObject(object)
               .then((response) => {
                 this.toasted(response.data.message, "success");
                 this.fetchObjects(this).then(() => {

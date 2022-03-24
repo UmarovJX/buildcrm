@@ -92,7 +92,6 @@
             <div class="float-right">
               <div
                   class="dropdown my-dropdown dropleft"
-                  v-if="data.item.id != getMe.user.id"
               >
                 <!--user.role.id != 1 &&-->
                 <button
@@ -105,12 +104,8 @@
 
                 <div
                     class="dropdown-menu"
-                    v-if="
-                    getPermission.users.update || getPermission.users.delete
-                  "
                 >
                   <b-button
-                      v-if="getPermission.users.update"
                       @click="clickManager(data)"
                       class="dropdown-item dropdown-item--inside"
                       v-b-modal.modal-edit
@@ -121,7 +116,6 @@
 
                   <b-button
                       class="dropdown-item dropdown-item--inside"
-                      v-if="getPermission.users.delete"
                       @click="Delete(data.item.id)"
                   >
                     <i class="far fa-trash"></i> {{ $t("delete") }}
@@ -164,6 +158,7 @@
 import {mapActions, mapGetters} from "vuex";
 import Create from "./Modal/Create";
 import Edit from "./Modal/Edit";
+import api from "@/services/api";
 
 export default {
   name: 'Users',
@@ -177,7 +172,7 @@ export default {
       manager: {},
       manager_id: 0,
       editHistoryContext: {
-        id:0
+        id: 0
       },
       header: {
         headers: {
@@ -281,8 +276,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.loading = true
-          this.axios
-              .delete(process.env.VUE_APP_URL + "/users/" + user, this.header)
+          api.user.deleteUserFromDB(user)
               .then((response) => {
                 this.loading = false
                 this.toasted(response.data.message, "success");

@@ -270,19 +270,12 @@ export default {
     async handleSubmit() {
       this.getLoading = true
       try {
-        const response = await this.axios.put(
-            process.env.VUE_APP_URL + "/users/" + this.managerId,
-            this.manager,
-            this.header
-        );
-
+        const response = await api.user.updateUserData(this.managerId, this.manager)
         this.toasted(response.data.message, "success");
-
         this.$nextTick(() => {
           this.getLoading = false
           this.$bvModal.hide("modal-edit");
         });
-
         this.$emit("EditManager", this.manager);
         this.resetFormValues()
       } catch (error) {

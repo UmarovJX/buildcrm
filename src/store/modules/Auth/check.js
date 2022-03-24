@@ -1,18 +1,15 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async fetchAuth(ctx, vm) {
             //let res = false;
-            if (localStorage.token) {
+            if (localStorage.getItem('auth__access__token')) {
                 try {
-                    await vm.axios.get(process.env.VUE_APP_URL + '/oauth/me', {
-                        headers: {
-                            Authorization: 'Bearer ' + localStorage.token,
-                        },
-                    });
-
+                    await api.authV1.getMe()
                     ctx.commit('updateAuth', true);
                 } catch (error) {
-                    if (! error.response) {
+                    if (!error.response) {
                         vm.toasted('Error: Network Error', 'error');
                     } else {
                         if (error.response.status === 403) {

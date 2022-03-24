@@ -1,33 +1,29 @@
+import api from "@/services/api";
+
 export default {
 
     actions: {
         async fetchClients(ctx, vm) {
-            ctx.commit('updateLoading', true, { root: true });
+            ctx.commit('updateLoading', true, {root: true});
 
             try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/clients?page=' + vm.page, header);
+                const response = await api.clients.fetchClients(vm.page)
                 const clients = response.data.data;
 
                 // const next = ;
 
                 const paginate = {
                     total: response.data.total,
-                    paginate: response.data.next ? true : false,
+                    paginate: !!response.data.next,
                     pageCount: response.data.last_page
                 };
 
                 ctx.commit('updatePaginateSetting', paginate);
 
-                ctx.commit('updateLoading', false, { root: true });
+                ctx.commit('updateLoading', false, {root: true});
                 ctx.commit('updateClients', clients);
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     this.toasted('Error: Network Error', 'error');
                 } else {
                     vm.toasted(error.response.data.message, 'error');
@@ -36,28 +32,22 @@ export default {
         },
 
         async fetchClientsSearch(ctx, vm) {
-            ctx.commit('updateLoading', true, { root: true });
+            ctx.commit('updateLoading', true, {root: true});
             try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/clients/search?page='+ vm.page +'&search=' + vm.search, header);
+                const response = await api.clients.searchClient(vm.search, vm.page)
                 const clients = response.data.data;
 
                 const paginate = {
                     total: response.data.total,
-                    paginate: response.data.next ? true : false,
+                    paginate: !!response.data.next,
                     pageCount: response.data.last_page
                 };
 
                 ctx.commit('updatePaginateSetting', paginate);
-                ctx.commit('updateLoading', false, { root: true });
+                ctx.commit('updateLoading', false, {root: true});
                 ctx.commit('updateClients', clients);
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     this.toasted('Error: Network Error', 'error');
                 } else {
                     vm.toasted(error.response.data.message, 'error');

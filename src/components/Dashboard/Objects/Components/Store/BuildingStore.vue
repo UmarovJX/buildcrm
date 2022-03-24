@@ -6,12 +6,12 @@
           {{ $t("objects.placeholder.building_name") }}
         </label>
         <input
-          type="text"
-          class="form-control"
-          id="building_name"
-          required
-          v-model="building.name"
-          :placeholder="$t('objects.placeholder.building_name')"
+            type="text"
+            class="form-control"
+            id="building_name"
+            required
+            v-model="building.name"
+            :placeholder="$t('objects.placeholder.building_name')"
         />
       </div>
 
@@ -20,13 +20,13 @@
           {{ $t("objects.create.balcony_price") }}
         </label>
         <input
-          type="number"
-          class="form-control"
-          v-model="building.balcony_price"
-          min="0"
-          step="0.1"
-          id="balcony_price"
-          :placeholder="$t('objects.create.balcony_price')"
+            type="number"
+            class="form-control"
+            v-model="building.balcony_price"
+            min="0"
+            step="0.1"
+            id="balcony_price"
+            :placeholder="$t('objects.create.balcony_price')"
         />
       </div>
 
@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import api from "@/services/api";
+
 export default {
   props: {
     object: {},
@@ -59,14 +61,7 @@ export default {
   methods: {
     async saveBuilding() {
       try {
-        const {data, status} = await this.axios.post(
-          process.env.VUE_APP_URL +
-            "/v2/objects/" +
-            this.object.id +
-            "/buildings",
-          this.building,
-          this.header
-        );
+        const {data, status} = await api.objects.createBuilding(this.object.id, this.building)
 
         if (status === 201) {
           this.building = {

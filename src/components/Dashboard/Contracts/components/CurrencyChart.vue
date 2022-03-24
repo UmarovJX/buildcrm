@@ -32,71 +32,61 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.currency__chart {
-  width: 306px;
-  height: 160px;
-  border-radius: 32px;
-  margin-top: 54px;
-  background-color: var(--gray-50);
-  border: 2px solid var(--gray-200);
-  padding: 24px;
+.title {
+  font-size: 20px;
+  line-height: 14px;
+  color: var(--violet-600);
+  display: block;
+  margin-bottom: 1rem;
+}
 
-  .title {
-    font-size: 20px;
-    line-height: 14px;
-    color: var(--violet-600);
-    display: block;
-    margin-bottom: 1rem;
+.price {
+  font-size: 24px;
+  line-height: 28px;
+  color: var(--gray-600);
+}
+
+.bottom__info {
+  display: block;
+  color: var(--gray-400);
+  margin-top: 4px;
+}
+
+.chart__list {
+  display: block;
+  margin-bottom: 24px;
+  margin-top: 16px;
+
+  & > span {
+    height: 28px;
   }
 
-  .price {
-    font-size: 24px;
-    line-height: 28px;
+  .progress {
+    width: 75%;
+    height: 6px;
+    border-radius: 1rem;
+    background-color: var(--gray-200);
+  }
+
+  ::v-deep .progress-bar {
+    background-color: var(--violet-600) !important;
+  }
+
+  .percent__value {
+    display: block;
+    margin-left: 8px;
     color: var(--gray-600);
+    font-size: 16px;
+    line-height: 22px;
   }
+}
 
-  .bottom__info {
-    display: block;
-    color: var(--gray-400);
-    margin-top: 4px;
-  }
-
-  .chart__list {
-    display: block;
-    margin-bottom: 24px;
-    margin-top: 16px;
-
-    & > span {
-      height: 28px;
-    }
-
-    .progress {
-      width: 75%;
-      height: 6px;
-      border-radius: 1rem;
-      background-color: var(--gray-200);
-    }
-
-    ::v-deep .progress-bar {
-      background-color: var(--violet-600) !important;
-    }
-
-    .percent__value {
-      display: block;
-      margin-left: 8px;
-      color: var(--gray-600);
-      font-size: 16px;
-      line-height: 22px;
-    }
-  }
-
-  .first__chart {
-    .progress {
-      width: 100%;
-      height: 6px;
-      border-radius: 1rem;
-      background-color: var(--gray-200);
-    }
+.first__chart {
+  .progress {
+    width: 100%;
+    height: 6px;
+    border-radius: 1rem;
+    background-color: var(--gray-200);
   }
 }
 </style>

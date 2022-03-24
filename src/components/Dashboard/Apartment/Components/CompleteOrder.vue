@@ -635,6 +635,7 @@
 <script>
 import {mapGetters, mapActions} from "vuex";
 import moment from "moment";
+import api from "@/services/api";
 
 export default {
   name: "CompleteOrder",
@@ -867,12 +868,7 @@ export default {
     },
     async Search() {
       try {
-        const {data} = await this.axios.get(
-            process.env.VUE_APP_URL +
-            "/clients/search?field=" +
-            this.search_label,
-            this.header
-        );
+        const {data} = await api.clients.fetchClientData(this.search_label)
         this.step = 1;
 
         this.client = {
@@ -916,12 +912,7 @@ export default {
     },
     async reserveClientFull() {
       try {
-        const {data} = await this.axios.get(
-            process.env.VUE_APP_URL +
-            "/clients/" +
-            this.getApartmentItem.order.id,
-            this.header
-        );
+        const {data} = await api.clients.fetchReserveClient(this.getApartmentItem.order.id)
         this.step = 1;
         this.client = {
           id: data.id,
@@ -964,8 +955,7 @@ export default {
     async postStore() {
       this.loading = true;
 
-      await this.axios
-          .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
+      await api.clients.createClient(this.client)
           .then((response) => {
             if (response) {
               this.onSubmit();
@@ -1104,12 +1094,8 @@ export default {
           if (this.step === 2 && this.client.discount.prepay != 100) {
             formData.append("months", this.month);
           }
-          this.axios
-              .post(
-                  process.env.VUE_APP_URL + "/orders/" + this.getApartmentItem.id,
-                  formData,
-                  this.header
-              )
+
+          api.orders.reserveApartment(this.getApartmentItem.id, formData)
               .then((response) => {
                 this.toasted(response.data.message, "success");
                 this.$bvModal.hide("modal-agree");
@@ -1343,12 +1329,7 @@ export default {
       this.search_label = this.client.passport_series;
       if (this.search_label.length == 9) {
         try {
-          const {data} = await this.axios.get(
-              process.env.VUE_APP_URL +
-              "/clients/search?field=" +
-              this.search_label,
-              this.header
-          );
+          const {data} = await api.clients.fetchClientData(this.search_label)
           this.client = {
             id: data.id,
             first_name: data.first_name ?? {

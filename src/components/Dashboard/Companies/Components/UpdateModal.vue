@@ -133,6 +133,7 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
   props: {
@@ -200,12 +201,8 @@ export default {
       const branch = this.getBranch;
 
       try {
-        const response = await this.axios.put(
-          process.env.VUE_APP_URL + "/companies/" + this.branchId,
-          branch,
-          this.header
-        );
-
+        branch.id = this.branchId
+        const response = await api.companies.updateCompany(branch)
         this.toasted(response.data.message, "success");
 
         this.$nextTick(() => {

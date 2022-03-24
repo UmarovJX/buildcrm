@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import api from "@/services/api";
+
 export default {
   name: "Confirm",
 
@@ -107,12 +109,7 @@ export default {
     async expiredConfirm() {
       try {
         this.loading = true;
-        await this.axios
-            .delete(
-                process.env.VUE_APP_URL +
-                `/orders/${this.order.uuid}/hold/`,
-                this.header
-            )
+        await api.orders.deactivateOrderHold(this.order.uuid)
             .then(() => {
               this.loading = false;
               this.$router.push({

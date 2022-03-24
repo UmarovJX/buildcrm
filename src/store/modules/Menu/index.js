@@ -1,36 +1,31 @@
+import api from "@/services/api";
+
 export default {
-  actions: {
-    fetchMenu(ctx, vm) {
-      let header = {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
+    actions: {
+        async fetchMenu(ctx) {
+            await api.home.fetchMenu()
+                .then((response) => {
+                    ctx.commit("updateMenus", response.data);
+                })
+                .catch(() => {
+                    // localStorage.clear();
+                });
         },
-      };
-
-      vm.axios
-        .get(process.env.VUE_APP_URL + "/menus", header)
-        .then((response) => {
-          ctx.commit("updateMenus", response.data);
-        })
-        .catch(() => {
-          localStorage.clear();
-        });
     },
-  },
 
-  mutations: {
-    updateMenus(state, result) {
-      state.menus = result;
+    mutations: {
+        updateMenus(state, result) {
+            state.menus = result;
+        },
     },
-  },
 
-  state: {
-    menus: [],
-  },
-
-  getters: {
-    getMenus(state) {
-      return state.menus;
+    state: {
+        menus: [],
     },
-  },
+
+    getters: {
+        getMenus(state) {
+            return state.menus;
+        },
+    },
 };

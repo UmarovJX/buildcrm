@@ -10,6 +10,7 @@
       :no-close-on-esc="true"
   >
     <b-overlay :show="loading" rounded="sm">
+
       <ValidationObserver ref="accordion-input-observer" class="flex w-100">
         <div>
           <!--  Date Inputs  -->
@@ -30,6 +31,13 @@
               :prepaysListLength="prepaysList.length"
               ref="prepay-input"
           />
+
+          <!--    Addition Button      -->
+          <!--          <div class="addition__traffic">-->
+          <!--            <button class="addition__traffic-button">-->
+          <!--              Добавить тариф-->
+          <!--            </button>-->
+          <!--          </div>-->
         </div>
       </ValidationObserver>
 
@@ -79,6 +87,7 @@ import {mapGetters, mapMutations} from "vuex";
 import PromoPrepayContent from "@/components/Dashboard/Objects/Components/Promo/PromoPrepayContent";
 import PromoDateInterface from "@/components/Dashboard/Objects/Components/Promo/PromoDateInterface";
 import PromoPrepayInput from "@/components/Dashboard/Objects/Components/Promo/PromoPrepayInput";
+
 export default {
   name: 'PromoCreationContent',
   components: {
@@ -330,3 +339,26 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.addition__traffic {
+  width: 100%;
+  min-height: 18.25rem;
+  background-color: #F9FBFF;
+  border-radius: .5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &-button {
+    display: block;
+    outline: none;
+    border: none;
+    color: #fff;
+    background-color: #41B883;
+    border-radius: 0.5rem;
+    padding: .75rem 1rem;
+    cursor: pointer;
+  }
+}
+</style>

@@ -247,7 +247,7 @@ export default {
     },
     getUserAvatarUrl() {
       if (this.getMe?.user?.avatar) {
-        return process.env.VUE_APP_URL + '/' + this.getMe.user.avatar
+        return process.env.VUE_APP_URL + '/v1/crm/' + this.getMe.user.avatar
       }
       return ''
     },

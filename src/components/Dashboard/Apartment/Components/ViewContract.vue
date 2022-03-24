@@ -143,6 +143,8 @@
 <script>
 // import Discount from './Discount'
 
+import api from "@/services/api";
+
 export default {
   props: {
     apartment: {},
@@ -216,12 +218,8 @@ export default {
     async fetchOrder() {
       this.getLoading = true
       try {
-        const {data} = await this.axios.get(
-          process.env.VUE_APP_URL + "/orders/" + this.apartment.order.id,
-          this.header
-        );
+        const {data} = await api.orders.fetchOrder(this.apartment.order.id)
         this.step = 1;
-
         this.order = {
           id: data.id,
           contract: data.contract,

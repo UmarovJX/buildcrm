@@ -1,11 +1,11 @@
 <template>
   <div>
     <b-modal
-      id="modal-upload-logo"
-      ref="modal"
-      :title="$t('upload_logo')"
-      hide-footer
-      @show="resetModal"
+        id="modal-upload-logo"
+        ref="modal"
+        :title="$t('upload_logo')"
+        hide-footer
+        @show="resetModal"
     >
       <b-alert show variant="danger" v-if="error">
         <ul>
@@ -23,10 +23,10 @@
             {{ $t("image") }}
           </label>
           <input
-            type="file"
-            @change="posterFile($event)"
-            class="form-control"
-            id="image"
+              type="file"
+              @change="posterFile($event)"
+              class="form-control"
+              id="image"
           />
         </div>
 
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import api from "@/services/api";
+
 export default {
   props: {
     objectId: {},
@@ -64,7 +66,8 @@ export default {
     },
   }),
 
-  mounted() {},
+  mounted() {
+  },
 
   methods: {
     resetModal() {
@@ -90,11 +93,7 @@ export default {
       formData.append("image", this.image);
 
       try {
-        const response = await this.axios.post(
-          process.env.VUE_APP_URL + "/objects/" + this.objectId,
-          formData,
-          this.header
-        );
+        const response = await api.objects.updateObject(this.objectId, formData)
 
         this.toasted(response.data.message, "success");
 

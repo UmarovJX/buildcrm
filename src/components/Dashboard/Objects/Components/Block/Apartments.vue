@@ -3,23 +3,23 @@
     <div class="row">
       <div class="col-md-12">
         <button
-          type="button"
-          @click="updateApartmentsPrice"
-          class="btn btn-primary"
+            type="button"
+            @click="updateApartmentsPrice"
+            class="btn btn-primary"
         >
           <i class="fa fa-refresh"></i> {{ $t("objects.create.price_update") }}
         </button>
       </div>
       <div
-        class="col-lg-4 my-2"
-        v-for="(apartment, index) in apartments"
-        :key="index"
+          class="col-lg-4 my-2"
+          v-for="(apartment, index) in apartments"
+          :key="index"
       >
         <div class="apartment">
           <button
-            type="button"
-            @click="RemoveApartment(apartment, index)"
-            class="apartment__close"
+              type="button"
+              @click="RemoveApartment(apartment, index)"
+              class="apartment__close"
           >
             <i class="fal fa-times"></i>
           </button>
@@ -32,14 +32,14 @@
             <div class="dropdown my-dropdown__two">
               {{ $t("objects.create.plan.name") }}
               <select
-                class="custom-select"
-                v-model="apartment.plan"
-                @change="ApartmentUpdate(apartment, 'plan')"
-                required
+                  class="custom-select"
+                  v-model="apartment.plan"
+                  @change="ApartmentUpdate(apartment, 'plan')"
+                  required
               >
                 <option
-                  disabled
-                  :value="{
+                    disabled
+                    :value="{
                     id: null,
                     name: null,
                     area: null,
@@ -52,8 +52,8 @@
                 </option>
 
                 <option
-                  v-for="(plan, index) in typePlans"
-                  :value="{
+                    v-for="(plan, index) in typePlans"
+                    :value="{
                     id: plan.id,
                     name: plan.name,
                     area: plan.area,
@@ -61,7 +61,7 @@
                     balcony_area: plan.balcony_area,
                     image: plan.image ? plan.image : null,
                   }"
-                  :key="index"
+                    :key="index"
                 >
                   {{ plan.name }}
                 </option>
@@ -71,45 +71,45 @@
           <div class="apartment__info">
             {{ $t("objects.create.rooms") }}:
             <input
-              type="number"
-              min="1"
-              required
-              class="form-control"
-              @change="ApartmentUpdate(apartment, 'rooms')"
-              v-model="apartment.rooms"
+                type="number"
+                min="1"
+                required
+                class="form-control"
+                @change="ApartmentUpdate(apartment, 'rooms')"
+                v-model="apartment.rooms"
             />
           </div>
 
           <div class="apartment__info">
             {{ $t("objects.create.entrance") }}:
             <input
-              type="number"
-              min="1"
-              required
-              class="form-control"
-              @change="ApartmentUpdate(apartment, 'entrance')"
-              v-model="apartment.entrance"
+                type="number"
+                min="1"
+                required
+                class="form-control"
+                @change="ApartmentUpdate(apartment, 'entrance')"
+                v-model="apartment.entrance"
             />
           </div>
 
           <div class="apartment__info">
             {{ $t("objects.create.area") }}:
             <input
-              type="number"
-              min="0"
-              required
-              class="form-control"
-              disabled
-              v-if="apartment.plan.id === null"
+                type="number"
+                min="0"
+                required
+                class="form-control"
+                disabled
+                v-if="apartment.plan.id === null"
             />
             <input
-              type="number"
-              min="1"
-              required
-              class="form-control"
-              disabled
-              v-else
-              v-model="apartment.plan.area"
+                type="number"
+                min="1"
+                required
+                class="form-control"
+                disabled
+                v-else
+                v-model="apartment.plan.area"
             />
           </div>
 
@@ -117,74 +117,74 @@
             <div class="apartment__info">
               {{ $t("objects.create.plan.balcony_area") }}:
               <input
-                type="number"
-                min="0"
-                required
-                class="form-control"
-                disabled
-                v-if="apartment.plan.id === null"
+                  type="number"
+                  min="0"
+                  required
+                  class="form-control"
+                  disabled
+                  v-if="apartment.plan.id === null"
               />
               <input
-                type="number"
-                min="1"
-                required
-                class="form-control"
-                disabled
-                v-else
-                v-model="apartment.plan.balcony_area"
+                  type="number"
+                  min="1"
+                  required
+                  class="form-control"
+                  disabled
+                  v-else
+                  v-model="apartment.plan.balcony_area"
               />
             </div>
 
             {{ $t("objects.create.plan.balcony_paid") }}:
             <input
-              type="checkbox"
-              @change="ApartmentUpdate(apartment, 'balcony_paid')"
-              v-model="apartment.balcony_paid"
+                type="checkbox"
+                @change="ApartmentUpdate(apartment, 'balcony_paid')"
+                v-model="apartment.balcony_paid"
             />
           </div>
 
           <div class="apartment__info">
             {{ $t("objects.create.other_price") }}:
             <input
-              type="checkbox"
-              @change="ApartmentUpdate(apartment, 'other_price')"
-              v-model="apartment.check_other_price"
+                type="checkbox"
+                @change="ApartmentUpdate(apartment, 'other_price')"
+                v-model="apartment.check_other_price"
             />
           </div>
 
           <div class="apartment__info" v-if="apartment.check_other_price">
             {{ $t("objects.create.price_m2") }}:
             <input
-              type="number"
-              min="1"
-              required
-              class="form-control"
-              @change="ApartmentUpdate(apartment, 'price')"
-              v-model="apartment.other_price"
+                type="number"
+                min="1"
+                required
+                class="form-control"
+                @change="ApartmentUpdate(apartment, 'price')"
+                v-model="apartment.other_price"
             />
           </div>
 
           <div class="apartment__info">
             {{ $t("objects.create.price") }}:
             <span
-              >{{
+            >{{
                 calcApartmentPrice(index, apartment, 0)
-                  | number("0,0.00", {
-                    thousandsSeparator: " ",
-                    decimalSeparator: ",",
-                  })
+                    | number("0,0.00", {
+                  thousandsSeparator: " ",
+                  decimalSeparator: ",",
+                })
               }}
               {{ $t("usd") }}</span
-            ><br />
+            ><br/>
 
             {{ $t("objects.create.price") }} {{ $t("ye") }}:
             <span
-              >{{
+            >{{
                 calcApartmentPrice(index, apartment, getCurrency.usd)
-                  | number("0,0.00", {
-                    thousandsSeparator: " ",
-                    decimalSeparator: ",",
-                  })
+                    | number("0,0.00", {
+                  thousandsSeparator: " ",
+                  decimalSeparator: ",",
+                })
               }}
               {{ $t("ye") }}</span
             >
@@ -197,6 +197,7 @@
 
 <script>
 import {mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
   props: {
@@ -240,26 +241,22 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
-          this.axios
-            .delete(
-              process.env.VUE_APP_URL + "/v2/objects/apartment/" + apartment.id,
-              this.header
-            )
-            .then((response) => {
-              if (response.status === 204) {
-                this.apartments.splice(index, 1);
-                this.$emit("RemoveApartment");
-                this.apartmentsSetPrice();
-              }
-            })
-            .catch((error) => {
-              this.toastedWithErrorCode(error);
+          api.objects.deleteApartment(apartment.id)
+              .then((response) => {
+                if (response.status === 204) {
+                  this.apartments.splice(index, 1);
+                  this.$emit("RemoveApartment");
+                  this.apartmentsSetPrice();
+                }
+              })
+              .catch((error) => {
+                this.toastedWithErrorCode(error);
 
-              if (error.response.status === 422) {
-                this.error = true;
-                this.errors = error.response.data;
-              }
-            });
+                if (error.response.status === 422) {
+                  this.error = true;
+                  this.errors = error.response.data;
+                }
+              });
         }
       });
     },
@@ -307,11 +304,7 @@ export default {
       }
 
       try {
-        await this.axios.put(
-          process.env.VUE_APP_URL + "/v2/objects/apartment/" + apartment.id,
-          data,
-          this.header
-        );
+        await api.objects.updateApartment(apartment.id, data)
       } catch (error) {
         this.toastedWithErrorCode(error);
 
@@ -335,13 +328,13 @@ export default {
           for (var prices = 0; prices < this.block.prices.length; prices++) {
             if (this.block.prices[prices].floors) {
               for (
-                var floors = 0;
-                floors < this.block.prices[prices].floors.length;
-                floors++
+                  var floors = 0;
+                  floors < this.block.prices[prices].floors.length;
+                  floors++
               ) {
                 if (
-                  this.block.prices[prices].floors[floors] ===
-                  this.apartments[apartment].floor
+                    this.block.prices[prices].floors[floors] ===
+                    this.apartments[apartment].floor
                 ) {
                   this.apartments[apartment].price = this.block.prices[prices];
                   // price = apartment.price.price;
@@ -377,17 +370,17 @@ export default {
       if (currency === 0) {
         if (area.balcony && apartment.balcony_paid)
           return (
-            price * area.area +
-            parseFloat(this.building.balcony_price) * area.balcony_area
+              price * area.area +
+              parseFloat(this.building.balcony_price) * area.balcony_area
           );
 
         return price * area.area;
       } else {
         if (area.balcony && apartment.balcony_paid)
           return (
-            (price * area.area +
-              parseFloat(this.building.balcony_price) * area.balcony_area) *
-            currency
+              (price * area.area +
+                  parseFloat(this.building.balcony_price) * area.balcony_area) *
+              currency
           );
 
         return price * area.area * currency;
