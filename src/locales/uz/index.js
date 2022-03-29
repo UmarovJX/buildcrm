@@ -32,7 +32,7 @@ export default {
     back: "Orqaga",
     next: "Davom etish",
     create_agree: "Tasdiqlash",
-    yes: "Bor",
+    yes: "Ha",
     no: "Yo'q",
     image: "Surat",
     address: "Manzil", // 'settings': 'Настройки',
@@ -73,6 +73,7 @@ export default {
     contract_details: 'Shartnoma tafsilotlari',
     initial_payment: 'Первоначальный',
     monthly_pay: 'Ежемесячный',
+    floor: 'Qavat',
 
     promo: {
         name: 'Aksiya',
@@ -105,6 +106,7 @@ export default {
         by_promo: "Aksiya bo'yicha",
         in_promo: 'Aktsiyalarda',
         promo_rate: 'Tarif',
+        initial_price: "Boshlang'ich to'lov (%)"
     },
 
     auth: {
@@ -268,6 +270,10 @@ export default {
     },
 
     apartments: {
+        title: 'Xonadonlar',
+        clone_tariff: 'Tarifdan nusxa olish',
+        delete_tariff: "Tarifni o'chirish",
+        add_tariff: "Tarif qo'shish",
         list: {
             choose: "Tanlash",
             reset: "Qayta o'rnatish",

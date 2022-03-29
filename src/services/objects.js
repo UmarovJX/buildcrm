@@ -46,24 +46,12 @@ class ObjectsV1Crm extends Core {
         return this.delete(`objects/${objectId}/contract/${contractId}`)
     }
 
-    fetchObjectPromos(objectId) {
-        return this.get(`objects/${objectId}/promo`)
-    }
-
     deleteObjectPromo({objectId, uuId}) {
         return this.delete(`objects/${objectId}/promo/${uuId}`)
     }
 
-    fetchObjectBlocks(objectId) {
-        return this.get(`objects/${objectId}/blocks`)
-    }
-
     fetchObjectBlockByType({objectId, blockId, type}) {
         return this.get(`objects/${objectId}/blocks/${blockId}/${type}s`)
-    }
-
-    createObjectPromo({id, form}) {
-        return this.post(`objects/${id}/promo`, form)
     }
 
     updateObjectPromo({id, promoId, form}) {

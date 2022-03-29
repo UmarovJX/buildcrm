@@ -16,14 +16,14 @@
     </base-bread-crumb>
 
     <!--  List Of Promos  -->
-    <promo-list-content
+    <list-content
         :promos="promos"
         @update-content="fetchPromoData(false)"
         @edit-promo-item="editPromoItem"
     />
 
     <!--  Modal Main Content    -->
-    <promo-creation-content
+    <creation-content
         @successfully-created="successfullyCreated"
         @successfully-edited="successfullyEdited"
         @error-on-creation="errorOnCreation"
@@ -36,19 +36,19 @@
 
 <script>
 import api from '@/services/api'
-import {mapMutations} from "vuex";
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import BaseLoadingContent from "@/components/BaseLoadingContent";
-import PromoListContent from "@/components/Dashboard/Objects/Components/Promo/PromoListContent";
-import PromoCreationContent from "@/components/Dashboard/Objects/Components/Promo/PromoCreationContent";
+import {mapMutations} from "vuex"
+import BaseBreadCrumb from "@/components/BaseBreadCrumb"
+import BaseLoadingContent from "@/components/BaseLoadingContent"
+import CreationContent from "@/components/Dashboard/Objects/Promo/components/CreationContent";
+import ListContent from "@/components/Dashboard/Objects/Promo/components/ListContent";
 
 export default {
-  name: "ObjectsPromo",
+  name: "Promo",
   components: {
+    ListContent,
+    CreationContent,
     BaseBreadCrumb,
     BaseLoadingContent,
-    PromoListContent,
-    PromoCreationContent
   },
   data() {
     return {
@@ -84,7 +84,7 @@ export default {
         this.startLoading()
       }
 
-      await api.objects.fetchObjectPromos(id)
+      await api.promo.fetchPromoList(id)
           .then(response => {
             this.promos = response.data
           })
@@ -107,9 +107,16 @@ export default {
       this.changeEditHistory({})
       this.$bvModal.show('promoCreationModal')
     },
-    editPromoItem(item) {
-      this.changeEditHistory(item)
-      this.$bvModal.show('promoCreationModal')
+    async editPromoItem(item) {
+      const objectId = this.$route.params.id
+      await api.promoV2.promoEditContext(objectId, item.uuid)
+          .then(response => {
+            this.changeEditHistory(response.data)
+            this.$bvModal.show('promoCreationModal')
+          })
+          .catch(error => {
+            this.toastedWithErrorCode(error)
+          })
     },
     async successfullyCreated() {
       const title = this.$t('promo.successfully_created')

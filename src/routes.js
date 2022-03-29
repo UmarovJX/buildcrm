@@ -45,13 +45,13 @@ import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment"
 import Companies from "./components/Dashboard/Companies/Index";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
+import Promo from './components/Dashboard/Objects/Promo/Index'
 /* PAGES */
 import UserSettings from "./views/UserSettings"
 import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
-import ObjectsPromo from "@/components/Dashboard/Objects/ObjectsPromo";
 import CloneView from "@/components/Dashboard/Contracts/CloneView";
 
 const routes = [
@@ -111,11 +111,12 @@ const routes = [
     {
         name: "objects-promo",
         path: "/objects/:id/promo",
-        component: ObjectsPromo,
+        component: Promo,
         meta: {
             requiresAuth: "objects",
         }
     },
+
 
     {
         name: "object-deal-template",

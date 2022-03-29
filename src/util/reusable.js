@@ -12,3 +12,9 @@ export function formatDateWithDot(rawDate) {
     const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
     return `${day}.${month}.${year}`
 }
+
+export function idGenerator() {
+    return String.fromCharCode(Math.floor(Math.random() * 26) + 97)
+        + Math.random().toString(16).slice(2)
+        + Date.now().toString(16).slice(4)
+}

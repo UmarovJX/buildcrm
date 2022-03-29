@@ -61,6 +61,7 @@ export default {
     object_details: 'Детали объекта',
     client_details: 'Детали клиента',
     contract_details: 'Детали договора',
+    floor: 'Этаж',
 
 
     promo: {
@@ -94,6 +95,7 @@ export default {
         by_promo: "По акции",
         in_promo: 'В акции',
         promo_rate: 'Тариф',
+        initial_price: "Первый взнос (%)"
     },
 
     promos: 'Акции',
@@ -276,6 +278,10 @@ export default {
     },
 
     apartments: {
+        title: 'Квартиры',
+        clone_tariff: 'Дублировать тариф',
+        delete_tariff: 'Удалить тариф',
+        add_tariff: 'Добавить тариф',
         list: {
             choose: "Выбрать",
             reset: "Сбросить",
