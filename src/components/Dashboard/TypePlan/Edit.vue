@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <div
-        class="
+          class="
           d-flex
           justify-content-between
           align-items-center
@@ -10,7 +10,7 @@
         "
       >
         <div
-          class="
+            class="
             d-flex
             w-100
             align-items-center
@@ -34,7 +34,7 @@
 
             <li class="breadcrumb-item">
               <router-link
-                :to="{name: 'type-plan-view', params: {id: getPlan.object.id}}"
+                  :to="{name: 'type-plan-view', params: {id: getPlan.object.id}}"
               >
                 {{ getPlan.object.name }}
               </router-link>
@@ -73,12 +73,12 @@
                     {{ $t("type_plan.name") }}
                   </label>
                   <input
-                    id="title"
-                    v-model="getPlan.name"
-                    type="text"
-                    required
-                    :placeholder="$t('type_plan.name')"
-                    class="my-form__input"
+                      id="title"
+                      v-model="getPlan.name"
+                      type="text"
+                      required
+                      :placeholder="$t('type_plan.name')"
+                      class="my-form__input"
                   />
                 </div>
 
@@ -87,12 +87,12 @@
                     {{ $t("objects.create.plan.area") }}
                   </label>
                   <input
-                    id="area"
-                    v-model="getPlan.area"
-                    type="text"
-                    required
-                    :placeholder="$t('type_plan.area')"
-                    class="my-form__input"
+                      id="area"
+                      v-model="getPlan.area"
+                      type="text"
+                      required
+                      :placeholder="$t('type_plan.area')"
+                      class="my-form__input"
                   />
                 </div>
 
@@ -101,9 +101,9 @@
                     {{ $t("objects.create.plan.balcony") }}
                   </label>
                   <input
-                    id="balcony"
-                    v-model="getPlan.balcony"
-                    type="checkbox"
+                      id="balcony"
+                      v-model="getPlan.balcony"
+                      type="checkbox"
                   />
                 </div>
 
@@ -112,12 +112,12 @@
                     {{ $t("objects.create.plan.balcony_area") }}
                   </label>
                   <input
-                    id="balcony_area"
-                    v-model="getPlan.balcony_area"
-                    type="text"
-                    required
-                    :placeholder="$t('type_plan.balcony_area')"
-                    class="my-form__input"
+                      id="balcony_area"
+                      v-model="getPlan.balcony_area"
+                      type="text"
+                      required
+                      :placeholder="$t('type_plan.balcony_area')"
+                      class="my-form__input"
                   />
                 </div>
 
@@ -125,40 +125,40 @@
                   <label for="plan" class="d-block text-uppercase">
                     {{ $t("type_plan.plan") }}
                     <span
-                      :class="getPlan.image ? 'text-success' : 'text-danger'"
-                      >{{
+                        :class="getPlan.image ? 'text-success' : 'text-danger'"
+                    >{{
                         getPlan.image
-                          ? $t("type_plan.yes_img")
-                          : $t("type_plan.no_img")
+                            ? $t("type_plan.yes_img")
+                            : $t("type_plan.no_img")
                       }}</span
                     >
                   </label>
                   <input
-                    id="plan"
-                    type="file"
-                    @change="compressImage($event)"
+                      id="plan"
+                      type="file"
+                      @change="compressImage($event)"
                   />
                   <img
-                    class="mt-4 img-fluid"
-                    v-if="getPlan.image && !inputURL"
-                    :data-fancybox="getPlan.image"
-                    v-lazy="getPlan.image"
-                    alt="Plan image"
+                      class="mt-4 img-fluid"
+                      v-if="getPlan.image && !inputURL"
+                      :data-fancybox="getPlan.image"
+                      v-lazy="getPlan.image"
+                      alt="Plan image"
                   />
                 </div>
                 <img
-                  v-if="inputURL"
-                  :data-fancybox="inputURL"
-                  class="img-fluid"
-                  :src="inputURL"
-                  alt="image"
+                    v-if="inputURL"
+                    :data-fancybox="inputURL"
+                    class="img-fluid"
+                    :src="inputURL"
+                    alt="image"
                 />
               </div>
             </div>
           </div>
           <div class="container-fluid">
             <div
-              class="
+                class="
                 mt-4
                 d-flex
                 justify-content-md-start justify-content-center
@@ -193,6 +193,8 @@ import {mapActions, mapGetters} from "vuex";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import Compressor from "compressorjs";
+import api from "@/services/api";
+
 export default {
   data() {
     return {
@@ -238,13 +240,6 @@ export default {
     },
 
     SavePlan() {
-      let headers = {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
-          "Content-Type": "multipart/form-data",
-        },
-      };
-
       let formData = new FormData();
       if (this.output) {
         formData.append("image", this.output);
@@ -256,37 +251,29 @@ export default {
 
       let vm = this;
 
-      this.axios
-        .post(
-          process.env.VUE_APP_URL +
-            "/objects/" +
-            this.$route.params.object +
-            "/plans/" +
-            this.$route.params.id,
-          formData,
-          headers
-        )
-        .then((response) => {
-          if (response.status === 202) {
-            vm.$router.back(-1);
-          }
-        })
-        .catch((error) => {
-          if (!error.response) {
-            this.toasted("Error: Network Error", "error");
-          } else {
-            if (error.response.status === 403) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 401) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 500) {
-              this.toasted(error.response.data.message, "error");
-            } else {
-              this.error = true;
-              this.errors = error.response.data.errors;
+      const {object, id} = this.$route.params
+      api.objects.updateObjectPlan(object, id, formData)
+          .then((response) => {
+            if (response.status === 202) {
+              vm.$router.back(-1);
             }
-          }
-        });
+          })
+          .catch((error) => {
+            if (!error.response) {
+              this.toasted("Error: Network Error", "error");
+            } else {
+              if (error.response.status === 403) {
+                this.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 401) {
+                this.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 500) {
+                this.toasted(error.response.data.message, "error");
+              } else {
+                this.error = true;
+                this.errors = error.response.data.errors;
+              }
+            }
+          });
     },
   },
 };

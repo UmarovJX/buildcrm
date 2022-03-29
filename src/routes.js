@@ -21,7 +21,6 @@ import ObjStore from "./components/Dashboard/Objects/Store";
 // import ObjFilter from './components/Dashboard/Objects/Filter';
 import ApartmentsList from "./components/Dashboard/Apartment/ApartmentsList";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
-
 // import Managers from './components/Dashboard/Managers/Index';
 // import Accountants from './components/Dashboard/Accountants/Index';
 // import Cashiers from './components/Dashboard/Cashiers/Index';
@@ -46,13 +45,14 @@ import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment"
 import Companies from "./components/Dashboard/Companies/Index";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
+import Promo from './components/Dashboard/Objects/Promo/Index'
 /* PAGES */
 import UserSettings from "./views/UserSettings"
 import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
-import ObjectsPromo from "@/components/Dashboard/Objects/ObjectsPromo";
+import CloneView from "@/components/Dashboard/Contracts/CloneView";
 
 const routes = [
     {
@@ -69,6 +69,15 @@ const routes = [
         // meta: {
         //   guest: true,
         // },
+    },
+
+    {
+        name: "contracts-view-clone",
+        path: "/contracts/:id/clone",
+        component: CloneView,
+        meta: {
+            requiresAuth: "contracts",
+        },
     },
 
 
@@ -102,11 +111,12 @@ const routes = [
     {
         name: "objects-promo",
         path: "/objects/:id/promo",
-        component: ObjectsPromo,
+        component: Promo,
         meta: {
             requiresAuth: "objects",
         }
     },
+
 
     {
         name: "object-deal-template",
@@ -234,6 +244,15 @@ const routes = [
     },
 
     {
+        name: "contracts-view-clone",
+        path: "/contracts/:id/clone",
+        component: CloneView,
+        meta: {
+            requiresAuth: "contracts",
+        },
+    },
+
+    {
         name: "type_plan",
         path: "/type/layouts",
         component: TypePlan,
@@ -311,17 +330,16 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const AUTH_TOKEN = localStorage.token
-
-    if (to.name === 'login') next()
+    const AUTH_TOKEN = localStorage.getItem('auth__access__token')
+    if (to.name === 'login') return next()
 
     if (AUTH_TOKEN)
         if (to.path === '/')
-            next({name: 'home'})
+            return next({name: 'home'})
         else
-            next()
+            return next()
     else
-        next({name: 'login'})
+        return next({name: 'login'})
 })
 
 // router.beforeEach((to, from, next) => {

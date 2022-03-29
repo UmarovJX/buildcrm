@@ -1,7 +1,6 @@
 <template>
   <div class="promo__creation__modal">
     <ValidationObserver ref="promo-observer">
-
       <div class="row flex-column flex-lg-row justify-content-lg-between mb-4">
         <div class="col-12 col-lg-6 pr-2">
 
@@ -163,10 +162,10 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapGetters} from "vuex"
 
 export default {
-  name: "PromoDateInterface",
+  name: "DateInterface",
   data() {
     return {
       form: {
@@ -216,6 +215,9 @@ export default {
       this.compareMileStone()
     }
   },
+  created() {
+    this.setUpHistoryContext()
+  },
   methods: {
     compareMileStone() {
       const dayInMilliseconds = 24 * 60 * 60 * 1000
@@ -236,11 +238,14 @@ export default {
       return true
     },
     setUpHistoryContext() {
-      this.setHistoryName()
-      this.setStartDate()
-      this.setStartedTime()
-      this.setEndDate()
-      this.setEndTime()
+      const history = Object.keys(this.getEditHistoryContext).length
+      if (history) {
+        this.setHistoryName()
+        this.setStartDate()
+        this.setStartedTime()
+        this.setEndDate()
+        this.setEndTime()
+      }
     },
     setHistoryName() {
       const {name} = this.getEditHistoryContext

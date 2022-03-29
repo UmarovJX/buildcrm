@@ -1,21 +1,26 @@
-import Core from "@/services/core";
+import {axiosV1CRM} from '@/services/core/base'
+import Core from '@/services/core/index'
 
 class Branches extends Core {
+    constructor(axios = axiosV1CRM) {
+        super(axios)
+    }
+
     getBranchesList() {
-        return this.get('/branches')
+        return this.get('branches')
     }
 
     addNewBranch(body) {
-        return this.post('/branches', body)
+        return this.post('branches', body)
     }
 
     editBranch(id, body) {
-        return this.put(`/branches/${id}`, body)
+        return this.put(`branches/${id}`, body)
     }
 
     deleteBranch(id) {
-        return this.delete(`/branches/${id}`)
+        return this.delete(`branches/${id}`)
     }
 }
 
-export default new Branches()
+export default Branches

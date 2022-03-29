@@ -1545,6 +1545,8 @@ import SuccessAgree from "./Components/SuccessAgree";
 import QuickViewApartments from "./Components/QuickViewApartments";
 import FlipCountdown from "vue2-flip-countdown";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
+import api from "@/services/api";
+
 export default {
   name: "ConfirmApartment",
 
@@ -1747,12 +1749,7 @@ export default {
     async expiredConfirm() {
       try {
         this.loading = true;
-        await this.axios
-            .delete(
-                process.env.VUE_APP_URL +
-                `/orders/${this.getApartmentOrder.uuid}/hold/`,
-                this.header
-            )
+        await api.orders.deactivateOrderHold(this.getApartmentOrder.uuid)
             .then(() => {
               this.$router.push({
                 name: "apartments",
@@ -1801,8 +1798,7 @@ export default {
     },
     async postStore() {
       this.loading = true;
-      await this.axios
-          .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
+      await api.clients.createClient(this.client)
           .then((response) => {
             if (response) {
               this.clientData = response.data;
@@ -1952,14 +1948,8 @@ export default {
             );
           }
 
-          this.axios
-              .post(
-                  process.env.VUE_APP_URL +
-                  "/orders/" +
-                  this.getApartmentOrder?.uuid,
-                  formData,
-                  this.header
-              )
+
+          api.orders.reserveApartment(this.getApartmentOrder?.uuid, formData)
               .then((response) => {
                 this.toasted(response.data.message, "success");
                 this.$bvModal.hide("modal-agree");
@@ -2020,12 +2010,7 @@ export default {
       if (this.search_label.length == 9) {
         this.loading = true;
         try {
-          const {data} = await this.axios.get(
-              process.env.VUE_APP_URL +
-              "/clients/search?field=" +
-              this.search_label,
-              this.header
-          );
+          const {data} = await api.clients.fetchClientData(this.search_label)
           this.client = {
             id: data.id,
             first_name: data.first_name ?? {

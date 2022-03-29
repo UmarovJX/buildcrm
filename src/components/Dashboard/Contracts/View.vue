@@ -9,6 +9,11 @@
       </base-bread-crumb>
       <div class="card">
         <div class="card-content">
+          <!--          <router-link-->
+          <!--              :to="{name:'contracts-view-clone'}"-->
+          <!--          >-->
+          <!--            clone view-->
+          <!--          </router-link>-->
           <div class="card-header">
             <h5 class="card-title">
               {{ $t("apartments.list.contract") }} #: {{ order.contract }}
@@ -709,6 +714,7 @@
 // import Discount from './Discount'
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import {mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
   name: 'ContractsView',
@@ -735,7 +741,6 @@ export default {
 
     order: {
       id: null,
-
       contract: null,
       friends: "unknown",
       contract_path: null,
@@ -856,17 +861,7 @@ export default {
     async saveComment() {
       this.getLoading = true;
       try {
-        const {data, status} = await this.axios.post(
-            process.env.VUE_APP_URL +
-            "/orders/" +
-            this.$route.params.id +
-            "/comment",
-            {
-              comment: this.comment,
-            },
-            this.header
-        );
-
+        const {data, status} = await api.orders.ordersComment(this.$route.params.id, this.comment)
         if (status === 201) {
           this.comment = "";
           this.order.comments.push(data);
@@ -882,17 +877,12 @@ export default {
     async CreatePayment() {
       this.getLoading = true;
       try {
-        await this.axios.post(
-            process.env.VUE_APP_URL +
-            "/debtors/payment/" +
-            this.$route.params.id +
-            "/store",
-            {
-              date: this.payment.data.date,
-              amount: this.payment.data.amount,
-            },
-            this.header
-        );
+        const body = {
+          date: this.payment.data.date,
+          amount: this.payment.data.amount,
+        }
+
+        await api.debtors.createPayment(this.$route.params.id, body)
 
         this.payment.data = {
           date: null,
@@ -912,10 +902,7 @@ export default {
     async fetchOrder() {
       this.getLoading = true;
       try {
-        const {data} = await this.axios.get(
-            process.env.VUE_APP_URL + "/orders/" + this.$route.params.id,
-            this.header
-        );
+        const {data} = await api.orders.fetchOrder(this.$route.params.id)
         this.step = 1;
 
         this.order = data;
@@ -929,17 +916,10 @@ export default {
     async ChangeTypeClient() {
       this.getLoading = true;
       try {
-        const {data} = await this.axios.put(
-            process.env.VUE_APP_URL +
-            "/orders/" +
-            this.$route.params.id +
-            "/client",
-            {
-              friends: this.order.friends,
-            },
-            this.header
-        );
-
+        const body = {
+          friends: this.order.friends
+        }
+        const {data} = await api.orders.changeClientType(this.$route.params.id, body)
         this.edit.type_client = false;
         this.getLoading = false;
         this.toasted(data.message, "success");
@@ -962,8 +942,7 @@ export default {
       }).then((result) => {
         if (result.value || result.value == "") {
           this.getLoading = true;
-          this.axios
-              .delete(process.env.VUE_APP_URL + "/debtors/" + id, this.header)
+          api.debtors.deleteMonthlyDebt(id)
               .then(() => {
                 this.fetchOrder();
                 this.getLoading = false;
@@ -1039,17 +1018,13 @@ export default {
         }).then((result) => {
           if (result.value || result.value == "") {
             this.getLoading = true;
-            this.axios
-                .put(
-                    process.env.VUE_APP_URL + "/debtors/" + id,
-                    {
-                      date_paid: formValues.date_payment,
-                      amount_paid: formValues.pay_amount,
-                      type_payment: formValues.type_payment,
-                      comment: result.value,
-                    },
-                    this.header
-                )
+            const body = {
+              date_paid: formValues.date_payment,
+              amount_paid: formValues.pay_amount,
+              type_payment: formValues.type_payment,
+              comment: result.value,
+            }
+            api.debtors.updateMonthlyDebt(id, body)
                 .then(() => {
                   this.fetchOrder();
                   this.getLoading = false;
@@ -1143,19 +1118,14 @@ export default {
           });
 
           this.getLoading = true;
-
-          this.axios
-              .post(
-                  process.env.VUE_APP_URL + "/debtors/" + id,
-                  {
-                    date_paid: formValues.date_payment,
-                    amount_paid: formValues.pay_amount,
-                    type_payment: formValues.type_payment,
-                    comment: initialValue.comment,
-                    next_payment_date: initialValue.next_payment_date,
-                  },
-                  this.header
-              )
+          const body = {
+            date_paid: formValues.date_payment,
+            amount_paid: formValues.pay_amount,
+            type_payment: formValues.type_payment,
+            comment: initialValue.comment,
+            next_payment_date: initialValue.next_payment_date,
+          }
+          api.debtors.createMonthlyPayment(id, body)
               .then(() => {
                 this.fetchOrder();
                 this.getLoading = false;
@@ -1199,17 +1169,13 @@ export default {
         }).then((result) => {
           if (result.value || result.value == "") {
             this.getLoading = true
-            this.axios
-                .post(
-                    process.env.VUE_APP_URL + "/debtors/" + id,
-                    {
-                      date_paid: formValues.date_payment,
-                      amount_paid: formValues.pay_amount,
-                      type_payment: formValues.type_payment,
-                      comment: result.value,
-                    },
-                    this.header
-                )
+            const body = {
+              date_paid: formValues.date_payment,
+              amount_paid: formValues.pay_amount,
+              type_payment: formValues.type_payment,
+              comment: result.value
+            }
+            api.debtors.createMonthlyPayment(id, body)
                 .then(() => {
                   this.fetchOrder();
                   this.getLoading = false
@@ -1258,14 +1224,10 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.getLoading = true;
-          this.axios
-              .post(
-                  process.env.VUE_APP_URL + "/deals/" + this.order.id,
-                  {
-                    comment: result.value,
-                  },
-                  this.header
-              )
+          const body = {
+            comment: result.value
+          }
+          api.contract.cancelContract(this.order.id, body)
               .then(() => {
                 this.$router.back(-1);
                 this.getLoading = false;

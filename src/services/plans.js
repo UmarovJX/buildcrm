@@ -1,6 +1,11 @@
-import Core from "@/services/core";
+import {axiosV1CRM} from '@/services/core/base'
+import Core from '@/services/core/index'
 
 class Plans extends Core {
+    constructor(axios = axiosV1CRM) {
+        super(axios);
+    }
+    
     deletePlanWhenHasApartment(objectId, planId) {
         return this.delete(`objects/${objectId}/plans/${planId}`)
     }
@@ -14,4 +19,4 @@ class Plans extends Core {
     }
 }
 
-export default new Plans()
+export default Plans

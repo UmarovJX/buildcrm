@@ -1,8 +1,17 @@
-import Core from "@/services/core";
+import {axiosV1CRM} from '@/services/core/base'
+import Core from '@/services/core/index'
 
 class Companies extends Core {
+    constructor(axios = axiosV1CRM) {
+        super(axios)
+    }
+
     getCompaniesList() {
-        return this.get('/companies')
+        return this.get('companies')
+    }
+
+    getCompanyBranch(branchId) {
+        return this.get(`companies/${branchId}`)
     }
 
     getCompanyType() {
@@ -13,7 +22,7 @@ class Companies extends Core {
         return this.put(`companies/${company.id}`, company)
     }
 
-    deleteCompany(id){
+    deleteCompany(id) {
         return this.delete(`companies/${id}`)
     }
 
@@ -22,4 +31,4 @@ class Companies extends Core {
     }
 }
 
-export default new Companies()
+export default Companies

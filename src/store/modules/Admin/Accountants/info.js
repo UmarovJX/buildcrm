@@ -1,11 +1,13 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async fetchAccountant(ctx, vm) {
             try {
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/accountants/update/' + vm.accountant_id, vm.header );
+                const response = await api.accountants.fetchAccountant(vm.accountant_id)
                 ctx.commit('updateAccountant', response.data);
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
                     if (error.response.status === 403) {
@@ -32,7 +34,7 @@ export default {
             state.manager = manager;
         },
 
-        nullAccountant (state) {
+        nullAccountant(state) {
             state.manager = {}
         },
     },

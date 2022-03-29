@@ -32,7 +32,7 @@ export default {
     back: "Orqaga",
     next: "Davom etish",
     create_agree: "Tasdiqlash",
-    yes: "Bor",
+    yes: "Ha",
     no: "Yo'q",
     image: "Surat",
     address: "Manzil", // 'settings': 'Настройки',
@@ -62,11 +62,18 @@ export default {
     usd_text: 'Usd',
     apartments_count: "Xonadonlar soni",
     contract_file_not_found: 'Kontrakt fayl topilmadi',
-    instruction:"Ko'rsatma",
+    instruction: "Ko'rsatma",
     validation_warning_to_bottom: "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
-    new_name:'Yangi nom',
-    meaning:'Manosi',
-    example_by_2:'Misol',
+    new_name: 'Yangi nom',
+    meaning: 'Manosi',
+    example_by_2: 'Misol',
+    payment_schedule: "To'lov jadvali",
+    object_details: 'Obyekt tafsilotlari',
+    client_details: 'Foydalanuvchi malumotlari',
+    contract_details: 'Shartnoma tafsilotlari',
+    initial_payment: 'Первоначальный',
+    monthly_pay: 'Ежемесячный',
+    floor: 'Qavat',
 
     promo: {
         name: 'Aksiya',
@@ -99,6 +106,7 @@ export default {
         by_promo: "Aksiya bo'yicha",
         in_promo: 'Aktsiyalarda',
         promo_rate: 'Tarif',
+        initial_price: "Boshlang'ich to'lov (%)"
     },
 
     auth: {
@@ -262,6 +270,10 @@ export default {
     },
 
     apartments: {
+        title: 'Xonadonlar',
+        clone_tariff: 'Tarifdan nusxa olish',
+        delete_tariff: "Tarifni o'chirish",
+        add_tariff: "Tarif qo'shish",
         list: {
             choose: "Tanlash",
             reset: "Qayta o'rnatish",
@@ -395,6 +407,7 @@ export default {
         plan_required: "Xonadon loyihasini tanlashingiz shart",
         delete_title: "Bu xonadon rejasida {apartments_count} ta kvartira mavjud boshqa rejaga o'tkazishingiz kerak"
     },
+
     debtors: {
         title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
         familiars: "Tanishlar", // asd

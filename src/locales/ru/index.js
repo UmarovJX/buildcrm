@@ -46,6 +46,8 @@ export default {
     activate: 'Активировать',
     deactivate: "Деактивировать",
     monthly_payment: 'Ежемесячный платеж',
+    initial_payment: 'Первоначальный',
+    monthly_pay: 'Ежемесячный',
     sum_text: 'В суммах',
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
@@ -55,6 +57,12 @@ export default {
     new_name: 'Новое название',
     meaning: 'Значение',
     example_by_2: "Примеры(по 2)",
+    payment_schedule: 'График оплаты',
+    object_details: 'Детали объекта',
+    client_details: 'Детали клиента',
+    contract_details: 'Детали договора',
+    floor: 'Этаж',
+
 
     promo: {
         name: 'Акция',
@@ -87,6 +95,7 @@ export default {
         by_promo: "По акции",
         in_promo: 'В акции',
         promo_rate: 'Тариф',
+        initial_price: "Первый взнос (%)"
     },
 
     promos: 'Акции',
@@ -269,6 +278,10 @@ export default {
     },
 
     apartments: {
+        title: 'Квартиры',
+        clone_tariff: 'Дублировать тариф',
+        delete_tariff: 'Удалить тариф',
+        add_tariff: 'Добавить тариф',
         list: {
             choose: "Выбрать",
             reset: "Сбросить",
@@ -409,6 +422,12 @@ export default {
 
     debtors: {
         title: "Должники",
+        overdue: "Просроченные", // asd
+        familiars: "Знакомые", // asd
+        contract_number: "№ договора", // asd
+        client_name: "имя клиента", // asd
+        client_number: "номер телефона", // asd
+        client_type: "тип клиента", // asd
     },
 
     backup: {

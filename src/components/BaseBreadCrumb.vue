@@ -53,6 +53,5 @@ export default {
       return this.breadCrumbs.length > 0
     }
   }
-
 }
 </script>

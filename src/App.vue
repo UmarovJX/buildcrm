@@ -17,6 +17,7 @@
       </div>
     </div>
     <header-block v-if="showHeaderContent" :theme="theme"></header-block>
+
     <router-view></router-view>
   </div>
 </template>
@@ -44,7 +45,7 @@ export default {
     }
 
     let path = this.$router.currentRoute;
-    if (localStorage.token) {
+    if (localStorage.getItem('auth__access__token')) {
       let vm = this;
       this.setMe(vm, path);
     } else {
@@ -84,7 +85,7 @@ export default {
   watch: {
     '$route.name': {
       handler: function (name) {
-        const unnecessaryRoute = ['login']
+        const unnecessaryRoute = ['login','home-2']
         const indexOfRoute = unnecessaryRoute.findIndex(routeName => routeName === name)
         this.showHeaderContent = indexOfRoute === -1;
       },

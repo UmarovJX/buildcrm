@@ -1,18 +1,15 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async fetchCounts(ctx, vm) {
             try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/home', header);
+                const response = await api.home.fetchHome()
+                console.log('response',response)
                 const counts = response.data;
                 ctx.commit('getUpdateCounts', counts);
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
                     if (error.response.status === 403) {

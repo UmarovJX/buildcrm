@@ -1,6 +1,35 @@
-import Core from "@/services/core";
+import {axiosV1CRM} from '@/services/core/base'
+import Core from '@/services/core/index'
 
-class Objects extends Core {
+class ObjectsV1Crm extends Core {
+    constructor(axios = axiosV1CRM) {
+        super(axios);
+    }
+
+    oldObjectCreation(body) {
+        return this.post('objects', body)
+    }
+
+    fetchByFilterObject(object) {
+        return this.get(`objects/${object}/filter`)
+    }
+
+    fetchObjectWithPagination(object, page, body) {
+        return this.post(`objects/${object}/filter?page=${page}`, body)
+    }
+
+    fetchOldObjects() {
+        return this.get(`objects`)
+    }
+
+    updateObject(objectId, body) {
+        return this.post(`objects/${objectId}`, body)
+    }
+
+    deleteObject(objectId) {
+        return this.delete(`objects/${objectId}`)
+    }
+
     getDealTemplateList(objectId) {
         return this.get(`objects/${objectId}/contract/`)
     }
@@ -17,24 +46,12 @@ class Objects extends Core {
         return this.delete(`objects/${objectId}/contract/${contractId}`)
     }
 
-    fetchObjectPromos(objectId) {
-        return this.get(`objects/${objectId}/promo`)
-    }
-
     deleteObjectPromo({objectId, uuId}) {
         return this.delete(`objects/${objectId}/promo/${uuId}`)
     }
 
-    fetchObjectBlocks(objectId) {
-        return this.get(`objects/${objectId}/blocks`)
-    }
-
     fetchObjectBlockByType({objectId, blockId, type}) {
         return this.get(`objects/${objectId}/blocks/${blockId}/${type}s`)
-    }
-
-    createObjectPromo({id, form}) {
-        return this.post(`objects/${id}/promo`, form)
     }
 
     updateObjectPromo({id, promoId, form}) {
@@ -44,6 +61,234 @@ class Objects extends Core {
     changeObjectPromoActivation({objectId, promoId, type}) {
         return this.put(`objects/${objectId}/promo/${promoId}/${type}`)
     }
+
+    fetchOldObjectPlans(objectId) {
+        return this.post(`objects/${objectId}/plans`)
+    }
+
+    fetchObjectPlan(objectId, planId) {
+        return this.get(`objects/${objectId}/plans/${planId}`)
+    }
+
+    updateObjectPlan(objectId, planId, body) {
+        return this.post(`objects/${objectId}/plans/${planId}`, body)
+    }
+
+    fetchObjectApartments(object, params) {
+        return this.get(`objects/${object}/apartments`, {params})
+    }
+
+    fetchObjectsApartment(object, apartmentId) {
+        return this.get(`objects/${object}/apartments/${apartmentId}`)
+    }
+
+    fetchObject(objectId) {
+        return this.get(`v2/objects/${objectId}`)
+    }
+
+    createObject(body) {
+        return this.post('v2/objects', body)
+    }
+
+    updateApartment(apartmentId, body) {
+        return this.put(`v2/objects/apartment/${apartmentId}`, body)
+    }
+
+    deleteApartment(apartmentId) {
+        return this.delete(`v2/objects/apartment/${apartmentId}`)
+    }
+
+    addBlockPrice(blockId, body) {
+        return this.post(`v2/objects/block/${blockId}/prices`, body)
+    }
+
+    createBlockPrice(blockId, body) {
+        return this.put(`v2/objects/block/${blockId}/prices`, body)
+    }
+
+    updateBlockPrice(blockId, priceId, body) {
+        return this.put(`v2/objects/block/${blockId}/prices/${priceId}`, body)
+    }
+
+    deleteBlockPrice(blockId, priceId) {
+        return this.delete(`v2/objects/block/${blockId}/prices/${priceId}`)
+    }
+
+    updateBlock(blockId, body) {
+        return this.put(`v2/objects/block/${blockId}`, body)
+    }
+
+    deleteBlock(blockId) {
+        return this.delete(`v2/objects/block/${blockId}`)
+    }
+
+    getBlockApartments(blockId) {
+        return this.get(`v2/objects/block/${blockId}/apartments`)
+    }
+
+    cloneFloors(blockId, body) {
+        return this.post(`v2/objects/apartments/${blockId}/clone`, body)
+    }
+
+    apartmentAddition(blockId, body) {
+        return this.post(`v2/objects/block/${blockId}/apartment`, body)
+    }
+
+    updateApartments(body) {
+        return this.put(`v2/objects/apartments/update`, body)
+    }
+
+    createDiscount(objectId, body) {
+        return this.post(`v2/objects/${objectId}/discounts`, body)
+    }
+
+    updateDiscount(objectId, discountId, body) {
+        return this.put(`v2/objects/${objectId}/discounts/${discountId}`, body)
+    }
+
+    deleteDiscount(objectId, discountId) {
+        return this.delete(`v2/objects/${objectId}/discounts/${discountId}`)
+    }
+
+    fetchObjectDiscount(objectId) {
+        return this.get(`v2/objects/${objectId}/discounts`)
+    }
+
+    fetchBuildings(objectId) {
+        return this.get(`v2/objects/${objectId}/buildings`)
+    }
+
+    createBuilding(objectId, body) {
+        return this.post(`v2/objects/${objectId}/buildings`, body)
+    }
+
+    updateBuilding(objectId, buildingId, body) {
+        return this.put(`v2/objects/${objectId}/buildings/${buildingId}`, body)
+    }
+
+    createBuildingBlock(buildingId, body) {
+        return this.post(`v2/objects/buildings/${buildingId}/block`, body)
+    }
+
+    deleteBuilding(objectId, buildingId) {
+        return this.delete(`v2/objects/${objectId}/buildings/${buildingId}`)
+    }
+
+    createObjectPlan(objectId, body) {
+        return this.post(`v2/objects/${objectId}/plans`, body)
+    }
+
+    fetchObjectPlans(objectId) {
+        return this.get(`objects/${objectId}/plans`)
+    }
 }
 
-export default new Objects()
+//
+// class ObjectsV2 extends ObjectsV1Crm {
+//     constructor(axios = axiosV2) {
+//         super(axios);
+//     }
+//
+//     fetchObject(objectId) {
+//         return this.get(`v2/objects/${objectId}`)
+//     }
+//
+//     createObject(body) {
+//         return this.post('v2/objects', body)
+//     }
+//
+//     updateApartment(apartmentId, body) {
+//         return this.put(`v2/objects/apartment/${apartmentId}`, body)
+//     }
+//
+//     deleteApartment(apartmentId) {
+//         return this.delete(`v2/objects/apartment/${apartmentId}`)
+//     }
+//
+//     addBlockPrice(blockId, body) {
+//         return this.post(`v2/objects/block/${blockId}/prices`, body)
+//     }
+//
+//     createBlockPrice(blockId, body) {
+//         return this.put(`v2/objects/block/${blockId}/prices`, body)
+//     }
+//
+//     updateBlockPrice(blockId, priceId, body) {
+//         return this.put(`v2/objects/block/${blockId}/prices/${priceId}`, body)
+//     }
+//
+//     deleteBlockPrice(blockId, priceId) {
+//         return this.delete(`v2/objects/block/${blockId}/prices/${priceId}`)
+//     }
+//
+//     updateBlock(blockId, body) {
+//         return this.put(`v2/objects/block/${blockId}`, body)
+//     }
+//
+//     deleteBlock(blockId) {
+//         return this.delete(`v2/objects/block/${blockId}`)
+//     }
+//
+//     getBlockApartments(blockId) {
+//         return this.get(`v2/objects/block/${blockId}/apartments`)
+//     }
+//
+//     cloneFloors(blockId, body) {
+//         return this.post(`v2/objects/apartments/${blockId}/clone`, body)
+//     }
+//
+//     apartmentAddition(blockId, body) {
+//         return this.post(`v2/objects/block/${blockId}/apartment`, body)
+//     }
+//
+//     updateApartments(body) {
+//         return this.put(`v2/objects/apartments/update`, body)
+//     }
+//
+//     createDiscount(objectId, body) {
+//         return this.post(`v2/objects/${objectId}/discounts`, body)
+//     }
+//
+//     updateDiscount(objectId, discountId, body) {
+//         return this.put(`v2/objects/${objectId}/discounts/${discountId}`, body)
+//     }
+//
+//     deleteDiscount(objectId, discountId) {
+//         return this.delete(`v2/objects/${objectId}/discounts/${discountId}`)
+//     }
+//
+//     fetchObjectDiscount(objectId) {
+//         return this.get(`v2/objects/${objectId}/discounts`)
+//     }
+//
+//     fetchBuildings(objectId) {
+//         return this.get(`v2/objects/${objectId}/buildings`)
+//     }
+//
+//     createBuilding(objectId, body) {
+//         return this.post(`v2/objects/${objectId}/buildings`, body)
+//     }
+//
+//     updateBuilding(objectId, buildingId, body) {
+//         return this.put(`v2/objects/${objectId}/buildings/${buildingId}`, body)
+//     }
+//
+//     createBuildingBlock(buildingId, body) {
+//         return this.post(`v2/objects/buildings/${buildingId}/block`, body)
+//     }
+//
+//     deleteBuilding(objectId, buildingId) {
+//         return this.delete(`v2/objects/${objectId}/buildings/${buildingId}`)
+//     }
+//
+//     createObjectPlan(objectId, body) {
+//         return this.post(`v2/objects/${objectId}/plans`, body)
+//     }
+//
+//     fetchObjectPlans(objectId) {
+//         return this.post(`v2/objects/${objectId}/plans`)
+//     }
+//
+// }
+
+export default ObjectsV1Crm

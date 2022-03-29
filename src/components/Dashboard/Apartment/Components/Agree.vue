@@ -949,6 +949,7 @@
 import {mapGetters} from "vuex";
 import Discount from "./Discount";
 import moment from "moment";
+import api from "@/services/api";
 
 export default {
   props: {
@@ -1122,12 +1123,7 @@ export default {
     async Search() {
       this.getLoading = true
       try {
-        const {data} = await this.axios.get(
-            process.env.VUE_APP_URL +
-            "/clients/search?field=" +
-            this.search_label,
-            this.header
-        );
+        const {data} = await api.clients.fetchClientData(this.search_label)
         this.step = 2;
 
         this.client = {
@@ -1175,10 +1171,7 @@ export default {
     async reserveClientFull() {
       this.getLoading = true
       try {
-        const {data} = await this.axios.get(
-            process.env.VUE_APP_URL + "/clients/" + this.apartment.order.id,
-            this.header
-        );
+        const {data} = await api.clients.fetchReserveClient(this.apartment.order.id)
         this.step = 2;
         this.client = {
           id: data.id,
@@ -1329,12 +1322,7 @@ export default {
             formData.append("months", this.month);
           }
 
-          this.axios
-              .post(
-                  process.env.VUE_APP_URL + "/orders/" + this.apartment.id,
-                  formData,
-                  this.header
-              )
+          api.orders.reserveApartment(this.apartment.id, formData)
               .then((response) => {
                 this.toasted(response.data.message, "success");
 

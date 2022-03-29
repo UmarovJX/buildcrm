@@ -1,19 +1,15 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async fetchCurrency(ctx, vm) {
             try {
-                let header = {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.token
-                    }
-                };
-
-                const { data } = await vm.axios.get(process.env.VUE_APP_URL + '/currency/', header);
+                const {data} = await api.settings.fetchCurrency()
 
                 ctx.commit('updateCurrency', data);
 
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
                     if (error.response.status === 403) {

@@ -1,11 +1,13 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async fetchCashier(ctx, vm) {
             try {
-                const response = await vm.axios.get(process.env.VUE_APP_URL + '/api/cashiers/update/' + vm.cashier_id, vm.header );
+                const response = await api.home.fetchCashier(vm.cashier_id)
                 ctx.commit('updateCashier', response.data);
             } catch (error) {
-                if (! error.response) {
+                if (!error.response) {
                     vm.toasted('Error: Network Error', 'error');
                 } else {
                     if (error.response.status === 403) {
@@ -32,7 +34,7 @@ export default {
             state.cashier = cashier;
         },
 
-        nullCashier (state) {
+        nullCashier(state) {
             state.cashier = {}
         },
     },

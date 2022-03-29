@@ -16,10 +16,10 @@
 <script>
 export default {
   name: "BaseUserAccountIcon",
-  props:{
-    extraClass:{
-      type:String,
-      required:true
+  props: {
+    extraClass: {
+      type: String,
+      required: true
     }
   }
 }

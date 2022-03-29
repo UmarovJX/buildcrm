@@ -1,16 +1,10 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async setMe(ctx, vm, path = '') {
             try {
-                const response = await vm.axios.get(
-                    process.env.VUE_APP_URL + "/oauth/me",
-                    {
-                        headers: {
-                            Authorization: "Bearer " + localStorage.token,
-                        },
-                    }
-                );
-
+                const response = await api.authV1.getMe()
                 ctx.commit("updateMe", response.data);
                 ctx.commit("updatePermissions", response.data);
                 return path

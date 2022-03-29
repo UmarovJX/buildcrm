@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tab__container">
     <div class="filter__content">
       <div
           v-for="{name,status} in filterTabList"
@@ -11,6 +11,7 @@
         <p>{{ name }}</p>
       </div>
     </div>
+    <div class="bottom__line"></div>
   </div>
 </template>
 
@@ -60,17 +61,18 @@ export default {
   margin-bottom: 8px;
   color: var(--dark);
 
-  &::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    bottom: 0;
-    width: 100%;
-    height: 6px;
-    background: #cccccc;
-    //border-top-left-radius: 3px;
-    //border-top-right-radius: 3px;
-  }
+
+  //&::before {
+  //content: '';
+  //position: absolute;
+  //z-index: -1;
+  //bottom: 0;
+  //width: 100%;
+  //height: 6px;
+  //background: red;
+  //border-top-left-radius: 3px;
+  //border-top-right-radius: 3px;
+  //}
 
   &-item {
     position: relative;
@@ -82,12 +84,32 @@ export default {
 
     p {
       margin: 0;
+      line-height: 22px;
+      font-size: 16px;
+      font-weight: 600;
     }
 
     &-active {
-      border-bottom: 6px solid #5851d8;
       border-top-left-radius: 100px;
+      color: var(--violet-600);
+
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -14px;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        border-radius: 16px 16px 0 0;
+        background-color: var(--violet-600);
+      }
     }
   }
+}
+
+.bottom__line {
+  width: 100%;
+  height: 6px;
+  border-bottom: 6px solid var(--gray-100);
 }
 </style>

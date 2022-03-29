@@ -106,6 +106,8 @@
 import {mapActions, mapGetters} from "vuex";
 // import SuccessAgree from "./Components/SuccessAgree";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import api from "@/services/api";
+
 export default {
   components: {
     // "success-agree": SuccessAgree,
@@ -177,8 +179,7 @@ export default {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
     async getUnfinishedOrders() {
       this.getLoading = true;
-      await this.axios
-          .get(process.env.VUE_APP_URL + "/orders/hold", this.header)
+      await api.orders.fetchUnfinishedOrders()
           .then((res) => {
             if (res) {
               this.items = res.data;
@@ -203,8 +204,7 @@ export default {
     async expiredConfirm(id) {
       this.getLoading = true;
       try {
-        await this.axios
-            .delete(process.env.VUE_APP_URL + `/orders/${id}/hold/`, this.header)
+        await api.orders.deactivateOrderHold(id)
             .then(() => {
               this.getUnfinishedOrders();
             })

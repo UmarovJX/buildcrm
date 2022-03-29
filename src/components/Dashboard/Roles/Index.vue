@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <div
-        class="
+          class="
           d-flex
           justify-content-between
           align-items-center
@@ -10,7 +10,7 @@
         "
       >
         <div
-          class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
+            class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
         >
           <h1 class="title__big my-0">
             {{ $t("roles.title") }}
@@ -34,9 +34,9 @@
         </div>
 
         <router-link
-          :to="{name: 'roles-store'}"
-          v-if="getPermission.roles.create"
-          :class="'btn btn-primary mr-0 mt-md-0'"
+            :to="{name: 'roles-store'}"
+            v-if="getPermission.roles.create"
+            :class="'btn btn-primary mr-0 mt-md-0'"
         >
           <i class="fal fa-plus mr-2"></i>
           {{ $t("add") }}
@@ -45,23 +45,23 @@
 
       <div class="">
         <b-table
-          sticky-header
-          borderless
-          responsive
-          :items="getRoles"
-          :fields="fields"
-          :busy="getLoading"
-          show-empty
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
-          sort-icon-left
-          class="custom-table"
-          :empty-text="$t('no_data')"
+            sticky-header
+            borderless
+            responsive
+            :items="getRoles"
+            :fields="fields"
+            :busy="getLoading"
+            show-empty
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            sort-icon-left
+            class="custom-table"
+            :empty-text="$t('no_data')"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">{{
-              scope.emptyText
-            }}</span>
+                scope.emptyText
+              }}</span>
           </template>
 
           <template #table-busy>
@@ -82,40 +82,40 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
-                class="dropdown my-dropdown dropleft"
-                v-if="
+                  class="dropdown my-dropdown dropleft"
+                  v-if="
                   (getPermission.roles.update && data.item.id != 1) ||
                   (getPermission.roles.delete && data.item.id != 1)
                 "
               >
                 <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
+                    type="button"
+                    class="dropdown-toggle"
+                    data-toggle="dropdown"
                 >
                   <i class="far fa-ellipsis-h"></i>
                 </button>
 
                 <div
-                  class="dropdown-menu"
-                  v-if="
+                    class="dropdown-menu"
+                    v-if="
                     getPermission.roles.update || getPermission.roles.delete
                   "
                 >
                   <router-link
-                    :to="{name: 'roles-update', params: {id: data.item.id}}"
-                    v-if="getPermission.roles.update && data.item.id != 1"
-                    :class="'dropdown-item dropdown-item--inside'"
+                      :to="{name: 'roles-update', params: {id: data.item.id}}"
+                      v-if="getPermission.roles.update && data.item.id != 1"
+                      :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="fas fa-pen"></i>
                     {{ $t("edit") }}
                   </router-link>
 
                   <a
-                    class="dropdown-item dropdown-item--inside"
-                    v-if="getPermission.roles.delete && data.item.id != 1"
-                    @click="Delete(data.item.id)"
-                    href="#"
+                      class="dropdown-item dropdown-item--inside"
+                      v-if="getPermission.roles.delete && data.item.id != 1"
+                      @click="Delete(data.item.id)"
+                      href="#"
                   >
                     <i class="far fa-trash"></i> {{ $t("delete") }}
                   </a>
@@ -131,9 +131,10 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import api from "@/services/api";
 
 export default {
-  name:'Roles',
+  name: 'Roles',
   data() {
     return {
       header: {
@@ -202,33 +203,32 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
-          this.axios
-            .delete(process.env.VUE_APP_URL + "/roles/" + id, this.header)
-            .then((response) => {
-              this.toasted(response.data.message, "success");
+          api.roles.deleteRole(id)
+              .then((response) => {
+                this.toasted(response.data.message, "success");
 
-              this.fetchRoles(this);
+                this.fetchRoles(this);
 
-              this.$swal(this.$t("sweetAlert.deleted"), "", "success");
-            })
-            .catch((error) => {
-              if (!error.response) {
-                this.toasted("Error: Network Error", "error");
-              } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 404) {
-                  this.toasted(error.response.data.exception, "error");
+                this.$swal(this.$t("sweetAlert.deleted"), "", "success");
+              })
+              .catch((error) => {
+                if (!error.response) {
+                  this.toasted("Error: Network Error", "error");
                 } else {
-                  this.error = true;
-                  this.errors = error.response.data.errors;
+                  if (error.response.status === 403) {
+                    this.toasted(error.response.data.message, "error");
+                  } else if (error.response.status === 401) {
+                    this.toasted(error.response.data.message, "error");
+                  } else if (error.response.status === 500) {
+                    this.toasted(error.response.data.message, "error");
+                  } else if (error.response.status === 404) {
+                    this.toasted(error.response.data.exception, "error");
+                  } else {
+                    this.error = true;
+                    this.errors = error.response.data.errors;
+                  }
                 }
-              }
-            });
+              });
         }
       });
     },

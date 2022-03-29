@@ -300,6 +300,7 @@ import {
   getTotal
 } from "@/util/calculator";
 import moment from "moment";
+import api from "@/services/api";
 // import moment from "moment";
 
 export default {
@@ -548,8 +549,7 @@ export default {
 
     async postStore() {
       this.buttons.loading = true;
-      await this.axios
-          .post(process.env.VUE_APP_URL + "/clients", this.client, this.header)
+      await api.clients.createClient(this.client)
           .then((response) => {
             this.buttons.loading = false;
             if (response) {
@@ -621,12 +621,7 @@ export default {
     async expiredConfirm() {
       try {
         this.loading = true;
-        await this.axios
-            .delete(
-                process.env.VUE_APP_URL +
-                `/orders/${this.getApartmentOrder.uuid}/hold/`,
-                this.header
-            )
+        await api.orders.deactivateOrderHold(this.getApartmentOrder.uuid)
             .then(() => {
               this.$router.push({
                 name: "apartments",
@@ -802,14 +797,7 @@ export default {
             );
           }
 
-          this.axios
-              .post(
-                  process.env.VUE_APP_URL +
-                  "/orders/" +
-                  this.order?.uuid,
-                  formData,
-                  this.header
-              )
+          api.orders.reserveApartment(this.order?.uuid, formData)
               .then((response) => {
                 this.toasted(response.data.message, "success");
                 this.$bvModal.hide("modal-agree");

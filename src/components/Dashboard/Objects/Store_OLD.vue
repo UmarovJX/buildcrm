@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <div
-        class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
+          class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
       >
         <h1 class="title__big mb-md-0 mb-3">{{ $t("objects.create.new") }}</h1>
       </div>
@@ -27,14 +27,14 @@
                   <label class="d-block text-uppercase" for="title">
                     {{ $t("objects.create.name") }}
                   </label>
-                  <vs-input v-model="value" placeholder="Name" />
+                  <vs-input v-model="value" placeholder="Name"/>
                   <input
-                    class="my-form__input"
-                    v-model="object.name"
-                    id="title"
-                    type="text"
-                    required
-                    :placeholder="$t('objects.placeholder.name')"
+                      class="my-form__input"
+                      v-model="object.name"
+                      id="title"
+                      type="text"
+                      required
+                      :placeholder="$t('objects.placeholder.name')"
                   />
                 </div>
               </div>
@@ -45,12 +45,12 @@
                     {{ $t("objects.address") }}
                   </label>
                   <input
-                    class="my-form__input"
-                    id="address"
-                    type="text"
-                    v-model="object.address"
-                    :placeholder="$t('objects.placeholder.address')"
-                    required
+                      class="my-form__input"
+                      id="address"
+                      type="text"
+                      v-model="object.address"
+                      :placeholder="$t('objects.placeholder.address')"
+                      required
                   />
                 </div>
               </div>
@@ -65,9 +65,9 @@
                       {{ $t("companies.company_enter") }}
                     </option>
                     <option
-                      v-for="(company, index) in getCompanies"
-                      :key="index"
-                      :value="company.id"
+                        v-for="(company, index) in getCompanies"
+                        :key="index"
+                        :value="company.id"
                     >
                       {{ company.type.name.ru }} "{{ company.name }}"
                     </option>
@@ -78,7 +78,7 @@
           </div>
           <!-- </div> -->
 
-          <hr />
+          <hr/>
 
           <div>
             <label class="d-block text-uppercase" for="type_plan">
@@ -86,61 +86,61 @@
             </label>
 
             <table
-              class="table table-striped"
-              v-if="object.type_plan.length > 0"
+                class="table table-striped"
+                v-if="object.type_plan.length > 0"
             >
               <thead>
-                <tr>
-                  <th scope="col" width="10">#</th>
-                  <th scope="col">{{ $t("objects.create.plan.name") }}</th>
-                  <th scope="col">{{ $t("objects.create.plan.area") }}</th>
-                  <th scope="col">{{ $t("objects.create.plan.balcony") }}</th>
-                  <th scope="col">
-                    {{ $t("objects.create.plan.balcony_area") }}
-                  </th>
-                  <th scope="col" width="150" class="text-right">
-                    {{ $t("action") }}
-                  </th>
-                </tr>
+              <tr>
+                <th scope="col" width="10">#</th>
+                <th scope="col">{{ $t("objects.create.plan.name") }}</th>
+                <th scope="col">{{ $t("objects.create.plan.area") }}</th>
+                <th scope="col">{{ $t("objects.create.plan.balcony") }}</th>
+                <th scope="col">
+                  {{ $t("objects.create.plan.balcony_area") }}
+                </th>
+                <th scope="col" width="150" class="text-right">
+                  {{ $t("action") }}
+                </th>
+              </tr>
               </thead>
               <tbody>
-                <tr v-for="(plan, index) in object.type_plan" :key="index">
-                  <th scope="row">{{ index + 1 }}</th>
-                  <td>{{ plan.name }}</td>
-                  <td>{{ plan.area }}</td>
-                  <td>{{ plan.balcony ? $t("yes") : $t("no") }}</td>
-                  <td>{{ plan.balcony_area }}</td>
-                  <td class="text-right">
-                    <b-button
+              <tr v-for="(plan, index) in object.type_plan" :key="index">
+                <th scope="row">{{ index + 1 }}</th>
+                <td>{{ plan.name }}</td>
+                <td>{{ plan.area }}</td>
+                <td>{{ plan.balcony ? $t("yes") : $t("no") }}</td>
+                <td>{{ plan.balcony_area }}</td>
+                <td class="text-right">
+                  <b-button
                       v-if="!plan.deleted"
                       size="sm"
                       variant="danger"
                       @click="deletePlan(plan)"
-                    >
-                      <i class="fas fa-trash"></i>
-                    </b-button>
-                  </td>
-                </tr>
+                  >
+                    <i class="fas fa-trash"></i>
+                  </b-button>
+                </td>
+              </tr>
               </tbody>
             </table>
 
             <b-button
-              variant="success"
-              v-b-modal.modal-create-type-plan
-              v-if="object.type_plan.length > 0"
+                variant="success"
+                v-b-modal.modal-create-type-plan
+                v-if="object.type_plan.length > 0"
             >
               <i class="fas fa-plus-circle"></i>
               {{ $t("objects.create.new_type_plan") }}
             </b-button>
 
             <div
-              class="object__item object__item--inside object__item-last"
-              v-if="object.type_plan.length === 0"
+                class="object__item object__item--inside object__item-last"
+                v-if="object.type_plan.length === 0"
             >
               <b-link
-                class="object__link"
-                @click="disabled.plan.create = true"
-                v-b-modal.modal-create-type-plan
+                  class="object__link"
+                  @click="disabled.plan.create = true"
+                  v-b-modal.modal-create-type-plan
               >
                 <div class="object__add object__add--inside">
                   <i class="fal fa-plus"></i>
@@ -168,7 +168,7 @@
             <!--                    </div>-->
           </div>
 
-          <hr />
+          <hr/>
 
           <div v-if="object.type_plan.length > 0">
             <!-- ЗДАНИЕ 1 -->
@@ -205,10 +205,10 @@
                       {{ $t("objects.placeholder.building_name") }}
                     </span>
                     <input
-                      type="text"
-                      class="form-control"
-                      v-model="building.name"
-                      :placeholder="$t('objects.placeholder.building_name')"
+                        type="text"
+                        class="form-control"
+                        v-model="building.name"
+                        :placeholder="$t('objects.placeholder.building_name')"
                     />
                   </div>
 
@@ -217,17 +217,17 @@
                       {{ $t("objects.create.balcony_price") }}
                     </span>
                     <input
-                      type="text"
-                      class="form-control"
-                      v-model="building.balcony_price"
-                      :placeholder="$t('objects.create.balcony_price')"
+                        type="text"
+                        class="form-control"
+                        v-model="building.balcony_price"
+                        :placeholder="$t('objects.create.balcony_price')"
                     />
                   </div>
 
                   <button
-                    class="btn btn-success"
-                    @click="saveBuildingName(index)"
-                    type="button"
+                      class="btn btn-success"
+                      @click="saveBuildingName(index)"
+                      type="button"
                   >
                     <i class="fa fa-save"></i> {{ $t("save") }}
                   </button>
@@ -237,7 +237,7 @@
               <div class="new-object__inside px-3 px-sm-4 py-4 my-4">
                 <!-- Квартирные блоки -->
                 <div
-                  class="d-flex justify-content-between align-items-center mb-3"
+                    class="d-flex justify-content-between align-items-center mb-3"
                 >
                   <h3 class="title__middle mb-0">
                     {{ $t("objects.create.blocks_apartment") }}
@@ -245,35 +245,35 @@
                   <div>
                     <div class="dropdown my-dropdown dropleft">
                       <button
-                        type="button"
-                        class="dropdown-toggle"
-                        data-toggle="dropdown"
+                          type="button"
+                          class="dropdown-toggle"
+                          data-toggle="dropdown"
                       >
                         <i class="far fa-ellipsis-h"></i>
                       </button>
                       <div class="dropdown-menu">
                         <a
-                          class="dropdown-item dropdown-item--inside"
-                          href="#"
-                          @click="editBuildingName(index)"
+                            class="dropdown-item dropdown-item--inside"
+                            href="#"
+                            @click="editBuildingName(index)"
                         >
                           <i class="fas fa-pen"></i> {{ $t("edit") }}
                         </a>
 
                         <a
-                          class="dropdown-item dropdown-item--inside"
-                          href="#"
-                          @click="CopyBuilding(index)"
+                            class="dropdown-item dropdown-item--inside"
+                            href="#"
+                            @click="CopyBuilding(index)"
                         >
                           <i class="fas fa-copy"></i>
                           {{ $t("objects.create.copy_building") }}
                         </a>
 
                         <a
-                          v-if="buildings.length > 1"
-                          class="dropdown-item dropdown-item--inside"
-                          href="#"
-                          @click="deleteBuilding(index)"
+                            v-if="buildings.length > 1"
+                            class="dropdown-item dropdown-item--inside"
+                            href="#"
+                            @click="deleteBuilding(index)"
                         >
                           <i class="far fa-trash"></i> {{ $t("delete") }}
                         </a>
@@ -284,40 +284,40 @@
                 <div class="object ">
                   <!--mb-5-->
                   <div
-                    class="object__item object__item--inside"
-                    v-for="(block, indexx) in building.blocks"
-                    :key="indexx"
+                      class="object__item object__item--inside"
+                      v-for="(block, indexx) in building.blocks"
+                      :key="indexx"
                   >
                     <div class="object__more-info">
                       <div class="dropdown my-dropdown dropleft">
                         <button
-                          type="button"
-                          class="dropdown-toggle"
-                          data-toggle="dropdown"
+                            type="button"
+                            class="dropdown-toggle"
+                            data-toggle="dropdown"
                         >
                           <i class="far fa-ellipsis-h"></i>
                         </button>
                         <div class="dropdown-menu">
                           <b-link
-                            class="dropdown-item dropdown-item--inside"
-                            href="#"
-                            @click="editBlock(index, indexx)"
-                            v-b-modal.modal-edit-object
+                              class="dropdown-item dropdown-item--inside"
+                              href="#"
+                              @click="editBlock(index, indexx)"
+                              v-b-modal.modal-edit-object
                           >
                             <i class="fas fa-pen"></i> {{ $t("edit") }}
                           </b-link>
 
                           <a
-                            class="dropdown-item dropdown-item--inside"
-                            @click="CopyBlock(index, indexx)"
+                              class="dropdown-item dropdown-item--inside"
+                              @click="CopyBlock(index, indexx)"
                           >
                             <i class="far fa-copy"></i
                             >{{ $t("objects.create.copy_block") }}
                           </a>
 
                           <a
-                            class="dropdown-item dropdown-item--inside"
-                            @click="deleteBlock(index, indexx)"
+                              class="dropdown-item dropdown-item--inside"
+                              @click="deleteBlock(index, indexx)"
                           >
                             <i class="far fa-trash"></i> {{ $t("delete") }}
                           </a>
@@ -326,8 +326,8 @@
                     </div>
                     <a href="#" class="object__link">
                       <div
-                        class="object__img object__img--inside"
-                        :style="'background-image: url(' + require('@/assets/img/object__img2.png')+ ');'"
+                          class="object__img object__img--inside"
+                          :style="'background-image: url(' + require('@/assets/img/object__img2.png')+ ');'"
                       ></div>
                       <div class="object__name object__name--inside">
                         {{ block.name }}
@@ -341,12 +341,12 @@
                   </div>
 
                   <div
-                    class="object__item object__item--inside object__item-last"
+                      class="object__item object__item--inside object__item-last"
                   >
                     <b-link
-                      @click="createBlock(index)"
-                      class="object__link"
-                      v-b-modal.modal-create-object
+                        @click="createBlock(index)"
+                        class="object__link"
+                        v-b-modal.modal-create-object
                     >
                       <div class="object__add object__add--inside">
                         <i class="fal fa-plus"></i>
@@ -369,15 +369,15 @@
               </a>
             </div>
 
-            <hr class="mt-4 mb-3" />
+            <hr class="mt-4 mb-3"/>
 
             <div class="container px-0 mx-0">
               <div class="row">
                 <div class="col-md-6">
                   <div
-                    class="discount mt-4 mb-4"
-                    v-for="(discount, index) in discounts"
-                    :key="index"
+                      class="discount mt-4 mb-4"
+                      v-for="(discount, index) in discounts"
+                      :key="index"
                   >
                     <div class="container px-0 mx-0">
                       <div class="row">
@@ -388,15 +388,15 @@
                                 {{ $t("objects.create.pre_pay") }}
                               </label>
                               <div
-                                class="d-flex justify-content-between align-items-center"
+                                  class="d-flex justify-content-between align-items-center"
                               >
                                 <div class="">
                                   <input
-                                    id="new_block_prepay"
-                                    class="my-form__input"
-                                    disabled
-                                    type="text"
-                                    :value="discount.prepay_from + '%'"
+                                      id="new_block_prepay"
+                                      class="my-form__input"
+                                      disabled
+                                      type="text"
+                                      :value="discount.prepay_from + '%'"
                                   />
                                 </div>
                                 <div class="mx-2 long-horizontal-line">
@@ -404,11 +404,11 @@
                                 </div>
                                 <div class="">
                                   <input
-                                    id="new_block_prepay_to"
-                                    class="my-form__input"
-                                    disabled
-                                    type="text"
-                                    :value="discount.prepay_to + '%'"
+                                      id="new_block_prepay_to"
+                                      class="my-form__input"
+                                      disabled
+                                      type="text"
+                                      :value="discount.prepay_to + '%'"
                                   />
                                 </div>
                               </div>
@@ -424,28 +424,28 @@
                               <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
                                   <input
-                                    id="new_block_discount"
-                                    class="my-form__input"
-                                    disabled
-                                    type="text"
-                                    :value="discount.discount + '%'"
+                                      id="new_block_discount"
+                                      class="my-form__input"
+                                      disabled
+                                      type="text"
+                                      :value="discount.discount + '%'"
                                   />
                                 </div>
                                 <div>
                                   <button
-                                    type="button"
-                                    class="btn btn-primary ml-2"
-                                    @click="editDiscount(index)"
-                                    v-b-modal.modal-edit-discount
+                                      type="button"
+                                      class="btn btn-primary ml-2"
+                                      @click="editDiscount(index)"
+                                      v-b-modal.modal-edit-discount
                                   >
                                     <i class="far fa-pen"></i>
                                   </button>
                                 </div>
                                 <div>
                                   <button
-                                    type="button"
-                                    class="btn btn-primary ml-2"
-                                    @click="DeleteDiscount(index)"
+                                      type="button"
+                                      class="btn btn-primary ml-2"
+                                      @click="DeleteDiscount(index)"
                                   >
                                     <i class="far fa-trash"></i>
                                   </button>
@@ -459,13 +459,13 @@
                   </div>
 
                   <div
-                    class="d-flex justify-content-md-start justify-content-center"
+                      class="d-flex justify-content-md-start justify-content-center"
                   >
                     <button
-                      type="button"
-                      class="btn btn-primary"
-                      @click="disabled.discount.create = true"
-                      v-b-modal.modal-create-discount
+                        type="button"
+                        class="btn btn-primary"
+                        @click="disabled.discount.create = true"
+                        v-b-modal.modal-create-discount
                     >
                       <i class="fal fa-plus mr-2"></i>
                       {{ $t("objects.create.create_discount") }}
@@ -475,10 +475,10 @@
               </div>
             </div>
 
-            <hr />
+            <hr/>
 
             <div
-              class="mt-4 d-flex justify-content-md-end justify-content-center"
+                class="mt-4 d-flex justify-content-md-end justify-content-center"
             >
               <button type="submit" class=" btn btn-primary">
                 <i class="fa fa-save"></i> {{ $t("save") }}
@@ -489,41 +489,41 @@
       </div>
 
       <create-block
-        v-if="disabled.block.create"
-        :data-object="object"
-        :balcony="building_balcony_price"
-        :currency="getCurrency"
-        @InsertBlock="InsertBlock"
-        @RemoveBlock="disabledBlock"
+          v-if="disabled.block.create"
+          :data-object="object"
+          :balcony="building_balcony_price"
+          :currency="getCurrency"
+          @InsertBlock="InsertBlock"
+          @RemoveBlock="disabledBlock"
       ></create-block>
 
       <edit-block
-        v-if="disabled.block.edit"
-        :data-object="object"
-        :balcony="building_balcony_price"
-        :currency="getCurrency"
-        :block_preview="edit.block"
-        @CancelEditBlock="CancelEditBlock"
-        @SaveEditBlock="saveEditBlock"
+          v-if="disabled.block.edit"
+          :data-object="object"
+          :balcony="building_balcony_price"
+          :currency="getCurrency"
+          :block_preview="edit.block"
+          @CancelEditBlock="CancelEditBlock"
+          @SaveEditBlock="saveEditBlock"
       ></edit-block>
 
       <create-discount
-        v-if="disabled.discount.create"
-        @RemoveDiscount="disabled.discount.create = false"
-        @SaveDiscount="SaveDiscount"
+          v-if="disabled.discount.create"
+          @RemoveDiscount="disabled.discount.create = false"
+          @SaveDiscount="SaveDiscount"
       ></create-discount>
 
       <edit-discount
-        v-if="disabled.discount.edit"
-        @cancelDiscount="disabled.discount.edit = false"
-        @SaveDiscount="disabled.discount.edit = false"
-        :data-discount="edit.discount"
+          v-if="disabled.discount.edit"
+          @cancelDiscount="disabled.discount.edit = false"
+          @SaveDiscount="disabled.discount.edit = false"
+          :data-discount="edit.discount"
       ></edit-discount>
 
       <type-plan-create
-        v-if="disabled.plan.create"
-        @RemovePlan="disabled.plan.create = false"
-        @savePlan="savePlan"
+          v-if="disabled.plan.create"
+          @RemovePlan="disabled.plan.create = false"
+          @savePlan="savePlan"
       ></type-plan-create>
     </div>
   </main>
@@ -534,6 +534,7 @@ import CreateBlock from "./Components/Block/CreateOld";
 import EditBlock from "./Components/Block/Edit";
 import TypePlanCreateModal from "./Components/Store/TypePlanCreateModal";
 import {mapGetters, mapActions} from "vuex";
+import api from "@/services/api";
 
 export default {
   components: {
@@ -543,7 +544,8 @@ export default {
   },
 
   watch: {
-    "object.type_plan": function() {},
+    "object.type_plan": function () {
+    },
   },
 
   data: () => ({
@@ -786,33 +788,32 @@ export default {
 
       let vm = this;
 
-      this.axios
-        .post(process.env.VUE_APP_URL + "/objects", data, this.header)
-        .then((response) => {
-          if (response.status == 201) {
-            vm.toasted(vm.$t("messages.created"), "success");
-            vm.$router.push({name: "objects"});
-          }
-        })
-        .catch((error) => {
-          if (!error.response) {
-            vm.toasted("Error: Network Error", "error");
-          } else {
-            if (error.response.status === 403) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 401) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 500) {
-              this.toasted(error.response.data.message, "error");
-            } else if (error.response.status === 422) {
-              this.error = true;
-              this.errors = error.response.data;
-            } else {
-              this.error = true;
-              this.errors = error.response.data;
+      api.objects.oldObjectCreation(data)
+          .then((response) => {
+            if (response.status == 201) {
+              vm.toasted(vm.$t("messages.created"), "success");
+              vm.$router.push({name: "objects"});
             }
-          }
-        });
+          })
+          .catch((error) => {
+            if (!error.response) {
+              vm.toasted("Error: Network Error", "error");
+            } else {
+              if (error.response.status === 403) {
+                this.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 401) {
+                this.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 500) {
+                this.toasted(error.response.data.message, "error");
+              } else if (error.response.status === 422) {
+                this.error = true;
+                this.errors = error.response.data;
+              } else {
+                this.error = true;
+                this.errors = error.response.data;
+              }
+            }
+          });
     },
   },
 };

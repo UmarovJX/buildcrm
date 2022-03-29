@@ -4,10 +4,14 @@ export default {
     state: {
         promoFormButtonClicked: false,
         editHistoryContext: {},
-        creationSelectedBlocks: []
+        creationSelectedBlocks: [],
+        showPromoError: false
     },
 
     mutations: {
+        togglePromoError(state) {
+            state.showPromoError = !state.showPromoError
+        },
         makeDefaultCreationSelectedBlocks(state) {
             state.creationSelectedBlocks = []
         },
@@ -63,6 +67,7 @@ export default {
     getters: {
         togglePromoSubmitButton: (state) => state.promoFormButtonClicked,
         getEditHistoryContext: (state) => state.editHistoryContext,
-        getSelectedBlocks: (state) => state.creationSelectedBlocks
+        getSelectedBlocks: (state) => state.creationSelectedBlocks,
+        getInputValidationError: (state) => state.showPromoError
     }
-};
+}

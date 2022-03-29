@@ -102,7 +102,7 @@ import {mapGetters} from "vuex";
 import api from '@/services/api'
 
 export default {
-  name: 'PromoListContent',
+  name: 'ListContent',
   props: {
     promos: {
       type: Array,
@@ -176,8 +176,7 @@ export default {
       this.toggleLoading()
       const promoId = item.uuid
       const {id: objectId} = this.$route.params
-      const context = {objectId, promoId, type: 'enable'}
-      await api.objects.changeObjectPromoActivation(context)
+      await api.promoV2.promoDeactivate(objectId, promoId)
           .then(() => {
             this.$emit('update-content')
           })
@@ -192,8 +191,7 @@ export default {
       this.toggleLoading()
       const promoId = item.uuid
       const {id: objectId} = this.$route.params
-      const context = {objectId, promoId, type: 'disable'}
-      await api.objects.changeObjectPromoActivation(context)
+      await api.promoV2.promoDeactivate(objectId, promoId)
           .then(() => {
             this.$emit('update-content')
           })
@@ -209,7 +207,7 @@ export default {
       if (result.isConfirmed) {
         const {id: objectId} = this.$route.params
         const uuId = item.uuid
-        await api.objects.deleteObjectPromo({objectId, uuId})
+        await api.promoV2.promoDelete(objectId, uuId)
             .then(() => {
               this.showSuccessResponse()
               this.$emit('update-content')

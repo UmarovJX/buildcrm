@@ -704,14 +704,7 @@ export default {
 
     async orderHold(arr) {
       this.getLoading = true;
-      await this.axios
-          .post(
-              process.env.VUE_APP_URL + "/orders/hold",
-              {
-                apartments: arr,
-              },
-              this.header
-          )
+      await api.orders.holdOrder(arr)
           .then((res) => {
             this.getLoading = false;
             if (res) {
@@ -787,14 +780,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.getLoading = true;
-          this.axios
-              .delete(
-                  process.env.VUE_APP_URL +
-                  "/orders/" +
-                  this.getReserveClient.id +
-                  "/reserve",
-                  this.header
-              )
+          api.orders.deactivateReserveOrders(this.getReserveClient.id)
               .then((response) => {
                 this.toasted(response.data.message, "success");
 

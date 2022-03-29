@@ -1,14 +1,14 @@
 <template>
   <div>
     <b-modal
-      id="modal-create-block"
-      class="py-4"
-      ref="modal"
-      :title="$t('objects.create.new_block')"
-      size="lg"
-      hide-footer
-      hide-header-close
-      no-close-on-backdrop
+        id="modal-create-block"
+        class="py-4"
+        ref="modal"
+        :title="$t('objects.create.new_block')"
+        size="lg"
+        hide-footer
+        hide-header-close
+        no-close-on-backdrop
     >
       <form class="my-form" @submit.prevent="saveBlock">
         <div class="container px-0 mx-0">
@@ -19,12 +19,12 @@
                   {{ $t("objects.create.name") }}
                 </label>
                 <input
-                  v-model="block.name"
-                  required
-                  :placeholder="$t('objects.placeholder.block_name')"
-                  id="new_block_title"
-                  class="my-form__input"
-                  type="text"
+                    v-model="block.name"
+                    required
+                    :placeholder="$t('objects.placeholder.block_name')"
+                    id="new_block_title"
+                    class="my-form__input"
+                    type="text"
                 />
               </div>
             </div>
@@ -36,19 +36,19 @@
                       {{ $t("objects.create.count_floors") }}
                     </label>
                     <input
-                      v-model="block.floor"
-                      required
-                      class="my-form__input"
-                      type="number"
-                      value="15"
-                      id="new_block_floor-count"
-                      min="1"
-                      max="100"
+                        v-model="block.floor"
+                        required
+                        class="my-form__input"
+                        type="number"
+                        value="15"
+                        id="new_block_floor-count"
+                        min="1"
+                        max="100"
                     />
                   </div>
                 </div>
                 <div
-                  class="
+                    class="
                     col-lg-3
                     ml-2
                     d-flex
@@ -59,10 +59,10 @@
                 >
                   <div class="mb-3" v-if="disabled.btn_save">
                     <button
-                      type="button"
-                      @click="createApartments"
-                      :disabled="!block.floor ? true : false"
-                      class="btn btn-primary"
+                        type="button"
+                        @click="createApartments"
+                        :disabled="!block.floor ? true : false"
+                        class="btn btn-primary"
                     >
                       {{ $t("create") }}
                     </button>
@@ -74,9 +74,9 @@
 
           <div v-if="disabled.settings">
             <div
-              class="row"
-              v-for="(price, index) in block.prices"
-              :key="index"
+                class="row"
+                v-for="(price, index) in block.prices"
+                :key="index"
             >
               <div class="col-lg-4">
                 <div class="mb-3">
@@ -84,13 +84,13 @@
                     {{ $t("objects.create.price_area") }}
                   </label>
                   <input
-                    id="new_block_price"
-                    class="my-form__input"
-                    @change="updatePrice(price)"
-                    type="number"
-                    v-model="price.price"
-                    required
-                    min="1"
+                      id="new_block_price"
+                      class="my-form__input"
+                      @change="updatePrice(price)"
+                      type="number"
+                      v-model="price.price"
+                      required
+                      min="1"
                   />
                 </div>
               </div>
@@ -104,20 +104,20 @@
                   <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
                       <multiselect
-                        v-model="price.floors"
-                        :multiple="true"
-                        :options="settings.available_floors"
-                        @select="selectFloor(price, index)"
-                        @remove="removeFloor(price, index)"
+                          v-model="price.floors"
+                          :multiple="true"
+                          :options="settings.available_floors"
+                          @select="selectFloor(price, index)"
+                          @remove="removeFloor(price, index)"
                       >
                       </multiselect>
                     </div>
                     <div>
                       <button
-                        type="button"
-                        class="btn btn-danger ml-2"
-                        v-if="block.prices.length != 1"
-                        @click="removePrice(price, index)"
+                          type="button"
+                          class="btn btn-danger ml-2"
+                          v-if="block.prices.length != 1"
+                          @click="removePrice(price, index)"
                       >
                         <i class="far fa-trash"></i>
                       </button>
@@ -129,16 +129,16 @@
           </div>
 
           <div
-            class="alert alert-info"
-            v-if="disabled.settings && block.prices.length === 0"
+              class="alert alert-info"
+              v-if="disabled.settings && block.prices.length === 0"
           >
             <i class="fa fa-info-circle"></i>
             {{ $t("objects.create.alert_price") }}
           </div>
 
           <div
-            class="object__item object__item--inside object__item-last"
-            v-if="disabled.settings && block.prices.length === 0"
+              class="object__item object__item--inside object__item-last"
+              v-if="disabled.settings && block.prices.length === 0"
           >
             <b-link class="object__link" @click="addPrice">
               <div class="object__add object__add--inside">
@@ -151,8 +151,8 @@
           </div>
 
           <div
-            class="mt-4 d-flex justify-content-md-start justify-content-center"
-            v-if="disabled.settings && block.prices.length > 0"
+              class="mt-4 d-flex justify-content-md-start justify-content-center"
+              v-if="disabled.settings && block.prices.length > 0"
           >
             <button type="button" class="btn btn-primary" @click="addPrice">
               <i class="fal fa-plus mr-2"></i>
@@ -166,12 +166,12 @@
             <div class="card-header" :id="'headingOne' + index">
               <h2 class="mb-0">
                 <button
-                  class="btn btn-link btn-block text-left"
-                  type="button"
-                  data-toggle="collapse"
-                  :data-target="'#collapseOne' + index"
-                  aria-expanded="true"
-                  :aria-controls="'collapseOne' + index"
+                    class="btn btn-link btn-block text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    :data-target="'#collapseOne' + index"
+                    aria-expanded="true"
+                    :aria-controls="'collapseOne' + index"
                 >
                   {{ floor }}-{{ $t("objects.create.floor") }} -
                   {{ $t("objects.create.apartments") }} ({{
@@ -182,27 +182,27 @@
             </div>
 
             <div
-              :id="'collapseOne' + index"
-              :class="index === 0 ? 'collapse show' : 'collapse show'"
-              :aria-labelledby="'headingOne' + index"
-              data-parent="#floors"
+                :id="'collapseOne' + index"
+                :class="index === 0 ? 'collapse show' : 'collapse show'"
+                :aria-labelledby="'headingOne' + index"
+                data-parent="#floors"
             >
               <div class="card-body">
                 <div class="row">
                   <apartments
-                    :building="building"
-                    :apartments="settings.apartments[index]"
-                    @UpdateApartments="UpdateApartments"
-                    :block="block"
-                    :type-plans="typePlans"
+                      :building="building"
+                      :apartments="settings.apartments[index]"
+                      @UpdateApartments="UpdateApartments"
+                      :block="block"
+                      :type-plans="typePlans"
                   ></apartments>
 
                   <div class="col-lg-4 my-2">
                     <div class="apartment apartment-last">
                       <a
-                        href="#"
-                        @click="AddApartment(floor)"
-                        class="object__link position-relative top-0 left-0"
+                          href="#"
+                          @click="AddApartment(floor)"
+                          class="object__link position-relative top-0 left-0"
                       >
                         <div class="object__add object__add--inside">
                           <i class="fal fa-plus"></i>
@@ -216,19 +216,19 @@
 
                   <div class="col-lg-4 my-2">
                     <div
-                      class="apartment apartment-last"
-                      v-if="
+                        class="apartment apartment-last"
+                        v-if="
                         block.apartments.length > 0 &&
                         settings.apartments[index].length === 0
                       "
                     >
                       <a
-                        data-toggle="collapse"
-                        :href="'#collapseCopy' + index"
-                        role="button"
-                        aria-expanded="false"
-                        :aria-controls="'collapseCopy' + index"
-                        class="object__link position-relative top-0 left-0"
+                          data-toggle="collapse"
+                          :href="'#collapseCopy' + index"
+                          role="button"
+                          aria-expanded="false"
+                          :aria-controls="'collapseCopy' + index"
+                          class="object__link position-relative top-0 left-0"
                       >
                         <div class="object__add object__add--inside">
                           <i class="fal fa-copy"></i>
@@ -241,8 +241,8 @@
                   </div>
 
                   <div
-                    class="col-md-12"
-                    v-if="
+                      class="col-md-12"
+                      v-if="
                       block.apartments.length > 0 &&
                       settings.apartments[index].length === 0
                     "
@@ -255,17 +255,17 @@
                               {{ $t("objects.create.choose_clone") }}
                             </label>
                             <select
-                              class="form-control"
-                              @change="cloneSelectFloor(index)"
-                              v-model="settings.clone_floor_select"
+                                class="form-control"
+                                @change="cloneSelectFloor(index)"
+                                v-model="settings.clone_floor_select"
                             >
                               <option
-                                v-for="(
+                                  v-for="(
                                   floor, index_clone
                                 ) in settings.apartments"
-                                :disabled="index_clone === index ? true : false"
-                                :value="index_clone"
-                                :key="index_clone"
+                                  :disabled="index_clone === index ? true : false"
+                                  :value="index_clone"
+                                  :key="index_clone"
                               >
                                 {{ index_clone + 1 }} -
                                 {{ $t("objects.create.floor") }}
@@ -276,21 +276,21 @@
 
                         <div class="card-footer">
                           <button
-                            type="button"
-                            @click="CopyFloor"
-                            class="btn btn-primary"
+                              type="button"
+                              @click="CopyFloor"
+                              class="btn btn-primary"
                           >
                             <i class="fa fa-copy"></i>
                             {{ $t("objects.create.clone") }}
                           </button>
 
                           <button
-                            type="button"
-                            class="btn"
-                            data-toggle="collapse"
-                            :data-target="'#collapseCopy' + index"
-                            aria-expanded="false"
-                            :aria-controls="'collapseCopy' + index"
+                              type="button"
+                              class="btn"
+                              data-toggle="collapse"
+                              :data-target="'#collapseCopy' + index"
+                              aria-expanded="false"
+                              :aria-controls="'collapseCopy' + index"
                           >
                             {{ $t("close") }}
                           </button>
@@ -305,7 +305,7 @@
         </div>
 
         <div
-          class="
+            class="
             mt-4
             d-flex
             justify-content-md-start justify-content-center
@@ -313,17 +313,17 @@
           "
         >
           <button
-            type="button"
-            class="btn btn-default mr-2"
-            @click="removeBlock"
+              type="button"
+              class="btn btn-default mr-2"
+              @click="removeBlock"
           >
             {{ $t("cancel") }}
           </button>
 
           <button
-            type="submit"
-            v-if="settings.btn_save"
-            class="btn btn-success"
+              type="submit"
+              v-if="settings.btn_save"
+              class="btn btn-success"
           >
             <i class="fa fa-save"></i> {{ $t("save") }}
           </button>
@@ -336,6 +336,7 @@
 <script>
 import {mapGetters} from "vuex";
 import Apartments from "./Apartments";
+import api from "@/services/api";
 
 export default {
   props: {
@@ -434,15 +435,7 @@ export default {
 
     async updatePrice(price) {
       try {
-        await this.axios.put(
-          process.env.VUE_APP_URL +
-            "/v2/objects/block/" +
-            this.block.id +
-            "/prices/" +
-            price.id,
-          price,
-          this.header
-        );
+        await api.objects.updateBlockPrice(this.block.id, price.id, price)
 
         this.setFloors();
         // if (status === 202) {
@@ -467,26 +460,22 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
-          this.axios
-            .delete(
-              process.env.VUE_APP_URL + "/v2/objects/block/" + this.block.id,
-              this.header
-            )
-            .then((response) => {
-              if (response.status === 204) {
-                this.$bvModal.hide("modal-create-block");
-                this.$emit("CreateBlockClose");
-                //this.buildings.splice(index, 1);
-              }
-            })
-            .catch((error) => {
-              this.toastedWithErrorCode(error);
+          api.objects.deleteBlock(this.block.id)
+              .then((response) => {
+                if (response.status === 204) {
+                  this.$bvModal.hide("modal-create-block");
+                  this.$emit("CreateBlockClose");
+                  //this.buildings.splice(index, 1);
+                }
+              })
+              .catch((error) => {
+                this.toastedWithErrorCode(error);
 
-              if (error.response.status === 422) {
-                this.error = true;
-                this.errors = error.response.data;
-              }
-            });
+                if (error.response.status === 422) {
+                  this.error = true;
+                  this.errors = error.response.data;
+                }
+              });
         }
       });
     },
@@ -502,38 +491,30 @@ export default {
         if (result.value) {
           const data = {
             apartments:
-              this.settings.apartments[this.settings.clone_floor_select],
+                this.settings.apartments[this.settings.clone_floor_select],
             floor: this.block.floors[this.settings.clone_floor],
           };
 
-          this.axios
-            .post(
-              process.env.VUE_APP_URL +
-                "/v2/objects/apartments/" +
-                this.block.id +
-                "/clone",
-              data,
-              this.header
-            )
-            .then((response) => {
-              if (response.status === 201) {
-                this.block = response.data;
-                this.setGroupApartments();
+          api.objects.cloneFloors(this.block.id, data)
+              .then((response) => {
+                if (response.status === 201) {
+                  this.block = response.data;
+                  this.setGroupApartments();
 
-                this.settings.clone_floor = null;
-                this.settings.clone_floor_select = null;
+                  this.settings.clone_floor = null;
+                  this.settings.clone_floor_select = null;
 
-                // this.this.setFloors();
-              }
-            })
-            .catch((error) => {
-              this.toastedWithErrorCode(error);
+                  // this.this.setFloors();
+                }
+              })
+              .catch((error) => {
+                this.toastedWithErrorCode(error);
 
-              if (error.response.status === 422) {
-                this.error = true;
-                this.errors = error.response.data;
-              }
-            });
+                if (error.response.status === 422) {
+                  this.error = true;
+                  this.errors = error.response.data;
+                }
+              });
         }
       });
     },
@@ -558,11 +539,8 @@ export default {
 
     async UpdateApartments() {
       try {
-        await this.axios.put(
-          process.env.VUE_APP_URL + "/v2/objects/apartments/update",
-          {apartments: this.block.apartments},
-          this.header
-        );
+        const body = {apartments: this.block.apartments}
+        await api.objects.updateApartments(body)
       } catch (error) {
         this.toastedWithErrorCode(error);
 
@@ -688,17 +666,7 @@ export default {
 
     async AddApartment(floor) {
       try {
-        const {data, status} = await this.axios.post(
-          process.env.VUE_APP_URL +
-            "/v2/objects/block/" +
-            this.block.id +
-            "/apartment",
-          {
-            floor: floor,
-          },
-          this.header
-        );
-
+        const {data, status} = await api.objects.apartmentAddition(this.block.id, {floor})
         if (status === 202) {
           this.block = data;
         }
@@ -726,36 +694,36 @@ export default {
       // }, []);
       //
       let floors = this.block.floors
-        .map(function (floor) {
-          let group = [];
-          let apartment;
-          if (apartments.length > 0) {
-            apartment = apartments
-              .map(function (apartment) {
-                if (apartment.floor === floor) {
-                  return apartment;
-                }
-                return null;
-              })
-              .filter(function (e) {
-                return e != null;
-              });
-          } else {
-            apartment = [];
-          }
+          .map(function (floor) {
+            let group = [];
+            let apartment;
+            if (apartments.length > 0) {
+              apartment = apartments
+                  .map(function (apartment) {
+                    if (apartment.floor === floor) {
+                      return apartment;
+                    }
+                    return null;
+                  })
+                  .filter(function (e) {
+                    return e != null;
+                  });
+            } else {
+              apartment = [];
+            }
 
-          group[floor] = apartment;
+            group[floor] = apartment;
 
-          return group;
-        })
-        .flat();
+            return group;
+          })
+          .flat();
 
       this.settings.apartments = floors;
     },
 
     rr_diff(a1, a2) {
       var a = [],
-        diff = [];
+          diff = [];
 
       for (var c = 0; c < a1.length; c++) {
         a[a1[c]] = true;
@@ -778,11 +746,7 @@ export default {
 
     async updateBlock() {
       try {
-        await this.axios.put(
-          process.env.VUE_APP_URL + "/v2/objects/block/" + this.block.id,
-          this.block,
-          this.header
-        );
+        await api.objects.updateBlock(this.block.id, this.block)
       } catch (error) {
         this.toastedWithErrorCode(error);
 
@@ -811,14 +775,7 @@ export default {
 
     async addPrice() {
       try {
-        const {data, status} = await this.axios.post(
-          process.env.VUE_APP_URL +
-            "/v2/objects/block/" +
-            this.block.id +
-            "/prices",
-          {},
-          this.header
-        );
+        const {data, status} = await api.objects.addBlockPrice(this.block.id, {})
         if (status === 201) {
           this.block = data;
           this.disabled.apartments = true;
@@ -836,15 +793,7 @@ export default {
 
     async removePrice(price) {
       try {
-        const {data, status} = await this.axios.delete(
-          process.env.VUE_APP_URL +
-            "/v2/objects/block/" +
-            this.block.id +
-            "/prices/" +
-            price.id,
-          this.header
-        );
-
+        const {data, status} = await api.objects.deleteBlockPrice(this.block.id, price.id)
         if (status === 202) {
           this.block = data;
           this.setFloors();

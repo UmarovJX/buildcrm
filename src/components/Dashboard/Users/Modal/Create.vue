@@ -234,14 +234,8 @@ export default {
     async handleSubmit() {
       this.getLoading = true;
       try {
-        const response = await this.axios.post(
-            process.env.VUE_APP_URL + "/users",
-            this.manager,
-            this.header
-        );
-
+        const response = await api.user.addNewUserToDB(this.manager)
         this.toasted(response.data.message, "success");
-
         this.$nextTick(() => {
           this.getLoading = false;
           this.$bvModal.hide("modal-create");
@@ -274,10 +268,10 @@ export default {
       for (let key of Object.keys(this.manager)) {
         const property = this.manager[key]
         const isArray = Array.isArray(property)
-        const notResetKeys = ['branch_id','role_id'].findIndex(property => property === key)
+        const notResetKeys = ['branch_id', 'role_id'].findIndex(property => property === key)
         if (isArray) {
           this.manager[key] = []
-        } else if(notResetKeys === -1){
+        } else if (notResetKeys === -1) {
           this.manager[key] = null
         }
       }

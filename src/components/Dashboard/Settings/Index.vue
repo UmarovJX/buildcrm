@@ -81,7 +81,7 @@ export default {
     async SavePlayMobile() {
       try {
         const {status, data} = await this.axios.put(
-          process.env.VUE_APP_URL + "/settings/sms",
+          process.env.VUE_APP_URL + "/v1/crm/settings/sms",
           {
             status: this.getPlaymobile.sms.status,
             login: this.getPlaymobile.sms.login,

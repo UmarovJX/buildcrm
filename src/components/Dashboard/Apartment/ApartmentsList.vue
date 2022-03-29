@@ -406,7 +406,7 @@
         <success-agree :contract="contract"></success-agree>
       </div>
     </div>
-    <apartments-booking-modal @set-client-data="bookSelectedApartments" />
+    <apartments-booking-modal @set-client-data="bookSelectedApartments"/>
   </main>
 </template>
 
@@ -719,38 +719,28 @@ export default {
       })
     },
     async getUnfinishedOrders() {
-      await this.axios
-          .get(process.env.VUE_APP_URL + "/orders/hold", this.header)
-          .then((res) => {
-            if (res) {
-              this.unsfinishedContracts = res.data;
-            }
-          });
+      await api.orders.fetchUnfinishedOrders().then((res) => {
+        if (res) {
+          this.unsfinishedContracts = res.data;
+        }
+      });
     },
 
     async orderHold(arr) {
       this.loading = true;
-      await this.axios
-          .post(
-              process.env.VUE_APP_URL + "/orders/hold",
-              {
-                apartments: arr,
-              },
-              this.header
-          )
-          .then((res) => {
-            this.loading = false;
-            if (res) {
-              // localStorage.setItem("order", JSON.stringify(res.data));
-              this.$router.push({
-                name: "confirm-apartment",
-                params: {id: res.data.uuid},
-              });
-              this.selected.view = false;
-              this.selected.values = [];
-              this.selectable = true;
-            }
-          });
+      await api.orders.holdOrder(arr).then((res) => {
+        this.loading = false;
+        if (res) {
+          // localStorage.setItem("order", JSON.stringify(res.data));
+          this.$router.push({
+            name: "confirm-apartment",
+            params: {id: res.data.uuid},
+          })
+          this.selected.view = false;
+          this.selected.values = [];
+          this.selectable = true;
+        }
+      });
     },
     goOrderHold(order_id) {
       this.selected.view = false;
@@ -759,7 +749,7 @@ export default {
       this.$router.push({
         name: "confirm-apartment",
         params: {id: order_id[0]},
-      });
+      })
     },
     multiSelectOn() {
       this.selected.view = true;
@@ -825,10 +815,10 @@ export default {
       this.$router.push({
         name: "apartments",
         query: this.filter,
-      });
+      })
       await this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table");
-        element.scrollIntoView();
+        const element = document.getElementById("my-table")
+        element.scrollIntoView()
       });
     },
     async handleScroll(event) {

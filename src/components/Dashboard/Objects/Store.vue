@@ -477,6 +477,7 @@ import CreateDiscount from "./Components/Discount/Create";
 import EditDiscount from "./Components/Discount/Edit";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import {mapGetters, mapActions} from "vuex";
+import api from "@/services/api";
 
 export default {
   components: {
@@ -594,7 +595,7 @@ export default {
     activeContent() {
       const {name} = this.$route
 
-      if(name === 'objectsEdit'){
+      if (name === 'objectsEdit') {
         return this.$t('objects.create.edit_block')
       }
 
@@ -624,11 +625,7 @@ export default {
       try {
 
         if (this.object.id === null) {
-          const {data, status} = await this.axios.post(
-              process.env.VUE_APP_URL + "/v2/objects/",
-              this.object,
-              this.header
-          );
+          const {data, status} = await api.objects.createObject(this.object)
 
           if (status === 201 || status === 202) {
             this.step = 2;
@@ -637,11 +634,7 @@ export default {
             this.object = data;
           }
         } else {
-          const {data, status} = await this.axios.put(
-              process.env.VUE_APP_URL + "/v2/objects/" + this.object.id,
-              this.object,
-              this.header
-          );
+          const {data, status} = await api.objects.updateObject(this.object.id, this.object)
 
           if (status === 201 || status === 202) {
             this.step = 2;
@@ -702,15 +695,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.getLoading = true
-          this.axios
-              .delete(
-                  process.env.VUE_APP_URL +
-                  "/v2/objects/" +
-                  this.object.id +
-                  "/discount/" +
-                  discount.id,
-                  this.header
-              )
+          api.objects.deleteDiscount(this.object.id, discount.id)
               .then((response) => {
                 this.getLoading = false
                 if (response.status === 204) {
@@ -765,10 +750,7 @@ export default {
     async getObject() {
       this.getLoading = true
       try {
-        const {data, status} = await this.axios.get(
-            process.env.VUE_APP_URL + "/v2/objects/" + this.object.id,
-            this.header
-        );
+        const {data, status} = await api.objects.fetchObject(this.object.id)
 
         if (status === 200) {
           this.object = {};
@@ -790,10 +772,7 @@ export default {
     async getPlans() {
       this.getLoading = true
       try {
-        const {data, status} = await this.axios.get(
-            process.env.VUE_APP_URL + "/v2/objects/" + this.object.id + "/plans",
-            this.header
-        );
+        const {data, status} = await api.objects.fetchObjectPlans(this.object.id)
 
         if (status === 200) {
           this.plans = [];
@@ -815,13 +794,7 @@ export default {
     async getBuildings() {
       this.getLoading = true
       try {
-        const {data, status} = await this.axios.get(
-            process.env.VUE_APP_URL +
-            "/v2/objects/" +
-            this.object.id +
-            "/buildings",
-            this.header
-        );
+        const {data, status} = await api.objects.fetchBuildings(this.object.id)
 
         if (status === 200) {
           this.buildings = [];
@@ -843,13 +816,7 @@ export default {
     async getDiscounts() {
       this.getLoading = true
       try {
-        const {data, status} = await this.axios.get(
-            process.env.VUE_APP_URL +
-            "/v2/objects/" +
-            this.object.id +
-            "/discounts",
-            this.header
-        );
+        const {data, status} = await api.objects.fetchObjectDiscount(this.object.id)
 
         if (status === 200) {
           this.discounts = [];

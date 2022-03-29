@@ -1,8 +1,10 @@
+import api from "@/services/api";
+
 export default {
     actions: {
         async fetchUser(ctx, vm) {
             try {
-                 const response = await vm.axios.get(process.env.VUE_APP_URL + '/users/' + vm.manager_id, vm.header );
+                 const response = await api.user.fetchUserData(vm.manager_id)
                  ctx.commit('updateUser', response.data);
             } catch (error) {
                 if (! error.response) {

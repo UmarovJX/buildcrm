@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "@/services/api";
 export default {
   state: {
     me: {},
@@ -14,12 +14,7 @@ export default {
   actions: {
     FETCH_ME({commit}) {
       return new Promise((resolve, reject) => {
-        axios
-          .get(process.env.VUE_APP_URL + "/oauth/me", {
-            headers: {
-              Authorization: "Bearer " + localStorage.token,
-            },
-          })
+        api.authV1.getMe()
           .then((response) => {
             commit("UPDATEME", response.data);
             resolve();

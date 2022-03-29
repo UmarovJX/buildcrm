@@ -83,6 +83,8 @@
 
 <script>
 import {mapActions} from "vuex";
+import api from "@/services/api";
+import {setLocalVar} from "@/util/localstorage-helper";
 
 export default {
   name: 'AppLogin',
@@ -136,7 +138,7 @@ export default {
   },
 
   created() {
-    localStorage.token && this.CheckLogin();
+    localStorage.getItem('auth__access__token') && this.CheckLogin();
   },
 
   methods: {
@@ -156,64 +158,53 @@ export default {
         this.authorizationUser()
       }
     },
-    authorizationUser() {
+    async authorizationUser() {
       this.loading = true
       let vm = this;
       let path = this.$router.currentRoute;
-      this.axios
-          .post(process.env.VUE_APP_URL + "/oauth", this.user)
-          .then((response) => {
-            localStorage.token = response.data.access_token;
-            // this.setToken(token);
+      await api.auth.login(this.user.email, this.user.password).then((response) => {
+        const {refresh_token, access_token} = response.data
+        setLocalVar('auth__refresh__token', refresh_token)
+        setLocalVar('auth__access__token', access_token)
 
-            this.fetchAuth(this);
-            this.fetchMenu(this);
-            this.setMe(this, path);
+        this.fetchAuth(this);
+        this.fetchMenu(this);
+        this.setMe(this, path);
 
-            vm.$toasted.show(response.data.message, {
-              type: 'success'
-            })
-            vm.$router.push({name: 'home'});
+        vm.$toasted.show(response.data.message, {
+          type: 'success'
+        })
+        vm.$router.push({name: 'home'});
+      }).catch((error) => {
+        if (!error.response) {
+          this.$toasted.show(error.message, {
+            type: 'error'
           })
-          .catch((error) => {
-            if (!error.response) {
-              this.$toasted.show("Error: Network Error", {
-                type: 'error'
-              })
-            } else {
-              const status = error.response.status
-              const message = error.response.data.message
+        } else {
+          const status = error.response.status
+          const message = error.response.data.message
 
-              /* CLIENT AND SERVER ERROR */
-              if (status && status >= 400 && status <= 511) {
-                this.$toasted.show(message, {
-                  type: 'error'
-                })
-              }
-            }
-          }).finally(() => {
+          /* CLIENT AND SERVER ERROR */
+          if (status && status >= 400 && status <= 511) {
+            this.$toasted.show(message, {
+              type: 'error'
+            })
+          }
+        }
+      }).finally(() => {
         this.loading = false
-      });
+      })
     },
 
     CheckLogin() {
-      let header = {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
-        },
-      };
-
-      let vm = this;
-
-      this.axios
-          .get(process.env.VUE_APP_URL + "/oauth/me", header)
-          .then(() => {
-            //this.items = response.data;
-            vm.$router.push({name: "home"});
-          })
-          .catch(() => {
-            localStorage.clear();
-          });
+      // let vm = this;
+      // api.authV1.getMe().then(() => {
+      //   //this.items = response.data;
+      //   vm.$router.push({name: "home"});
+      // })
+      // .catch(() => {
+      // localStorage.clear();
+      // });
     },
   },
 };

@@ -1,4 +1,5 @@
 import router from '../../../routes'
+import api from "@/services/api";
 
 export default {
     state: {
@@ -72,19 +73,9 @@ export default {
             if (router.currentRoute.name !== "apartments") return;
 
             try {
-                let header = {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.token,
-                    },
-                    params: router.currentRoute.query,
-                };
-
-                let {data} = await vm.axios.get(
-                    `${process.env.VUE_APP_URL}/objects/${router.currentRoute.params.object}/apartments/`,
-                    header
-                );
-
-                ctx.commit("updateApartment", data);
+                const object = router.currentRoute.params.object
+                let {data} = await api.objects.fetchObjectApartments(object, router.currentRoute.query)
+                ctx.commit("updateApartment", data)
             } catch (error) {
                 vm.toastedWithErrorCode(error);
             } finally {
@@ -95,21 +86,8 @@ export default {
         async fetchApartmentsFilter(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
             try {
-                let header = {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.token,
-                    },
-                };
-
-                const response = await vm.axios.post(
-                    process.env.VUE_APP_URL +
-                    "/objects/" +
-                    router.currentRoute.params.object +
-                    "/filter?page=" +
-                    vm.page,
-                    vm.filter,
-                    header
-                );
+                const {object} = this.router.currentRoute.params
+                const response = await api.objects.fetchObjectWithPagination(object, vm.page, vm.filter)
                 const apartments = response.data;
                 ctx.commit("updateApartment", apartments);
                 ctx.commit("updateLoading", false, {root: true});
@@ -121,19 +99,7 @@ export default {
         async fetchFilterObject(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
             try {
-                let header = {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.token,
-                    },
-                };
-
-                const response = await vm.axios.get(
-                    process.env.VUE_APP_URL +
-                    "/objects/" +
-                    router.currentRoute.params.object +
-                    "/filter",
-                    header
-                );
+                const response = await api.objects.fetchByFilterObject(router.currentRoute.params.object)
                 const floors = response.data;
                 ctx.commit("updateFilter", floors);
             } catch (error) {
@@ -149,16 +115,7 @@ export default {
 
         async fetchReserveClient(ctx, vm) {
             try {
-                let header = {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.token,
-                    },
-                };
-
-                const response = await vm.axios.get(
-                    process.env.VUE_APP_URL + "/orders/" + vm.order_id + "/client",
-                    header
-                );
+                const response = await api.orders.fetchOrderClient(vm.order_id)
                 const client = response.data;
                 ctx.commit("updateReserveClient", client);
             } catch (error) {
@@ -182,5 +139,5 @@ export default {
         getReserveClient(state) {
             return state.client;
         },
-    },
-};
+    }
+}
