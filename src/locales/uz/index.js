@@ -75,6 +75,17 @@ export default {
     monthly_pay: 'Ежемесячный',
     floor: 'Qavat',
 
+    tab_status: {
+        all: "Hammasi",
+        available: "Mavjud",
+        booked: "Band qilingan",
+        sold: "Sotilgan",
+        unavailable: "Mavjud emas",
+        promo: 'Aksiya',
+        on_payment: "To'lovda",
+        closed: 'Yopilgan'
+    },
+
     promo: {
         name: 'Aksiya',
         promos: 'Aksiyalar',
