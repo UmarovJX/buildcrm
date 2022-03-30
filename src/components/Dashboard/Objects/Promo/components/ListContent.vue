@@ -176,7 +176,7 @@ export default {
       this.toggleLoading()
       const promoId = item.uuid
       const {id: objectId} = this.$route.params
-      await api.promoV2.promoDeactivate(objectId, promoId)
+      await api.promoV2.promoActivate(objectId, promoId)
           .then(() => {
             this.$emit('update-content')
           })

@@ -63,6 +63,17 @@ export default {
     contract_details: 'Детали договора',
     floor: 'Этаж',
 
+    tab_status: {
+        all: "Все",
+        available: "Доступный",
+        booked: "Забронирован",
+        sold: "Оформлен",
+        unavailable: "Недоступен",
+        promo: 'Акция',
+        on_payment: 'На оплате',
+        closed: 'Закрыт'
+    },
+
 
     promo: {
         name: 'Акция',

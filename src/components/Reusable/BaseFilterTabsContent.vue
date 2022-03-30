@@ -2,13 +2,22 @@
   <div class="tab__container">
     <div class="filter__content">
       <div
-          v-for="{name,status} in filterTabList"
+          v-for="{name,status,counts} in filterTabList"
           :key="status"
           @click="getFilteredContent(status)"
           class="filter__content-item"
           :class="[status === currentStatus ? 'filter__content-item-active' : '']"
       >
-        <p>{{ name }}</p>
+        <div class="filter__content-item-inline">
+          <span>{{ name }}</span>
+          <span
+              v-if="counts"
+              class="counts"
+              :class="{ 'active' : status === currentStatus }"
+          >
+            {{ counts }}
+          </span>
+        </div>
       </div>
     </div>
     <div class="bottom__line"></div>
@@ -103,6 +112,23 @@ export default {
         border-radius: 16px 16px 0 0;
         background-color: var(--violet-600);
       }
+    }
+  }
+
+  &-item-inline {
+    display: flex;
+    align-items: center;
+
+    .counts {
+      margin-left: 0.5rem;
+      background-color: var(--gray-100);
+      border-radius: 2rem;
+      padding: 0.25rem 0.5rem;
+      color: var(--gray-400);
+    }
+
+    .counts.active {
+      color: var(--violet-600);
     }
   }
 }

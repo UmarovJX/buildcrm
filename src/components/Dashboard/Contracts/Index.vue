@@ -14,13 +14,17 @@
       </template>
     </base-bread-crumb>
 
+    <!--    <router-link :to="{name:'contracts-clone'}">-->
+    <!--      Contracts Clone-->
+    <!--    </router-link>-->
+
     <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter"/>
 
     <!--    <base-filter-tabs-content-->
     <!--        :filter-tab-list="filterTabList"-->
     <!--        @get-new-content="getFilterTabsContent"-->
     <!--    />-->
-    
+
     <div class="app-content">
       <b-table
           ref="contracts-table"
@@ -308,7 +312,7 @@ export default {
 
   methods: {
     ...mapActions(["fetchContracts"]),
-    getFilterTabsContent(status){
+    getFilterTabsContent(status) {
       console.log(status)
     },
     downloadContractLink(id) {

@@ -53,6 +53,7 @@ import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import CloneView from "@/components/Dashboard/Contracts/CloneView";
+import CloneContracts from "@/views/Contracts/Index"
 
 const routes = [
     {
@@ -229,6 +230,15 @@ const routes = [
         name: "contracts",
         path: "/contracts",
         component: Contracts,
+        meta: {
+            requiresAuth: "contracts",
+        },
+    },
+
+    {
+        name: "contracts-clone",
+        path: "/contracts/clone",
+        component: CloneContracts,
         meta: {
             requiresAuth: "contracts",
         },
