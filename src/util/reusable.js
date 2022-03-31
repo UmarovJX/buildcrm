@@ -18,3 +18,15 @@ export function idGenerator() {
         + Math.random().toString(16).slice(2)
         + Date.now().toString(16).slice(4)
 }
+
+export function phonePrettier(phoneNumber) {
+    const phone = phoneNumber.toString()
+    /* 998 90 992 50 44 */
+    if (!phone) return
+    const leftHandSide = '+' + phone.slice(0, 3)  /* 998 */
+    const companyCode = phone.slice(3, 5)        /* 90  */
+    const starterNumbers = phone.slice(5, 8)    /* 992 */
+    const middleNumbers = phone.slice(8, 10)   /* 50  */
+    const endingNumbers = phone.slice(10, 12) /* 44  */
+    return `${leftHandSide} ${companyCode} ${starterNumbers} ${middleNumbers} ${endingNumbers}`
+}

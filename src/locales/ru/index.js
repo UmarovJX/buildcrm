@@ -134,6 +134,25 @@ export default {
         client_phone: 'Номер телефона', // asd
         price: 'Стоимость', // asd
         object: 'Объект', // asd
+        show_by: 'Показать по',
+
+        table: {
+            contract: 'Договор',
+            client: 'Клиент',
+            phone_number: 'Телефон',
+            status: 'Статус',
+            cost: 'Стоимость',
+            object: 'Объект',
+            date: 'Дата'
+        },
+
+        status: {
+            waiting: 'На оплате',
+            booked: 'Забронирован',
+            sold: 'Оформлен',
+            closed: 'Закрыт',
+            contract: 'Договор'
+        },
 
         view: {
             unfamiliar: "Незнакомый", // asd

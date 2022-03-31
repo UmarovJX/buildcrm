@@ -143,6 +143,25 @@ export default {
         client_phone: 'Telefon raqami', // asd
         price: 'Narxi', // asd
         object: "Ob'ekt", // asd
+        show_by: "Ko'rsatish",
+
+        table: {
+            contract: 'Shartnoma',
+            client: 'Foydalanuvchi',
+            phone_number: 'Telefon',
+            status: 'Status',
+            cost: 'Narxi',
+            object: 'Bino',
+            date: 'Sana'
+        },
+
+        status: {
+            waiting: "To'lovda",
+            booked: 'Band qilingan',
+            sold: 'Sotilgan',
+            closed: 'Yopilgan',
+            contract: 'Shartnoma'
+        },
 
         view: {
             unfamiliar: "Notanish", // asd

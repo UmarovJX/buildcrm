@@ -61,6 +61,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-family: Inter, serif;
+  font-style: normal;
+  line-height: 22px;
+  color: var(--gray-600);
+}
+
 .filter__content {
   position: relative;
   display: flex;
@@ -68,8 +75,11 @@ export default {
   gap: 2rem;
   margin-top: 16px;
   margin-bottom: 8px;
-  color: var(--dark);
-
+  font-family: Inter, serif;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--gray-600);
 
   //&::before {
   //content: '';
