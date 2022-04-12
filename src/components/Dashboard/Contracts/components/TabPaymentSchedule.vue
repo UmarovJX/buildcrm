@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--  CURRENCY CHART  -->
     <div class="cards">
       <currency-chart
           class="currency__chart"
@@ -8,52 +9,330 @@
           :context="context"
       ></currency-chart>
     </div>
+
+    <!--  PAYMENTS HISTORY  -->
+    <div class="payments__history">
+
+      <!--  HEADING    -->
+      <div class="heading">
+        <h3 class="title">Список оплат</h3>
+        <div class="d-flex">
+          <base-button
+              @click="openPaymentsImportModal"
+              text="Импорт оплат"
+              design="import__button"
+          >
+            <template #left-icon>
+              <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED"/>
+            </template>
+          </base-button>
+          <base-button
+              @click="openPaymentAdditionModal"
+              text="Добавить оплату"
+              design="add__button"
+          >
+            <template #left-icon>
+              <base-plus-icon :width="20" :height="20" fill="#ffffff"/>
+            </template>
+          </base-button>
+        </div>
+      </div>
+
+      <!--   PAYMENT ADDITION MODAL   -->
+      <base-modal ref="payment-addition-modal">
+        <template #header>
+          <!--   GO BACK     -->
+          <span class="d-flex align-items-center">
+          <span class="go__back" @click="closePaymentAdditionModal">
+            <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+          </span>
+            <!--    TITLE      -->
+          <span class="title">Добавить оплату</span>
+        </span>
+        </template>
+
+        <template #main>
+          <ValidationObserver ref="payment-observer">
+            <div class="d-flex justify-content-between mb-3">
+              <ValidationProvider name="payment_date" rules="required" class="w-50 mr-3">
+                <input type="date" v-model="appendPayment.payment_date" class="w-100"/>
+              </ValidationProvider>
+              <ValidationProvider name="payment_type" rules="required" class="content__form__select">
+                <b-form-select
+                    v-model="appendPayment.type"
+                    class="form__select"
+                    :options="paymentTypeOptions"
+                >
+                  <template #first>
+                    <b-form-select-option
+                        :value="null"
+                        disabled
+                    >
+                  <span class="disabled__option">
+                    Тип
+                  </span>
+                    </b-form-select-option>
+                  </template>
+                </b-form-select>
+              </ValidationProvider>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+              <ValidationProvider name="amount" rules="required" class="w-50 mr-3">
+                <base-numeric-input
+                    v-model.number="appendPayment.amount"
+                    :currency="`${$t('ye')}`"
+                    :minus="false"
+                    :value="null"
+                    currency-symbol-position="suffix"
+                    separator="space"
+                    placeholder="Сумма"
+                    class="w-100"
+                ></base-numeric-input>
+              </ValidationProvider>
+              <ValidationProvider name="type" rules="required" class="content__form__select">
+                <b-form-select
+                    v-model="appendPayment.payment_type"
+                    class="form__select"
+                    :options="paymentMethodOptions"
+                >
+                  <template #first>
+                    <b-form-select-option
+                        :value="null"
+                        disabled
+                    >
+                  <span class="disabled__option">
+                    Способ
+                  </span>
+                    </b-form-select-option>
+                  </template>
+                </b-form-select>
+              </ValidationProvider>
+            </div>
+            <input type="text" v-model="appendPayment.comment" placeholder="Комментарий" class="w-100">
+          </ValidationObserver>
+        </template>
+
+        <template #footer>
+          <b-overlay
+              :show="buttonLoading"
+              rounded
+              opacity="0.6"
+              spinner-small
+              spinner-variant="primary"
+              class="d-inline-block w-100"
+          >
+            <base-button text="Добавить" @click="submitNewPayment" class="w-100 add__button"/>
+          </b-overlay>
+        </template>
+      </base-modal>
+
+      <!--   MAIN    -->
+      <div class="main">
+        <!--  TABLE PAYMENTS LIST -->
+        <b-table
+            sticky-header
+            borderless
+            responsive
+            :items="paymentHistory.items"
+            :fields="paymentsField"
+            class="table__list"
+            :empty-text="$t('no_data')"
+            thead-tr-class="row__head__bottom-border"
+            tbody-tr-class="row__body__bottom-border"
+            show-empty
+        >
+          <!--    CELL OF COMMENT      -->
+          <template #cell(comment)="{item}">
+            <span v-if="item.comment">{{ item.comment }}</span>
+            <span v-else class=""> - </span>
+          </template>
+
+          <!--     ACTIONS     -->
+          <template #cell(actions)="{item}">
+            <span class="actions">
+              <!--     EDIT PAYMENT       -->
+              <span class="edit__icon icon">
+                <base-edit-icon :width="18" :height="18" fill="#ffff"/>
+              </span>
+              <!--      DELETE PAYMENT        -->
+              <span class="delete__icon icon">
+                <base-delete-icon :width="18" :height="18" fill="#ffff"/>
+              </span>
+            </span>
+          </template>
+
+          <!--   CONTENT WHEN EMPTY SCOPE       -->
+          <template #empty="scope" class="text-center">
+            <div class="d-flex justify-content-center align-items-center empty__scope">
+              {{ $t('no_data') }}
+            </div>
+          </template>
+        </b-table>
+
+        <!--   PAYMENT PAGINATION     -->
+        <div v-if="showPaymentsPagination" class="pagination__vue">
+          <!--   Pagination   -->
+          <vue-paginate
+              :page-count="paymentHistory.pagination.total"
+              :value="paymentHistory.pagination.current"
+              :container-class="'container'"
+              :page-class="'page-item'"
+              :page-link-class="'page-link'"
+              :next-class="'page-item'"
+              :prev-class="'page-item'"
+              :prev-link-class="'page-link'"
+              :next-link-class="'page-link'"
+              @change-page="swipePaymentsPage"
+          >
+            <template #next-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-right-icon/>
+          </span>
+            </template>
+
+            <template #prev-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-left-icon/>
+          </span>
+            </template>
+          </vue-paginate>
+
+          <!--  Show By Select    -->
+          <div class="show__by">
+        <span class="show__by__content">
+          <span class="description">{{ $t('contracts.show_by') }}:</span>
+          <b-form-select
+              @input="changePaymentsShowingLimit"
+              v-model="paymentHistory.params.limit"
+              :options="showByOptions"
+          ></b-form-select>
+          <span class="arrow__down">
+            <base-down-icon/>
+          </span>
+        </span>
+          </div>
+        </div>
+
+        <!--  PAYMENTS LOADING    -->
+        <base-loading v-if="paymentHistory.appLoading"/>
+      </div>
+    </div>
+
+    <!--  PAYMENT SCHEDULE  -->
     <div class="payment__schedule">
       <div>
         <h3 class="title">График оплаты</h3>
         <div class="addition__button"></div>
       </div>
+      <!--   SCHEDULE TABLE   -->
       <b-table
           :fields="scheduleFields"
-          :items="scheduleItems"
+          :items="paymentSchedule.items"
           :bordered="false"
           :striped="false"
           thead-class="payment__schedule__thead"
           tbody-class="payment__schedule__tbody"
           class="payment__schedule-table"
+          v-if="!paymentSchedule.appLoading"
       >
-        <template #cell(price)="data">
-          {{ data.item.price }} сум
-        </template>
-
-        <template #cell(paid)="data">
-          {{ data.item.paid }} сум
-        </template>
-
         <template #cell(status)="{item}">
           <span v-if="item.status === 'waiting'" class="payment__schedule-waiting">
-            {{ $t('contracts.waiting_to_payment') }}
+            {{ $t('waiting_to_payment') }}
           </span>
           <span v-else-if="item.status === 'paid'" class="payment__schedule-paid">
-            {{ $t('contracts.paid') }}
+            {{ $t('paid') }}
           </span>
           <span v-else class="payment__schedule-uncertain">
             {{ item.status }}
           </span>
         </template>
       </b-table>
+
+      <!--  SCHEDULE PAGINATION    -->
+      <div v-if="showSchedulePagination" class="pagination__vue">
+        <!--   Pagination   -->
+        <vue-paginate
+            :page-count="paymentSchedule.pagination.total"
+            :value="paymentSchedule.pagination.current"
+            :container-class="'container'"
+            :page-class="'page-item'"
+            :page-link-class="'page-link'"
+            :next-class="'page-item'"
+            :prev-class="'page-item'"
+            :prev-link-class="'page-link'"
+            :next-link-class="'page-link'"
+            @change-page="swipeSchedulePage"
+        >
+          <template #next-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-right-icon/>
+          </span>
+          </template>
+
+          <template #prev-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-left-icon/>
+          </span>
+          </template>
+        </vue-paginate>
+
+        <!--  Show By Select    -->
+        <div class="show__by">
+        <span class="show__by__content">
+          <span class="description">{{ $t('contracts.show_by') }}:</span>
+          <b-form-select
+              @input="changeScheduleShowingLimit"
+              v-model="paymentSchedule.params.limit"
+              :options="showByOptions"
+          ></b-form-select>
+          <span class="arrow__down">
+            <base-down-icon/>
+          </span>
+        </span>
+        </div>
+      </div>
+
+      <!--  PAYMENT SCHEDULE LOADING    -->
+      <base-loading v-if="paymentSchedule.appLoading"/>
     </div>
+
+    <import-payments-modal ref="import-payments" :contract="order"/>
   </div>
 </template>
 
 <script>
-import {formatDateWithDot, formatToPrice} from "@/util/reusable";
+import {/*formatDateWithDot*/ formatToPrice, getDateProperty} from "@/util/reusable";
+import ImportPaymentsModal from "@/components/Contracts/view/ImportPaymentsModal";
 import CurrencyChart from "@/components/Dashboard/Contracts/components/CurrencyChart";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
+import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
+import BaseDownIcon from "@/components/icons/BaseDownIcon";
+import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseLoading from "@/components/Reusable/BaseLoading";
+import BaseModal from "@/components/Reusable/BaseModal";
+import BaseButton from "@/components/Reusable/BaseButton";
+import api from "@/services/api";
 
 export default {
   name: "TabPaymentSchedule",
   components: {
+    ImportPaymentsModal,
+    BaseNumericInput,
+    BaseArrowRightIcon,
+    BaseArrowDownIcon,
+    BaseArrowLeftIcon,
+    BaseDeleteIcon,
+    BasePlusIcon,
     CurrencyChart,
+    BaseEditIcon,
+    BaseDownIcon,
+    BaseLoading,
+    BaseButton,
+    BaseModal
   },
   props: {
     order: {
@@ -65,72 +344,122 @@ export default {
       required: true
     }
   },
+  emits: ['start-loading', 'finish-loading'],
+  data() {
+    const paymentTypeOptions = [
+      {
+        value: 'initial_payment',
+        text: this.$t('initial_payment')
+      },
+      {
+        value: 'monthly',
+        text: this.$t('monthly')
+      }
+    ]
+
+    const paymentMethodOptions = [
+      {
+        value: 'cash',
+        text: this.$t('cash')
+      },
+      {
+        value: 'payme',
+        text: this.$t('Payme')
+      },
+      {
+        value: 'click',
+        text: this.$t('Click')
+      },
+      {
+        value: 'apelsin',
+        text: this.$t('Apelsin')
+      },
+      {
+        value: 'other',
+        text: this.$t('Apelsin')
+      },
+    ]
+
+
+    const showByOptions = []
+
+    for (let number = 10; number <= 50; number += 10) {
+      showByOptions.push({
+        value: number,
+        text: number
+      })
+    }
+
+    return {
+      showByOptions,
+      paymentTypeOptions,
+      paymentMethodOptions,
+      buttonLoading: false,
+      appLoading: false,
+      /* График оплаты */
+      paymentSchedule: {
+        items: [],
+        pagination: {},
+        params: {
+          limit: 20,
+          page: 1
+        },
+        appLoading: false
+      },
+      /* Список оплат */
+      paymentHistory: {
+        items: [],
+        pagination: {},
+        params: {
+          limit: 20,
+          page: 1
+        },
+        appLoading: false
+      },
+      appendPayment: {
+        type: null,
+        amount: null,
+        payment_date: null,
+        payment_type: null,
+      }
+    }
+  },
   computed: {
-    monthlyPayments() {
-      if (this.hasConstructorOrder)
-        return this.order.payments.filter(payment => payment.type === 'monthly')
-      return 0
-    },
-    initialPayments() {
-      if (this.hasConstructorOrder)
-        return this.order.payments.filter(payment => payment.type === 'initial_payment')
-      return 0
-    },
     firstChart() {
-      const {transaction_price, currency} = this.order
-      const usdPrice = formatToPrice(currency.usd)
-      const bottom = `Курс: ${usdPrice} сум `
+      const {payments, currency} = this.order
+      const currencyPrettier = formatToPrice(currency.toFixed(0))
+      const bottom = `Курс: ${currencyPrettier} сум`
       return {
         index: 0,
         title: 'Сумма договора',
-        price: formatToPrice(transaction_price),
+        price: formatToPrice(payments.transaction_price.toFixed(0)),
         bottom,
         progress: 0
       }
     },
     secondChart() {
-      const {initial_payment} = this.order
-      const paidInitialPayment = this.initialPayments
-          .filter(payment => payment.status === 'paid')
-          .reduce((prev, current) => prev + current.amount, 0)
-      const remainInitialPayment = initial_payment - paidInitialPayment
-
-      const progress = () => {
-        if (initial_payment) {
-          return (paidInitialPayment / initial_payment * 100).toFixed()
-        }
-        return 0
-      }
-
+      const {initial_payment, initial_payment_remained, initial_payment_percent} = this.order.payments
       return {
         index: 1,
         title: 'Первоначальный взнос',
         price: formatToPrice(initial_payment),
-        bottom: `Остаток: ${formatToPrice(remainInitialPayment)} сум`,
-        progress: progress()
+        bottom: `Остаток: ${formatToPrice(initial_payment_remained)} сум`,
+        progress: initial_payment_percent
       }
     },
     thirdChart() {
-      const {transaction_price, initial_payment} = this.order
-      const paidMonthlyPayment = this.monthlyPayments
-          .filter(payment => payment.status === 'paid')
-          .reduce((prev, current) => prev + current.amount, 0)
-      const fullMonthlyPrice = transaction_price - initial_payment
-      const remainMonthlyPayment = fullMonthlyPrice - paidMonthlyPayment
-
-      const progress = () => {
-        if (fullMonthlyPrice) {
-          return (paidMonthlyPayment / fullMonthlyPrice * 100).toFixed()
-        }
-        return 0
-      }
-
+      const {
+        installment_price,
+        monthly_payments_count,
+        installment_price_remained,
+        installment_price_remained_percent
+      } = this.order.payments
       return {
         index: 2,
-        title: 'Рассрочка (12 месяцев)',
-        price: formatToPrice(fullMonthlyPrice),
-        bottom: `Остаток: ${formatToPrice(remainMonthlyPayment)} сум`,
-        progress: progress()
+        title: `Рассрочка (${monthly_payments_count} месяцев)`,
+        price: formatToPrice(installment_price),
+        bottom: `Остаток: ${formatToPrice(installment_price_remained)} сум`,
+        progress: installment_price_remained_percent
       }
     },
     currencyList() {
@@ -142,16 +471,23 @@ export default {
     scheduleFields() {
       return [
         {
-          key: 'schedule',
+          key: 'date_payment',
           label: 'Расписание',
+          formatter: (datePayment) => {
+            const {year, month, day} = getDateProperty(datePayment)
+            const lastYear = year.toString().slice(-2)
+            return `${day}.${month}.${lastYear}`
+          }
         },
         {
-          key: 'price',
-          label: 'Сумма'
+          key: 'amount',
+          label: 'Сумма',
+          formatter: (amount) => (formatToPrice(amount) + ' ' + this.$t('ye'))
         },
         {
           key: 'type',
-          label: 'Тип'
+          label: 'Тип',
+          formatter: (type) => this.$t(type)
         },
         {
           key: 'paid',
@@ -163,51 +499,336 @@ export default {
         }
       ]
     },
-    scheduleItems() {
-      if (this.hasConstructorOrder) {
-        return this.order.payments.map((payment) => {
-          const {date_payment, amount, type, amount_paid, status} = payment
-          const schedule = formatDateWithDot(date_payment)
-          let typeContext = this.$t('initial_payment')
-
-          if (type === 'monthly') {
-            typeContext = this.$t('monthly_pay')
+    paymentsField() {
+      return [
+        {
+          key: 'date_paid',
+          label: 'Дата',
+          formatter: (datePayment) => {
+            const {year, month, day} = getDateProperty(datePayment)
+            const lastYear = year.toString().slice(-2)
+            return `${day}.${month}.${lastYear}`
           }
-
-          const paid = amount_paid ? amount_paid : 0
-          return {
-            paid: formatToPrice(paid),
-            status,
-            schedule,
-            type: typeContext,
-            price: formatToPrice(amount),
+        },
+        {
+          key: 'amount',
+          label: 'Сумма',
+          formatter: (amount) => (formatToPrice(amount) + ' ' + this.$t('ye'))
+        },
+        {
+          key: 'type',
+          label: 'Тип',
+          formatter: (type) => this.$t(type)
+        },
+        {
+          key: 'payment_type',
+          label: 'Способ',
+          formatter: (paymentType) => {
+            if (paymentType === 'cash') return this.$t('cash')
+            if (!paymentType) return '-'
+            return paymentType
           }
-        })
+        },
+        {
+          key: 'comment',
+          label: 'Комментарий'
+        },
+        {
+          key: 'actions',
+          label: 'Действия'
+        }
+      ]
+    },
+    countOfScheduleItems() {
+      const {items, pagination} = this.paymentSchedule
+      return items.length && pagination['totalItems'] > 9
+    },
+    countOfPaymentItems() {
+      const {items, pagination} = this.paymentHistory
+      return items.length && pagination['totalItems'] > 9
+    },
+    showSchedulePagination() {
+      const {paymentSchedule, appLoading, countOfScheduleItems} = this
+      return countOfScheduleItems && !(appLoading || paymentSchedule.appLoading)
+    },
+    showPaymentsPagination() {
+      const {paymentHistory, appLoading, countOfPaymentItems} = this
+      return countOfPaymentItems && !(appLoading || paymentHistory.appLoading)
+    }
+  },
+  created() {
+    this.fetchItems()
+  },
+  methods: {
+    async fetchItems() {
+      this.startLoading()
+      await Promise.any([this.getPaymentSchedule(), this.getPaymentHistory(),])
+          .finally(() => {
+            this.finishLoading()
+          })
+    },
+    async getPaymentSchedule() {
+      this.paymentSchedule.appLoading = true
+      const {id} = this.$route.params
+      const {params: scheduleParams} = this.paymentSchedule
+      await api.contractV2.fetchPaymentSchedule(id, scheduleParams)
+          .then((response) => {
+            this.paymentSchedule.items = response.data.items
+            this.paymentSchedule.pagination = response.data.pagination
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.paymentSchedule.appLoading = false
+          })
+    },
+    async getPaymentHistory() {
+      this.paymentHistory.appLoading = true
+      const {id} = this.$route.params
+      const {params: historyParams} = this.paymentHistory
+      await api.contractV2.fetchPayments(id, historyParams)
+          .then((response) => {
+            this.paymentHistory.items = response.data.items
+            this.paymentHistory.pagination = response.data.pagination
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.paymentHistory.appLoading = false
+          })
+    },
+    startLoading() {
+      this.appLoading = true
+      this.$emit('start-loading')
+    },
+    finishLoading() {
+      this.appLoading = false
+      this.$emit('finish-loading')
+    },
+    swipePaymentsPage(page) {
+      this.paymentHistory.params.page = page
+      this.getPaymentHistory()
+    },
+    changePaymentsShowingLimit() {
+      this.getPaymentHistory()
+    },
+    swipeSchedulePage(page) {
+      this.paymentSchedule.params.page = page
+      this.getPaymentSchedule()
+    },
+    changeScheduleShowingLimit() {
+      this.getPaymentSchedule()
+    },
+    openPaymentAdditionModal() {
+      this.$refs['payment-addition-modal'].openModal()
+    },
+    closePaymentAdditionModal() {
+      this.$refs['payment-addition-modal'].closeModal()
+    },
+    openPaymentsImportModal() {
+      this.$refs['import-payments'].openModal()
+    },
+    async submitNewPayment() {
+      const formCompleted = await this.$refs['payment-observer'].validate()
+      if (formCompleted) {
+        const {id} = this.$route.params
+        this.buttonLoading = true
+        // this.appendPayment.amount *= 100
+        delete this.appendPayment.amount
+        await api.contractV2.appendPayment(id, this.appendPayment)
+            .then(() => {
+              this.closePaymentAdditionModal()
+              this.$swal({
+                title: "Muvaffaqiyatli!",
+                text: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+                icon: "success"
+              }).then(() => {
+                this.initAppendPayment()
+                this.getPaymentHistory()
+              })
+            }).catch((error) => {
+              const {data} = error.response
+              const index = Object.keys(data)[0]
+              const text = data[index]
+              this.$swal({
+                text,
+                icon: "error",
+                title: this.$t('error'),
+              })
+            }).finally(() => {
+              this.buttonLoading = false
+            })
       }
-      return []
+    },
+    initAppendPayment() {
+      for (let [key,] of Object.entries(this.appendPayment)) {
+        this.appendPayment[key] = null
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "../../../../assets/scss/utils/pagination";
+
+* {
+  font-family: Inter, serif;
+  font-style: normal;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
 .cards {
   display: flex;
   gap: 24px;
 
   .currency__chart {
-    width: 306px;
-    height: 160px;
+    //width: 306px;
+    //height: 160px;
+    max-width: 32rem;
+    flex-grow: 1;
     border-radius: 32px;
     margin-top: 54px;
+    margin-bottom: 2rem;
     background-color: var(--gray-50);
     border: 2px solid var(--gray-200);
-    padding: 24px;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
   }
 }
 
+
+/* PAYMENT HISTORY */
+.payments__history {
+  border-top: 6px solid var(--gray-100);
+  border-bottom: 6px solid var(--gray-100);
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  .heading {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .import__button {
+      background-color: var(--gray-100);
+      margin-right: 1rem;
+    }
+  }
+
+  ::v-deep .table__list {
+    max-height: none;
+
+    table {
+      color: var(--gray-600);
+
+      thead tr th {
+        font-family: CraftworkSans, serif;
+        font-weight: 600;
+        line-height: 14px;
+        letter-spacing: 1px;
+        color: var(--gray-400) !important;
+        padding: 1.25rem 1rem 1.25rem 0.75rem;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+    }
+
+    .table.b-table[aria-busy=true] {
+      opacity: 1 !important;
+    }
+
+    .empty__scope {
+      font-size: 1.5rem;
+      min-height: 30rem;
+    }
+  }
+
+  ::v-deep .row__head__bottom-border {
+    border-bottom: 2px solid var(--gray-200) !important;
+  }
+
+  ::v-deep .row__body__bottom-border:not(:last-child) {
+    border-bottom: 2px solid var(--gray-200) !important;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+
+    .icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .edit__icon {
+      background-color: var(--violet-600);
+    }
+
+    .delete__icon {
+      background-color: var(--red-600);
+      margin-left: 1rem;
+    }
+  }
+}
+
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+  color: var(--gray-600);
+}
+
+
+.add__button {
+  background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
+  color: #FFFFFF;
+}
+
+.go__back {
+  width: 56px;
+  height: 56px;
+  border-radius: 100%;
+  background-color: var(--gray-100);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.content__form__select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--gray-100);
+  border-radius: 2rem;
+  width: 50%;
+  border: none;
+  color: var(--gray-600);
+  position: relative;
+
+  .form__select {
+    background-color: transparent;
+    border: none;
+    color: var(--gray-600);
+    margin: 0 1rem;
+    width: 100%;
+  }
+}
+
+/* PAYMENT SCHEDULE */
 .payment__schedule {
-  margin-top: 4rem;
+  margin-top: 2rem;
 
   .title {
     font-size: 24px;

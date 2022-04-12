@@ -12,7 +12,7 @@
       </a>
     </li>
 
-    <li v-for="page in pages" :key="page"
+    <li v-for="(page,index) in pages" :key="index"
         :class="[pageClass, page.selected ? activeClass : '', page.disabled ? disabledClass : '', page.breakView ? breakViewClass: '']">
       <a v-if="page.breakView" :class="[pageLinkClass, breakViewLinkClass]" tabindex="0">
         <slot name="breakViewContent">{{ breakViewText }}</slot>
@@ -41,7 +41,7 @@
        :class="[prevLinkClass, firstPageSelected() ? disabledClass : '']" tabindex="0">
       <slot name="next-content"></slot>
     </a>
-    <div v-for="page in pages" :key="page">
+    <div v-for="(page,index) in pages" :key="index">
       <a v-if="page.breakView" :class="[pageLinkClass, breakViewLinkClass, page.disabled ? disabledClass : '']"
          tabindex="0">
         <slot name="breakViewContent">{{ breakViewText }}</slot>
@@ -63,6 +63,7 @@
 
 <script>
 export default {
+  name: 'Paginate',
   props: {
     value: {
       type: Number
@@ -73,11 +74,6 @@ export default {
     },
     forcePage: {
       type: Number
-    },
-    clickHandler: {
-      type: Function,
-      default: () => {
-      }
     },
     pageRange: {
       type: Number,
@@ -155,6 +151,7 @@ export default {
       default: false
     }
   },
+  emits: ['change-page'],
   beforeUpdate() {
     if (this.forcePage === undefined) return
     if (this.forcePage !== this.selected) {
@@ -174,12 +171,11 @@ export default {
       let items = {}
       if (this.pageCount <= this.pageRange) {
         for (let index = 0; index < this.pageCount; index++) {
-          let page = {
+          items[index] = {
             index: index,
             content: index + 1,
             selected: index === (this.selected - 1)
           }
-          items[index] = page
         }
       } else {
         const halfPageRange = Math.floor(this.pageRange / 2)
@@ -248,8 +244,7 @@ export default {
       if (this.selected === selected) return
 
       this.innerValue = selected
-      this.$emit('input', selected)
-      this.clickHandler(selected)
+      this.$emit('change-page', selected)
     },
     prevPage() {
       if (this.selected <= 1) return

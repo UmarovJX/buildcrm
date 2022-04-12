@@ -133,7 +133,7 @@ export default {
      */
     value: {
       type: [Number, String],
-      default: 0,
+      default: null,
       required: false
     },
 
@@ -281,13 +281,17 @@ export default {
     // Set default value props when valueNumber has some value
     if (this.valueNumber || this.isDeliberatelyZero()) {
       this.process(this.valueNumber)
-      this.amount = this.format(this.valueNumber)
+      if (parseFloat(this.format(this.valueNumber))) {
+        this.amount = this.format(this.valueNumber)
+      } else {
+        this.amount = ''
+      }
 
       // In case of delayed props value.
-      setTimeout(() => {
-        this.process(this.valueNumber)
-        this.amount = this.format(this.valueNumber)
-      }, 500)
+      // setTimeout(() => {
+      //   this.process(this.valueNumber)
+      //   this.amount = this.format(this.valueNumber)
+      // }, 500)
     }
 
     // Set read-only span element's class
@@ -298,13 +302,12 @@ export default {
     formatAmount() {
       let newValue = this.amount
 
-      const findDecimalSeparator = newValue.indexOf(',')
+      const findDecimalSeparator = newValue?.indexOf(',')
       const unFormatValue = accounting.unformat(newValue, this.decimalSeparatorSymbol)
-
-      let formattingValue = this.formatWithoutSeparator(unFormatValue).slice(0, -1)
-      if (findDecimalSeparator !== -1) {
-        let decimalSide = newValue.slice(findDecimalSeparator)
-        let wholeSide = newValue.slice(0, findDecimalSeparator)
+      let formattingValue = this.formatWithoutSeparator(unFormatValue)?.slice(0, -1)
+      if (findDecimalSeparator !== -1 && newValue) {
+        let decimalSide = newValue?.slice(findDecimalSeparator)
+        let wholeSide = newValue?.slice(0, findDecimalSeparator)
         const unFormatWholeSide = accounting.unformat(wholeSide)
         if (decimalSide.length > 1) {
           const lastValueOfDecimalSide = parseInt(decimalSide[decimalSide.length - 1])
@@ -323,7 +326,11 @@ export default {
       }
 
       if (newValue !== formattingValue) {
-        this.amount = formattingValue
+        if (formattingValue === '0') {
+          this.amount = null
+        } else {
+          this.amount = formattingValue
+        }
       }
     },
 
@@ -343,7 +350,11 @@ export default {
       this.$emit('blur', e)
       this.startTyping = false
       const unFormatAmount = this.unformat(this.amount)
-      this.amount = this.format(unFormatAmount)
+      if (parseInt(this.format(unFormatAmount)) === 0) {
+        this.amount = null
+      } else {
+        this.amount = this.format(unFormatAmount)
+      }
     },
 
     /**
@@ -356,6 +367,8 @@ export default {
       const usd = `${this.$t('usd')}`
       const ye = `${this.$t('ye')}`
 
+      if (!this.amount) return
+
       const symbolUsdIndex = this.amount.indexOf(usd)
       const symbolSumIndex = this.amount.indexOf(ye)
 
@@ -366,17 +379,6 @@ export default {
       if (symbolSumIndex !== -1) {
         this.amount = this.amount.slice(0, symbolSumIndex)
       }
-      // if (this.valueNumber === 0) {
-      //   this.amount = null
-      // } else {
-      //   this.amount = accounting.formatMoney(this.valueNumber, {
-      //     symbol: '',
-      //     format: '%v',
-      //     thousand: '',
-      //     decimal: this.decimalSeparatorSymbol,
-      //     precision: Number(this.precision)
-      //   })
-      // }
     },
 
     /**

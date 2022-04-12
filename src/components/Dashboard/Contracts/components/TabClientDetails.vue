@@ -1,11 +1,6 @@
 <template>
-  <div class="">
+  <div v-if="haveClient">
     <div class="client__details col-12 px-0">
-      <!--      <div class="client__details_titles d-flex">-->
-      <!--        <h3>Основные</h3>-->
-      <!--        <h3>Паспортные данные</h3>-->
-      <!--      </div>-->
-
       <b-form class="client__details_info">
         <div class="d-flex">
           <h3 class="client__details__title mr-5">Основные</h3>
@@ -15,83 +10,158 @@
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label for="firstname">ФИО</label>
-            <b-form-input disabled value="Илон Маск" id="firstname"/>
+            <b-form-input disabled :value="getClientName(client)" id="firstname"/>
           </div>
           <div class="client__details_info_card">
-            <label for="lastname">Дата рождения</label>
-            <b-form-input disabled value="01.01.1991" id="firstname"/>
+            <label for="birthdate">Дата рождения</label>
+            <b-form-input disabled :value="datePrettier(client.birth_day)" id="birthdate"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="firstname">Телефон (Основной)</label>
-            <b-form-input disabled value="+998 99 720 90 90" id="firstname"/>
+            <label for="phone">Телефон (Основной)</label>
+            <b-form-input disabled :value="formattingPhone(client.phone)" id="phone"/>
           </div>
           <div class="client__details_info_card">
-            <label for="lastname">Серия</label>
-            <b-form-input disabled value="AA9207070" id="firstname"/>
+            <label for="series">Серия</label>
+            <b-form-input disabled :value="client.passport_series" id="series"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="firstname">Телефон (Дополнительный)</label>
-            <b-form-input disabled value="+998 99 740 90 90" id="firstname"/>
+            <label for="second_number">Телефон (Дополнительный)</label>
+            <b-form-input disabled :value="formattingPhone(client.other_phone)" id="second_number"/>
           </div>
           <div class="client__details_info_card">
-            <label for="lastname">Выдан</label>
-            <b-form-input disabled value="Yunusobod tumani IIB" id="firstname"/>
+            <label for="date_of_given_place">Выдан</label>
+            <b-form-input disabled :value="client.issued_by_whom" id="date_of_given_place"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="firstname">Тип клиента</label>
-            <b-form-input disabled value="Знакомый" id="firstname"/>
+            <label for="client_type">Тип клиента</label>
+            <div class="selection__content">
+              <select
+                  @change="changeClientType"
+                  name="client_type"
+                  id="client_type"
+                  class="client__type"
+                  :value="client.friends"
+              >
+                <option :value="false">Незнакомый</option>
+                <option :value="true">Знакомый</option>
+              </select>
+              <!--              <span class="edit__icon">-->`
+              <!--                <base-edit-icon :height="16" :width="16" fill="#ffffff"/>-->
+              <!--              </span>-->
+            </div>
           </div>
           <div class="client__details_info_card">
-            <label for="lastname">Дата выдачи</label>
-            <b-form-input disabled value="01.01.2016" id="firstname"/>
+            <label for="date_of_issue">Дата выдачи</label>
+            <b-form-input disabled :value="datePrettier(client.date_of_issue)" id="date_of_issue"/>
           </div>
         </div>
-
-        <!--        <div class="client__details_info_card">-->
-        <!--          <label>Тип клиента</label>-->
-        <!--          <b-form-select v-model="selected" :options="options" size="lg" class="mt-3"></b-form-select>-->
-        <!--          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
-        <!--            <circle cx="12" cy="12" r="12" fill="#7C3AED"/>-->
-        <!--            <path-->
-        <!--                d="M11.6992 9.70962L14.7992 12.1775C14.874 12.2365 14.8868 12.3448 14.8284 12.4203L11.1532 17.1382C10.9222 17.4297 10.5817 17.5945 10.217 17.6006L8.21066 17.625C8.10366 17.6262 8.01003 17.5532 7.98571 17.4485L7.52973 15.4954C7.4507 15.1364 7.52973 14.7652 7.76076 14.4793L11.4542 9.73883C11.5138 9.66277 11.6238 9.64939 11.6992 9.70962Z"-->
-        <!--                fill="white"/>-->
-        <!--            <path-->
-        <!--                d="M16.188 10.7067L15.5903 11.4417C15.5301 11.5166 15.4219 11.5287 15.3471 11.4691C14.6206 10.8899 12.7602 9.40342 12.2441 8.9915C12.1687 8.93066 12.1584 8.82235 12.2191 8.7469L12.7955 8.04171C13.3184 7.3785 14.2303 7.31765 14.966 7.89568L15.811 8.55889C16.1576 8.82661 16.3886 9.17951 16.4676 9.55067C16.5588 9.95894 16.4616 10.3599 16.188 10.7067Z"-->
-        <!--                fill="white"/>-->
-        <!--          </svg>-->
-        <!--        </div>-->
-
       </b-form>
     </div>
-
   </div>
 </template>
 
 <script>
+import {formatDateWithDot, phonePrettier} from "@/util/reusable";
+import api from "@/services/api";
+
 export default {
   name: "TabClientDetails",
+  props: {
+    order: {
+      type: Object,
+      required: true
+    }
+  },
+  emits: ['start-loading', 'finish-loading'],
   data() {
     return {
       selected: null,
       options: [
         {value: "Незнакомый", text: "Незнакомый"},
         {value: "Знакомый", text: "Знакомый"}
-      ]
+      ],
+      client: {},
+      contractId: this.$route.params.id
+    }
+  },
+  computed: {
+    haveClient() {
+      return Object.keys(this.client).length
+    }
+  },
+  created() {
+    this.getClientInformation()
+  },
+  methods: {
+    datePrettier: (time) => formatDateWithDot(time),
+    async getClientInformation() {
+      this.startLoading()
+      await api.contractV2.fetchClientInfo(this.contractId)
+          .then((response) => {
+            this.client = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.finishLoading()
+          })
+    },
+    startLoading() {
+      this.$emit('start-loading')
+    },
+    finishLoading() {
+      this.$emit('finish-loading')
+    },
+    formattingPhone: (phone) => phonePrettier(phone),
+    dateReverser: (time) => formatDateWithDot(time),
+    getClientName(client) {
+      let language = 'kirill'
+      if (this.$i18n.locale === 'uz') {
+        language = 'lotin'
+      }
+      const {last_name, first_name} = client
+      return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language)
+    },
+    clientName(multiName, language) {
+      const lastNameByLang = multiName[language]
+      if (lastNameByLang) {
+        return lastNameByLang
+      } else {
+        const lastNameOtherLang = language === 'kirill' ? multiName['lotin'] : multiName['kirill']
+        if (lastNameOtherLang) return lastNameOtherLang
+      }
+
+      return ''
+    },
+    async changeClientType() {
+      this.startLoading()
+      await api.contractV2.toggleClientType(this.contractId).finally(() => {
+        this.finishLoading()
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-family: CraftworkSans, serif;
+  font-style: normal;
+  line-height: 22px;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
 .custom__container {
   margin: 32px 90px;
   background: #fff;
@@ -138,9 +208,10 @@ export default {
         text-transform: uppercase;
         margin: 0;
         padding-right: 10px;
-        color: #9CA3AF;
+        color: var(--gray-400);
         white-space: nowrap;
-        font-size: 1em;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
       }
 
       input {
@@ -149,6 +220,7 @@ export default {
         border: none;
         text-align: right;
         padding-right: 4px;
+        color: var(--gray-600);
       }
 
       select {
@@ -173,6 +245,41 @@ export default {
   .form-control:disabled {
     background: #fff;
   }
+}
+
+.selection__content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 1.6rem;
+}
+
+//.selection__content .client__type {
+//-webkit-appearance: none;
+//-moz-appearance: none;
+//top: auto;
+//right: auto;
+//background: transparent;
+//background-image: url('../../../../assets/img/edit-button.png');
+
+//}
+
+//.edit__icon {
+//  width: 1.5rem;
+//  height: 1.5rem;
+//  padding: 0.25rem;
+//  border-radius: 50%;
+//  background-color: var(--violet-600);
+//  display: block;
+//  margin-bottom: 1.6rem;
+//  margin-right: 1.5rem;
+//}
+
+.client__details_info_card {
+  display: flex;
+  align-items: center;
 }
 
 @media screen and (max-width: 1100px) {

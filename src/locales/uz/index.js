@@ -42,6 +42,8 @@ export default {
     close: "Yopish",
     ye: "sum",
     usd: "$",
+    _usd: 'USD',
+    uzs: 'UZS',
     general: "Umumiy",
     edit_password: "Parolni o'zgartirish",
     profile: 'Profil',
@@ -74,6 +76,10 @@ export default {
     initial_payment: 'Первоначальный',
     monthly_pay: 'Ежемесячный',
     floor: 'Qavat',
+    paid: "To'langan",
+    waiting_to_payment: 'Kutilmoqda',
+    cash: 'Naqd',
+    error: "Xatolik!",
 
     tab_status: {
         all: "Hammasi",

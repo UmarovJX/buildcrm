@@ -7,15 +7,23 @@
     />
 
     <!--  Search Content  -->
-    <search-bar-content/>
+    <search-bar-content
+        @trigger-input="setSearchValue"
+        @search-by-filter="searchByFilter"
+        @replace-router="replaceRouter"
+    />
 
     <!--  Table List -->
     <b-table
         sticky-header
         borderless
         responsive
+        :busy="showLoading"
         :items="tableItems"
         :fields="tableFields"
+        :select-mode="selectMode"
+        :selectable="selectable"
+        @row-selected="contractView"
         class="table__list"
         :empty-text="$t('no_data')"
         thead-tr-class="row__head__bottom-border"
@@ -42,7 +50,7 @@
         <span>{{ formattingPhone(data.item.client.phone) }}</span>
       </template>
 
-      <!--   Phone Number   -->
+      <!--   Date   -->
       <template #cell(date)="data">
         <span>{{ dateReverser(data.item.object.build_date) }}</span>
       </template>
@@ -65,34 +73,34 @@
       </template>
 
 
+      <!--  Actions    -->
       <template #cell(actions)="data">
-        <span class="arrow__down-violet">
+        <span
+            @click="downloadContractLink(data.item.id)"
+            class="arrow__down-violet"
+        >
           <base-arrow-down-icon :width="20" :height="20" fill="#fff"/>
         </span>
       </template>
 
+      <!--  Busy Animation    -->
       <template #table-busy>
-        <div class="d-flex justify-content-center w-100">
-          <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
+        <base-loading/>
       </template>
 
       <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">
-              {{ scope['emptyText'] }}
-            </span>
+        <div class="d-flex justify-content-center align-items-center flex-column not__found">
+          <p class="head">Договоры не были найдены</p>
+          <p>Попробуйте ввести другие данные для поиска</p>
+        </div>
       </template>
     </b-table>
 
-    <div class="pagination__contract">
+    <div v-if="!showLoading && countOfItems" class="pagination__vue">
       <!--   Pagination   -->
       <vue-paginate
-          :page-count="20"
+          :page-count="pagination.total"
+          :value="pagination.current"
           :container-class="'container'"
           :page-class="'page-item'"
           :page-link-class="'page-link'"
@@ -100,6 +108,7 @@
           :prev-class="'page-item'"
           :prev-link-class="'page-link'"
           :next-link-class="'page-link'"
+          @change-page="changeCurrentPage"
       >
         <template #next-content>
           <span class="d-flex align-items-center justify-content-center">
@@ -118,7 +127,11 @@
       <div class="show__by">
         <span class="show__by__content">
           <span class="description">{{ $t('contracts.show_by') }}:</span>
-          <b-form-select v-model="showByValue" :options="showByOptions"></b-form-select>
+          <b-form-select
+              @input="limitChanged"
+              v-model="showByValue"
+              :options="showByOptions"
+          ></b-form-select>
           <span class="arrow__down">
             <base-down-icon/>
           </span>
@@ -136,8 +149,9 @@ import BaseStarIcon from "@/components/icons/BaseStarIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
+import BaseLoading from "@/components/Reusable/BaseLoading";
 import api from "@/services/api";
-import {formatDateWithDot, formatToPrice, phonePrettier} from "@/util/reusable";
+import {formatDateWithDot, formatToPrice, phonePrettier, sortObjectValues} from "@/util/reusable";
 
 export default {
   name: "Contracts",
@@ -148,12 +162,13 @@ export default {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
     BaseStarIcon,
-    BaseDownIcon
+    BaseDownIcon,
+    BaseLoading
   },
   data() {
     const showByOptions = []
 
-    for (let number = 10; number <= 100; number += 10) {
+    for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
         value: number,
         text: number
@@ -163,37 +178,47 @@ export default {
     const filterTabList = [
       {
         name: this.$t('tab_status.all'),
-        status: 0,
+        status: '',
         counts: 900
       },
       {
         name: this.$t('tab_status.booked'),
-        status: 1,
+        status: 'booked',
         counts: 50
       },
       {
         name: this.$t('tab_status.sold'),
-        status: 2,
+        status: 'sold',
         counts: 60
       },
       {
         name: this.$t('tab_status.on_payment'),
-        status: 3,
+        status: 'hold',
         counts: 700
       },
       {
         name: this.$t('tab_status.closed'),
-        status: 4,
+        status: 'closed',
         counts: 90
       }
     ]
 
+    let {search: searchValue, limit: showByValue} = this.$route.query
+
+    if (!showByValue) {
+      showByValue = 20
+    }
+
     return {
+      showByValue,
+      searchValue,
       showByOptions,
       filterTabList,
       tableItems: [],
       pagination: {},
-      showByValue: 10
+      showLoading: false,
+      selectMode: 'single',
+      selectable: true,
     }
   },
   computed: {
@@ -238,6 +263,23 @@ export default {
           label: '',
         }
       ]
+    },
+    query() {
+      return Object.assign({}, this.$route.query)
+    },
+    countOfItems() {
+      return this.tableItems.length
+    }
+  },
+  watch: {
+    '$route.query': {
+      handler: function () {
+        this.fetchContractList()
+      },
+      deep: true
+    },
+    searchValue() {
+      this.getContractListBySearch()
     }
   },
   async created() {
@@ -246,31 +288,113 @@ export default {
   methods: {
     formattingPhone: (phone) => phonePrettier(phone),
     dateReverser: (time) => formatDateWithDot(time),
+    limitChanged() {
+      this.changeFetchLimit()
+    },
+    downloadContractLink(id) {
+      api.contractV2.downloadContract(id)
+          .then(() => {
+            window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`)
+          })
+          .catch(() => {
+            return '#'
+          })
+    },
     getClientName(client) {
       let language = 'kirill'
       if (this.$i18n.locale === 'uz') {
         language = 'lotin'
       }
       const {last_name, first_name} = client
-      return last_name[language] + ' ' + first_name[language]
+      return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language)
     },
-    fetchContentByStatus() {
+    contractView(items) {
+      const {id} = items[0]
+      this.$router.push({
+        name: 'contracts-view-clone',
+        params: {
+          id
+        }
+      })
+    },
+    clientName(multiName, language) {
+      const lastNameByLang = multiName[language]
+      if (lastNameByLang) {
+        return lastNameByLang
+      } else {
+        const lastNameOtherLang = language === 'kirill' ? multiName['lotin'] : multiName['kirill']
+        if (lastNameOtherLang) return lastNameOtherLang
+      }
 
+      return ''
+    },
+    searchByFilter(fromFilter) {
+      this.replaceRouter(fromFilter)
+    },
+    fetchContentByStatus(status) {
+      this.replaceRouter({...this.query, status})
+    },
+    changeCurrentPage(page) {
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({...this.query, page})
+    },
+    changeFetchLimit() {
+      const query = {
+        ...this.query, page: 1
+      }
+      const limit = this.showByValue
+      this.replaceRouter({...query, limit})
+    },
+    setSearchValue(search) {
+      const hasSearchQuery = this.query.hasOwnProperty('search')
+      if (search?.length < 3 && hasSearchQuery) {
+        this.replaceRouter({})
+      }
+
+      if (this.searchValue === search || search.length < 3) return
+      this.searchValue = search
+    },
+    getContractListBySearch() {
+      const {query, searchValue} = this
+      const hasSearchQuery = query.hasOwnProperty('search')
+      if (!hasSearchQuery) {
+        this.pushRouter({
+          search: searchValue
+        })
+        return
+      }
+
+      query.search = searchValue
+      this.pushRouter(query)
     },
     async fetchContractList() {
-      const query = this.$route.query
-      query.page = '1'
+      const query = sortObjectValues(this.query)
+      this.showLoading = true
       await api.contractV2.fetchContractsList(query)
           .then((response) => {
             this.tableItems = response.data.items
             this.pagination = response.data.pagination
+            this.showByValue = response.data.pagination.perPage
+          }).finally(() => {
+            this.showLoading = false
           })
+    },
+    replaceRouter(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({query: sortQuery})
+    },
+    pushRouter(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({query: sortQuery})
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "../../assets/scss/utils/pagination";
+
 * {
   font-family: Inter, serif;
   font-style: normal;
@@ -303,6 +427,10 @@ export default {
     td {
       vertical-align: middle;
     }
+  }
+
+  .table.b-table[aria-busy=true] {
+    opacity: 1 !important;
   }
 }
 
@@ -340,7 +468,7 @@ export default {
 
 .current__status {
   display: inline-flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   min-width: 9rem;
   border-radius: 2rem;
@@ -376,46 +504,6 @@ export default {
   border-bottom: 2px solid var(--gray-200) !important;
 }
 
-::v-deep .pagination__contract {
-  display: flex;
-  margin-top: 2rem;
-
-  ul.container {
-    list-style-type: none;
-    display: flex;
-    padding: 0;
-    margin: 0;
-
-    .page-item {
-      margin-right: 0.5rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .page-link {
-        background-color: var(--gray-100);
-        color: var(--gray-600);
-        border-radius: 50%;
-        padding: 1rem;
-        min-width: 3rem;
-        min-height: 3rem;
-        border: none;
-        transition: all 200ms ease-in;
-
-        &:hover {
-          background-color: var(--violet-300);
-          color: var(--violet-800);
-        }
-      }
-
-      &.active .page-link {
-        background-color: var(--violet-100);
-        color: var(--violet-600);
-      }
-    }
-  }
-}
-
 .show__by {
   width: 100%;
   display: flex;
@@ -447,6 +535,19 @@ export default {
       position: absolute;
       right: 1.75rem;
     }
+  }
+}
+
+.not__found {
+  min-height: 30rem;
+
+  p {
+    color: var(--gray-400);
+    line-height: 1.75rem;
+  }
+
+  p.head {
+    font-size: 2rem;
   }
 }
 </style>

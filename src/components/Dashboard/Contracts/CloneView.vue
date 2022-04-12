@@ -8,7 +8,7 @@
       <span class="breadcrumb__content">
         <span>
           Список договоров
-          <base-arrow-right/>
+          <base-arrow-right :width="18" :height="18"/>
           <span>{{ order.contract }}</span>
         </span>
         <span class="head">
@@ -25,15 +25,18 @@
         :is="activeTab"
         :order="order"
         :has-constructor-order="hasConstructorOrder"
+        v-show="!showLoading"
+        @start-loading="startLoading"
+        @finish-loading="finishLoading"
     >
     </component>
-    <base-loading-content :loading="showLoading"/>
+    <base-loading v-if="showLoading"/>
   </main>
 </template>
 
 <script>
 import api from "@/services/api";
-import BaseLoadingContent from "@/components/BaseLoadingContent";
+import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
@@ -46,13 +49,13 @@ export default {
   name: "CloneView",
   components: {
     BaseArrowRight,
-    BaseLoadingContent,
     BaseFilterTabsContent,
     BaseArrowLeft,
     TabPaymentSchedule,
     TabObjectDetails,
     TabClientDetails,
-    TabContractDetails
+    TabContractDetails,
+    BaseLoading
   },
   data() {
     return {
@@ -94,7 +97,7 @@ export default {
     async fetchContractData() {
       this.showLoading = true
       const {id} = this.$route.params
-      await api.contract.fetchContract(id)
+      await api.contractV2.fetchContractView(id)
           .then((response) => {
             this.order = response.data
           })
@@ -104,6 +107,12 @@ export default {
           .finally(() => {
             this.showLoading = false
           })
+    },
+    startLoading() {
+      this.showLoading = true
+    },
+    finishLoading() {
+      this.showLoading = false
     },
     backNavigation() {
       this.$router.go(-1)
@@ -116,6 +125,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-family: Inter, serif;
+  font-style: normal;
+  line-height: 22px;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
 .main__class {
   background-color: white;
   padding: 3rem;

@@ -6,14 +6,6 @@ class Contract extends Core {
         super(axios)
     }
 
-    downloadContract(id) {
-        return this.get('orders/' + id + '/contract')
-    }
-
-    fetchContract(id) {
-        return this.get(`orders/${id}`)
-    }
-
     fetchDeals(params) {
         return this.get('deals', params)
     }
@@ -30,6 +22,42 @@ class ContractV2 extends Core {
 
     fetchContractsList(params) {
         return this.get(`contracts`, {params})
+    }
+
+    fetchContractView(id) {
+        return this.get(`contracts/${id}`)
+    }
+
+    downloadContract(id) {
+        return this.get('orders/' + id + '/contract')
+    }
+
+    fetchClientInfo(id) {
+        return this.get('contracts/' + id + '/client')
+    }
+
+    fetchContractDetails(id) {
+        return this.get('contracts/' + id + '/details')
+    }
+
+    getContractApartments(id) {
+        return this.get('contracts/' + id + '/apartments')
+    }
+
+    fetchPaymentSchedule(id, params) {
+        return this.get('contracts/' + id + '/payment-schedule', {params})
+    }
+
+    fetchPayments(id, params) {
+        return this.get('contracts/' + id + '/payments', {params})
+    }
+
+    toggleClientType(id) {
+        return this.put('contracts/' + id + '/client')
+    }
+
+    appendPayment(id, body) {
+        return this.post(`contracts/${id}/payments`, body)
     }
 }
 

@@ -30,6 +30,8 @@ export default {
     close: "Закрыть",
     ye: "сум",
     usd: "$",
+    _usd: 'USD',
+    uzs: 'UZS',
     general: "Общие",
     edit_password: "Изменить пароль",
     profile: 'Профиль',
@@ -62,6 +64,10 @@ export default {
     client_details: 'Детали клиента',
     contract_details: 'Детали договора',
     floor: 'Этаж',
+    paid: 'Оплачено',
+    waiting_to_payment: 'На оплате',
+    cash: 'Наличные',
+    error: "Ошибка!",
 
     tab_status: {
         all: "Все",
