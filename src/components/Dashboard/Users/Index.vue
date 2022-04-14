@@ -1,87 +1,77 @@
 <template>
   <main>
     <div class="app-content">
-      <div
-          class="
-          d-flex
-          justify-content-between
-          align-items-center
-          flex-md-row flex-column
-        "
-      >
-        <div
-            class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
-        >
-          <h1 class="title__big my-0">
-            {{ $t("users.title") }}
-          </h1>
-          <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
-            <li class="breadcrumb-item">
-              <router-link :to="{name: 'home'}">
-                <i class="far fa-home"></i>
-              </router-link>
-            </li>
 
-            <li class="breadcrumb-item">
-              <a href="#">
-                {{ $t("users.title") }}
-              </a>
-            </li>
-            <li class="breadcrumb-item active">
-              {{ $t("list") }}
-            </li>
-          </ul>
-        </div>
-
-        <b-link
-            v-if="getPermission.users.create"
-            class="btn btn-primary mr-0 mt-md-0"
-            v-b-modal.modal-create
-        >
-          <i class="fal fa-plus mr-2"></i>
-          {{ $t("add") }}
-        </b-link>
+      <div class="d-flex align-items-center">
+        <base-search-input @trigger-input="setSearchValue"/>
+        <base-button v-if="getPermission.users.create"
+                     design="violet-gradient mb-3"
+                     :text="$t('add')"
+                     v-b-modal.modal-create>
+          <template #left-icon>
+            <i class="fal fa-plus mr-2"></i>
+          </template>
+        </base-button>
       </div>
+
 
       <div class="pt-2">
         <b-table
-            sticky-header
+            thead-tr-class="row__head__bottom-border"
+            tbody-tr-class="row__body__bottom-border"
+            ref="contracts-table"
+            id="users-table"
+            class="table__list"
             borderless
             responsive
-            :items="getUsers"
-            :fields="fields"
-            :busy="getLoading"
             show-empty
+            sort-icon-left
+            :busy="loading"
+            @sort-changed="sortingChanged"
+            :items="tableItems"
+            :fields="fields"
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
-            sort-icon-left
-            class="custom-table"
             :empty-text="$t('no_data')"
         >
-          <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">
-              {{ scope.emptyText }}</span>
-          </template>
 
           <template #table-busy>
-            <div class="d-flex justify-content-center w-100">
-              <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
+            <base-loading/>
+          </template>
+
+          <template #empty="scope" class="text-center">
+            <div class="d-flex justify-content-center align-items-center flex-column not__found">
+              <p class="head">{{ scope.emptyText }}</p>
+              <p>Попробуйте ввести другие данные для поиска</p>
             </div>
           </template>
 
-          <template #cell(userFullName)="data">
-            {{ data.item.first_name }} {{ data.item.last_name }}
+
+          <!-- INDEX COLUMN -->
+          <template #cell(index)="data">
+            <span>
+              {{ data.index + 1 }}
+            </span>
+          </template>
+
+          <template #cell(first_name)="data">
+            {{ data.item.first_name }} {{ data.item.last_name }} {{ data.item.second_name }}
+          </template>
+
+          <template #cell(branch)="data">
+            {{ data.item.branch.name }}
           </template>
 
           <template #cell(objects)="data">
-            <span v-for="object in data.item.objects" :key="object.id">
-              {{ object.name }},
+
+            <span>
+              <span v-for="object in showByCollapse(data.item)" :key="object.id">
+                {{ object.name }},
+              </span>
+              <div v-if="data.item.objects.length > 3 && !data.item.toggleCollapse"
+                   @click="data.item.toggleCollapse = !data.item.toggleCollapse">...</div>
             </span>
+
           </template>
 
           <template #cell(role)="data">
@@ -135,42 +125,115 @@
           v-if="getPermission.users.update"
           :manager-id="manager_id"
           :edit-history-context="editHistoryContext"
-          @EditManager="EditManager(item)"
+          @EditManager="EditManager"
       ></edit-modal>
+
+      <div v-if="!loading && countOfItems" class="pagination__vue">
+        <!--   Pagination   -->
+        <vue-paginate
+            :page-count="pagination.total"
+            :value="pagination.current"
+            :container-class="'container'"
+            :page-class="'page-item'"
+            :page-link-class="'page-link'"
+            :next-class="'page-item'"
+            :prev-class="'page-item'"
+            :prev-link-class="'page-link'"
+            :next-link-class="'page-link'"
+            @change-page="changeCurrentPage"
+        >
+          <template #next-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-right-icon/>
+          </span>
+          </template>
+
+          <template #prev-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-left-icon/>
+          </span>
+          </template>
+        </vue-paginate>
+
+        <!--  Show By Select    -->
+        <div class="show__by">
+        <span class="show__by__content">
+          <span class="description">{{ $t('contracts.show_by') }}:</span>
+          <b-form-select
+              @input="limitChanged"
+              v-model="showByValue"
+              :options="showByOptions"
+          ></b-form-select>
+          <span class="arrow__down">
+            <base-down-icon/>
+          </span>
+        </span>
+        </div>
+      </div>
     </div>
 
-    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
-      <template #overlay>
-        <div class="d-flex justify-content-center w-100">
-          <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
-      </template>
-    </b-overlay>
   </main>
+
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+
 import Create from "./Modal/Create";
 import Edit from "./Modal/Edit";
 import api from "@/services/api";
+import {sortObjectValues} from "@/util/reusable";
+import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import BaseButton from "@/components/Reusable/BaseButton"
+import BaseLoading from "@/components/Reusable/BaseLoading"
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseDownIcon from "@/components/icons/BaseArrowDownIcon";
+import {mapGetters} from "vuex";
+
 
 export default {
   name: 'Users',
   components: {
+    BaseSearchInput,
+    BaseLoading,
+    BaseButton,
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
+    BaseDownIcon,
     "create-modal": Create,
     "edit-modal": Edit,
   },
 
+  created() {
+    this.filter = {
+      ...this.$route.query,
+    }
+    this.currentPage = Number(this.filter.page)
+  },
   data() {
+
+    const showByOptions = []
+
+    for (let number = 10; number <= 50; number += 10) {
+      showByOptions.push({
+        value: number,
+        text: number
+      })
+    }
+
+    let {search: searchValue, limit: showByValue} = this.$route.query
+
+    if (!showByValue) {
+      showByValue = 20
+    }
     return {
+      searchValue,
+      showByOptions,
+      filter: {},
+      page: 1,
+      currentPage: 1,
       manager: {},
-      manager_id: 0,
+      manager_id: '',
       editHistoryContext: {
         id: 0
       },
@@ -179,17 +242,21 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
-
-      sortBy: "id",
+      sortBy: "",
       sortDesc: false,
       fields: [
         {
-          key: "id",
+          key: "index",
           label: "#",
         },
         {
-          key: "userFullName",
+          key: "first_name",
           label: this.$t("users.name"),
+          sortable: true,
+        },
+        {
+          key: "branch",
+          label: this.$t("users.branch"),
         },
         {
           key: "objects",
@@ -198,52 +265,136 @@ export default {
         {
           key: "phone",
           label: this.$t("users.phone"),
+          sortable: true,
         },
         {
           key: "role",
           label: this.$t("users.roles"),
-          sortable: true,
         },
         {
           key: "email",
           label: this.$t("users.login"),
+          sortable: true,
         },
         {
           key: "actions",
           label: "",
         },
       ],
-      loading: false
+      tableItems: [],
+      loading: false,
+      showByValue,
+      pagination: {},
     };
   },
+  watch: {
+    '$route.query': {
+      handler: function () {
+        this.fetchUsers()
+      },
+      deep: true
+    },
+    searchValue() {
+      this.getUsersListBySearch()
+    }
+  },
+  computed: {
+    ...mapGetters(["getPermission"]),
 
-  computed: mapGetters([
-    "getUsers",
-    "getUser",
-    "getPermission",
-    "getLoading",
-    "getMe",
-  ]),
+    countOfItems() {
+      return this.tableItems.length
+    },
+    query() {
+      return Object.assign({}, this.$route.query)
+    },
+  },
 
   mounted() {
-    this.fetchUsers(this);
+    this.fetchUsers();
   },
 
   methods: {
-    ...mapActions(["fetchUsers", "fetchUser", "fetchMenu"]),
+    showByCollapse(item) {
+      if (item.toggleCollapse) {
+        return item.objects
+      }
+      return item.objects.slice(0, 3)
+    },
+    setSearchValue(search) {
+      const hasSearchQuery = this.query.hasOwnProperty('search')
+      if (search?.length < 3 && hasSearchQuery) {
+        this.replaceRouter({})
+      }
+
+      if (this.searchValue === search || search.length < 3) return
+      this.searchValue = search
+    },
+
+    limitChanged() {
+      this.changeFetchLimit()
+    },
+    changeCurrentPage(page) {
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({...this.query, page})
+    },
+    changeFetchLimit() {
+      const query = {
+        ...this.query, page: 1
+      }
+      const limit = this.showByValue
+      this.replaceRouter({...query, limit})
+    },
+
+    getUsersListBySearch() {
+      const {query, searchValue} = this
+      const hasSearchQuery = query.hasOwnProperty('search')
+      if (!hasSearchQuery) {
+        this.pushRouter({
+          search: searchValue
+        })
+        return
+      }
+      query.search = searchValue
+      this.pushRouter(query)
+    },
+
+    pushRouter(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({query: sortQuery})
+    },
+
+    async fetchUsers() {
+      const query = sortObjectValues(this.query)
+      this.loading = true
+      await api.userV2.getUsersList(query)
+          .then((response) => {
+            this.tableItems = response.data.items.map(item => ({...item, toggleCollapse: false}))
+            this.pagination = response.data.pagination
+            this.showByValue = response.data.pagination.perPage
+            this.loading = true
+          }).finally(() => {
+            this.loading = false
+          })
+    },
+
+    replaceRouter(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({query: sortQuery})
+    },
+
 
     CreateManager() {
-      this.fetchUsers(this);
+      this.fetchUsers();
     },
 
     EditManager() {
-      this.fetchUsers(this);
+      this.fetchUsers();
     },
 
     clickManager(data) {
       this.manager_id = data.item.id;
       this.editHistoryContext = data.item
-      this.fetchUser(this);
     },
 
     getName(name) {
@@ -276,13 +427,12 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.loading = true
-          api.user.deleteUserFromDB(user)
+          api.userV2.deleteUserFromDB(user)
               .then((response) => {
                 this.loading = false
                 this.toasted(response.data.message, "success");
-                this.fetchUsers(this);
-                this.fetchMenu(this);
-
+                this.fetchUsers();
+                this.loading = false
                 this.$swal(this.$t("sweetAlert.deleted"), "", "success");
               })
               .catch((error) => {
@@ -296,7 +446,95 @@ export default {
         }
       });
     },
-  },
+
+    sortingChanged(val) {
+      this.filter.sort_by = val.sortBy;
+      this.filter.order_by = val.sortDesc ? "desc" : "asc";
+      this.filter.page = 1;
+      this.currentPage = this.filter.page;
+
+      this.$router.push({
+        name: "users",
+        query: this.filter,
+      });
+    },
+
+  }
+  ,
 }
 </script>
 
+<style lang="scss" scoped>
+@import "@/assets/scss/utils/pagination";
+
+.search__content {
+  margin-top: 0;
+}
+
+::v-deep .row__head__bottom-border {
+  border-bottom: 2px solid var(--gray-200) !important;
+}
+
+::v-deep .row__body__bottom-border:not(:last-child) {
+  border-bottom: 2px solid var(--gray-200) !important;
+}
+
+
+::v-deep .table__list {
+  min-height: 250px;
+  max-height: none;
+
+  table {
+    color: var(--gray-600);
+
+    thead tr th {
+      font-family: CraftworkSans, serif;
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 14px;
+      letter-spacing: 1px;
+      color: var(--gray-400) !important;
+      padding: 1.125rem 1rem;
+      vertical-align: middle;
+
+      //&.b-table-sort-icon-left {
+      //display: flex;
+      //align-items: center;
+      //}
+    }
+
+    td {
+      vertical-align: middle;
+    }
+  }
+
+
+  .table.b-table[aria-busy=true] {
+    opacity: 1 !important;
+  }
+}
+
+
+::v-deep .table.b-table > thead > tr > [aria-sort="none"],
+::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
+  background-position: right calc(2rem / 2) center !important;
+  //background-position: right !important;
+  padding-right: 20px;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../../assets/icons/icon-arrow-down.svg") !important;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=descending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
+}
+
+
+</style>

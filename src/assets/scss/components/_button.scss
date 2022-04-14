@@ -44,7 +44,7 @@ button:focus {
   box-shadow: unset !important;
   border: 1px solid transparent !important;
   padding: 0.786rem 1.5rem !important;
-  border-radius: 0.358rem !important;
+  //border-radius: 0.358rem !important;
   text-align: center;
   font-weight: 500;
   user-select: none;
@@ -54,6 +54,7 @@ button:focus {
   border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background 0s,
   border 0s, -webkit-box-shadow 0.15s ease-in-out !important;
   text-transform: none;
+  border-radius: 32px !important;
 
   display: flex !important;
   justify-content: center;
@@ -82,7 +83,8 @@ button:focus {
 
 .btn-primary {
   color: #fff !important;
-  background-color: var(--primary) !important;
+  background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%) !important;
+  //background-color: var(--primary) !important;
   border-color: var(--primary) !important;
 }
 

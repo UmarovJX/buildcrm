@@ -26,8 +26,13 @@ export default {
       type: String,
       default: () => ('')
     },
+    size: {
+      type: String,
+      default: () => 'lg'
+    }
   },
   emits: ['click'],
+  computed: {},
   methods: {
     triggerEvent() {
       this.$emit('click')
@@ -37,9 +42,11 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
 .base__button
   font-family: Inter, serif
-  padding: 1rem 1.5rem 1rem 1rem
+  padding: 1rem 1.25rem
+  max-height: 56px
   border-radius: 2rem
   color: var(--gray-600)
   font-size: 1rem
@@ -49,15 +56,27 @@ export default {
   justify-content: center
   align-items: center
   cursor: pointer
+  background-color: var(--gray-100)
 
   .text
     color: inherit
     font-family: Inter, serif
 
   .left__icon
-    margin-right: 1rem
+  //margin-right: .5rem
 
   .right__icon
-    margin-left: 1rem
+//margin-left: .5rem
+
+.gray-button
+  background-color: var(--gray-200)
+
+.violet
+  background-color: var(--violet-700)
+  color: var(--white)
+
+.violet-gradient
+  background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
+  color: var(--white)
 
 </style>
