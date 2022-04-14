@@ -48,6 +48,10 @@ class UserV2 extends Core {
         return this.get('oauth/me')
     }
 
+    getUser() {
+        return this.get('users/me')
+    }
+
     deleteUserFromDB(userId) {
         return this.delete(`users/${userId}`)
     }
