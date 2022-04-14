@@ -353,10 +353,9 @@
       </template>
 
       <template #main>
-        <h3 class="d-flex justify-content-center">Ogohlantirish!</h3>
+        <h3 class="d-flex justify-content-center">{{ $t('contracts.warning') }}</h3>
         <p>
-          Boshlang'ich to'lov uchun {{ increasedPrice }}
-          so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi
+          {{ $t('contracts.warning_in_payment', {price: increasedPrice}) }}
         </p>
       </template>
 
