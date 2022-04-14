@@ -45,6 +45,18 @@
         <b-form-group
             label-cols="4"
             label-cols-lg="2"
+            :label="$t('user.second_name')"
+            label-for="second_name"
+        >
+          <b-form-input
+              id="second_name"
+              v-model="manager.second_name"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+            label-cols="4"
+            label-cols-lg="2"
             :label="$t('user.phone')"
             label-for="phone"
         >
@@ -164,6 +176,7 @@ export default {
     manager: {
       first_name: null,
       last_name: null,
+      second_name: null,
       phone: null,
       password: null,
       email: null,
@@ -214,6 +227,7 @@ export default {
     resetModal() {
       this.manager.first_name = null;
       this.manager.last_name = null;
+      this.manager.second_name = null,
       this.manager.phone = null;
       this.manager.password = null;
       this.manager.email = null;
@@ -234,7 +248,7 @@ export default {
     async handleSubmit() {
       this.getLoading = true;
       try {
-        const response = await api.user.addNewUserToDB(this.manager)
+        const response = await api.userV2.addNewUserToDB(this.manager)
         this.toasted(response.data.message, "success");
         this.$nextTick(() => {
           this.getLoading = false;

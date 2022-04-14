@@ -1,9 +1,6 @@
 <template>
   <div class="search__content">
     <div class="search__content-input">
-      <div @click="focusOnSearchInput" class="search__content-input-icon">
-        <base-search-icon/>
-      </div>
       <input
           v-model="searchInput"
           type="search"
@@ -12,12 +9,14 @@
           placeholder="ФИО, телефон, номер договора"
           @input="triggerInputEvent"
       />
+<!--      <data-picker v-model="searchInput">-->
+
+<!--      </data-picker>-->
       <span
-          v-if="showClearIcon"
           class="clear__icon"
           @click="clearSearchInput"
       >
-        <base-times-circle-icon/>
+        <base-calendar-icon/>
       </span>
     </div>
   </div>
@@ -25,15 +24,18 @@
 
 
 <script>
-import BaseSearchIcon from "@/components/icons/BaseSearchIcon";
-import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
+// import BaseSearchIcon from "@/components/icons/BaseSearchIcon";
+// import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import {debounce, sortInFirstRelationship} from "@/util/reusable";
+import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
+// import DataPicker from
 
 export default {
   name: "BaseSearchInput",
   components: {
-    BaseSearchIcon,
-    BaseTimesCircleIcon,
+    BaseCalendarIcon,
+    // BaseSearchIcon,
+    // BaseTimesCircleIcon,
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
@@ -93,18 +95,18 @@ export default {
 .search__content {
   margin-top: 2rem;
   margin-bottom: 1rem;
-  width: 100%;
+  width: 90%;
   display: flex;
 
   &-input {
-    width: 75%;
+    width: 100%;
     height: 3.5rem;
     border: 0.25rem solid transparent;
     border-radius: 2rem;
     background-color: var(--gray-100);
     display: flex;
     align-items: center;
-    padding-left: 1.25rem;
+    //right: 1.25rem;
     position: relative;
 
     &:focus-within {
@@ -117,14 +119,17 @@ export default {
     }
 
     input {
-      width: 95%;
+      //width: 95%;
+      padding: 1rem;
       background-color: transparent;
-      margin-left: 1.25rem;
+      //margin-left: 1.25rem;
       height: 100%;
+      border-radius: 2rem;
       outline: none;
       border: none;
       font-weight: 700;
       color: var(--gray-600);
+
 
       &::placeholder {
         font-weight: 600;
@@ -143,7 +148,8 @@ export default {
 
 .clear__icon {
   position: absolute;
-  right: 1rem;
+  width: 20px;
+  right: 1.25rem;
   cursor: pointer;
   transition: transform 100ms ease-in;
 
@@ -178,7 +184,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 
 @media (max-width: 996px) {
   .search__content-input {
-    width: 60%;
+    width: 80%;
   }
 }
 </style>

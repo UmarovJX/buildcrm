@@ -615,6 +615,7 @@ export default {
     user: {
         first_name: "Имя",
         last_name: "Фамилия",
+        second_name: "Очества",
         phone: "Номер телефона",
         password: "Пароль",
         email: "E-mail",
@@ -631,6 +632,7 @@ export default {
         phone: "Номер телефона",
         roles: "Роль",
         object: "Объект",
+        branch: "Филиал",
         login: "Логин",
     },
 

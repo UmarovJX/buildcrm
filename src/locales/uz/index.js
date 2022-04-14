@@ -5,6 +5,7 @@ export default {
     user: {
         first_name: "Ism",
         last_name: "Familiya",
+        second_name: "Otasining ismi",
         phone: "Telefon raqami",
         password: "Parol",
         email: "E-mail",
@@ -609,7 +610,7 @@ export default {
 
 
     users: {
-        title: "Foydalanuvchilar", name: "Ism", phone: "Telefon raqami", roles: "Rol", object: "Obyekt", login: "Login",
+        title: "Foydalanuvchilar", name: "Ism", phone: "Telefon raqami", roles: "Rol", object: "Obyekt", branch:"Filial", login: "Login",
     },
 
     accountants: {
