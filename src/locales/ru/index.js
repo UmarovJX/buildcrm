@@ -66,6 +66,7 @@ export default {
     floor: 'Этаж',
     paid: 'Оплачено',
     waiting_to_payment: 'На оплате',
+    partially: 'Частично оплачено',
     cash: 'Наличные',
     error: "Ошибка!",
 

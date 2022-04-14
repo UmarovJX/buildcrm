@@ -24,6 +24,10 @@ class ContractV2 extends Core {
         return this.get(`contracts`, {params})
     }
 
+    fetchObjectsOption() {
+        return this.get(`contracts/filter-fields`)
+    }
+
     fetchContractView(id) {
         return this.get(`contracts/${id}`)
     }
@@ -58,6 +62,18 @@ class ContractV2 extends Core {
 
     appendPayment(id, body) {
         return this.post(`contracts/${id}/payments`, body)
+    }
+
+    importPaymentTransaction(id, payments) {
+        return this.post(`contracts/${id}/payments/import`, {payments})
+    }
+
+    removePaymentTransaction(contractId, transactionId) {
+        return this.delete(`contracts/${contractId}/payments/${transactionId}`)
+    }
+
+    editPaymentTransaction({contractId, transactionId, params}) {
+        return this.put(`contracts/${contractId}/payments/${transactionId}`, params)
     }
 }
 

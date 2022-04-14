@@ -49,18 +49,18 @@ export default {
 
 <style lang="sass" scoped>
 .filter__inputs
-  margin-top: 2rem
+  //margin-top: 2rem
 
   &-input
     display: flex
     align-items: center
     justify-content: space-between
-    min-width: 20rem
+    //min-width: 20rem
     min-height: 4rem
     background-color: var(--gray-100)
     border-radius: 2rem
     padding: 1rem 1.25rem
-    margin-top: 1.5rem
+    //margin-top: 1.5rem
     width: 100%
     border: none
     color: var(--gray-600)

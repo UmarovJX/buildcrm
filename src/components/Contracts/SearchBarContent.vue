@@ -50,7 +50,7 @@
           <div class="filter__inputs">
             <!--    Object Selection      -->
             <div class="filter__inputs-input">
-              <b-form-select v-model="filter.object" class="inline" :options="objectOptions">
+              <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
                 <template #first>
                   <b-form-select-option
                       :value="null"
@@ -128,7 +128,7 @@
             <!--   Client Type     -->
             <div class="filter__inputs-input">
               <b-form-select
-                  v-model="filter.client_type" class="inline" :options="objectOptions">
+                  v-model="filter.client_type" class="inline" :options="clientTypeOptions">
                 <template #first>
                   <b-form-select-option
                       :value="null"
@@ -162,6 +162,7 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import {debounce, sortInFirstRelationship} from "@/util/reusable";
+import api from "@/services/api";
 
 export default {
   name: "SearchBarContent",
@@ -175,30 +176,19 @@ export default {
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
-    const objectOptions = [
-      {value: 'a', text: 'This is First option'},
-      {value: 'b', text: 'Default Selected Option'},
-      {value: 'c', text: 'This is another option'},
-      {value: 'd', text: 'This one is disabled'},
-      {value: 'e', text: 'This is option e'},
-      {value: 'f', text: 'This is option f'},
-      {value: 'g', text: 'This is option g'}
-    ]
-
-    const filter = {
-      object: null,
-      contract_number: null,
-      contract_date: null,
-      client_type: null,
-      contract_price: null,
-      price_to: null,
-      price_from: null,
-      apartment_number: []
-    }
-
     return {
-      objectOptions,
-      filter,
+      filter: {
+        object_id: null,
+        contract_number: null,
+        contract_date: null,
+        client_type: null,
+        contract_price: null,
+        price_to: null,
+        price_from: null,
+        apartment_number: []
+      },
+      objectOptions: [],
+      clientTypeOptions: [],
       currencyOptions: [this.$t('uzs'), this.$t('_usd')],
       searchInput: this.$route.query.search,
       debounceInput: this.$route.query.search,
@@ -223,15 +213,29 @@ export default {
       this.triggerInputEvent()
     }
   },
-  async created() {
-    await this.fetchObjects()
-  },
   mounted() {
     if (this.searchInput?.length) {
       this.toggleClearIcon()
     }
+    this.fetchObjectsOption()
   },
   methods: {
+    async fetchObjectsOption() {
+      await api.contractV2.fetchObjectsOption()
+          .then((response) => {
+            const {objects, client_types} = response.data
+            this.objectOptions = objects.map(({id, name}) => ({value: id, text: name}))
+            for (let [key, value] of Object.entries(client_types)) {
+              this.clientTypeOptions.push({
+                value: key,
+                text: value
+              })
+            }
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     clearFilter() {
       const sortingValues = sortInFirstRelationship(this.filter)
       const loopQuery = Object.assign({}, this.query)
@@ -245,7 +249,7 @@ export default {
       this.$emit('replace-router', loopQuery)
 
       this.filter = {
-        object: null,
+        object_id: null,
         contract_number: null,
         contract_date: null,
         client_type: null,
@@ -258,12 +262,10 @@ export default {
 
       this.$refs['base-form-tag-input'].clear()
     },
-    fetchObjects() {
-
-    },
     searchByFilterField() {
-      const sortingQuery = sortInFirstRelationship(this.filter)
-      this.$emit('search-by-filter', sortingQuery)
+      const sortingQuery = Object.assign({}, this.filter)
+      sortingQuery.object_id = [this.filter.object_id]
+      this.$emit('search-by-filter', sortInFirstRelationship(sortingQuery))
       this.hideFilterModal()
     },
     hideFilterModal() {
@@ -301,6 +303,15 @@ export default {
         if (property === 'apartment_number' && typeof query === 'string') {
           const toNumber = parseInt(query)
           this.filter[property] = isNaN(toNumber) ? [] : [toNumber]
+        }
+
+        if (property === 'object_id' && query) {
+          if (Array.isArray(query)) {
+            this.filter[property] = parseInt(query[0])
+          } else {
+            this.filter[property] = parseInt(query)
+          }
+          continue
         }
 
         if (query) this.filter[property] = query

@@ -78,6 +78,7 @@ export default {
     floor: 'Qavat',
     paid: "To'langan",
     waiting_to_payment: 'Kutilmoqda',
+    partially: "Qisman to'langan",
     cash: 'Naqd',
     error: "Xatolik!",
 

@@ -45,6 +45,7 @@
             <label for="client_type">Тип клиента</label>
             <div class="selection__content">
               <select
+                  v-if="permission.contracts.friends"
                   @change="changeClientType"
                   name="client_type"
                   id="client_type"
@@ -54,6 +55,10 @@
                 <option :value="false">Незнакомый</option>
                 <option :value="true">Знакомый</option>
               </select>
+              <p v-else>
+                <span v-if="client.friends">Знакомый</span>
+                <span v-else>Незнакомый</span>
+              </p>
               <!--              <span class="edit__icon">-->`
               <!--                <base-edit-icon :height="16" :width="16" fill="#ffffff"/>-->
               <!--              </span>-->
@@ -72,6 +77,7 @@
 <script>
 import {formatDateWithDot, phonePrettier} from "@/util/reusable";
 import api from "@/services/api";
+import {mapGetters} from "vuex";
 
 export default {
   name: "TabClientDetails",
@@ -94,6 +100,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      permission: 'getPermission'
+    }),
     haveClient() {
       return Object.keys(this.client).length
     }

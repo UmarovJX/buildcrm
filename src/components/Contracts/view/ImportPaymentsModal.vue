@@ -152,8 +152,17 @@ export default {
     triggerUploadEvent() {
       this.excelFile = this.$refs['file-input'].files[0]
       readExcelFile(this.excelFile).then((rows) => {
+        const head = rows[0]
+        const sortRows = rows.slice(1).map(row => {
+          const loopPackage = {}
+          head.forEach((headCell, index) => {
+            loopPackage[headCell] = row[index]
+          })
+          return loopPackage
+        })
+        sortRows.unshift(head)
         this.initExcelSheet({
-          rows,
+          rows: sortRows,
           file: this.excelFile,
           contract: this.contract
         })
