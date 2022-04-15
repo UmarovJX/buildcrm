@@ -212,8 +212,11 @@ export default {
       return this.haveApartment && this.apartment.apartment.hasOwnProperty('plan')
     },
     imageUrl() {
-      if (!this.havePlan) return ''
-      return process.env.VUE_APP_URL + '/' + this.apartment.apartment.plan.image
+      const {apartment} = this.apartment
+      if (!(this.havePlan && apartment.plan)) {
+        return ''
+      }
+      return process.env.VUE_APP_URL + '/' + apartment.plan?.image
     }
   },
   created() {
