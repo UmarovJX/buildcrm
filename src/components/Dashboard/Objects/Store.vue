@@ -634,7 +634,7 @@ export default {
             this.object = data;
           }
         } else {
-          const {data, status} = await api.objects.updateObject(this.object.id, this.object)
+          const {data, status} = await api.objectsV2.updateObject(this.object.id, this.object)
 
           if (status === 201 || status === 202) {
             this.step = 2;
@@ -772,7 +772,7 @@ export default {
     async getPlans() {
       this.getLoading = true
       try {
-        const {data, status} = await api.objects.fetchObjectPlans(this.object.id)
+        const {data, status} = await api.objectsV2.fetchObjectPlans(this.object.id)
 
         if (status === 200) {
           this.plans = [];

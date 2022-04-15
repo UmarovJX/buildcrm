@@ -38,6 +38,10 @@ class AuthV2 extends Core {
             client_secret: process.env.VUE_APP_CLIENT_SECRET
         })
     }
+
+    getMe() {
+        return this.get('users/me')
+    }
 }
 
 export default {

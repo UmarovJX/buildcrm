@@ -5,6 +5,7 @@ export default {
     user: {
         first_name: "Ism",
         last_name: "Familiya",
+        second_name: "Otasining ismi",
         phone: "Telefon raqami",
         password: "Parol",
         email: "E-mail",
@@ -42,6 +43,8 @@ export default {
     close: "Yopish",
     ye: "sum",
     usd: "$",
+    _usd: 'USD',
+    uzs: 'UZS',
     general: "Umumiy",
     edit_password: "Parolni o'zgartirish",
     profile: 'Profil',
@@ -74,6 +77,11 @@ export default {
     initial_payment: 'Первоначальный',
     monthly_pay: 'Ежемесячный',
     floor: 'Qavat',
+    paid: "To'langan",
+    waiting_to_payment: 'Kutilmoqda',
+    partially: "Qisman to'langan",
+    cash: 'Naqd',
+    error: "Xatolik!",
 
     tab_status: {
         all: "Hammasi",
@@ -137,12 +145,33 @@ export default {
     },
 
     contracts: {
+        warning: 'Предупреждение',
+        warning_in_payment: "Boshlang'ich to'lov uchun {price} so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi?",
         title: "Shartnomalar", download: "Shartnomani yuklab olish", f_i_o: 'F.I.SH', // asd
         filter_with_date: "Sana bo'yicha filtrlash", // asd
         client_name: 'Foydalanuvchi ismi', // asd
         client_phone: 'Telefon raqami', // asd
         price: 'Narxi', // asd
         object: "Ob'ekt", // asd
+        show_by: "Ko'rsatish",
+
+        table: {
+            contract: 'Shartnoma',
+            client: 'Foydalanuvchi',
+            phone_number: 'Telefon',
+            status: 'Status',
+            cost: 'Narxi',
+            object: 'Bino',
+            date: 'Sana'
+        },
+
+        status: {
+            waiting: "To'lovda",
+            booked: 'Band qilingan',
+            sold: 'Sotilgan',
+            closed: 'Yopilgan',
+            contract: 'Shartnoma'
+        },
 
         view: {
             unfamiliar: "Notanish", // asd
@@ -584,7 +613,7 @@ export default {
 
 
     users: {
-        title: "Foydalanuvchilar", name: "Ism", phone: "Telefon raqami", roles: "Rol", object: "Obyekt", login: "Login",
+        title: "Foydalanuvchilar", name: "Ism", phone: "Telefon raqami", roles: "Rol", object: "Obyekt", branch:"Filial", login: "Login",
     },
 
     accountants: {

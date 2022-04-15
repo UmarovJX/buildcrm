@@ -27,7 +27,7 @@ import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedCont
 
 import Clients from "./components/Dashboard/Clients/Index";
 
-import Contracts from "./components/Dashboard/Contracts/Index";
+// import Contracts from "./components/Dashboard/Contracts/Index";
 import ContractsView from "./components/Dashboard/Contracts/View";
 
 import Users from "./components/Dashboard/Users/Index";
@@ -53,7 +53,8 @@ import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import CloneView from "@/components/Dashboard/Contracts/CloneView";
-import CloneContracts from "@/views/Contracts/Index"
+import ImportPayments from "@/components/Contracts/view/ImportPayments";
+import Contracts from "@/views/Contracts/Index"
 
 const routes = [
     {
@@ -61,7 +62,6 @@ const routes = [
         name: "home",
         component: Dashboard,
     },
-
 
     {
         path: "/login",
@@ -226,19 +226,19 @@ const routes = [
         },
     },
 
+    // {
+    //     name: "contracts",
+    //     path: "/contracts",
+    //     component: Contracts,
+    //     meta: {
+    //         requiresAuth: "contracts",
+    //     },
+    // },
+
     {
         name: "contracts",
         path: "/contracts",
         component: Contracts,
-        meta: {
-            requiresAuth: "contracts",
-        },
-    },
-
-    {
-        name: "contracts-clone",
-        path: "/contracts/clone",
-        component: CloneContracts,
         meta: {
             requiresAuth: "contracts",
         },
@@ -259,8 +259,18 @@ const routes = [
         component: CloneView,
         meta: {
             requiresAuth: "contracts",
-        },
+        }
     },
+
+    {
+        name: "contract-import-payments",
+        path: "/contracts/:id/clone/import-payments",
+        component: ImportPayments,
+        meta: {
+            requiresAuth: "contracts",
+        }
+    },
+
 
     {
         name: "type_plan",

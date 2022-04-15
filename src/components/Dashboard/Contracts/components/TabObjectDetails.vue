@@ -3,7 +3,7 @@
     <div class="row">
       <div class="object__details_layout col-5">
         <div class="object__details_layout_img">
-<!--          <img src="@/assets/img/apartment-graphic.png" alt="apartment image">-->
+          <img :src="imageUrl" alt="apartment image">
         </div>
         <button>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,7 +15,7 @@
         </button>
       </div>
 
-      <div class="object__details_info col-6">
+      <div class="object__details_info col-6" v-if="haveApartment">
         <div class="breadcrumb__head">
           <span class="name">
             {{ apartment.building.name }}
@@ -25,7 +25,7 @@
             {{ apartment.block.name }}
           </span>
         </div>
-        <span class="breadcrumb__location">{{ apartment.object.address }}</span>
+        <span class="breadcrumb__location">{{ apartment.object.name }}</span>
 
         <div class="object__details_info_cards">
           <div class="object__details_info_card d-flex align-items-center">
@@ -39,7 +39,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>дом</span>
-              <span>{{ apartment.floor }}</span>
+              <span>{{ apartment.apartment.floor }}</span>
             </div>
           </div>
 
@@ -55,7 +55,73 @@
             </div>
             <div class="object__details_info_card_text">
               <span>Подъезд</span>
-              <span>{{ apartment.entrance }}</span>
+              <span>{{ apartment.apartment.entrance }}</span>
+            </div>
+          </div>
+
+          <div class="object__details_info_card d-flex align-items-center">
+            <div class="object__details_info_card_icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="12" fill="#EDE9FE"/>
+                <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"/>
+              </svg>
+
+            </div>
+            <div class="object__details_info_card_text">
+              <span>Этаж</span>
+              <span>{{ apartment.apartment.floor }}</span>
+            </div>
+          </div>
+
+          <div class="object__details_info_card d-flex align-items-center">
+            <div class="object__details_info_card_icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="12" fill="#EDE9FE"/>
+                <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"/>
+              </svg>
+            </div>
+            <div class="object__details_info_card_text">
+              <span>Этажность</span>
+              <span>
+              </span>
+            </div>
+          </div>
+
+          <div class="object__details_info_card d-flex align-items-center">
+            <div class="object__details_info_card_icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="12" fill="#EDE9FE"/>
+                <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"/>
+              </svg>
+            </div>
+            <div class="object__details_info_card_text">
+              <span>Квартира</span>
+              <span>
+                {{ apartment.apartment.number }}
+              </span>
+            </div>
+          </div>
+
+          <div class="object__details_info_card d-flex align-items-center">
+            <div class="object__details_info_card_icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="12" fill="#EDE9FE"/>
+                <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"/>
+              </svg>
+            </div>
+            <div class="object__details_info_card_text">
+              <span>Кол-во комнат</span>
+              <span>
+                {{ apartment.apartment.rooms }}
+              </span>
             </div>
           </div>
 
@@ -71,8 +137,10 @@
             <div class="object__details_info_card_text">
               <span>Площадь</span>
               <span class="d-flex">
-                  <span class="mr-2">{{ parseFloat(apartment.plan.area).toFixed(1) }}</span>
-                  <span class="lowercase"> м2</span>
+                  <span v-if="havePlan" class="mr-2 font-normal">{{
+                      parseFloat(apartment.apartment.plan.area).toFixed(1)
+                    }}</span>
+                  <span class="lowercase">м2</span>
               </span>
             </div>
           </div>
@@ -85,30 +153,31 @@
                     d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
                     fill="#7C3AED"/>
               </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>Площадь</span>
-              <span v-if="apartment.plan.balcony">
-                {{ parseFloat(apartment.plan.balcony_area).toFixed(1) }} м2
-              </span>
-              <span v-else> Нет </span>
-            </div>
-          </div>
-
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="24" height="24" rx="12" fill="#EDE9FE"/>
-                <path
-                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                    fill="#7C3AED"/>
-              </svg>
-
             </div>
             <div class="object__details_info_card_text">
               <span>Балкон</span>
+              <span v-if="havePlan && apartment.apartment.plan.balcony" class="d-flex font-normal">
+                    <span class="mr-2">{{ parseFloat(apartment.apartment.plan.balcony_area).toFixed(1) }}</span>
+                    <span class="lowercase">м2</span>
+              </span>
+              <span v-else>Нет</span>
+            </div>
+          </div>
+
+          <div class="object__details_info_card d-flex align-items-center">
+            <div class="object__details_info_card_icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="24" rx="12" fill="#EDE9FE"/>
+                <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"/>
+              </svg>
+
+            </div>
+            <div class="object__details_info_card_text">
+              <span>Завершение строительства</span>
               <span>
-                {{ parseFloat(apartment.plan.area).toFixed(1) }}
+                {{ datePrettier(apartment.object.build_date) }}
               </span>
             </div>
           </div>
@@ -119,32 +188,78 @@
 </template>
 
 <script>
+import api from "@/services/api";
+
 export default {
   name: "TabObjectDetails",
   props: {
     order: {
       type: Object,
       required: true
-    },
-    hasConstructorOrder: {
-      type: Boolean,
-      required: true
+    }
+  },
+  emits: ['start-loading', 'finish-loading'],
+  data() {
+    return {
+      apartment: {}
     }
   },
   computed: {
-    hasApartments() {
-      return this.order.hasOwnProperty('apartments') && this.order.apartments.length
+    haveApartment() {
+      return Object.keys(this.apartment).length
     },
-    apartment() {
-      if (this.hasApartments)
-        return this.order.apartments[0]
-      return {}
+    havePlan() {
+      return this.haveApartment && this.apartment.apartment.hasOwnProperty('plan')
+    },
+    imageUrl() {
+      if (!this.havePlan) return ''
+      return process.env.VUE_APP_URL + '/' + this.apartment.apartment.plan.image
     }
+  },
+  created() {
+    this.fetchObjectDetails()
+  },
+  methods: {
+    datePrettier: (rawDate) => {
+      const date = new Date(rawDate)
+      const year = date.getFullYear()
+      const baseMonth = date.getMonth() + 1
+      const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+      return `${month}/${year}`
+    },
+    async fetchObjectDetails() {
+      this.startLoading()
+      const {id} = this.$route.params
+      await api.contractV2.getContractApartments(id)
+          .then(response => {
+            this.apartment = response.data[0]
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.finishLoading()
+          })
+    },
+    startLoading() {
+      this.$emit('start-loading')
+    },
+    finishLoading() {
+      this.$emit('finish-loading')
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-family: CraftworkSans, serif;
+  font-style: normal;
+  line-height: 22px;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
 .custom__container {
   margin: 2rem 0;
 }
@@ -158,7 +273,7 @@ export default {
 
   &_img {
     width: 100%;
-    height: 100%;
+    height: 84%;
 
     & img {
       width: 100%;
@@ -189,7 +304,7 @@ export default {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    margin-top: 32px;
+    margin-top: 2rem;
   }
 
   &_card {
@@ -198,9 +313,10 @@ export default {
     width: 48%;
     height: 56px;
     padding: 0 16px;
-    margin-bottom: 16px;
+    margin-bottom: 1.5rem;
     border: 2px solid #E5E7EB;
     border-radius: 32px;
+    letter-spacing: 1px;
 
     &:nth-last-child(1) {
       width: 100%;
@@ -214,8 +330,12 @@ export default {
       align-items: center;
       text-transform: uppercase;
 
-      & span {
+      & > span {
         display: block;
+      }
+
+      & > span:first-child {
+        font-size: 0.75rem;
       }
     }
   }
@@ -240,6 +360,10 @@ export default {
 
 .lowercase {
   text-transform: lowercase;
+}
+
+.font-normal {
+  font-size: 1rem;
 }
 
 @media screen and (max-width: 1100px) {

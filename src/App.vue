@@ -38,7 +38,7 @@ export default {
   computed: {
     ...mapGetters(["getMe"])
   },
-  created() {
+  async created() {
     if (!localStorage.locale) {
       localStorage.locale = "ru";
       this.$i18n.locale = "ru";
@@ -47,15 +47,15 @@ export default {
     let path = this.$router.currentRoute;
     if (localStorage.getItem('auth__access__token')) {
       let vm = this;
-      this.setMe(vm, path);
+      await this.setMe(vm, path)
     } else {
       if (path.path !== "/") {
-        this.$router.push("/");
+        await this.$router.push("/")
       }
     }
 
     if (!localStorage.getItem("user-theme")) {
-      this.setTheme("light-theme");
+      this.setTheme("light-theme")
     }
   },
   methods: {
@@ -85,7 +85,7 @@ export default {
   watch: {
     '$route.name': {
       handler: function (name) {
-        const unnecessaryRoute = ['login','home-2']
+        const unnecessaryRoute = ['login', 'home-2']
         const indexOfRoute = unnecessaryRoute.findIndex(routeName => routeName === name)
         this.showHeaderContent = indexOfRoute === -1;
       },

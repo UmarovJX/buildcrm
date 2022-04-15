@@ -176,7 +176,7 @@ export default {
         password: newPassword,
         password_confirmation: repeatedPassword
       }
-      api.user.updateUserPassword(data)
+      api.userV2.updateUserPassword(data)
           .then(() => {
             this.responseAlert.variant = 'success'
             this.responseAlert.message = 'Ваш пароль был обновлен'

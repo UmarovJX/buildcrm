@@ -8,7 +8,7 @@
       <span class="breadcrumb__content">
         <span>
           Список договоров
-          <base-arrow-right/>
+          <base-arrow-right :width="18" :height="18"/>
           <span>{{ order.contract }}</span>
         </span>
         <span class="head">
@@ -25,15 +25,19 @@
         :is="activeTab"
         :order="order"
         :has-constructor-order="hasConstructorOrder"
+        v-show="!showLoading"
+        @start-loading="startLoading"
+        @finish-loading="finishLoading"
+        @refresh-details="refreshDetails"
     >
     </component>
-    <base-loading-content :loading="showLoading"/>
+    <base-loading v-if="showLoading"/>
   </main>
 </template>
 
 <script>
 import api from "@/services/api";
-import BaseLoadingContent from "@/components/BaseLoadingContent";
+import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
@@ -46,13 +50,13 @@ export default {
   name: "CloneView",
   components: {
     BaseArrowRight,
-    BaseLoadingContent,
     BaseFilterTabsContent,
     BaseArrowLeft,
     TabPaymentSchedule,
     TabObjectDetails,
     TabClientDetails,
-    TabContractDetails
+    TabContractDetails,
+    BaseLoading
   },
   data() {
     return {
@@ -64,24 +68,26 @@ export default {
   },
   computed: {
     filterTabList() {
-      return [
+      const list = [
         {
           name: this.$t('payment_schedule'),
-          status: 0
         },
         {
           name: this.$t('object_details'),
-          status: 1
         },
         {
           name: this.$t('client_details'),
-          status: 2
         },
         {
           name: this.$t('contract_details'),
-          status: 3
         }
       ]
+
+      const {status} = this.order
+      if (status === 'booked') {
+        return list.slice(1).map((ls, index) => ({...ls, status: index}))
+      }
+      return list.map((ls, index) => ({...ls, status: index}))
     },
     hasConstructorOrder() {
       return Object.keys(this.order).length > 0
@@ -94,9 +100,10 @@ export default {
     async fetchContractData() {
       this.showLoading = true
       const {id} = this.$route.params
-      await api.contract.fetchContract(id)
+      await api.contractV2.fetchContractView(id)
           .then((response) => {
             this.order = response.data
+            this.tabsConfiguration()
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
@@ -105,17 +112,41 @@ export default {
             this.showLoading = false
           })
     },
+    tabsConfiguration() {
+      const {status} = this.order
+      if (status === 'booked') {
+        this.activeTab = 'TabObjectDetails'
+        this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
+      }
+    },
+    startLoading() {
+      this.showLoading = true
+    },
+    finishLoading() {
+      this.showLoading = false
+    },
     backNavigation() {
       this.$router.go(-1)
     },
     changeTabOrder(status) {
       this.activeTab = this.tabs[status]
+    },
+    refreshDetails() {
+      this.fetchContractData()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-family: Inter, serif;
+  font-style: normal;
+  line-height: 22px;
+  color: var(--gray-600);
+  font-weight: 600;
+}
+
 .main__class {
   background-color: white;
   padding: 3rem;

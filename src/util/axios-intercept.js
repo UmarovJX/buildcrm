@@ -21,7 +21,6 @@ async function retryApiCall(config) {
             'Authorization': `Bearer ${access_token}`
         }
     })
-    // console.log('data', JSON.parse(config.data))
     const data = () => {
         if (config.data)
             return JSON.parse(config.data)
@@ -51,27 +50,31 @@ async function waitApiCall(config) {
 async function refreshToken() {
     const refreshToken = getLocalVar('auth__refresh__token')
     if (refreshToken) {
-        const expiredIn = parseFloat(getLocalVar('expired_in'))
-        const current = (new Date()).getTime()
-        if (!expiredIn || expiredIn < current) {
-            sessionStorage.setItem('pending', '1')
-            return await api.auth.refreshToken(refreshToken)
-                .then(async (response) => {
-                    const {refresh_token, access_token, expires_in} = await response.data
-                    const expiredTime = (new Date()).getTime() + parseFloat(expires_in) * 1000
-                    setLocalVar('expired_in', `${expiredTime}`)
-                    setLocalVar('auth__refresh__token', refresh_token)
-                    setLocalVar('auth__access__token', access_token)
-                    return 1
-                })
-                .catch(() => 1)
-                .finally(() => {
-                    sessionStorage.setItem('pending', '0')
-                    return 1
-                })
-        } else {
-            return 1
-        }
+        // const expiredIn = parseFloat(getLocalVar('expired_in'))
+        // const current = (new Date()).getTime()
+        // if (!expiredIn || expiredIn < current) {
+        sessionStorage.setItem('pending', '1')
+        return await api.auth.refreshToken(refreshToken)
+            .then(async (response) => {
+                const {refresh_token, access_token, expires_in} = await response.data
+                const expiredTime = (new Date()).getTime() + parseFloat(expires_in) * 1000
+                setLocalVar('expired_in', `${expiredTime}`)
+                setLocalVar('auth__refresh__token', refresh_token)
+                setLocalVar('auth__access__token', access_token)
+                return 1
+            })
+            .catch(() => {
+                if (window.location.pathname !== '/login')
+                    window.location.href = '/login'
+                return 1
+            })
+            .finally(() => {
+                sessionStorage.setItem('pending', '0')
+                return 1
+            })
+        // } else {
+        //     return 1
+        // }
     } else {
         navigateToLoginPage()
         return 0

@@ -88,7 +88,7 @@ export default {
           type: 'text',
           name: this.$t('user.first_name'),
           rules: 'required|alpha',
-          bind: 'firstName',
+          bind: 'first_name',
           placeholder: this.$t('user.first_name'),
           extraClass: 'validation__provider'
         },
@@ -97,8 +97,17 @@ export default {
           type: 'text',
           name: this.$t('user.last_name'),
           rules: 'required|alpha',
-          bind: 'lastName',
+          bind: 'last_name',
           placeholder: this.$t('user.last_name'),
+          extraClass: 'validation__provider'
+        },
+        {
+          id: 'secondName',
+          type: 'text',
+          name: this.$t('user.second_name'),
+          rules: 'required|alpha',
+          bind: 'second_name',
+          placeholder: this.$t('user.second_name'),
           extraClass: 'validation__provider'
         },
         {
@@ -122,8 +131,9 @@ export default {
       ],
       user: {
         avatar: '',
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
+        second_name: '',
         phone: '',
         email: ''
       },
@@ -141,12 +151,12 @@ export default {
       if (this.uploadImage) {
         return this.uploadImage
       }
-      return process.env.VUE_APP_URL + '/' + this.user.avatar
+      return process.env.VUE_APP_URL_V2 + '/' + this.user.avatar
     },
     getNameSnippet() {
-      const {firstName, lastName} = this.user
-      if (firstName !== '' && lastName !== '') {
-        return lastName[0] + firstName[0]
+      const {first_name, last_name} = this.user
+      if (first_name !== '' && last_name !== '') {
+        return last_name[0] + first_name[0]
       }
       return ''
     },
@@ -170,14 +180,15 @@ export default {
     },
     async initUserData() {
       this.loading = true
-      await api.user.getUserData().then(response => {
-        const {user} = response.data
+      await api.userV2.getUser().then(response => {
+        const user = response.data
         this.user = {...this.user, ...user}
       }).catch((error) => {
         this.toastedWithErrorCode(error)
       }).finally(() => {
         this.loading = false
       })
+
     },
     compressImage(file) {
       const fileUpl = file.target.files ? file.target.files[0] : null;
@@ -203,7 +214,7 @@ export default {
       const form = new FormData()
       form.append('avatar', 'null')
 
-      await api.user.updateUserAvatar(form)
+      await api.userV2.updateUserAvatar(form)
           .catch((error) => {
             this.toastedWithErrorCode(error)
           })
@@ -220,7 +231,7 @@ export default {
 
       // const _axios = axios.create({baseURL: process.env.VUE_APP_URL});
       // await _axios.post('users/me', form, config)
-      await api.user.updateUserAvatar(form, config)
+      await api.userV2.updateUserAvatar(form, config)
           .catch((error) => {
             this.toastedWithErrorCode(error)
           }).finally(() => {

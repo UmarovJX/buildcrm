@@ -1,4 +1,4 @@
-import {axiosV1CRM} from '@/services/core/base'
+import {axiosV1CRM, axiosV2} from '@/services/core/base'
 import Core from '@/services/core/index'
 
 class ObjectsV1Crm extends Core {
@@ -20,10 +20,6 @@ class ObjectsV1Crm extends Core {
 
     fetchOldObjects() {
         return this.get(`objects`)
-    }
-
-    updateObject(objectId, body) {
-        return this.post(`objects/${objectId}`, body)
     }
 
     deleteObject(objectId) {
@@ -183,112 +179,22 @@ class ObjectsV1Crm extends Core {
     }
 }
 
-//
-// class ObjectsV2 extends ObjectsV1Crm {
-//     constructor(axios = axiosV2) {
-//         super(axios);
-//     }
-//
-//     fetchObject(objectId) {
-//         return this.get(`v2/objects/${objectId}`)
-//     }
-//
-//     createObject(body) {
-//         return this.post('v2/objects', body)
-//     }
-//
-//     updateApartment(apartmentId, body) {
-//         return this.put(`v2/objects/apartment/${apartmentId}`, body)
-//     }
-//
-//     deleteApartment(apartmentId) {
-//         return this.delete(`v2/objects/apartment/${apartmentId}`)
-//     }
-//
-//     addBlockPrice(blockId, body) {
-//         return this.post(`v2/objects/block/${blockId}/prices`, body)
-//     }
-//
-//     createBlockPrice(blockId, body) {
-//         return this.put(`v2/objects/block/${blockId}/prices`, body)
-//     }
-//
-//     updateBlockPrice(blockId, priceId, body) {
-//         return this.put(`v2/objects/block/${blockId}/prices/${priceId}`, body)
-//     }
-//
-//     deleteBlockPrice(blockId, priceId) {
-//         return this.delete(`v2/objects/block/${blockId}/prices/${priceId}`)
-//     }
-//
-//     updateBlock(blockId, body) {
-//         return this.put(`v2/objects/block/${blockId}`, body)
-//     }
-//
-//     deleteBlock(blockId) {
-//         return this.delete(`v2/objects/block/${blockId}`)
-//     }
-//
-//     getBlockApartments(blockId) {
-//         return this.get(`v2/objects/block/${blockId}/apartments`)
-//     }
-//
-//     cloneFloors(blockId, body) {
-//         return this.post(`v2/objects/apartments/${blockId}/clone`, body)
-//     }
-//
-//     apartmentAddition(blockId, body) {
-//         return this.post(`v2/objects/block/${blockId}/apartment`, body)
-//     }
-//
-//     updateApartments(body) {
-//         return this.put(`v2/objects/apartments/update`, body)
-//     }
-//
-//     createDiscount(objectId, body) {
-//         return this.post(`v2/objects/${objectId}/discounts`, body)
-//     }
-//
-//     updateDiscount(objectId, discountId, body) {
-//         return this.put(`v2/objects/${objectId}/discounts/${discountId}`, body)
-//     }
-//
-//     deleteDiscount(objectId, discountId) {
-//         return this.delete(`v2/objects/${objectId}/discounts/${discountId}`)
-//     }
-//
-//     fetchObjectDiscount(objectId) {
-//         return this.get(`v2/objects/${objectId}/discounts`)
-//     }
-//
-//     fetchBuildings(objectId) {
-//         return this.get(`v2/objects/${objectId}/buildings`)
-//     }
-//
-//     createBuilding(objectId, body) {
-//         return this.post(`v2/objects/${objectId}/buildings`, body)
-//     }
-//
-//     updateBuilding(objectId, buildingId, body) {
-//         return this.put(`v2/objects/${objectId}/buildings/${buildingId}`, body)
-//     }
-//
-//     createBuildingBlock(buildingId, body) {
-//         return this.post(`v2/objects/buildings/${buildingId}/block`, body)
-//     }
-//
-//     deleteBuilding(objectId, buildingId) {
-//         return this.delete(`v2/objects/${objectId}/buildings/${buildingId}`)
-//     }
-//
-//     createObjectPlan(objectId, body) {
-//         return this.post(`v2/objects/${objectId}/plans`, body)
-//     }
-//
-//     fetchObjectPlans(objectId) {
-//         return this.post(`v2/objects/${objectId}/plans`)
-//     }
-//
-// }
+class ObjectsV2 extends Core {
+    constructor(axios = axiosV2) {
+        super(axios)
+    }
 
-export default ObjectsV1Crm
+    updateObject(objectId, body) {
+        return this.put(`objects/${objectId}`, body)
+    }
+
+    fetchObjectPlans(objectId) {
+        return this.get(`objects/${objectId}/plans`)
+    }
+}
+
+export default {
+    ObjectsV1Crm,
+    ObjectsV2
+}
+

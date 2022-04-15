@@ -30,6 +30,8 @@ export default {
     close: "Закрыть",
     ye: "сум",
     usd: "$",
+    _usd: 'USD',
+    uzs: 'UZS',
     general: "Общие",
     edit_password: "Изменить пароль",
     profile: 'Профиль',
@@ -62,6 +64,11 @@ export default {
     client_details: 'Детали клиента',
     contract_details: 'Детали договора',
     floor: 'Этаж',
+    paid: 'Оплачено',
+    waiting_to_payment: 'На оплате',
+    partially: 'Частично оплачено',
+    cash: 'Наличные',
+    error: "Ошибка!",
 
     tab_status: {
         all: "Все",
@@ -128,12 +135,33 @@ export default {
     },
 
     contracts: {
+        warning: 'Ogohlantirish',
+        warning_in_payment: 'На первоначальный взнос имеется излишек в размере {price} сумов. Вы хотите перевести эту сумму в ежемесячный платеж?',
         title: "Договоры", download: "Скачать договор", f_i_o: 'Ф.И.О', // asd
         filter_with_date: 'Фильтр по дате', // asd
         client_name: 'Имя клиента', // asd
         client_phone: 'Номер телефона', // asd
         price: 'Стоимость', // asd
         object: 'Объект', // asd
+        show_by: 'Показать по',
+
+        table: {
+            contract: 'Договор',
+            client: 'Клиент',
+            phone_number: 'Телефон',
+            status: 'Статус',
+            cost: 'Стоимость',
+            object: 'Объект',
+            date: 'Дата'
+        },
+
+        status: {
+            waiting: 'На оплате',
+            booked: 'Забронирован',
+            sold: 'Оформлен',
+            closed: 'Закрыт',
+            contract: 'Договор'
+        },
 
         view: {
             unfamiliar: "Незнакомый", // asd
@@ -590,6 +618,7 @@ export default {
     user: {
         first_name: "Имя",
         last_name: "Фамилия",
+        second_name: "Очества",
         phone: "Номер телефона",
         password: "Пароль",
         email: "E-mail",
@@ -606,6 +635,7 @@ export default {
         phone: "Номер телефона",
         roles: "Роль",
         object: "Объект",
+        branch: "Филиал",
         login: "Логин",
     },
 
