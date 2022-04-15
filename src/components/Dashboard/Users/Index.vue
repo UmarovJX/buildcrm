@@ -229,6 +229,7 @@ export default {
     return {
       searchValue,
       showByOptions,
+      dateIssue: '',
       filter: {},
       page: 1,
       currentPage: 1,
@@ -459,8 +460,7 @@ export default {
       });
     },
 
-  }
-  ,
+  },
 }
 </script>
 
