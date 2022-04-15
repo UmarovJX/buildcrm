@@ -23,7 +23,11 @@ class ObjectsV1Crm extends Core {
     }
 
     updateObject(objectId, body) {
-        return this.post(`v2/objects/${objectId}`, body)
+        return this.put(`v2/objects/${objectId}`, body)
+    }
+
+    updateLogo(objectId, body) {
+        return this.post(`objects/${objectId}`, body)
     }
 
     deleteObject(objectId) {

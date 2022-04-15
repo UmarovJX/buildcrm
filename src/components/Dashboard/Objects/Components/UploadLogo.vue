@@ -93,8 +93,7 @@ export default {
       formData.append("image", this.image);
 
       try {
-        const response = await api.objects.updateObject(this.objectId, formData)
-
+        const response = await api.objects.updateLogo(this.objectId, formData)
         this.toasted(response.data.message, "success");
 
         this.$nextTick(() => {
