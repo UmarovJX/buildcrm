@@ -177,7 +177,7 @@
             <div class="object__details_info_card_text">
               <span>Завершение строительства</span>
               <span>
-                {{ datePrettier(apartment.object.build_date) }}
+                {{ buildingDate(apartment.object.build_date) }}
               </span>
             </div>
           </div>
@@ -228,6 +228,22 @@ export default {
       const year = date.getFullYear()
       const baseMonth = date.getMonth() + 1
       const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
+
+      return `${month}/${year}`
+    },
+    buildingDate(time) {
+      const date = new Date(time)
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      if (month < 3) {
+        month = '01'
+      } else if (month >= 3 && month < 6) {
+        month = '02'
+      } else if (month >= 6 && month < 9) {
+        month = '03'
+      } else {
+        month = '04'
+      }
       return `${month}/${year}`
     },
     async fetchObjectDetails() {
