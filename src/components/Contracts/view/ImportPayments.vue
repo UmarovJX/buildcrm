@@ -388,7 +388,7 @@ export default {
       api.contractV2.importPaymentTransaction(id, paymentsList)
           .then(() => {
             this.$router.push({
-              name: 'contracts-view-clone'
+              name: 'contracts-view'
             })
             this.$swal({
               title: "Muvaffaqiyatli!",

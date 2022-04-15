@@ -312,7 +312,7 @@ export default {
     contractView(items) {
       const {id} = items[0]
       this.$router.push({
-        name: 'contracts-view-clone',
+        name: 'contracts-view',
         params: {
           id
         }

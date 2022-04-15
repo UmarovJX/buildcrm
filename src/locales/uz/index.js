@@ -145,6 +145,7 @@ export default {
     },
 
     contracts: {
+        transfer: "O'tkazilgan",
         warning: 'Предупреждение',
         warning_in_payment: "Boshlang'ich to'lov uchun {price} so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi?",
         title: "Shartnomalar", download: "Shartnomani yuklab olish", f_i_o: 'F.I.SH', // asd
@@ -613,7 +614,13 @@ export default {
 
 
     users: {
-        title: "Foydalanuvchilar", name: "Ism", phone: "Telefon raqami", roles: "Rol", object: "Obyekt", branch:"Filial", login: "Login",
+        title: "Foydalanuvchilar",
+        name: "Ism",
+        phone: "Telefon raqami",
+        roles: "Rol",
+        object: "Obyekt",
+        branch: "Filial",
+        login: "Login",
     },
 
     accountants: {

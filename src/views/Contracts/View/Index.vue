@@ -41,13 +41,13 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
-import TabPaymentSchedule from "@/components/Dashboard/Contracts/components/TabPaymentSchedule";
-import TabObjectDetails from "@/components/Dashboard/Contracts/components/TabObjectDetails";
-import TabClientDetails from "@/components/Dashboard/Contracts/components/TabClientDetails";
-import TabContractDetails from "@/components/Dashboard/Contracts/components/TabContractDetails";
+import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
+import TabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
+import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
+import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
 
 export default {
-  name: "CloneView",
+  name: "ContractView",
   components: {
     BaseArrowRight,
     BaseFilterTabsContent,

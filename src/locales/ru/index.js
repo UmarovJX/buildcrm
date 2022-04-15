@@ -135,7 +135,8 @@ export default {
     },
 
     contracts: {
-        warning: 'Ogohlantirish',
+        transfer: 'Перемещение',
+        warning: 'Внимание',
         warning_in_payment: 'На первоначальный взнос имеется излишек в размере {price} сумов. Вы хотите перевести эту сумму в ежемесячный платеж?',
         title: "Договоры", download: "Скачать договор", f_i_o: 'Ф.И.О', // asd
         filter_with_date: 'Фильтр по дате', // asd

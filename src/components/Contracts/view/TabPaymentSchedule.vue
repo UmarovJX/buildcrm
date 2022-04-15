@@ -23,7 +23,9 @@
               design="import__button"
           >
             <template #left-icon>
-              <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED"/>
+              <span class="mr-3">
+                <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED"/>
+              </span>
             </template>
           </base-button>
           <base-button
@@ -33,7 +35,9 @@
               design="add__button"
           >
             <template #left-icon>
-              <base-plus-icon :width="20" :height="20" fill="#ffffff"/>
+              <span class="mr-3">
+                <base-plus-icon :width="20" :height="20" fill="#ffffff"/>
+              </span>
             </template>
           </base-button>
         </div>
@@ -390,7 +394,7 @@
 import {/*formatDateWithDot*/ formatToPrice, getDateProperty} from "@/util/reusable";
 import ModifyPaymentTransaction from "@/components/Contracts/view/ModifyPaymentTransaction";
 import ImportPaymentsModal from "@/components/Contracts/view/ImportPaymentsModal";
-import CurrencyChart from "@/components/Dashboard/Contracts/components/CurrencyChart";
+import CurrencyChart from "@/components/Contracts/view/CurrencyChart";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
@@ -590,8 +594,8 @@ export default {
           label: 'Расписание',
           formatter: (datePayment) => {
             const {year, month, day} = getDateProperty(datePayment)
-            const lastYear = year.toString().slice(-2)
-            return `${day}.${month}.${lastYear}`
+            /*const lastYear = year.toString().slice(-2)*/
+            return `${day}.${month}.${year}`
           }
         },
         {
@@ -622,8 +626,8 @@ export default {
           label: 'Дата',
           formatter: (datePayment) => {
             const {year, month, day} = getDateProperty(datePayment)
-            const lastYear = year.toString().slice(-2)
-            return `${day}.${month}.${lastYear}`
+            /*const lastYear = year.toString().slice(-2)*/
+            return `${day}.${month}.${year}`
           }
         },
         {
@@ -641,6 +645,7 @@ export default {
           label: 'Способ',
           formatter: (paymentType) => {
             if (paymentType === 'cash') return this.$t('cash')
+            if (paymentType === 'transfer') return this.$t('contracts.transfer')
             if (!paymentType) return '-'
             return paymentType
           }
@@ -872,41 +877,16 @@ export default {
           })
     },
     async exchangeToMonthlyPayment() {
-      const {price, overbalance} = this.warningForPayInitialPayment
-      const formInitial = Object.assign({}, this.appendPayment)
-      const formMonthly = Object.assign({}, this.appendPayment)
-      formInitial.type = 'initial_payment'
-      formInitial.amount = price
-      formMonthly.type = 'monthly'
-      formMonthly.amount = overbalance
       const {id} = this.$route.params
       this.monthlyPaymentLoading = true
+      const {price, overbalance} = this.warningForPayInitialPayment
+
+      const formInitial = Object.assign({}, this.appendPayment)
+      formInitial.type = 'initial_payment'
+      formInitial.amount = price
       await api.contractV2.appendPayment(id, formInitial)
           .then(async () => {
             this.closePaymentAdditionModal()
-            await api.contractV2.appendPayment(id, formMonthly)
-                .then(() => {
-                  this.$swal({
-                    title: "Muvaffaqiyatli!",
-                    text: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
-                    icon: "success"
-                  }).then(() => {
-                    this.initAppendPayment()
-                    this.refreshDetails()
-                  })
-                })
-                .catch((error) => {
-                  const {data} = error.response
-                  const primaryKey = Object.keys(data)[0]
-                  this.$bvToast.toast(data[primaryKey], {
-                    title: `${this.$t('error')}`,
-                    variant: 'danger',
-                    solid: true
-                  })
-                }).finally(() => {
-                  this.$refs['initial-payment-warning'].closeModal()
-                  this.monthlyPaymentLoading = false
-                })
           })
           .catch((error) => {
             const {data} = error.response
@@ -917,13 +897,40 @@ export default {
               solid: true
             })
           })
+
+      const formMonthly = Object.assign({}, this.appendPayment)
+      formMonthly.type = 'monthly'
+      formMonthly.amount = overbalance
+      await api.contractV2.appendPayment(id, formMonthly)
+          .then(() => {
+            this.$swal({
+              title: "Muvaffaqiyatli!",
+              text: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+              icon: "success"
+            }).then(() => {
+              this.initAppendPayment()
+              this.refreshDetails()
+            })
+          })
+          .catch((error) => {
+            const {data} = error.response
+            const primaryKey = Object.keys(data)[0]
+            this.$bvToast.toast(data[primaryKey], {
+              title: `${this.$t('error')}`,
+              variant: 'danger',
+              solid: true
+            })
+          }).finally(() => {
+            this.$refs['initial-payment-warning'].closeModal()
+            this.monthlyPaymentLoading = false
+          })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import "../../../../assets/scss/utils/pagination";
+@import "../../../assets/scss/utils/pagination";
 
 * {
   font-family: Inter, serif;
