@@ -10,7 +10,7 @@
     <search-bar-content
         @trigger-input="setSearchValue"
         @search-by-filter="searchByFilter"
-        @replace-router="replaceRouter"
+        @replace-router="searchQueryFilter"
     />
 
     <!--  Table List -->
@@ -414,6 +414,19 @@ export default {
           }
         }
       })
+    },
+    searchQueryFilter(searchQuery) {
+      const hasQueryStatus = this.query.hasOwnProperty('status')
+      if (hasQueryStatus) {
+        const {status} = this.query
+        this.replaceRouter({
+          ...searchQuery,
+          status
+        })
+        return
+      }
+
+      this.replaceRouter(searchQuery)
     },
     replaceRouter(query) {
       const sortQuery = sortObjectValues(query)

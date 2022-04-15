@@ -49,20 +49,29 @@
         <div class="modal__content-main">
           <div class="filter__inputs">
             <!--    Object Selection      -->
-            <div class="filter__inputs-input">
-              <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
-                <template #first>
-                  <b-form-select-option
-                      :value="null"
-                      disabled
-                  >
-                  <span class="disabled__option">
-                    Название объекта
-                  </span>
-                  </b-form-select-option>
-                </template>
-              </b-form-select>
-            </div>
+            <!--            <div class="filter__inputs-input">
+                          <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
+                            <template #first>
+                              <b-form-select-option
+                                  :value="null"
+                                  disabled
+                              >
+                              <span class="disabled__option">
+                                Название объекта
+                              </span>
+                              </b-form-select-option>
+                            </template>
+                          </b-form-select>
+                        </div>-->
+
+            <base-multiselect
+                :default-values="filter.object_id"
+                :options="objectOptions"
+                placeholder="Название объекта"
+                track-by="value"
+                label="text"
+                @input="inputFilterObject"
+            />
 
             <!--    Filter Apartment Number      -->
             <div class="filter__inputs-input">
@@ -161,6 +170,7 @@ import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import {debounce, sortInFirstRelationship} from "@/util/reusable";
 import api from "@/services/api";
 
@@ -172,7 +182,8 @@ export default {
     BaseArrowLeftIcon,
     BaseTimesCircleIcon,
     BaseNumericInput,
-    BaseFormTagInput
+    BaseFormTagInput,
+    BaseMultiselect
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
@@ -223,9 +234,9 @@ export default {
     async fetchObjectsOption() {
       await api.contractV2.fetchObjectsOption()
           .then((response) => {
-            const {objects, client_types} = response.data
+            const {objects, 'client-types': clientTypes} = response.data
             this.objectOptions = objects.map(({id, name}) => ({value: id, text: name}))
-            for (let [key, value] of Object.entries(client_types)) {
+            for (let [key, value] of Object.entries(clientTypes)) {
               this.clientTypeOptions.push({
                 value: key,
                 text: value
@@ -259,12 +270,13 @@ export default {
         apartment_number: []
       }
 
-
       this.$refs['base-form-tag-input'].clear()
+    },
+    inputFilterObject(objects) {
+      this.filter.object_id = objects.map(({value}) => value)
     },
     searchByFilterField() {
       const sortingQuery = Object.assign({}, this.filter)
-      sortingQuery.object_id = [this.filter.object_id]
       this.$emit('search-by-filter', sortInFirstRelationship(sortingQuery))
       this.hideFilterModal()
     },
@@ -303,14 +315,20 @@ export default {
         if (property === 'apartment_number' && typeof query === 'string') {
           const toNumber = parseInt(query)
           this.filter[property] = isNaN(toNumber) ? [] : [toNumber]
+          continue
         }
 
-        if (property === 'object_id' && query) {
+        /*if (property === 'object_id' && query) {
           if (Array.isArray(query)) {
             this.filter[property] = parseInt(query[0])
           } else {
             this.filter[property] = parseInt(query)
           }
+          continue
+        }*/
+
+        if (property === 'object_id' && query) {
+          this.filter[property] = query.map(value => parseInt(value))
           continue
         }
 
