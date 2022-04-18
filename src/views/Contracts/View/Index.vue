@@ -28,6 +28,7 @@
         v-show="!showLoading"
         @start-loading="startLoading"
         @finish-loading="finishLoading"
+        @refresh-details="refreshDetails"
     >
     </component>
     <base-loading v-if="showLoading"/>
@@ -40,13 +41,13 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
-import TabPaymentSchedule from "@/components/Dashboard/Contracts/components/TabPaymentSchedule";
-import TabObjectDetails from "@/components/Dashboard/Contracts/components/TabObjectDetails";
-import TabClientDetails from "@/components/Dashboard/Contracts/components/TabClientDetails";
-import TabContractDetails from "@/components/Dashboard/Contracts/components/TabContractDetails";
+import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
+import TabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
+import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
+import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
 
 export default {
-  name: "CloneView",
+  name: "ContractView",
   components: {
     BaseArrowRight,
     BaseFilterTabsContent,
@@ -67,24 +68,26 @@ export default {
   },
   computed: {
     filterTabList() {
-      return [
+      const list = [
         {
           name: this.$t('payment_schedule'),
-          status: 0
         },
         {
           name: this.$t('object_details'),
-          status: 1
         },
         {
           name: this.$t('client_details'),
-          status: 2
         },
         {
           name: this.$t('contract_details'),
-          status: 3
         }
       ]
+
+      const {status} = this.order
+      if (status === 'booked') {
+        return list.slice(1).map((ls, index) => ({...ls, status: index}))
+      }
+      return list.map((ls, index) => ({...ls, status: index}))
     },
     hasConstructorOrder() {
       return Object.keys(this.order).length > 0
@@ -100,6 +103,7 @@ export default {
       await api.contractV2.fetchContractView(id)
           .then((response) => {
             this.order = response.data
+            this.tabsConfiguration()
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
@@ -107,6 +111,13 @@ export default {
           .finally(() => {
             this.showLoading = false
           })
+    },
+    tabsConfiguration() {
+      const {status} = this.order
+      if (status === 'booked') {
+        this.activeTab = 'TabObjectDetails'
+        this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
+      }
     },
     startLoading() {
       this.showLoading = true
@@ -119,6 +130,9 @@ export default {
     },
     changeTabOrder(status) {
       this.activeTab = this.tabs[status]
+    },
+    refreshDetails() {
+      this.fetchContractData()
     }
   }
 }

@@ -10,7 +10,7 @@
     <search-bar-content
         @trigger-input="setSearchValue"
         @search-by-filter="searchByFilter"
-        @replace-router="replaceRouter"
+        @replace-router="searchQueryFilter"
     />
 
     <!--  Table List -->
@@ -179,27 +179,27 @@ export default {
       {
         name: this.$t('tab_status.all'),
         status: '',
-        counts: 900
+        counts: 0
       },
       {
         name: this.$t('tab_status.booked'),
         status: 'booked',
-        counts: 50
+        counts: 0
       },
       {
         name: this.$t('tab_status.sold'),
         status: 'sold',
-        counts: 60
+        counts: 0
       },
       {
         name: this.$t('tab_status.on_payment'),
-        status: 'hold',
-        counts: 700
+        status: 'contract',
+        counts: 0
       },
       {
         name: this.$t('tab_status.closed'),
         status: 'closed',
-        counts: 90
+        counts: 0
       }
     ]
 
@@ -219,6 +219,7 @@ export default {
       showLoading: false,
       selectMode: 'single',
       selectable: true,
+      counts: {}
     }
   },
   computed: {
@@ -245,7 +246,7 @@ export default {
           label: this.$t("contracts.table.status"),
         },
         {
-          key: "transaction_price",
+          key: "payments.transaction_price",
           label: this.$t("contracts.table.cost"),
           formatter: (price) => formatToPrice(price) + ' ' + this.$t('ye')
         },
@@ -311,7 +312,7 @@ export default {
     contractView(items) {
       const {id} = items[0]
       this.$router.push({
-        name: 'contracts-view-clone',
+        name: 'contracts-view',
         params: {
           id
         }
@@ -370,15 +371,62 @@ export default {
     },
     async fetchContractList() {
       const query = sortObjectValues(this.query)
+
+      if (query.hasOwnProperty('object_id') && typeof query.object_id === 'string') {
+        query.object_id = [query.object_id]
+      }
+
       this.showLoading = true
       await api.contractV2.fetchContractsList(query)
           .then((response) => {
             this.tableItems = response.data.items
             this.pagination = response.data.pagination
+            this.counts = response.data.counts
             this.showByValue = response.data.pagination.perPage
-          }).finally(() => {
+            this.initCounts()
+          })
+          .finally(() => {
             this.showLoading = false
           })
+    },
+    initCounts() {
+      this.filterTabList = this.filterTabList.map(filterTab => {
+        const findIndex = this.counts.hasOwnProperty(filterTab.status)
+        if (findIndex) {
+          return {
+            ...filterTab,
+            counts: this.counts[filterTab.status]
+          }
+        }
+
+        const sum = () => {
+          let init = 0
+          for (let [, value] of Object.entries(this.counts)) {
+            init += value
+          }
+          return init
+        }
+
+        if (filterTab.status === '') {
+          return {
+            ...filterTab,
+            counts: sum()
+          }
+        }
+      })
+    },
+    searchQueryFilter(searchQuery) {
+      const hasQueryStatus = this.query.hasOwnProperty('status')
+      if (hasQueryStatus) {
+        const {status} = this.query
+        this.replaceRouter({
+          ...searchQuery,
+          status
+        })
+        return
+      }
+
+      this.replaceRouter(searchQuery)
     },
     replaceRouter(query) {
       const sortQuery = sortObjectValues(query)

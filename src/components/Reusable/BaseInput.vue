@@ -1,10 +1,11 @@
 <template>
   <div class="base-input">
+    <span v-if="searchInput && label" class="input-label">{{ placeholder }}</span>
     <input
         v-model="searchInput"
         :type="type"
-        id="search-input"
-        ref="search-input"
+        id="base-input"
+        ref="base-input"
         :placeholder="placeholder"
         @input="triggerInputEvent"
     />
@@ -39,6 +40,10 @@ export default {
     type: {
       type: String,
       default: () => 'text'
+    },
+    label: {
+      type: Boolean,
+      default: () => false
     }
   },
   data() {
@@ -62,8 +67,10 @@ export default {
       this.debounceInput = newValue
     }, 350),
     debounceInput() {
-      this.toggleClearIcon()
-      this.triggerInputEvent()
+      if (this.type === 'text' || this.type === 'search') {
+        this.toggleClearIcon()
+        this.triggerInputEvent()
+      }
     },
   },
   mounted() {
@@ -73,7 +80,7 @@ export default {
   },
   methods: {
     focusOnSearchInput() {
-      this.$refs['search-input'].focus()
+      this.$refs['base-input'].focus()
     },
     clearSearchInput() {
       this.searchInput = ''
@@ -90,15 +97,27 @@ export default {
 
 
 <style lang="scss" scoped>
+.input-label {
+  font-weight: 900;
+  font-size: 8px;
+  line-height: 10px;
+  margin-bottom: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
 
 .base-input {
   width: 75%;
   height: 3.5rem;
+  padding: 11px 20px;
   border: 0.25rem solid transparent;
   border-radius: 2rem;
   background-color: var(--gray-100);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   padding-left: 1.25rem;
   position: relative;
 

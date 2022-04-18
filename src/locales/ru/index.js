@@ -66,6 +66,7 @@ export default {
     floor: 'Этаж',
     paid: 'Оплачено',
     waiting_to_payment: 'На оплате',
+    partially: 'Частично оплачено',
     cash: 'Наличные',
     error: "Ошибка!",
 
@@ -134,6 +135,9 @@ export default {
     },
 
     contracts: {
+        transfer: 'Перемещение',
+        warning: 'Внимание',
+        warning_in_payment: 'На первоначальный взнос имеется излишек в размере {price} сумов. Вы хотите перевести эту сумму в ежемесячный платеж?',
         title: "Договоры", download: "Скачать договор", f_i_o: 'Ф.И.О', // asd
         filter_with_date: 'Фильтр по дате', // asd
         client_name: 'Имя клиента', // asd

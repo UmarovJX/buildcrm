@@ -6,17 +6,9 @@
     >
     </base-bread-crumb>
 
-
-    <base-multiselect/>
-    <base-input
-        v-model="search"
-        :placeholder="$t('search')"
-        type="date"/>
-
-    <p>
-      {{ search }}
-
-    </p>
+    <base-input v-model="search" :placeholder="$t('users.name')" :label="true"></base-input>
+    <base-select :options="array" placeholder="label" :label="true"/>
+<!--    <date-picker/>-->
 
     <b-card no-body>
       <b-tabs
@@ -54,7 +46,7 @@ import TabChangePassword from "@/components/UserSettings/TabChangePassword";
 import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
+import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseInput from "@/components/Reusable/BaseInput";
 
 export default {
@@ -65,13 +57,16 @@ export default {
     TabChangePassword,
     BaseUserAccountIcon,
     BaseUserPasswordIcon,
-    BaseMultiselect,
+    BaseSelect,
     BaseInput
   },
   data() {
     return {
       tabIndex: 0,
-      search: ''
+      search: '',
+      array: [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+      ]
     }
   },
   computed: {
@@ -94,6 +89,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
 .user__account__icons {
   fill: var(--dark);
 }

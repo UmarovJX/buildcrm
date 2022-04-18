@@ -1,9 +1,8 @@
 <template>
   <b-modal
-      v-model="show"
       ref="base-modal"
       title="Using Component Methods"
-      modal-class="base__modal"
+      :modal-class="modalClass"
       @show="showModal"
       @hide="hideModal"
       hide-header
@@ -27,17 +26,28 @@
 export default {
   name: "BaseModal",
   emits: ['show', 'hide'],
+  props: {
+    design: {
+      type: String,
+      default: () => ('')
+    }
+  },
   data() {
     return {
       show: false
     }
   },
+  computed: {
+    modalClass() {
+      return `base__modal ${this.design}`
+    }
+  },
   methods: {
     openModal() {
-      this.show = true
+      this.$refs["base-modal"].show()
     },
     closeModal() {
-      this.show = false
+      this.$refs['base-modal'].hide()
     },
     showModal() {
       this.$emit('show')
@@ -50,6 +60,12 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+::v-deep .small-modal
+  .modal-dialog
+    .modal-content
+      width: 40rem !important
+      height: 30rem !important
+
 ::v-deep .base__modal
   overflow-y: hidden
   background: rgba(156, 163, 175, 0.32)
