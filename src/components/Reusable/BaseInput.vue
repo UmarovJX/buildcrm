@@ -1,5 +1,5 @@
 <template>
-  <div class="base-input">
+  <div class="base-input" :class="error ? 'error' : ''">
     <span v-if="searchInput && label" class="input-label">{{ placeholder }}</span>
     <input
         v-model="searchInput"
@@ -25,7 +25,7 @@ import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import {debounce} from "@/util/reusable";
 
 export default {
-  name: "BaseSearchInput",
+  name: "BaseInput",
   components: {
     BaseTimesCircleIcon,
   },
@@ -42,6 +42,10 @@ export default {
       default: () => 'text'
     },
     label: {
+      type: Boolean,
+      default: () => false
+    },
+    error: {
       type: Boolean,
       default: () => false
     }
@@ -110,7 +114,7 @@ export default {
 .base-input {
   width: 75%;
   height: 3.5rem;
-  padding: 11px 20px;
+  padding: 10px 20px 10px 1.25rem;
   border: 0.25rem solid transparent;
   border-radius: 2rem;
   background-color: var(--gray-100);
@@ -118,7 +122,6 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  padding-left: 1.25rem;
   position: relative;
 
   &:focus-within {
@@ -187,6 +190,11 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   right: 2rem;
   transform: translateY(-60%);
 }
+
+.error {
+  border: .25rem solid var(--red-500) !important
+}
+
 
 @media (max-width: 996px) {
   .search__content-input {

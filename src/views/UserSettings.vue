@@ -6,9 +6,23 @@
     >
     </base-bread-crumb>
 
-    <base-input v-model="search" :placeholder="$t('users.name')" :label="true"></base-input>
-    <base-select :options="array" placeholder="label" :label="true"/>
-<!--    <date-picker/>-->
+    <base-input
+        v-model="search"
+        :placeholder="$t('users.name')"
+        type="date"
+        :label="true"
+        :error="false"
+    />
+    <base-select
+        :options="array"
+        placeholder="label"
+        :label="true"
+        :error="false"/>
+
+    <warning-success status="success" ref="base-modal"/>
+
+
+    <b-btn @click="openModal">click</b-btn>
 
     <b-card no-body>
       <b-tabs
@@ -48,17 +62,19 @@ import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseInput from "@/components/Reusable/BaseInput";
+import WarningSuccess from "@/components/Reusable/WarningSuccess";
 
 export default {
   name: 'UserSettings',
   components: {
+    WarningSuccess,
     TabUserMe,
     BaseBreadCrumb,
     TabChangePassword,
     BaseUserAccountIcon,
     BaseUserPasswordIcon,
     BaseSelect,
-    BaseInput
+    BaseInput,
   },
   data() {
     return {
@@ -78,6 +94,9 @@ export default {
     },
   },
   methods: {
+    openModal() {
+      this.$refs["base-modal"].openModal()
+    },
     activeTabIconColor(index) {
       if (this.theme === 'light-theme' && this.tabIndex === index) {
         return 'user__account__icons-active'
