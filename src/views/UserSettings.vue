@@ -6,6 +6,18 @@
     >
     </base-bread-crumb>
 
+
+    <base-multiselect/>
+    <base-input
+        v-model="search"
+        :placeholder="$t('search')"
+        type="date"/>
+
+    <p>
+      {{ search }}
+
+    </p>
+
     <b-card no-body>
       <b-tabs
           v-model="tabIndex"
@@ -36,12 +48,15 @@
 </template>
 
 <script>
-import  {mapGetters} from "vuex";
+import {mapGetters} from "vuex";
 import TabUserMe from "@/components/UserSettings/TabUserMe";
 import TabChangePassword from "@/components/UserSettings/TabChangePassword";
 import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
+import BaseInput from "@/components/Reusable/BaseInput";
+
 export default {
   name: 'UserSettings',
   components: {
@@ -50,10 +65,13 @@ export default {
     TabChangePassword,
     BaseUserAccountIcon,
     BaseUserPasswordIcon,
+    BaseMultiselect,
+    BaseInput
   },
   data() {
     return {
       tabIndex: 0,
+      search: ''
     }
   },
   computed: {
@@ -69,7 +87,6 @@ export default {
       if (this.theme === 'light-theme' && this.tabIndex === index) {
         return 'user__account__icons-active'
       }
-
       return ''
     }
   }

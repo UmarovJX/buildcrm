@@ -2,10 +2,10 @@
   <div class="base-input">
     <input
         v-model="searchInput"
-        type="search"
+        :type="type"
         id="search-input"
         ref="search-input"
-        placeholder="ФИО, телефон, номер договора"
+        :placeholder="placeholder"
         @input="triggerInputEvent"
     />
     <span
@@ -20,27 +20,41 @@
 
 
 <script>
-import BaseSearchIcon from "@/components/icons/BaseSearchIcon";
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import {debounce, sortInFirstRelationship} from "@/util/reusable";
+import {debounce} from "@/util/reusable";
 
 export default {
   name: "BaseSearchInput",
   components: {
-    BaseSearchIcon,
     BaseTimesCircleIcon,
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
+  props: {
+    placeholder: {
+      type: String,
+    },
+    value: {
+      type: String, Number
+    },
+    type: {
+      type: String,
+      default: () => 'text'
+    }
+  },
   data() {
     return {
-      searchInput: this.$route.query.search,
-      debounceInput: this.$route.query.search,
+      debounceInput: this.value,
       showClearIcon: false,
     }
   },
   computed: {
-    query() {
-      return Object.assign({}, this.$route.query)
+    searchInput: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.$emit('input', val)
+      }
     }
   },
   watch: {
@@ -50,22 +64,14 @@ export default {
     debounceInput() {
       this.toggleClearIcon()
       this.triggerInputEvent()
-    }
+    },
   },
-  // async created() {
-  //   await this.fetchObjects()
-  // },
   mounted() {
     if (this.searchInput?.length) {
       this.toggleClearIcon()
     }
   },
   methods: {
-    searchByFilterField() {
-      const sortingQuery = sortInFirstRelationship(this.filter)
-      this.$emit('search-by-filter', sortingQuery)
-      this.hideFilterModal()
-    },
     focusOnSearchInput() {
       this.$refs['search-input'].focus()
     },
@@ -78,28 +84,12 @@ export default {
     triggerInputEvent() {
       this.$emit('trigger-input', this.debounceInput)
     },
-
   }
 }
 </script>
 
 
 <style lang="scss" scoped>
-
-//.base-input {
-//  display: flex;
-//  align-items: center;
-//  border-radius: 3rem;
-//  padding: 1.125rem 1.125rem 1.25rem;
-//  background-color: var(--gray-100);
-//  border: none;
-//  height: 56px;
-//
-//  &:focus {
-//    background-color: var(--gray-200);
-//  }
-//}
-
 
 .base-input {
   width: 75%;
