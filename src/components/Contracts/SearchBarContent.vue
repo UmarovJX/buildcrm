@@ -33,6 +33,7 @@
         title="Using Component Methods"
         modal-class="filter__modal"
         @show="filterModalOpened"
+        @hidden="hideFilterModal"
         hide-header
         hide-footer
     >
@@ -49,20 +50,22 @@
         <div class="modal__content-main">
           <div class="filter__inputs">
             <!--    Object Selection      -->
-            <!--            <div class="filter__inputs-input">
-                          <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
-                            <template #first>
-                              <b-form-select-option
-                                  :value="null"
-                                  disabled
-                              >
-                              <span class="disabled__option">
-                                Название объекта
-                              </span>
-                              </b-form-select-option>
-                            </template>
-                          </b-form-select>
-                        </div>-->
+            <!--
+                  <div class="filter__inputs-input">
+                    <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
+                      <template #first>
+                        <b-form-select-option
+                            :value="null"
+                            disabled
+                        >
+                        <span class="disabled__option">
+                          Название объекта
+                        </span>
+                        </b-form-select-option>
+                      </template>
+                    </b-form-select>
+                  </div>
+            -->
 
             <base-multiselect
                 :default-values="filter.object_id"
@@ -94,13 +97,25 @@
             </div>
 
             <!--    Contract Date    -->
-            <div class="filter__inputs-input">
+            <div class="filter__inputs-input d-flex justify-content-between">
               <span class="placeholder">Дата договора</span>
+              <!--
               <input
                   type="date"
-                  v-model="filter.contract_date"
+                  v-model="filter.date"
                   class="input__date"
               >
+              -->
+              <date-picker
+                  id="filter-by-date"
+                  v-model="filter.date"
+                  type="date"
+                  value-type="format"
+                  format="YYYY-MM-DD"
+                  placeholder="Select date range"
+                  class="input__date"
+                  range
+              ></date-picker>
             </div>
 
             <!--     Apartment Price     -->
@@ -171,12 +186,15 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 import {debounce, sortInFirstRelationship} from "@/util/reusable";
 import api from "@/services/api";
 
 export default {
   name: "SearchBarContent",
   components: {
+    DatePicker,
     BaseSearchIcon,
     BaseFilterIcon,
     BaseArrowLeftIcon,
@@ -191,7 +209,7 @@ export default {
       filter: {
         object_id: null,
         contract_number: null,
-        contract_date: null,
+        date: null,
         client_type: null,
         contract_price: null,
         price_to: null,
@@ -258,18 +276,7 @@ export default {
       }
 
       this.$emit('replace-router', loopQuery)
-
-      this.filter = {
-        object_id: null,
-        contract_number: null,
-        contract_date: null,
-        client_type: null,
-        contract_price: null,
-        price_to: null,
-        price_from: null,
-        apartment_number: []
-      }
-
+      this.resetFilter()
       this.$refs['base-form-tag-input'].clear()
     },
     inputFilterObject(objects) {
@@ -278,10 +285,23 @@ export default {
     searchByFilterField() {
       const sortingQuery = Object.assign({}, this.filter)
       this.$emit('search-by-filter', sortInFirstRelationship(sortingQuery))
-      this.hideFilterModal()
+      this.$refs['filter-modal'].hide()
     },
     hideFilterModal() {
       this.$refs['filter-modal'].hide()
+      this.resetFilter()
+    },
+    resetFilter() {
+      this.filter = {
+        object_id: null,
+        contract_number: null,
+        date: null,
+        client_type: null,
+        contract_price: null,
+        price_to: null,
+        price_from: null,
+        apartment_number: []
+      }
     },
     showFilterModal() {
       this.$refs['filter-modal'].show()
@@ -458,6 +478,10 @@ export default {
     .filter__inputs {
       margin-top: 2rem;
 
+      .input__date.mx-datepicker.mx-datepicker-range {
+        width: 60% !important;
+      }
+
       &-input {
         display: flex;
         align-items: center;
@@ -618,6 +642,7 @@ export default {
     margin-left: 0.5rem;
     background-color: transparent;
     border: none;
+    width: auto;
   }
 
   .inline {

@@ -234,7 +234,7 @@ export default {
     buildingDate(time) {
       const date = new Date(time)
       const year = date.getFullYear()
-      let month = date.getMonth() + 1
+      let month = date.getMonth()
       if (month < 3) {
         month = '01'
       } else if (month >= 3 && month < 6) {
