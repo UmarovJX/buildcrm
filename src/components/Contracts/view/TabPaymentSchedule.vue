@@ -17,7 +17,7 @@
         <h3 class="title">Список оплат</h3>
         <div class="d-flex">
           <base-button
-              v-if="permission.contracts.paid"
+              v-if="paidPermission"
               @click="openPaymentsImportModal"
               text="Импорт оплат"
               design="import__button"
@@ -59,14 +59,24 @@
         <template #main>
           <ValidationObserver ref="payment-observer">
             <div class="d-flex justify-content-between mb-3">
-              <ValidationProvider name="payment_date" rules="required" class="w-50 mr-3">
+              <ValidationProvider
+                  name="payment_date"
+                  rules="required"
+                  class="w-50 mr-3 content__form__select"
+                  :class="{'warning__border':validationWarnings.payment_date}"
+              >
                 <input type="date" v-model="appendPayment.payment_date" class="w-100"/>
               </ValidationProvider>
-              <ValidationProvider name="payment_type" rules="required" class="content__form__select">
+              <ValidationProvider
+                  name="type"
+                  rules="required"
+                  class="content__form__select"
+                  :class="{'warning__border':validationWarnings.type}"
+              >
                 <b-form-select
                     v-model="appendPayment.type"
                     class="form__select"
-                    :options="paymentTypeOptions"
+                    :options="paymentTypeOptionsForCreate"
                 >
                   <template #first>
                     <b-form-select-option
@@ -82,19 +92,28 @@
               </ValidationProvider>
             </div>
             <div class="d-flex justify-content-between mb-3">
-              <ValidationProvider name="amount" rules="required" class="w-50 mr-3">
+              <ValidationProvider
+                  name="amount"
+                  rules="required|min:2"
+                  class="w-50 mr-3 content__form__select"
+                  :class="{'warning__border':validationWarnings.amount}"
+              >
                 <base-numeric-input
-                    v-model.number="appendPayment.amount"
+                    v-model="appendPayment.amount"
                     :currency="`${$t('ye')}`"
                     :minus="false"
-                    :value="null"
                     currency-symbol-position="suffix"
                     separator="space"
                     placeholder="Сумма"
                     class="w-100"
                 ></base-numeric-input>
               </ValidationProvider>
-              <ValidationProvider name="type" rules="required" class="content__form__select">
+              <ValidationProvider
+                  name="payment_type"
+                  rules="required"
+                  class="content__form__select"
+                  :class="{'warning__border':validationWarnings.payment_type}"
+              >
                 <b-form-select
                     v-model="appendPayment.payment_type"
                     class="form__select"
@@ -168,7 +187,7 @@
               <span
                   v-if="userInteraction(item.type)"
                   class="delete__icon icon"
-                  @click="deletePaymentTransaction(item.id)"
+                  @click="warnBeforeDelete(item.id)"
               >
                 <base-delete-icon :width="18" :height="18" fill="#ffff"/>
               </span>
@@ -230,6 +249,47 @@
         <!--  PAYMENTS LOADING    -->
         <base-loading v-if="paymentHistory.appLoading"/>
       </div>
+
+      <!--  WARNING BEFORE DELETE PAYMENT    -->
+      <base-modal ref="warning-before-delete">
+        <template #header>
+          <span class="warning__before__delete-head">
+            <span>
+              <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path opacity="0.4"
+                      d="M51.3346 27.9996C51.3346 40.8889 40.8883 51.3329 28.0013 51.3329C15.1143 51.3329 4.66797 40.8889 4.66797 27.9996C4.66797 15.1149 15.1143 4.66626 28.0013 4.66626C40.8883 4.66626 51.3346 15.1149 51.3346 27.9996"
+                      fill="#EF4444"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M30.3081 29.5574C30.3081 30.7612 29.2661 31.7427 27.988 31.7427C26.71 31.7427 25.668 30.7612 25.668 29.5574V18.5185C25.668 17.3148 26.71 16.3333 27.988 16.3333C29.2661 16.3333 30.3081 17.3148 30.3081 18.5185V29.5574ZM25.6811 37.4814C25.6811 36.2776 26.7178 35.2961 27.9879 35.2961C29.2951 35.2961 30.3345 36.2776 30.3345 37.4814C30.3345 38.6852 29.2951 39.6667 28.0144 39.6667C26.7284 39.6667 25.6811 38.6852 25.6811 37.4814Z"
+                      fill="#EF4444"/>
+              </svg>
+            </span>
+            <span class="title">Удалить оплату?</span>
+          </span>
+        </template>
+
+        <template #main>
+          <span class="warning__before__delete-main">
+            Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.
+          </span>
+        </template>
+
+        <template #footer>
+          <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
+            <base-button
+                @click="cancelRemovingPayment"
+                text="Нет, отменить"
+            >
+            </base-button>
+              <base-button
+                  @click="deletePaymentTransaction(deletionPaymentId)"
+                  text="Да, удалить"
+                  class="add__button"
+              >
+              </base-button>
+          </div>
+        </template>
+      </base-modal>
     </div>
 
     <!--  PAYMENT SCHEDULE  -->
@@ -331,7 +391,7 @@
     <modify-payment-transaction
         ref="modify-payment-transaction"
         :payment-method-options="paymentMethodOptions"
-        :payment-type-options="paymentTypeOptions"
+        :payment-type-options="paymentTypeOptionsPermission"
         :toggle-modal="toggleModifyTransaction"
         :properties="modifyTransactionProperties"
         @hide-modal="modifyTransactionModalHide"
@@ -391,7 +451,7 @@
   </div>
 </template>
 <script>
-import {/*formatDateWithDot*/ formatToPrice, getDateProperty} from "@/util/reusable";
+import {formatToPrice, getDateProperty} from "@/util/reusable";
 import ModifyPaymentTransaction from "@/components/Contracts/view/ModifyPaymentTransaction";
 import ImportPaymentsModal from "@/components/Contracts/view/ImportPaymentsModal";
 import CurrencyChart from "@/components/Contracts/view/CurrencyChart";
@@ -457,8 +517,12 @@ export default {
         text: this.$t('Apelsin')
       },
       {
+        value: 'transfer',
+        text: this.$t('contracts.transfer')
+      },
+      {
         value: 'other',
-        text: this.$t('Apelsin')
+        text: this.$t('other')
       }
     ]
 
@@ -502,10 +566,17 @@ export default {
         payment_date: null,
         payment_type: null,
       },
+      validationWarnings: {
+        type: null,
+        amount: null,
+        payment_date: null,
+        payment_type: null,
+      },
       modifyTransactionProperties: {},
       toggleModifyTransaction: false,
       initialPaymentLoading: false,
       monthlyPaymentLoading: false,
+      deletionPaymentId: null,
       warningForPayInitialPayment: {
         price: 0,
         overbalance: 0
@@ -516,22 +587,24 @@ export default {
     ...mapGetters({
       permission: 'getPermission'
     }),
+    paidPermission() {
+      return this.permission?.contracts?.paid
+    },
     increasedPrice() {
       const {overbalance} = this.warningForPayInitialPayment
       return formatToPrice((overbalance / 100).toFixed(0))
     },
-    paymentTypeOptions() {
+    paymentTypeOptionsPermission() {
       const listOption = []
-      const {debtors} = this.permission
 
-      if (debtors.first_payment.edit) {
+      if (this.permission?.debtors?.first_payment?.edit) {
         listOption.push({
           value: 'initial_payment',
           text: this.$t('initial_payment')
         })
       }
 
-      if (debtors.monthly.edit) {
+      if (this.permission?.debtors?.monthly?.edit) {
         listOption.push({
           value: 'monthly',
           text: this.$t('monthly')
@@ -540,9 +613,18 @@ export default {
 
       return listOption
     },
+    paymentTypeOptionsForCreate() {
+      const remainedPriceInitialPayment = this.order?.payments?.initial_payment_remained
+      if (!remainedPriceInitialPayment) {
+        return this.paymentTypeOptionsPermission
+            .filter(paymentOption => paymentOption.value !== 'initial_payment')
+      }
+
+      return this.paymentTypeOptionsPermission
+    },
     uploadFilePermission() {
       const {debtors} = this.permission
-      return debtors.first_payment.edit || debtors.monthly.edit
+      return debtors?.first_payment?.edit || debtors?.monthly?.edit
     },
     firstChart() {
       const {payments, currency} = this.order
@@ -677,6 +759,28 @@ export default {
       return countOfPaymentItems && !(appLoading || paymentHistory.appLoading)
     }
   },
+  watch: {
+    'appendPayment.amount'(amount) {
+      if (amount) {
+        this.validationWarnings.amount = false
+      }
+    },
+    'appendPayment.type'(type) {
+      if (type?.length > 1) {
+        this.validationWarnings.type = false
+      }
+    },
+    'appendPayment.payment_date'(paymentDate) {
+      if (paymentDate) {
+        this.validationWarnings.payment_date = false
+      }
+    },
+    'appendPayment.payment_type'(paymentType) {
+      if (paymentType) {
+        this.validationWarnings.payment_type = false
+      }
+    }
+  },
   async created() {
     await this.fetchItems()
   },
@@ -762,7 +866,8 @@ export default {
       this.$refs['import-payments'].openModal()
     },
     async submitNewPayment() {
-      const formCompleted = await this.$refs['payment-observer'].validate()
+      const paymentObserver = this.$refs['payment-observer']
+      const formCompleted = await paymentObserver.validate()
       if (formCompleted) {
         const {id} = this.$route.params
         this.buttonLoading = true
@@ -803,6 +908,18 @@ export default {
             }).finally(() => {
               this.buttonLoading = false
             })
+      } else {
+        this.revalidateForm()
+      }
+    },
+    revalidateForm() {
+      const {errors} = this.$refs['payment-observer']
+      const haveErrors = Object.keys(errors).length
+      if (haveErrors) {
+        const warningProperties = Object.keys(this.validationWarnings)
+        warningProperties.forEach(warningProperty => {
+          this.validationWarnings[warningProperty] = errors[warningProperty].length > 0
+        })
       }
     },
     initAppendPayment() {
@@ -810,9 +927,18 @@ export default {
         this.appendPayment[key] = null
       }
     },
+    warnBeforeDelete(id) {
+      this.deletionPaymentId = id
+      this.$refs['warning-before-delete'].openModal()
+    },
+    cancelRemovingPayment() {
+      this.deletionPaymentId = null
+      this.$refs['warning-before-delete'].closeModal()
+    },
     async deletePaymentTransaction(transactionId) {
       const {id: contractId} = this.$route.params
       this.paymentHistory.appLoading = true
+      this.$refs['warning-before-delete'].closeModal()
       await api.contractV2.removePaymentTransaction(contractId, transactionId)
           .then(() => {
             this.fetchItems()
@@ -821,6 +947,7 @@ export default {
               text: "To'lovlar ro'yxatidan muvaffaqiyatli o'chirildi",
               icon: "success"
             })
+            this.deletionPaymentId = null
           })
           .catch((error) => {
             const {data} = error.response
@@ -1164,6 +1291,39 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     height: 30rem;
   }
 }
+
+.warning__border {
+  border: 2px solid var(--red-600);
+}
+
+.warning__before__delete {
+  &-head {
+    display: flex;
+    align-items: center;
+
+    .title {
+      font-size: 2.25rem;
+      line-height: 42px;
+    }
+  }
+
+  &-main {
+    display: block;
+    max-width: 60%;
+    font-family: Inter, sans-serif;
+    color: var(--gray-600);
+    margin-left: 0.5rem;
+  }
+
+  &-footer {
+    gap: 2rem;
+
+    button {
+      flex-grow: 1;
+    }
+  }
+}
+
 
 @media screen and (max-width: 1010px) {
   .cards {

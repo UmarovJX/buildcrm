@@ -96,10 +96,12 @@ export default {
   &-item {
     position: relative;
     transition: all 0.1s ease-in;
-    display: flex;
-    align-items: center;
-    padding: 4px;
+    //padding: 4px;
     cursor: pointer;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     p {
       margin: 0;
@@ -115,10 +117,10 @@ export default {
       &:after {
         content: '';
         position: absolute;
-        bottom: -14px;
+        bottom: -16px;
         left: 0;
         width: 100%;
-        height: 6px;
+        height: 8px;
         border-radius: 16px 16px 0 0;
         background-color: var(--violet-600);
       }
@@ -146,6 +148,6 @@ export default {
 .bottom__line {
   width: 100%;
   height: 6px;
-  border-bottom: 6px solid var(--gray-100);
+  border-bottom: 8px solid var(--gray-100);
 }
 </style>

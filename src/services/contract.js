@@ -75,6 +75,12 @@ class ContractV2 extends Core {
     editPaymentTransaction({contractId, transactionId, params}) {
         return this.put(`contracts/${contractId}/payments/${transactionId}`, params)
     }
+
+    downloadContractTemplate() {
+        return this.get('contracts/template', {
+            responseType: 'blob'
+        })
+    }
 }
 
 export default {

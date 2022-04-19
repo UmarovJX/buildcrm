@@ -15,6 +15,7 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
+    other: 'Boshqa',
     booked: 'Band qilindi',
     not_for_sale: "Sotilmaydi",
     remove_from_sale: "Sotuvdan olib tashlash",

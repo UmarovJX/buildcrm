@@ -209,7 +209,7 @@ export default {
       return Object.keys(this.apartment).length
     },
     havePlan() {
-      return this.haveApartment && this.apartment.apartment.hasOwnProperty('plan')
+      return this.haveApartment && this.apartment.apartment?.plan
     },
     imageUrl() {
       const {apartment} = this.apartment
@@ -228,7 +228,6 @@ export default {
       const year = date.getFullYear()
       const baseMonth = date.getMonth() + 1
       const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
-
       return `${month}/${year}`
     },
     buildingDate(time) {
@@ -293,6 +292,7 @@ export default {
   &_img {
     width: 100%;
     height: 84%;
+    min-height: 20rem;
 
     & img {
       width: 100%;

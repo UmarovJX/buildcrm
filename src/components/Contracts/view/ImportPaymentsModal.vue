@@ -60,7 +60,7 @@
         >
       </div>
 
-      <base-button text="Скачать шаблон" class="download__template"/>
+      <base-button @click="downloadTemplate" text="Скачать шаблон" class="download__template"/>
 
     </template>
 
@@ -91,6 +91,7 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import readExcelFile from 'read-excel-file'
 import {mapMutations} from "vuex";
+import api from "@/services/api";
 
 export default {
   name: "ImportPaymentsModal",
@@ -133,6 +134,18 @@ export default {
     ...mapMutations({
       initExcelSheet: 'initExcelSheet'
     }),
+    downloadTemplate() {
+      api.contractV2.downloadContractTemplate()
+          .then(response => {
+            console.log(response)
+            const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            fileLink.setAttribute('download', 'contract_template.xlsx')
+            document.body.appendChild(fileLink)
+            fileLink.click()
+          })
+    },
     openModal() {
       this.$refs['base-modal'].openModal()
     },

@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
+    other: 'Другие',
     booked: 'Забронировать',
     not_for_sale: "Hе продается",
     remove_from_sale: "Снять с продажи",

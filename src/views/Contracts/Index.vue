@@ -9,7 +9,7 @@
     <!--  Search Content  -->
     <search-bar-content
         @trigger-input="setSearchValue"
-        @search-by-filter="searchByFilter"
+        @search-by-filter="searchQueryFilter"
         @replace-router="searchQueryFilter"
     />
 
@@ -21,9 +21,7 @@
         :busy="showLoading"
         :items="tableItems"
         :fields="tableFields"
-        :select-mode="selectMode"
-        :selectable="selectable"
-        @row-selected="contractView"
+        @row-clicked="contractView"
         class="table__list"
         :empty-text="$t('no_data')"
         thead-tr-class="row__head__bottom-border"
@@ -79,12 +77,12 @@
 
       <!--  Actions    -->
       <template #cell(actions)="data">
-        <span
-            @click="downloadContractLink(data.item.id)"
-            class="arrow__down-violet"
-        >
-          <base-arrow-down-icon :width="20" :height="20" fill="#fff"/>
-        </span>
+          <span
+              @click="downloadContractLink(data.item.id)"
+              class="arrow__down-violet"
+          >
+            <base-arrow-down-icon class="download__icon" :width="20" :height="20" fill="#fff"/>
+          </span>
       </template>
 
       <!--  Busy Animation    -->
@@ -301,7 +299,7 @@ export default {
     downloadContractLink(id) {
       api.contractV2.downloadContract(id)
           .then(() => {
-            window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`)
+            window.open(process.env.VUE_APP_URL_V1_CRM + `/orders/${id}/contract`)
           })
           .catch(() => {
             return '#'
@@ -315,14 +313,18 @@ export default {
       const {last_name, first_name} = client
       return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language)
     },
-    contractView(items) {
-      const {id} = items[0]
-      this.$router.push({
-        name: 'contracts-view',
-        params: {
-          id
-        }
-      })
+    contractView({id}, index, event) {
+      const clickedDownloadBtn = event.target.classList.contains('download__icon')
+      if (clickedDownloadBtn) {
+        this.downloadContractLink()
+      } else {
+        this.$router.push({
+          name: 'contracts-view',
+          params: {
+            id
+          }
+        })
+      }
     },
     clientName(multiName, language) {
       const lastNameByLang = multiName[language]
@@ -334,9 +336,6 @@ export default {
       }
 
       return ''
-    },
-    searchByFilter(fromFilter) {
-      this.replaceRouter(fromFilter)
     },
     fetchContentByStatus(status) {
       this.replaceRouter({...this.query, status})
@@ -603,5 +602,13 @@ export default {
   p.head {
     font-size: 2rem;
   }
+}
+
+.download__arrow__button {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%);
 }
 </style>
