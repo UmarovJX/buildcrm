@@ -83,6 +83,33 @@ export default {
     partially: "Qisman to'langan",
     cash: 'Naqd',
     error: "Xatolik!",
+    view_map: "Xaritada ko'rsatish",
+    object_map: "Obyekt joylashuvi",
+    main: 'Asosiy',
+    passport: "Pasport ma'lumotlar",
+    builder: 'Quruvchi',
+    other_details: 'Boshqa tafsilotlar',
+    phone: "Telefon",
+    other_phone: "Qo'shimcha telefon raqami",
+    extra: "Qo'shimcha",
+    client_type: "Mijoz turi",
+    birth_day: "Tug'ilgan sana",
+    series: 'Seriya',
+    given: 'Tomonidan berilgan',
+    given_date: 'Berilgan sana',
+    company: 'Kompaniya',
+    agent: 'Vakil',
+    pc: "R/S",
+    inn: 'INN',
+    mfo: 'MFO',
+    contract_number: 'Shartnoma raqami',
+    contract_price: 'Shartnoma summasi',
+    date: "Sana",
+    formed: 'Rasmiylashtirilgan',
+    status: 'Status',
+    familiar: 'Tanish',
+    unfamiliar: 'Notanish',
+
 
     tab_status: {
         all: "Hammasi",
@@ -492,6 +519,18 @@ export default {
 
     backup: {
         title: "Zaxira",
+    },
+
+    object: {
+        home: 'UY',
+        entrance: 'PODEYZ',
+        level: 'QAVAT',
+        number_level: 'QAVATLAR SONI',
+        flat: 'XONADON',
+        number_flat: 'XONALAR SONI',
+        area: 'MAYDONI',
+        balcony: 'BALKON',
+        complete: 'QURILISHNI TUGASHI',
     },
 
     objects: {

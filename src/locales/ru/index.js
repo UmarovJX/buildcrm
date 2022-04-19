@@ -70,6 +70,34 @@ export default {
     partially: 'Частично оплачено',
     cash: 'Наличные',
     error: "Ошибка!",
+    view_map: 'Показать на карте',
+    object_map: 'Локация объекта',
+    main: 'Основные',
+    passport: 'Паспортные данные',
+    builder: 'Застройщик',
+    other_details: 'Другие детали',
+    fio: 'ФИО',
+    phone: "Номер телефона",
+    other_phone: "Дополнительный номер телефона",
+    extra: "Дополнительный",
+    client_type: "тип клиента",
+    birth_day: "Дата рождения",
+    series: 'СЕРИЯ',
+    given: 'ВЫДАН',
+    given_date: 'ДАТА ВЫДАЧИ',
+    company: 'КОМПАНИЯ',
+    agent: 'ПРЕДСТАВИТЕЛЬ',
+    pc: "Р/С",
+    inn: 'ИНН',
+    mfo: 'МФО',
+    contract_number: 'НОМЕР ДОГОВОРА',
+    contract_price: 'СУММА ДОГОВОРА',
+    date: "Дата",
+    formed: 'ОФОРМИЛ',
+    status: 'СТАТУС',
+    familiar: 'Знакомый',
+    unfamiliar: 'Незнакомый',
+
 
     tab_status: {
         all: "Все",
@@ -504,6 +532,18 @@ export default {
 
     backup: {
         title: "Резерв",
+    },
+
+    object: {
+        home: 'ДОМ',
+        entrance: 'ПОДЪЕЗД',
+        level: 'ЭТАЖ',
+        number_level: 'ЭТАЖНОСТЬ',
+        flat: 'КВАРТИРА',
+        number_flat: 'КОЛ-ВО КОМНАТ',
+        area: 'ПЛОЩАДЬ',
+        balcony: 'БАЛКОН',
+        complete: 'ЗАВЕРШЕНИЕ СТРОИТЕЛЬСТВА',
     },
 
     objects: {

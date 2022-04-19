@@ -3,61 +3,61 @@
     <div class="client__details col-12 px-0">
       <b-form class="client__details_info">
         <div class="d-flex">
-          <h3 class="client__details__title mr-5">Застройщик</h3>
-          <h3 class="client__details__title">Другие детали</h3>
+          <h3 class="client__details__title mr-5">{{ $t('builder') }}</h3>
+          <h3 class="client__details__title">{{ $t('other_details') }}</h3>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label>Компания</label>
+            <label>{{ $t('company') }}</label>
             <b-form-input disabled :value="companyDetails['company_name']"/>
           </div>
           <div class="client__details_info_card">
-            <label>Номер договора</label>
+            <label>{{ $t('contract_number') }}</label>
             <b-form-input disabled :value="otherDetails.contract"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label>Представитель</label>
+            <label>{{ $t('agent') }}</label>
             <b-form-input disabled :value="companyDetails['full_name']"/>
           </div>
           <div class="client__details_info_card">
-            <label>Сумма договора</label>
+            <label>{{ $t('contract_price') }}</label>
             <b-form-input disabled :value="pricePrettier(otherDetails.transaction_price)"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label>Р/С</label>
+            <label>{{ $t('pc') }}</label>
             <b-form-input disabled value=""/>
           </div>
           <div class="client__details_info_card">
-            <label>Дата</label>
+            <label>{{ $t('date') }}</label>
             <b-form-input disabled :value="datePrettier(otherDetails.contract_date)"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label>ИНН</label>
+            <label>{{ $t('inn') }}</label>
             <b-form-input disabled :value="companyDetails.inn"/>
           </div>
           <div class="client__details_info_card">
-            <label>Оформил</label>
+            <label>{{ $t('formed') }}</label>
             <b-form-input disabled :value="otherDetails.created_by" id="firstname"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label>МФО</label>
+            <label>{{ $t('mfo') }}</label>
             <b-form-input disabled :value="otherDetails.mfo" id="firstname"/>
           </div>
           <div class="client__details_info_card">
-            <label>Статус</label>
+            <label>{{ $t('status') }}</label>
             <b-form-input disabled :value="getStatus(otherDetails.status)" id="firstname"/>
           </div>
         </div>

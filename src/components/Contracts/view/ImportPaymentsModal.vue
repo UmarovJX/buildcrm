@@ -74,7 +74,7 @@
           class="d-inline-block w-100"
       >
         <base-button
-            text="Продолжить"
+            :text="$t('next')"
             @click="importUploadExcel"
             class="w-100 add__button"
         />

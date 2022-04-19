@@ -6,23 +6,23 @@
     >
     </base-bread-crumb>
 
-    <base-input
-        v-model="search"
-        :placeholder="$t('users.name')"
-        type="date"
-        :label="true"
-        :error="false"
-    />
-    <base-select
-        :options="array"
-        placeholder="label"
-        :label="true"
-        :error="false"/>
+<!--    <base-input-->
+<!--        v-model="search"-->
+<!--        :placeholder="$t('users.name')"-->
+<!--        type="date"-->
+<!--        :label="true"-->
+<!--        :error="false"-->
+<!--    />-->
+<!--    <base-select-->
+<!--        :options="array"-->
+<!--        placeholder="label"-->
+<!--        :label="true"-->
+<!--        :error="false"/>-->
 
-    <warning-success status="warning" ref="base-modal"/>
+<!--    <warning-success status="warning" ref="base-modal"/>-->
 
 
-    <b-btn @click="openModal">click</b-btn>
+<!--    <b-btn @click="openModal">click</b-btn>-->
 
     <b-card no-body>
       <b-tabs
@@ -60,21 +60,21 @@ import TabChangePassword from "@/components/UserSettings/TabChangePassword";
 import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import BaseSelect from "@/components/Reusable/BaseSelect";
-import BaseInput from "@/components/Reusable/BaseInput";
-import WarningSuccess from "@/components/Reusable/WarningSuccess";
+// import BaseSelect from "@/components/Reusable/BaseSelect";
+// import BaseInput from "@/components/Reusable/BaseInput";
+// import WarningSuccess from "@/components/Reusable/WarningSuccess";
 
 export default {
   name: 'UserSettings',
   components: {
-    WarningSuccess,
     TabUserMe,
     BaseBreadCrumb,
     TabChangePassword,
     BaseUserAccountIcon,
     BaseUserPasswordIcon,
-    BaseSelect,
-    BaseInput,
+    // WarningSuccess,
+    // BaseSelect,
+    // BaseInput,
   },
   data() {
     return {
