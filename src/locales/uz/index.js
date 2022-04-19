@@ -155,6 +155,8 @@ export default {
         price: 'Narxi', // asd
         object: "Ob'ekt", // asd
         show_by: "Ko'rsatish",
+        search: 'Ism, telefon raqami, shartnoma raqami',
+        filter: 'Qidiruv filtrlari',
 
         table: {
             contract: 'Shartnoma',
@@ -203,6 +205,7 @@ export default {
             payment_transaction: "Pul ko'chirish orqali", // asd
             payment_other: "Boshqa to'lov turi", // asd,
             initial_payment: "Birinchi to'lov", // asd
+            actions: 'Amallar'
         },
 
     },

@@ -9,7 +9,7 @@
           type="search"
           id="search-input"
           ref="search-input"
-          placeholder="ФИО, телефон, номер договора"
+          :placeholder="$t('contracts.search')"
           @input="triggerInputEvent"
       />
       <span
@@ -24,7 +24,7 @@
       <span class="filter__icon">
         <base-filter-icon fill="#7C3AED"/>
       </span>
-      <span>Фильтры поиска</span>
+      <span>{{ $t('contracts.filter') }}</span>
     </div>
 
     <!--  FILTER MODAL   -->

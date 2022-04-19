@@ -19,7 +19,7 @@
         :label="true"
         :error="false"/>
 
-    <warning-success status="success" ref="base-modal"/>
+    <warning-success status="warning" ref="base-modal"/>
 
 
     <b-btn @click="openModal">click</b-btn>

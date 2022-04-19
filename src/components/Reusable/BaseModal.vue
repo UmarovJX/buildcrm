@@ -86,6 +86,7 @@ export default {
       justify-content: center
       align-items: center
       width: auto
+      max-width: 90vw;
       height: auto
       border-radius: 3.5rem
       padding: 3.5rem

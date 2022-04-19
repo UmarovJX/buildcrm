@@ -145,6 +145,8 @@ export default {
         price: 'Стоимость', // asd
         object: 'Объект', // asd
         show_by: 'Показать по',
+        search: 'ФИО, телефон, номер договора',
+        filter: 'Фильтры поиска',
 
         table: {
             contract: 'Договор',
@@ -193,6 +195,7 @@ export default {
             payment_transaction: "Перечисление", // asd
             payment_other: "Другое", // asd
             initial_payment: 'Первый взнос', // asd
+            actions: 'Действия'
         },
     },
 

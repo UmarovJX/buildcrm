@@ -25,10 +25,17 @@
       <div class="wcModal-footer">
         <b-row class="w-100">
           <b-col cols="6">
-            <base-button v-if="status !== 'success'" :text="$t('cancel')"/>
+            <base-button
+                v-if="status !== 'success'"
+                :text="$t('cancel')"
+                @click="closeModal"
+            />
           </b-col>
           <b-col cols="6">
-            <base-button design="violet" text="OK"/>
+            <base-button
+                design="violet"
+                text="OK"
+                @click="closeModal"/>
           </b-col>
         </b-row>
       </div>
@@ -57,6 +64,9 @@ export default {
     openModal() {
       this.$refs["base-modal"].openModal()
     },
+    closeModal() {
+      this.$refs["base-modal"].closeModal()
+    }
   }
 }
 

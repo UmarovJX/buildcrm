@@ -177,27 +177,27 @@ export default {
 
     const filterTabList = [
       {
-        name: this.$t('tab_status.all'),
+        name: 'tab_status.all',
         status: '',
         counts: 0
       },
       {
-        name: this.$t('tab_status.booked'),
+        name: 'tab_status.booked',
         status: 'booked',
         counts: 0
       },
       {
-        name: this.$t('tab_status.sold'),
+        name: 'tab_status.sold',
         status: 'sold',
         counts: 0
       },
       {
-        name: this.$t('tab_status.on_payment'),
+        name: 'tab_status.on_payment',
         status: 'contract',
         counts: 0
       },
       {
-        name: this.$t('tab_status.closed'),
+        name: 'tab_status.closed',
         status: 'closed',
         counts: 0
       }

@@ -9,7 +9,7 @@
           :class="[status === currentStatus ? 'filter__content-item-active' : '']"
       >
         <div class="filter__content-item-inline">
-          <span>{{ name }}</span>
+          <span>{{ $t(`${name}`) }}</span>
           <span
               v-if="counts"
               class="counts"
