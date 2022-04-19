@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
+    other: 'Другие',
     booked: 'Забронировать',
     not_for_sale: "Hе продается",
     remove_from_sale: "Снять с продажи",
@@ -134,6 +135,32 @@ export default {
         title: "Уведомления",
     },
 
+    payments: {
+        payment: 'Сумма договора',
+        course: 'Курс',
+        balance: 'Остаток',
+        initial_fee: 'Первоначальный взнос',
+        installment: 'Рассрочка',
+        month: 'месяцев',
+        course_name: 'сум',
+        contract: 'Договор',
+        payment_list: 'Список оплат',
+        payment_download: 'Импорт оплат',
+        payment_add: 'Добавить оплату',
+        import: 'Загрузите файл в формате .xls или .csv для импорта оплат',
+        drag_file: 'Перетащите файл в эту область или',
+        click_file: 'нажмите для выбора файла',
+        download_template: 'Скачать шаблон',
+        table: {
+            date: 'Сумма',
+            balance: 'Сумма',
+            type: 'Тип',
+            method: 'Способ',
+            comment: 'Комментарий',
+            actions: 'Действия',
+        }
+    },
+
     contracts: {
         transfer: 'Перемещение',
         warning: 'Внимание',
@@ -147,6 +174,7 @@ export default {
         show_by: 'Показать по',
         search: 'ФИО, телефон, номер договора',
         filter: 'Фильтры поиска',
+
 
         table: {
             contract: 'Договор',
@@ -197,6 +225,7 @@ export default {
             initial_payment: 'Первый взнос', // asd
             actions: 'Действия'
         },
+
     },
 
     roles: {

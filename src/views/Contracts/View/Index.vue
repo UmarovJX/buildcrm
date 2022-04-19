@@ -8,12 +8,12 @@
         </span>
         <span class="breadcrumb__content">
           <span>
-            Список договоров
+            {{ $t('payments.payment_list') }}
             <base-arrow-right :width="18" :height="18"/>
             <span>{{ order.contract }}</span>
           </span>
           <span class="head">
-            Договор <span class="contract__number">{{ order.contract }}</span>
+            {{ $t('payments.contract') }} <span class="contract__number">{{ order.contract }}</span>
           </span>
         </span>
       </div>

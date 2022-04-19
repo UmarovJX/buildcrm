@@ -1,7 +1,7 @@
 <template>
   <div class="currency__chart">
     <span class="title">{{ context.title }}</span>
-    <span class="price">{{ context.price }} сум</span>
+    <span class="price">{{ context.price }} {{ $t('payments.course_name') }}</span>
     <span class="bottom__info">{{ context.bottom }}</span>
     <span class="chart__list" :class="firstChartLineClass">
       <span class="d-flex align-items-center">

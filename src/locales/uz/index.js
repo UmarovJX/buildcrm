@@ -15,6 +15,7 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
+    other: 'Boshqa',
     booked: 'Band qilindi',
     not_for_sale: "Sotilmaydi",
     remove_from_sale: "Sotuvdan olib tashlash",
@@ -144,6 +145,32 @@ export default {
         title: "Bildirishnomalar",
     },
 
+    payments: {
+        payment: 'Shartnoma summasi',
+        course: 'Kurs',
+        balance: 'Qoldiq',
+        initial_fee: "Boshlang'ich to'lov",
+        installment: "Bo'lib to'lash rejasi",
+        month: 'oylar',
+        course_name: "so'm",
+        contract: 'Shartnoma',
+        payment_list: "To'lovlar ro'yxati",
+        payment_download: "To'lovlarni import qilish",
+        payment_add: "To'lov qo'shish",
+        import: 'Toʻlovlarni import qilish uchun faylni .xls yoki .csv formatida yuklang',
+        drag_file: 'Faylni ushbu maydonga torting yoki',
+        click_file: 'faylni tanlash uchun bosing',
+        download_template: 'Shablonni yuklab olish',
+        table: {
+            date: 'Sana',
+            balance: 'Miqdor',
+            type: 'Tur',
+            method: 'Usul',
+            comment: 'Izoh',
+            actions: 'Harakatlar',
+        }
+    },
+
     contracts: {
         transfer: "O'tkazilgan",
         warning: 'Предупреждение',
@@ -157,6 +184,7 @@ export default {
         show_by: "Ko'rsatish",
         search: 'Ism, telefon raqami, shartnoma raqami',
         filter: 'Qidiruv filtrlari',
+
 
         table: {
             contract: 'Shartnoma',

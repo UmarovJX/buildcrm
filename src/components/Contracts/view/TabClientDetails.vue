@@ -59,7 +59,7 @@
                 <span v-if="client.friends">Знакомый</span>
                 <span v-else>Незнакомый</span>
               </p>
-              <!--              <span class="edit__icon">-->`
+              <!--              <span class="edit__icon">-->
               <!--                <base-edit-icon :height="16" :width="16" fill="#ffffff"/>-->
               <!--              </span>-->
             </div>
