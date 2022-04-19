@@ -77,10 +77,7 @@
 
       <!--  Actions    -->
       <template #cell(actions)="data">
-          <span
-              @click="downloadContractLink(data.item.id)"
-              class="arrow__down-violet"
-          >
+          <span class="arrow__down-violet">
             <base-arrow-down-icon class="download__icon" :width="20" :height="20" fill="#fff"/>
           </span>
       </template>
@@ -297,9 +294,15 @@ export default {
       this.changeFetchLimit()
     },
     downloadContractLink(id) {
-      api.contractV2.downloadContract(id)
-          .then(() => {
-            window.open(process.env.VUE_APP_URL_V1_CRM + `/orders/${id}/contract`)
+      api.contract.downloadContract(id)
+          .then(response => {
+            console.log(response)
+            const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            fileLink.setAttribute('download', 'contract.docx')
+            document.body.appendChild(fileLink)
+            fileLink.click()
           })
           .catch(() => {
             return '#'
@@ -316,7 +319,7 @@ export default {
     contractView({id}, index, event) {
       const clickedDownloadBtn = event.target.classList.contains('download__icon')
       if (clickedDownloadBtn) {
-        this.downloadContractLink()
+        this.downloadContractLink(id)
       } else {
         this.$router.push({
           name: 'contracts-view',
