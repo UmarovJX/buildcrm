@@ -623,7 +623,7 @@ export default {
   width: 100%
   justify-content: space-between
   border-bottom: 2px solid var(--gray-200)
-  padding-left: 1rem
+  //padding-left: 1rem
   font-size: 1rem
 
   .row
@@ -636,7 +636,7 @@ export default {
     height: 3.5rem
     letter-spacing: 1px
     text-transform: uppercase
-    padding-left: 1rem
+    //padding-left: 1rem
 
 .main__section
   .main__row
@@ -656,7 +656,7 @@ export default {
       align-items: center
       padding-top: 1rem
       padding-bottom: 1rem
-      padding-left: 1rem
+      //padding-left: 1rem
       border-bottom: 2px solid var(--gray-200)
 
       &__item

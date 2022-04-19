@@ -48,11 +48,11 @@
         <template #header>
           <!--   GO BACK     -->
           <span class="d-flex align-items-center">
-          <span class="go__back" @click="closePaymentAdditionModal">
-            <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
-          </span>
+            <span class="go__back" @click="closePaymentAdditionModal">
+              <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+            </span>
             <!--    TITLE      -->
-          <span class="title">Добавить оплату</span>
+            <span class="title">Добавить оплату</span>
         </span>
         </template>
 
@@ -281,12 +281,12 @@
                 text="Нет, отменить"
             >
             </base-button>
-              <base-button
-                  @click="deletePaymentTransaction(deletionPaymentId)"
-                  text="Да, удалить"
-                  class="add__button"
-              >
-              </base-button>
+            <base-button
+                @click="deletePaymentTransaction(deletionPaymentId)"
+                text="Да, удалить"
+                class="add__button"
+            >
+            </base-button>
           </div>
         </template>
       </base-modal>
@@ -398,7 +398,7 @@
         @update-content="refreshDetails"
     />
 
-    <!-- Warning Modal -->
+    <!-- WARNING MODAL -->
     <base-modal
         design="small-modal"
         ref="initial-payment-warning"
@@ -485,7 +485,7 @@ export default {
     BaseDownIcon,
     BaseLoading,
     BaseButton,
-    BaseModal
+    BaseModal,
   },
   props: {
     order: {
@@ -861,6 +861,9 @@ export default {
     },
     closePaymentAdditionModal() {
       this.$refs['payment-addition-modal'].closeModal()
+      setTimeout(() => {
+        this.initAppendPayment()
+      }, 200)
     },
     openPaymentsImportModal() {
       this.$refs['import-payments'].openModal()

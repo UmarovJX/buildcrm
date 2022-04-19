@@ -74,7 +74,6 @@
         </div>
       </template>
     </b-overlay>
-
   </main>
 </template>
 

@@ -7,7 +7,7 @@ export default {
             ctx.commit('updateLoading', true, {root: true});
 
             try {
-                const response = await api.clients.fetchClients(vm.page)
+                const response = await api.clientsV2.fetchClients(vm.page)
                 const clients = response.data.data;
 
                 // const next = ;
@@ -34,7 +34,7 @@ export default {
         async fetchClientsSearch(ctx, vm) {
             ctx.commit('updateLoading', true, {root: true});
             try {
-                const response = await api.clients.searchClient(vm.search, vm.page)
+                const response = await api.clientsV2.searchClient(vm.search, vm.page)
                 const clients = response.data.data;
 
                 const paginate = {

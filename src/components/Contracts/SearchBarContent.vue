@@ -504,7 +504,7 @@ export default {
 
         .placeholder {
           color: var(--gray-600);
-          padding-left: 1rem;
+          //padding-left: 1rem;
         }
 
         .input__date {
@@ -517,7 +517,7 @@ export default {
           background-color: transparent;
           border: none;
           color: var(--gray-600);
-          padding: 0 0 0 1rem;
+          padding: 0;
 
           .disabled__option {
             color: var(--gray-100) !important;
@@ -659,7 +659,7 @@ export default {
   .price__currency {
     min-width: 6rem;
     height: 100%;
-    padding-left: 1rem;
+    //padding-left: 1rem;
   }
 }
 

@@ -1,4 +1,4 @@
-import {axiosV1CRM} from '@/services/core/base'
+import {axiosV1CRM, axiosV2} from '@/services/core/base'
 import Core from '@/services/core/index'
 
 class Settings extends Core {
@@ -15,4 +15,18 @@ class Settings extends Core {
     }
 }
 
-export default Settings
+class SettingsV2 extends Core {
+    constructor(axios = axiosV2) {
+        super(axios);
+    }
+
+    fetchSettings() {
+        return this.get('settings')
+    }
+
+    fetchCurrency() {
+        return this.get('currency')
+    }
+}
+
+export default {Settings, SettingsV2}

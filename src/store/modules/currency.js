@@ -4,7 +4,7 @@ export default {
     actions: {
         async fetchCurrency(ctx, vm) {
             try {
-                const {data} = await api.settings.fetchCurrency()
+                const {data} = await api.settingsV2.fetchCurrency()
 
                 ctx.commit('updateCurrency', data);
 

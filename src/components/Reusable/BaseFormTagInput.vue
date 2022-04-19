@@ -133,7 +133,7 @@ export default {
   border: none;
   outline: none;
   background-color: transparent;
-  padding-left: 1rem;
+  //padding-left: 1rem;
 }
 
 .addition__button {
