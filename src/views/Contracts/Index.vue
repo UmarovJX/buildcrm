@@ -338,7 +338,11 @@ export default {
       return ''
     },
     fetchContentByStatus(status) {
-      this.replaceRouter({...this.query, status})
+      const query = Object.assign({}, this.query)
+      if (query.hasOwnProperty('page')) {
+        delete query.page
+      }
+      this.replaceRouter({...query, status})
     },
     changeCurrentPage(page) {
       const currentPage = this.query.page
