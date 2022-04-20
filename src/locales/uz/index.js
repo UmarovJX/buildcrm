@@ -15,6 +15,12 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
+    thank_you: 'Rahmat',
+    no_cancel: "Yo'q, bekor qiling",
+    yes_delete: "Ha, o'chirilsin",
+    remove_payment: "To'lov o'chirilsinmi ?",
+    deleted: "O'chirildi",
+    successfully: 'Muvaffaqiyatli!',
     other: 'Boshqa',
     booked: 'Band qilindi',
     not_for_sale: "Sotilmaydi",
@@ -201,6 +207,10 @@ export default {
     contracts: {
         transfer: "O'tkazilgan",
         warning: 'Предупреждение',
+        edit_payment: "To'lovni tahrirlash",
+        add_payment_successfully: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+        deleted_payment_successfully: "Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.",
+        warn_before_delete_payment: 'Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.',
         warning_in_payment: "Boshlang'ich to'lov uchun {price} so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi?",
         title: "Shartnomalar", download: "Shartnomani yuklab olish", f_i_o: 'F.I.SH', // asd
         filter_with_date: "Sana bo'yicha filtrlash", // asd

@@ -2,6 +2,11 @@ export default {
     home: {
         title: "Главная",
     },
+    no_cancel: "Нет, отменить",
+    yes_delete: "Да, удалить",
+    remove_payment: "Удалить оплату ?",
+    deleted: "Удалено",
+    successfully: 'Успешно!',
     other: 'Другие',
     booked: 'Забронировать',
     not_for_sale: "Hе продается",
@@ -192,6 +197,10 @@ export default {
     contracts: {
         transfer: 'Перемещение',
         warning: 'Внимание',
+        edit_payment: "Редактировать оплату",
+        add_payment_successfully: "Успешно добавлено в список платежей",
+        deleted_payment_successfully: "Успешно удалено из списка платежей",
+        warn_before_delete_payment: 'Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.',
         warning_in_payment: 'На первоначальный взнос имеется излишек в размере {price} сумов. Вы хотите перевести эту сумму в ежемесячный платеж?',
         title: "Договоры", download: "Скачать договор", f_i_o: 'Ф.И.О', // asd
         filter_with_date: 'Фильтр по дате', // asd

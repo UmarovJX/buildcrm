@@ -114,11 +114,42 @@ export default {
     await this.fetchContractData()
   },
   methods: {
-    downloadContact() {
-      // console.log('123');
+    async downloadContact() {
+      const {id} = this.$route.params
+      await api.contract.downloadContract(id)
+          .then(({data, headers}) => {
+            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
+            const fileURL = window.URL.createObjectURL(new Blob([data]))
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            fileLink.setAttribute('download', filename)
+            document.body.appendChild(fileLink)
+            fileLink.click()
+          })
+          .catch(() => {
+            return '#'
+          })
     },
-    deleteContact() {
-      // console.log('345');
+    async deleteContact() {
+      const {id} = this.$route.params
+      this.showLoading = true
+      await api.contractV2.deleteContract(id)
+          .then(() => {
+            this.$router.push({
+              name: 'contracts'
+            })
+            this.$swal({
+              title: this.$t('successfully'),
+              icon: "success",
+              button: this.$t('yes')
+            })
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.showLoading = false
+          })
     },
     async fetchContractData() {
       this.showLoading = true

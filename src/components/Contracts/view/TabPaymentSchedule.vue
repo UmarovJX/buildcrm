@@ -265,13 +265,13 @@
                       fill="#EF4444"/>
               </svg>
             </span>
-            <span class="title">Удалить оплату?</span>
+            <span class="title">{{ $t('remove_payment') }}</span>
           </span>
         </template>
 
         <template #main>
           <span class="warning__before__delete-main">
-            Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.
+            {{ $t('contracts.warn_before_delete_payment') }}
           </span>
         </template>
 
@@ -279,12 +279,12 @@
           <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
             <base-button
                 @click="cancelRemovingPayment"
-                text="Нет, отменить"
+                :text="`${ $t('no_cancel') }`"
             >
             </base-button>
             <base-button
                 @click="deletePaymentTransaction(deletionPaymentId)"
-                text="Да, удалить"
+                :text="`${ $t('yes_delete') }`"
                 class="add__button"
             >
             </base-button>
@@ -605,7 +605,8 @@ export default {
         })
       }
 
-      if (this.permission?.debtors?.monthly?.edit) {
+      const monthlyPaymentCounts = this.order?.payments?.monthly_payments_count
+      if (this.permission?.debtors?.monthly?.edit && monthlyPaymentCounts) {
         listOption.push({
           value: 'monthly',
           text: this.$t('monthly')
@@ -616,12 +617,11 @@ export default {
     },
     paymentTypeOptionsForCreate() {
       const remainedPriceInitialPayment = this.order?.payments?.initial_payment_remained
+      let options = this.paymentTypeOptionsPermission
       if (!remainedPriceInitialPayment) {
-        return this.paymentTypeOptionsPermission
-            .filter(paymentOption => paymentOption.value !== 'initial_payment')
+        options = options.filter(paymentOption => paymentOption.value !== 'initial_payment')
       }
-
-      return this.paymentTypeOptionsPermission
+      return options
     },
     uploadFilePermission() {
       const {debtors} = this.permission
@@ -881,8 +881,8 @@ export default {
             .then(() => {
               this.closePaymentAdditionModal()
               this.$swal({
-                title: "Muvaffaqiyatli!",
-                text: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+                title: this.$t('successfully'),
+                text: this.$t('add_payment_successfully'),
                 icon: "success"
               }).then(() => {
                 this.initAppendPayment()
@@ -947,8 +947,8 @@ export default {
           .then(() => {
             this.fetchItems()
             this.$swal({
-              title: "O'chirildi!",
-              text: "To'lovlar ro'yxatidan muvaffaqiyatli o'chirildi",
+              title: this.$t('deleted'),
+              text: this.$t('contracts.deleted_payment_successfully'),
               icon: "success"
             })
             this.deletionPaymentId = null
@@ -985,8 +985,8 @@ export default {
           .then(() => {
             this.closePaymentAdditionModal()
             this.$swal({
-              title: "Muvaffaqiyatli!",
-              text: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+              title: this.$t('successfully'),
+              text: this.$t('contracts.add_payment_successfully'),
               icon: "success"
             }).then(() => {
               this.initAppendPayment()
@@ -1035,8 +1035,8 @@ export default {
       await api.contractV2.appendPayment(id, formMonthly)
           .then(() => {
             this.$swal({
-              title: "Muvaffaqiyatli!",
-              text: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+              title: this.$t('successfully'),
+              text: this.$t('contracts.add_payment_successfully'),
               icon: "success"
             }).then(() => {
               this.initAppendPayment()

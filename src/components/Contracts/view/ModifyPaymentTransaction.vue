@@ -12,7 +12,7 @@
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
         <!--    TITLE      -->
-          <span class="title">Редактировать оплату</span>
+          <span class="title">{{ $t('contracts.edit_payment') }}</span>
         </span>
     </template>
 
@@ -173,7 +173,7 @@ export default {
     async submitModifyTransaction() {
       const formCompleted = await this.$refs['modify-payment'].validate()
       if (formCompleted) {
-        const body = Object.assign({},this.form)
+        const body = Object.assign({}, this.form)
         const {id: contractId} = this.$route.params
         const {id: transactionId} = this.properties
         this.buttonLoading = true

@@ -252,7 +252,8 @@ export default {
       if (!(this.havePlan && apartment.plan)) {
         return ''
       }
-      return process.env.VUE_APP_URL + '/' + apartment.plan?.image
+
+      return apartment.plan?.image
     },
     coordinates() {
       const {latitude, longitude} = this.order.object.location
@@ -339,11 +340,15 @@ export default {
     width: 100%;
     height: 84%;
     min-height: 20rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
 
     & img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border: 2px solid var(--gray-200);
+      border-radius: 2rem;
     }
   }
 
