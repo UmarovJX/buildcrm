@@ -137,9 +137,8 @@
             <div class="object__details_info_card_text">
               <span>{{ $t('object.area') }}</span>
               <span class="d-flex">
-                  <span v-if="havePlan" class="mr-2 font-normal">{{
-                      parseFloat(apartment.apartment.plan.area).toFixed(1)
-                    }}</span>
+                  <span v-if="havePlan" class="mr-2 font-normal">
+                    {{ parseFloat(apartment.apartment.plan.area).toFixed(1) }}</span>
                   <span class="lowercase">м2</span>
               </span>
             </div>
@@ -276,15 +275,16 @@ export default {
       const year = date.getFullYear()
       let month = date.getMonth()
       if (month < 3) {
-        month = '01'
+        month = '1'
       } else if (month >= 3 && month < 6) {
-        month = '02'
+        month = '2'
       } else if (month >= 6 && month < 9) {
-        month = '03'
+        month = '3'
       } else {
-        month = '04'
+        month = '4'
       }
-      return `${month}/${year}`
+
+      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t('of_the_year')}`
     },
     async fetchObjectDetails() {
       this.startLoading()

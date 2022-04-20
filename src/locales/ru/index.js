@@ -2,6 +2,8 @@ export default {
     home: {
         title: "Главная",
     },
+    quarter: 'четверть',
+    of_the_year: 'года',
     no_cancel: "Нет, отменить",
     yes_delete: "Да, удалить",
     remove_payment: "Удалить оплату ?",
@@ -195,11 +197,19 @@ export default {
     },
 
     contracts: {
+        object_name: 'Название объекта',
+        apply_filter: 'Применить',
+        client_type: 'Тип клиента',
+        reset_filter: 'Сбросить',
+        agreement_date: 'Дата договора',
+        apartment_number: 'Номер квартиры',
+        filter_title: 'Фильтры поиска',
         transfer: 'Перемещение',
         warning: 'Внимание',
         edit_payment: "Редактировать оплату",
         add_payment_successfully: "Успешно добавлено в список платежей",
         deleted_payment_successfully: "Успешно удалено из списка платежей",
+        warn_before_delete_contract: 'Вы уверены, что хотите удалить договор? Данное действие нельзя отменить.',
         warn_before_delete_payment: 'Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.',
         warning_in_payment: 'На первоначальный взнос имеется излишек в размере {price} сумов. Вы хотите перевести эту сумму в ежемесячный платеж?',
         title: "Договоры", download: "Скачать договор", f_i_o: 'Ф.И.О', // asd

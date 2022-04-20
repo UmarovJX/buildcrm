@@ -44,7 +44,7 @@
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
           <!--    Title      -->
-          <span class="title">Фильтры поиска</span>
+          <span class="title"> {{ $t('contracts.filter_title') }} </span>
         </span>
 
         <div class="modal__content-main">
@@ -70,7 +70,7 @@
             <base-multiselect
                 :default-values="filter.object_id"
                 :options="objectOptions"
-                placeholder="Название объекта"
+                :placeholder="`${ $t('contracts.object_name') }`"
                 track-by="value"
                 label="text"
                 @input="inputFilterObject"
@@ -82,7 +82,7 @@
                   @set-tags="setApartments"
                   :default-tags="filter.apartment_number"
                   ref="base-form-tag-input"
-                  placeholder="Номер квартиры"
+                  :placeholder="`${ $t('contracts.apartment_number') }`"
               >
                 <template #delete-content>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@
 
             <!--    Contract Date    -->
             <div class="filter__inputs-input d-flex justify-content-between">
-              <span class="placeholder">Дата договора</span>
+              <span class="placeholder">{{ $t('contracts.agreement_date') }}</span>
               <!--
               <input
                   type="date"
@@ -159,7 +159,7 @@
                       disabled
                   >
                   <span class="disabled__option">
-                    Тип клиента
+                    {{ $t('contracts.client_type') }}
                   </span>
                   </b-form-select-option>
                 </template>
@@ -169,8 +169,8 @@
 
           <!--  Modal Footer    -->
           <div class="modal__footer">
-            <button @click="clearFilter" class="clear__button">Сбросить</button>
-            <button @click="searchByFilterField" class="search__button">Применить</button>
+            <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
+            <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
           </div>
         </div>
       </div>
