@@ -145,10 +145,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      permission: 'getPermission'
+      permission: 'getPermission',
+      me: 'getMe'
     }),
+    role() {
+      return this.me.role
+    },
+    isStatusContract() {
+      return this.order.status === 'contract'
+    },
     deletePermission() {
-      return this.permission?.contracts?.cancelled
+      return this.permission?.contracts?.cancelled && this.isStatusContract
     },
     filterTabList() {
       const list = [

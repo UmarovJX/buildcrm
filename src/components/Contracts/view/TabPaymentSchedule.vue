@@ -882,7 +882,7 @@ export default {
               this.closePaymentAdditionModal()
               this.$swal({
                 title: this.$t('successfully'),
-                text: this.$t('add_payment_successfully'),
+                text: this.$t('contracts.add_payment_successfully'),
                 icon: "success"
               }).then(() => {
                 this.initAppendPayment()
