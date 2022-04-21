@@ -13,6 +13,12 @@ class Contract extends Core {
     cancelContract(id, body) {
         return this.post(`deals/${id}`, body)
     }
+
+    downloadContract(id) {
+        return this.get('orders/' + id + '/contract', {
+            responseType: 'blob'
+        })
+    }
 }
 
 class ContractV2 extends Core {
@@ -30,10 +36,6 @@ class ContractV2 extends Core {
 
     fetchContractView(id) {
         return this.get(`contracts/${id}`)
-    }
-
-    downloadContract(id) {
-        return this.get('orders/' + id + '/contract')
     }
 
     fetchClientInfo(id) {
@@ -74,6 +76,16 @@ class ContractV2 extends Core {
 
     editPaymentTransaction({contractId, transactionId, params}) {
         return this.put(`contracts/${contractId}/payments/${transactionId}`, params)
+    }
+
+    downloadContractTemplate() {
+        return this.get('contracts/template', {
+            responseType: 'blob'
+        })
+    }
+
+    deleteContract(contractId) {
+        return this.delete(`contracts/${contractId}`)
     }
 }
 

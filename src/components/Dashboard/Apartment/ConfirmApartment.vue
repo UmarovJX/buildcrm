@@ -25,7 +25,6 @@
           class="mb-4"
       >
       </base-bread-crumb>
-
       <!-- Step 1 -->
       <div class="new-object p-3" v-if="contract.step === 1">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
@@ -549,7 +548,7 @@ export default {
 
     async postStore() {
       this.buttons.loading = true;
-      await api.clients.createClient(this.client)
+      await api.clientsV2.createClient(this.client)
           .then((response) => {
             this.buttons.loading = false;
             if (response) {

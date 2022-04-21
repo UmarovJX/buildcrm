@@ -1,6 +1,14 @@
 import Vue from "vue";
 import Multiselect from "vue-multiselect";
 
+// const extendedSelect = {
+//     extends: Multiselect,
+//     styles:{
+//
+//     }
+// }
+
+
 import CreateObjectDiscount from "./components/Dashboard/Objects/Components/Discount/Create";
 import EditObjectDiscount from "./components/Dashboard/Objects/Components/Discount/Edit";
 import Header from "./components/Dashboard/Layouts/Header";

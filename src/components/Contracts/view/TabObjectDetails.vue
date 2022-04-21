@@ -5,13 +5,13 @@
         <div class="object__details_layout_img">
           <img :src="imageUrl" alt="apartment image">
         </div>
-        <button>
+        <button @click="openMapModal">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd"
                   d="M3.4395 1.66675H16.5592C17.539 1.66675 18.3327 2.48429 18.3327 3.49363V4.76988C18.3327 5.25952 18.1413 5.72972 17.8016 6.07265L12.3807 11.5559C12.2872 11.6514 12.1602 11.7044 12.029 11.7035L7.49013 11.6894C7.35199 11.6894 7.22071 11.6302 7.12633 11.5268L2.14478 6.0479C1.83676 5.70939 1.66602 5.26217 1.66602 4.79816V3.49451C1.66602 2.48518 2.45967 1.66675 3.4395 1.66675ZM7.73277 13.1869L11.7782 13.1992C12.0305 13.2001 12.2347 13.4114 12.2347 13.6703V15.9462C12.2347 16.206 12.0871 16.4411 11.8572 16.5498L8.18493 18.2742C8.09913 18.314 8.00819 18.3334 7.91724 18.3334C7.79626 18.3334 7.67528 18.2981 7.56975 18.2282C7.38528 18.1063 7.27374 17.8959 7.27374 17.6705V13.6579C7.27374 13.3972 7.47966 13.186 7.73277 13.1869Z"
                   fill="#7C3AED"/>
           </svg>
-          Показать на карте
+          {{ $t('view_map') }}
         </button>
       </div>
 
@@ -38,7 +38,7 @@
               </svg>
             </div>
             <div class="object__details_info_card_text">
-              <span>дом</span>
+              <span>{{ $t('object.home') }}</span>
               <span>{{ apartment.apartment.floor }}</span>
             </div>
           </div>
@@ -54,7 +54,7 @@
 
             </div>
             <div class="object__details_info_card_text">
-              <span>Подъезд</span>
+              <span>{{ $t('object.entrance') }}</span>
               <span>{{ apartment.apartment.entrance }}</span>
             </div>
           </div>
@@ -70,7 +70,7 @@
 
             </div>
             <div class="object__details_info_card_text">
-              <span>Этаж</span>
+              <span>{{ $t('object.level') }}</span>
               <span>{{ apartment.apartment.floor }}</span>
             </div>
           </div>
@@ -85,7 +85,7 @@
               </svg>
             </div>
             <div class="object__details_info_card_text">
-              <span>Этажность</span>
+              <span>{{ $t('object.number_level') }}</span>
               <span>
               </span>
             </div>
@@ -101,7 +101,7 @@
               </svg>
             </div>
             <div class="object__details_info_card_text">
-              <span>Квартира</span>
+              <span>{{ $t('object.flat') }}</span>
               <span>
                 {{ apartment.apartment.number }}
               </span>
@@ -118,7 +118,7 @@
               </svg>
             </div>
             <div class="object__details_info_card_text">
-              <span>Кол-во комнат</span>
+              <span>{{ $t('object.number_flat') }}</span>
               <span>
                 {{ apartment.apartment.rooms }}
               </span>
@@ -135,11 +135,10 @@
               </svg>
             </div>
             <div class="object__details_info_card_text">
-              <span>Площадь</span>
+              <span>{{ $t('object.area') }}</span>
               <span class="d-flex">
-                  <span v-if="havePlan" class="mr-2 font-normal">{{
-                      parseFloat(apartment.apartment.plan.area).toFixed(1)
-                    }}</span>
+                  <span v-if="havePlan" class="mr-2 font-normal">
+                    {{ parseFloat(apartment.apartment.plan.area).toFixed(1) }}</span>
                   <span class="lowercase">м2</span>
               </span>
             </div>
@@ -155,7 +154,7 @@
               </svg>
             </div>
             <div class="object__details_info_card_text">
-              <span>Балкон</span>
+              <span>{{ $t('object.balcony') }}</span>
               <span v-if="havePlan && apartment.apartment.plan.balcony" class="d-flex font-normal">
                     <span class="mr-2">{{ parseFloat(apartment.apartment.plan.balcony_area).toFixed(1) }}</span>
                     <span class="lowercase">м2</span>
@@ -175,23 +174,59 @@
 
             </div>
             <div class="object__details_info_card_text">
-              <span>Завершение строительства</span>
+              <span>{{ $t('object.complete') }}</span>
               <span>
-                {{ datePrettier(apartment.object.build_date) }}
+                {{ buildingDate(apartment.object.build_date) }}
               </span>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!--  LOCATION APARTMENT ON THE MAP  -->
+    <base-modal ref="map-modal">
+      <template #header>
+        <!--   GO BACK     -->
+        <span class="d-flex align-items-center">
+            <span class="go__back" @click="closeMapModal">
+              <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+            </span>
+          <!--    TITLE      -->
+            <span class="title">{{ $t('object_map') }}</span>
+        </span>
+      </template>
+
+      <template #main>
+        <div class="yandex__content">
+          <yandex-map :coords="coordinates" zoom="18" ymap-class="yandex__content-map">
+            <yandexMarker
+                :coords="coordinates"
+                marker-id="123123"
+                marker-type="placemark"
+            />
+          </yandex-map>
+        </div>
+      </template>
+
+    </base-modal>
   </div>
 </template>
 
 <script>
 import api from "@/services/api";
+import {yandexMap, ymapMarker} from "vue-yandex-maps";
+import BaseModal from "@/components/Reusable/BaseModal";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 
 export default {
   name: "TabObjectDetails",
+  components: {
+    BaseModal,
+    yandexMap,
+    yandexMarker: ymapMarker,
+    BaseArrowLeftIcon
+  },
   props: {
     order: {
       type: Object,
@@ -209,12 +244,20 @@ export default {
       return Object.keys(this.apartment).length
     },
     havePlan() {
-      return this.haveApartment && this.apartment.apartment.hasOwnProperty('plan')
+      return this.haveApartment && this.apartment.apartment?.plan
     },
     imageUrl() {
-      if (!this.havePlan) return ''
-      return process.env.VUE_APP_URL + '/' + this.apartment.apartment.plan.image
-    }
+      const {apartment} = this.apartment
+      if (!(this.havePlan && apartment.plan)) {
+        return ''
+      }
+
+      return apartment.plan?.image
+    },
+    coordinates() {
+      const {latitude, longitude} = this.order.object.location
+      return [latitude, longitude]
+    },
   },
   created() {
     this.fetchObjectDetails()
@@ -226,6 +269,22 @@ export default {
       const baseMonth = date.getMonth() + 1
       const month = baseMonth < 10 ? `0${baseMonth}` : baseMonth
       return `${month}/${year}`
+    },
+    buildingDate(time) {
+      const date = new Date(time)
+      const year = date.getFullYear()
+      let month = date.getMonth()
+      if (month < 3) {
+        month = '1'
+      } else if (month >= 3 && month < 6) {
+        month = '2'
+      } else if (month >= 6 && month < 9) {
+        month = '3'
+      } else {
+        month = '4'
+      }
+
+      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t('of_the_year')}`
     },
     async fetchObjectDetails() {
       this.startLoading()
@@ -247,6 +306,12 @@ export default {
     finishLoading() {
       this.$emit('finish-loading')
     },
+    closeMapModal() {
+      this.$refs['map-modal'].closeModal()
+    },
+    openMapModal() {
+      this.$refs['map-modal'].openModal()
+    }
   }
 }
 </script>
@@ -274,11 +339,16 @@ export default {
   &_img {
     width: 100%;
     height: 84%;
+    min-height: 20rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
 
     & img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border: 2px solid var(--gray-200);
+      border-radius: 2rem;
     }
   }
 
@@ -364,6 +434,34 @@ export default {
 
 .font-normal {
   font-size: 1rem;
+}
+
+.go__back {
+  width: 56px;
+  height: 56px;
+  border-radius: 100%;
+  background-color: var(--gray-100);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+::v-deep .yandex__content {
+  width: 45rem;
+  height: 25rem;
+
+  &-map {
+    z-index: 100;
+    border-radius: 2rem;
+    border: 2px solid var(--gray-200);
+    height: 25rem;
+    width: 45rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
 }
 
 @media screen and (max-width: 1100px) {

@@ -30,15 +30,19 @@ export function idGenerator() {
 }
 
 export function phonePrettier(phoneNumber) {
-    const phone = phoneNumber.toString()
-    /* 998 90 992 50 44 */
-    if (!phone) return
-    const leftHandSide = '+' + phone.slice(0, 3)  /* 998 */
-    const companyCode = phone.slice(3, 5)        /* 90  */
-    const starterNumbers = phone.slice(5, 8)    /* 992 */
-    const middleNumbers = phone.slice(8, 10)   /* 50  */
-    const endingNumbers = phone.slice(10, 12) /* 44  */
-    return `${leftHandSide} ${companyCode} ${starterNumbers} ${middleNumbers} ${endingNumbers}`
+    if (phoneNumber) {
+        const phone = phoneNumber.toString()
+        /* 998 90 992 50 44 */
+        if (!phone) return
+        const leftHandSide = '+' + phone.slice(0, 3)  /* 998 */
+        const companyCode = phone.slice(3, 5)        /* 90  */
+        const starterNumbers = phone.slice(5, 8)    /* 992 */
+        const middleNumbers = phone.slice(8, 10)   /* 50  */
+        const endingNumbers = phone.slice(10, 12) /* 44  */
+        return `${leftHandSide} ${companyCode} ${starterNumbers} ${middleNumbers} ${endingNumbers}`
+    }
+
+    return ''
 }
 
 export function debounce(fn, delay) {
@@ -67,8 +71,13 @@ export function sortObjectValues(obj) {
 export function sortInFirstRelationship(obj) {
     const loopPackage = {}
     for (let [key, value] of Object.entries(obj)) {
+        if (!value) continue
+
         if (Array.isArray(value) && value.length > 0) {
-            loopPackage[key] = value
+            const valuable = value.filter(arrValue => arrValue !== null)
+            if (valuable.length) {
+                loopPackage[key] = valuable
+            }
             continue
         }
 

@@ -9,8 +9,8 @@
     <!--  Search Content  -->
     <search-bar-content
         @trigger-input="setSearchValue"
-        @search-by-filter="searchByFilter"
-        @replace-router="replaceRouter"
+        @search-by-filter="searchQueryFilter"
+        @replace-router="searchQueryFilter"
     />
 
     <!--  Table List -->
@@ -21,29 +21,31 @@
         :busy="showLoading"
         :items="tableItems"
         :fields="tableFields"
-        :select-mode="selectMode"
-        :selectable="selectable"
-        @row-selected="contractView"
+        @row-clicked="contractView"
         class="table__list"
         :empty-text="$t('no_data')"
         thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border"
+        tbody-tr-class="row__body__bottom-border cursor-pointer"
         show-empty
         sort-icon-left
     >
       <!--   Checkbox Head    -->
-      <template #head(checkbox)="data">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="1" width="14" height="14" rx="3" stroke="#9CA3AF" stroke-width="2"/>
-        </svg>
-      </template>
+      <!--
+        <template #head(checkbox)="data">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="14" height="14" rx="3" stroke="#9CA3AF" stroke-width="2"/>
+          </svg>
+        </template>
+      -->
 
       <!--   Checkbox  Body   -->
-      <template #cell(checkbox)="data">
+      <!--
+       <template #cell(checkbox)="data">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="1" y="1" width="14" height="14" rx="3" stroke="#9CA3AF" stroke-width="2"/>
         </svg>
       </template>
+      -->
 
       <!--   Phone Number   -->
       <template #cell(phone)="data">
@@ -75,12 +77,9 @@
 
       <!--  Actions    -->
       <template #cell(actions)="data">
-        <span
-            @click="downloadContractLink(data.item.id)"
-            class="arrow__down-violet"
-        >
-          <base-arrow-down-icon :width="20" :height="20" fill="#fff"/>
-        </span>
+          <span class="arrow__down-violet">
+            <base-arrow-down-icon class="download__icon" :width="20" :height="20" fill="#fff"/>
+          </span>
       </template>
 
       <!--  Busy Animation    -->
@@ -177,27 +176,27 @@ export default {
 
     const filterTabList = [
       {
-        name: this.$t('tab_status.all'),
+        name: 'tab_status.all',
         status: '',
         counts: 0
       },
       {
-        name: this.$t('tab_status.booked'),
+        name: 'tab_status.booked',
         status: 'booked',
         counts: 0
       },
       {
-        name: this.$t('tab_status.sold'),
+        name: 'tab_status.sold',
         status: 'sold',
         counts: 0
       },
       {
-        name: this.$t('tab_status.on_payment'),
+        name: 'tab_status.on_payment',
         status: 'contract',
         counts: 0
       },
       {
-        name: this.$t('tab_status.closed'),
+        name: 'tab_status.closed',
         status: 'closed',
         counts: 0
       }
@@ -225,10 +224,12 @@ export default {
   computed: {
     tableFields() {
       return [
-        {
-          key: "checkbox",
-          label: "",
-        },
+        /*
+          {
+            key: "checkbox",
+            label: "",
+          },
+        */
         {
           key: "contract",
           label: this.$t("contracts.table.contract"),
@@ -293,9 +294,15 @@ export default {
       this.changeFetchLimit()
     },
     downloadContractLink(id) {
-      api.contractV2.downloadContract(id)
-          .then(() => {
-            window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`)
+      api.contract.downloadContract(id)
+          .then(({data, headers}) => {
+            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
+            const fileURL = window.URL.createObjectURL(new Blob([data]))
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            fileLink.setAttribute('download', filename)
+            document.body.appendChild(fileLink)
+            fileLink.click()
           })
           .catch(() => {
             return '#'
@@ -309,14 +316,18 @@ export default {
       const {last_name, first_name} = client
       return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language)
     },
-    contractView(items) {
-      const {id} = items[0]
-      this.$router.push({
-        name: 'contracts-view-clone',
-        params: {
-          id
-        }
-      })
+    contractView({id}, index, event) {
+      const clickedDownloadBtn = event.target.classList.contains('download__icon')
+      if (clickedDownloadBtn) {
+        this.downloadContractLink(id)
+      } else {
+        this.$router.push({
+          name: 'contracts-view',
+          params: {
+            id
+          }
+        })
+      }
     },
     clientName(multiName, language) {
       const lastNameByLang = multiName[language]
@@ -329,11 +340,12 @@ export default {
 
       return ''
     },
-    searchByFilter(fromFilter) {
-      this.replaceRouter(fromFilter)
-    },
     fetchContentByStatus(status) {
-      this.replaceRouter({...this.query, status})
+      const query = Object.assign({}, this.query)
+      if (query.hasOwnProperty('page')) {
+        delete query.page
+      }
+      this.replaceRouter({...query, status})
     },
     changeCurrentPage(page) {
       const currentPage = this.query.page
@@ -414,6 +426,19 @@ export default {
           }
         }
       })
+    },
+    searchQueryFilter(searchQuery) {
+      const hasQueryStatus = this.query.hasOwnProperty('status')
+      if (hasQueryStatus) {
+        const {status} = this.query
+        this.replaceRouter({
+          ...searchQuery,
+          status
+        })
+        return
+      }
+
+      this.replaceRouter(searchQuery)
     },
     replaceRouter(query) {
       const sortQuery = sortObjectValues(query)
@@ -584,5 +609,13 @@ export default {
   p.head {
     font-size: 2rem;
   }
+}
+
+.download__arrow__button {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%);
 }
 </style>

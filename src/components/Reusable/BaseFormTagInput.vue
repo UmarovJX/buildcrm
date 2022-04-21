@@ -133,7 +133,7 @@ export default {
   border: none;
   outline: none;
   background-color: transparent;
-  padding-left: 1rem;
+  //padding-left: 1rem;
 }
 
 .addition__button {
@@ -144,7 +144,9 @@ export default {
   //border: 2px solid var(--gray-500);
   background-color: #FFFFFF;
   border-radius: 2rem;
-  padding: 0.75rem 1.75rem;
+  //padding: 0.5rem 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   cursor: pointer;
   display: flex;
   justify-content: center;

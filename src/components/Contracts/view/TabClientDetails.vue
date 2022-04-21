@@ -3,46 +3,46 @@
     <div class="client__details col-12 px-0">
       <b-form class="client__details_info">
         <div class="d-flex">
-          <h3 class="client__details__title mr-5">Основные</h3>
-          <h3 class="client__details__title">Паспортные данные</h3>
+          <h3 class="client__details__title mr-5">{{ $t('main') }}</h3>
+          <h3 class="client__details__title">{{ $t('passport') }}</h3>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="firstname">ФИО</label>
+            <label for="firstname">{{ $t('fio') }}</label>
             <b-form-input disabled :value="getClientName(client)" id="firstname"/>
           </div>
           <div class="client__details_info_card">
-            <label for="birthdate">Дата рождения</label>
+            <label for="birthdate">{{ $t('birth_day') }}</label>
             <b-form-input disabled :value="datePrettier(client.birth_day)" id="birthdate"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="phone">Телефон (Основной)</label>
+            <label for="phone">{{ $t('phone') }} ({{ $t('main') }})</label>
             <b-form-input disabled :value="formattingPhone(client.phone)" id="phone"/>
           </div>
           <div class="client__details_info_card">
-            <label for="series">Серия</label>
+            <label for="series">{{ $t('series') }}</label>
             <b-form-input disabled :value="client.passport_series" id="series"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="second_number">Телефон (Дополнительный)</label>
+            <label for="second_number">{{ $t('phone') }} ({{ $t('extra') }})</label>
             <b-form-input disabled :value="formattingPhone(client.other_phone)" id="second_number"/>
           </div>
           <div class="client__details_info_card">
-            <label for="date_of_given_place">Выдан</label>
+            <label for="date_of_given_place">{{ $t('given') }}</label>
             <b-form-input disabled :value="client.issued_by_whom" id="date_of_given_place"/>
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="client_type">Тип клиента</label>
+            <label for="client_type">{{ $t('client_type') }}</label>
             <div class="selection__content">
               <select
                   v-if="permission.contracts.friends"
@@ -52,20 +52,20 @@
                   class="client__type"
                   :value="client.friends"
               >
-                <option :value="false">Незнакомый</option>
-                <option :value="true">Знакомый</option>
+                <option :value="false">{{ $t('unfamiliar') }}</option>
+                <option :value="true">{{ $t('familiar') }}</option>
               </select>
               <p v-else>
-                <span v-if="client.friends">Знакомый</span>
-                <span v-else>Незнакомый</span>
+                <span v-if="client.friends">{{ $t('familiar') }}</span>
+                <span v-else>{{ $t('unfamiliar') }}</span>
               </p>
-              <!--              <span class="edit__icon">-->`
+              <!--              <span class="edit__icon">-->
               <!--                <base-edit-icon :height="16" :width="16" fill="#ffffff"/>-->
               <!--              </span>-->
             </div>
           </div>
           <div class="client__details_info_card">
-            <label for="date_of_issue">Дата выдачи</label>
+            <label for="date_of_issue">{{ $t('given_date') }}</label>
             <b-form-input disabled :value="datePrettier(client.date_of_issue)" id="date_of_issue"/>
           </div>
         </div>

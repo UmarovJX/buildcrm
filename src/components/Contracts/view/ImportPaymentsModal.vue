@@ -7,12 +7,12 @@
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
         <!--    TITLE      -->
-          <span class="title">Добавить оплату</span>
+          <span class="title">{{ $t('payments.payment_add') }}</span>
         </span>
     </template>
 
     <template #main>
-      <p class="instruction">Загрузите файл в формате .xls или .csv для импорта оплат</p>
+      <p class="instruction">{{ $t('payments.import') }}</p>
 
       <div class="upload__content">
         <!--   IF FILE UPLOAD     -->
@@ -44,8 +44,8 @@
             <base-arrow-down-icon :width="56" :height="56" fill="#9CA3AF"/>
           </span>
           <span class="max-width-16">
-            Перетащите файл в эту область или
-            <span class="color-violet-600">нажмите для выбора файла</span>
+            {{ $t('payments.drag_file') }}
+            <span class="color-violet-600"> {{ $t('payments.click_file') }}</span>
           </span>
         </span>
 
@@ -60,7 +60,7 @@
         >
       </div>
 
-      <base-button text="Скачать шаблон" class="download__template"/>
+      <base-button @click="downloadTemplate" :text="$t('payments.download_template')" class="download__template"/>
 
     </template>
 
@@ -74,7 +74,7 @@
           class="d-inline-block w-100"
       >
         <base-button
-            text="Продолжить"
+            :text="$t('next')"
             @click="importUploadExcel"
             class="w-100 add__button"
         />
@@ -91,6 +91,7 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import readExcelFile from 'read-excel-file'
 import {mapMutations} from "vuex";
+import api from "@/services/api";
 
 export default {
   name: "ImportPaymentsModal",
@@ -133,6 +134,17 @@ export default {
     ...mapMutations({
       initExcelSheet: 'initExcelSheet'
     }),
+    downloadTemplate() {
+      api.contractV2.downloadContractTemplate()
+          .then(response => {
+            const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            fileLink.setAttribute('download', 'contract_template.xlsx')
+            document.body.appendChild(fileLink)
+            fileLink.click()
+          })
+    },
     openModal() {
       this.$refs['base-modal'].openModal()
     },
@@ -192,7 +204,7 @@ export default {
 .title
   font-size: 24px
   line-height: 28px
-  margin-bottom: 1rem
+  //margin-bottom: 1rem
 
 .max-width-16
   max-width: 16rem

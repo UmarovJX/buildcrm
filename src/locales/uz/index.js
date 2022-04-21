@@ -15,6 +15,15 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
+    quarter: 'chorak',
+    of_the_year: 'yil',
+    thank_you: 'Rahmat',
+    no_cancel: "Yo'q, bekor qiling",
+    yes_delete: "Ha, o'chirilsin",
+    remove_payment: "To'lov o'chirilsinmi ?",
+    deleted: "O'chirildi",
+    successfully: 'Muvaffaqiyatli!',
+    other: 'Boshqa',
     booked: 'Band qilindi',
     not_for_sale: "Sotilmaydi",
     remove_from_sale: "Sotuvdan olib tashlash",
@@ -30,7 +39,7 @@ export default {
     create: "Yaratish",
     view: "Ko'rish",
     cancel: "Bekor qilish",
-    back: "Orqaga",
+    back: "Ortga",
     next: "Davom etish",
     create_agree: "Tasdiqlash",
     yes: "Ha",
@@ -41,7 +50,7 @@ export default {
     logout: "Chiqish",
     list: "Ro'yxat",
     close: "Yopish",
-    ye: "sum",
+    ye: "so`m",
     usd: "$",
     _usd: 'USD',
     uzs: 'UZS',
@@ -57,7 +66,7 @@ export default {
     reservation: 'Band qilish',
     free_of_charge: "Boshlang'ich to'lovsiz",
     without_initial: "Boshlang'ich to'lovsiz",
-    go_back: 'Orqaga',
+    go_back: 'Ortga',
     activate: 'Faollashtirish',
     deactivate: "disable",
     monthly_payment: "Oylik to'lov",
@@ -74,14 +83,41 @@ export default {
     object_details: 'Obyekt tafsilotlari',
     client_details: 'Foydalanuvchi malumotlari',
     contract_details: 'Shartnoma tafsilotlari',
-    initial_payment: 'Первоначальный',
-    monthly_pay: 'Ежемесячный',
+    initial_payment: "Boshlang'ich to'lov",
+    monthly_pay: "Oylik to'lov",
     floor: 'Qavat',
     paid: "To'langan",
     waiting_to_payment: 'Kutilmoqda',
     partially: "Qisman to'langan",
     cash: 'Naqd',
     error: "Xatolik!",
+    view_map: "Xaritada ko'rsatish",
+    object_map: "Obyekt joylashuvi",
+    main: 'Asosiy',
+    passport: "Pasport ma'lumotlar",
+    builder: 'Quruvchi',
+    other_details: 'Boshqa tafsilotlar',
+    phone: "Telefon",
+    other_phone: "Qo'shimcha telefon raqami",
+    extra: "Qo'shimcha",
+    client_type: "Mijoz turi",
+    birth_day: "Tug'ilgan sana",
+    series: 'Seriya',
+    given: 'Tomonidan berilgan',
+    given_date: 'Berilgan sana',
+    company: 'Kompaniya',
+    agent: 'Vakil',
+    pc: "R/S",
+    inn: 'INN',
+    mfo: 'MFO',
+    contract_number: 'Shartnoma raqami',
+    contract_price: 'Shartnoma summasi',
+    date: "Sana",
+    formed: 'Rasmiylashtirilgan',
+    status: 'Status',
+    familiar: 'Tanish',
+    unfamiliar: 'Notanish',
+
 
     tab_status: {
         all: "Hammasi",
@@ -130,10 +166,10 @@ export default {
 
     auth: {
         email: "E-mail",
-        password: "parol",
+        password: "Parol",
         login: "Kirish",
-        validation_email: 'Неправильный формат электронной почты',
-        validation_password: 'Пароль должен содержать не менее 8 символов'
+        validation_email: 'Elektron pochta xato formatda kiritildi',
+        validation_password: 'Parol 8ta belgilardan iborat bolishi kerak'
     },
 
     messages: {
@@ -144,8 +180,47 @@ export default {
         title: "Bildirishnomalar",
     },
 
+    payments: {
+        payment: 'Shartnoma summasi',
+        course: 'Kurs',
+        balance: 'Qoldiq',
+        initial_fee: "Boshlang'ich to'lov",
+        installment: "Bo'lib to'lash rejasi",
+        month: 'oy',
+        course_name: "so'm",
+        contract: 'Shartnoma',
+        payment_list: "To'lovlar ro'yxati",
+        payment_download: "To'lovlarni import qilish",
+        payment_add: "To'lov qo'shish",
+        import: 'Toʻlovlarni import qilish uchun faylni .xls yoki .csv formatida yuklang',
+        drag_file: 'Faylni ushbu maydonga torting yoki',
+        click_file: 'faylni tanlash uchun bosing',
+        download_template: 'Shablonni yuklab olish',
+        table: {
+            date: 'Sana',
+            balance: 'Miqdor',
+            type: 'Tur',
+            method: 'Usul',
+            comment: 'Izoh',
+            actions: 'Harakatlar',
+        }
+    },
+
     contracts: {
-        warning: 'Предупреждение',
+        reset_filter: "Filterni tozalash",
+        apply_filter: 'Qidirish',
+        object_name: 'Obyektning nomi',
+        client_type: 'Mijoz turi',
+        apartment_number: 'Xonadon raqami',
+        agreement_date: 'Kelishuv sanasi',
+        filter_title: 'Qidiruv filtrlari',
+        transfer: "O'tkazilgan",
+        warning: 'Ogohlantirish',
+        edit_payment: "To'lovni tahrirlash",
+        warn_before_delete_contract: 'Shartnomani oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
+        add_payment_successfully: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+        deleted_payment_successfully: "Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.",
+        warn_before_delete_payment: 'Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
         warning_in_payment: "Boshlang'ich to'lov uchun {price} so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi?",
         title: "Shartnomalar", download: "Shartnomani yuklab olish", f_i_o: 'F.I.SH', // asd
         filter_with_date: "Sana bo'yicha filtrlash", // asd
@@ -154,6 +229,9 @@ export default {
         price: 'Narxi', // asd
         object: "Ob'ekt", // asd
         show_by: "Ko'rsatish",
+        search: 'Ism, telefon raqami, shartnoma raqami',
+        filter: 'Qidiruv filtrlari',
+
 
         table: {
             contract: 'Shartnoma',
@@ -202,6 +280,7 @@ export default {
             payment_transaction: "Pul ko'chirish orqali", // asd
             payment_other: "Boshqa to'lov turi", // asd,
             initial_payment: "Birinchi to'lov", // asd
+            actions: 'Amallar'
         },
 
     },
@@ -462,6 +541,18 @@ export default {
         title: "Zaxira",
     },
 
+    object: {
+        home: 'UY',
+        entrance: 'PODEYZ',
+        level: 'QAVAT',
+        number_level: 'QAVATLAR SONI',
+        flat: 'XONADON',
+        number_flat: 'XONALAR SONI',
+        area: 'MAYDONI',
+        balcony: 'BALKON',
+        complete: 'QURILISHNI TUGASHI',
+    },
+
     objects: {
         title: "Obyektlar",
         apartments: "Xonadonlar",
@@ -613,7 +704,13 @@ export default {
 
 
     users: {
-        title: "Foydalanuvchilar", name: "Ism", phone: "Telefon raqami", roles: "Rol", object: "Obyekt", branch:"Filial", login: "Login",
+        title: "Foydalanuvchilar",
+        name: "Ism",
+        phone: "Telefon raqami",
+        roles: "Rol",
+        object: "Obyekt",
+        branch: "Filial",
+        login: "Login",
     },
 
     accountants: {

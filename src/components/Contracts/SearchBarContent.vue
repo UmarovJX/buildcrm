@@ -9,7 +9,7 @@
           type="search"
           id="search-input"
           ref="search-input"
-          placeholder="ФИО, телефон, номер договора"
+          :placeholder="$t('contracts.search')"
           @input="triggerInputEvent"
       />
       <span
@@ -24,7 +24,7 @@
       <span class="filter__icon">
         <base-filter-icon fill="#7C3AED"/>
       </span>
-      <span>Фильтры поиска</span>
+      <span>{{ $t('contracts.filter') }}</span>
     </div>
 
     <!--  FILTER MODAL   -->
@@ -33,6 +33,7 @@
         title="Using Component Methods"
         modal-class="filter__modal"
         @show="filterModalOpened"
+        @hidden="hideFilterModal"
         hide-header
         hide-footer
     >
@@ -43,26 +44,37 @@
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
           <!--    Title      -->
-          <span class="title">Фильтры поиска</span>
+          <span class="title"> {{ $t('contracts.filter_title') }} </span>
         </span>
 
         <div class="modal__content-main">
           <div class="filter__inputs">
             <!--    Object Selection      -->
-            <div class="filter__inputs-input">
-              <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
-                <template #first>
-                  <b-form-select-option
-                      :value="null"
-                      disabled
-                  >
-                  <span class="disabled__option">
-                    Название объекта
-                  </span>
-                  </b-form-select-option>
-                </template>
-              </b-form-select>
-            </div>
+            <!--
+                  <div class="filter__inputs-input">
+                    <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
+                      <template #first>
+                        <b-form-select-option
+                            :value="null"
+                            disabled
+                        >
+                        <span class="disabled__option">
+                          Название объекта
+                        </span>
+                        </b-form-select-option>
+                      </template>
+                    </b-form-select>
+                  </div>
+            -->
+
+            <base-multiselect
+                :default-values="filter.object_id"
+                :options="objectOptions"
+                :placeholder="`${ $t('contracts.object_name') }`"
+                track-by="value"
+                label="text"
+                @input="inputFilterObject"
+            />
 
             <!--    Filter Apartment Number      -->
             <div class="filter__inputs-input">
@@ -70,7 +82,7 @@
                   @set-tags="setApartments"
                   :default-tags="filter.apartment_number"
                   ref="base-form-tag-input"
-                  placeholder="Номер квартиры"
+                  :placeholder="`${ $t('contracts.apartment_number') }`"
               >
                 <template #delete-content>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -85,13 +97,25 @@
             </div>
 
             <!--    Contract Date    -->
-            <div class="filter__inputs-input">
-              <span class="placeholder">Дата договора</span>
+            <div class="filter__inputs-input d-flex justify-content-between">
+              <span class="placeholder">{{ $t('contracts.agreement_date') }}</span>
+              <!--
               <input
                   type="date"
-                  v-model="filter.contract_date"
+                  v-model="filter.date"
                   class="input__date"
               >
+              -->
+              <date-picker
+                  id="filter-by-date"
+                  v-model="filter.date"
+                  type="date"
+                  value-type="format"
+                  format="YYYY-MM-DD"
+                  placeholder="Select date range"
+                  class="input__date"
+                  range
+              ></date-picker>
             </div>
 
             <!--     Apartment Price     -->
@@ -135,7 +159,7 @@
                       disabled
                   >
                   <span class="disabled__option">
-                    Тип клиента
+                    {{ $t('contracts.client_type') }}
                   </span>
                   </b-form-select-option>
                 </template>
@@ -145,8 +169,8 @@
 
           <!--  Modal Footer    -->
           <div class="modal__footer">
-            <button @click="clearFilter" class="clear__button">Сбросить</button>
-            <button @click="searchByFilterField" class="search__button">Применить</button>
+            <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
+            <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
           </div>
         </div>
       </div>
@@ -161,18 +185,23 @@ import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 import {debounce, sortInFirstRelationship} from "@/util/reusable";
 import api from "@/services/api";
 
 export default {
   name: "SearchBarContent",
   components: {
+    DatePicker,
     BaseSearchIcon,
     BaseFilterIcon,
     BaseArrowLeftIcon,
     BaseTimesCircleIcon,
     BaseNumericInput,
-    BaseFormTagInput
+    BaseFormTagInput,
+    BaseMultiselect
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
@@ -180,7 +209,7 @@ export default {
       filter: {
         object_id: null,
         contract_number: null,
-        contract_date: null,
+        date: null,
         client_type: null,
         contract_price: null,
         price_to: null,
@@ -223,9 +252,9 @@ export default {
     async fetchObjectsOption() {
       await api.contractV2.fetchObjectsOption()
           .then((response) => {
-            const {objects, client_types} = response.data
+            const {objects, 'client-types': clientTypes} = response.data
             this.objectOptions = objects.map(({id, name}) => ({value: id, text: name}))
-            for (let [key, value] of Object.entries(client_types)) {
+            for (let [key, value] of Object.entries(clientTypes)) {
               this.clientTypeOptions.push({
                 value: key,
                 text: value
@@ -247,29 +276,32 @@ export default {
       }
 
       this.$emit('replace-router', loopQuery)
-
+      this.resetFilter()
+      this.$refs['base-form-tag-input'].clear()
+    },
+    inputFilterObject(objects) {
+      this.filter.object_id = objects.map(({value}) => value)
+    },
+    searchByFilterField() {
+      const sortingQuery = Object.assign({}, this.filter)
+      this.$emit('search-by-filter', sortInFirstRelationship(sortingQuery))
+      this.$refs['filter-modal'].hide()
+    },
+    hideFilterModal() {
+      this.$refs['filter-modal'].hide()
+      this.resetFilter()
+    },
+    resetFilter() {
       this.filter = {
         object_id: null,
         contract_number: null,
-        contract_date: null,
+        date: null,
         client_type: null,
         contract_price: null,
         price_to: null,
         price_from: null,
         apartment_number: []
       }
-
-
-      this.$refs['base-form-tag-input'].clear()
-    },
-    searchByFilterField() {
-      const sortingQuery = Object.assign({}, this.filter)
-      sortingQuery.object_id = [this.filter.object_id]
-      this.$emit('search-by-filter', sortInFirstRelationship(sortingQuery))
-      this.hideFilterModal()
-    },
-    hideFilterModal() {
-      this.$refs['filter-modal'].hide()
     },
     showFilterModal() {
       this.$refs['filter-modal'].show()
@@ -303,14 +335,20 @@ export default {
         if (property === 'apartment_number' && typeof query === 'string') {
           const toNumber = parseInt(query)
           this.filter[property] = isNaN(toNumber) ? [] : [toNumber]
+          continue
         }
 
-        if (property === 'object_id' && query) {
+        /*if (property === 'object_id' && query) {
           if (Array.isArray(query)) {
             this.filter[property] = parseInt(query[0])
           } else {
             this.filter[property] = parseInt(query)
           }
+          continue
+        }*/
+
+        if (property === 'object_id' && query) {
+          this.filter[property] = query.map(value => parseInt(value))
           continue
         }
 
@@ -440,6 +478,10 @@ export default {
     .filter__inputs {
       margin-top: 2rem;
 
+      .input__date.mx-datepicker.mx-datepicker-range {
+        width: 60% !important;
+      }
+
       &-input {
         display: flex;
         align-items: center;
@@ -462,7 +504,7 @@ export default {
 
         .placeholder {
           color: var(--gray-600);
-          padding-left: 1rem;
+          //padding-left: 1rem;
         }
 
         .input__date {
@@ -475,7 +517,7 @@ export default {
           background-color: transparent;
           border: none;
           color: var(--gray-600);
-          padding: 0 0 0 1rem;
+          padding: 0;
 
           .disabled__option {
             color: var(--gray-100) !important;
@@ -600,6 +642,7 @@ export default {
     margin-left: 0.5rem;
     background-color: transparent;
     border: none;
+    width: auto;
   }
 
   .inline {
@@ -616,7 +659,7 @@ export default {
   .price__currency {
     min-width: 6rem;
     height: 100%;
-    padding-left: 1rem;
+    //padding-left: 1rem;
   }
 }
 

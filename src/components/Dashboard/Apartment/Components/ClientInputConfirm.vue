@@ -351,13 +351,13 @@
               id="phone"
               name="phone"
               type="tel"
-              v-mask="maskForPhoneNumber"
               :placeholder="$t('apartments.agree.placeholder.phone')"
               v-model="clientPhoneNumber"
               :state="getValidationState(validationContext)"
+              v-mask="maskForPhoneNumber"
               aria-describedby="phone-feedback"
               @focus="userFocused"
-          ></b-form-input>
+          />
 
           <b-form-invalid-feedback id="phone-feedback" class="error__provider">{{
               validationContext.errors[0]
@@ -374,11 +374,11 @@
             $t("apartments.agree.other_phone")
           }}</label>
         <input
+            id="other_phone"
             class="my-form__input form-control"
             type="tel"
             :placeholder="$t('apartments.agree.placeholder.other_phone')"
             v-model="clientOtherPhoneNumber"
-            id="other_phone"
             v-mask="maskForPhoneNumber"
             @focus="userFocused"
         />
@@ -440,15 +440,7 @@ import api from "@/services/api";
 
 export default {
   name: "ClientInputConfirm",
-  emits:['focus'],
-  computed: {
-    ...mapGetters([
-      "getReserveClient",
-      "getPermission",
-      "getMe",
-    ]),
-  },
-
+  emits: ['focus'],
   props: {
     client: {}
   },
@@ -460,9 +452,7 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
-      maskForPhoneNumber: `+998 ## ### ## ##`,
-      clientPhoneNumber: this.client.phone,
-      clientOtherPhoneNumber: this.client.other_phone
+      maskForPhoneNumber: `+### ## ### ## ##`,
     }
   },
 
@@ -470,13 +460,32 @@ export default {
     client: function () {
       this.$emit('clientSet', this.client)
     },
-    clientPhoneNumber(phone) {
-      this.client.phone = phone.replace(/\s/g, '')
+  },
+
+  computed: {
+    ...mapGetters([
+      "getReserveClient",
+      "getPermission",
+      "getMe",
+    ]),
+    clientPhoneNumber: {
+      get() {
+        return this.client.phone
+      },
+      set(val) {
+        this.client.phone = val.replace(/\s/g, '')
+      }
     },
-    clientOtherPhoneNumber(phone) {
-      this.client.other_phone = phone.replace(/\s/g, '')
+    clientOtherPhoneNumber: {
+      get() {
+        return this.client.other_phone
+      },
+      set(val) {
+        this.client.other_phone = val.replace(/\s/g, '')
+      }
     }
   },
+
 
   methods: {
     userFocused() {
@@ -486,7 +495,9 @@ export default {
       if (this.client.passport_series.length === 9) {
         this.loading = true;
         try {
-          const {data} = await api.clients.fetchClientData(this.client.passport_series)
+          console.log(api.clientsV2, 'api 2');
+          const {data} = await api.clientsV2.fetchClientData(this.client.passport_series)
+          console.log(data, 'data');
           this.client = {
             id: data.id,
             first_name: data.first_name ?? {

@@ -205,7 +205,7 @@ export default {
       return this.$t(`${type}`)
     },
     downloadDocumentURl(url) {
-      return process.env.VUE_APP_URL + '/v1/crm/' + url
+      return url
     },
     timeFormatter(timeSetter) {
       const time = new Date(timeSetter)

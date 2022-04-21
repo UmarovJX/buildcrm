@@ -151,7 +151,7 @@ export default {
       if (this.uploadImage) {
         return this.uploadImage
       }
-      return process.env.VUE_APP_URL_V2 + '/' + this.user.avatar
+      return this.user.avatar
     },
     getNameSnippet() {
       const {first_name, last_name} = this.user
