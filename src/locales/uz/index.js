@@ -39,7 +39,7 @@ export default {
     create: "Yaratish",
     view: "Ko'rish",
     cancel: "Bekor qilish",
-    back: "Orqaga",
+    back: "Ortga",
     next: "Davom etish",
     create_agree: "Tasdiqlash",
     yes: "Ha",
@@ -50,7 +50,7 @@ export default {
     logout: "Chiqish",
     list: "Ro'yxat",
     close: "Yopish",
-    ye: "sum",
+    ye: "so`m",
     usd: "$",
     _usd: 'USD',
     uzs: 'UZS',
@@ -66,7 +66,7 @@ export default {
     reservation: 'Band qilish',
     free_of_charge: "Boshlang'ich to'lovsiz",
     without_initial: "Boshlang'ich to'lovsiz",
-    go_back: 'Orqaga',
+    go_back: 'Ortga',
     activate: 'Faollashtirish',
     deactivate: "disable",
     monthly_payment: "Oylik to'lov",
@@ -166,10 +166,10 @@ export default {
 
     auth: {
         email: "E-mail",
-        password: "parol",
+        password: "Parol",
         login: "Kirish",
-        validation_email: 'Неправильный формат электронной почты',
-        validation_password: 'Пароль должен содержать не менее 8 символов'
+        validation_email: 'Elektron pochta xato formatda kiritildi',
+        validation_password: 'Parol 8ta belgilardan iborat bolishi kerak'
     },
 
     messages: {
@@ -186,7 +186,7 @@ export default {
         balance: 'Qoldiq',
         initial_fee: "Boshlang'ich to'lov",
         installment: "Bo'lib to'lash rejasi",
-        month: 'oylar',
+        month: 'oy',
         course_name: "so'm",
         contract: 'Shartnoma',
         payment_list: "To'lovlar ro'yxati",
@@ -211,7 +211,7 @@ export default {
         apply_filter: 'Qidirish',
         object_name: 'Obyektning nomi',
         client_type: 'Mijoz turi',
-        apartment_number: 'Kvartira raqami',
+        apartment_number: 'Xonadon raqami',
         agreement_date: 'Kelishuv sanasi',
         filter_title: 'Qidiruv filtrlari',
         transfer: "O'tkazilgan",
