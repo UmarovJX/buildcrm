@@ -137,39 +137,46 @@
 
     <div class="chess-tab">
 
-      <base-button text="Фасады">
+      <base-button class="active" text="Фасады">
         <template #left-icon>
           <base-details-icon/>
         </template>
       </base-button>
 
-      <base-button text="Фасады">
+      <base-button text="Шахматка 1.0">
         <template #left-icon>
           <base-details-icon/>
         </template>
       </base-button>
 
-      <base-button text="Фасады">
+      <base-button text="Шахматка 2.0">
         <template #left-icon>
           <base-details-icon/>
         </template>
       </base-button>
 
-      <base-button text="Фасады">
+      <base-button text="Этажи">
         <template #left-icon>
           <base-details-icon/>
         </template>
       </base-button>
 
-      <base-button text="Фасады">
+      <base-button text="Список">
         <template #left-icon>
-          <base-details-icon/>
+          <base-details-icon :fill="fill"/>
         </template>
       </base-button>
+
+      <base-button text="Планировки">
+        <template #left-icon>
+          <base-details-icon :fill="fill"/>
+        </template>
+      </base-button>
+
 
     </div>
 
-    <div class="chess-tab">
+    <div v-if="!sortBar" class="sort-hide">
       <div class="filter__inputs-input">
         <base-form-tag-input
             @set-tags="setApartments"
@@ -244,7 +251,6 @@
       </b-dropdown>
 
     </div>
-
     <div v-if="!sortBar" class="sort-hide">
       <b-dropdown left>
         <template #button-content>
@@ -342,7 +348,7 @@ export default {
         block: null,
         status: null,
       },
-
+      fill: undefined,
       options: [1, 2, 3, 4, 5, 6, 7],
       currencyOptions: ["UZS", "USD"],
       areaOptions: 'M2',
@@ -364,7 +370,7 @@ export default {
     },
     clear() {
       this.$refs['base-form-tag-input'].clear()
-    }
+    },
   }
 }
 </script>
@@ -393,10 +399,13 @@ export default {
 .chess-tab {
   .base__button {
     &.active {
-
+      background-color: var(--violet-600);
+      color: var(--white);
     }
 
     &:hover {
+      background-color: var(--violet-600);
+      color: var(--white);
 
     }
   }
@@ -414,7 +423,7 @@ export default {
   &:after {
     content: '';
     position: absolute;
-    width: calc(100% + 4rem);
+    width: calc(100% + 3rem);
     left: -2rem;
     bottom: 0;
     height: 2px;
