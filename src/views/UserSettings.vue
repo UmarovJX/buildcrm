@@ -24,6 +24,8 @@
 
 <!--    <b-btn @click="openModal">click</b-btn>-->
 
+
+
     <b-card no-body>
       <b-tabs
           v-model="tabIndex"

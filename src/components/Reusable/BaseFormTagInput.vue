@@ -113,15 +113,20 @@ export default {
 }
 
 .tag-input__tag {
+  display: flex;
+  align-items: center;
   background-color: #FFFFFF;
   border-radius: 2rem;
   padding: 0.5rem 0.75rem;
   margin-right: 0.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  //margin-top: 0.5rem;
+  //margin-bottom: 0.5rem;
 }
 
 .tag-input__tag .tag {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
   margin-right: 0.5rem;
 }
 
@@ -130,10 +135,13 @@ export default {
 }
 
 .tag-input__text {
+  width: 100%;
+  min-width: 10rem;
   border: none;
   outline: none;
   background-color: transparent;
   //padding-left: 1rem;
+
 }
 
 .addition__button {
@@ -160,5 +168,6 @@ export default {
 
 .w-4 {
   width: 4rem;
+  min-width: 4rem !important;
 }
 </style>
