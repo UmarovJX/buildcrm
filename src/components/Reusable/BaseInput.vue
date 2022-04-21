@@ -35,7 +35,7 @@ export default {
       type: String,
     },
     value: {
-      type: String, Number
+      type: [String, Number]
     },
     type: {
       type: String,

@@ -4,11 +4,11 @@
       class="base__button"
       :class="design"
   >
-    <span class="left__icon">
+    <span v-if="hasLeftSlot" class="left__icon">
       <slot name="left-icon"/>
     </span>
     <span class="text">{{ text }}</span>
-    <span class="right__icon">
+    <span v-if="hasRightSlot" class="right__icon">
       <slot name="right-icon"/>
     </span>
   </button>
@@ -32,7 +32,14 @@ export default {
     }
   },
   emits: ['click'],
-  computed: {},
+  computed: {
+    hasLeftSlot() {
+      return this.$slots['left-icon']
+    },
+    hasRightSlot() {
+      return this.$slots['right-icon']
+    }
+  },
   methods: {
     triggerEvent() {
       this.$emit('click')
@@ -63,10 +70,10 @@ export default {
     font-family: Inter, serif
 
   .left__icon
-  //margin-right: .5rem
+    margin-right: .5rem
 
   .right__icon
-//margin-left: .5rem
+    margin-left: .5rem
 
 .gray-button
   background-color: var(--gray-200)

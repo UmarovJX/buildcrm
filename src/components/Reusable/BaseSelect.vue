@@ -1,11 +1,10 @@
 <template>
   <div class="filter__inputs-input" :class="error ? 'error' : ''">
-    <span v-if="value && label" class="input-label">{{ placeholder }}</span>
-    <b-form-select v-model="value" class="inline" :options="options" name="select" :placeholder="placeholder">
+    <span v-if="select && label" class="input-label">{{ placeholder }}</span>
+    <b-form-select v-model="select" class="inline" :options="options" name="select" :placeholder="placeholder">
       <template #first v-if="placeholder">
         <b-form-select-option
             :value="null"
-            disabled
         >
           <span class="disabled__option">
             {{ placeholder }}
@@ -24,6 +23,9 @@ export default {
       type: Array,
       required: true
     },
+    value: {
+      type: [String, Number],
+    },
     placeholder: {
       type: String,
       default: null
@@ -38,26 +40,37 @@ export default {
     }
   },
   emits: ['change'],
-  data() {
-    return {
-      value: null
+  // data() {
+  //   return {
+  //     select: null
+  //   }
+  // },
+  computed: {
+    select: {
+      get() {
+        console.log(this.value);
+        return this.value
+      },
+      set(val) {
+        console.log(val);
+        this.$emit('input', val)
+      }
     }
   },
-  watch: {
-    value() {
-      this.triggerEvent()
-    }
-  },
-  methods: {
-    triggerEvent() {
-      this.$emit('change', this.value)
-    }
-  }
+  // watch: {
+  //   select() {
+  //     this.triggerEvent()
+  //   }
+  // },
+  // methods: {
+  //   triggerEvent() {
+  //     this.$emit('change', this.select)
+  //   }
+  // }
 }
 </script>
 
 <style lang="sass" scoped>
-
 
 .input-label
   font-weight: 900
@@ -69,12 +82,12 @@ export default {
   color: var(--gray-400)
 
 .custom-select
-  background: #fff url('../../assets/icons/icon-down.svg') right 0.5rem bottom 6.5px no-repeat
+  background: #fff url('../../assets/icons/icon-down.svg') right 0 bottom 6.5px no-repeat
   //background-position: top -10px right 0.75rem
   transition: background .3s ease-in-out
 
   &:focus
-    background: #fff url('../../assets/icons/icon-up.svg') right 0.5rem bottom 6.5px no-repeat
+    background: #fff url('../../assets/icons/icon-up.svg') right 0 bottom 6.5px no-repeat
 
 
 .filter__inputs
@@ -87,35 +100,41 @@ export default {
     align-items: flex-start
     justify-content: space-between
     height: 3.5rem
+    //min-width: 100px;
     background-color: var(--gray-100)
     border-radius: 2rem
     padding: 6px 1.25rem
     width: 100%
+    min-width: 4rem;
     //border: none
     border: .25rem solid transparent
     color: var(--gray-600)
     position: relative
 
     ::placeholder
-      color: var(--gray-600)
+      color: var(--gray-400)
       opacity: 1
 
     .placeholder
-      color: var(--gray-600)
+      color: var(--gray-400)
 
     .input__date
       margin-left: 0.5rem
       background-color: transparent
       border: none
 
+
     .inline
       background-color: transparent
       border: none
       color: var(--gray-600)
+      //color: red;
       padding: 0
 
       .disabled__option
-        color: var(--gray-100) !important
+        //color: red !important
+        color: var(--gray-400) !important
+
 
 .error
   border: .25rem solid var(--red-500) !important

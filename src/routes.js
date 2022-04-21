@@ -57,6 +57,9 @@ import ImportPayments from "@/components/Contracts/view/ImportPayments";
 import Contracts from "@/views/Contracts/Index"
 import ContractView from "@/views/Contracts/View/Index"
 
+import ChessObjects from "./views/Chess/Objects"
+
+
 const routes = [
     {
         /* HOME */
@@ -72,6 +75,15 @@ const routes = [
         component: Auth,
     },
 
+    {
+        /* OBJECTS */
+        name: "chess",
+        path: "/chess",
+        component: ChessObjects,
+        meta: {
+            requiresAuth: "objects",
+        },
+    },
 
     {
         /* OBJECTS */
