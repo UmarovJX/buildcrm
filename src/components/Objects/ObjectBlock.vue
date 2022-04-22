@@ -170,6 +170,7 @@ export default {
 <style scoped>
 div {
   border: 1px solid red;
+  /*width: 100%;*/
   /*  background-color: var(--gray-400);*/
   /*  min-height: 50px;*/
   /*  !*min-width: 50px;*!*/
@@ -181,6 +182,9 @@ div {
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
+  overflow: auto;
+  max-height: 60vh;
+
 }
 
 .counter {
@@ -193,8 +197,9 @@ div {
   height: 100%;
   max-height: 60vh;
   width: 100vw;
+  /*height: 100vh;*/
   max-width: 100vw;
-  overflow: auto;
+  /*overflow: auto;*/
 }
 
 .header {
@@ -213,5 +218,6 @@ div {
   transform: rotate(180deg);
   writing-mode: vertical-lr;
   -webkit-writing-mode: vertical-lr;
+  background-color: var(--white);
 }
 </style>
