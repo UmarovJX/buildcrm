@@ -49,7 +49,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-
 .base__button
   font-family: Inter, serif
   padding: 1rem 1.25rem
@@ -85,5 +84,4 @@ export default {
 .violet-gradient
   background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
   color: var(--white)
-
 </style>
