@@ -5,32 +5,35 @@
       Этажи
     </div>
 
-    <div class="d-flex flex-column">
-      <div class="header">
-        tr
-      </div>
-      <div v-for="level in levelLarge" :key="level + 'level'" class="counter h-100">
-        {{ (levelLarge + 1) - level }}
-      </div>
-    </div>
+
     <div class="d-flex block">
 
-      <div v-for="(key, value, index) in object " :key="index + 'block'" class="d-flex flex-column">
+      <div v-for="(key, value, index) in object " :key="index + 'block'" class="d-flex ">
         <!--        <span v-if="index < 1">-->
         <!--          <div v-for="level in levelLarge" :key="level + 'level'" class="counter h-100">-->
         <!--          {{ (levelLarge + 1) - level }}-->
         <!--        </div>-->
         <!--        </span>-->
-
-        <div class="header">
-          {{ value }}
+        <div v-if="index < 1">
+          <div class="header">
+            tr
+          </div>
+          <div v-for="level in levelLarge" :key="level + 'level'" class="counter">
+            {{ (levelLarge + 1) - level }}
+          </div>
         </div>
-        <span class="d-flex flex-nowrap" v-for="item in key" :key="item+ 'item'">
-        <div v-for="elem in item" :key="elem +'element'">
+        <div>
+          <div class="header">
+            {{ value }}
+          </div>
+          <span class="d-flex flex-nowrap" v-for="item in key" :key="item+ 'item'">
+        <div v-for="elem in item" :key="elem +'element'" class="block-item">
           {{ elem }} <br>
           {{ elem }}
         </div>
       </span>
+        </div>
+
       </div>
     </div>
   </div>
@@ -178,9 +181,19 @@ div {
 
 }
 
+.list-num {
+  max-height: 60vh;
+  overflow: auto;
+  height: 100%;
+}
+
 .counter {
-  display: flex;
-  flex-basis: 100%;
+  display: grid;
+  grid-auto-rows: auto;
+  /*display: flex;*/
+  /*flex-basis: 100%;*/
+  /*height: 100%;*/
+  /*max-height: 300px;*/
   /*flex: auto;*/
 }
 
@@ -189,6 +202,11 @@ div {
   max-height: 60vh;
   max-width: 100vw;
   overflow: auto;
+}
+
+.block-item {
+  /*height: 300px;*/
+  /*max-height: 300px;*/
 }
 
 .header {
