@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex ">
+  <div class="grid-container">
 
     <div class="vertical">
       Этажи
@@ -178,6 +178,11 @@ div {
 
 }
 
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
 .counter {
   display: flex;
   flex-basis: 100%;
@@ -187,6 +192,7 @@ div {
 .block {
   height: 100%;
   max-height: 60vh;
+  width: 100vw;
   max-width: 100vw;
   overflow: auto;
 }
