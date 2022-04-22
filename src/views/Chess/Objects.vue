@@ -1,24 +1,38 @@
 <template>
   <main class="app-content">
-    <ObjectSort/>
-    <!--    <div class="object-cards">-->
-    <!--      <object-card v-for="index in 10" :key="index"/>-->
-    <!--    </div>-->
-    <object-block/>
+    <object-sort/>
+    <object-block @show-express-sidebar="apartmentExpressReview"/>
+
+    <!-- APARTMENT QUICK VIEW   -->
+    <apartment-express-view :visible="expressView.toggle"/>
   </main>
 </template>
 
 <script>
-// import ObjectCard from "@/components/Objects/ObjectCard";
 import ObjectSort from "@/components/Objects/ObjectSort";
 import ObjectBlock from "@/components/Objects/ObjectBlock";
+import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
 
 export default {
   name: "Objects",
   components: {
-    // ObjectCard,
     ObjectSort,
-    ObjectBlock
+    ObjectBlock,
+    ApartmentExpressView
+  },
+  data() {
+    return {
+      expressView: {
+        toggle: false,
+        item: {}
+      }
+    }
+  },
+  methods: {
+    apartmentExpressReview(item) {
+      this.expressView.item = item
+      this.expressView.toggle = true
+    }
   }
 }
 </script>

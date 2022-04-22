@@ -27,10 +27,15 @@
             {{ value }}
           </div>
           <span class="d-flex flex-nowrap" v-for="item in key" :key="item+ 'item'">
-        <div v-for="elem in item" :key="elem +'element'" class="block-item">
-          {{ elem }} <br>
-          {{ elem }}
-        </div>
+          <div
+              v-for="elem in item"
+              :key="elem +'element'"
+              class="block-item"
+              @click="showExpressSidebar(item)"
+          >
+            {{ elem }} <br>
+            {{ elem }}
+          </div>
       </span>
         </div>
 
@@ -40,8 +45,10 @@
 </template>
 
 <script>
+
 export default {
   name: "ObjectBlock",
+  emits: ['show-express-sidebar'],
   data() {
     return {
       object: {
@@ -160,6 +167,9 @@ export default {
     this.getMaxLength(this.object)
   },
   methods: {
+    showExpressSidebar(item) {
+      this.$emit('show-express-sidebar', item)
+    },
     getMaxLength(arr) {
       this.levelLarge = Math.max(...Object.values(arr).map(item => {
         return item.length
