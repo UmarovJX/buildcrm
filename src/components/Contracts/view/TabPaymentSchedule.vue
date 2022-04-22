@@ -502,6 +502,10 @@ export default {
   data() {
     const paymentMethodOptions = [
       {
+        value: 'transfer',
+        text: this.$t('contracts.transfer')
+      },
+      {
         value: 'cash',
         text: this.$t('cash')
       },
@@ -516,10 +520,6 @@ export default {
       {
         value: 'apelsin',
         text: this.$t('Apelsin')
-      },
-      {
-        value: 'transfer',
-        text: this.$t('contracts.transfer')
       },
       {
         value: 'other',
