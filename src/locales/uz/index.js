@@ -15,6 +15,14 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
+    quarter: 'chorak',
+    of_the_year: 'yil',
+    thank_you: 'Rahmat',
+    no_cancel: "Yo'q, bekor qiling",
+    yes_delete: "Ha, o'chirilsin",
+    remove_payment: "To'lov o'chirilsinmi ?",
+    deleted: "O'chirildi",
+    successfully: 'Muvaffaqiyatli!',
     other: 'Boshqa',
     booked: 'Band qilindi',
     not_for_sale: "Sotilmaydi",
@@ -31,7 +39,7 @@ export default {
     create: "Yaratish",
     view: "Ko'rish",
     cancel: "Bekor qilish",
-    back: "Orqaga",
+    back: "Ortga",
     next: "Davom etish",
     create_agree: "Tasdiqlash",
     yes: "Ha",
@@ -42,7 +50,7 @@ export default {
     logout: "Chiqish",
     list: "Ro'yxat",
     close: "Yopish",
-    ye: "sum",
+    ye: "so`m",
     usd: "$",
     _usd: 'USD',
     uzs: 'UZS',
@@ -58,7 +66,7 @@ export default {
     reservation: 'Band qilish',
     free_of_charge: "Boshlang'ich to'lovsiz",
     without_initial: "Boshlang'ich to'lovsiz",
-    go_back: 'Orqaga',
+    go_back: 'Ortga',
     activate: 'Faollashtirish',
     deactivate: "disable",
     monthly_payment: "Oylik to'lov",
@@ -75,8 +83,8 @@ export default {
     object_details: 'Obyekt tafsilotlari',
     client_details: 'Foydalanuvchi malumotlari',
     contract_details: 'Shartnoma tafsilotlari',
-    initial_payment: 'Первоначальный',
-    monthly_pay: 'Ежемесячный',
+    initial_payment: "Boshlang'ich to'lov",
+    monthly_pay: "Oylik to'lov",
     floor: 'Qavat',
     paid: "To'langan",
     waiting_to_payment: 'Kutilmoqda',
@@ -158,10 +166,10 @@ export default {
 
     auth: {
         email: "E-mail",
-        password: "parol",
+        password: "Parol",
         login: "Kirish",
-        validation_email: 'Неправильный формат электронной почты',
-        validation_password: 'Пароль должен содержать не менее 8 символов'
+        validation_email: 'Elektron pochta xato formatda kiritildi',
+        validation_password: 'Parol 8ta belgilardan iborat bolishi kerak'
     },
 
     messages: {
@@ -178,7 +186,7 @@ export default {
         balance: 'Qoldiq',
         initial_fee: "Boshlang'ich to'lov",
         installment: "Bo'lib to'lash rejasi",
-        month: 'oylar',
+        month: 'oy',
         course_name: "so'm",
         contract: 'Shartnoma',
         payment_list: "To'lovlar ro'yxati",
@@ -199,8 +207,20 @@ export default {
     },
 
     contracts: {
+        reset_filter: "Filterni tozalash",
+        apply_filter: 'Qidirish',
+        object_name: 'Obyektning nomi',
+        client_type: 'Mijoz turi',
+        apartment_number: 'Xonadon raqami',
+        agreement_date: 'Kelishuv sanasi',
+        filter_title: 'Qidiruv filtrlari',
         transfer: "O'tkazilgan",
-        warning: 'Предупреждение',
+        warning: 'Ogohlantirish',
+        edit_payment: "To'lovni tahrirlash",
+        warn_before_delete_contract: 'Shartnomani oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
+        add_payment_successfully: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+        deleted_payment_successfully: "Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.",
+        warn_before_delete_payment: 'Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
         warning_in_payment: "Boshlang'ich to'lov uchun {price} so'm ortiqcha qolgan. Shu miqdorni oylik to'lovga o'tkazishni xohlaysizmi?",
         title: "Shartnomalar", download: "Shartnomani yuklab olish", f_i_o: 'F.I.SH', // asd
         filter_with_date: "Sana bo'yicha filtrlash", // asd

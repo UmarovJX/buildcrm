@@ -5,6 +5,7 @@
     <!--      <object-card v-for="index in 10" :key="index"/>-->
     <!--    </div>-->
     <object-block/>
+    <object-block/>
   </main>
 </template>
 

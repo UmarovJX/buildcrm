@@ -176,7 +176,7 @@
 
     </div>
 
-    <div v-if="!sortBar" class="sort-hide">
+    <div v-if="sortBar" class="sort-hide">
       <div class="filter__inputs-input">
         <base-form-tag-input
             @set-tags="setApartments"
@@ -251,7 +251,8 @@
       </b-dropdown>
 
     </div>
-    <div v-if="!sortBar" class="sort-hide">
+
+    <div v-if="sortBar" class="sort-hide">
       <b-dropdown left>
         <template #button-content>
           Срок сдачи

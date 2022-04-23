@@ -71,8 +71,13 @@ export function sortObjectValues(obj) {
 export function sortInFirstRelationship(obj) {
     const loopPackage = {}
     for (let [key, value] of Object.entries(obj)) {
+        if (!value) continue
+
         if (Array.isArray(value) && value.length > 0) {
-            loopPackage[key] = value
+            const valuable = value.filter(arrValue => arrValue !== null)
+            if (valuable.length) {
+                loopPackage[key] = valuable
+            }
             continue
         }
 

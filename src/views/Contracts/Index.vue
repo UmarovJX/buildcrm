@@ -25,7 +25,7 @@
         class="table__list"
         :empty-text="$t('no_data')"
         thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border"
+        tbody-tr-class="row__body__bottom-border cursor-pointer"
         show-empty
         sort-icon-left
     >
@@ -295,12 +295,12 @@ export default {
     },
     downloadContractLink(id) {
       api.contract.downloadContract(id)
-          .then(response => {
-            console.log(response)
-            const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+          .then(({data, headers}) => {
+            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
+            const fileURL = window.URL.createObjectURL(new Blob([data]))
             const fileLink = document.createElement('a')
             fileLink.href = fileURL
-            fileLink.setAttribute('download', 'contract.docx')
+            fileLink.setAttribute('download', filename)
             document.body.appendChild(fileLink)
             fileLink.click()
           })

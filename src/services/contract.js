@@ -16,7 +16,7 @@ class Contract extends Core {
 
     downloadContract(id) {
         return this.get('orders/' + id + '/contract', {
-            responseType:'blob'
+            responseType: 'blob'
         })
     }
 }
@@ -82,6 +82,10 @@ class ContractV2 extends Core {
         return this.get('contracts/template', {
             responseType: 'blob'
         })
+    }
+
+    deleteContract(contractId) {
+        return this.delete(`contracts/${contractId}`)
     }
 }
 

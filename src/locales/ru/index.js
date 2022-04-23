@@ -2,6 +2,13 @@ export default {
     home: {
         title: "Главная",
     },
+    quarter: 'четверть',
+    of_the_year: 'года',
+    no_cancel: "Нет, отменить",
+    yes_delete: "Да, удалить",
+    remove_payment: "Удалить оплату ?",
+    deleted: "Удалено",
+    successfully: 'Успешно!',
     other: 'Другие',
     booked: 'Забронировать',
     not_for_sale: "Hе продается",
@@ -44,7 +51,6 @@ export default {
     payment_type: 'Способ оплаты',
     created_at: 'Время создания',
     reservation: 'Бронирование',
-    free_of_charge: 'Без первоначальной оплаты',
     more_info: 'Подробная информация',
     activate: 'Активировать',
     deactivate: "Деактивировать",
@@ -54,9 +60,9 @@ export default {
     sum_text: 'В суммах',
     usd_text: 'В долларах',
     apartments_count: "Количество квартир",
-    contract_file_not_found: 'Файл контракта не найдено',
+    contract_file_not_found: 'Файл контракта не найден',
     instruction: "Инструкция",
-    validation_warning_to_bottom: 'Одно из полей заполнена неправильно, пожалуйста проверьте все поля еще раз!',
+    validation_warning_to_bottom: 'Одно из полей заполнено неправильно, пожалуйста проверьте все поля еще раз!',
     new_name: 'Новое название',
     meaning: 'Значение',
     example_by_2: "Примеры(по 2)",
@@ -76,7 +82,7 @@ export default {
     passport: 'Паспортные данные',
     builder: 'Застройщик',
     other_details: 'Другие детали',
-    fio: 'ФИО',
+    fio: 'Ф.И.О',
     phone: "Номер телефона",
     other_phone: "Дополнительный номер телефона",
     extra: "Дополнительный",
@@ -101,10 +107,10 @@ export default {
 
     tab_status: {
         all: "Все",
-        available: "Доступный",
+        available: "Доступные",
         booked: "Забронирован",
         sold: "Оформлен",
-        unavailable: "Недоступен",
+        unavailable: "Недоступные",
         promo: 'Акция',
         on_payment: 'На оплате',
         closed: 'Закрыт'
@@ -122,18 +128,18 @@ export default {
         modal_input_text_label: 'Название акции',
         date_of_start_title: 'Дата начала акции',
         date_of_end_title: 'Акция действует до',
-        date_of_start_label: 'Скидка будет действовать с этой даты',
+        date_of_start_label: 'Акция будет действовать с начала выбранной даты',
         date_of_end_label: 'Срок акции истекает в этой дате',
         select_block: 'Выберите блок(и)',
         select_floor_plan: 'Выберите этажи, планировки или квартиры в блоках',
-        select_price: 'Цена в акции (за м2)',
+        select_price: 'Цена по акции (за м2)',
         select_type: 'Выберите тип акции',
         select_sum: 'В суммах',
         select_by_floor: 'По этажам',
-        select_by_apartment: 'По квартиры',
-        select_by_plan: 'По планировки',
+        select_by_apartment: 'По квартирам',
+        select_by_plan: 'По планировке',
         add_price: 'Добавить цену',
-        warn_before_delete: "Вы дейстительно  хотите удалить акцию",
+        warn_before_delete: "Вы действительно хотите удалить акцию",
         successfully_deleted: "Акция успешно удалена",
         successfully_created: 'Акция успешно создана',
         successfully_edited: 'Акция обновлена',
@@ -142,7 +148,7 @@ export default {
         by_promo: "По акции",
         in_promo: 'В акции',
         promo_rate: 'Тариф',
-        initial_price: "Первый взнос (%)"
+        initial_price: "Первоначальный взнос (%)"
     },
 
     promos: 'Акции',
@@ -180,7 +186,7 @@ export default {
         click_file: 'нажмите для выбора файла',
         download_template: 'Скачать шаблон',
         table: {
-            date: 'Сумма',
+            date: 'Дата',
             balance: 'Сумма',
             type: 'Тип',
             method: 'Способ',
@@ -190,9 +196,21 @@ export default {
     },
 
     contracts: {
-        transfer: 'Перемещение',
+        object_name: 'Название объекта',
+        apply_filter: 'Применить',
+        client_type: 'Тип клиента',
+        reset_filter: 'Сбросить',
+        agreement_date: 'Дата договора',
+        apartment_number: 'Номер квартиры',
+        filter_title: 'Фильтры поиска',
+        transfer: 'Перечисления',
         warning: 'Внимание',
-        warning_in_payment: 'На первоначальный взнос имеется излишек в размере {price} сумов. Вы хотите перевести эту сумму в ежемесячный платеж?',
+        edit_payment: "Редактировать оплату",
+        add_payment_successfully: "Оплата проведена",
+        deleted_payment_successfully: "Оплата успешно удалена",
+        warn_before_delete_contract: 'Вы уверены, что хотите удалить договор? Данное действие нельзя отменить.',
+        warn_before_delete_payment: 'Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.',
+        warning_in_payment: 'Первоначальный взнос имеет излишек в размере {price} сумов. Вы хотите перевести данную сумму в ежемесячный платеж?',
         title: "Договоры", download: "Скачать договор", f_i_o: 'Ф.И.О', // asd
         filter_with_date: 'Фильтр по дате', // asd
         client_name: 'Имя клиента', // asd
@@ -237,7 +255,7 @@ export default {
             sum: "Сумма", // asd
             cancel_btn: "Отменить", // asd
             type: "Тип", // asd
-            comment: "Комментария", // asd
+            comment: "Комментарий", // asd
             payment_type: "Тип оплаты", // asd
             payment_date: "Дата оплаты", // asd
             payment_sum: "Сумма оплаты", // asd
@@ -247,10 +265,10 @@ export default {
             add_comment: "Добавить комментарий", // asd
             download_contract: "Скачать договор", // asd
             cancel_contract: "Отменить договор", // asd
-            payment_by_cash: "Наличный", // asd
+            payment_by_cash: "Наличные", // asd
             payment_transaction: "Перечисление", // asd
             payment_other: "Другое", // asd
-            initial_payment: 'Первый взнос', // asd
+            initial_payment: 'Первоначальный взнос', // asd
             actions: 'Действия'
         },
 
@@ -274,7 +292,7 @@ export default {
                 view: "Разрешить просмотр объектов",
                 create: "Разрешить создать объект",
                 update: "Разрешить редактировать объект",
-                delete: "Разрешить удалять объектов",
+                delete: "Разрешить удалять объекты",
                 apartments: "Разрешить видеть список квартир"
             },
 
@@ -386,7 +404,7 @@ export default {
             choose: "Выбрать",
             reset: "Сбросить",
             contract_all: "Оформить все",
-            number: "№Дом",
+            number: "№",
             object: "Объект",
             rooms: "Количество комнат",
             floor: "Этаж",

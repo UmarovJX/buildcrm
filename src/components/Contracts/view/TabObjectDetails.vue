@@ -137,9 +137,8 @@
             <div class="object__details_info_card_text">
               <span>{{ $t('object.area') }}</span>
               <span class="d-flex">
-                  <span v-if="havePlan" class="mr-2 font-normal">{{
-                      parseFloat(apartment.apartment.plan.area).toFixed(1)
-                    }}</span>
+                  <span v-if="havePlan" class="mr-2 font-normal">
+                    {{ parseFloat(apartment.apartment.plan.area).toFixed(1) }}</span>
                   <span class="lowercase">м2</span>
               </span>
             </div>
@@ -252,7 +251,8 @@ export default {
       if (!(this.havePlan && apartment.plan)) {
         return ''
       }
-      return process.env.VUE_APP_URL + '/' + apartment.plan?.image
+
+      return apartment.plan?.image
     },
     coordinates() {
       const {latitude, longitude} = this.order.object.location
@@ -275,15 +275,16 @@ export default {
       const year = date.getFullYear()
       let month = date.getMonth()
       if (month < 3) {
-        month = '01'
+        month = '1'
       } else if (month >= 3 && month < 6) {
-        month = '02'
+        month = '2'
       } else if (month >= 6 && month < 9) {
-        month = '03'
+        month = '3'
       } else {
-        month = '04'
+        month = '4'
       }
-      return `${month}/${year}`
+
+      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t('of_the_year')}`
     },
     async fetchObjectDetails() {
       this.startLoading()
@@ -339,11 +340,15 @@ export default {
     width: 100%;
     height: 84%;
     min-height: 20rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
 
     & img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border: 2px solid var(--gray-200);
+      border-radius: 2rem;
     }
   }
 
