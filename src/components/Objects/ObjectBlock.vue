@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <div v-for="(value, index) in objectApi.blocks" :key="value.id" class="d-flex flex-column position-relative"
+      <div v-for="value in objectApi.blocks" :key="value.id" class="d-flex flex-column position-relative"
            style="margin-right: 30px">
 
         <div class="header">
@@ -29,16 +29,18 @@
 
           <!--{{value[0]}}-->
           <span class="d-flex flex-nowrap block-content" v-for="item in value.floors" :key="item.name+ 'item'">
-          <div v-for="elem in item.apartments" :key="elem.id +'element'" class="block-item">
-
+          <div
+              v-for="elem in item.apartments"
+              :key="elem.id +'element'"
+              class="block-item"
+              @click="showExpressSidebar(item)"
+          >
             <div class="square">
               <div class="square-top">
                 <p>Кв. №200</p>
                 <img src="../../assets/icons/icon-down.svg" alt="">
               </div>
             </div>
-
-
             {{ elem.number }}
           </div>
          </span>
@@ -51,6 +53,7 @@
 <script>
 export default {
   name: "ObjectBlock",
+  emits: ['show-express-sidebar'],
   data() {
     return {
       objectApi: {
@@ -4274,8 +4277,10 @@ export default {
       // this.levelLarge = Math.max(...Object.values(arr).map(item => {
       //   return item.length
       // }))
-    }
-
+    },
+    showExpressSidebar(item) {
+      this.$emit('show-express-sidebar', item)
+    },
   }
 }
 </script>
