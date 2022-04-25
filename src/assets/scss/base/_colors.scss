@@ -79,3 +79,45 @@
 .color-gray-900 {
   color: var(--violet-900) !important;
 }
+
+.color-white {
+  color: #FFFFFF !important;
+}
+
+/* TODO:BACKGROUND GRADIENT COLORS */
+.bg-gradient-violet {
+  background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
+}
+
+/* TODO: BACKGROUND COLOR */
+.bg-gray-100 {
+  background-color: var(--gray-100) !important;
+}
+
+.bg-gray-200 {
+  background-color: var(--gray-200) !important;
+}
+
+.bg-gray-300 {
+  background-color: var(--gray-300) !important;
+}
+
+.bg-gray-400 {
+  background-color: var(--gray-400) !important;
+}
+
+.bg-gray-500 {
+  background-color: var(--gray-500) !important;
+}
+
+.bg-gray-600 {
+  background-color: var(--gray-600) !important;
+}
+
+.bg-gray-700 {
+  background-color: var(--gray-700) !important;
+}
+
+.bg-gray-800 {
+  background-color: var(--gray-900) !important;
+}

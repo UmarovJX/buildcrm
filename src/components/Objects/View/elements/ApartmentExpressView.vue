@@ -181,7 +181,18 @@
 
         <!--   ACTIONS     -->
         <div class="d-flex justify-content-between mt-4">
-          <base-button text="Оформить" class="checkout__button"  />
+          <base-button text="Оформить" class="checkout__button bg-gradient-violet color-white"/>
+          <base-button text="Забронировать" class="checkout__button bg-gray-100 color-gray-600"/>
+          <button
+              class="print__button bg-gray-100 d-flex justify-content-center align-items-center"
+          >
+            <base-print-icon :square="20" fill="#4B5563"/>
+          </button>
+          <button
+              class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center"
+          >
+            <base-minus-circle-icon :square="20" fill="#4B5563"/>
+          </button>
         </div>
       </div>
     </template>
@@ -190,7 +201,9 @@
 <script>
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
+import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
 import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
@@ -200,8 +213,10 @@ export default {
   /* COMPONENTS */
   components: {
     BaseButton,
+    BasePrintIcon,
     BaseArrowLeftIcon,
-    BaseArrowRightIcon
+    BaseArrowRightIcon,
+    BaseMinusCircleIcon
   },
 
   /* DIRECTIVES */
@@ -265,13 +280,25 @@ export default {
     padding: 3.5rem 3rem 3.5rem 3.5rem
 
     /* Hide scrollbar for Chrome, Safari and Opera */
+
+
+
+
+
     &::-webkit-scrollbar
       display: none
 
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none  /* IE and Edge */
-    scrollbar-width: none  /* Firefox */
+    -ms-overflow-style: none
+    /* IE and Edge */
+    scrollbar-width: none
+    /* Firefox */
+
+
+
+
+
 
     .head
       line-height: 1.75rem
@@ -413,6 +440,7 @@ export default {
 
 .particular__qualities
   font-family: Inter, sans-serif
+  margin-bottom: 2.5rem
 
   .title
     font-size: 1.25rem
@@ -439,4 +467,14 @@ export default {
         font-size: 14px
         line-height: 20px
 
+.checkout__button
+  padding: 1rem 3rem
+
+.print__button,
+.cancel__button
+  outline: none
+  border: none
+  width: 3.5rem
+  height: 3.5rem
+  border-radius: 50%
 </style>
