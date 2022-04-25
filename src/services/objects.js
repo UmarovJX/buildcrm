@@ -199,6 +199,10 @@ class ObjectsV2 extends Core {
     fetchObjectPlans(objectId) {
         return this.get(`objects/${objectId}/plans`)
     }
+
+    getApartments(objectId) {
+        return this.get(`apartments/objects/${objectId}/apartments/grid`)
+    }
 }
 
 export default {
