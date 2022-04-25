@@ -137,42 +137,16 @@
 
     <div class="chess-tab">
 
-      <base-button class="active" text="Фасады">
+      <base-button
+          v-for="tab in tabs"
+          :key="tab.id"
+          :class="{ active: currentTab === tab.name }"
+          @click="changeProduct(tab.name)"
+          :text="tab.title">
         <template #left-icon>
-          <base-details-icon/>
+          <component :is="tab.buttonIcon" :fill="currentTab === tab.name ? '#fff' : undefined"/>
         </template>
       </base-button>
-
-      <base-button text="Шахматка 1.0">
-        <template #left-icon>
-          <base-details-icon/>
-        </template>
-      </base-button>
-
-      <base-button text="Шахматка 2.0">
-        <template #left-icon>
-          <base-details-icon/>
-        </template>
-      </base-button>
-
-      <base-button text="Этажи">
-        <template #left-icon>
-          <base-details-icon/>
-        </template>
-      </base-button>
-
-      <base-button text="Список">
-        <template #left-icon>
-          <base-details-icon :fill="fill"/>
-        </template>
-      </base-button>
-
-      <base-button text="Планировки">
-        <template #left-icon>
-          <base-details-icon :fill="fill"/>
-        </template>
-      </base-button>
-
 
     </div>
 
@@ -341,6 +315,15 @@ export default {
   },
   data() {
     return {
+      currentTab: 'ObjectBlock',
+      tabs: [
+        // {id: 1, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Фасады'},
+        {id: 2, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Шахматка 1.0'},
+        {id: 3, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Шахматка 2.0'},
+        // {id: 4, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
+        // {id: 5, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Список'},
+        // {id: 6, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Планировки'},
+      ],
       setApartments: [],
       sortBar: false,
       form: {
@@ -349,7 +332,6 @@ export default {
         block: null,
         status: null,
       },
-      fill: undefined,
       options: [1, 2, 3, 4, 5, 6, 7],
       currencyOptions: ["UZS", "USD"],
       areaOptions: 'M2',
@@ -359,6 +341,14 @@ export default {
         price_to: 0,
       },
       currency: 'UZS'
+    }
+  },
+  watch: {
+    currentTab: {
+      handler(val) {
+        this.$emit('current-tab', val)
+      },
+      immediate: true
     }
   },
   methods: {
@@ -371,6 +361,9 @@ export default {
     },
     clear() {
       this.$refs['base-form-tag-input'].clear()
+    },
+    changeProduct(name) {
+      this.currentTab = name
     },
   }
 }

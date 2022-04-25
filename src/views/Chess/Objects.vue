@@ -1,13 +1,16 @@
 <template>
   <main class="app-content">
-    <ObjectSort/>
-    <object-block :apartments="apartments" @show-express-sidebar="apartmentExpressReview"/>
+    <ObjectSort @current-tab="changeTab"/>
+
+    <component :is="currentTab" :apartments="apartments" @show-express-sidebar="apartmentExpressReview"/>
 
     <!-- APARTMENT QUICK VIEW   -->
     <apartment-express-view
         :visible="expressView.toggle"
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
+
+
   </main>
 </template>
 
@@ -15,13 +18,15 @@
 
 // import ObjectCard from "@/components/Objects/ObjectCard";
 import ObjectSort from "@/components/Objects/ObjectSort";
-import ObjectBlock from "@/components/Objects/ObjectBlock";
+import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
 import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
 import api from "@/services/api";
+import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
 
 export default {
   name: "Objects",
   components: {
+    ChessSquareCard,
     // ObjectCard,
     ObjectSort,
     ObjectBlock,
@@ -34,7 +39,12 @@ export default {
         item: {}
       },
       getLoading: false,
-      apartments: []
+      apartments: [],
+      currentTab: 'ObjectBlock',
+      // tabs: [
+      //   {id: 1, name: 'ObjectBlock', title: 'Характеристики и описание'},
+      //   {id: 2, name: 'ChessSquareCard', title: 'Аналоги запчастей'},
+      // ],
     }
   },
   async mounted() {
@@ -42,8 +52,11 @@ export default {
     await this.getApartments()
   },
   methods: {
+    changeTab(name) {
+      this.currentTab = name
+    },
     async getApartments() {
-      await api.objectsV2.getApartments(14).then((res) => {
+      await api.objectsV2.getApartments(18).then((res) => {
         this.apartments = res.data.data
         this.getLoading = false
       }).catch(err => {

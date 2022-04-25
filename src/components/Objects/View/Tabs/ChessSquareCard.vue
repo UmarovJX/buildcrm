@@ -9,9 +9,6 @@
 
       <div class="block">
         <div class="list-number">
-          <div class="header" style="color: transparent">
-            .
-          </div>
           <div v-for="level in levelLarge(index)" :key="level" class="counter">
             {{ level }}
           </div>
@@ -23,32 +20,15 @@
             {{ value.name }}
           </div>
 
-          <div class="item">
+          <div class="item" style="margin-right: 30px">
 
-          <span v-for="item in value.floors" :key="item.name">
+          <span v-for="item in value.floors" :key="item.name" style="display:block;">
             <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
               <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square" @click="showExpressSidebar">
-                  <div class="square-header">
-                    <p>Кв. №{{ elem.id }}</p>
-                    <div v-if="!elem.discounts.length" class="h-auto d-flex">
-                      <img src="../../assets/icons/bonuses.svg" alt="">
-                    </div>
-                  </div>
-                  <div class="square-body">
-                    <h5 :class="status(elem.order.status).class">
-                      <template v-if="status(elem.order.status).statusText">
-                        {{ status(elem.order.status).statusText }}
-                      </template>
-                      <template v-else>
-                        {{ price(elem.price) }} сум
-                      </template>
+                <div class="square" @click="showExpressSidebar" :class="status(elem.order.status).class">
+                    <h5>
+                     {{ elem.id }}
                     </h5>
-                  </div>
-                  <div class="square-footer">
-                    <p>{{ elem.plan.area }}M<sup>2</sup></p>
-                    <p>{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -69,7 +49,7 @@
 <script>
 
 export default {
-  name: "ObjectBlock",
+  name: "ChessSquareCard",
   props: {
     apartments: {
       type: Array,
@@ -89,8 +69,20 @@ export default {
         case 'sold': {
           return {statusText: 'Продано', class: 'gray'}
         }
-        case 'bron': {
+        case 'booked': {
           return {statusText: 'Забронировано', class: 'yellow'}
+        }
+        case 'cancelled': {
+          return {statusText: 'cancelled', class: 'yellow'}
+        }
+        case 'hold': {
+          return {statusText: 'hold', class: 'yellow'}
+        }
+        case 'waiting': {
+          return {statusText: 'waiting', class: 'yellow'}
+        }
+        case 'closed': {
+          return {statusText: 'closed', class: 'yellow'}
         }
         default:
           return {statusText: '', class: 'yellow'}
@@ -115,59 +107,48 @@ export default {
 
 
 .square {
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: 16.5rem;
-  height: 96px;
+  min-width: 4rem;
+  width: auto;
+  height: 56px;
   background-color: var(--gray-50);
+  font-family: Inter, sans-serif;
+  border: 1px solid var(--gray-100);
+  justify-content: center;
+  align-items: center;
 
-  p {
+  h5 {
     font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--gray-500);
-    margin-bottom: 0;
+    font-size: 18px;
+    line-height: 24px;
+    margin: 0;
   }
 
-  &-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  &-body {
-    display: flex;
-
+  &.yellow {
     h5 {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 24px;
-      margin: 0;
-    }
-
-    .yellow {
       color: var(--yellow-500);
     }
+  }
 
-    .teal {
+  &.teal {
+    h5 {
       color: var(--teal-500);
-    }
-
-    .blue {
-      color: var(--light-blue-500);
-    }
-
-    .gray {
-      color: var(--gray-500);
     }
   }
 
-  &-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  &.blue {
+    h5 {
+      color: var(--light-blue-500);
+    }
+  }
+
+  &.gray {
+    h5 {
+      color: var(--gray-500);
+    }
   }
 }
 
@@ -189,7 +170,7 @@ export default {
   line-height: 20px;
   color: var(--gray-400);
   padding: 3px;
-  height: 97px;
+  height: 56px;
 }
 
 .block {
@@ -201,8 +182,7 @@ export default {
   overflow-y: visible;
 
   &-content {
-    border: 1px solid var(--gray-100);
-    //min-height: 56px;
+    border: 0 solid var(--gray-100);
     height: auto;
   }
 
@@ -210,16 +190,9 @@ export default {
   &-item {
     color: var(--teal-500);
     width: 100%;
-    height: auto;
-    min-height: 56px;
-    border-color: var(--gray-100);
-    border-style: solid;
-    border-top: 0;
-    border-bottom: 0;
+    height: 56px;
     background-color: var(--gray-50);
-
   }
-
 }
 
 
@@ -258,6 +231,5 @@ export default {
 
   }
 }
-
 
 </style>
