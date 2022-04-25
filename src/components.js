@@ -21,3 +21,9 @@ Vue.component("paginate", Paginate);
 Vue.component("header-block", Header);
 Vue.component("edit-discount", EditObjectDiscount);
 Vue.component("create-discount", CreateObjectDiscount);
+
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+
+// import style
+
+Vue.use(VueAwesomeSwiper, /* { default options with global component } */)
