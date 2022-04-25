@@ -28,7 +28,7 @@
           <span v-for="item in value.floors" :key="item.name">
             <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
               <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square">
+                <div class="square" @click="showExpressSidebar">
                   <div class="square-header">
                     <p>Кв. №{{ elem.id }}</p>
                     <div v-if="!elem.discounts.length" class="h-auto d-flex">
@@ -76,6 +76,7 @@ export default {
       required: true,
     }
   },
+  emits: ['show-express-sidebar'],
   methods: {
     status(value) {
       switch (value) {
@@ -102,7 +103,10 @@ export default {
       return Math.max(...this.apartments[index].blocks.map(item => {
         return item.floors.length
       }))
-    }
+    },
+    showExpressSidebar(item) {
+      this.$emit('show-express-sidebar', item)
+    },
   }
 }
 </script>

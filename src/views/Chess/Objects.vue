@@ -1,9 +1,6 @@
 <template>
   <main className="app-content">
     <ObjectSort/>
-    <!--    <div class="object-cards">-->
-    <!--      <object-card v-for="index in 10" :key="index"/>-->
-    <!--    </div>-->
     <object-block :apartments="apartments" @show-express-sidebar="apartmentExpressReview"/>
 
     <!-- APARTMENT QUICK VIEW   -->
@@ -55,6 +52,7 @@ export default {
       })
     },
     apartmentExpressReview(item) {
+      console.log(item);
       this.expressView.item = item
       this.expressView.toggle = true
     },
