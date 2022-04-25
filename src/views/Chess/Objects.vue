@@ -1,5 +1,5 @@
 <template>
-  <main class="app-content">
+  <main className="app-content">
     <ObjectSort/>
     <!--    <div class="object-cards">-->
     <!--      <object-card v-for="index in 10" :key="index"/>-->
