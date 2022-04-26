@@ -55,7 +55,6 @@ export default {
     },
     async getApartments() {
       const id = this.$route.params.objectId
-      console.log(id);
       await api.objectsV2.getApartments(id).then((res) => {
 
         this.apartments = res.data.data
@@ -66,7 +65,6 @@ export default {
       })
     },
     apartmentExpressReview(item) {
-      console.log(item);
       this.expressView.item = item
       this.expressView.toggle = true
     },

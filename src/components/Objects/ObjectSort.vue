@@ -350,7 +350,6 @@ export default {
   watch: {
     currentTab: {
       handler(val) {
-        console.log(val, 'val');
         this.$router.push({name: val.param, params: {object: 18}})
         this.$emit('current-tab', val)
       },

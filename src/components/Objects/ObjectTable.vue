@@ -286,13 +286,10 @@ export default {
             this.tableItems = response.data.items
             this.pagination = response.data.pagination
             this.showByValue = response.data.pagination.perPage
-            console.log(response, 'response');
           })
           .finally(() => {
-            console.log(this.showLoading, 'dslog');
             this.showLoading = false
           })
-      console.log(this.showLoading, ' fslse dsdk');
     },
     changeFetchLimit() {
       const query = {
