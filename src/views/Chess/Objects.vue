@@ -43,10 +43,6 @@ export default {
       getLoading: false,
       apartments: [],
       currentTab: 'ObjectTable',
-      // tabs: [
-      //   {id: 1, name: 'ObjectBlock', title: 'Характеристики и описание'},
-      //   {id: 2, name: 'ChessSquareCard', title: 'Аналоги запчастей'},
-      // ],
     }
   },
   async mounted() {
