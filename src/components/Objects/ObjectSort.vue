@@ -140,11 +140,11 @@
       <base-button
           v-for="tab in tabs"
           :key="tab.id"
-          :class="{ active: currentTab === tab.name }"
-          @click="changeProduct(tab.name)"
+          :class="{ active: currentTab.name === tab.name }"
+          @click="changeProduct(tab)"
           :text="tab.title">
         <template #left-icon>
-          <component :is="tab.buttonIcon" :fill="currentTab === tab.name ? '#fff' : undefined"/>
+          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#fff' : undefined"/>
         </template>
       </base-button>
 
@@ -301,6 +301,8 @@
 
 <script>
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
+import BaseChessOne from "@/components/icons/BaseChessOne";
+import BaseChessTwo from "@/components/icons/BaseChessTwo";
 import BaseDetailsIcon from "@/components/icons/BaseDetailsIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
@@ -308,6 +310,8 @@ import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 export default {
   name: "ObjectSort",
   components: {
+    BaseChessOne,
+    BaseChessTwo,
     BaseDetailsIcon,
     BaseNumericInput,
     BaseButton,
@@ -315,12 +319,12 @@ export default {
   },
   data() {
     return {
-      currentTab: 'ObjectBlock',
+      currentTab: {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
       tabs: [
         // {id: 1, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Фасады'},
-        {id: 2, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Шахматка 1.0'},
-        {id: 3, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Шахматка 2.0'},
-        // {id: 4, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
+        {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
+        {id: 3, param: 'chess-two', name: 'ChessSquareCard', buttonIcon: 'BaseChessTwo', title: 'Шахматка 2.0'},
+        {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
         // {id: 5, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Список'},
         // {id: 6, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Планировки'},
       ],
@@ -346,9 +350,12 @@ export default {
   watch: {
     currentTab: {
       handler(val) {
+        console.log(val, 'val');
+        this.$router.push({name: val.param, params: {object: 18}})
         this.$emit('current-tab', val)
       },
-      immediate: true
+      immediate: true,
+      deep: true,
     }
   },
   methods: {

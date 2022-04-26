@@ -63,29 +63,20 @@ export default {
         case 'available': {
           return {statusText: '', class: 'teal'}
         }
-        case 'contract': {
-          return {statusText: 'Оформлено', class: 'blue'}
-        }
-        case 'sold': {
+        case 'contract':
+        case 'waiting':
+        case 'sold':
+        case 'closed': {
           return {statusText: 'Продано', class: 'gray'}
         }
         case 'booked': {
           return {statusText: 'Забронировано', class: 'yellow'}
         }
-        case 'cancelled': {
-          return {statusText: 'cancelled', class: 'yellow'}
-        }
         case 'hold': {
-          return {statusText: 'hold', class: 'yellow'}
-        }
-        case 'waiting': {
-          return {statusText: 'waiting', class: 'yellow'}
-        }
-        case 'closed': {
-          return {statusText: 'closed', class: 'yellow'}
+          return {statusText: 'Оформлено', class: 'blue'}
         }
         default:
-          return {statusText: '', class: 'yellow'}
+          return {statusText: '', class: 'teal'}
       }
     },
     price(value) {

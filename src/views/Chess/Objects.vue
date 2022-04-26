@@ -22,11 +22,13 @@ import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
 import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
 import api from "@/services/api";
 import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
+import ObjectTable from "@/components/Objects/ObjectTable";
 
 export default {
   name: "Objects",
   components: {
     ChessSquareCard,
+    ObjectTable,
     // ObjectCard,
     ObjectSort,
     ObjectBlock,
@@ -40,7 +42,7 @@ export default {
       },
       getLoading: false,
       apartments: [],
-      currentTab: 'ObjectBlock',
+      currentTab: 'ObjectTable',
       // tabs: [
       //   {id: 1, name: 'ObjectBlock', title: 'Характеристики и описание'},
       //   {id: 2, name: 'ChessSquareCard', title: 'Аналоги запчастей'},
@@ -53,10 +55,13 @@ export default {
   },
   methods: {
     changeTab(name) {
-      this.currentTab = name
+      this.currentTab = name.name
     },
     async getApartments() {
-      await api.objectsV2.getApartments(18).then((res) => {
+      const id = this.$route.params.objectId
+      console.log(id);
+      await api.objectsV2.getApartments(id).then((res) => {
+
         this.apartments = res.data.data
         this.getLoading = false
       }).catch(err => {
