@@ -203,6 +203,11 @@ class ObjectsV2 extends Core {
     getApartments(objectId, body) {
         return this.get(`apartments/objects/${objectId}/apartments/grid`, {params: body})
     }
+
+    getObjectPlans(objectId) {
+        return this.get(`/apartments/objects/${objectId}/apartments/plans`)
+    }
+
 }
 
 export default {

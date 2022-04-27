@@ -1,0 +1,316 @@
+<template>
+  <div class="position-relative" style="min-height: 300px">
+    <div class="object-cards">
+      <div class="card" v-for="plan in plans" :key="plan.id">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-top__content">
+              <h5 class="card-title">
+                {{ plan.name }}
+              </h5>
+              <div class="card-subtitle">
+                {{ plan.address }}
+              </div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-block">
+              <p class="card-block__title">{{ plan.area }} М<sup>2</sup></p>
+              <p class="card-block__subtitle">{{ price(plan.price_m2) }} сум/M<sup>2</sup></p>
+            </div>
+            <div class="card-block">
+              <p class="card-block__title">{{ plan.rooms }} комнаты</p>
+              <p class="card-block__subtitle price">{{ price(plan.price) }} сум</p>
+            </div>
+            <div class="card-block">
+              <p class="card-block__title">{{ plan.apartments_count }} помещений</p>
+            </div>
+          </div>
+          <div class="card-bottom">
+            <div class="swiper" v-swiper="swiperOption" :id="plan.id">
+
+              <!--     MAIN CONTENT OF SLIDE       -->
+              <div class="swiper-wrapper">
+                <div
+                    v-for="key of [1,2,3,4,5,6]"
+                    :key="key"
+                    class="swiper-slide"
+                >
+                  <div class="d-flex justify-content-center align-items-center">
+                    <img class="swiper-image" :src="plan.image" alt="img">
+                  </div>
+                </div>
+              </div>
+
+              <!--     BUTTON PREVIOUS       -->
+              <div
+                  slot="button-prev"
+                  class="swiper-button-prev swiper-button d-flex justify-content-center align-items-center"
+              >
+                <base-arrow-left-icon/>
+              </div>
+
+              <!--     BUTTON NEXT       -->
+              <div
+                  slot="button-next"
+                  class="swiper-button-next swiper-button d-flex justify-content-center align-items-center"
+              >
+                <base-arrow-right-icon/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+
+  </div>
+</template>
+
+<script>
+import api from "@/services/api";
+import {directive} from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+// import BaseEditIcon from "@/components/icons/BaseEditIcon";
+
+export default {
+  name: "ObjectPlan",
+
+  components: {
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
+    // BaseEditIcon
+  },
+
+  /* DIRECTIVES */
+  directives: {
+    swiper: directive,
+  },
+
+  data() {
+    return {
+      plans: [],
+      loading: false,
+      swiperOption: {
+        slidesPerView: 1,
+        spaceBetween: 80,
+        direction: 'horizontal',
+        paginationClickable: true,
+        draggable: true,
+        loop: false,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }
+      }
+    }
+  },
+  mounted() {
+    this.getObjectPlans()
+  },
+  methods: {
+    price(value) {
+      return value.toLocaleString()
+    },
+    async getObjectPlans() {
+      this.loading = true
+      await api.objectsV2.getObjectPlans(18)
+          .then((response) => {
+            this.plans = response.data
+          }).catch((err) => {
+            this.toastedWithErrorCode(err)
+          })
+          .finally(() => {
+            this.loading = false
+          })
+    },
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+
+.object-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.card {
+  border-radius: 1rem;
+  max-width: 412px;
+  border: none;
+  cursor: pointer;
+  font-family: Inter, sans-serif;
+
+  &-body {
+    border-radius: 1rem;
+    padding: 28px;
+    background-color: var(--gray-100)
+  }
+
+  &:hover {
+    .card-body {
+      background-color: var(--violet-100)
+    }
+  }
+
+  &-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--gray-200);
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+
+    &__content {
+    }
+  }
+
+  ::v-deep .card-bottom {
+    margin-top: -1rem;
+
+    .swiper-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 18rem;
+
+      .swiper-slide {
+        cursor: grab;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .swiper-image {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 16rem;
+          height: 16rem;
+          object-fit: contain;
+
+        }
+      }
+
+      .swiper-button {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background-color: var(--violet-100);
+      }
+
+      .swiper-button-next {
+        right: 0;
+      }
+
+      .swiper-button-prev {
+        left: 0;
+      }
+
+      .swiper-button-next::after,
+      .swiper-button-prev::after {
+        content: none;
+      }
+
+      .swiper-pagination {
+        margin-top: 3rem;
+
+        &-bullets {
+          bottom: 1rem;
+        }
+
+        &-bullet {
+          width: 0.75rem;
+          height: 0.75rem;
+          margin-right: 0.3rem;
+          background-color: var(--gray-400);
+
+          &-active {
+            background-color: var(--violet-400);
+          }
+        }
+      }
+    }
+  }
+
+  &-title {
+    color: var(--violet-600);
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 16px;
+  }
+
+  &-subtitle {
+    font-size: 1rem;
+    line-height: 22px;
+    font-weight: 600;
+    color: var(--gray-500);
+    margin: 0;
+  }
+
+  &-button {
+    width: max-content;
+    border-radius: 1rem;
+    background-color: var(--white);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+    padding: 5px 10px;
+  }
+
+  &-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+
+
+    p {
+      margin-bottom: 0;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--gray-500);
+    }
+
+    .price {
+      font-size: 18px;
+      line-height: 24px;
+      color: var(--violet-600);
+    }
+
+    &__title {
+
+    }
+  }
+
+  &-img {
+    height: 206px;
+
+    img {
+      border-radius: 0 0 1rem 1rem;
+      max-height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+}
+</style>

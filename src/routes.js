@@ -108,6 +108,14 @@ const routes = [
                 meta: {
                     requiresAuth: "objects",
                 },
+            },
+            {
+                name: "chess-plan",
+                path: "plan",
+                component: ChessObjects,
+                meta: {
+                    requiresAuth: "objects",
+                },
             }
         ]
     },

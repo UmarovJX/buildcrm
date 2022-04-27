@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>
@@ -24,13 +25,44 @@
 
           <span v-for="item in value.floors" :key="item.name" style="display:block;">
             <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
-              <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square" @click="showExpressSidebar" :class="status(elem.order.status).class">
+              <div v-for="elem in item.apartments" :key="elem.id" class="block-item"
+                   :class="status(elem.order.status).class">
+                <div :id="'tolltip'+elem.number" class="box" @click="showExpressSidebar"
+                >
                     <h5>
-                     {{ elem.id }}
+                     {{ elem.number }}
                     </h5>
                 </div>
+                <span :class="status(elem.order.status).class+'-tool'">
+                <b-tooltip class="custom-tooltip" :target="'tolltip' + elem.number" triggers="hover"
+                           placement="bottomright">
+                  <div class="square"
+                       :class="status(elem.order.status).class+'-tool'">
+                  <div class="square-header">
+                    <p>Кв. №{{ elem.number }}</p>
+                    <div v-if="elem.is_promo" class="h-auto d-flex">
+                      <img src="../../../../assets/icons/bonuses.svg" alt="">
+                    </div>
+                  </div>
+                  <div class="square-body">
+                    <h5>
+                      <template v-if="status(elem.order.status).statusText">
+                        {{ status(elem.order.status).statusText }}
+                      </template>
+                      <template v-else>
+                        {{ price(elem.price) }} сум
+                      </template>
+                    </h5>
+                  </div>
+                  <div class="square-footer">
+                    <p>{{ elem.plan.area }} M<sup>2</sup></p>
+                    <p>{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                  </div>
+                </div>
+                </b-tooltip>
+                </span>
               </div>
+
             </div>
 
             <div v-else class="block-item">
@@ -57,6 +89,10 @@ export default {
     }
   },
   emits: ['show-express-sidebar'],
+  // data() {
+  //   return {
+  //   }
+  // },
   methods: {
     status(value) {
       switch (value) {
@@ -96,8 +132,218 @@ export default {
 
 <style lang="scss" scoped>
 
+.block-content {
+  .yellow {
+    h5 {
+      color: var(--yellow-500);
+    }
+  }
 
-.square {
+  .teal-tool {
+    h5 {
+      color: var(--teal-500);
+    }
+  }
+
+  .blue {
+    h5 {
+      color: var(--light-blue-500);
+    }
+  }
+
+  .gray {
+    h5 {
+      color: var(--gray-500);
+    }
+  }
+}
+
+//::v-deep .bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+//  bottom: 6px;
+//}
+
+::v-deep.b-tooltip {
+
+  .arrow {
+    display: none !important;
+    left: -6px !important;
+    bottom: .5rem !important;
+    top: .5rem !important;
+    margin: 0.5rem;
+    transform: rotate(-90deg);
+  }
+
+  //
+  //.arrow::before, {
+  //  border-width: .5rem 1rem 0;
+  //  left: -0.5rem !important;
+  //}
+
+  .tooltip-inner {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .square {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 16.5rem;
+    height: 96px;
+    background-color: var(--gray-50);
+    font-family: Inter, sans-serif;
+    border-radius: .5rem;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+
+
+    &::before {
+      position: absolute;
+      content: '';
+      width: .5rem;
+      height: .8rem;
+      left: 0;
+      top: 0;
+      border-color: transparent;
+      border-style: solid;
+      border-left-color: black;
+      border-width: .5rem;
+    }
+
+    p {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--gray-500);
+      margin-bottom: 0;
+    }
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    &-body {
+      display: flex;
+
+      h5 {
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 24px;
+        margin: 0;
+      }
+    }
+
+    &-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      p {
+        color: var(--gray-600);
+      }
+    }
+
+
+    .yellow {
+      color: var(--white) !important;
+      background-color: var(--yellow-500) !important;
+
+
+      h5 {
+        color: var(--yellow-500);
+      }
+    }
+
+    &.teal {
+      h5 {
+        color: var(--teal-500);
+      }
+    }
+
+    &.blue {
+      .square-footer {
+        p {
+          color: var(--gray-400);
+        }
+      }
+
+      h5 {
+        color: var(--light-blue-500);
+      }
+
+
+    }
+
+    &.gray {
+      h5 {
+        color: var(--gray-500);
+      }
+
+      .square-footer {
+        p {
+          color: var(--gray-400);
+        }
+      }
+    }
+  }
+
+
+  .yellow-tool {
+    background-color: var(--yellow-500);
+
+    p, h5 {
+      color: var(--white) !important;
+    }
+
+    &::before {
+      border-left-color: var(--yellow-500);
+    }
+
+  }
+
+  .teal-tool {
+    background-color: var(--teal-500);
+
+    p, h5 {
+      color: var(--white) !important;
+    }
+
+    &::before {
+      border-left-color: var(--teal-500);
+    }
+  }
+
+  .blue-tool {
+    background-color: var(--light-blue-500);
+
+    p, h5 {
+      color: var(--white) !important;
+    }
+
+    &::before {
+      border-left-color: var(--light-blue-500);
+    }
+  }
+
+  .gray-tool {
+    background-color: var(--gray-500);
+
+    p, h5 {
+      color: var(--white) !important;
+    }
+
+    &::before {
+      border-left-color: var(--gray-500);
+    }
+  }
+}
+
+
+.box {
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -118,29 +364,6 @@ export default {
     margin: 0;
   }
 
-  &.yellow {
-    h5 {
-      color: var(--yellow-500);
-    }
-  }
-
-  &.teal {
-    h5 {
-      color: var(--teal-500);
-    }
-  }
-
-  &.blue {
-    h5 {
-      color: var(--light-blue-500);
-    }
-  }
-
-  &.gray {
-    h5 {
-      color: var(--gray-500);
-    }
-  }
 }
 
 

@@ -144,10 +144,9 @@
           @click="changeProduct(tab)"
           :text="tab.title">
         <template #left-icon>
-          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#fff' : undefined"/>
+          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"/>
         </template>
       </base-button>
-
     </div>
 
     <div v-if="sortBar" class="sort-hide">
@@ -304,6 +303,8 @@ import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseChessOne from "@/components/icons/BaseChessOne";
 import BaseChessTwo from "@/components/icons/BaseChessTwo";
 import BaseDetailsIcon from "@/components/icons/BaseDetailsIcon";
+import BaseChessList from "@/components/icons/BaseChessList";
+import BaseChessPlan from "@/components/icons/BaseChessPlan";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 
@@ -316,16 +317,18 @@ export default {
     BaseNumericInput,
     BaseButton,
     BaseFormTagInput,
+    BaseChessList,
+    BaseChessPlan,
   },
   data() {
     return {
-      currentTab: {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
+      currentTab: {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
       tabs: [
         // {id: 1, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Фасады'},
         {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
         {id: 3, param: 'chess-two', name: 'ChessSquareCard', buttonIcon: 'BaseChessTwo', title: 'Шахматка 2.0'},
-        {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
-        // {id: 5, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Список'},
+        {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: 'Список'},
+        {id: 5, param: 'chess-plan', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: 'Планировки'},
         // {id: 6, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Планировки'},
       ],
       setApartments: [],
@@ -382,9 +385,11 @@ export default {
   display: flex;
   flex-direction: column;
   padding-bottom: 1rem;
-  margin-bottom: 1rem;
+  //margin-bottom: 1rem;
   gap: 1rem;
   background-color: var(--white);
+  font-family: Inter, sans-serif;
+
 }
 
 .sort-top, .sort-hide, .chess-tab {
@@ -577,7 +582,7 @@ export default {
     font-family: Inter, serif;
     padding: 1rem 1rem 1rem 1.5rem !important;
     height: 56px;
-    font-weight: 600 !important;
+    font-style: normal;
     line-height: 22px !important;
     border-radius: 2rem !important;
     color: var(--gray-400) !important;
