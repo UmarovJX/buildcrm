@@ -200,8 +200,8 @@ class ObjectsV2 extends Core {
         return this.get(`objects/${objectId}/plans`)
     }
 
-    getApartments(objectId) {
-        return this.get(`apartments/objects/${objectId}/apartments/grid`)
+    getApartments(objectId, body) {
+        return this.get(`apartments/objects/${objectId}/apartments/grid`, {params: body})
     }
 }
 

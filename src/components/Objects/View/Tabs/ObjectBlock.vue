@@ -9,9 +9,6 @@
 
       <div class="block">
         <div class="list-number">
-          <div class="header" style="color: transparent">
-            .
-          </div>
           <div v-for="level in levelLarge(index)" :key="level" class="counter">
             {{ level }}
           </div>
@@ -23,20 +20,20 @@
             {{ value.name }}
           </div>
 
-          <div class="item">
+          <div class="item" style="margin-right: 30px">
 
           <span v-for="item in value.floors" :key="item.name">
             <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
               <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square" @click="showExpressSidebar(elem)">
+                <div class="square" @click="showExpressSidebar" :class="status(elem.order.status).class">
                   <div class="square-header">
                     <p>Кв. №{{ elem.id }}</p>
-                    <div v-if="!elem.discounts.length" class="h-auto d-flex">
-                      <img src="../../assets/icons/bonuses.svg" alt="">
+                    <div v-if="!elem.is_promo" class="h-auto d-flex">
+                      <img src="../../../../assets/icons/bonuses.svg" alt="">
                     </div>
                   </div>
                   <div class="square-body">
-                    <h5 :class="status(elem.order.status).class">
+                    <h5>
                       <template v-if="status(elem.order.status).statusText">
                         {{ status(elem.order.status).statusText }}
                       </template>
@@ -83,17 +80,20 @@ export default {
         case 'available': {
           return {statusText: '', class: 'teal'}
         }
-        case 'contract': {
-          return {statusText: 'Оформлено', class: 'blue'}
-        }
-        case 'sold': {
+        case 'contract':
+        case 'waiting':
+        case 'sold':
+        case 'closed': {
           return {statusText: 'Продано', class: 'gray'}
         }
-        case 'bron': {
+        case 'booked': {
           return {statusText: 'Забронировано', class: 'yellow'}
         }
+        case 'hold': {
+          return {statusText: 'Оформлено', class: 'blue'}
+        }
         default:
-          return {statusText: '', class: 'yellow'}
+          return {statusText: '', class: 'teal'}
       }
     },
     price(value) {
@@ -112,8 +112,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
 .square {
-  font-family: Inter, sans-serif;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -121,6 +122,8 @@ export default {
   width: 16.5rem;
   height: 96px;
   background-color: var(--gray-50);
+  font-family: Inter, sans-serif;
+  border: 1px solid var(--gray-100);
 
   p {
     font-weight: 600;
@@ -145,28 +148,55 @@ export default {
       line-height: 24px;
       margin: 0;
     }
-
-    .yellow {
-      color: var(--yellow-500);
-    }
-
-    .teal {
-      color: var(--teal-500);
-    }
-
-    .blue {
-      color: var(--light-blue-500);
-    }
-
-    .gray {
-      color: var(--gray-500);
-    }
   }
 
   &-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    p {
+      color: var(--gray-600);
+    }
+  }
+
+
+  &.yellow {
+    h5 {
+      color: var(--yellow-500);
+    }
+  }
+
+  &.teal {
+    h5 {
+      color: var(--teal-500);
+    }
+  }
+
+  &.blue {
+    .square-footer {
+      p {
+        color: var(--gray-400);
+      }
+    }
+
+    h5 {
+      color: var(--light-blue-500);
+    }
+
+
+  }
+
+  &.gray {
+    h5 {
+      color: var(--gray-500);
+    }
+
+    .square-footer {
+      p {
+        color: var(--gray-400);
+      }
+    }
   }
 }
 
@@ -188,7 +218,7 @@ export default {
   line-height: 20px;
   color: var(--gray-400);
   padding: 3px;
-  height: 97px;
+  height: 96px;
 }
 
 .block {
@@ -200,7 +230,7 @@ export default {
   overflow-y: visible;
 
   &-content {
-    border: 1px solid var(--gray-100);
+    //border: 1px solid var(--gray-100);
     //min-height: 56px;
     height: auto;
   }
@@ -211,10 +241,10 @@ export default {
     width: 100%;
     height: auto;
     min-height: 56px;
-    border-color: var(--gray-100);
-    border-style: solid;
-    border-top: 0;
-    border-bottom: 0;
+    //border-color: var(--gray-100);
+    //border-style: solid;
+    //border-top: 0;
+    //border-bottom: 0;
     background-color: var(--gray-50);
 
   }
@@ -257,4 +287,6 @@ export default {
 
   }
 }
+
+
 </style>
