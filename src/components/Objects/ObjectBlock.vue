@@ -28,7 +28,7 @@
           <span v-for="item in value.floors" :key="item.name">
             <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
               <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square" @click="showExpressSidebar">
+                <div class="square" @click="showExpressSidebar(elem)">
                   <div class="square-header">
                     <p>Кв. №{{ elem.id }}</p>
                     <div v-if="!elem.discounts.length" class="h-auto d-flex">
@@ -113,6 +113,7 @@ export default {
 
 <style lang="scss" scoped>
 .square {
+  font-family: Inter, sans-serif;
   padding: 12px;
   display: flex;
   flex-direction: column;

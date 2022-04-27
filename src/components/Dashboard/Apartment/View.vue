@@ -429,17 +429,20 @@
                   <!--  Оформить when processing  -->
                   <b-link
                       v-if="
-                      ((((apartment.order && apartment.order.status) !==
-                        'sold' ||
-                        (apartment.order && apartment.order.status) !==
-                          'contract') &&
+                      (
+                          (
+                          ((apartment.order && apartment.order.status) !==
+                          'sold' ||
+                          (apartment.order && apartment.order.status) !==
+                            'contract') &&
                         apartment.order &&
                         apartment.order &&
                         apartment.order.status === 'booked' &&
                         apartment.order.user_id === getMe.user.id &&
                         getPermission.apartments &&
                         getPermission.apartments &&
-                        getPermission.apartments.contract) ||
+                        getPermission.apartments.contract)
+                        ||
                         (!(
                           apartment.order &&
                           ((apartment.order &&

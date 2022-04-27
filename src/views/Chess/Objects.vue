@@ -1,19 +1,18 @@
 <template>
-  <main className="app-content">
+  <main class="app-content">
     <ObjectSort/>
     <object-block :apartments="apartments" @show-express-sidebar="apartmentExpressReview"/>
 
     <!-- APARTMENT QUICK VIEW   -->
     <apartment-express-view
         :visible="expressView.toggle"
+        :apartment="expressView.item"
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
   </main>
 </template>
 
 <script>
-
-// import ObjectCard from "@/components/Objects/ObjectCard";
 import ObjectSort from "@/components/Objects/ObjectSort";
 import ObjectBlock from "@/components/Objects/ObjectBlock";
 import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
@@ -22,7 +21,6 @@ import api from "@/services/api";
 export default {
   name: "Objects",
   components: {
-    // ObjectCard,
     ObjectSort,
     ObjectBlock,
     ApartmentExpressView
@@ -52,12 +50,10 @@ export default {
       })
     },
     apartmentExpressReview(item) {
-      console.log(item);
       this.expressView.item = item
       this.expressView.toggle = true
     },
     hideApartmentSidebarView() {
-      this.expressView.item = {}
       this.expressView.toggle = false
     }
   }

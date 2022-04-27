@@ -103,7 +103,7 @@ export default {
     status: 'СТАТУС',
     familiar: 'Знакомый',
     unfamiliar: 'Незнакомый',
-
+    continue_registration: 'Продолжить оформление',
 
     tab_status: {
         all: "Все",
@@ -400,6 +400,18 @@ export default {
         clone_tariff: 'Дублировать тариф',
         delete_tariff: 'Удалить тариф',
         add_tariff: 'Добавить тариф',
+
+        status: {
+            cancelled: 'Отменен',
+            waiting: 'В процессе',
+            contract: 'Оформлено',
+            sold: 'Продано',
+            booked: 'Забронировано',
+            hold: 'Оставайтесь',
+            closed: 'Закрыто',
+            available: 'Свободно'
+        },
+
         list: {
             choose: "Выбрать",
             reset: "Сбросить",
@@ -418,10 +430,8 @@ export default {
             filter: "Фильтр",
             apartments: "Квартиры",
             contract: "Договор",
-
             entrance: "Подъезд",
             balcony: "Балкон",
-
             period_date: "Период бронирования",
             more: "Подробная информация",
             cancel_contract: "Отменить контракт",

@@ -24,7 +24,7 @@ export default {
     deleted: "O'chirildi",
     successfully: 'Muvaffaqiyatli!',
     other: 'Boshqa',
-    booked: 'Band qilindi',
+    booked: 'Band qilingan',
     not_for_sale: "Sotilmaydi",
     remove_from_sale: "Sotuvdan olib tashlash",
     return_to_sale: "Sotuvga qaytarish",
@@ -117,6 +117,7 @@ export default {
     status: 'Status',
     familiar: 'Tanish',
     unfamiliar: 'Notanish',
+    continue_registration: "Rasmiylashtirishni davom etish",
 
 
     tab_status: {
@@ -393,6 +394,18 @@ export default {
         clone_tariff: 'Tarifdan nusxa olish',
         delete_tariff: "Tarifni o'chirish",
         add_tariff: "Tarif qo'shish",
+
+        status: {
+            cancelled: 'Bekor qilingan',
+            waiting: 'Kutish',
+            contract: 'Shartnomada',
+            sold: 'Sotilgan',
+            booked: 'Band qilingan',
+            hold: 'Band qilinmoqda',
+            closed: 'Yopilgan',
+            available: 'Sotuvda'
+        },
+
         list: {
             choose: "Tanlash",
             reset: "Qayta o'rnatish",
