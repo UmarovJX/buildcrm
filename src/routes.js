@@ -58,6 +58,7 @@ import Contracts from "@/views/Contracts/Index"
 import ContractView from "@/views/Contracts/View/Index"
 
 import ChessObjects from "./views/Chess/Objects"
+import ObjectTable from "@/components/Objects/ObjectTable";
 
 
 const routes = [
@@ -77,12 +78,38 @@ const routes = [
 
     {
         /* OBJECTS */
-        name: "chess",
-        path: "/chess",
+        // name: "chess",
+        path: "/chess/:objectId",
         component: ChessObjects,
         meta: {
             requiresAuth: "objects",
         },
+        children: [
+            {
+                name: "chess-one",
+                path: "one",
+                component: ChessObjects,
+                meta: {
+                    requiresAuth: "objects",
+                },
+            },
+            {
+                name: "chess-two",
+                path: "two",
+                component: ChessObjects,
+                meta: {
+                    requiresAuth: "objects",
+                },
+            },
+            {
+                name: "chess-table",
+                path: "table",
+                component: ChessObjects,
+                meta: {
+                    requiresAuth: "objects",
+                },
+            }
+        ]
     },
 
     {

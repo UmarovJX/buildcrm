@@ -1,16 +1,16 @@
 <template>
-  <main className="app-content">
-    <ObjectSort/>
-    <!--    <div class="object-cards">-->
-    <!--      <object-card v-for="index in 10" :key="index"/>-->
-    <!--    </div>-->
-    <object-block :apartments="apartments" @show-express-sidebar="apartmentExpressReview"/>
+  <main class="app-content">
+    <ObjectSort @current-tab="changeTab"/>
+
+    <component :is="currentTab" :apartments="apartments" @show-express-sidebar="apartmentExpressReview"/>
 
     <!-- APARTMENT QUICK VIEW   -->
     <apartment-express-view
         :visible="expressView.toggle"
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
+
+
   </main>
 </template>
 
@@ -18,13 +18,17 @@
 
 // import ObjectCard from "@/components/Objects/ObjectCard";
 import ObjectSort from "@/components/Objects/ObjectSort";
-import ObjectBlock from "@/components/Objects/ObjectBlock";
+import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
 import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
 import api from "@/services/api";
+import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
+import ObjectTable from "@/components/Objects/ObjectTable";
 
 export default {
   name: "Objects",
   components: {
+    ChessSquareCard,
+    ObjectTable,
     // ObjectCard,
     ObjectSort,
     ObjectBlock,
@@ -37,7 +41,8 @@ export default {
         item: {}
       },
       getLoading: false,
-      apartments: []
+      apartments: [],
+      currentTab: 'ObjectTable',
     }
   },
   async mounted() {
@@ -45,8 +50,13 @@ export default {
     await this.getApartments()
   },
   methods: {
+    changeTab(name) {
+      this.currentTab = name.name
+    },
     async getApartments() {
-      await api.objectsV2.getApartments(14).then((res) => {
+      const id = this.$route.params.objectId
+      await api.objectsV2.getApartments(id).then((res) => {
+
         this.apartments = res.data.data
         this.getLoading = false
       }).catch(err => {

@@ -29,6 +29,7 @@ export default {
             } else {
                 state.apartments = apartments;
             }
+            console.log(apartments, '📷📹');
         },
 
         updateFilter(state, filter) {
@@ -39,6 +40,7 @@ export default {
             state.client = client;
         },
     },
+
     actions: {
         async fetchApartments(ctx, vm) {
             /* eslint-disable no-debugger */
@@ -70,17 +72,20 @@ export default {
                 router.currentRoute.query.blocks = newArr;
             }
 
-            if (router.currentRoute.name !== "apartments") return;
+            // if (router.currentRoute.name !== "apartments") return;
 
             try {
                 const object = router.currentRoute.params.object
+                console.log(router.currentRoute.params);
                 let {data} = await api.objects.fetchObjectApartments(object, router.currentRoute.query)
+                console.log(data, '🤨🤨');
                 ctx.commit("updateApartment", data)
             } catch (error) {
                 vm.toastedWithErrorCode(error);
             } finally {
                 ctx.commit("updateLoading", false, {root: true});
             }
+
         },
 
         async fetchApartmentsFilter(ctx, vm) {
