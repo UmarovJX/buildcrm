@@ -169,8 +169,8 @@ export default {
         this.$bvModal.hide("modal-reserve-create");
         this.getLoading = false
         this.$emit("CreateReserve", this.client);
-        const {contract_path} = response.data
-        this.downloadContract(contract_path)
+        // const {contract_path} = response.data
+        // this.downloadContract(contract_path)
       } catch (error) {
         this.getLoading = false
         if (!error.response) {

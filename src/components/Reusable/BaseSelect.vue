@@ -1,7 +1,13 @@
 <template>
   <div class="filter__inputs-input" :class="error ? 'error' : ''">
     <span v-if="select && label" class="input-label">{{ placeholder }}</span>
-    <b-form-select v-model="select" class="inline" :options="options" name="select" :placeholder="placeholder">
+    <b-form-select
+        v-model="select"
+        class="inline"
+        :options="options"
+        name="select"
+        :placeholder="placeholder"
+    >
       <template #first v-if="placeholder">
         <b-form-select-option
             :value="null"
@@ -48,11 +54,9 @@ export default {
   computed: {
     select: {
       get() {
-        console.log(this.value);
         return this.value
       },
       set(val) {
-        console.log(val);
         this.$emit('input', val)
       }
     }
@@ -67,6 +71,12 @@ export default {
   //     this.$emit('change', this.select)
   //   }
   // }
+
+  methods:{
+    consoleL(){
+      console.log('komnsdksj')
+    }
+  }
 }
 </script>
 
@@ -86,8 +96,8 @@ export default {
   //background-position: top -10px right 0.75rem
   transition: background .3s ease-in-out
 
-  &:focus
-    background: #fff url('../../assets/icons/icon-up.svg') right 0 bottom 6.5px no-repeat
+  //&:focus
+  //  background: #fff url('../../assets/icons/icon-up.svg') right 0 bottom 6.5px no-repeat
 
 
 .filter__inputs

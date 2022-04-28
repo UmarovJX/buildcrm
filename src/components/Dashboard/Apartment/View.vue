@@ -726,7 +726,7 @@ export default {
       this.$router.push({
         name: "confirm-apartment",
         params: {id: order_id[0]},
-      });
+      })
     },
 
     momentQuarter(val) {

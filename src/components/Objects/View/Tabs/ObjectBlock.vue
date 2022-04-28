@@ -25,7 +25,7 @@
           <span v-for="item in value.floors" :key="item.name">
             <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
               <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square" @click="showExpressSidebar" :class="status(elem.order.status).class">
+                <div class="square" @click="showExpressSidebar(elem)" :class="status(elem.order.status).class">
                   <div class="square-header">
                     <p>Кв. №{{ elem.id }}</p>
                     <div v-if="!elem.is_promo" class="h-auto d-flex">

@@ -8,20 +8,17 @@
     <apartment-express-view
         :visible="expressView.toggle"
         :apartment="expressView.item"
+        @update-content="updateContent"
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
-
-
   </main>
 </template>
 
 <script>
-
-// import ObjectCard from "@/components/Objects/ObjectCard";
+import api from "@/services/api";
 import ObjectSort from "@/components/Objects/ObjectSort";
 import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
 import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
-import api from "@/services/api";
 import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
 
@@ -30,7 +27,6 @@ export default {
   components: {
     ChessSquareCard,
     ObjectTable,
-    // ObjectCard,
     ObjectSort,
     ObjectBlock,
     ApartmentExpressView
@@ -71,6 +67,9 @@ export default {
     },
     hideApartmentSidebarView() {
       this.expressView.toggle = false
+    },
+    updateContent() {
+      this.getApartments()
     }
   }
 }

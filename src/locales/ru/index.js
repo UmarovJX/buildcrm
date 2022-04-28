@@ -104,6 +104,7 @@ export default {
     familiar: 'Знакомый',
     unfamiliar: 'Незнакомый',
     continue_registration: 'Продолжить оформление',
+    apartment: "Квартира",
 
     tab_status: {
         all: "Все",

@@ -137,7 +137,6 @@
 </template>
 
 <script>
-import {mapActions, mapMutations, mapGetters} from "vuex";
 import api from "@/services/api"
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";

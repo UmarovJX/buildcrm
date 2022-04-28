@@ -56,7 +56,7 @@ import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import ImportPayments from "@/components/Contracts/view/ImportPayments";
 import Contracts from "@/views/Contracts/Index"
 import ContractView from "@/views/Contracts/View/Index"
-
+import ApartmentCloneView from '@/views/Chess/ApartmentView'
 import ChessObjects from "./views/Chess/Objects"
 import ObjectTable from "@/components/Objects/ObjectTable";
 
@@ -213,6 +213,16 @@ const routes = [
         name: "apartment-view",
         path: "/objects/:object/apartment/:id",
         component: ApartmentView,
+        meta: {
+            requiresAuth: "apartments",
+        },
+    },
+
+    {
+        /* CLONE APARTMENT VIEW */
+        name: "apartment-view-clone",
+        path: "/objects/:object/apartment/:id/clone",
+        component: ApartmentCloneView,
         meta: {
             requiresAuth: "apartments",
         },
