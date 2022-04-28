@@ -4,9 +4,9 @@
       <!--  HEADER NAVIGATION  -->
       <div class="navigation__content justify-content-between">
         <div class="d-flex align-items-center">
-        <span class="go__back" @click="$router.go(-1)">
-          <base-arrow-left :width="32" :height="32"></base-arrow-left>
-        </span>
+          <span class="go__back" @click="$router.go(-1)">
+            <base-arrow-left :width="32" :height="32"></base-arrow-left>
+          </span>
           <span class="breadcrumb__content">
           <span class="d-flex align-items-center">
             <span class="mr-2">{{ $t('objects.title') }}</span>

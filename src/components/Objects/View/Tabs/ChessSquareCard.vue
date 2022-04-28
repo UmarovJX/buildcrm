@@ -137,6 +137,7 @@ export default {
       }))
     },
     showExpressSidebar(item) {
+      console.log(item)
       this.$emit('show-express-sidebar', item)
     },
   }
