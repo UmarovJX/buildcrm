@@ -208,6 +208,21 @@ class ObjectsV2 extends Core {
         return this.get(`/apartments/objects/${objectId}/apartments/plans`)
     }
 
+    getDealTemplateList(objectId) {
+        return this.get(`templates/branch/${objectId}`)
+    }
+
+    addNewContract({id, form}) {
+        return this.post(`templates/branch/${id}`, form)
+    }
+
+    makeContractPrimary({objectId, contractId}) {
+        return this.put(`templates/branch/${objectId}/contract/${contractId}/primary`)
+    }
+
+    deleteContract({objectId, contractId}) {
+        return this.delete(`templates/branch/${objectId}/contract/${contractId}`)
+    }
 }
 
 export default {

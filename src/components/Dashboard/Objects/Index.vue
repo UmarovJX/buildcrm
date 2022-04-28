@@ -33,13 +33,7 @@
                   <i class="fas fa-pen"></i> {{ $t("edit") }}
                 </router-link>
 
-                <router-link
-                    v-if="getPermission.objects.update"
-                    :to="{name:'object-deal-template',params:{id:object.id}}"
-                    :class="'dropdown-item'"
-                >
-                  <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}
-                </router-link>
+
 
                 <router-link
                     v-if="getPermission.objects.view"

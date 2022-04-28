@@ -146,7 +146,7 @@ export default {
     async getDealTemplateList() {
       this.loading = true
       const {id} = this.$route.params
-      await api.objects.getDealTemplateList(id)
+      await api.objectsV2.getDealTemplateList(id)
           .then((response) => {
             this.contracts = response.data.data
             const objectCrumb = {
