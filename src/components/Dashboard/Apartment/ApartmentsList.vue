@@ -714,6 +714,7 @@ export default {
       const {status} = this.$route.query
       const id = this.$route.params.object
       const apartmentUID = item.id
+      console.log(status, 'apartmen status');
       await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
         this.updateSpecificApartment({updatingApartment: response.data, status})
       })

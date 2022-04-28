@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="position-relative" style="min-height: 300px">
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>
@@ -25,10 +25,11 @@
           <span v-for="item in value.floors" :key="item.name">
             <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
               <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square" @click="showExpressSidebar(elem)" :class="status(elem.order.status).class">
+                <div class="square" @click="showExpressSidebar"
+                     :class="status(elem.order.status).class">
                   <div class="square-header">
-                    <p>Кв. №{{ elem.id }}</p>
-                    <div v-if="!elem.is_promo" class="h-auto d-flex">
+                    <p>Кв. № {{ elem.number }}</p>
+                    <div v-if="elem.is_promo" class="h-auto d-flex">
                       <img src="../../../../assets/icons/bonuses.svg" alt="">
                     </div>
                   </div>
@@ -43,7 +44,7 @@
                     </h5>
                   </div>
                   <div class="square-footer">
-                    <p>{{ elem.plan.area }}M<sup>2</sup></p>
+                    <p>{{ elem.plan.area }} M<sup>2</sup></p>
                     <p>{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
                   </div>
                 </div>
@@ -60,6 +61,20 @@
       </div>
 
     </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+
   </div>
 </template>
 
@@ -71,6 +86,10 @@ export default {
     apartments: {
       type: Array,
       required: true,
+    },
+    loading: {
+      type: Boolean,
+      required: false,
     }
   },
   emits: ['show-express-sidebar'],
@@ -80,7 +99,7 @@ export default {
         case 'available': {
           return {statusText: '', class: 'teal'}
         }
-        case 'contract':
+          // case 'contract':
         case 'waiting':
         case 'sold':
         case 'closed': {
@@ -89,7 +108,7 @@ export default {
         case 'booked': {
           return {statusText: 'Забронировано', class: 'yellow'}
         }
-        case 'hold': {
+        case 'contract': {
           return {statusText: 'Оформлено', class: 'blue'}
         }
         default:
@@ -162,14 +181,31 @@ export default {
 
 
   &.yellow {
+
     h5 {
       color: var(--yellow-500);
+    }
+
+    &:hover {
+      background-color: var(--yellow-500);
+
+      p, h5 {
+        color: var(--white);
+      }
     }
   }
 
   &.teal {
     h5 {
       color: var(--teal-500);
+    }
+
+    &:hover {
+      background-color: var(--teal-500);
+
+      p, h5 {
+        color: var(--white);
+      }
     }
   }
 
@@ -184,6 +220,14 @@ export default {
       color: var(--light-blue-500);
     }
 
+    &:hover {
+      background-color: var(--light-blue-500);
+
+      p, h5 {
+        color: var(--white);
+      }
+    }
+
 
   }
 
@@ -195,6 +239,14 @@ export default {
     .square-footer {
       p {
         color: var(--gray-400);
+      }
+    }
+
+    &:hover {
+      background-color: var(--gray-500);
+
+      p, h5 {
+        color: var(--white);
       }
     }
   }
