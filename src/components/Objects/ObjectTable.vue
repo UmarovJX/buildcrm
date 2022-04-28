@@ -13,7 +13,7 @@
           show-empty
           responsive
           sort-icon-left
-          :items="tableItems"
+          :items="apartments"
           :fields="fields"
           :busy="showLoading"
           :sort-by="sortBy"
@@ -252,50 +252,48 @@
         </div>
       </div>
 
-<!--      <div>-->
-<!--        <reserve-add-->
-<!--            v-if="-->
-<!--            reserve || getPermission.apartments &&-->
-<!--              getPermission.apartments.reserve-->
-<!--          "-->
-<!--            :apartment="apartment_id"-->
-<!--            @CreateReserve="CreateReserveSuccess"-->
-<!--        ></reserve-add>-->
+      <!--      <div>-->
+      <reserve-add
+          v-if="
+                  reserve || getPermission.apartments &&
+                    getPermission.apartments.reserve
+                "
+          :apartment="apartment_id"
+          @CreateReserve="CreateReserveSuccess"
+      ></reserve-add>
 
-<!--        <filter-form-->
-<!--            v-if="getPermission.apartments && getPermission.apartments.filter"-->
-<!--            @filteredForm="filteredForm"-->
-<!--            :filtered="filter"-->
-<!--        ></filter-form>-->
+      <!--        <filter-form-->
+      <!--            v-if="getPermission.apartments && getPermission.apartments.filter"-->
+      <!--            @filteredForm="filteredForm"-->
+      <!--            :filtered="filter"-->
+      <!--        ></filter-form>-->
 
-<!--        <view-client-->
-<!--            v-if="info_reserve"-->
-<!--            @CancelReserve="CloseReserveInfo"-->
-<!--            :apartment-data="apartment_preview"-->
-<!--        ></view-client>-->
+      <!--        <view-client-->
+      <!--            v-if="info_reserve"-->
+      <!--            @CancelReserve="CloseReserveInfo"-->
+      <!--            :apartment-data="apartment_preview"-->
+      <!--        ></view-client>-->
 
-<!--        <edit-modal-->
-<!--            v-if="-->
-<!--            (getPermission.apartments && getPermission.apartments.edit) || edit-->
-<!--          "-->
-<!--            :apartment="apartment_id"-->
-<!--            @EditApartment="EditApartment"-->
-<!--        ></edit-modal>-->
+      <edit-modal
+          v-if="(hasPermission) || edit"
+          :apartment="apartment_id"
+          @EditApartment="EditApartment"
+      ></edit-modal>
 
-<!--        &lt;!&ndash;        <info-manager-modal&ndash;&gt;-->
-<!--        &lt;!&ndash;            :manager-data="this.manager_apartment"&ndash;&gt;-->
-<!--        &lt;!&ndash;            @ManagerInfo="ManagerInfo"&ndash;&gt;-->
-<!--        &lt;!&ndash;        ></info-manager-modal>&ndash;&gt;-->
+      <!--        &lt;!&ndash;        <info-manager-modal&ndash;&gt;-->
+      <!--        &lt;!&ndash;            :manager-data="this.manager_apartment"&ndash;&gt;-->
+      <!--        &lt;!&ndash;            @ManagerInfo="ManagerInfo"&ndash;&gt;-->
+      <!--        &lt;!&ndash;        ></info-manager-modal>&ndash;&gt;-->
 
-<!--        <agree-modal-->
-<!--            v-if="selected.confirm"-->
-<!--            :apartments="selected.values"-->
-<!--            @successAgree="successAgree"-->
-<!--            @CloseAgree="CloseAgree"-->
-<!--        ></agree-modal>-->
+      <!--        <agree-modal-->
+      <!--            v-if="selected.confirm"-->
+      <!--            :apartments="selected.values"-->
+      <!--            @successAgree="successAgree"-->
+      <!--            @CloseAgree="CloseAgree"-->
+      <!--        ></agree-modal>-->
 
-<!--        <success-agree :contract="contract"></success-agree>-->
-<!--      </div>-->
+      <!--        <success-agree :contract="contract"></success-agree>-->
+      <!--      </div>-->
 
     </div>
 
@@ -313,9 +311,9 @@ import {sortObjectValues} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import {mapActions, mapGetters} from "vuex";
 // import Filter from "@/components/Dashboard/Apartment/Components/ApartmentsFilter";
-// import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
+import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
 // import ViewClient from "@/components/Dashboard/Apartment/ViewClient";
-// import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
+import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
 // import InfoManager from "@/components/Dashboard/Apartment/InfoManager";
 // import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
 // import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
@@ -328,9 +326,9 @@ export default {
     BaseDownIcon,
     BaseLoading,
     // "filter-form": Filter,
-    // "reserve-add": ReserveAdd,
+    "reserve-add": ReserveAdd,
     // "view-client": ViewClient,
-    // "edit-modal": EditApartment,
+    "edit-modal": EditApartment,
     // "info-manager-modal": InfoManager,
     // "agree-modal": AgreeMultiple,
     // "success-agree": SuccessAgree,
@@ -357,7 +355,7 @@ export default {
       showByValue,
       showByOptions,
       pagination: {},
-      tableItems: [],
+      apartments: [],
       page: 1,
       reserve: false,
       apartment_id: 0,
@@ -454,8 +452,8 @@ export default {
     await this.fetchContractList()
   },
   computed: {
-    ...mapActions(["fetchApartments", "fetchReserveClient"]),
     ...mapGetters(["getPermission", "getMe"]),
+    ...mapActions(["fetchApartments", "fetchReserveClient"]),
     hasPermission() {
       return this.getPermission.apartments && this.getPermission.apartments.edit
     },
@@ -464,7 +462,7 @@ export default {
       return Object.assign({}, this.$route.query)
     },
     countOfItems() {
-      return this.tableItems.length
+      return this.apartments.length
     },
   },
 
@@ -484,12 +482,13 @@ export default {
     async fetchContractList() {
       this.showLoading = true
       const query = sortObjectValues(this.query)
-      if (query.hasOwnProperty('object_id') && typeof query.object_id === 'string') {
-        query.object_id = [query.object_id]
+      if (query.hasOwnProperty('objectId') && typeof query.objectId === 'string') {
+        query.objectId = [query.objectId]
       }
-      await api.objects.fetchObjectApartments(18, query)
+      const {objectId} = this.$route.params
+      await api.objects.fetchObjectApartments(objectId, query)
           .then((response) => {
-            this.tableItems = response.data.items
+            this.apartments = response.data.items
             this.pagination = response.data.pagination
             this.showByValue = response.data.pagination.perPage
           }).catch((err) => {
@@ -523,12 +522,11 @@ export default {
 
     onRowSelected(items) {
       console.log(items);
-      /// on select visit children
 
-      // this.$router.push({
-      //   name: "chess",
-      //   params: {id: items[0].id},
-      // });
+      this.$router.push({
+        name: "objects",
+        params: {id: items[0].id},
+      });
     },
 
     sortingChanged(val) {
@@ -539,7 +537,7 @@ export default {
 
       this.$router.push({
         name: "chess-table",
-        params: {objectId: 18},
+        params: this.$route.params.objectId,
         query: this.filter,
       }).then(() => {
         const element = document.getElementById("my-table");
@@ -574,6 +572,19 @@ export default {
       }
     },
 
+
+    async EditApartment() {
+      this.apartment_id = 0;
+      this.edit = false;
+
+      await this.$router.push({
+        name: "chess-table",
+        query: this.filter,
+      });
+
+      if (this.filter.filtered) await this.fetchApartments(this);
+      else await this.fetchApartments(this);
+    },
 
     CreateReserve(id) {
       this.reserve = true;
@@ -636,11 +647,13 @@ export default {
     },
 
     async toggleApartmentToSale(item) {
-      const {status} = this.$route.query
-      const id = this.$route.params.object
+      const id = this.$route.params.objectId
       const apartmentUID = item.id
       await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
-        this.updateSpecificApartment({updatingApartment: response.data, status})
+        const updatingIndex = this.apartments.findIndex((apartment) => apartment.id === response.data.id)
+        if (updatingIndex !== -1) {
+          this.apartments.splice(updatingIndex, 1, response.data)
+        }
       })
     },
 

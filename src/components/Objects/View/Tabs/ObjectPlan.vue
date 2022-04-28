@@ -1,6 +1,6 @@
 <template>
   <div class="position-relative" style="min-height: 300px">
-    <div class="object-cards">
+    <div v-if="!planLoad && plans.length" class="object-cards">
       <div class="card" v-for="plan in plans" :key="plan.id">
         <div class="card-body">
           <div class="card-top">
@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay :show="planLoad" no-wrap opacity="0.5" style="z-index: 2222">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import api from "@/services/api";
+// import api from "@/services/api";
 import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
@@ -101,10 +101,22 @@ export default {
     swiper: directive,
   },
 
+  /* PROPS */
+  props: {
+    planLoad: {
+      type: Boolean,
+      default: () => false
+    },
+    plans: {
+      type: Array,
+      default: () => []
+    }
+  },
+
   data() {
     return {
-      plans: [],
-      loading: false,
+      // plans: [],
+      // loading: false,
       swiperOption: {
         slidesPerView: 1,
         spaceBetween: 80,
@@ -120,24 +132,13 @@ export default {
     }
   },
   mounted() {
-    this.getObjectPlans()
+    // this.getObjectPlans()
   },
   methods: {
     price(value) {
       return value.toLocaleString()
     },
-    async getObjectPlans() {
-      this.loading = true
-      await api.objectsV2.getObjectPlans(18)
-          .then((response) => {
-            this.plans = response.data
-          }).catch((err) => {
-            this.toastedWithErrorCode(err)
-          })
-          .finally(() => {
-            this.loading = false
-          })
-    },
+
   }
 }
 </script>

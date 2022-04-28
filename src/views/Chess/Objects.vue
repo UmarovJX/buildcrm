@@ -19,7 +19,8 @@
       </b-form-checkbox>
     </b-form-checkbox-group>
 
-    <component v-if="apartments" :is="currentTab" :apartments="apartments"
+    <component v-if="apartments" :loading="getLoading" :plans="plans" :plan-load="planLoading" :is="currentTab"
+               :apartments="apartments"
                @show-express-sidebar="apartmentExpressReview"/>
 
     <!-- APARTMENT QUICK VIEW   -->
@@ -28,18 +29,6 @@
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
 
-    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
-      <template #overlay>
-        <div class="d-flex justify-content-center w-100">
-          <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
-      </template>
-    </b-overlay>
 
   </main>
 </template>
@@ -73,7 +62,9 @@ export default {
         item: {}
       },
       getLoading: false,
+      planLoading: false,
       apartments: [],
+      plans: [],
       currentTab: 'ObjectTable',
       sort: [
         {
@@ -100,16 +91,17 @@ export default {
       filter: [],
     }
   },
-  async mounted() {
-    await this.getApartments()
+  created() {
+    this.getObjectPlans()
+    this.getApartments()
   },
+
   methods: {
     changeTab(name) {
       this.currentTab = name.name
     },
     async getApartments() {
       this.getLoading = true
-
       const id = this.$route.params.objectId
       await api.objectsV2.getApartments(id).then((res) => {
         this.apartments = res.data.data
@@ -118,6 +110,18 @@ export default {
       }).finally(() => {
         this.getLoading = false
       })
+    },
+    async getObjectPlans() {
+      this.planLoading = true
+      await api.objectsV2.getObjectPlans(18)
+          .then((response) => {
+            this.plans = response.data
+          }).catch((err) => {
+            this.toastedWithErrorCode(err)
+          })
+          .finally(() => {
+            this.planLoading = false
+          })
     },
     apartmentExpressReview(item) {
       this.expressView.item = item

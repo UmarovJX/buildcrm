@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="position-relative" style="min-height: 300px">
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>
@@ -61,6 +61,20 @@
       </div>
 
     </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+
   </div>
 </template>
 
@@ -72,6 +86,10 @@ export default {
     apartments: {
       type: Array,
       required: true,
+    },
+    loading: {
+      type: Boolean,
+      required: false,
     }
   },
   emits: ['show-express-sidebar'],

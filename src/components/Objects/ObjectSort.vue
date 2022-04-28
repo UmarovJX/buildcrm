@@ -39,7 +39,7 @@
 
       <b-dropdown left>
         <template #button-content>
-          Блок
+          Жилая площадь
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -83,49 +83,6 @@
         ></base-numeric-input>
       </div>
 
-      <div class="filter__apartment__price">
-        <div class="filter-value">
-          <span>M<sup>2</sup></span>
-        </div>
-        <base-numeric-input
-            v-model.number="filter.area_from"
-            :currency="` `"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
-            placeholder="от"
-            class="filter__price"
-        ></base-numeric-input>
-        <base-numeric-input
-            v-model.number="filter.area_to"
-            :currency="` `"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
-            placeholder="до"
-            class="filter__price"
-        ></base-numeric-input>
-      </div>
-
-      <b-dropdown left>
-        <template #button-content>
-          Статус
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
 
       <div class="detail-button" @click="openBar">
         <base-details-icon fill="#7C3AED"/>
@@ -169,6 +126,50 @@
         </base-form-tag-input>
       </div>
 
+      <div class="filter__apartment__price">
+        <div class="filter-value">
+          <span>M<sup>2</sup></span>
+        </div>
+        <base-numeric-input
+            v-model.number="filter.area_from"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            placeholder="от"
+            class="filter__price"
+        ></base-numeric-input>
+        <base-numeric-input
+            v-model.number="filter.area_to"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            placeholder="до"
+            class="filter__price"
+        ></base-numeric-input>
+      </div>
+
+      <b-dropdown left>
+        <template #button-content>
+          Блок
+        </template>
+        <b-dropdown-text href="#">
+          <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+                id="checkbox-group-2"
+                v-model="form.flat"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
+            >
+              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-dropdown-text>
+      </b-dropdown>
+
       <b-dropdown left>
         <template #button-content>
           Срок сдачи
@@ -189,7 +190,7 @@
 
       <b-dropdown left>
         <template #button-content>
-          Жилая площадь
+          Статус
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -226,6 +227,31 @@
     </div>
 
     <div v-if="sortBar" class="sort-hide">
+      <div class="filter__apartment__price">
+        <div class="filter-value">
+          <span>M<sup>2</sup></span>
+        </div>
+        <base-numeric-input
+            v-model.number="filter.area_from"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            placeholder="от"
+            class="filter__price"
+        ></base-numeric-input>
+        <base-numeric-input
+            v-model.number="filter.area_to"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            placeholder="до"
+            class="filter__price"
+        ></base-numeric-input>
+      </div>
       <b-dropdown left>
         <template #button-content>
           Срок сдачи
@@ -399,6 +425,11 @@ export default {
   gap: 1rem .5rem;
   color: var(--gray-600) !important;
   background-color: var(--white);
+}
+
+.sort-top {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .chess-tab {
@@ -590,7 +621,7 @@ export default {
     border: none !important;
     outline: none;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     cursor: pointer;
     background-color: var(--gray-100) !important;

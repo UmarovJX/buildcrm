@@ -1,6 +1,5 @@
 <template>
-  <div>
-
+  <div class="position-relative" style="min-height: 300px">
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>
@@ -34,8 +33,8 @@
                     </h5>
                 </div>
                 <span :class="status(elem.order.status).class+'-tool'">
-                <b-tooltip class="custom-tooltip" :target="'tolltip' + elem.number" triggers="hover"
-                           placement="bottomright">
+                  <b-tooltip class="custom-tooltip" :target="'tolltip' + elem.number" triggers="hover"
+                             placement="bottomright">
                   <div class="square"
                        :class="status(elem.order.status).class+'-tool'">
                   <div class="square-header">
@@ -75,6 +74,20 @@
       </div>
 
     </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+
   </div>
 </template>
 
@@ -86,6 +99,10 @@ export default {
     apartments: {
       type: Array,
       required: true,
+    },
+    loading: {
+      type: Boolean,
+      required: false,
     }
   },
   emits: ['show-express-sidebar'],
@@ -137,11 +154,32 @@ export default {
     h5 {
       color: var(--yellow-500);
     }
+
+    &:hover {
+      h5 {
+        color: var(--white);
+      }
+
+      .box {
+        background-color: var(--yellow-500);
+      }
+    }
   }
 
-  .teal-tool {
+  .teal {
     h5 {
       color: var(--teal-500);
+    }
+
+    &:hover {
+      h5 {
+        color: var(--white);
+      }
+
+      .box {
+        background-color: var(--teal-500);
+
+      }
     }
   }
 
@@ -149,18 +187,36 @@ export default {
     h5 {
       color: var(--light-blue-500);
     }
+
+    &:hover {
+      h5 {
+        color: var(--white);
+      }
+
+      .box {
+        background-color: var(--light-blue-500);
+
+      }
+    }
   }
 
   .gray {
     h5 {
       color: var(--gray-500);
     }
+
+    &:hover {
+      h5 {
+        color: var(--white);
+      }
+
+      .box {
+        background-color: var(--gray-500);
+
+      }
+    }
   }
 }
-
-//::v-deep .bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
-//  bottom: 6px;
-//}
 
 ::v-deep.b-tooltip {
 
@@ -173,11 +229,6 @@ export default {
     transform: rotate(-90deg);
   }
 
-  //
-  //.arrow::before, {
-  //  border-width: .5rem 1rem 0;
-  //  left: -0.5rem !important;
-  //}
 
   .tooltip-inner {
     max-width: none !important;
@@ -248,7 +299,7 @@ export default {
     }
 
 
-    .yellow {
+    &.yellow {
       color: var(--white) !important;
       background-color: var(--yellow-500) !important;
 
