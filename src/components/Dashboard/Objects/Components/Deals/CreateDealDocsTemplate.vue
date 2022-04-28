@@ -200,7 +200,7 @@ export default {
 
           this.loading = true
           const {id} = this.$route.params
-          await api.objects.addNewContract({id, form})
+          await api.objectsV2.addNewContract({id, form})
               .then(() => {
                 this.$refs["creation-content"].hide()
                 this.$emit('update-content', {category: this.form.category})

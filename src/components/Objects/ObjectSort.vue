@@ -39,7 +39,7 @@
 
       <b-dropdown left>
         <template #button-content>
-          Блок
+          Жилая площадь
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -83,6 +83,49 @@
         ></base-numeric-input>
       </div>
 
+
+      <div class="detail-button" @click="openBar">
+        <base-details-icon fill="#7C3AED"/>
+      </div>
+
+      <base-button text="Применить" design="violet-gradient"/>
+
+    </div>
+
+    <div class="chess-tab">
+
+      <base-button
+          v-for="tab in tabs"
+          :key="tab.id"
+          :class="{ active: currentTab.name === tab.name }"
+          @click="changeProduct(tab)"
+          :text="tab.title">
+        <template #left-icon>
+          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"/>
+        </template>
+      </base-button>
+    </div>
+
+    <div v-if="sortBar" class="sort-hide">
+      <div class="filter__inputs-input">
+        <base-form-tag-input
+            @set-tags="setApartments"
+            :default-tags="filter.apartment_number"
+            ref="base-form-tag-input"
+            placeholder="Номер квартиры"
+        >
+          <template #delete-content>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="10" fill="#9CA3AF"/>
+              <path d="M13.125 6.875L6.875 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <path d="M6.875 6.875L13.125 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </template>
+        </base-form-tag-input>
+      </div>
+
       <div class="filter__apartment__price">
         <div class="filter-value">
           <span>M<sup>2</sup></span>
@@ -111,7 +154,7 @@
 
       <b-dropdown left>
         <template #button-content>
-          Статус
+          Блок
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -126,49 +169,6 @@
           </b-form-group>
         </b-dropdown-text>
       </b-dropdown>
-
-      <div class="detail-button" @click="openBar">
-        <base-details-icon fill="#7C3AED"/>
-      </div>
-
-      <base-button text="Применить" design="violet-gradient"/>
-
-    </div>
-
-    <div class="chess-tab">
-
-      <base-button
-          v-for="tab in tabs"
-          :key="tab.id"
-          :class="{ active: currentTab.name === tab.name }"
-          @click="changeProduct(tab)"
-          :text="tab.title">
-        <template #left-icon>
-          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#fff' : undefined"/>
-        </template>
-      </base-button>
-
-    </div>
-
-    <div v-if="sortBar" class="sort-hide">
-      <div class="filter__inputs-input">
-        <base-form-tag-input
-            @set-tags="setApartments"
-            :default-tags="filter.apartment_number"
-            ref="base-form-tag-input"
-            placeholder="Номер квартиры"
-        >
-          <template #delete-content>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="10" fill="#9CA3AF"/>
-              <path d="M13.125 6.875L6.875 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round"/>
-              <path d="M6.875 6.875L13.125 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round"/>
-            </svg>
-          </template>
-        </base-form-tag-input>
-      </div>
 
       <b-dropdown left>
         <template #button-content>
@@ -190,7 +190,7 @@
 
       <b-dropdown left>
         <template #button-content>
-          Жилая площадь
+          Статус
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -227,6 +227,31 @@
     </div>
 
     <div v-if="sortBar" class="sort-hide">
+      <div class="filter__apartment__price">
+        <div class="filter-value">
+          <span>M<sup>2</sup></span>
+        </div>
+        <base-numeric-input
+            v-model.number="filter.area_from"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            placeholder="от"
+            class="filter__price"
+        ></base-numeric-input>
+        <base-numeric-input
+            v-model.number="filter.area_to"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            placeholder="до"
+            class="filter__price"
+        ></base-numeric-input>
+      </div>
       <b-dropdown left>
         <template #button-content>
           Срок сдачи
@@ -304,6 +329,8 @@ import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseChessOne from "@/components/icons/BaseChessOne";
 import BaseChessTwo from "@/components/icons/BaseChessTwo";
 import BaseDetailsIcon from "@/components/icons/BaseDetailsIcon";
+import BaseChessList from "@/components/icons/BaseChessList";
+import BaseChessPlan from "@/components/icons/BaseChessPlan";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 
@@ -316,16 +343,18 @@ export default {
     BaseNumericInput,
     BaseButton,
     BaseFormTagInput,
+    BaseChessList,
+    BaseChessPlan,
   },
   data() {
     return {
-      currentTab: {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
+      currentTab: {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
       tabs: [
         // {id: 1, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Фасады'},
         {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
         {id: 3, param: 'chess-two', name: 'ChessSquareCard', buttonIcon: 'BaseChessTwo', title: 'Шахматка 2.0'},
-        {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseDetailsIcon', title: 'Этажи'},
-        // {id: 5, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Список'},
+        {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: 'Список'},
+        {id: 5, param: 'chess-plan', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: 'Планировки'},
         // {id: 6, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Планировки'},
       ],
       setApartments: [],
@@ -382,9 +411,11 @@ export default {
   display: flex;
   flex-direction: column;
   padding-bottom: 1rem;
-  margin-bottom: 1rem;
+  //margin-bottom: 1rem;
   gap: 1rem;
   background-color: var(--white);
+  font-family: Inter, sans-serif;
+
 }
 
 .sort-top, .sort-hide, .chess-tab {
@@ -394,6 +425,11 @@ export default {
   gap: 1rem .5rem;
   color: var(--gray-600) !important;
   background-color: var(--white);
+}
+
+.sort-top {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .chess-tab {
@@ -577,7 +613,7 @@ export default {
     font-family: Inter, serif;
     padding: 1rem 1rem 1rem 1.5rem !important;
     height: 56px;
-    font-weight: 600 !important;
+    font-style: normal;
     line-height: 22px !important;
     border-radius: 2rem !important;
     color: var(--gray-400) !important;
@@ -585,7 +621,7 @@ export default {
     border: none !important;
     outline: none;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     cursor: pointer;
     background-color: var(--gray-100) !important;

@@ -141,7 +141,7 @@ export default {
       required: true
     }
   },
-  emits: ['update-content','update-loading'],
+  emits: ['update-content', 'update-loading'],
   data() {
     return {
       sortBy: "main",
@@ -229,7 +229,7 @@ export default {
     makeItMain(contractId) {
       const {id: objectId} = this.$route.params
       this.showLoading = true
-      api.objects.makeContractPrimary({objectId, contractId})
+      api.objectsV2.makeContractPrimary({objectId, contractId})
           .then(() => {
             this.$emit('update-content')
           })
@@ -243,7 +243,7 @@ export default {
     async deleteContract(contractId) {
       this.showLoading = false
       const objectId = this.$route.params.id
-      await api.objects.deleteContract({objectId, contractId})
+      await api.objectsV2.deleteContract({objectId, contractId})
           .then(() => {
             const findIndex = this.contracts.findIndex(contract => contract.id === contractId)
             this.contracts.splice(findIndex, 1)

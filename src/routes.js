@@ -108,6 +108,14 @@ const routes = [
                 meta: {
                     requiresAuth: "objects",
                 },
+            },
+            {
+                name: "chess-plan",
+                path: "plan",
+                component: ChessObjects,
+                meta: {
+                    requiresAuth: "objects",
+                },
             }
         ]
     },
@@ -156,7 +164,7 @@ const routes = [
     {
         /* OBJECT DEAL TEMPLATE */
         name: "object-deal-template",
-        path: "/objects/:id/contracts",
+        path: "/branches/:id/contracts",
         component: DealDocsTemplate,
         meta: {
             requiresAuth: "objects",

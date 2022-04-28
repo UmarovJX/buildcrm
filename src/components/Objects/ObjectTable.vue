@@ -13,7 +13,7 @@
           show-empty
           responsive
           sort-icon-left
-          :items="tableItems"
+          :items="apartments"
           :fields="fields"
           :busy="showLoading"
           :sort-by="sortBy"
@@ -21,6 +21,7 @@
           :empty-text="$t('no_data')"
           @sort-changed="sortingChanged"
           :selectable="selectable"
+          select-mode="single"
           @row-selected="onRowSelected"
       >
 
@@ -35,18 +36,21 @@
         </template>
 
         <template #cell(number)="data" class="p-0">
-          <div class="position-relative">
-            <div class="table-multi-select">
-              <!--              <b-form-checkbox-->
-              <!--                  title="Выберите"-->
-              <!--                  v-if="data.item.is_sold && selected.view && data.item.order.status === 'available'"-->
-              <!--                  :id="'checkbox-' + data.item.id"-->
-              <!--                  v-model="selected.values"-->
-              <!--                  :name="'checkbox-' + data.item.id"-->
-              <!--                  :value="data.item.id"-->
-              <!--              ></b-form-checkbox>-->
-              <span>{{ data.item.number }}</span>
+          <div class="d-flex position-relative">
+            <div v-if="!data.item.is_sold" class="apartments__lock">
+              <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="svg-lock-button"
+              >
+                <path
+                    d="M17 9V7C17 4.2 14.8 2 12 2C9.2 2 7 4.2 7 7V9C5.3 9 4 10.3 4 12V19C4 20.7 5.3 22 7 22H17C18.7 22 20 20.7 20 19V12C20 10.3 18.7 9 17 9ZM9 7C9 5.3 10.3 4 12 4C13.7 4 15 5.3 15 7V9H9V7Z"
+                />
+              </svg>
             </div>
+            <span style="padding-left: 20px">{{ data.item.number }}</span>
           </div>
         </template>
 
@@ -82,6 +86,124 @@
           <span v-else :class="getStatus(data.item.order.status).class">
               {{ getStatus(data.item.order.status).statusText }}
           </span>
+        </template>
+
+        <template #cell(actions)="data">
+          <div class="float-right">
+            <div class="dropdown my-dropdown dropleft">
+              <button
+                  type="button"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+              >
+                <i class="far fa-ellipsis-h"></i>
+              </button>
+
+              <div class="dropdown-menu">
+                <template v-if="hasPermission">
+                  <!-- Редактировать -->
+                  <b-link
+                      class="dropdown-item dropdown-item--inside"
+                      @click="[(edit = true), (apartment_id = data.item.id)]"
+                      v-b-modal.modal-edit
+                  >
+                    <i class="far fa-pencil"></i> {{ $t("edit") }}
+                  </b-link>
+
+
+                  <!--        Вернуть к продаже          -->
+                  <b-link
+                      v-if="data.item.is_sold && data.item.order.status === 'available'"
+                      @click="toggleApartmentToSale(data.item)"
+                      class="dropdown-item dropdown-item--inside"
+                  >
+                    <i class="far fa-unlock"></i> {{ $t("remove_from_sale") }}
+                  </b-link>
+
+                  <b-link
+                      v-if="!data.item.is_sold && data.item.order.status === 'available'"
+                      @click="toggleApartmentToSale(data.item)"
+                      class="dropdown-item dropdown-item--inside"
+                  >
+                    <i class="far fa-lock"></i> {{ $t("return_to_sale") }}
+                  </b-link>
+                </template>
+
+                <!--  Забронировать -->
+                <b-link
+                    v-if="
+                                    data.item.is_sold &&
+                                    getPermission.apartments &&
+                                      getPermission.apartments.reserve &&
+                                      data.item.order.status === 'available'
+                                  "
+                    @click="[(reserve = true), (apartment_id = data.item.id)]"
+                    v-b-modal.modal-reserve-create
+                    class="dropdown-item dropdown-item--inside"
+                >
+                  <i class="far fa-calendar-check"></i>
+                  {{ $t("apartments.list.book") }}
+                </b-link>
+
+                <!-- Посмотреть клиент  -->
+                <b-link
+                    v-if="clientsView(data)"
+                    @click="ReserveInfo(data.item)"
+                    class="dropdown-item dropdown-item--inside"
+                >
+                  <i class="far fa-eye"></i>
+                  {{ $t("apartments.list.view_client") }}
+                </b-link>
+
+                <!--  Информация о менеджера  -->
+                <b-link
+                    v-if="data.item.order.status === 'booked' && data.item.order.user.id !== getMe.user.id
+                                  "
+                    @click="getInfoReserve(data.item)"
+                    v-b-modal.modal-view-info-manager
+                    class="dropdown-item dropdown-item--inside"
+                >
+                  <i class="far fa-info-circle"></i>
+                  {{ $t("apartments.list.view_manager") }}
+                </b-link>
+
+                <!--  Подробная информация  -->
+                <router-link
+                    :to="{
+                                    name: 'apartment-view',
+                                    params: {id: data.item.id},
+                                  }"
+                    :class="'dropdown-item dropdown-item--inside'"
+
+                >
+                  <i class="far fa-eye"></i>
+                  {{ $t("apartments.list.more") }}
+                </router-link>
+
+                <!-- Подробная информация  -->
+
+                <!--  Оформить -->
+                <b-link
+                    @click="orderHold([data.item.id])"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    v-if="allowViewWhenProcessing(data) && !statusHold(data)"
+                >
+                  <i class="far fa-ballot-check"></i>
+                  {{ $t("apartments.list.confirm") }}
+                </b-link>
+
+                <!--  Оформить when processing  -->
+                <b-link
+                    @click="goOrderHold([data.item.order.id])"
+                    :class="'dropdown-item dropdown-item--inside'"
+                    v-if="allowViewWhenProcessing(data) && statusHold(data)"
+                >
+                  <i class="far fa-ballot-check"></i>
+                  Продолжить оформление
+                </b-link>
+              </div>
+            </div>
+          </div>
         </template>
 
       </b-table>
@@ -130,6 +252,49 @@
         </div>
       </div>
 
+      <!--      <div>-->
+      <reserve-add
+          v-if="
+                  reserve || getPermission.apartments &&
+                    getPermission.apartments.reserve
+                "
+          :apartment="apartment_id"
+          @CreateReserve="CreateReserveSuccess"
+      ></reserve-add>
+
+      <!--        <filter-form-->
+      <!--            v-if="getPermission.apartments && getPermission.apartments.filter"-->
+      <!--            @filteredForm="filteredForm"-->
+      <!--            :filtered="filter"-->
+      <!--        ></filter-form>-->
+
+      <!--        <view-client-->
+      <!--            v-if="info_reserve"-->
+      <!--            @CancelReserve="CloseReserveInfo"-->
+      <!--            :apartment-data="apartment_preview"-->
+      <!--        ></view-client>-->
+
+      <edit-modal
+          v-if="(hasPermission) || edit"
+          :apartment="apartment_id"
+          @EditApartment="EditApartment"
+      ></edit-modal>
+
+      <!--        &lt;!&ndash;        <info-manager-modal&ndash;&gt;-->
+      <!--        &lt;!&ndash;            :manager-data="this.manager_apartment"&ndash;&gt;-->
+      <!--        &lt;!&ndash;            @ManagerInfo="ManagerInfo"&ndash;&gt;-->
+      <!--        &lt;!&ndash;        ></info-manager-modal>&ndash;&gt;-->
+
+      <!--        <agree-modal-->
+      <!--            v-if="selected.confirm"-->
+      <!--            :apartments="selected.values"-->
+      <!--            @successAgree="successAgree"-->
+      <!--            @CloseAgree="CloseAgree"-->
+      <!--        ></agree-modal>-->
+
+      <!--        <success-agree :contract="contract"></success-agree>-->
+      <!--      </div>-->
+
     </div>
 
 
@@ -137,13 +302,21 @@
 </template>
 
 <script>
-import {mapActions, mapMutations, mapGetters} from "vuex";
+// import {mapActions, mapMutations, mapGetters} from "vuex";
 import api from "@/services/api"
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import {sortObjectValues} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading";
+import {mapActions, mapGetters} from "vuex";
+// import Filter from "@/components/Dashboard/Apartment/Components/ApartmentsFilter";
+import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
+// import ViewClient from "@/components/Dashboard/Apartment/ViewClient";
+import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
+// import InfoManager from "@/components/Dashboard/Apartment/InfoManager";
+// import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
+// import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
 
 export default {
   name: 'ObjectTable',
@@ -151,7 +324,14 @@ export default {
     BaseArrowRightIcon,
     BaseArrowLeftIcon,
     BaseDownIcon,
-    BaseLoading
+    BaseLoading,
+    // "filter-form": Filter,
+    "reserve-add": ReserveAdd,
+    // "view-client": ViewClient,
+    "edit-modal": EditApartment,
+    // "info-manager-modal": InfoManager,
+    // "agree-modal": AgreeMultiple,
+    // "success-agree": SuccessAgree,
 
   },
 
@@ -175,13 +355,16 @@ export default {
       showByValue,
       showByOptions,
       pagination: {},
-      tableItems: [],
-      selectable: true,
+      apartments: [],
       page: 1,
+      reserve: false,
+      apartment_id: 0,
+      order_id: 0,
+      edit: false,
       fields: [
         {
           key: "number",
-          label: this.$t('apartments.list.number'),
+          label: 'Номер помещения',
           sortable: true,
         },
         // {
@@ -199,11 +382,6 @@ export default {
         //   sortable: true,
         // },
         {
-          key: "rooms",
-          label: this.$t('apartments.list.rooms'),
-          sortable: true,
-        },
-        {
           key: "floor",
           label: this.$t('apartments.list.floor'),
           sortable: true,
@@ -214,20 +392,32 @@ export default {
           sortable: true,
         },
         {
+          key: "rooms",
+          label: 'Комнатность',
+          sortable: true,
+        },
+
+
+        {
           key: "area",
           label: this.$t('apartments.list.area'),
           sortable: true,
         },
-        {
-          key: "balcony",
-          label: this.$t('apartments.list.balcony'),
-          sortable: true,
-        },
+        // {
+        //   key: "price_area",
+        //   label: this.$t('apartments.list.price'),
+        //   sortable: true,
+        // },
         {
           key: "price",
           label: this.$t('apartments.list.price'),
           sortable: true,
         },
+        // {
+        //   key: "price_currency",
+        //   label: this.$t('apartments.list.price'),
+        //   sortable: true,
+        // },
         {
           key: "status",
           label: this.$t('apartments.list.status'),
@@ -241,6 +431,15 @@ export default {
       sortDesc: false,
       currentPage: 1,
       showLoading: false,
+      selectMode: "single",
+      unsfinishedContracts: [],
+      contract: {},
+      selectable: true,
+      selected: {
+        view: false,
+        confirm: false,
+        values: [],
+      },
     }
   },
 
@@ -253,11 +452,17 @@ export default {
     await this.fetchContractList()
   },
   computed: {
+    ...mapGetters(["getPermission", "getMe"]),
+    ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    hasPermission() {
+      return this.getPermission.apartments && this.getPermission.apartments.edit
+    },
+
     query() {
       return Object.assign({}, this.$route.query)
     },
     countOfItems() {
-      return this.tableItems.length
+      return this.apartments.length
     },
   },
 
@@ -276,16 +481,18 @@ export default {
     },
     async fetchContractList() {
       this.showLoading = true
-      console.log('nimader')
       const query = sortObjectValues(this.query)
-      if (query.hasOwnProperty('object_id') && typeof query.object_id === 'string') {
-        query.object_id = [query.object_id]
+      if (query.hasOwnProperty('objectId') && typeof query.objectId === 'string') {
+        query.objectId = [query.objectId]
       }
-      await api.objects.fetchObjectApartments(18, query)
+      const {objectId} = this.$route.params
+      await api.objects.fetchObjectApartments(objectId, query)
           .then((response) => {
-            this.tableItems = response.data.items
+            this.apartments = response.data.items
             this.pagination = response.data.pagination
             this.showByValue = response.data.pagination.perPage
+          }).catch((err) => {
+            this.toastedWithErrorCode(err)
           })
           .finally(() => {
             this.showLoading = false
@@ -315,12 +522,11 @@ export default {
 
     onRowSelected(items) {
       console.log(items);
-      /// on select visit children
 
-      // this.$router.push({
-      //   name: "chess",
-      //   params: {id: items[0].id},
-      // });
+      this.$router.push({
+        name: "objects",
+        params: {id: items[0].id},
+      });
     },
 
     sortingChanged(val) {
@@ -331,7 +537,7 @@ export default {
 
       this.$router.push({
         name: "chess-table",
-        params: {objectId: 18},
+        params: this.$route.params.objectId,
         query: this.filter,
       }).then(() => {
         const element = document.getElementById("my-table");
@@ -366,6 +572,138 @@ export default {
       }
     },
 
+
+    async EditApartment() {
+      this.apartment_id = 0;
+      this.edit = false;
+
+      await this.$router.push({
+        name: "chess-table",
+        query: this.filter,
+      });
+
+      if (this.filter.filtered) await this.fetchApartments(this);
+      else await this.fetchApartments(this);
+    },
+
+    CreateReserve(id) {
+      this.reserve = true;
+      this.apartment_id = id;
+    },
+
+    CreateReserveSuccess() {
+      this.fetchApartments(this).then(() => {
+        location.reload();
+      });
+    },
+
+    CloseReserveInfo() {
+      this.info_reserve = false;
+      this.apartment_preview = {};
+      this.fetchApartments(this).then(() => {
+        location.reload();
+      });
+    },
+
+    ReserveInfo(apartment) {
+      this.info_reserve = true;
+      this.apartment_preview = apartment;
+      this.order_id = apartment.order.id;
+      this.fetchReserveClient(this).then(() => {
+        this.$root.$emit("bv::show::modal", "modal-view-reserved-client");
+      });
+    },
+
+    getInfoReserve(apartment) {
+      this.info_manager = true;
+      this.manager_apartment = apartment.order.user;
+    },
+
+    async orderHold(arr) {
+      this.loading = true;
+      await api.orders.holdOrder(arr).then((res) => {
+        this.loading = false;
+        if (res) {
+          // localStorage.setItem("order", JSON.stringify(res.data));
+          this.$router.push({
+            name: "confirm-apartment",
+            params: {id: res.data.uuid},
+          })
+          this.selected.view = false;
+          this.selected.values = [];
+          this.selectable = true;
+        }
+      });
+    },
+
+    goOrderHold(order_id) {
+      this.selected.view = false;
+      this.selected.values = [];
+      this.selectable = true;
+      this.$router.push({
+        name: "confirm-apartment",
+        params: {id: order_id[0]},
+      })
+    },
+
+    async toggleApartmentToSale(item) {
+      const id = this.$route.params.objectId
+      const apartmentUID = item.id
+      await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
+        const updatingIndex = this.apartments.findIndex((apartment) => apartment.id === response.data.id)
+        if (updatingIndex !== -1) {
+          this.apartments.splice(updatingIndex, 1, response.data)
+        }
+      })
+    },
+
+    statusHold(data) {
+      return data.item.order.status === 'hold'
+    },
+
+    allowViewWhenProcessing(data) {
+      const status = data.item.order.status
+      const userId = data.item.order?.user_id
+
+      const permissionApartment = this.getPermission.apartments
+      const sameUserId = userId === this.getMe.user.id
+
+      const unnecessaryStatus = ['sold', 'contract']
+      const notSolidOrContract = !unnecessaryStatus.includes(status)
+
+      const firstOption = notSolidOrContract && status === 'booked' && sameUserId && permissionApartment.contract
+      const secondOption = !notSolidOrContract && permissionApartment && permissionApartment.root_contract
+      const thirdOption = notSolidOrContract && status === 'available' && permissionApartment.contract
+
+      return (firstOption || secondOption || thirdOption) && status === 'hold'
+    },
+
+    clientsView(data) {
+      const firstOption = data.item.order.status === 'booked' && data.item.order.user.id === this.getMe.user.id
+      const secondOption = (this.getPermission.apartments && this.getPermission.apartments.root_contract && data.item.order.status === 'booked')
+      return firstOption || secondOption
+    },
+
+    async filteredForm(event) {
+      this.filter = event;
+      this.selected.view = false;
+      this.selected.values = [];
+      this.selectable = true;
+      this.scrollActive = true;
+      this.page = 1;
+      this.filter.page = 1;
+      this.currentPage = this.filter.page;
+
+      await this.$router.push({
+        name: "apartments",
+        query: this.filter,
+      });
+
+      const vm = this;
+      await this.fetchApartments(vm)
+    },
+
+
   },
 
 };
@@ -398,15 +736,21 @@ export default {
     thead tr th {
       font-family: CraftworkSans, serif;
       font-weight: 900;
-      font-size: 14px;
+      font-size: 12px;
       line-height: 14px;
       letter-spacing: 1px;
+      text-transform: uppercase;
       color: var(--gray-400) !important;
       padding: 1.125rem 1rem;
       vertical-align: middle;
     }
 
     td {
+      font-family: Inter, sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--gray-600);
       vertical-align: middle;
     }
   }
@@ -474,5 +818,11 @@ export default {
   background-image: url("../../assets/icons/icon-arrow-up.svg") !important;
 }
 
+.apartments__lock {
+  position: absolute;
+  left: 0;
+  top: 25%;
+  transform: translateY(-30%);
+}
 
 </style>

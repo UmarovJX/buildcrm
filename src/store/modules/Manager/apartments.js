@@ -12,6 +12,7 @@ export default {
     },
     mutations: {
         updateSpecificApartment(state, {updatingApartment, status}) {
+            console.log({updatingApartment, status}, 'state');
             if (status === 'unavailable') {
                 state.apartments.items.splice(updatingIndex, 1)
                 return
