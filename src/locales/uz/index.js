@@ -383,9 +383,11 @@ export default {
         first_name: "Direktorning ismi",
         last_name: "Direktorning familiyasi",
         second_name: "Direktorning sharifi",
-
         type_enter: "Turini tanlang",
         branch_enter: "Kompaniyani tanlang",
+        address: 'Kompaniya manzili',
+        code: "To'lovchining ro'yxatga olish kodi",
+        oked: 'Oked',
     },
 
     apartments: {

@@ -14,7 +14,7 @@
         :empty-text="$t('no_data')"
     >
       <template #cell(name)="data">
-        {{ getName(data.item.type.name) }} «{{ data.item.name }}»
+        {{ getName(data.item.type) }} «{{ data.item.name }}»
       </template>
 
 
@@ -67,11 +67,13 @@
       <!--  ROW DETAILS    -->
       <template #row-details="data">
         <div class="payment__content">
-            <PaymentBoxContent
-                v-for="detail in data.item.details"
-                :key="detail.created_at"
-                :detail="detail"
-            />
+          <PaymentBoxContent
+              v-for="detail in data.item.details"
+              :key="detail.created_at"
+              :detail="detail"
+              :company="data.item"
+              @updated-company="updatedCompany"
+          />
         </div>
       </template>
     </b-table>
@@ -81,9 +83,10 @@
 <script>
 import {mapGetters} from "vuex";
 import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
+
 export default {
   name: "CompaniesList",
-  components:{
+  components: {
     PaymentBoxContent
   },
   props: {
@@ -161,12 +164,15 @@ export default {
     editSelectedCompany(item) {
       this.$emit('edit-selected-company', item)
     },
-    deleteCompany() {
-      // this.$emit('delete-company',id)
+    deleteCompany(id) {
+      this.$emit('delete-company', id)
     },
     makePrimaryPayment(detail) {
       console.log(detail.is_primary)
-    }
+    },
+    updatedCompany({message}) {
+      this.$emit("updated-company", {message})
+    },
   }
 }
 </script>

@@ -393,6 +393,9 @@ export default {
         second_name: "Отчество директора",
         type_enter: "Выберите тип",
         branch_enter: "Выберите компанию",
+        address: 'Адрес компании',
+        code: 'Регистрационный код плательщика',
+        oked: 'Окед',
     },
 
     apartments: {

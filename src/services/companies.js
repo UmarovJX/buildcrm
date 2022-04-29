@@ -22,6 +22,10 @@ class Companies extends Core {
         return this.put(`companies/${company.id}`, company)
     }
 
+    changeStatusCompany(company, detailId, data) {
+        return this.post(`companies/${company.id}/payment-details/${detailId}`, data)
+    }
+
     deleteCompany(id) {
         return this.delete(`companies/${id}`)
     }
