@@ -23,7 +23,15 @@ class Companies extends Core {
     }
 
     changeStatusCompany(company, detailId, data) {
-        return this.post(`companies/${company.id}/payment-details/${detailId}`, data)
+        return this.post(`companies/${company}/payment-details/${detailId}`, data)
+    }
+
+    getPaymentsList(companyId) {
+        return this.get(`companies/${companyId}/payment-details`)
+    }
+
+    addPayment(companyId, form) {
+        return this.post(`companies/${companyId}/payment-details`, form)
     }
 
     deleteCompany(id) {

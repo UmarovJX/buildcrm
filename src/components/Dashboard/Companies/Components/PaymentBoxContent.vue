@@ -11,10 +11,10 @@
       <span>{{ $t("companies.payment_account") }} : </span>
       <span>{{ detail.payment_account }}</span>
     </p>
-    <p>
-      <span>{{ $t("companies.inn") }} : </span>
-      <span>{{ detail.inn }}</span>
-    </p>
+    <!--    <p>-->
+    <!--      <span>{{ $t("companies.inn") }} : </span>-->
+    <!--      <span>{{ detail.inn }}</span>-->
+    <!--    </p>-->
     <p>
       <span>{{ $t("companies.mfo") }} : </span>
       <span>{{ detail.mfo }}</span>
@@ -30,6 +30,7 @@
         </b-form-checkbox>
       </span>
     </div>
+
   </div>
 </template>
 
@@ -44,7 +45,7 @@ export default {
       required: true
     },
     company: {
-      type: Object,
+      type: [Number, String],
       required: true
     }
   },
@@ -98,6 +99,8 @@ export default {
   border: 1px solid var(--border-color);
   padding: 0.5rem;
   font-size: 14px;
+  width: 100%;
+  max-width: 22rem;
 }
 
 .active__payment__content {

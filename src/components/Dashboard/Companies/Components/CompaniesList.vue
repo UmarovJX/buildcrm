@@ -33,11 +33,9 @@
             </button>
 
             <div class="dropdown-menu">
-              <b-button
-                  class="dropdown-item dropdown-item--inside"
-                  v-b-toggle="data.item.type.created_at"
-                  @click="data.toggleDetails"
-              >
+              <b-button class="dropdown-item dropdown-item--inside"
+                        @click="openDetails(data.item)">
+
                 <i class="fas fa-info-circle"></i>
                 {{ $t("more_info") }}
               </b-button>
@@ -155,6 +153,9 @@ export default {
     })
   },
   methods: {
+    openDetails(data) {
+      this.$router.push({name: 'company-details', params: {companyId: data.id}})
+    },
     getName(name) {
       if (localStorage.locale)
         return name[localStorage.locale]

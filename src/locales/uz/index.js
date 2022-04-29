@@ -61,6 +61,7 @@ export default {
     full: "To'liqligicha",
     monthly: "Oylik",
     month: 'Oy',
+    more_info: "Batafsil ma'lumot",
     payment_type: "To'lov sharti",
     created_at: "Yaratilgan vaqti",
     reservation: 'Band qilish',
@@ -388,6 +389,10 @@ export default {
         address: 'Kompaniya manzili',
         code: "To'lovchining ro'yxatga olish kodi",
         oked: 'Oked',
+        addPayment: "Hisob qo'shish",
+        bank_name_uz: 'Название банка (Узб.)',
+        bank_name_ru: 'Название банка (Рус.)',
+        check_account: 'Расчетный счет',
     },
 
     apartments: {
@@ -668,7 +673,8 @@ export default {
         canceled_contract: "Shartnoma bekor qilindi",
         payment_success: "To'lov muvaffaqiyatli qabul qilindi",
         payment_success_added: "To'lov muvaffaqiyatli qo'shildi",
-
+        success_create_payment: "Hisob raqam qo'shildi",
+        success_update_payment: "Hisob raqam yangilandi",
         text_cancel_agree: "Rostdan ham bekor qilishni xoxlaysizmi?",
         text_agree: "Rostan ham shartnoma tuzishni hohlaysizmi?",
 
