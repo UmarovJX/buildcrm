@@ -239,7 +239,6 @@ export default {
       this.calForPrint = this.calc;
       this.$emit("getCalData", this.calForPrint);
     },
-
     async changeDiscount() {
       this.calc.prepay_percente = this.discount.prepay;
       this.calc.discount_price = 0;
@@ -256,18 +255,15 @@ export default {
         await this.initialCalc();
       }
     },
-
     async changeDiscount_price() {
       await this.initialCalc();
     },
-
     changeDiscount_month() {
       this.monthly_price = this.getMonth();
 
       this.calForPrint.monthly_price = this.monthly_price;
       this.$emit("getCalData", this.calForPrint);
     },
-
     getPrepay() {
       if (this.discount.prepay === 100) return 0;
 

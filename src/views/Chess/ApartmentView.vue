@@ -2,7 +2,7 @@
   <main>
     <div v-if="!appLoading" class="main__content">
       <!--  HEADER NAVIGATION  -->
-      <div class="navigation__content justify-content-between">
+      <div class="header-navigation d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
           <span class="go__back" @click="$router.go(-1)">
             <base-arrow-left :width="32" :height="32"></base-arrow-left>
@@ -22,23 +22,161 @@
           </span>
         </span>
         </div>
+
+        <div>
+          <span
+              class="apartment__status d-flex justify-content-center align-items-center"
+              :class="`status-${status}`"
+          >
+              {{ $t(`apartments.status.${status}`) }}
+            </span>
+        </div>
       </div>
 
       <div class="d-flex justify-content-between">
         <primary-information class="primary__information" :apartment="apartment"/>
-        <div class="calculator-content">
-          <h3 class="title">Выберите вариант оплаты</h3>
+        <div class="calculator w-100 d-flex flex-column justify-content-between">
           <div>
-            <base-select
-                :label="true"
-                :options="paymentOption"
-                v-model="selectedOption"
-                placeholder="Вариант оплаты"
-            ></base-select>
+            <h4 class="calculator-title color-gray-600 font-craftworksans">Выберите вариант оплаты</h4>
+            <div class="d-flex flex-wrap justify-content-between">
+              <!--    INPUTS      -->
+              <div class="w-100 inputs">
+
+                <!--    PAYMENT OPTIONS       -->
+                <div>
+                  <base-select
+                      :label="true"
+                      :options="paymentOption"
+                      :value="discount"
+                      @input="changeDiscount"
+                      placeholder="Вариант оплаты"
+                  ></base-select>
+                </div>
+
+                <!--     INPUT MONTHLY PAYMENT       -->
+                <div class="monthly">
+                  <div class="placeholder font-weight-600">Ежемесячный платеж</div>
+                  <div class="input d-flex justify-content-between">
+                    <input
+                        v-if="discount.amount > 0"
+                        v-model="calc.month"
+                        @input="changeDiscount_month"
+                        type="number"
+                        class="input-monthly-payment color-gray-600 w-100"
+                        :placeholder="$t('monthly_payment')"
+                    >
+                    <span v-else class="d-block">{{ $t('monthly_payment') }}</span>
+                    <div class="font-inter color-gray-600 font-weight-600">месяцев</div>
+                  </div>
+                  <div class="square-price font-inter color-gray-600 font-weight-600">
+                    По {{ pricePrettier(monthly_price) }} сум
+                  </div>
+                </div>
+
+                <!--     DISCOUNT PER M2       -->
+                <base-input
+                    class="discount-per-m2"
+                    type="number"
+                    :label="true"
+                    :currency="`${$t('ye')}`"
+                    placeholder="Скидка за м2"
+                    @trigger-input="changeDiscount_price"
+                />
+              </div>
+
+              <!--     OUTPUTS     -->
+              <div class="w-100 outputs font-inter">
+                <div v-if="discount.amount > 0" class="d-flex justify-content-between">
+                  <span class="property d-block color-gray-400">Начальная цена</span>
+                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.prepay) }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <span class="property d-block color-gray-400">
+                    {{ $t('apartments.view.prepayment') }} {{ calc.prepay_percente }}%
+                  </span>
+                  <span class="price d-block color-gray-600">99 050 000</span>
+                </div>
+
+                <div v-if="discount.amount > 0" class="d-flex justify-content-between">
+                  <span class="property d-block color-gray-400">{{ $t('contracts.view.remainder') }}</span>
+                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.debt) }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <span class="property d-block color-gray-400">{{  $t('apartments.view.price_for_m2') }}</span>
+                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.price_for_m2) }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
+                  <span class="price d-block color-violet-600 total-price">{{ pricePrettier(calc.total) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="align-self-stretch d-flex justify-content-end">
+            <!--   ACTIONS     -->
+            <div class="d-flex flex-wrap mt-4 pb-4">
+              <!--      CHECKOUT        -->
+              <base-button
+                  v-if="permission.order"
+                  @click="orderApartment"
+                  :text="`${ $t('apartments.list.confirm') }`"
+                  class="checkout__button bg-gradient-violet color-white mr-3 mb-4"
+              />
+
+              <!--      CONTINUE CHECKOUT        -->
+              <base-button
+                  v-if="permission.continueOrder"
+                  @click="continueApartmentOrder"
+                  :text="`${ $t('continue_registration') }`"
+                  class="checkout__button bg-gradient-violet color-white mr-3 mb-4"
+              />
+
+              <!--       MAKE A RESERVATION       -->
+              <base-button
+                  v-if="permission.reserve"
+                  @click="showReservationModal = true"
+                  :text="`${ $t('apartments.list.book') }`"
+                  class="checkout__button bg-gray-100 color-gray-600 mr-3 mb-4"
+                  v-b-modal.modal-reserve-create
+              />
+
+              <!-- CANCEL RESERVE -->
+              <base-button
+                  v-if="permission.cancelReserve"
+                  :text="`${ $t('apartments.list.cancel_reserve') }`"
+                  class="reserve__button mr-3 mb-4"
+                  @click="cancelReservation"
+              />
+
+              <button
+                  @click="printApartmentInformation"
+                  class="print__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
+              >
+                <base-print-icon :square="20" fill="#4B5563"/>
+              </button>
+
+              <button
+                  @click="hideApartmentSidebar"
+                  class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
+              >
+                <base-minus-circle-icon :square="20" fill="#4B5563"/>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!--  MAKE A RESERVATION MODAL    -->
+    <reserve
+        v-if="showReservationModal"
+        :apartment="apartment.id"
+        @CreateReserve="updateContent"
+    />
 
     <!--  LOADING    -->
     <base-loading v-if="appLoading"/>
@@ -51,30 +189,73 @@ import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
+import BaseButton from "@/components/Reusable/BaseButton";
 import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInformation";
+import BasePrintIcon from "@/components/icons/BasePrintIcon";
+import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
+import BaseInput from "@/components/Reusable/BaseInput";
+import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
+import {formatToPrice} from "@/util/reusable";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ApartmentView",
 
   components: {
+    BaseInput,
     BaseSelect,
     BaseLoading,
     BaseArrowLeft,
     BaseArrowRight,
-    PrimaryInformation
+    BasePrintIcon,
+    PrimaryInformation,
+    BaseMinusCircleIcon,
+    Reserve,
+    BaseButton
   },
 
   data() {
     return {
-      appLoading: false,
       selectedOption: null,
-      apartment: []
+      monthlyPayment: null,
+      discountPerM2: null,
+      apartment: {},
+      discount: {
+        amount: 0
+      },
+      calc: {
+        amount: 0,
+        price_for_m2: 0,
+        discount_price: 0,
+        monthly_price: 0,
+        prepay: 0,
+        debt: 0,
+        total: 0
+      },
+      monthly_price: 0,
+      calForPrint: {},
+      appLoading: false,
+      showReservationModal: false,
     }
   },
 
   computed: {
+    ...mapGetters({
+      me: "getMe",
+      userPermission: "getPermission",
+      reserveClient: "getReserveClient",
+    }),
     hasApartment() {
       return Object.keys(this.apartment).length > 0
+    },
+    getApartmentDiscounts() {
+      const hasDiscount = this.hasApartment && this.apartment.hasOwnProperty('discounts')
+      if (!hasDiscount) return []
+      const discounts = [...this.apartment.discounts]
+      return discounts.sort((a, b) => a.prepay - b.prepay)
+    },
+    status() {
+      return this.apartment.order.status
     },
     paymentOption() {
       const discounts = [...this.apartment.discounts]
@@ -89,14 +270,62 @@ export default {
               value: discount
             }
           })
+    },
+    permission() {
+      const context = {
+        cancelReserve: false,
+        reserve: false,
+        continueOrder: false,
+        order: false
+      }
+
+      if (!this.hasApartment) return context
+
+      const {apartment, me, userPermission} = this
+      const {order} = apartment
+      const {apartments} = userPermission
+
+      const forSale = apartment['is_sold']
+      const authorityUser = order?.user?.id === me?.user?.id
+      const rootContract = userPermission?.apartments?.root_contract
+      const isMainRole = me?.role?.id === 1
+      const isStatusBooked = order.status === 'booked'
+      const isStatusAvailable = order.status === 'available'
+      const isStatusHold = order.status === 'hold'
+
+      const permissionCancelReserve = isStatusBooked && (authorityUser || rootContract || isMainRole)
+      const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
+
+      const permissionOrder = () => {
+        const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
+        return forSale && permissionOne
+      }
+
+      const permissionContinueOrder = () => {
+        const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || apartments.contract)
+        const permissionTwo = isStatusBooked && authorityUser && apartments.contract
+        return permissionOne || permissionTwo
+      }
+
+      const effectContext = (property) => {
+        context[property] = true
+      }
+
+      permissionCancelReserve && effectContext('cancelReserve')
+      permissionReserve && effectContext('reserve')
+      permissionOrder() && effectContext('order')
+      permissionContinueOrder() && effectContext('continueOrder')
+      return context
     }
   },
 
   async created() {
     await this.fetchApartmentView()
+    await this.initialCalc()
   },
 
   methods: {
+    pricePrettier: (price) => formatToPrice(price),
     async fetchApartmentView() {
       this.appLoading = true
       const {object, id} = this.$route.params
@@ -109,11 +338,248 @@ export default {
             this.appLoading = false
           })
     },
+
+    hideApartmentSidebar() {
+      this.$emit('hide-apartment-sidebar-view')
+    },
+
+    printApartmentInformation() {
+      window.print()
+    },
+
+    async orderApartment() {
+      this.appLoading = true
+      const apartments = [this.apartment.id]
+      await api.orders.holdOrder(apartments)
+          .then((response) => {
+            if (response?.data) {
+              this.$router.push({
+                name: "confirm-apartment",
+                params: {id: response.data.id}
+              })
+            }
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.appLoading = false
+          })
+    },
+
+    continueApartmentOrder() {
+      this.$router.push({
+        name: "confirm-apartment",
+        params: {
+          id: this.apartment.order.id
+        },
+      })
+    },
+
+    updateContent() {
+      this.$emit('update-content')
+    },
+
+    async cancelReservation() {
+      this.appLoading = true
+      await api.orders.fetchOrderClient(this.apartment.order.id)
+          .then((response) => {
+            const client = response.data
+            this.$swal({
+              title: this.$t("sweetAlert.title"),
+              text: this.$t("sweetAlert.text_cancel_reserve"),
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
+            }).then((result) => {
+              if (result.value) {
+                this.appLoading = true
+                api.orders.deactivateReserveOrders(client.id)
+                    .then((response) => {
+                      this.toasted(response.data.message, "success")
+
+                      this.$nextTick(() => {
+                        this.$bvModal.hide("modal-view-reserved-client")
+                      })
+
+                      this.hideApartmentSidebar()
+                      this.updateContent()
+
+                      this.$swal(this.$t("sweetAlert.canceled_reserve"), "", "success");
+                    })
+                    .catch((error) => {
+                      this.toastedWithErrorCode(error)
+                    })
+                    .finally(() => {
+                      this.appLoading = false
+                    })
+              }
+            })
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.appLoading = false
+          })
+    },
+
+    async initialCalc() {
+      this.discount = this.getApartmentDiscounts ? this.getApartmentDiscounts[0] : {amount: 0}
+      if (this.discount.type === "percent") {
+        if (this.discount.prepay === 100) {
+          this.calc.price_for_m2 = this.apartment.price_m2;
+        } else {
+          this.calc.price_for_m2 =
+              this.getTotalForPercente() / this.apartment.plan.area;
+        }
+      } else {
+        this.calc.price_for_m2 = this.discount.amount;
+      }
+      this.calc.prepay_percente = this.discount.prepay;
+      this.calc.prepay = this.getPrepay();
+      this.calc.month = this.apartment?.object?.credit_month;
+      this.calc.monthly_price = this.getMonth();
+      this.monthly_price = this.calc.monthly_price;
+      this.calc.debt = this.getDebt();
+      this.calc.total = this.getTotal();
+
+      this.calForPrint = this.calc;
+      this.$emit("getCalData", this.calForPrint);
+    },
+
+    async changeDiscount(discount) {
+      this.discount = discount
+      this.calc.prepay_percente = this.discount.prepay;
+      this.calc.discount_price = 0;
+      if (this.discount.type === "fixed" || this.discount.type === "promo") {
+        await this.initialCalc();
+      } else if (this.discount.prepay === 100) {
+        this.calc.total = this.apartment.price;
+        this.calc.prepay = this.apartment.price;
+        this.calc.price_for_m2 = this.apartment.price_m2;
+
+        this.calForPrint = this.calc;
+        this.$emit("getCalData", this.calForPrint);
+      } else {
+        await this.initialCalc();
+      }
+    },
+    async changeDiscount_price(discountPrice) {
+      this.calc.discount_price = discountPrice
+      await this.initialCalc()
+    },
+    changeDiscount_month() {
+      this.monthly_price = this.getMonth()
+      this.calForPrint.monthly_price = this.monthly_price
+    },
+    getPrepay() {
+      if (this.discount.prepay === 100) return 0;
+
+      let total_discount = this.getDiscount();
+
+      let total = 0;
+
+      switch (this.discount.type) {
+        case "promo":
+        case "fixed":
+          if (this.calc.discount_price) {
+            total =
+                (this.discount.amount - parseFloat(this.calc.discount_price)) *
+                this.apartment.plan.area;
+          } else {
+            total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
+          }
+          break;
+        default:
+          total = this.getTotalForPercente() / total_discount;
+
+          break;
+      }
+
+      return (this.discount.prepay * total) / 100;
+    },
+    getDiscount() {
+      if (this.discount.prepay === 100) return 1;
+
+      return 1 - this.discount.prepay / 100
+
+      /*return 1 - this.discount.amount / 100;*/
+    },
+    getMonth() {
+      if (this.calc.month) {
+        return (this.getTotal() - this.getPrepay()) / this.calc.month;
+      }
+      return 0
+    },
+    getDebt() {
+      return this.getTotal() - this.getPrepay();
+    },
+    getTotal() {
+      let total_discount = this.getDiscount();
+      let total = 0;
+
+      switch (this.discount.type) {
+        case 'promo':
+        case "fixed":
+          if (this.calc.discount_price) {
+            total =
+                (this.discount.amount - parseFloat(this.calc.discount_price)) *
+                this.apartment.plan.area;
+          } else {
+            total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
+          }
+          break;
+        default:
+          total = this.apartment.price / total_discount;
+          if (this.calc.discount_price) {
+            total -=
+                parseFloat(this.calc.discount_price) * this.apartment.plan.area;
+          }
+          break;
+      }
+
+      return total;
+    },
+    getTotalForPercente() {
+      let total_discount = this.getDiscount();
+      let total = 0;
+
+      switch (this.discount.type) {
+        case "fixed":
+          if (this.calc.discount_price) {
+            total =
+                (this.discount.amount - parseFloat(this.calc.discount_price)) *
+                this.apartment.plan.area;
+          } else {
+            total = this.discount.amount * this.apartment.plan.area;
+          }
+          break;
+        default:
+          total = this.apartment.price / total_discount;
+          break;
+      }
+
+      return total;
+    },
   }
 }
 </script>
 
 <style lang="sass" scoped>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button
+  -webkit-appearance: none
+  margin: 0
+
+/* Firefox */
+input[type="number"]
+  -moz-appearance: textfield
+
+.header-navigation
+  margin-right: 4.25rem
+
 .main__content
   padding-left: 1rem
   padding-right: 1rem
@@ -150,4 +616,106 @@ export default {
 .primary__information
   width: 42rem
 
+.calculator
+  margin-top: 3.5rem
+  margin-left: 2.25rem
+  margin-right: 1.5rem
+
+  &-title
+    font-size: 1.5rem
+    margin-bottom: 1.5rem
+
+  .inputs
+    margin-right: 2.25rem
+    margin-bottom: 2.5rem
+
+  .outputs
+    margin-right: 2.25rem
+
+    & > div
+      margin-bottom: 2rem
+      font-size: 18px
+      font-weight: 600
+
+      .total-price
+        font-size: 24px
+
+.monthly
+  background-color: var(--gray-100)
+  border-radius: 1rem
+  margin-top: 1.5rem
+
+  .placeholder
+    letter-spacing: 1px
+    color: var(--gray-400)
+    text-transform: uppercase
+    line-height: 10px
+    font-size: 0.6rem
+    margin-bottom: 0.25rem
+    padding-top: 0.75rem
+    padding-left: 1.5rem
+
+  .input
+    padding: 0.25rem 1.25rem 0.75rem 0
+    margin-left: 1.5rem
+
+    &::placeholder
+      padding: 0
+
+    &-monthly-payment
+      border: none
+      background-color: transparent
+
+  .square-price
+    padding: 0.75rem 1.25rem
+    background-color: var(--gray-200)
+    border-top: 2px solid var(--gray-300)
+    border-bottom-right-radius: 1rem
+    border-bottom-left-radius: 1rem
+
+.discount-per-m2
+  border-radius: 2rem
+  background-color: var(--gray-100)
+  margin-top: 1.5rem
+  width: 100%
+
+.checkout__button
+  padding: 1rem 3rem
+
+.print__button,
+.cancel__button,
+.view__button
+  outline: none
+  border: none
+  width: 3.5rem
+  height: 3.5rem
+  border-radius: 50%
+
+.apartment__status
+  font-family: Inter, sans-serif
+  background-color: var(--gray-100)
+  border-radius: 2rem
+  padding: 0.5rem 2rem
+
+.status
+  &-waiting
+    background-color: var(--yellow-100) !important
+    color: var(--yellow-600) !important
+
+  &-contract,
+  &-booked
+    background-color: var(--yellow-100) !important
+    color: var(--yellow-600) !important
+
+  &-cancelled
+    background-color: var(--pink-100) !important
+    color: var(--pink-600) !important
+
+  &-available
+    background-color: var(--teal-100) !important
+    color: var(--teal-600) !important
+
+  &-sold
+    background-color: var(--light-blue-100) !important
+    color: var(--light-blue-600) !important
 </style>

@@ -1,7 +1,20 @@
 <template>
   <div class="base-input" :class="error ? 'error' : ''">
-    <span v-if="searchInput && label" class="input-label">{{ placeholder }}</span>
+    <span v-if="debounceInput && label" class="input-label">{{ placeholder }}</span>
+    <base-numeric-input
+        v-if=" type === 'number' "
+        :currency="currency"
+        :minus="false"
+        :value="null"
+        currency-symbol-position="suffix"
+        separator="space"
+        :placeholder="placeholder"
+        id="base-input"
+        ref="base-input"
+        @input="triggerNumberEvent"
+    />
     <input
+        v-else
         v-model="searchInput"
         :type="type"
         id="base-input"
@@ -19,7 +32,6 @@
   </div>
 </template>
 
-
 <script>
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import {debounce} from "@/util/reusable";
@@ -28,6 +40,7 @@ export default {
   name: "BaseInput",
   components: {
     BaseTimesCircleIcon,
+    BaseNumericInput: () => import('@/components/Reusable/BaseNumericInput')
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   props: {
@@ -48,6 +61,10 @@ export default {
     error: {
       type: Boolean,
       default: () => false
+    },
+    currency: {
+      type: String,
+      default: ' '
     }
   },
   data() {
@@ -95,6 +112,10 @@ export default {
     triggerInputEvent() {
       this.$emit('trigger-input', this.debounceInput)
     },
+    triggerNumberEvent($event) {
+      this.debounceInput = $event
+      this.$emit('trigger-input', $event)
+    }
   }
 }
 </script>

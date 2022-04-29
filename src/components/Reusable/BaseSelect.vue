@@ -30,7 +30,7 @@ export default {
       required: true
     },
     value: {
-      type: [String, Number],
+      type: [String, Number, Object],
     },
     placeholder: {
       type: String,
@@ -45,36 +45,41 @@ export default {
       default: () => false
     }
   },
-  emits: ['change'],
-  // data() {
-  //   return {
-  //     select: null
-  //   }
-  // },
-  computed: {
-    select: {
-      get() {
-        return this.value
-      },
-      set(val) {
-        this.$emit('input', val)
-      }
+  emits: ['change', 'select', 'input'],
+
+  data() {
+    return {
+      select: null,
+      initialValue: null
     }
   },
-  // watch: {
-  //   select() {
-  //     this.triggerEvent()
-  //   }
-  // },
-  // methods: {
-  //   triggerEvent() {
-  //     this.$emit('change', this.select)
-  //   }
-  // }
 
-  methods:{
-    consoleL(){
-      console.log('komnsdksj')
+  mounted() {
+    this.initDefaultValue()
+  },
+
+  watch: {
+    select() {
+      this.triggerEvent()
+    }
+  },
+
+  methods: {
+    initDefaultValue() {
+      // const typeOfValue = typeof this.value
+      // if (typeOfValue === 'string' && typeOfValue === 'number') {
+      //   this.select = this.value
+      // } else if (typeOfValue === 'object' && Object.keys(this.value).length) {
+      //   this.select = this.options[0]
+      //   this.initialValue = this.options[0]
+      // }
+      //
+      // this.triggerEvent()
+    },
+    triggerEvent() {
+      this.$emit('input', this.select)
+      this.$emit('select', this.select)
+      this.$emit('change', this.select)
     }
   }
 }
@@ -96,8 +101,8 @@ export default {
   //background-position: top -10px right 0.75rem
   transition: background .3s ease-in-out
 
-  //&:focus
-  //  background: #fff url('../../assets/icons/icon-up.svg') right 0 bottom 6.5px no-repeat
+//&:focus
+//  background: #fff url('../../assets/icons/icon-up.svg') right 0 bottom 6.5px no-repeat
 
 
 .filter__inputs
@@ -115,7 +120,6 @@ export default {
     border-radius: 2rem
     padding: 6px 1.25rem
     width: 100%
-    min-width: 4rem;
     //border: none
     border: .25rem solid transparent
     color: var(--gray-600)

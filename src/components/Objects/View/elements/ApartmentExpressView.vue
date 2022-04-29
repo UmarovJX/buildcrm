@@ -136,8 +136,6 @@ import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
 import VueHtml2pdf from 'vue-html2pdf'
 import {formatToPrice} from "@/util/reusable";
-import {directive} from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
 import {mapGetters} from "vuex";
 import api from "@/services/api";
 
@@ -155,11 +153,6 @@ export default {
     Reserve,
     VueHtml2pdf,
     BaseEyeIcon
-  },
-
-  /* DIRECTIVES */
-  directives: {
-    swiper: directive,
   },
 
   /* PROPS */

@@ -478,7 +478,7 @@ export default {
             object: "Объект", // asd
             address: "Адрес", // asd
             completion_date: "Дата завершения строительства", // asd
-            price_for_m2: "Цена продажы за м2:", // asd
+            price_for_m2: "Цена продажы за м2", // asd
             discount_per_m2: "Скидка за м2:", // asd
             prepayment: "Предоплата", // asd
             total: "Итого", // asd
