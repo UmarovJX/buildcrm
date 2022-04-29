@@ -63,30 +63,30 @@
       </template>
 
       <!--  ROW DETAILS    -->
-      <template #row-details="data">
-        <div class="payment__content">
-          <PaymentBoxContent
-              v-for="detail in data.item.details"
-              :key="detail.created_at"
-              :detail="detail"
-              :company="data.item"
-              @updated-company="updatedCompany"
-          />
-        </div>
-      </template>
+<!--      <template #row-details="data">-->
+<!--        <div class="payment__content">-->
+<!--          <PaymentBoxContent-->
+<!--              v-for="detail in data.item.details"-->
+<!--              :key="detail.created_at"-->
+<!--              :detail="detail"-->
+<!--              :company="data.item"-->
+<!--              @updated-company="updatedCompany"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </template>-->
     </b-table>
   </div>
 </template>
 
 <script>
 import {mapGetters} from "vuex";
-import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
+// import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
 
 export default {
   name: "CompaniesList",
-  components: {
-    PaymentBoxContent
-  },
+  // components: {
+  //   PaymentBoxContent
+  // },
   props: {
     companies: {
       type: Array,
