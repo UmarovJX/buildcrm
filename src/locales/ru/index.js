@@ -393,6 +393,13 @@ export default {
         second_name: "Отчество директора",
         type_enter: "Выберите тип",
         branch_enter: "Выберите компанию",
+        address: 'Адрес компании',
+        code: 'Регистрационный код плательщика',
+        oked: 'Окед',
+        addPayment: 'Добавить счет',
+        bank_name_uz: 'Название банка (Узб.)',
+        bank_name_ru: 'Название банка (Рус.)',
+        check_account: 'Расчетный счет',
     },
 
     apartments: {
@@ -688,6 +695,8 @@ export default {
         canceled_reserve: "Бронь отменена",
         success_create_role: "Роль успешно создана",
         success_create_company: "Компания успешно создано",
+        success_create_payment: "Счет успешно создана",
+        success_update_payment: "Счет успешно редактировано",
         success_update_company: "Компания успешно редактировано",
         success_update_role: "Роль успешно редактирована",
         are_you_sure_delete_role:
