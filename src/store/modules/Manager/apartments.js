@@ -12,7 +12,6 @@ export default {
     },
     mutations: {
         updateSpecificApartment(state, {updatingApartment, status}) {
-            console.log({updatingApartment, status}, 'state');
             if (status === 'unavailable') {
                 state.apartments.items.splice(updatingIndex, 1)
                 return
@@ -30,7 +29,6 @@ export default {
             } else {
                 state.apartments = apartments;
             }
-            console.log(apartments, '📷📹');
         },
 
         updateFilter(state, filter) {
@@ -77,9 +75,7 @@ export default {
 
             try {
                 const object = router.currentRoute.params.object
-                console.log(router.currentRoute.params);
                 let {data} = await api.objects.fetchObjectApartments(object, router.currentRoute.query)
-                console.log(data, '🤨🤨');
                 ctx.commit("updateApartment", data)
             } catch (error) {
                 vm.toastedWithErrorCode(error);

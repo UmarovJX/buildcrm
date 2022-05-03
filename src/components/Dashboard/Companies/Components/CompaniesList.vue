@@ -14,7 +14,7 @@
         :empty-text="$t('no_data')"
     >
       <template #cell(name)="data">
-        {{ getName(data.item.type.name) }} «{{ data.item.name }}»
+        {{ getName(data.item.type) }} «{{ data.item.name }}»
       </template>
 
 
@@ -33,11 +33,9 @@
             </button>
 
             <div class="dropdown-menu">
-              <b-button
-                  class="dropdown-item dropdown-item--inside"
-                  v-b-toggle="data.item.type.created_at"
-                  @click="data.toggleDetails"
-              >
+              <b-button class="dropdown-item dropdown-item--inside"
+                        @click="openDetails(data.item)">
+
                 <i class="fas fa-info-circle"></i>
                 {{ $t("more_info") }}
               </b-button>
@@ -65,27 +63,30 @@
       </template>
 
       <!--  ROW DETAILS    -->
-      <template #row-details="data">
-        <div class="payment__content">
-            <PaymentBoxContent
-                v-for="detail in data.item.details"
-                :key="detail.created_at"
-                :detail="detail"
-            />
-        </div>
-      </template>
+<!--      <template #row-details="data">-->
+<!--        <div class="payment__content">-->
+<!--          <PaymentBoxContent-->
+<!--              v-for="detail in data.item.details"-->
+<!--              :key="detail.created_at"-->
+<!--              :detail="detail"-->
+<!--              :company="data.item"-->
+<!--              @updated-company="updatedCompany"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </template>-->
     </b-table>
   </div>
 </template>
 
 <script>
 import {mapGetters} from "vuex";
-import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
+// import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
+
 export default {
   name: "CompaniesList",
-  components:{
-    PaymentBoxContent
-  },
+  // components: {
+  //   PaymentBoxContent
+  // },
   props: {
     companies: {
       type: Array,
@@ -152,6 +153,9 @@ export default {
     })
   },
   methods: {
+    openDetails(data) {
+      this.$router.push({name: 'company-details', params: {companyId: data.id}})
+    },
     getName(name) {
       if (localStorage.locale)
         return name[localStorage.locale]
@@ -161,12 +165,15 @@ export default {
     editSelectedCompany(item) {
       this.$emit('edit-selected-company', item)
     },
-    deleteCompany() {
-      // this.$emit('delete-company',id)
+    deleteCompany(id) {
+      this.$emit('delete-company', id)
     },
     makePrimaryPayment(detail) {
       console.log(detail.is_primary)
-    }
+    },
+    updatedCompany({message}) {
+      this.$emit("updated-company", {message})
+    },
   }
 }
 </script>

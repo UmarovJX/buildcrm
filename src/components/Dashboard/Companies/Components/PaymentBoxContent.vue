@@ -11,10 +11,10 @@
       <span>{{ $t("companies.payment_account") }} : </span>
       <span>{{ detail.payment_account }}</span>
     </p>
-    <p>
-      <span>{{ $t("companies.inn") }} : </span>
-      <span>{{ detail.inn }}</span>
-    </p>
+    <!--    <p>-->
+    <!--      <span>{{ $t("companies.inn") }} : </span>-->
+    <!--      <span>{{ detail.inn }}</span>-->
+    <!--    </p>-->
     <p>
       <span>{{ $t("companies.mfo") }} : </span>
       <span>{{ detail.mfo }}</span>
@@ -30,29 +30,58 @@
         </b-form-checkbox>
       </span>
     </div>
+
   </div>
 </template>
 
 <script>
+import api from "@/services/api";
+
 export default {
   name: "PaymentBoxContent",
   props: {
     detail: {
       type: Object,
       required: true
+    },
+    company: {
+      type: [Number, String],
+      required: true
     }
   },
   data() {
     return {
-      isPrimary: 0
+      isPrimary: this.checker(this.detail.is_primary)
     }
   },
-  mounted(){
-    this.isPrimary = this.detail.is_primary
+  watch: {
+    isPrimary() {
+      this.makePrimaryPayment()
+    }
   },
   methods: {
+    checker(data) {
+      if (data === 1) {
+        return true
+      } else {
+        return false
+      }
+    },
     makePrimaryPayment() {
-      this.detail.is_primary = !this.detail.is_primary
+      const data = {
+        is_primary: this.isPrimary
+      }
+      api.companies.changeStatusCompany(this.company, this.detail.id, data)
+          .then((response) => {
+            const {message} = response.data
+            this.$emit("updated-company", {message})
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.loading = false
+          })
     },
     getName(name) {
       if (localStorage.locale)
@@ -70,6 +99,8 @@ export default {
   border: 1px solid var(--border-color);
   padding: 0.5rem;
   font-size: 14px;
+  width: 100%;
+  max-width: 22rem;
 }
 
 .active__payment__content {

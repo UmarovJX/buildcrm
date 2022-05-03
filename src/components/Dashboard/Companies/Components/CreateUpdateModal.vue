@@ -43,14 +43,14 @@
           </ValidationProvider>
 
           <ValidationProvider
-              v-for="{label,labelFor,bind,mask,rules} in providerSchema"
+              v-for="{label,labelFor,bind,mask,rules, type} in providerSchema"
               :key="label + labelFor"
               :name="label"
               :rules="rules"
               v-slot="{ errors }"
           >
             <b-form-group class="mb-2" :label="label" :label-for="labelFor">
-              <b-form-input :id="labelFor" v-mask="mask" v-model="company[bind]"/>
+              <b-form-input :type="type" :id="labelFor" v-mask="mask" v-model="company[bind]"/>
             </b-form-group>
             <span class="error__provider" v-if="errors[0]">
               {{ errors[0] }}
@@ -109,6 +109,9 @@ export default {
         phone: null,
         other_phone: null,
         type_id: 0,
+        address: null,
+        code: null,
+        oked: null,
       },
       providerSchema: [
         {
@@ -150,6 +153,30 @@ export default {
           labelFor: 'second_name',
           rules: 'required|min:2',
           label: this.$t('companies.second_name')
+        },
+        {
+          mask: '',
+          type: 'text',
+          bind: 'address',
+          labelFor: 'address',
+          rules: 'required|min:2',
+          label: this.$t('companies.address')
+        },
+        {
+          mask: '',
+          type: 'number',
+          bind: 'code',
+          labelFor: 'code',
+          rules: 'required|min:2',
+          label: this.$t('companies.code')
+        },
+        {
+          mask: '',
+          type: 'text',
+          bind: 'oked',
+          labelFor: 'oked',
+          rules: 'required|min:2',
+          label: this.$t('companies.oked')
         },
         {
           mask: '############',
@@ -219,7 +246,10 @@ export default {
         last_name: null,
         second_name: null,
         other_phone: null,
-        first_name: null
+        first_name: null,
+        address: null,
+        code: 0,
+        oked: null
       }
 
       this.$bvModal.hide("modal-create")

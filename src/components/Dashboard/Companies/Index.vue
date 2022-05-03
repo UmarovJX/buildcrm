@@ -15,6 +15,7 @@
         :companies="companies"
         @delete-company="deleteCompany"
         @edit-selected-company="openEditingModal"
+        @updated-company="updatedCompany"
     />
     <create-update-modal
         @updated-company="updatedCompany"
@@ -102,7 +103,7 @@ export default {
 
     addNewCompany() {
       this.modalProperties = {
-        title: this.$t('add'),
+        title: this.$t('companies.addPayment'),
         position: 'create'
       }
       this.$bvModal.show('modal-create')
@@ -130,17 +131,11 @@ export default {
       })
     },
 
-    async deleteCompany(id){
+    async deleteCompany(id) {
       await api.companies.deleteCompany(id)
           .then((response) => {
             const {message} = response.data
-            this.$swal({
-              title: this.$t("sweetAlert.deleted"),
-              text: message,
-              icon: "success",
-              showCancelButton: false,
-              confirmButtonText: this.$t("next"),
-            })
+            this.updatedCompany({message})
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
