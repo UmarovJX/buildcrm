@@ -6,7 +6,7 @@ export default {
             ctx.commit("updateLoading", true, {root: true});
 
             try {
-                const response = await api.objectsV2.fetchObjectPlans(vm.$route.params.id)
+                const response = await api.objects.fetchObjectPlans(vm.$route.params.id)
                 const plans = response.data;
 
                 ctx.commit("updatePlan", plans);

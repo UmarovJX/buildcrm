@@ -626,6 +626,7 @@ export default {
     cursor: pointer;
     background-color: var(--gray-100) !important;
     margin: 0 !important;
+    //width: 100%;
 
     &:hover {
       -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
@@ -712,7 +713,11 @@ export default {
     }
   }
 
-
+  //@media (max-width: 1200px) {
+  //  .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
+  //    width: auto;
+  //  }
+  //}
 }
 
 
