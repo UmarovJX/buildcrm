@@ -100,11 +100,11 @@
             <div class="card-content">
               <div class="card-block">
                 <p class="card-block__title">{{ object.apartments_count }} квартиры</p>
-                <p class="card-block__subtitle price">от 330,000,000 сум</p>
+                <p class="card-block__subtitle price">от {{ object.apartment_price }} сум</p>
               </div>
               <div class="card-block">
-                <p class="card-block__title">16 этажей</p>
-                <p class="card-block__subtitle">от 3,500,000 сум/м<sup>2</sup></p>
+                <p class="card-block__title">{{ object.floors_count }} этажей</p>
+                <p class="card-block__subtitle">от {{ object.apartment_price_m2 }} сум/м<sup>2</sup></p>
               </div>
             </div>
           </router-link>
