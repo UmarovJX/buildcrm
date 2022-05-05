@@ -535,7 +535,7 @@ export default {
       this.filter.order_by = val.sortDesc ? "desc" : "asc";
 
       this.$router.push({
-        name: "chess-table",
+        name: "chess",
         params: this.$route.params.objectId,
         query: this.filter,
       }).then(() => {
@@ -577,7 +577,7 @@ export default {
       this.edit = false;
 
       await this.$router.push({
-        name: "chess-table",
+        name: "chess",
         query: this.filter,
       });
 

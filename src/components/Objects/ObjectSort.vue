@@ -238,8 +238,8 @@
       <!--        </b-dropdown-text>-->
       <!--      </b-dropdown>-->
 
-      <div class="detail-button" @click="openBar">
-        <base-details-icon fill="#7C3AED"/>
+      <div class="detail-button" @click="openBar" :class="sortBar ? 'active':''">
+        <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'"/>
       </div>
 
       <base-button @click="clearFilter" :text="$t('object.sort.apply')" design="violet-gradient"/>
@@ -293,7 +293,7 @@ export default {
     return {
       currentTab: {
         id: 2,
-        param: 'chess-one',
+        param: 'chess',
         name: 'ObjectBlock',
         buttonIcon: 'BaseChessOne',
         title: this.$t('object.chess') + ' 1.0'
@@ -301,20 +301,20 @@ export default {
       tabs: [
         {
           id: 2,
-          param: 'chess-one',
+          param: 'chess',
           name: 'ObjectBlock',
           buttonIcon: 'BaseChessOne',
           title: this.$t('object.chess') + ' 1.0'
         },
         {
           id: 3,
-          param: 'chess-two',
+          param: 'chess',
           name: 'ChessSquareCard',
           buttonIcon: 'BaseChessTwo',
           title: this.$t('object.chess') + ' 2.0'
         },
-        {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: this.$t('object.list')},
-        {id: 5, param: 'chess-plan', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: this.$t('object.plan')},
+        {id: 4, param: 'chess', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: this.$t('object.list')},
+        {id: 5, param: 'chess', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: this.$t('object.plan')},
       ],
       sortBar: false,
       defaultApartments: [],
@@ -524,6 +524,12 @@ export default {
   background-color: var(--gray-100);
   border-radius: 50%;
   cursor: pointer;
+  transition: all .2s linear;
+
+  &.active {
+    background-color: var(--violet-600);
+  }
+
 }
 
 .filter__price {
