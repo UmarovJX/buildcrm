@@ -79,46 +79,12 @@ const routes = [
 
     {
         /* OBJECTS */
-        // name: "chess",
         path: "/chess/:objectId",
+        name: "chess",
         component: ChessObjects,
         meta: {
-            requiresAuth: "objects",
-        },
-        children: [
-            {
-                name: "chess-one",
-                path: "one",
-                component: ChessObjects,
-                meta: {
-                    requiresAuth: "objects",
-                },
-            },
-            {
-                name: "chess-two",
-                path: "two",
-                component: ChessObjects,
-                meta: {
-                    requiresAuth: "objects",
-                },
-            },
-            {
-                name: "chess-table",
-                path: "table",
-                component: ChessObjects,
-                meta: {
-                    requiresAuth: "objects",
-                },
-            },
-            {
-                name: "chess-plan",
-                path: "plan",
-                component: ChessObjects,
-                meta: {
-                    requiresAuth: "objects",
-                },
-            }
-        ]
+            requiresAuth: "objects"
+        }
     },
 
     {

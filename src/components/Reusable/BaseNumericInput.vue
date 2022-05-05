@@ -234,7 +234,9 @@ export default {
      * @param {Number} newValue
      */
     valueNumber(newValue) {
-      if (this.$refs.numeric !== document.activeElement) {
+      if (newValue === 0) {
+        this.amount = null
+      } else if (this.$refs.numeric !== document.activeElement) {
         this.amount = this.format(newValue)
       }
     },

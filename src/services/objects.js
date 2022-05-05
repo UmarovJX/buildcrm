@@ -223,6 +223,10 @@ class ObjectsV2 extends Core {
     deleteContract({objectId, contractId}) {
         return this.delete(`templates/branch/${objectId}/contract/${contractId}`)
     }
+
+    fetchObjectFields(objectId) {
+        return this.get(`apartments/objects/${objectId}/filter-fields`)
+    }
 }
 
 export default {

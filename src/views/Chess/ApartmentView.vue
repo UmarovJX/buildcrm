@@ -33,7 +33,8 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between">
+      <!--   MAIN   -->
+      <div class="content-view d-flex justify-content-between flex-wrap">
         <primary-information class="primary__information" :apartment="apartment"/>
         <div class="calculator w-100 d-flex flex-column justify-content-between">
           <div>
@@ -47,14 +48,16 @@
                   <base-select
                       :label="true"
                       :options="paymentOption"
+                      :no-placeholder="true"
                       :value="discount"
-                      @input="changeDiscount"
+                      value-field="id"
+                      @change="changeDiscount"
                       placeholder="Вариант оплаты"
                   ></base-select>
                 </div>
 
                 <!--     INPUT MONTHLY PAYMENT       -->
-                <div class="monthly">
+                <div class="monthly" v-show="showMonthlyCalculation">
                   <div class="placeholder font-weight-600">Ежемесячный платеж</div>
                   <div class="input d-flex justify-content-between">
                     <input
@@ -86,16 +89,26 @@
 
               <!--     OUTPUTS     -->
               <div class="w-100 outputs font-inter">
-                <div v-if="discount.amount > 0" class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">Начальная цена</span>
-                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.prepay) }}</span>
+                  <span class="price d-block color-gray-600">{{ initialPrice }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">
                     {{ $t('apartments.view.prepayment') }} {{ calc.prepay_percente }}%
                   </span>
-                  <span class="price d-block color-gray-600">99 050 000</span>
+                  <span v-if="calc.prepay_percente === 100"
+                        class="price d-block color-gray-600"
+                  >
+                    {{ pricePrettier(calc.total) }}
+                  </span>
+                  <span
+                      v-else
+                      class="price d-block color-gray-600"
+                  >
+                    {{ pricePrettier(calc.prepay) }}
+                  </span>
                 </div>
 
                 <div v-if="discount.amount > 0" class="d-flex justify-content-between">
@@ -104,7 +117,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">{{  $t('apartments.view.price_for_m2') }}</span>
+                  <span class="property d-block color-gray-400">{{ $t('apartments.view.price_for_m2') }}</span>
                   <span class="price d-block color-gray-600">{{ pricePrettier(calc.price_for_m2) }}</span>
                 </div>
 
@@ -230,7 +243,8 @@ export default {
         monthly_price: 0,
         prepay: 0,
         debt: 0,
-        total: 0
+        total: 0,
+        prepay_percente: 0
       },
       monthly_price: 0,
       calForPrint: {},
@@ -248,6 +262,12 @@ export default {
     hasApartment() {
       return Object.keys(this.apartment).length > 0
     },
+    initialPrice() {
+      return this.pricePrettier(this.apartment.price)
+    },
+    showMonthlyCalculation() {
+      return this.calc.prepay_percente !== 100
+    },
     getApartmentDiscounts() {
       const hasDiscount = this.hasApartment && this.apartment.hasOwnProperty('discounts')
       if (!hasDiscount) return []
@@ -263,11 +283,12 @@ export default {
       return discounts.sort((a, b) => a.prepay - b.prepay)
           .map((discount, index) => {
             let text = this.$t("apartments.view.variant")
-            if (discount.type === 'promo') text += ' ' + this.$t('promo.by_promo')
+            if (discount.type === 'promo') text += ' ' + `( ${this.$t('promo.by_promo')} )`
             text += ' ' + (index + 1) + ' - ' + discount.prepay + '%'
             return {
               text,
-              value: discount
+              value: discount,
+              id: discount.id
             }
           })
     },
@@ -355,7 +376,7 @@ export default {
             if (response?.data) {
               this.$router.push({
                 name: "confirm-apartment",
-                params: {id: response.data.id}
+                params: {id: response.data.uuid}
               })
             }
           })
@@ -425,7 +446,10 @@ export default {
     },
 
     async initialCalc() {
-      this.discount = this.getApartmentDiscounts ? this.getApartmentDiscounts[0] : {amount: 0}
+      if (Object.keys(this.discount).length < 1) {
+        this.discount = this.getApartmentDiscounts ? this.getApartmentDiscounts[0] : {amount: 0}
+      }
+
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
           this.calc.price_for_m2 = this.apartment.price_m2;
@@ -448,8 +472,8 @@ export default {
       this.$emit("getCalData", this.calForPrint);
     },
 
-    async changeDiscount(discount) {
-      this.discount = discount
+    async changeDiscount(discountId) {
+      this.discount = this.paymentOption.find(option => option.value.id === discountId).value
       this.calc.prepay_percente = this.discount.prepay;
       this.calc.discount_price = 0;
       if (this.discount.type === "fixed" || this.discount.type === "promo") {
@@ -579,10 +603,12 @@ input[type="number"]
 
 .header-navigation
   margin-right: 4.25rem
+  max-width: 640px
 
 .main__content
   padding-left: 1rem
   padding-right: 1rem
+  max-width: 1500px !important
 
 .main__class
   background-color: white
@@ -616,10 +642,12 @@ input[type="number"]
 .primary__information
   width: 42rem
 
+
 .calculator
   margin-top: 3.5rem
-  margin-left: 2.25rem
+  margin-left: 1rem
   margin-right: 1.5rem
+  max-width: 500px
 
   &-title
     font-size: 1.5rem
@@ -718,4 +746,9 @@ input[type="number"]
   &-sold
     background-color: var(--light-blue-100) !important
     color: var(--light-blue-600) !important
+
+
+@media only screen and (max-width: 1390px)
+  .calculator
+    max-width: 640px
 </style>

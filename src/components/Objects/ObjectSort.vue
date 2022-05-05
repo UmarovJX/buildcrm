@@ -1,6 +1,7 @@
 <template>
   <div class="sort-list">
-    <div class="sort-top">
+    <div class="sort-top ">
+      <!--   Комнат    -->
       <b-dropdown left>
         <template #button-content>
           Комнат
@@ -9,16 +10,19 @@
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
                 id="checkbox-group-2"
-                v-model="form.flat"
+                v-model="form.rooms"
                 :aria-describedby="ariaDescribedby"
                 name="flavour-2"
             >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
+              <b-form-checkbox v-for="option in filterFields.rooms" :key="option" :value="option">
+                {{ option }}
+              </b-form-checkbox>
             </b-form-checkbox-group>
           </b-form-group>
         </b-dropdown-text>
       </b-dropdown>
 
+      <!--  Этаж    -->
       <b-dropdown left>
         <template #button-content>
           Этаж
@@ -27,16 +31,19 @@
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
                 id="checkbox-group-2"
-                v-model="form.flat"
+                v-model="form.floors"
                 :aria-describedby="ariaDescribedby"
                 name="flavour-2"
             >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
+              <b-form-checkbox v-for="option in filterFields.floors" :key="option" :value="option">
+                {{ option }}
+              </b-form-checkbox>
             </b-form-checkbox-group>
           </b-form-group>
         </b-dropdown-text>
       </b-dropdown>
 
+      <!--   Жилая площадь    -->
       <b-dropdown left>
         <template #button-content>
           Жилая площадь
@@ -45,11 +52,17 @@
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
                 id="checkbox-group-2"
-                v-model="form.flat"
+                v-model="form.areas"
                 :aria-describedby="ariaDescribedby"
                 name="flavour-2"
             >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
+              <b-form-checkbox
+                  v-for="option in filterFields.area"
+                  :key="option"
+                  :value="option"
+              >
+                {{ option }} M<sup>2</sup>
+              </b-form-checkbox>
             </b-form-checkbox-group>
           </b-form-group>
         </b-dropdown-text>
@@ -62,7 +75,7 @@
             class="inline price__currency"
         />
         <base-numeric-input
-            v-model.number="filter.price_from"
+            v-model.number="form.price_from"
             :currency="` `"
             :minus="false"
             :value="null"
@@ -71,8 +84,9 @@
             placeholder="от"
             class="filter__price"
         ></base-numeric-input>
+
         <base-numeric-input
-            v-model.number="filter.price_to"
+            v-model.number="form.price_to"
             :currency="` `"
             :minus="false"
             :value="null"
@@ -83,34 +97,36 @@
         ></base-numeric-input>
       </div>
 
-
-      <div class="detail-button" @click="openBar">
-        <base-details-icon fill="#7C3AED"/>
-      </div>
-
-      <base-button text="Применить" design="violet-gradient"/>
-
-    </div>
-
-    <div class="chess-tab">
-
-      <base-button
-          v-for="tab in tabs"
-          :key="tab.id"
-          :class="{ active: currentTab.name === tab.name }"
-          @click="changeProduct(tab)"
-          :text="tab.title">
-        <template #left-icon>
-          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"/>
+      <!--   Блок    -->
+      <b-dropdown v-show="sortBar" left>
+        <template #button-content>
+          Блок
         </template>
-      </base-button>
-    </div>
+        <b-dropdown-text href="#">
+          <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+                id="checkbox-group-2"
+                v-model="form.blocks"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
+            >
+              <b-form-checkbox
+                  v-for="option in filterFields.blocks"
+                  :key="option.id"
+                  :value="option.id"
+              >
+                {{ option.name }}
+              </b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-dropdown-text>
+      </b-dropdown>
 
-    <div v-if="sortBar" class="sort-hide">
-      <div class="filter__inputs-input">
+      <!--   Номер квартиры   -->
+      <div v-show="sortBar" class="filter__inputs-input">
         <base-form-tag-input
-            @set-tags="setApartments"
-            :default-tags="filter.apartment_number"
+            @set-tags="setApartmentNumbers"
+            :default-tags="defaultApartments"
             ref="base-form-tag-input"
             placeholder="Номер квартиры"
         >
@@ -126,12 +142,63 @@
         </base-form-tag-input>
       </div>
 
-      <div class="filter__apartment__price">
+      <!--  Статус    -->
+      <!--      <b-dropdown v-if="sortBar" left>-->
+      <!--        <template #button-content>-->
+      <!--          Статус-->
+      <!--        </template>-->
+      <!--        <b-dropdown-text href="#">-->
+      <!--          <b-form-group v-slot="{ ariaDescribedby }">-->
+      <!--            <b-form-checkbox-group-->
+      <!--                id="checkbox-group-2"-->
+      <!--                v-model="form.status"-->
+      <!--                :aria-describedby="ariaDescribedby"-->
+      <!--                name="flavour-2"-->
+      <!--            >-->
+      <!--              <b-form-checkbox-->
+      <!--                  v-for="option in options"-->
+      <!--                  :key="option"-->
+      <!--                  :value="option"-->
+      <!--              >-->
+      <!--                {{ option }}-->
+      <!--              </b-form-checkbox>-->
+      <!--            </b-form-checkbox-group>-->
+      <!--          </b-form-group>-->
+      <!--        </b-dropdown-text>-->
+      <!--      </b-dropdown>-->
+
+      <!--  Стоимость кв.м    -->
+      <!--      <b-dropdown v-if="sortBar" left>-->
+      <!--        <template #button-content>-->
+      <!--          Стоимость кв.м-->
+      <!--        </template>-->
+      <!--        <b-dropdown-text href="#">-->
+      <!--          <b-form-group v-slot="{ ariaDescribedby }">-->
+      <!--            <b-form-checkbox-group-->
+      <!--                id="checkbox-group-2"-->
+      <!--                v-model="form.price_m2"-->
+      <!--                :aria-describedby="ariaDescribedby"-->
+      <!--                name="flavour-2"-->
+      <!--            >-->
+      <!--              <b-form-checkbox-->
+      <!--                  v-for="option in options"-->
+      <!--                  :key="option"-->
+      <!--                  :value="option"-->
+      <!--              >-->
+      <!--                {{ option }}-->
+      <!--              </b-form-checkbox>-->
+      <!--            </b-form-checkbox-group>-->
+      <!--          </b-form-group>-->
+      <!--        </b-dropdown-text>-->
+      <!--      </b-dropdown>-->
+
+      <!--  Сум  От / До  -->
+      <div v-show="sortBar" class="filter__apartment__price">
         <div class="filter-value">
           <span>M<sup>2</sup></span>
         </div>
         <base-numeric-input
-            v-model.number="filter.area_from"
+            v-model.number="form.area_from"
             :currency="` `"
             :minus="false"
             :value="null"
@@ -141,7 +208,7 @@
             class="filter__price"
         ></base-numeric-input>
         <base-numeric-input
-            v-model.number="filter.area_to"
+            v-model.number="form.area_to"
             :currency="` `"
             :minus="false"
             :value="null"
@@ -152,174 +219,43 @@
         ></base-numeric-input>
       </div>
 
-      <b-dropdown left>
-        <template #button-content>
-          Блок
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
+      <!--  Спецпредложения    -->
+      <!--      <b-dropdown v-if="sortBar" left>-->
+      <!--        <template #button-content>-->
+      <!--          Спецпредложения-->
+      <!--        </template>-->
+      <!--        <b-dropdown-text href="#">-->
+      <!--          <b-form-group v-slot="{ ariaDescribedby }">-->
+      <!--            <b-form-checkbox-group-->
+      <!--                id="checkbox-group-2"-->
+      <!--                v-model="form.flat"-->
+      <!--                :aria-describedby="ariaDescribedby"-->
+      <!--                name="flavour-2"-->
+      <!--            >-->
+      <!--              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>-->
+      <!--            </b-form-checkbox-group>-->
+      <!--          </b-form-group>-->
+      <!--        </b-dropdown-text>-->
+      <!--      </b-dropdown>-->
 
-      <b-dropdown left>
-        <template #button-content>
-          Срок сдачи
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
+      <div class="detail-button" @click="openBar">
+        <base-details-icon fill="#7C3AED"/>
+      </div>
 
-      <b-dropdown left>
-        <template #button-content>
-          Статус
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-
-      <b-dropdown left>
-        <template #button-content>
-          Спецпредложения
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-
+      <base-button @click="clearFilter" text="Применить" design="violet-gradient"/>
     </div>
 
-    <div v-if="sortBar" class="sort-hide">
-      <div class="filter__apartment__price">
-        <div class="filter-value">
-          <span>M<sup>2</sup></span>
-        </div>
-        <base-numeric-input
-            v-model.number="filter.area_from"
-            :currency="` `"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
-            placeholder="от"
-            class="filter__price"
-        ></base-numeric-input>
-        <base-numeric-input
-            v-model.number="filter.area_to"
-            :currency="` `"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
-            placeholder="до"
-            class="filter__price"
-        ></base-numeric-input>
-      </div>
-      <b-dropdown left>
-        <template #button-content>
-          Срок сдачи
+    <div class="chess-tab">
+      <base-button
+          v-for="tab in tabs"
+          :key="tab.id"
+          :class="{ active: currentTab.name === tab.name }"
+          @click="changeProduct(tab)"
+          :text="tab.title">
+        <template #left-icon>
+          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"/>
         </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-      <b-dropdown left>
-        <template #button-content>
-          Жилая площадь
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-      <b-dropdown left>
-        <template #button-content>
-          Тип отделки
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-      <b-dropdown left>
-        <template #button-content>
-          Спецпредложения
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.flat"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
+      </base-button>
     </div>
   </div>
 </template>
@@ -333,6 +269,10 @@ import BaseChessList from "@/components/icons/BaseChessList";
 import BaseChessPlan from "@/components/icons/BaseChessPlan";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import {clearObjectProperties} from "@/util/reusable";
+
+import {sortInFirstRelationship} from "@/util/reusable";
+import api from "@/services/api";
 
 export default {
   name: "ObjectSort",
@@ -346,56 +286,151 @@ export default {
     BaseChessList,
     BaseChessPlan,
   },
+
+  emits: ['filter-values'],
+
   data() {
     return {
-      currentTab: {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
+      currentTab: {
+        id: 2,
+        param: 'chess-one',
+        name: 'ObjectBlock',
+        buttonIcon: 'BaseChessOne',
+        title: 'Шахматка 1.0'
+      },
       tabs: [
-        // {id: 1, name: 'ObjectBlock', buttonIcon: 'BaseDetailsIcon', title: 'Фасады'},
         {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
         {id: 3, param: 'chess-two', name: 'ChessSquareCard', buttonIcon: 'BaseChessTwo', title: 'Шахматка 2.0'},
         {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: 'Список'},
         {id: 5, param: 'chess-plan', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: 'Планировки'},
-        // {id: 6, name: 'ChessSquareCard', buttonIcon: 'BaseDetailsIcon', title: 'Планировки'},
       ],
-      setApartments: [],
       sortBar: false,
+      defaultApartments: [],
       form: {
-        flat: [],
-        level: null,
-        block: null,
         status: null,
+        price_m2: null,
+        price_from: null,
+        price_to: null,
+        area_from: null,
+        area_to: null,
+        blocks: [],
+        areas: [],
+        rooms: [],
+        floors: [],
+        apartments: []
       },
       options: [1, 2, 3, 4, 5, 6, 7],
       currencyOptions: ["UZS", "USD"],
       areaOptions: 'M2',
-      filter: {
-        apartment_number: [],
-        price_from: 0,
-        price_to: 0,
-      },
-      currency: 'UZS'
+      currency: 'UZS',
+      filterFields: {}
     }
   },
+
   watch: {
     currentTab: {
       handler(val) {
-        this.$router.push({name: val.param, params: {object: 18}})
         this.$emit('current-tab', val)
       },
       immediate: true,
+    },
+    form: {
+      handler() {
+        this.filterApartments()
+      },
       deep: true,
+      immediate: false
     }
   },
+
+  async created() {
+    this.initSelectedApartments()
+    await this.fetchFilterFields()
+    await this.setRouteQuery()
+  },
+
   methods: {
+    filterApartments() {
+      const values = sortInFirstRelationship(this.form)
+      this.$emit('filter-values', values)
+    },
+    setApartmentNumbers(apartments) {
+      this.form.apartments = apartments
+    },
+    async fetchFilterFields() {
+      const {objectId} = this.$route.params
+      await api.objectsV2.fetchObjectFields(objectId)
+          .then((response) => {
+            this.filterFields = response.data
+          }).catch((err) => {
+            this.toastedWithErrorCode(err)
+          })
+    },
     setFormProperty(property, value) {
       this.form[property] = value
       this.errors[property] = false
     },
+    setRouteQuery() {
+      const filterQuery = Object.assign({}, this.$route.query)
+      const queryProperties = Object.keys(filterQuery)
+      const loopPackage = {}
+
+      queryProperties.forEach((property) => {
+        const hasFormProperty = this.form.hasOwnProperty(property)
+        if (hasFormProperty) {
+          if (property === 'blocks') {
+            const values = filterQuery[property]
+            const isQueryPrimitive = typeof values === 'number' || typeof values === 'string'
+            if (isQueryPrimitive) {
+              loopPackage[property] = this.filterFields.blocks.filter(block => {
+                return block.id.toString() === values.toString()
+              }).map(block => block.id)
+            } else {
+              loopPackage[property] = this.filterFields.blocks.filter(block => {
+                return values.findIndex((value) => value === block.id.toString()) > -1
+              }).map(block => block.id)
+            }
+          } else {
+            const queryValue = filterQuery[property]
+            const formValue = this.form[property]
+            const isQueryPrimitive = typeof queryValue === 'number' || typeof queryValue === 'string'
+            const isArray = Array.isArray(formValue) && (typeof formValue === 'object')
+            if (isArray && isQueryPrimitive) {
+              loopPackage[property] = [queryValue]
+            } else {
+              loopPackage[property] = queryValue
+            }
+          }
+        }
+      })
+
+      this.form = {...this.form, ...loopPackage}
+    },
+    initSelectedApartments() {
+      const filterQuery = Object.assign({}, this.$route.query)
+      const hasApartments = filterQuery.hasOwnProperty('apartments')
+      if (hasApartments) {
+        const value = filterQuery['apartments']
+        const isQueryPrimitive = typeof value === 'number' || typeof value === 'string'
+        if (isQueryPrimitive)
+          this.defaultApartments = parseInt(value)
+        else
+          this.defaultApartments = value.map(vs => parseInt(vs))
+      }
+    },
     openBar() {
       this.sortBar = !this.sortBar
     },
-    clear() {
+    clearApartments() {
       this.$refs['base-form-tag-input'].clear()
+    },
+    clearFilter() {
+      this.form = clearObjectProperties(this.form)
+      this.clearApartments()
+      const query = {}
+      this.$router.push({
+        query
+      })
     },
     changeProduct(name) {
       this.currentTab = name
@@ -429,7 +464,7 @@ export default {
 
 .sort-top {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .chess-tab {

@@ -444,9 +444,8 @@ export default {
   },
 
   async created() {
-    this.filter = {
-      ...this.$route.query,
-    }
+    this.filter = this.query
+
     this.currentPage = Number(this.filter.page);
 
     await this.fetchContractList()

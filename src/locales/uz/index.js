@@ -119,6 +119,7 @@ export default {
     familiar: 'Tanish',
     unfamiliar: 'Notanish',
     continue_registration: "Rasmiylashtirishni davom etish",
+    square_meter: 'M<sub>2</sub>',
 
 
     tab_status: {

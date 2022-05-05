@@ -100,3 +100,26 @@ export function sortInFirstRelationship(obj) {
     }
     return loopPackage
 }
+
+export function clearObjectProperties(context) {
+    if (typeof context !== 'object' || Array.isArray(context)) return
+    const keys = Object.keys(context)
+    const loopPassage = {}
+    keys.forEach(key => {
+        const value = context[key]
+        const type = typeof value
+        const primitiveTypes = ['string', 'number', 'boolean', 'undefined']
+        const isPrimitive = primitiveTypes.includes(type)
+        if (isPrimitive) {
+            loopPassage[key] = null
+        } else if (type === 'object') {
+            if (Array.isArray(value))
+                loopPassage[key] = []
+            else if (value == null)
+                loopPassage[key] = null
+            else
+                loopPassage[key] = {}
+        }
+    })
+    return loopPassage
+}

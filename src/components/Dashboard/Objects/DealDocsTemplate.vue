@@ -112,7 +112,9 @@ export default {
     },
     saleContracts() {
       return this.contracts.filter(contract => {
-        return contract.category === 'sale' || contract.category === 'not_initial' || contract.category === 'not_initial'
+        return contract.category === 'sale'
+            || contract.category === 'not_initial'
+            || contract.category === 'not_initial'
       })
     },
     notInitialContracts() {

@@ -27,7 +27,6 @@
             :searchable="false"
             :hide-selected="true"
         ></multiselect>
-        Lorem ipsum dolor sit amet.
 
         <span class="error__provider" v-if="errors[0]">
           {{ blockSelectionError(errors[0]) }}

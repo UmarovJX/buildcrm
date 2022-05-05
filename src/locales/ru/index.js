@@ -105,6 +105,7 @@ export default {
     unfamiliar: 'Незнакомый',
     continue_registration: 'Продолжить оформление',
     apartment: "Квартира",
+    square_meter: 'M<sub>2</sub>',
 
     tab_status: {
         all: "Все",

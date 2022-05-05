@@ -1,7 +1,7 @@
 <template>
   <main class="app-content">
 
-    <ObjectSort @current-tab="changeTab"/>
+    <object-sort @current-tab="changeTab" @filter-values="filterApartment"/>
 
     <b-form-checkbox-group
         id="checkbox-sort"
@@ -19,9 +19,15 @@
       </b-form-checkbox>
     </b-form-checkbox-group>
 
-    <component v-if="apartments" :loading="getLoading" :plans="plans" :plan-load="planLoading" :is="currentTab"
-               :apartments="apartments"
-               @show-express-sidebar="apartmentExpressReview"/>
+    <component
+        v-if="apartments"
+        :loading="getLoading"
+        :plans="plans"
+        :plan-load="planLoading"
+        :is="currentTab"
+        :apartments="apartments"
+        @show-express-sidebar="apartmentExpressReview"
+    />
 
     <!-- APARTMENT QUICK VIEW   -->
     <apartment-express-view
@@ -62,7 +68,7 @@ export default {
       planLoading: false,
       apartments: [],
       plans: [],
-      currentTab: 'ObjectTable',
+      currentTab: 'ObjectBlock',
       sort: [
         {
           label: 'Свободно',
@@ -96,6 +102,25 @@ export default {
   methods: {
     changeTab(name) {
       this.currentTab = name.name
+    },
+    filterApartment(filter) {
+      if (Object.keys(filter).length) {
+        const params = this.$route.params
+        this.$router.push({
+          query: filter,
+          params
+        })
+
+        this.filterItems(filter)
+      }
+    },
+    filterItems(filter) {
+      console.log(filter)
+      // const filterPassage = []
+      // const hasBlocks = filter.hasOwnProperty('blocks')
+      // if (hasBlocks) {
+      //
+      // }
     },
     async getApartments() {
       this.getLoading = true

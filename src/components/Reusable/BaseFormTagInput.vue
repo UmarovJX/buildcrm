@@ -47,7 +47,7 @@ export default {
     },
     defaultTags: {
       type: Array,
-      required: true
+      required: false
     }
   },
   data() {
@@ -57,7 +57,9 @@ export default {
     }
   },
   mounted() {
-    this.tags = [...this.defaultTags]
+    if (this.defaultTags.length) {
+      this.tags = this.defaultTags
+    }
   },
   methods: {
     addTag(event) {
