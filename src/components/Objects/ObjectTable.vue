@@ -364,7 +364,7 @@ export default {
       fields: [
         {
           key: "number",
-          label: 'Номер помещения',
+          label: this.$t('object.sort.number_rooms'),
           sortable: true,
         },
         // {
@@ -552,22 +552,22 @@ export default {
     getStatus(value) {
       switch (value) {
         case 'available': {
-          return {statusText: 'Свободно', class: 'teal'}
+          return {statusText: this.$t('object.status.available'), class: 'teal'}
         }
         case 'contract':
         case 'waiting':
         case 'sold':
         case 'closed': {
-          return {statusText: 'Продано', class: 'gray'}
+          return {statusText: this.$t('object.status.sold'), class: 'gray'}
         }
         case 'booked': {
-          return {statusText: 'Забронировано', class: 'yellow'}
+          return {statusText: this.$t('object.status.booked'), class: 'yellow'}
         }
         case 'hold': {
-          return {statusText: 'Оформлено', class: 'blue'}
+          return {statusText: this.$t('object.status.contract'), class: 'blue'}
         }
         default:
-          return {statusText: 'Свободно', class: 'teal'}
+          return {statusText: this.$t('object.status.available'), class: 'teal'}
       }
     },
 

@@ -39,13 +39,13 @@
                         {{ status(elem.order.status).statusText }}
                       </template>
                       <template v-else>
-                        {{ price(elem.price) }} сум
+                        {{ price(elem.price) }} {{ $t('ye') }}
                       </template>
                     </h5>
                   </div>
                   <div class="square-footer">
                     <p>{{ elem.plan.area }} M<sup>2</sup></p>
-                    <p>{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                    <p>{{ price(elem.price_m2) }} {{ $t('ye') }}/M<sup>2</sup></p>
                   </div>
                 </div>
               </div>
@@ -103,13 +103,13 @@ export default {
         case 'waiting':
         case 'sold':
         case 'closed': {
-          return {statusText: 'Продано', class: 'gray'}
+          return {statusText: this.$t('object.status.sold'), class: 'gray'}
         }
         case 'booked': {
-          return {statusText: 'Забронировано', class: 'yellow'}
+          return {statusText: this.$t('object.status.booked'), class: 'yellow'}
         }
         case 'contract': {
-          return {statusText: 'Оформлено', class: 'blue'}
+          return {statusText: this.$t('object.status.contract'), class: 'blue'}
         }
         default:
           return {statusText: '', class: 'teal'}

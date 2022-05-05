@@ -71,23 +71,23 @@ export default {
       currentTab: 'ObjectBlock',
       sort: [
         {
-          label: 'Свободно',
+          label: this.$t('object.status.available'),
           class: 'teal',
         },
         {
-          label: 'Заброниравано',
+          label: this.$t('object.status.booked'),
           class: 'yellow',
         },
         {
-          label: 'Оформлено',
+          label: this.$t('object.status.contract'),
           class: 'blue',
         },
         {
-          label: 'Продано',
+          label: this.$t('object.status.sold'),
           class: 'gray',
         },
         {
-          label: 'Недоступно',
+          label: this.$t('object.status.disable'),
           class: 'disabled',
         },
       ],

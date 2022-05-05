@@ -7,6 +7,7 @@ export default {
                 const response = await api.authV1.getMe()
                 ctx.commit("updateMe", response.data);
                 ctx.commit("updatePermissions", response.data);
+                // ctx.commit("updateLocale", response.data);
                 return path
             } catch (error) {
                 if (error.response) {

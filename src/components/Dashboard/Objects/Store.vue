@@ -100,23 +100,23 @@
               </div>
 
               <div class="mb-3">
-                <label class="form-label" for="comapnies">
+                <label class="form-label" for="companies">
                   {{ $t("companies.title") }}
                 </label>
                 <select
                     class="form-control"
-                    id="comapnies"
+                    id="companies"
                     v-model="object.company_id"
                 >
-                  <option value="0">
-                    {{ $t("companies.company_enter") }}
+                  <option value="0" selected>
+                    {{ $t("companies.branch_enter") }}
                   </option>
                   <option
                       v-for="(company, index) in getCompanies"
                       :key="index"
                       :value="company.id"
                   >
-                    {{ company.type.name.ru }} "{{ company.name }}"
+                    {{ company.type.ru }} "{{ company.name }}"
                   </option>
                 </select>
               </div>
