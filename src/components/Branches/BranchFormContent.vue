@@ -179,7 +179,7 @@ export default {
   },
   methods: {
     async getManagersList() {
-      await api.user.getUsersList()
+      await api.userV2.getUsersList()
           .then(response => {
             this.managersList = response.data
             this.setHistoryField()

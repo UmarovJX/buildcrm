@@ -1,4 +1,4 @@
-import {axiosV1CRM} from '@/services/core/base'
+import {axiosV1CRM, axiosV2} from '@/services/core/base'
 import Core from '@/services/core/index'
 
 class User extends Core {
@@ -39,4 +39,17 @@ class User extends Core {
     }
 }
 
-export default User
+class UserV2 extends Core {
+    constructor(axios = axiosV2) {
+        super(axios);
+    }
+
+    getUsersList() {
+        return this.get('users')
+    }
+}
+
+export default {
+    User,
+    UserV2
+}

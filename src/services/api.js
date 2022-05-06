@@ -17,7 +17,8 @@ import Promo from "@/services/promo"
 
 export default {
     home: new Home(),
-    user: new User(),
+    user: new User.User(),
+    userV2: new User.UserV2(),
     plans: new Plans(),
     promo: new Promo.Promo(),
     promoV2: new Promo.PromoV2(),
