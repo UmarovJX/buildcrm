@@ -14,36 +14,36 @@
           </div>
         </div>
 
-        <div v-for="value in apartment.blocks" :key="value.id" class="d-flex flex-column position-relative">
+        <template v-for="value in apartment.blocks">
+          <div v-if="showBlock(value.blockActive)" :key="value.id" class="d-flex flex-column position-relative">
+            <div class="header">
+              {{ value.name }}
+            </div>
 
-          <div class="header">
-            {{ value.name }}
-          </div>
+            <div class="item" style="margin-right: 30px">
 
-          <div class="item" style="margin-right: 30px">
-
-            <div v-for="item in value.floors" :key="item.name" style="display:block;">
-              <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
-                <div
-                    v-for="elem in item.apartments"
-                    :key="elem.id"
-                    class="block-item"
-                    :class="[
+              <div v-for="item in value.floors" :key="item.name" style="display:block;">
+                <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
+                  <div
+                      v-for="elem in item.apartments"
+                      :key="elem.id"
+                      class="block-item"
+                      :class="[
                         hasQuery && inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
                         ? 'apartment-inactive'
                         : status(elem.order.status).class
                     ]"
-                >
-                  <div
-                      :id="'tolltip'+elem.number"
-                      class="box"
-                      @click="showExpressSidebar(elem.apartmentActive,item.floorActive,value.blockActive)"
                   >
-                    <h5 class="apartment-number">
-                      {{ elem.number }}
-                    </h5>
-                  </div>
-                  <span class="tooltip-content" :class="status(elem.order.status).class+'-tool'">
+                    <div
+                        :id="'tolltip'+elem.number"
+                        class="box"
+                        @click="showExpressSidebar(elem.apartmentActive,item.floorActive,value.blockActive)"
+                    >
+                      <h5 class="apartment-number">
+                        {{ elem.number }}
+                      </h5>
+                    </div>
+                    <span class="tooltip-content" :class="status(elem.order.status).class+'-tool'">
                       <b-tooltip
                           class="custom-tooltip"
                           :target="'tolltip' + elem.number"
@@ -75,17 +75,18 @@
                       </div>
                       </b-tooltip>
                     </span>
+                  </div>
+
                 </div>
 
-              </div>
-
-              <div v-else class="block-item">
-                <div class="square">
+                <div v-else class="block-item">
+                  <div class="square">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </template>
       </div>
 
     </div>
@@ -164,13 +165,19 @@ export default {
     },
     showExpressSidebar(item, floorActive, blockActive) {
       const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
-      console.log(isActive)
       if (isActive) {
         this.$emit('show-express-sidebar', item)
       }
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {
       return !(blockActive && floorActive && apartmentActive)
+    },
+    showBlock(blockActive) {
+      if (blockActive === undefined) {
+        return true
+      } else {
+        return blockActive
+      }
     }
   }
 }
@@ -454,7 +461,7 @@ export default {
   display: flex;
   padding-top: 22px;
   background-color: var(--white);
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .counter {
@@ -483,6 +490,7 @@ export default {
   &-item {
     color: var(--teal-500);
     width: 100%;
+    min-width: 4rem;
     height: 56px;
     background-color: var(--gray-50);
     border: 1px solid var(--gray-100);

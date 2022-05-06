@@ -10,16 +10,16 @@
     <b-form-checkbox-group
         id="checkbox-sort"
         class="status-sort"
-        v-model="filter"
+        v-model="statusFilter"
         name="sort"
     >
       <b-form-checkbox
-          v-for="object in sort"
-          :key="object.label"
-          :value="object.label"
-          :class="object.class"
+          v-for="status in statusList"
+          :key="status.label"
+          :value="status.value"
+          :class="status.class"
       >
-        {{ object.label }}
+        {{ status.label }}
       </b-form-checkbox>
     </b-form-checkbox-group>
 
@@ -74,34 +74,52 @@ export default {
       apartments: [],
       plans: [],
       currentTab: 'ObjectBlock',
-      sort: [
+      statusList: [
+        /*
+        * available
+          contract
+          waiting
+          sold
+          closed
+          booked
+          hold
+        * */
         {
           label: 'Свободно',
           class: 'teal',
+          value: 'available'
         },
         {
           label: 'Заброниравано',
           class: 'yellow',
+          value: 'booked'
         },
         {
-          label: 'Оформлено',
+          label: 'contract',
           class: 'blue',
+          value: 'booked'
         },
         {
           label: 'Продано',
           class: 'gray',
+          value: 'sold'
         },
         {
           label: 'Недоступно',
           class: 'disabled',
+          value: 'closed'
         },
       ],
+      statusFilter: [],
       filter: [],
       filterFields: {}
     }
   },
 
   watch: {
+    statusFilter(statuses) {
+      console.log(statuses)
+    },
     '$route.query'(query) {
       const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
       const accessToFilter = tabsActiveToFilter.includes(this.currentTab)
@@ -248,7 +266,7 @@ export default {
                     //   continue
                     // }
 
-                    if (key === 'apartments') {
+                    if (key === 'numbers') {
                       const isSatisfy = value.includes(number)
                       filterResult.push(isSatisfy)
                     }
