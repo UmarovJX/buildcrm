@@ -3,7 +3,7 @@
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>
-          Этажи
+          {{ $t('object.level') }}
         </h5>
       </div>
 
@@ -14,48 +14,62 @@
           </div>
         </div>
 
-        <div v-for="value in apartment.blocks" :key="value.id" class="d-flex flex-column position-relative">
+        <div
+            v-for="value in apartment.blocks"
+            :key="value.id"
+            class="d-flex flex-column position-relative"
+        >
 
           <div class="header">
             {{ value.name }}
           </div>
 
           <div class="item" style="margin-right: 30px">
-
-          <span v-for="item in value.floors" :key="item.name">
-            <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
-              <div v-for="elem in item.apartments" :key="elem.id" class="block-item">
-                <div class="square" @click="showExpressSidebar(elem)"
-                     :class="status(elem.order.status).class">
-                  <div class="square-header">
-                    <p>Кв. № {{ elem.number }}</p>
-                    <div v-if="elem.is_promo" class="h-auto d-flex">
-                      <img src="../../../../assets/icons/bonuses.svg" alt="">
+            <div v-for="item in value.floors" :key="item.name">
+              <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
+                <div
+                    v-for="elem in item.apartments"
+                    :key="elem.id"
+                    class="block-item"
+                    :class="{
+                      'inactive-apartment':
+                      hasQuery &&
+                      inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
+                    }"
+                >
+                  <div class="square" @click="showExpressSidebar(elem,item.floorActive,value.blockActive)"
+                       :class="status(elem.order.status).class">
+                    <div class="square-header">
+                      <p class="apartment-number">Кв. № {{ elem.number }}</p>
+                      <div v-if="elem.is_promo" class="h-auto d-flex apartment-promo-icon">
+                        <img src="../../../../assets/icons/bonuses.svg" alt="">
+                      </div>
                     </div>
-                  </div>
-                  <div class="square-body">
-                    <h5>
-                      <template v-if="status(elem.order.status).statusText">
-                        {{ status(elem.order.status).statusText }}
-                      </template>
-                      <template v-else>
-                        {{ price(elem.price) }} {{ $t('ye') }}
-                      </template>
-                    </h5>
-                  </div>
-                  <div class="square-footer">
-                    <p>{{ elem.plan.area }} M<sup>2</sup></p>
-                    <p>{{ price(elem.price_m2) }} {{ $t('ye') }}/M<sup>2</sup></p>
+                    <div class="square-body">
+                      <h5>
+                        <template v-if="status(elem.order.status).statusText">
+                          <span class="apartment-status">
+                            {{ status(elem.order.status).statusText }}
+                          </span>
+                        </template>
+                        <template v-else>
+                          <span class="apartment-price">{{ price(elem.price) }} сум</span>
+                        </template>
+                      </h5>
+                    </div>
+                    <div class="square-footer">
+                      <p class="apartment-area">{{ elem.plan.area }} M<sup>2</sup></p>
+                      <p class="apartment-square-price">{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div v-else class="block-item">
-              <div class="square">
+              <div v-else class="block-item">
+                <div class="square">
+                </div>
               </div>
             </div>
-         </span>
           </div>
         </div>
       </div>
@@ -93,6 +107,14 @@ export default {
     }
   },
   emits: ['show-express-sidebar'],
+  computed: {
+    query() {
+      return this.$route.query
+    },
+    hasQuery() {
+      return Object.keys(this.query).length > 0
+    }
+  },
   methods: {
     status(value) {
       switch (value) {
@@ -123,16 +145,20 @@ export default {
         return item.floors.length
       }))
     },
-    showExpressSidebar(item) {
-      this.$emit('show-express-sidebar', item)
+    showExpressSidebar(item, floorActive, blockActive) {
+      const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
+      if (isActive) {
+        this.$emit('show-express-sidebar', item)
+      }
     },
+    inactiveApartment(apartmentActive, floorActive, blockActive) {
+      return !(blockActive && floorActive && apartmentActive)
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
-
 .square {
   padding: 12px;
   display: flex;
@@ -181,7 +207,6 @@ export default {
 
 
   &.yellow {
-
     h5 {
       color: var(--yellow-500);
     }
@@ -340,5 +365,45 @@ export default {
   }
 }
 
+.inactive-apartment {
+  .square {
+    &.yellow,
+    &.teal,
+    &.blue,
+    &.gray {
+      &:hover {
+        background-color: var(--gray-50);
 
+        p, h5 {
+          color: transparent;
+        }
+      }
+    }
+
+    .square-footer {
+      .apartment-area,
+      .apartment-square-price {
+        color: var(--gray-50);
+      }
+    }
+  }
+
+  .apartment {
+    &-number {
+      color: var(--gray-50);
+    }
+
+    &-status {
+      color: var(--gray-50);
+    }
+
+    &-price {
+      color: var(--gray-50);
+    }
+
+    &-square-price {
+      color: var(--gray-50);
+    }
+  }
+}
 </style>

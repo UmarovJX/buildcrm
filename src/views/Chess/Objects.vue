@@ -1,7 +1,11 @@
 <template>
   <main class="app-content">
 
-    <object-sort @current-tab="changeTab" @filter-values="filterApartment"/>
+    <object-sort
+        :filter-fields="filterFields"
+        :app-loading="finishLoading"
+        @current-tab="changeTab"
+    />
 
     <b-form-checkbox-group
         id="checkbox-sort"
@@ -65,6 +69,7 @@ export default {
         item: {}
       },
       getLoading: false,
+      finishLoading: false,
       planLoading: false,
       apartments: [],
       plans: [],
@@ -92,35 +97,211 @@ export default {
         },
       ],
       filter: [],
+      filterFields: {}
     }
   },
-  created() {
-    this.getObjectPlans()
-    this.getApartments()
+
+  watch: {
+    '$route.query'(query) {
+      const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
+      const accessToFilter = tabsActiveToFilter.includes(this.currentTab)
+      if (accessToFilter) {
+        this.filterItems(query)
+      }
+    }
+  },
+
+  async created() {
+    await Promise.allSettled([
+      await this.fetchFilterFields(),
+      await this.getApartments(),
+      await this.getObjectPlans(),
+    ]).finally(() => {
+      this.finishLoading = true
+    })
   },
 
   methods: {
+    async fetchFilterFields() {
+      const {objectId} = this.$route.params
+      await api.objectsV2.fetchObjectFields(objectId)
+          .then((response) => {
+            this.filterFields = response.data
+          }).catch((err) => {
+            this.toastedWithErrorCode(err)
+          })
+    },
     changeTab(name) {
       this.currentTab = name.name
     },
-    filterApartment(filter) {
-      if (Object.keys(filter).length) {
-        const params = this.$route.params
-        this.$router.push({
-          query: filter,
-          params
+    filterItems(filter) {
+      this.apartments = this.apartments.map(mainConstructor => {
+        let filterBlocks
+        const hasBlocks = filter.hasOwnProperty('blocks')
+        if (hasBlocks) {
+          filterBlocks = mainConstructor.blocks.map(block => {
+            const isActiveBlock = filter.blocks.includes(block.id)
+            if (isActiveBlock) {
+              return {
+                ...block,
+                blockActive: true
+              }
+            }
+
+            return {
+              ...block,
+              blockActive: false
+            }
+          })
+        } else {
+          filterBlocks = mainConstructor.blocks.map(block => {
+            return {
+              ...block,
+              blockActive: true
+            }
+          })
+        }
+
+        filterBlocks = filterBlocks.map(filterBlock => {
+          let filterFloors = filterBlock.floors
+          const hasFloorsQuery = filter.hasOwnProperty('floors')
+          if (hasFloorsQuery) {
+            filterFloors = filterFloors.map(floor => {
+              const isActiveFloor = filter.floors.includes(floor.name)
+              if (isActiveFloor) {
+                return {
+                  ...floor,
+                  floorActive: true
+                }
+              }
+
+              return {
+                ...floor,
+                floorActive: false
+              }
+            })
+          } else {
+            filterFloors = filterFloors.map(floor => {
+              return {
+                ...floor,
+                floorActive: true
+              }
+            })
+          }
+
+          const notRelatedToApartment = Object.keys(filter).length === 2 && hasFloorsQuery && hasBlocks
+          if (!notRelatedToApartment) {
+            filterFloors = filterFloors.map((filterFloor) => {
+              let floorApartments = filterFloor.apartments
+              floorApartments = floorApartments.map(floorApartment => {
+                let apartment = floorApartment
+                const {price_m2, number, price, plan, rooms} = apartment
+                const filterResult = []
+                const filterQueryLength = Object.keys(filter).length > 0
+                if (filterQueryLength) {
+                  for (let [key, value] of Object.entries(filter)) {
+                    if (key === 'price_m2') {
+                      const isSatisfy = value === price_m2
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
+
+                    if (key === 'price_from') {
+                      const isSatisfy = value <= price
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
+
+                    if (key === 'price_to') {
+                      const isSatisfy = value >= price
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
+
+                    if (key === 'area_from') {
+                      const isSatisfy = value <= plan.area
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
+
+                    if (key === 'area_to') {
+                      const isSatisfy = value >= plan.area
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
+
+                    if (key === 'areas') {
+                      const isSatisfy = value.includes(plan.area)
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
+
+                    if (key === 'rooms') {
+                      const isSatisfy = value.includes(rooms)
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
+
+                    // if (key === 'floors') {
+                    //   const isSatisfy = value.includes(floor)
+                    //   filterResult.push(isSatisfy)
+                    //   continue
+                    // }
+
+                    if (key === 'apartments') {
+                      const isSatisfy = value.includes(number)
+                      filterResult.push(isSatisfy)
+                    }
+                  }
+
+                  let satisfyFilter = true
+
+                  if (filterResult.length) {
+                    satisfyFilter = filterResult.reduce((prev, next) => prev && next)
+                  }
+
+                  if (satisfyFilter) {
+                    return {
+                      ...apartment,
+                      apartmentActive: true
+                    }
+                  } else {
+                    return {
+                      ...apartment,
+                      apartmentActive: false
+                    }
+                  }
+                } else {
+                  return {
+                    ...apartment,
+                    apartmentActive: true
+                  }
+                }
+              })
+
+              return {
+                name: filterFloor.name,
+                apartments: floorApartments,
+                floorActive: filterFloor.floorActive
+              }
+            })
+          }
+
+          const {id, name, blockActive} = filterBlock
+
+          return {
+            id,
+            name,
+            blockActive,
+            floors: filterFloors,
+          }
         })
 
-        this.filterItems(filter)
-      }
-    },
-    filterItems(filter) {
-      console.log(filter)
-      // const filterPassage = []
-      // const hasBlocks = filter.hasOwnProperty('blocks')
-      // if (hasBlocks) {
-      //
-      // }
+        return {
+          ...mainConstructor,
+          blocks: filterBlocks
+        }
+      })
     },
     async getApartments() {
       this.getLoading = true

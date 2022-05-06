@@ -270,9 +270,7 @@ import BaseChessPlan from "@/components/icons/BaseChessPlan";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import {clearObjectProperties} from "@/util/reusable";
-
 import {sortInFirstRelationship} from "@/util/reusable";
-import api from "@/services/api";
 
 export default {
   name: "ObjectSort",
@@ -285,6 +283,17 @@ export default {
     BaseFormTagInput,
     BaseChessList,
     BaseChessPlan,
+  },
+
+  props: {
+    filterFields: {
+      type: Object,
+      required: true
+    },
+    appLoading: {
+      type: Boolean,
+      required: true
+    }
   },
 
   emits: ['filter-values'],
@@ -335,11 +344,13 @@ export default {
       currencyOptions: ["UZS", "USD"],
       areaOptions: 'M2',
       currency: 'UZS',
-      filterFields: {}
     }
   },
 
   watch: {
+    appLoading(finishLoading) {
+      finishLoading && this.setRouteQuery()
+    },
     currentTab: {
       handler(val) {
         this.$emit('current-tab', val)
@@ -357,26 +368,19 @@ export default {
 
   async created() {
     this.initSelectedApartments()
-    await this.fetchFilterFields()
-    await this.setRouteQuery()
   },
 
   methods: {
     filterApartments() {
       const values = sortInFirstRelationship(this.form)
-      this.$emit('filter-values', values)
+      const params = this.$route.params
+      this.$router.push({
+        query: values,
+        params
+      })
     },
     setApartmentNumbers(apartments) {
       this.form.apartments = apartments
-    },
-    async fetchFilterFields() {
-      const {objectId} = this.$route.params
-      await api.objectsV2.fetchObjectFields(objectId)
-          .then((response) => {
-            this.filterFields = response.data
-          }).catch((err) => {
-            this.toastedWithErrorCode(err)
-          })
     },
     setFormProperty(property, value) {
       this.form[property] = value
@@ -416,7 +420,9 @@ export default {
         }
       })
 
-      this.form = {...this.form, ...loopPackage}
+      if (Object.keys(loopPackage).length) {
+        this.form = {...this.form, ...loopPackage}
+      }
     },
     initSelectedApartments() {
       const filterQuery = Object.assign({}, this.$route.query)
