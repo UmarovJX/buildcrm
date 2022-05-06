@@ -7,10 +7,10 @@ import store from "./store";
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
-    return originalPush.call(this, location).catch((err) => err);
+    return originalPush.call(this, location).catch((err) => err)
 };
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 import Auth from "./components/Auth/Login";
 import PageNotFound from "./components/PageNotFound";
@@ -27,7 +27,7 @@ import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedCont
 
 import Clients from "./components/Dashboard/Clients/Index";
 
-import Contracts from "./components/Dashboard/Contracts/Index";
+// import Contracts from "./components/Dashboard/Contracts/Index";
 import ContractsView from "./components/Dashboard/Contracts/View";
 
 import Users from "./components/Dashboard/Users/Index";
@@ -53,37 +53,29 @@ import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
-import CloneView from "@/components/Dashboard/Contracts/CloneView";
-import CloneContracts from "@/views/Contracts/Index"
+// import CloneView from "@/views/Contracts/View";
+import ImportPayments from "@/components/Contracts/view/ImportPayments";
+import Contracts from "@/views/Contracts/Index"
+import ContractView from "@/views/Contracts/View/Index"
 
 const routes = [
     {
+        /* HOME */
         path: "/home",
         name: "home",
         component: Dashboard,
     },
 
-
     {
+        /* LOGIN */
         path: "/login",
         name: "login",
         component: Auth,
-        // meta: {
-        //   guest: true,
-        // },
-    },
-
-    {
-        name: "contracts-view-clone",
-        path: "/contracts/:id/clone",
-        component: CloneView,
-        meta: {
-            requiresAuth: "contracts",
-        },
     },
 
 
     {
+        /* OBJECTS */
         name: "objects",
         path: "/objects",
         component: Objects,
@@ -93,6 +85,7 @@ const routes = [
     },
 
     {
+        /* OBJECTS STORE */
         name: "objectsStore",
         path: "/objects/add",
         component: ObjStore,
@@ -102,6 +95,7 @@ const routes = [
     },
 
     {
+        /* OBJECTS EDIT */
         name: "objectsEdit",
         path: "/objects/:id/update",
         component: ObjStore,
@@ -111,6 +105,7 @@ const routes = [
     },
 
     {
+        /* OBJECTS PROMO */
         name: "objects-promo",
         path: "/objects/:id/promo",
         component: Promo,
@@ -121,6 +116,7 @@ const routes = [
 
 
     {
+        /* OBJECT DEAL TEMPLATE */
         name: "object-deal-template",
         path: "/objects/:id/contracts",
         component: DealDocsTemplate,
@@ -131,18 +127,21 @@ const routes = [
 
 
     {
+        /* SETTINGS */
         name: "settings",
         path: "/settings",
         component: Settings,
     },
 
     {
+        /* PROFILE */
         path: '/profile',
         name: 'user-settings',
         component: UserSettings
     },
 
     {
+        /* DEBTORS */
         name: "debtors",
         path: "/debtors",
         component: Debtors,
@@ -150,7 +149,9 @@ const routes = [
             requiresAuth: "debtors",
         },
     },
+
     {
+        /* APARTMENTS */
         name: "apartments",
         path: "/objects/:object/apartments",
         component: ApartmentsList,
@@ -158,7 +159,9 @@ const routes = [
             requiresAuth: "apartments",
         },
     },
+
     {
+        /* UNFINISHED CONTRACTS */
         name: "unfinished-contracts",
         path: "/objects/unfinished-contracts",
         component: UnfinishedContracts,
@@ -166,7 +169,9 @@ const routes = [
             requiresAuth: "apartments",
         },
     },
+
     {
+        /* APARTMENT VIEW */
         name: "apartment-view",
         path: "/objects/:object/apartment/:id",
         component: ApartmentView,
@@ -174,7 +179,9 @@ const routes = [
             requiresAuth: "apartments",
         },
     },
+
     {
+        /* CONFIRM APARTMENT*/
         name: "confirm-apartment",
         path: "/objects/:object/apartment/:id/order",
         component: ConfirmApartment,
@@ -183,6 +190,7 @@ const routes = [
         },
     },
     {
+        /* USERS */
         name: "users",
         path: "/users",
         component: Users,
@@ -192,6 +200,7 @@ const routes = [
     },
 
     {
+        /* ROLES */
         name: "roles",
         path: "/roles",
         component: Roles,
@@ -201,6 +210,7 @@ const routes = [
     },
 
     {
+        /* ROLES UPDATE */
         name: "roles-update",
         path: "/roles/update/:id",
         component: RolesUpdate,
@@ -210,6 +220,7 @@ const routes = [
     },
 
     {
+        /* ROLES STORE */
         name: "roles-store",
         path: "/roles/store",
         component: RolesStore,
@@ -219,6 +230,7 @@ const routes = [
     },
 
     {
+        /* CLIENTS */
         name: "clients",
         path: "/clients",
         component: Clients,
@@ -228,6 +240,7 @@ const routes = [
     },
 
     {
+        /* CONTRACTS */
         name: "contracts",
         path: "/contracts",
         component: Contracts,
@@ -237,33 +250,28 @@ const routes = [
     },
 
     {
-        name: "contracts-clone",
-        path: "/contracts/clone",
-        component: CloneContracts,
-        meta: {
-            requiresAuth: "contracts",
-        },
-    },
-
-    {
+        /* CONTRACTS VIEW */
         name: "contracts-view",
         path: "/contracts/:id",
-        component: ContractsView,
+        component: ContractView,
         meta: {
-            requiresAuth: "contracts",
-        },
+            requiresAuth: "contracts"
+        }
     },
 
     {
-        name: "contracts-view-clone",
-        path: "/contracts/:id/clone",
-        component: CloneView,
+        /* CONTRACT IMPORT PAYMENTS */
+        name: "contract-import-payments",
+        path: "/contracts/:id/clone/import-payments",
+        component: ImportPayments,
         meta: {
             requiresAuth: "contracts",
-        },
+        }
     },
 
+
     {
+        /* TYPE PLAN */
         name: "type_plan",
         path: "/type/layouts",
         component: TypePlan,
@@ -273,6 +281,7 @@ const routes = [
     },
 
     {
+        /* TYPE PLAN VIEW */
         name: "type-plan-view",
         path: "/type/layouts/view/:id",
         component: TypePlanList,
@@ -282,6 +291,7 @@ const routes = [
     },
 
     {
+        /* TYPE PLAN EDIT*/
         name: "type-plan-edit",
         path: "/type/layouts/:object/edit/:id",
         component: TypePlanEdit,
@@ -291,6 +301,7 @@ const routes = [
     },
 
     {
+        /* COMPANIES */
         name: "companies",
         path: "/companies",
         component: Companies,
@@ -309,35 +320,33 @@ const routes = [
     },
 
     {
+        /* BRANCHES */
         name: 'branches',
         path: '/branches',
         component: Branches
     },
 
     {
+        /* CREATE BRANCH */
         name: 'create-branch',
         path: '/branches/create',
         component: CreateBranchPage
     },
 
     {
+        /* EDIT BRANCH */
         name: 'edit-branch',
         path: '/branches/:id/update',
         component: EditBranchContent
     },
 
-    // {
-    //     name: 'settings',
-    //     path: '/settings',
-    //     component: Clients
-    // },
-
     {
+        /* 404 PAGE */
         path: "*",
         name: "not_found",
         component: PageNotFound,
-    },
-];
+    }
+]
 
 
 const router = new VueRouter({

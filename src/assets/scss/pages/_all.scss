@@ -1,3 +1,7 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
 /* BUTTON MIXIN
 ============================================= */
 
@@ -634,6 +638,7 @@
     padding: 0;
   }
 }
+
 .heading-for-print,
 .datas-for-print {
   display: none;
@@ -672,6 +677,7 @@
           text-decoration: none !important;
         }
       }
+
       .map {
         display: none;
       }
@@ -710,6 +716,7 @@
           border: 1px solid #454d55 !important;
           -webkit-print-color-adjust: exact !important;
         }
+
         tbody td {
           border: 1px solid rgba(0, 0, 0, 0.1) !important;
           -webkit-print-color-adjust: exact !important;
@@ -722,6 +729,7 @@
 .table-multi-select {
   display: flex;
   align-items: center;
+
   input {
     width: 25px;
     height: 25px;
@@ -756,9 +764,11 @@
     background-color: var(--primary);
   }
 }
+
 .custom-table {
   min-height: 80vh;
 }
+
 .custom-table table tbody tr,
 .custom-table table thead tr {
   background-color: var(--background-color-nav);

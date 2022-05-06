@@ -14,9 +14,9 @@
       </template>
     </base-bread-crumb>
 
-    <!--    <router-link :to="{name:'contracts-clone'}">-->
-    <!--      Contracts Clone-->
-    <!--    </router-link>-->
+    <router-link :to="{name:'contracts-clone'}">
+      Contracts Clone
+    </router-link>
 
     <SideBarFilter @contractsFiltered="contractsFiltered" :filtered="filter"/>
 

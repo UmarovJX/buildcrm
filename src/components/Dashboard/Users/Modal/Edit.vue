@@ -45,6 +45,18 @@
         <b-form-group
             label-cols="4"
             label-cols-lg="2"
+            :label="$t('user.second_name')"
+            label-for="second_name"
+        >
+          <b-form-input
+              id="second_name"
+              v-model="manager.second_name"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+            label-cols="4"
+            label-cols-lg="2"
             :label="$t('user.phone')"
             label-for="phone"
         >
@@ -149,7 +161,7 @@
       </form>
     </b-modal>
 
-    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 222233">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
@@ -171,7 +183,7 @@ import api from "@/services/api";
 export default {
   props: {
     managerId: {
-      type: Number,
+      type: String,
       required: true
     },
     editHistoryContext: {
@@ -192,6 +204,7 @@ export default {
       branch_id: null,
       first_name: '',
       last_name: '',
+      second_name: '',
       phone: '',
       email: '',
       role_id: '',
@@ -231,10 +244,11 @@ export default {
     setHistoryContext() {
       const length = Object.keys(this.editHistoryContext).length > 1
       if (length) {
-        const {first_name, last_name, phone, email, branch, role, objects} = this.editHistoryContext
+        const {first_name, last_name, second_name, phone, email, branch, role, objects} = this.editHistoryContext
         this.manager.objects = objects.map(object => object.id)
         this.manager.first_name = first_name
         this.manager.last_name = last_name
+        this.manager.second_name = second_name
         this.manager.phone = phone
         this.manager.email = email
         this.manager.branch_id = branch.id
@@ -270,7 +284,7 @@ export default {
     async handleSubmit() {
       this.getLoading = true
       try {
-        const response = await api.user.updateUserData(this.managerId, this.manager)
+        const response = await api.userV2.updateUserData(this.managerId, this.manager)
         this.toasted(response.data.message, "success");
         this.$nextTick(() => {
           this.getLoading = false

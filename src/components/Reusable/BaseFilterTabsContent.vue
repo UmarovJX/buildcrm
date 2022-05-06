@@ -9,7 +9,7 @@
           :class="[status === currentStatus ? 'filter__content-item-active' : '']"
       >
         <div class="filter__content-item-inline">
-          <span>{{ name }}</span>
+          <span>{{ $t(`${name}`) }}</span>
           <span
               v-if="counts"
               class="counts"
@@ -61,6 +61,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+  font-family: Inter, serif;
+  font-style: normal;
+  line-height: 22px;
+  color: var(--gray-600);
+}
+
 .filter__content {
   position: relative;
   display: flex;
@@ -68,8 +75,11 @@ export default {
   gap: 2rem;
   margin-top: 16px;
   margin-bottom: 8px;
-  color: var(--dark);
-
+  font-family: Inter, serif;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--gray-600);
 
   //&::before {
   //content: '';
@@ -86,10 +96,12 @@ export default {
   &-item {
     position: relative;
     transition: all 0.1s ease-in;
-    display: flex;
-    align-items: center;
-    padding: 4px;
+    //padding: 4px;
     cursor: pointer;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     p {
       margin: 0;
@@ -105,10 +117,10 @@ export default {
       &:after {
         content: '';
         position: absolute;
-        bottom: -14px;
+        bottom: -16px;
         left: 0;
         width: 100%;
-        height: 6px;
+        height: 8px;
         border-radius: 16px 16px 0 0;
         background-color: var(--violet-600);
       }
@@ -136,6 +148,6 @@ export default {
 .bottom__line {
   width: 100%;
   height: 6px;
-  border-bottom: 6px solid var(--gray-100);
+  border-bottom: 8px solid var(--gray-100);
 }
 </style>

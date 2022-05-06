@@ -1,0 +1,80 @@
+::v-deep .pagination__vue {
+  display: flex;
+  margin-top: 2rem;
+
+  ul.container {
+    list-style-type: none;
+    display: flex;
+    padding: 0;
+    margin: 0;
+
+    .page-item {
+      margin-right: 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .page-link {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--gray-100);
+        color: var(--gray-600);
+        border-radius: 50%;
+        padding: 1rem;
+        min-width: 3rem;
+        min-height: 3rem;
+        width: 3rem;
+        height: 3rem;
+        border: none;
+        transition: all 200ms ease-in;
+
+        &:hover {
+          transform: scale(1.1);
+          //background-color: var(--violet-300);
+          //color: var(--violet-800);
+        }
+      }
+
+      &.active .page-link {
+        background-color: var(--violet-100);
+        color: var(--violet-600);
+      }
+    }
+  }
+
+  .show__by {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+    &__content {
+      display: flex;
+      align-items: center;
+      border-radius: 2rem;
+      background-color: var(--gray-100);
+      padding: .75rem 1.5rem;
+      height: 3rem;
+      width: auto;
+      position: relative;
+
+      .custom-select {
+        width: auto;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--gray-600);
+      }
+
+      .description {
+        color: var(--gray-400);
+      }
+
+      .arrow__down {
+        position: absolute;
+        right: 1.75rem;
+      }
+    }
+  }
+}

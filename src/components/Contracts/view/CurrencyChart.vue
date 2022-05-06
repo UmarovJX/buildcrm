@@ -1,7 +1,7 @@
 <template>
   <div class="currency__chart">
     <span class="title">{{ context.title }}</span>
-    <span class="price">{{ context.price }} сум</span>
+    <span class="price">{{ context.price }} {{ $t('payments.course_name') }}</span>
     <span class="bottom__info">{{ context.bottom }}</span>
     <span class="chart__list" :class="firstChartLineClass">
       <span class="d-flex align-items-center">
@@ -33,16 +33,19 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 14px;
   color: var(--violet-600);
   display: block;
   margin-bottom: 1rem;
+  letter-spacing: 1px;
 }
 
 .price {
-  font-size: 24px;
+  font-size: 1.5rem;
   line-height: 28px;
+  margin-bottom: 0.5rem;
+  display: block;
   color: var(--gray-600);
 }
 
@@ -54,8 +57,7 @@ export default {
 
 .chart__list {
   display: block;
-  margin-bottom: 24px;
-  margin-top: 16px;
+  margin-top: 1.5rem;
 
   & > span {
     height: 28px;
@@ -76,7 +78,7 @@ export default {
     display: block;
     margin-left: 8px;
     color: var(--gray-600);
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 22px;
   }
 }
@@ -87,6 +89,20 @@ export default {
     height: 6px;
     border-radius: 1rem;
     background-color: var(--gray-200);
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .title {
+    font-size: 1rem;
+  }
+
+  .price {
+    font-size: 1.25rem;
+  }
+
+  .bottom__info {
+    font-size: 0.8rem;
   }
 }
 </style>

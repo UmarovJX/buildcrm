@@ -8,7 +8,7 @@
           class="filter__content-item"
           :class="[status === currentStatus ? 'filter__content-item-active' : '']"
       >
-        <p>{{ name }}</p>
+        <p>{{ $t(`${name}`) }}</p>
       </div>
     </div>
   </div>
@@ -30,27 +30,27 @@ export default {
     filterList() {
       return [
         {
-          name: this.$t('apartments.tab_names.all'),
+          name: 'apartments.tab_names.all',
           status: 'all'
         },
         {
-          name: this.$t('apartments.tab_names.available'),
+          name: 'apartments.tab_names.available',
           status: 'available'
         },
         {
-          name: this.$t('apartments.tab_names.booked'),
+          name: 'apartments.tab_names.booked',
           status: 'booked'
         },
         {
-          name: this.$t('apartments.tab_names.promo'),
+          name: 'apartments.tab_names.promo',
           status: 'promo'
         },
         {
-          name: this.$t('apartments.tab_names.sold'),
+          name: 'apartments.tab_names.sold',
           status: 'sold'
         },
         {
-          name: this.$t('apartments.tab_names.unavailable'),
+          name: 'apartments.tab_names.unavailable',
           status: 'unavailable'
         }
       ]
