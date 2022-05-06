@@ -6,12 +6,12 @@
         <!--     MAIN CONTENT OF SLIDE       -->
         <div class="swiper-wrapper">
           <div
-              v-for="key of [1,2,3,4,5,6]"
-              :key="key"
+              v-for="(image,index) in apartment.plan.image"
+              :key="index"
               class="swiper-slide"
           >
             <div class="d-flex justify-content-center align-items-center">
-              <img class="swiper-image" src="../../../../assets/img/object-details.png" alt="img">
+              <img class="swiper-image" :src="image" alt="img">
             </div>
           </div>
         </div>
@@ -47,11 +47,11 @@
     </div>
 
     <!--   LINK TO APARTMENT VIEW     -->
-    <div class="mt-5 mb-4">
-      <router-link to="/" class="button__view">Вариант оплаты</router-link>
-    </div>
+    <!--    <div class="mt-5 mb-4">-->
+    <!--      <router-link to="/" class="button__view">Вариант оплаты</router-link>-->
+    <!--    </div>-->
 
-    <!--   PROMO SECTION     -->
+    <!--   PROMO SECTION
     <div class="promo__section font-inter">
           <span class="d-block mb-2">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,28 +84,29 @@
             </span>
           </span>
     </div>
+    -->
 
     <!--   APARTMENT DETAILS     -->
     <div class="apartment__details my-3">
               <span class="apartment__details-row">
-                <span class="property">№ квартиры</span>
+                <span class="property">№ {{ $t('apartment_number') }}</span>
                 <span class="value">{{ apartment.number }}</span>
               </span>
 
       <span class="apartment__details-row">
-                <span class="property">Дата завершения</span>
+                <span class="property">{{ $t('completion_date') }}</span>
                 <span class="value"> {{ buildingDate(apartment.object.build_date) }} </span>
               </span>
 
       <span class="apartment__details-row">
-                <span class="property">Площадь планировки</span>
-                <span class="value">
-                  {{ apartment.plan.area }} M<sup>2</sup>
-                </span>
-              </span>
+        <span class="property">{{ $t('plan_area') }}</span>
+        <span class="value">
+          {{ apartment.plan.area }} M<sup>2</sup>
+        </span>
+      </span>
 
       <span class="apartment__details-row">
-                <span class="property">Балкон</span>
+                <span class="property">{{ $t('balcony') }}</span>
                 <span class="value">
                   {{ apartment.plan.balcony_area }} M<sup>2</sup>
                 </span>
@@ -127,36 +128,38 @@
               </span>
     </div>
 
-    <!--   PARTICULAR QUALITIES     -->
-    <div class="particular__qualities font-inter">
-      <h3 class="title color-gray-600">Особенности</h3>
-      <div class="particular__qualities-content">
-        <div class="part">
-          <span class="image__container"></span>
-          <span class="description">Большой балкон</span>
-        </div>
+    <!--
+      PARTICULAR QUALITIES
+      <div class="particular__qualities font-inter">
+        <h3 class="title color-gray-600">Особенности</h3>
+        <div class="particular__qualities-content">
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Большой балкон</span>
+          </div>
 
-        <div class="part">
-          <span class="image__container"></span>
-          <span class="description">Шикарный вид</span>
-        </div>
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Шикарный вид</span>
+          </div>
 
-        <div class="part">
-          <span class="image__container"></span>
-          <span class="description">Эко-парковка</span>
-        </div>
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Эко-парковка</span>
+          </div>
 
-        <div class="part">
-          <span class="image__container"></span>
-          <span class="description">Секретный шкаф</span>
-        </div>
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Секретный шкаф</span>
+          </div>
 
-        <div class="part">
-          <span class="image__container"></span>
-          <span class="description">Красный ковер</span>
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Красный ковер</span>
+          </div>
         </div>
       </div>
-    </div>
+    -->
   </div>
 </template>
 

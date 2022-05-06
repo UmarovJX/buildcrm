@@ -75,7 +75,6 @@
           </div>
         </template>
       </div>
-
     </div>
 
     <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
@@ -123,7 +122,6 @@ export default {
         case 'available': {
           return {statusText: '', class: 'teal'}
         }
-          // case 'contract':
         case 'waiting':
         case 'sold':
         case 'closed': {

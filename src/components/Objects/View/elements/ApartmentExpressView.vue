@@ -34,7 +34,7 @@
                 <base-arrow-left-icon :width="32" :height="32"/>
               </span>
               <span class="section__title">
-                {{ apartment.object.name }} , {{ apartment.block.name }}
+                {{ sidebarApartment.object.name }} , {{ sidebarApartment.block.name }}
               </span>
             </span>
             <span
@@ -46,7 +46,7 @@
           </div>
 
           <!--  MAIN    -->
-          <primary-information class="pdf-item" v-if="visible" :apartment="apartment" />
+          <primary-information class="pdf-item" v-if="visible" :apartment="sidebarApartment"/>
 
           <!--   ACTIONS     -->
           <div class="d-flex flex-wrap mt-4">
@@ -94,7 +94,7 @@
                 :to="{
                     name: 'apartment-view-clone',
                     params:{
-                      object: apartment.object.id,
+                      object: sidebarApartment.object.id,
                       id: apartment.uuid
                     }
                   }"
@@ -121,7 +121,7 @@
       />
 
       <!--  LOADING    -->
-      <base-loading v-if="appLoading"/>
+      <base-loading class="h-100" v-if="appLoading"/>
     </template>
   </b-sidebar>
 </template>
@@ -164,6 +164,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    apartmentUuid: {
+      type: String,
+      default: ''
     }
   },
 
@@ -177,8 +181,8 @@ export default {
         margin: 6,
         filename: ''
       },
-
-      appLoading: false,
+      sidebarApartment: {},
+      appLoading: true,
       showReservationModal: false
     }
   },
@@ -191,16 +195,16 @@ export default {
       reserveClient: "getReserveClient",
     }),
     hasApartment() {
-      return Object.keys(this.apartment).length > 0
+      return Object.keys(this.sidebarApartment).length > 0
     },
     price() {
-      return formatToPrice(this.apartment.price) + ' ' + this.$t('ye')
+      return formatToPrice(this.sidebarApartment.price) + ' ' + this.$t('ye')
     },
     squareMetrePrice() {
-      return formatToPrice(this.apartment.price_m2) + ' ' + this.$t('ye')
+      return formatToPrice(this.sidebarApartment.price_m2) + ' ' + this.$t('ye')
     },
     status() {
-      return this.apartment.order.status
+      return this.sidebarApartment.order.status
     },
     permission() {
       const context = {
@@ -212,11 +216,11 @@ export default {
 
       if (!this.hasApartment) return context
 
-      const {apartment, me, userPermission} = this
-      const {order} = apartment
+      const {sidebarApartment, me, userPermission} = this
+      const {order} = sidebarApartment
       const {apartments} = userPermission
 
-      const forSale = apartment['is_sold']
+      const forSale = sidebarApartment['is_sold']
       const authorityUser = order?.user?.id === me?.user?.id
       const rootContract = userPermission?.apartments?.root_contract
       const isMainRole = me?.role?.id === 1
@@ -250,19 +254,39 @@ export default {
     }
   },
 
+  watch: {
+    visible(visibleValue) {
+      if (visibleValue) {
+        this.fetchSidebarItem()
+      }
+    }
+  },
+
   /* METHODS */
   methods: {
+    async fetchSidebarItem() {
+      this.appLoading = true
+      const {objectId} = this.$route.params
+      await api.apartments.getApartmentView(objectId, this.apartmentUuid)
+          .then(response => {
+            this.sidebarApartment = response.data
+          }).catch((error) => {
+            this.toastedWithErrorCode(error)
+          }).finally(() => {
+            this.appLoading = false
+          })
+    },
     hideApartmentSidebar() {
       this.$emit('hide-apartment-sidebar-view')
     },
     printApartmentInformation() {
-      const {object, block, entrance, number} = this.apartment
+      const {object, block, entrance, number} = this.sidebarApartment
       this.htmlToPdfOptions.filename = object.name + ' , ' + block.name + ' , ' + entrance + '/' + number
       this.$refs.html2Pdf.generatePdf()
     },
     async orderApartment() {
       this.appLoading = true
-      const apartments = [this.apartment.uuid]
+      const apartments = [this.sidebarApartment.uuid]
       await api.orders.holdOrder(apartments)
           .then((response) => {
             if (response?.data) {
@@ -283,7 +307,7 @@ export default {
       this.$router.push({
         name: "confirm-apartment",
         params: {
-          id: this.apartment.order.id
+          id: this.sidebarApartment.order.id
         },
       })
     },
@@ -292,7 +316,7 @@ export default {
     },
     async cancelReservation() {
       this.appLoading = true
-      await api.orders.fetchOrderClient(this.apartment.order.id)
+      await api.orders.fetchOrderClient(this.sidebarApartment.order.id)
           .then((response) => {
             const client = response.data
             this.$swal({

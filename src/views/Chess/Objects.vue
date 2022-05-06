@@ -37,6 +37,7 @@
     <apartment-express-view
         :visible="expressView.toggle"
         :apartment="expressView.item"
+        :apartmentUuid="expressView.item.uuid"
         @update-content="updateContent"
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />

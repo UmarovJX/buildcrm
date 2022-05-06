@@ -122,6 +122,10 @@ export default {
     square_meter: 'M<sub>2</sub>',
     from: 'dan',
     to: 'gacha',
+    apartment_number: 'Xonadon raqami',
+    completion_date: 'Tugallanish vaqti',
+    plan_area: 'Loyiha maydoni',
+    balcony: 'Balkon',
 
     tab_status: {
         all: "Hammasi",
