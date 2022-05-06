@@ -16,14 +16,14 @@
           <div class="card-content">
             <div class="card-block">
               <p class="card-block__title">{{ plan.area }} М<sup>2</sup></p>
-              <p class="card-block__subtitle">{{ price(plan.price_m2) }} сум/M<sup>2</sup></p>
+              <p class="card-block__subtitle">{{ price(plan.price_m2) }} {{ $t('ye') }}/M<sup>2</sup></p>
             </div>
             <div class="card-block">
-              <p class="card-block__title">{{ plan.rooms }} комнаты</p>
-              <p class="card-block__subtitle price">{{ price(plan.price) }} сум</p>
+              <p class="card-block__title">{{ plan.rooms }} {{ $t('object.flats') }}</p>
+              <p class="card-block__subtitle price">{{ price(plan.price) }} {{ $t('ye') }}</p>
             </div>
             <div class="card-block">
-              <p class="card-block__title">{{ plan.apartments_count }} помещений</p>
+              <p class="card-block__title">{{ plan.apartments_count }} {{ $t('object.rooms') }}</p>
             </div>
           </div>
           <div class="card-bottom">

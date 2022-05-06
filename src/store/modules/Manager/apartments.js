@@ -75,7 +75,7 @@ export default {
 
             try {
                 const object = router.currentRoute.params.object
-                let {data} = await api.objects.fetchObjectApartments(object, router.currentRoute.query)
+                let {data} = await api.objectsV2.fetchObjectApartments(object, router.currentRoute.query)
                 ctx.commit("updateApartment", data)
             } catch (error) {
                 vm.toastedWithErrorCode(error);

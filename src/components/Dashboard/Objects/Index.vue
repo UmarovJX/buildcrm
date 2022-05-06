@@ -31,13 +31,13 @@
                   <i class="fas fa-pen"></i> {{ $t("edit") }}
                 </router-link>
 
-                <router-link
-                    v-if="getPermission.objects.update"
-                    :to="{name:'object-deal-template',params:{id:object.id}}"
-                    :class="'dropdown-item'"
-                >
-                  <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}
-                </router-link>
+                <!--                <router-link-->
+                <!--                    v-if="getPermission.objects.update"-->
+                <!--                    :to="{name:'object-deal-template',params:{id:object.id}}"-->
+                <!--                    :class="'dropdown-item'"-->
+                <!--                >-->
+                <!--                  <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}-->
+                <!--                </router-link>-->
 
 
                 <router-link
@@ -91,9 +91,6 @@
                 <h5 class="card-title">
                   {{ object.name }}
                 </h5>
-                <!--                <div class="card-button">-->
-                <!--                  Объект сдан-->
-                <!--                </div>-->
                 <div class="card-subtitle">
                   {{ object.address }}
                 </div>
@@ -103,11 +100,11 @@
             <div class="card-content">
               <div class="card-block">
                 <p class="card-block__title">{{ object.apartments_count }} квартиры</p>
-                <p class="card-block__subtitle price">от 330,000,000 сум</p>
+                <p class="card-block__subtitle price">от {{ object.apartment_price }} сум</p>
               </div>
               <div class="card-block">
-                <p class="card-block__title">16 этажей</p>
-                <p class="card-block__subtitle">от 3,500,000 сум/м<sup>2</sup></p>
+                <p class="card-block__title">{{ object.floors_count }} этажей</p>
+                <p class="card-block__subtitle">от {{ object.apartment_price_m2 }} сум/м<sup>2</sup></p>
               </div>
             </div>
           </router-link>
@@ -197,14 +194,25 @@ export default {
 
   mounted() {
     this.fetchObjects(this);
-    //this.fetchApartmentsRooms(this);
+    console.log(this.getPermission);
   },
 
   computed: {
     ...mapGetters(["getObjects", "getPermission"]),
     activeContent() {
       return this.$t('objects.title')
-    }
+    },
+    // permission(){
+    //   const hasObjectPermission = this.getPermission.hasOwnProperty('objects')
+    //   if(hasObjectPermission){
+    //     return this.getPermission.objects
+    //   }
+    //
+    //   return {
+    //     update:false,
+    //
+    //   }
+    // }
   },
 
   methods: {

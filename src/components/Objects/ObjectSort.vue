@@ -4,7 +4,7 @@
       <!--   Комнат    -->
       <b-dropdown left>
         <template #button-content>
-          Комнат
+          {{ $t('object.sort.flat') }}
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -25,7 +25,7 @@
       <!--  Этаж    -->
       <b-dropdown left>
         <template #button-content>
-          Этаж
+          {{ $t('object.level') }}
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -46,7 +46,7 @@
       <!--   Жилая площадь    -->
       <b-dropdown left>
         <template #button-content>
-          Жилая площадь
+          {{ $t('object.sort.area') }}
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -81,7 +81,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            placeholder="от"
+            :placeholder="$t('from')"
             class="filter__price"
         ></base-numeric-input>
 
@@ -92,7 +92,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            placeholder="до"
+            :placeholder="$t('to')"
             class="filter__price"
         ></base-numeric-input>
       </div>
@@ -100,7 +100,7 @@
       <!--   Блок    -->
       <b-dropdown v-show="sortBar" left>
         <template #button-content>
-          Блок
+          {{ $t('object.sort.block') }}
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -128,7 +128,7 @@
             @set-tags="setApartmentNumbers"
             :default-tags="defaultApartments"
             ref="base-form-tag-input"
-            placeholder="Номер квартиры"
+            :placeholder="$t('object.sort.number_flat')"
         >
           <template #delete-content>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -204,7 +204,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            placeholder="от"
+            :placeholder="$t('from')"
             class="filter__price"
         ></base-numeric-input>
         <base-numeric-input
@@ -214,7 +214,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            placeholder="до"
+            :placeholder="$t('to')"
             class="filter__price"
         ></base-numeric-input>
       </div>
@@ -238,10 +238,11 @@
       <!--        </b-dropdown-text>-->
       <!--      </b-dropdown>-->
 
-      <div class="detail-button" @click="openBar">
-        <base-details-icon fill="#7C3AED"/>
+      <div class="detail-button" @click="openBar" :class="sortBar ? 'active':''">
+        <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'"/>
       </div>
 
+      <base-button @click="clearFilter" :text="$t('object.sort.apply')" design="violet-gradient"/>
       <base-button @click="clearFilter" text="Очистить" design="violet-gradient"/>
     </div>
 
@@ -302,16 +303,28 @@ export default {
     return {
       currentTab: {
         id: 2,
-        param: 'chess-one',
+        param: 'chess',
         name: 'ObjectBlock',
         buttonIcon: 'BaseChessOne',
-        title: 'Шахматка 1.0'
+        title: this.$t('object.chess') + ' 1.0'
       },
       tabs: [
-        {id: 2, param: 'chess-one', name: 'ObjectBlock', buttonIcon: 'BaseChessOne', title: 'Шахматка 1.0'},
-        {id: 3, param: 'chess-two', name: 'ChessSquareCard', buttonIcon: 'BaseChessTwo', title: 'Шахматка 2.0'},
-        {id: 4, param: 'chess-table', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: 'Список'},
-        {id: 5, param: 'chess-plan', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: 'Планировки'},
+        {
+          id: 2,
+          param: 'chess',
+          name: 'ObjectBlock',
+          buttonIcon: 'BaseChessOne',
+          title: this.$t('object.chess') + ' 1.0'
+        },
+        {
+          id: 3,
+          param: 'chess',
+          name: 'ChessSquareCard',
+          buttonIcon: 'BaseChessTwo',
+          title: this.$t('object.chess') + ' 2.0'
+        },
+        {id: 4, param: 'chess', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: this.$t('object.list')},
+        {id: 5, param: 'chess', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: this.$t('object.plan')},
       ],
       sortBar: false,
       defaultApartments: [],
@@ -518,6 +531,12 @@ export default {
   background-color: var(--gray-100);
   border-radius: 50%;
   cursor: pointer;
+  transition: all .2s linear;
+
+  &.active {
+    background-color: var(--violet-600);
+  }
+
 }
 
 .filter__price {

@@ -402,6 +402,7 @@ export default {
 
       & > span {
         display: block;
+        text-transform: uppercase;
       }
 
       & > span:first-child {

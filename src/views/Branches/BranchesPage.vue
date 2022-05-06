@@ -73,12 +73,8 @@
                       }"
                       :class="'dropdown-item dropdown-item--inside'"
                   >
-                    <span>
-                      <i class="fas fa-pen"></i>
-                    </span>
-                    <span class="ml-2">
-                      {{ $t("edit") }}
-                    </span>
+                    <i class="fas fa-pen"></i>
+                    {{ $t("edit") }}
                   </router-link>
 
                   <router-link

@@ -363,7 +363,7 @@ export default {
       fields: [
         {
           key: "number",
-          label: 'Номер помещения',
+          label: this.$t('object.sort.number_rooms'),
           sortable: true,
         },
         // {
@@ -484,7 +484,7 @@ export default {
         query.objectId = [query.objectId]
       }
       const {objectId} = this.$route.params
-      await api.objects.fetchObjectApartments(objectId, query)
+      await api.objectsV2.fetchObjectApartments(objectId, query)
           .then((response) => {
             this.apartments = response.data.items
             this.pagination = response.data.pagination
@@ -534,7 +534,7 @@ export default {
       this.filter.order_by = val.sortDesc ? "desc" : "asc";
 
       this.$router.push({
-        name: "chess-table",
+        name: "chess",
         params: this.$route.params.objectId,
         query: this.filter,
       }).then(() => {
@@ -551,22 +551,22 @@ export default {
     getStatus(value) {
       switch (value) {
         case 'available': {
-          return {statusText: 'Свободно', class: 'teal'}
+          return {statusText: this.$t('object.status.available'), class: 'teal'}
         }
         case 'contract':
         case 'waiting':
         case 'sold':
         case 'closed': {
-          return {statusText: 'Продано', class: 'gray'}
+          return {statusText: this.$t('object.status.sold'), class: 'gray'}
         }
         case 'booked': {
-          return {statusText: 'Забронировано', class: 'yellow'}
+          return {statusText: this.$t('object.status.booked'), class: 'yellow'}
         }
         case 'hold': {
-          return {statusText: 'Оформлено', class: 'blue'}
+          return {statusText: this.$t('object.status.contract'), class: 'blue'}
         }
         default:
-          return {statusText: 'Свободно', class: 'teal'}
+          return {statusText: this.$t('object.status.available'), class: 'teal'}
       }
     },
 
@@ -576,7 +576,7 @@ export default {
       this.edit = false;
 
       await this.$router.push({
-        name: "chess-table",
+        name: "chess",
         query: this.filter,
       });
 

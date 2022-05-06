@@ -105,6 +105,8 @@ export default {
     unfamiliar: 'Незнакомый',
     continue_registration: 'Продолжить оформление',
     apartment: "Квартира",
+    from: 'от',
+    to: 'до',
     square_meter: 'M<sub>2</sub>',
 
     tab_status: {
@@ -574,14 +576,36 @@ export default {
     object: {
         home: 'ДОМ',
         entrance: 'ПОДЪЕЗД',
-        level: 'ЭТАЖ',
+        level: 'Этаж',
         number_level: 'ЭТАЖНОСТЬ',
         flat: 'КВАРТИРА',
         number_flat: 'КОЛ-ВО КОМНАТ',
         area: 'ПЛОЩАДЬ',
         balcony: 'БАЛКОН',
         complete: 'ЗАВЕРШЕНИЕ СТРОИТЕЛЬСТВА',
+        sort: {
+            flat: 'Комнат',
+            area: 'Жилая площадь',
+            block: 'Блок',
+            number_flat: 'Номер квартиры',
+            number_rooms: 'Номер помещения',
+            apply: 'Применить'
+        },
+        chess: 'Шахматка',
+        list: 'Список',
+        plan: 'Планировки',
+        flats: 'комнаты',
+        rooms: 'помещений',
+        status: {
+            available: 'Свободно',
+            sold: 'Продано',
+            booked: 'Забронировано',
+            contract: 'Оформлено',
+            disable: 'Недоступно',
+
+        }
     },
+
 
     objects: {
         title: "Объекты",

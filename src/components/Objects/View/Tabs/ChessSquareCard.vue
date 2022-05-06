@@ -3,7 +3,7 @@
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>
-          Этажи
+          {{ $t('object.level') }}
         </h5>
       </div>
 
@@ -139,17 +139,16 @@ export default {
         case 'available': {
           return {statusText: '', class: 'teal'}
         }
-        case 'contract':
         case 'waiting':
         case 'sold':
         case 'closed': {
-          return {statusText: 'Продано', class: 'gray'}
+          return {statusText: this.$t('object.status.sold'), class: 'gray'}
         }
         case 'booked': {
-          return {statusText: 'Забронировано', class: 'yellow'}
+          return {statusText: this.$t('object.status.booked'), class: 'yellow'}
         }
-        case 'hold': {
-          return {statusText: 'Оформлено', class: 'blue'}
+        case 'contract': {
+          return {statusText: this.$t('object.status.contract'), class: 'blue'}
         }
         default:
           return {statusText: '', class: 'teal'}

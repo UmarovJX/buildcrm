@@ -120,7 +120,8 @@ export default {
     unfamiliar: 'Notanish',
     continue_registration: "Rasmiylashtirishni davom etish",
     square_meter: 'M<sub>2</sub>',
-
+    from: 'dan',
+    to: 'gacha',
 
     tab_status: {
         all: "Hammasi",
@@ -565,14 +566,36 @@ export default {
     object: {
         home: 'UY',
         entrance: 'PODEYZ',
-        level: 'QAVAT',
+        level: 'Qavat',
         number_level: 'QAVATLAR SONI',
         flat: 'XONADON',
         number_flat: 'XONALAR SONI',
         area: 'MAYDONI',
         balcony: 'BALKON',
         complete: 'QURILISHNI TUGASHI',
+        sort: {
+            flat: 'Xonalar',
+            area: 'Yashash maydoni',
+            block: 'Blok',
+            number_flat: 'Kvartira raqami',
+            number_rooms: 'Xonalar soni',
+            apply: "Qo'llash"
+        },
+        chess: 'Shaxmatka',
+        list: "Ro'yxat",
+        plan: "Tartiblar",
+        flats: "kvartiralar",
+        rooms: 'xonalar',
+        status: {
+            available: "Bo'sh",
+            sold: 'Sotilgan',
+            booked: 'Band qilingan',
+            contract: 'Rasmiylashtirilgan',
+            disable: 'Mavjud emas',
+
+        }
     },
+
 
     objects: {
         title: "Obyektlar",

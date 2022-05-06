@@ -85,27 +85,27 @@ export default {
           hold
         * */
         {
-          label: 'Свободно',
+          label: this.$t('object.status.available'),
           class: 'teal',
           value: 'available'
         },
         {
-          label: 'Заброниравано',
+          label: this.$t('object.status.booked'),
           class: 'yellow',
           value: 'booked'
         },
         {
-          label: 'contract',
+          label: this.$t('object.status.contract'),
           class: 'blue',
           value: 'booked'
         },
         {
-          label: 'Продано',
+          label: this.$t('object.status.sold'),
           class: 'gray',
           value: 'sold'
         },
         {
-          label: 'Недоступно',
+          label: this.$t('object.status.disable'),
           class: 'disabled',
           value: 'closed'
         },
