@@ -154,6 +154,8 @@ export default {
       }
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {
+      if (apartmentActive === undefined || floorActive === undefined || blockActive === undefined)
+        return false
       return !(blockActive && floorActive && apartmentActive)
     },
     showBlock(blockActive) {

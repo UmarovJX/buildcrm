@@ -97,7 +97,7 @@ export default {
         {
           label: this.$t('object.status.contract'),
           class: 'blue',
-          value: 'booked'
+          value: 'contract'
         },
         {
           label: this.$t('object.status.sold'),
@@ -117,8 +117,16 @@ export default {
   },
 
   watch: {
-    statusFilter(statuses) {
-      console.log(statuses)
+    query() {
+      return Object.assign({}, this.$route.query)
+    },
+    statusFilter(status) {
+      this.$router.push({
+        query: {
+          ...this.query,
+          status: status
+        }
+      })
     },
     '$route.query'(query) {
       const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
@@ -213,7 +221,7 @@ export default {
               let floorApartments = filterFloor.apartments
               floorApartments = floorApartments.map(floorApartment => {
                 let apartment = floorApartment
-                const {price_m2, number, price, plan, rooms} = apartment
+                const {price_m2, number, price, plan, rooms, order} = apartment
                 const filterResult = []
                 const filterQueryLength = Object.keys(filter).length > 0
                 if (filterQueryLength) {
@@ -260,11 +268,11 @@ export default {
                       continue
                     }
 
-                    // if (key === 'floors') {
-                    //   const isSatisfy = value.includes(floor)
-                    //   filterResult.push(isSatisfy)
-                    //   continue
-                    // }
+                    if (key === 'status') {
+                      const isSatisfy = value.includes(order.status)
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
 
                     if (key === 'numbers') {
                       const isSatisfy = value.includes(number)
