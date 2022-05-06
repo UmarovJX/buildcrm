@@ -22,53 +22,68 @@
 
           <div class="item" style="margin-right: 30px">
 
-          <span v-for="item in value.floors" :key="item.name" style="display:block;">
-            <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
-              <div v-for="elem in item.apartments" :key="elem.id" class="block-item"
-                   :class="status(elem.order.status).class">
-                <div :id="'tolltip'+elem.number" class="box" @click="showExpressSidebar(elem)"
+            <div v-for="item in value.floors" :key="item.name" style="display:block;">
+              <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
+                <div
+                    v-for="elem in item.apartments"
+                    :key="elem.id"
+                    class="block-item"
+                    :class="[
+                        hasQuery && inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
+                        ? 'apartment-inactive'
+                        : status(elem.order.status).class
+                    ]"
                 >
-                    <h5>
-                     {{ elem.number }}
-                    </h5>
-                </div>
-                <span :class="status(elem.order.status).class+'-tool'">
-                  <b-tooltip class="custom-tooltip" :target="'tolltip' + elem.number" triggers="hover"
-                             placement="bottomright">
-                  <div class="square"
-                       :class="status(elem.order.status).class+'-tool'">
-                  <div class="square-header">
-                    <p>Кв. №{{ elem.number }}</p>
-                    <div v-if="elem.is_promo" class="h-auto d-flex">
-                      <img src="../../../../assets/icons/bonuses.svg" alt="">
-                    </div>
-                  </div>
-                  <div class="square-body">
-                    <h5>
-                      <template v-if="status(elem.order.status).statusText">
-                        {{ status(elem.order.status).statusText }}
-                      </template>
-                      <template v-else>
-                        {{ price(elem.price) }} сум
-                      </template>
+                  <div
+                      :id="'tolltip'+elem.number"
+                      class="box"
+                      @click="showExpressSidebar(elem.apartmentActive,item.floorActive,value.blockActive)"
+                  >
+                    <h5 class="apartment-number">
+                      {{ elem.number }}
                     </h5>
                   </div>
-                  <div class="square-footer">
-                    <p>{{ elem.plan.area }} M<sup>2</sup></p>
-                    <p>{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
-                  </div>
+                  <span class="tooltip-content" :class="status(elem.order.status).class+'-tool'">
+                      <b-tooltip
+                          class="custom-tooltip"
+                          :target="'tolltip' + elem.number"
+                          triggers="hover"
+                          placement="bottomright"
+                      >
+                        <div class="square"
+                             :class="status(elem.order.status).class+'-tool'">
+                        <div class="square-header">
+                          <p>Кв. №{{ elem.number }}</p>
+                          <div v-if="elem.is_promo" class="h-auto d-flex">
+                            <img src="../../../../assets/icons/bonuses.svg" alt="">
+                          </div>
+                        </div>
+                        <div class="square-body">
+                          <h5>
+                            <template v-if="status(elem.order.status).statusText">
+                              {{ status(elem.order.status).statusText }}
+                            </template>
+                            <template v-else>
+                              {{ price(elem.price) }} сум
+                            </template>
+                          </h5>
+                        </div>
+                        <div class="square-footer">
+                          <p>{{ elem.plan.area }} M<sup>2</sup></p>
+                          <p>{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                        </div>
+                      </div>
+                      </b-tooltip>
+                    </span>
                 </div>
-                </b-tooltip>
-                </span>
+
               </div>
 
-            </div>
-
-            <div v-else class="block-item">
-              <div class="square">
+              <div v-else class="block-item">
+                <div class="square">
+                </div>
               </div>
             </div>
-         </span>
           </div>
         </div>
       </div>
@@ -105,7 +120,18 @@ export default {
       required: false,
     }
   },
+
   emits: ['show-express-sidebar'],
+
+  computed: {
+    query() {
+      return this.$route.query
+    },
+    hasQuery() {
+      return Object.keys(this.query).length > 0
+    }
+  },
+
   methods: {
     status(value) {
       switch (value) {
@@ -136,9 +162,16 @@ export default {
         return item.floors.length
       }))
     },
-    showExpressSidebar(item) {
-      this.$emit('show-express-sidebar', item)
+    showExpressSidebar(item, floorActive, blockActive) {
+      const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
+      console.log(isActive)
+      if (isActive) {
+        this.$emit('show-express-sidebar', item)
+      }
     },
+    inactiveApartment(apartmentActive, floorActive, blockActive) {
+      return !(blockActive && floorActive && apartmentActive)
+    }
   }
 }
 </script>
@@ -400,7 +433,6 @@ export default {
   height: 56px;
   background-color: var(--gray-50);
   font-family: Inter, sans-serif;
-  border: 1px solid var(--gray-100);
   justify-content: center;
   align-items: center;
 
@@ -453,6 +485,7 @@ export default {
     width: 100%;
     height: 56px;
     background-color: var(--gray-50);
+    border: 1px solid var(--gray-100);
   }
 }
 
@@ -492,5 +525,20 @@ export default {
 
   }
 }
+
+.inactive-apartment .apartment-number {
+  color: transparent;
+}
+
+.apartment-inactive {
+  .box {
+    display: none;
+  }
+
+  ::v-deep .tooltip-content {
+    display: none;
+  }
+}
+
 
 </style>
