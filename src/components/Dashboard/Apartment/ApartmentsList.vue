@@ -426,6 +426,7 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api"
 
 export default {
+  name:'ApartmentList',
   components: {
     "filter-form": Filter,
     "reserve-add": ReserveAdd,

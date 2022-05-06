@@ -1,4 +1,4 @@
-import router from '../../../routes'
+// import router from '../../../routes'
 import api from "@/services/api";
 
 export default {
@@ -39,42 +39,45 @@ export default {
             state.client = client;
         },
     },
+
     actions: {
         async fetchApartments(ctx, vm) {
             /* eslint-disable no-debugger */
             // debugger;
+            const router = vm.$route
             ctx.commit("updateLoading", true, {root: true});
 
-            if (typeof router.currentRoute.query.rooms === "string") {
+            if (typeof router.query.rooms === "string") {
                 const newArr = [];
-                const newArrItem = parseInt(router.currentRoute.query.rooms);
+                const newArrItem = parseInt(router.query.rooms);
                 newArr.push(newArrItem);
-                router.currentRoute.query.rooms = newArr;
-            }
-            if (typeof router.currentRoute.query.number === "string") {
-                const newArr = [];
-                const newArrItem = parseInt(router.currentRoute.query.number);
-                newArr.push(newArrItem);
-                router.currentRoute.query.number = newArr;
-            }
-            if (typeof router.currentRoute.query.floors === "string") {
-                const newArr = [];
-                const newArrItem = parseInt(router.currentRoute.query.floors);
-                newArr.push(newArrItem);
-                router.currentRoute.query.floors = newArr;
-            }
-            if (typeof router.currentRoute.query.blocks === "string") {
-                const newArr = [];
-                const newArrItem = parseInt(router.currentRoute.query.blocks);
-                newArr.push(newArrItem);
-                router.currentRoute.query.blocks = newArr;
+                router.query.rooms = newArr;
             }
 
-            if (router.currentRoute.name !== "apartments") return;
+            if (typeof router.query.number === "string") {
+                const newArr = [];
+                const newArrItem = parseInt(router.query.number);
+                newArr.push(newArrItem);
+                router.query.number = newArr;
+            }
+            if (typeof router.query.floors === "string") {
+                const newArr = [];
+                const newArrItem = parseInt(router.query.floors);
+                newArr.push(newArrItem);
+                router.query.floors = newArr;
+            }
+            if (typeof router.query.blocks === "string") {
+                const newArr = [];
+                const newArrItem = parseInt(router.query.blocks);
+                newArr.push(newArrItem);
+                router.query.blocks = newArr;
+            }
+
+            // if (router.name !== "apartments") return;
 
             try {
-                const object = router.currentRoute.params.object
-                let {data} = await api.objects.fetchObjectApartments(object, router.currentRoute.query)
+                const object = router.params.object
+                let {data} = await api.objects.fetchObjectApartments(object, router.query)
                 ctx.commit("updateApartment", data)
             } catch (error) {
                 vm.toastedWithErrorCode(error);
@@ -86,7 +89,7 @@ export default {
         async fetchApartmentsFilter(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
             try {
-                const {object} = this.router.currentRoute.params
+                const {object} = this.router.params
                 const response = await api.objects.fetchObjectWithPagination(object, vm.page, vm.filter)
                 const apartments = response.data;
                 ctx.commit("updateApartment", apartments);
@@ -97,9 +100,10 @@ export default {
         },
 
         async fetchFilterObject(ctx, vm) {
+            const router = vm.$route
             ctx.commit("updateLoading", true, {root: true});
             try {
-                const response = await api.objects.fetchByFilterObject(router.currentRoute.params.object)
+                const response = await api.objects.fetchByFilterObject(router.params.object)
                 const floors = response.data;
                 ctx.commit("updateFilter", floors);
             } catch (error) {

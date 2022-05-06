@@ -43,6 +43,7 @@ import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
 import ApartmentView from "./components/Dashboard/Apartment/View";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
 import Companies from "./components/Dashboard/Companies/Index";
+import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
 import Promo from './components/Dashboard/Objects/Promo/Index'
@@ -293,6 +294,15 @@ const routes = [
         name: "companies",
         path: "/companies",
         component: Companies,
+        meta: {
+            requiresAuth: "companies",
+        }
+    },
+    {
+        /* COMPANIES */
+        name: "company-details",
+        path: "/company/:companyId/details",
+        component: CompanyDetails,
         meta: {
             requiresAuth: "companies",
         }

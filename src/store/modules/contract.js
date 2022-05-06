@@ -5,6 +5,11 @@ export default {
     state: {
         contracts: [],
         pagination: {},
+        excelSheets: {
+            rows: [],
+            file: null,
+            contract: {}
+        }
     },
 
     mutations: {
@@ -15,6 +20,10 @@ export default {
         updatePagination(state, pagination) {
             state.pagination = pagination;
         },
+
+        initExcelSheet(state, excelList) {
+            state.excelSheets = excelList
+        }
     },
 
     getters: {
@@ -25,6 +34,10 @@ export default {
         getPaginationContracts(state) {
             return state.pagination;
         },
+
+        getExcelSheets(state) {
+            return state.excelSheets
+        }
     },
     actions: {
         async fetchContracts(ctx, vm) {

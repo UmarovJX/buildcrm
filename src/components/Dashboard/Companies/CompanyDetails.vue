@@ -74,11 +74,11 @@ export default {
     }
   },
   async created() {
-    this.loading = true
     await this.getPaymentList()
   },
   methods: {
     async getPaymentList() {
+      this.loading = true
       const id = this.$route.params.companyId
       await api.companies.getPaymentsList(id)
           .then((res) => {

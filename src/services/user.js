@@ -44,10 +44,43 @@ class UserV2 extends Core {
         super(axios);
     }
 
-    getUsersList() {
-        return this.get('users')
+    getUserData() {
+        return this.get('oauth/me')
+    }
+
+    getUser() {
+        return this.get('users/me')
+    }
+
+    deleteUserFromDB(userId) {
+        return this.delete(`users/${userId}`)
+    }
+
+    updateUserAvatar(data, config) {
+        return this.post('users/me', data, config)
+    }
+
+    updateUserPassword(data) {
+        return this.put('users/me', data)
+    }
+
+    getUsersList(query) {
+        return this.get('users', {params: query})
+    }
+
+    fetchUserData(userId) {
+        return this.get(`users/${userId}`)
+    }
+
+    updateUserData(userId, body) {
+        return this.put(`users/${userId}`, body)
+    }
+
+    addNewUserToDB(body) {
+        return this.post(`users`, body)
     }
 }
+
 
 export default {
     User,
