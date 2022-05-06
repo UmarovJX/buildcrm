@@ -145,11 +145,8 @@ export default {
         return item.floors.length
       }))
     },
-    showExpressSidebar(item, floorActive, blockActive) {
-      const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
-      if (isActive) {
-        this.$emit('show-express-sidebar', item)
-      }
+    showExpressSidebar(item) {
+      this.$emit('show-express-sidebar', item)
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {
       return !(blockActive && floorActive && apartmentActive)

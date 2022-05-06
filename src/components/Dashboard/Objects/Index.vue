@@ -100,11 +100,11 @@
             <div class="card-content">
               <div class="card-block">
                 <p class="card-block__title">{{ object.apartments_count }} квартиры</p>
-                <p class="card-block__subtitle price">от {{ object.apartment_price }} сум</p>
+                <p class="card-block__subtitle price">от {{ priceFormat(object.apartment_price) }} сум</p>
               </div>
               <div class="card-block">
                 <p class="card-block__title">{{ object.floors_count }} этажей</p>
-                <p class="card-block__subtitle">от {{ object.apartment_price_m2 }} сум/м<sup>2</sup></p>
+                <p class="card-block__subtitle">от {{ priceFormat(object.apartment_price_m2) }} сум/м<sup>2</sup></p>
               </div>
             </div>
           </router-link>
@@ -159,6 +159,7 @@ import UploadLogo from "./Components/UploadLogo";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import {formatToPrice} from "@/util/reusable";
 
 export default {
   name: 'Objects',
@@ -220,6 +221,10 @@ export default {
 
     createBlock() {
       this.$router.push({name: "objectsStore"});
+    },
+
+    priceFormat(value) {
+      return formatToPrice(value)
     },
 
     uploadLogo() {

@@ -1,10 +1,11 @@
 <template>
   <b-sidebar
-      :visible="visible"
+      v-model="visible"
       sidebar-class="sidebar__apartment"
       body-class="sidebar__apartment-body"
       aria-labelledby="sidebar-no-header-title"
-      id="apartment-express-view"
+      :backdrop-variant="variant"
+      backdrop
       right no-header shadow
   >
     <template #default="{ hide }">
@@ -46,7 +47,7 @@
           </div>
 
           <!--  MAIN    -->
-          <primary-information class="pdf-item" v-if="visible" :apartment="apartment" />
+          <primary-information class="pdf-item" v-if="visible" :apartment="apartment"/>
 
           <!--   ACTIONS     -->
           <div class="d-flex flex-wrap mt-4">
@@ -138,6 +139,8 @@ import VueHtml2pdf from 'vue-html2pdf'
 import {formatToPrice} from "@/util/reusable";
 import {mapGetters} from "vuex";
 import api from "@/services/api";
+// import ClickOutside from 'vue-click-outside'
+
 
 export default {
   name: "ApartmentExpressView",
@@ -177,11 +180,13 @@ export default {
         margin: 6,
         filename: ''
       },
-
+      variant: 'light',
+      visibleModal: true,
       appLoading: false,
       showReservationModal: false
     }
   },
+
 
   /* COMPUTED */
   computed: {
@@ -252,6 +257,13 @@ export default {
 
   /* METHODS */
   methods: {
+    // hideModal() {
+    //   // setTimeout(() => {
+    //     if (this.visible) {
+    //       this.$emit('close', this.apartment)
+    //     }
+    //   // }, 1000)
+    // },
     hideApartmentSidebar() {
       this.$emit('hide-apartment-sidebar-view')
     },
