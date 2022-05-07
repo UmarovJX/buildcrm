@@ -242,8 +242,8 @@
         <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'"/>
       </div>
 
-      <base-button @click="clearFilter" :text="$t('object.sort.apply')" design="violet-gradient"/>
-      <base-button @click="clearFilter" text="Очистить" design="violet-gradient"/>
+<!--      <base-button @click="clearFilter" :text="$t('object.sort.apply')" design="violet-gradient"/>-->
+      <base-button @click="clearFilter" :text="$t('object.sort.clear')" design="violet-gradient"/>
     </div>
 
     <div class="chess-tab">

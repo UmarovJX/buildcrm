@@ -227,6 +227,10 @@ class ObjectsV2 extends Core {
     fetchObjectFields(objectId) {
         return this.get(`apartments/objects/${objectId}/filter-fields`)
     }
+
+    fetchObjectApartments(object, params) {
+        return this.get(`apartments/objects/${object}/apartments`, {params})
+    }
 }
 
 export default {
