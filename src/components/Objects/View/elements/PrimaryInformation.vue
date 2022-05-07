@@ -272,7 +272,8 @@ export default {
 
       .swiper-image
         width: 16rem
-        height: 16rem
+        object-fit: contain
+        //height: 16rem
 
     .swiper-button
       width: 3rem

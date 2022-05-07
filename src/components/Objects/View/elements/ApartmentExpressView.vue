@@ -191,7 +191,6 @@ export default {
     }
   },
 
-
   /* COMPUTED */
   computed: {
     ...mapGetters({
@@ -263,6 +262,8 @@ export default {
     visible(visibleValue) {
       if (visibleValue) {
         this.fetchSidebarItem()
+      } else {
+        this.$emit('hide-apartment-sidebar-view')
       }
     }
   },

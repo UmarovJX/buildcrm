@@ -404,15 +404,14 @@ export default {
           })
     },
     apartmentExpressReview(item) {
-      const itemNotOpen = item.uuid !== this.expressView.item.uuid
-      if (itemNotOpen) {
-        this.expressView.item = item
-        this.expressView.toggle = true
-      }
+      // const itemNotOpen = item.uuid !== this.expressView.item.uuid
+      // if (itemNotOpen) {
+      this.expressView.item = item
+      this.expressView.toggle = true
+      // }
     },
     hideApartmentSidebarView() {
       this.expressView.toggle = false
-      console.log(this.expressView.toggle, 'log');
     },
     updateContent() {
       this.getApartments()
