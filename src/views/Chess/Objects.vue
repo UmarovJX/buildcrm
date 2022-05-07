@@ -1,6 +1,7 @@
 <template>
   <main class="app-content">
 
+
     <object-sort
         :filter-fields="filterFields"
         :app-loading="finishLoading"
@@ -33,6 +34,7 @@
         @show-express-sidebar="apartmentExpressReview"
     />
 
+
     <!-- APARTMENT QUICK VIEW   -->
     <apartment-express-view
         :visible="expressView.toggle"
@@ -41,10 +43,12 @@
         @update-content="updateContent"
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
+
   </main>
 </template>
 
 <script>
+
 import api from "@/services/api";
 import ObjectSort from "@/components/Objects/ObjectSort";
 import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
@@ -52,6 +56,7 @@ import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentEx
 import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
 import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
+import ClickOutside from "vue-click-outside";
 
 export default {
   name: "Objects",
@@ -62,6 +67,9 @@ export default {
     ObjectBlock,
     ObjectPlan,
     ApartmentExpressView
+  },
+  directives: {
+    ClickOutside
   },
   data() {
     return {
@@ -130,6 +138,29 @@ export default {
     }
   },
 
+  mounted() {
+    // this.popupItem = this.$el
+
+    // window.addEventListener('click', (event) => {
+    //   const modalOverlay = document.getElementsByClassName('app-content')
+    //   const modalContent = document.getElementById('apartment-express-view')
+    //   const mountedContent = modalContent === event.target
+    //   const mountedOverlay = modalOverlay === event.target
+    //   console.log('ishladi')
+    //   if (mountedOverlay) {
+    //     console.log('mountedOverlay')
+    //   }
+    //   if (mountedContent) {
+    //     console.log('mountedContent');
+    //   }
+    //   if (mountedOverlay && !mountedContent) {
+    //     console.log('ishladi if icihi')
+    //     this.expressView.toggle = false
+    //
+    //   }
+    // })
+  },
+
   async created() {
     await Promise.allSettled([
       await this.fetchFilterFields(),
@@ -139,6 +170,7 @@ export default {
       this.finishLoading = true
     })
   },
+
 
   methods: {
     async fetchFilterFields() {
@@ -153,6 +185,24 @@ export default {
     changeTab(name) {
       this.currentTab = name.name
     },
+    // hideModal() {
+    //   console.log('ishladi');
+    //
+    //   if (this.expressView.toggle) {
+    //     console.log('ifni ichi');
+    //     this.expressView.toggle = false
+    //     this.expressView.item = {}
+    //   }
+    // },
+    // hideExpressModal() {
+    //   this.expressView.toggle = false
+    //   this.expressView.item = {}
+    //   // const accessToClose = openedApartment.uuid === this.expressView.item.uuid
+    //   // if (accessToClose) {
+    //   //   this.expressView.toggle = false
+    //   //   this.expressView.item = {}
+    //   // }
+    // },
     filterItems(filter) {
       this.apartments = this.apartments.map(mainConstructor => {
         let filterBlocks
@@ -346,8 +396,11 @@ export default {
           })
     },
     apartmentExpressReview(item) {
+      // const itemNotOpen = item.uuid !== this.expressView.item.uuid
+      // if (itemNotOpen) {
       this.expressView.item = item
       this.expressView.toggle = true
+      // }
     },
     hideApartmentSidebarView() {
       this.expressView.toggle = false

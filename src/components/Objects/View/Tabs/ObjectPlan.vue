@@ -27,17 +27,17 @@
             </div>
           </div>
           <div class="card-bottom">
-            <div class="swiper" v-swiper="swiperOption" :id="plan.id">
+            <div class="swiper" v-swiper="swiperOption" :id="plan.id" style="padding: 0 60px">
 
               <!--     MAIN CONTENT OF SLIDE       -->
               <div class="swiper-wrapper">
                 <div
-                    v-for="key of [1,2,3,4,5,6]"
-                    :key="key"
+                    v-for="(key,index) of plan.image"
+                    :key="index"
                     class="swiper-slide"
                 >
                   <div class="d-flex justify-content-center align-items-center">
-                    <img class="swiper-image" :src="plan.image" alt="img">
+                    <img class="swiper-image" :src="key" alt="img">
                   </div>
                 </div>
               </div>
@@ -63,7 +63,7 @@
       </div>
     </div>
 
-    <b-overlay :show="planLoad" no-wrap opacity="0.5" style="z-index: 2222">
+    <b-overlay :show="planLoad" no-wrap opacity="0" style="z-index: 2222">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
@@ -119,7 +119,7 @@ export default {
       // loading: false,
       swiperOption: {
         slidesPerView: 1,
-        spaceBetween: 80,
+        spaceBetween: 0,
         direction: 'horizontal',
         paginationClickable: true,
         draggable: true,

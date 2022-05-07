@@ -168,12 +168,9 @@
 
                 <!--  Подробная информация  -->
                 <router-link
-                    :to="{
-                                    name: 'apartment-view',
-                                    params: {id: data.item.id},
-                                  }"
+                    :to="{name: 'apartment-view',
+                          params: {object: $route.params.objectId, id: data.item.id}}"
                     :class="'dropdown-item dropdown-item--inside'"
-
                 >
                   <i class="far fa-eye"></i>
                   {{ $t("apartments.list.more") }}
@@ -466,7 +463,8 @@ export default {
 
   watch: {
     '$route.query': {
-      handler: function () {
+      handler(val) {
+        console.log(val, 'value');
         this.fetchContractList()
       },
       deep: true
@@ -484,7 +482,8 @@ export default {
         query.objectId = [query.objectId]
       }
       const {objectId} = this.$route.params
-      await api.objectsV2.fetchObjectApartments(objectId, query)
+      console.log(query, 'query');
+      await api.objects.fetchObjectApartments(objectId, query)
           .then((response) => {
             this.apartments = response.data.items
             this.pagination = response.data.pagination

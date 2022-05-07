@@ -1,10 +1,12 @@
 <template>
   <b-sidebar
-      :visible="visible"
+      v-model="visible"
       sidebar-class="sidebar__apartment"
       body-class="sidebar__apartment-body"
       aria-labelledby="sidebar-no-header-title"
       id="apartment-express-view"
+      :backdrop-variant="variant"
+      backdrop
       right no-header shadow
   >
     <template #default="{ hide }">
@@ -183,6 +185,8 @@ export default {
       },
       sidebarApartment: {},
       appLoading: true,
+      variant: 'light',
+      visibleModal: true,
       showReservationModal: false
     }
   },
@@ -258,6 +262,8 @@ export default {
     visible(visibleValue) {
       if (visibleValue) {
         this.fetchSidebarItem()
+      } else {
+        this.$emit('hide-apartment-sidebar-view')
       }
     }
   },
