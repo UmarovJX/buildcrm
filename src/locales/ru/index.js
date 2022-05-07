@@ -112,6 +112,8 @@ export default {
     completion_date: 'Дата завершения',
     plan_area: 'Площадь планировки',
     balcony: 'Балкон',
+    number_of_rooms: 'Количество комнат',
+    number_of_floors_of_the_block: 'Blokning qavatlar soni',
 
     tab_status: {
         all: "Все",

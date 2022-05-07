@@ -76,15 +76,7 @@ export default {
       plans: [],
       currentTab: 'ObjectBlock',
       statusList: [
-        /*
-        * available
-          contract
-          waiting
-          sold
-          closed
-          booked
-          hold
-        * */
+        /* available,contract,waiting,sold,closed,booked,hold */
         {
           label: this.$t('object.status.available'),
           class: 'teal',

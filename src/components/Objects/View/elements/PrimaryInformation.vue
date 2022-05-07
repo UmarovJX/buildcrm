@@ -88,15 +88,15 @@
 
     <!--   APARTMENT DETAILS     -->
     <div class="apartment__details my-3">
-              <span class="apartment__details-row">
-                <span class="property">№ {{ $t('apartment_number') }}</span>
-                <span class="value">{{ apartment.number }}</span>
-              </span>
+      <span class="apartment__details-row">
+        <span class="property">№ {{ $t('apartment_number') }}</span>
+        <span class="value">{{ apartment.number }}</span>
+      </span>
 
       <span class="apartment__details-row">
-                <span class="property">{{ $t('completion_date') }}</span>
-                <span class="value"> {{ buildingDate(apartment.object.build_date) }} </span>
-              </span>
+        <span class="property">{{ $t('completion_date') }}</span>
+        <span class="value"> {{ buildingDate(apartment.object.build_date) }} </span>
+      </span>
 
       <span class="apartment__details-row">
         <span class="property">{{ $t('plan_area') }}</span>
@@ -106,26 +106,26 @@
       </span>
 
       <span class="apartment__details-row">
-                <span class="property">{{ $t('balcony') }}</span>
-                <span class="value">
-                  {{ apartment.plan.balcony_area }} M<sup>2</sup>
-                </span>
-              </span>
+        <span class="property">{{ $t('balcony') }}</span>
+        <span class="value">
+          {{ apartment.plan.balcony_area }} M<sup>2</sup>
+        </span>
+      </span>
 
       <span class="apartment__details-row">
-                <span class="property">Количество комнат</span>
-                <span class="value">{{ apartment.rooms }}</span>
-              </span>
+        <span class="property">{{ $t('number_of_rooms') }}</span>
+        <span class="value">{{ apartment.rooms }}</span>
+      </span>
 
       <span class="apartment__details-row">
-                <span class="property">Этаж</span>
-                <span class="value">{{ apartment.floor }}</span>
-              </span>
+        <span class="property">{{ $t('floor') }}</span>
+        <span class="value">{{ apartment.floor }}</span>
+      </span>
 
       <span class="apartment__details-row">
-                <span class="property">Этажность блока</span>
-                <span class="value">{{ apartment.block.floors }}</span>
-              </span>
+        <span class="property">{{ $t('number_of_floors_of_the_block') }}</span>
+        <span class="value">{{ apartment.block.floors }}</span>
+      </span>
     </div>
 
     <!--

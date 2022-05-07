@@ -384,7 +384,7 @@ export default {
         background-color: var(--gray-50);
 
         p, h5 {
-          color: transparent;
+          display: none;
         }
       }
     }
@@ -392,26 +392,17 @@ export default {
     .square-footer {
       .apartment-area,
       .apartment-square-price {
-        color: var(--gray-50);
+        display: none;
       }
     }
   }
 
   .apartment {
+    &-square-price,
+    &-price,
+    &-status,
     &-number {
-      color: var(--gray-50);
-    }
-
-    &-status {
-      color: var(--gray-50);
-    }
-
-    &-price {
-      color: var(--gray-50);
-    }
-
-    &-square-price {
-      color: var(--gray-50);
+      display: none;
     }
   }
 }

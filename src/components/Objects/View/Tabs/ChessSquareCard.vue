@@ -534,7 +534,7 @@ export default {
 }
 
 .inactive-apartment .apartment-number {
-  color: transparent;
+  display: none;
 }
 
 .apartment-inactive {
