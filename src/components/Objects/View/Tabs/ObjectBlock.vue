@@ -14,66 +14,67 @@
           </div>
         </div>
 
-        <div
-            v-for="value in apartment.blocks"
-            :key="value.id"
-            class="d-flex flex-column position-relative"
-        >
+        <template v-for="value in apartment.blocks">
+          <div
+              v-if="showBlock(value.blockActive)"
+              :key="value.id"
+              class="d-flex flex-column position-relative"
+          >
 
-          <div class="header">
-            {{ value.name }}
-          </div>
+            <div class="header">
+              {{ value.name }}
+            </div>
 
-          <div class="item" style="margin-right: 30px">
-            <div v-for="item in value.floors" :key="item.name">
-              <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
-                <div
-                    v-for="elem in item.apartments"
-                    :key="elem.id"
-                    class="block-item"
-                    :class="{
+            <div class="item" style="margin-right: 30px">
+              <div v-for="item in value.floors" :key="item.name">
+                <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
+                  <div
+                      v-for="elem in item.apartments"
+                      :key="elem.id"
+                      class="block-item"
+                      :class="{
                       'inactive-apartment':
                       hasQuery &&
                       inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
                     }"
-                >
-                  <div class="square" @click="showExpressSidebar(elem,item.floorActive,value.blockActive)"
-                       :class="status(elem.order.status).class">
-                    <div class="square-header">
-                      <p class="apartment-number">Кв. № {{ elem.number }}</p>
-                      <div v-if="elem.is_promo" class="h-auto d-flex apartment-promo-icon">
-                        <img src="../../../../assets/icons/bonuses.svg" alt="">
+                  >
+                    <div class="square" @click="showExpressSidebar(elem,item.floorActive,value.blockActive)"
+                         :class="status(elem.order.status).class">
+                      <div class="square-header">
+                        <p class="apartment-number">Кв. № {{ elem.number }}</p>
+                        <div v-if="elem.is_promo" class="h-auto d-flex apartment-promo-icon">
+                          <img src="../../../../assets/icons/bonuses.svg" alt="">
+                        </div>
                       </div>
-                    </div>
-                    <div class="square-body">
-                      <h5>
-                        <template v-if="status(elem.order.status).statusText">
+                      <div class="square-body">
+                        <h5>
+                          <template v-if="status(elem.order.status).statusText">
                           <span class="apartment-status">
                             {{ status(elem.order.status).statusText }}
                           </span>
-                        </template>
-                        <template v-else>
-                          <span class="apartment-price">{{ price(elem.price) }} сум</span>
-                        </template>
-                      </h5>
-                    </div>
-                    <div class="square-footer">
-                      <p class="apartment-area">{{ elem.plan.area }} M<sup>2</sup></p>
-                      <p class="apartment-square-price">{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                          </template>
+                          <template v-else>
+                            <span class="apartment-price">{{ price(elem.price) }} сум</span>
+                          </template>
+                        </h5>
+                      </div>
+                      <div class="square-footer">
+                        <p class="apartment-area">{{ elem.plan.area }} M<sup>2</sup></p>
+                        <p class="apartment-square-price">{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div v-else class="block-item">
-                <div class="square">
+                <div v-else class="block-item">
+                  <div class="square">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </template>
       </div>
-
     </div>
 
     <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
@@ -121,7 +122,6 @@ export default {
         case 'available': {
           return {statusText: '', class: 'teal'}
         }
-          // case 'contract':
         case 'waiting':
         case 'sold':
         case 'closed': {
@@ -149,7 +149,16 @@ export default {
       this.$emit('show-express-sidebar', item)
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {
+      if (apartmentActive === undefined || floorActive === undefined || blockActive === undefined)
+        return false
       return !(blockActive && floorActive && apartmentActive)
+    },
+    showBlock(blockActive) {
+      if (blockActive === undefined) {
+        return true
+      } else {
+        return blockActive
+      }
     }
   }
 }
@@ -283,7 +292,7 @@ export default {
   display: flex;
   padding-top: 22px;
   background-color: var(--white);
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .counter {

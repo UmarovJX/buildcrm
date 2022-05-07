@@ -1,6 +1,5 @@
 <template>
   <div class="apartment-list-filter">
-
     <div>
       <b-table
           thead-tr-class="row__head__bottom-border"

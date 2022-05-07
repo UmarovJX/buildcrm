@@ -11,16 +11,16 @@
     <b-form-checkbox-group
         id="checkbox-sort"
         class="status-sort"
-        v-model="filter"
+        v-model="statusFilter"
         name="sort"
     >
       <b-form-checkbox
-          v-for="object in sort"
-          :key="object.label"
-          :value="object.label"
-          :class="object.class"
+          v-for="status in statusList"
+          :key="status.label"
+          :value="status.value"
+          :class="status.class"
       >
-        {{ object.label }}
+        {{ status.label }}
       </b-form-checkbox>
     </b-form-checkbox-group>
 
@@ -39,6 +39,7 @@
     <apartment-express-view
         :visible="expressView.toggle"
         :apartment="expressView.item"
+        :apartmentUuid="expressView.item.uuid"
         @update-content="updateContent"
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
@@ -82,34 +83,60 @@ export default {
       apartments: [],
       plans: [],
       currentTab: 'ObjectBlock',
-      sort: [
+      statusList: [
+        /*
+        * available
+          contract
+          waiting
+          sold
+          closed
+          booked
+          hold
+        * */
         {
           label: this.$t('object.status.available'),
           class: 'teal',
+          value: 'available'
         },
         {
           label: this.$t('object.status.booked'),
           class: 'yellow',
+          value: 'booked'
         },
         {
           label: this.$t('object.status.contract'),
           class: 'blue',
+          value: 'contract'
         },
         {
           label: this.$t('object.status.sold'),
           class: 'gray',
+          value: 'sold'
         },
         {
           label: this.$t('object.status.disable'),
           class: 'disabled',
+          value: 'closed'
         },
       ],
+      statusFilter: [],
       filter: [],
       filterFields: {}
     }
   },
 
   watch: {
+    query() {
+      return Object.assign({}, this.$route.query)
+    },
+    statusFilter(status) {
+      this.$router.push({
+        query: {
+          ...this.query,
+          status: status
+        }
+      })
+    },
     '$route.query'(query) {
       const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
       const accessToFilter = tabsActiveToFilter.includes(this.currentTab)
@@ -245,7 +272,7 @@ export default {
               let floorApartments = filterFloor.apartments
               floorApartments = floorApartments.map(floorApartment => {
                 let apartment = floorApartment
-                const {price_m2, number, price, plan, rooms} = apartment
+                const {price_m2, number, price, plan, rooms, order} = apartment
                 const filterResult = []
                 const filterQueryLength = Object.keys(filter).length > 0
                 if (filterQueryLength) {
@@ -292,13 +319,13 @@ export default {
                       continue
                     }
 
-                    // if (key === 'floors') {
-                    //   const isSatisfy = value.includes(floor)
-                    //   filterResult.push(isSatisfy)
-                    //   continue
-                    // }
+                    if (key === 'status') {
+                      const isSatisfy = value.includes(order.status)
+                      filterResult.push(isSatisfy)
+                      continue
+                    }
 
-                    if (key === 'apartments') {
+                    if (key === 'numbers') {
                       const isSatisfy = value.includes(number)
                       filterResult.push(isSatisfy)
                     }

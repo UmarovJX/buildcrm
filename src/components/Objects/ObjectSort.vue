@@ -243,6 +243,7 @@
       </div>
 
       <base-button @click="clearFilter" :text="$t('object.sort.apply')" design="violet-gradient"/>
+      <base-button @click="clearFilter" text="Очистить" design="violet-gradient"/>
     </div>
 
     <div class="chess-tab">
@@ -338,7 +339,7 @@ export default {
         areas: [],
         rooms: [],
         floors: [],
-        apartments: []
+        numbers: []
       },
       options: [1, 2, 3, 4, 5, 6, 7],
       currencyOptions: ["UZS", "USD"],
@@ -380,7 +381,7 @@ export default {
       })
     },
     setApartmentNumbers(apartments) {
-      this.form.apartments = apartments
+      this.form.numbers = apartments
     },
     setFormProperty(property, value) {
       this.form[property] = value
@@ -426,9 +427,9 @@ export default {
     },
     initSelectedApartments() {
       const filterQuery = Object.assign({}, this.$route.query)
-      const hasApartments = filterQuery.hasOwnProperty('apartments')
+      const hasApartments = filterQuery.hasOwnProperty('numbers')
       if (hasApartments) {
-        const value = filterQuery['apartments']
+        const value = filterQuery['numbers']
         const isQueryPrimitive = typeof value === 'number' || typeof value === 'string'
         if (isQueryPrimitive)
           this.defaultApartments = parseInt(value)
