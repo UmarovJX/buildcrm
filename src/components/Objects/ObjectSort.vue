@@ -25,7 +25,20 @@
       <!--  Этаж    -->
       <b-dropdown left>
         <template #button-content>
+          <!--          <div class="dr-content d-flex">-->
+          <!--            <div v-if="form.floors">-->
+          <!--              <div v-for="item in form.floors" :key="item"-->
+          <!--                   style="display:flex; max-width: 50px; overflow:hidden">-->
+          <!--                {{ item }},&ensp;-->
+          <!--              </div>-->
+          <!--            </div>-->
+          <!--            <template v-else>-->
+          <!--              {{ $t('object.level') }}-->
+          <!--            </template>-->
+
+          <!--          </div>-->
           {{ $t('object.level') }}
+
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -242,7 +255,7 @@
         <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'"/>
       </div>
 
-<!--      <base-button @click="clearFilter" :text="$t('object.sort.apply')" design="violet-gradient"/>-->
+      <!--      <base-button @click="clearFilter" :text="$t('object.sort.apply')" design="violet-gradient"/>-->
       <base-button @click="clearFilter" :text="$t('object.sort.clear')" design="violet-gradient"/>
     </div>
 
@@ -446,6 +459,7 @@ export default {
     clearFilter() {
       this.form = clearObjectProperties(this.form)
       this.clearApartments()
+      this.$emit('clear-status')
       const query = {}
       this.$router.push({
         query

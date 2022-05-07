@@ -57,12 +57,14 @@
                 v-slot="{ errors }"
                 class="mt-3 validation__provider"
             >
+              <!--              {{ managersOption }}-->
               <label for="select-managers"> Менеджер </label>
               <b-form-select
                   id="select-managers"
                   v-model="form.managerId"
                   :options="managersOption"
-              ></b-form-select>
+              >
+              </b-form-select>
               <span class="error__provider">
                 {{ errors[0] }}
               </span>
@@ -156,6 +158,9 @@ export default {
       ]
     }
   },
+  async created() {
+    await this.getManagersList()
+  },
   computed: {
     managersOption() {
       const managers = this.managersList
@@ -167,19 +172,15 @@ export default {
           }
         })
       }
-
       return []
     },
     hiddenArea() {
       return this.loading ? 'true' : null
     }
   },
-  async created() {
-    await this.getManagersList()
-  },
   methods: {
     async getManagersList() {
-      await api.user.getUsersList()
+      await api.userV2.getUsersAll()
           .then(response => {
             this.managersList = response.data
             this.setHistoryField()
@@ -188,7 +189,7 @@ export default {
             this.toastedWithErrorCode(error)
           })
     },
-    setHistoryField() {
+    async setHistoryField() {
       const hasHistory = this.$route.params?.historyForm && Object.keys(this.$route.params?.historyForm).length > 0
       if (hasHistory) {
         const {name, address, phone, manager} = this.$route.params.historyForm
@@ -202,6 +203,14 @@ export default {
           }
         }
       } else {
+        // this.managersList.map((val) => {
+        //   // return console.log(val);
+        //   console.log(val);
+        //   if (val.id === this.$route.params.id) {
+        //     console.log(val.id, 'manager id')
+        //   }
+        //   return val
+        // })
         this.form.managerId = this.managersList[0].id
       }
     },

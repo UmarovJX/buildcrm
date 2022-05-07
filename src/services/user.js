@@ -48,6 +48,11 @@ class UserV2 extends Core {
         return this.get('oauth/me')
     }
 
+    //
+    // getUsersList() {
+    //     return this.get('users')
+    // }
+
     getUser() {
         return this.get('users/me')
     }
@@ -66,6 +71,10 @@ class UserV2 extends Core {
 
     getUsersList(query) {
         return this.get('users', {params: query})
+    }
+
+    getUsersAll() {
+        return this.get('users/all')
     }
 
     fetchUserData(userId) {

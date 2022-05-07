@@ -1,10 +1,10 @@
 <template>
   <main class="app-content">
 
-
     <object-sort
         :filter-fields="filterFields"
         :app-loading="finishLoading"
+        @clear-status="clearStatus"
         @current-tab="changeTab"
     />
 
@@ -192,6 +192,9 @@ export default {
     },
     changeTab(name) {
       this.currentTab = name.name
+    },
+    clearStatus() {
+      this.statusFilter = []
     },
     // hideModal() {
     //   console.log('ishladi');

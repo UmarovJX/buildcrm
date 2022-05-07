@@ -200,7 +200,7 @@ export default {
       /* SLIDER OPTION */
       swiperOption: {
         slidesPerView: 1,
-        spaceBetween: 80,
+        spaceBetween: 0,
         direction: 'horizontal',
         pagination: {
           el: '.swiper-pagination',
@@ -255,8 +255,10 @@ export default {
     object-fit: contain
 
 ::v-deep .slider-content
-  margin-left: 2.5rem
-  margin-right: 2.5rem
+  margin: 1rem
+  //margin-left: 1rem
+  //margin-right: 1rem
+  //margin-bottom: 1rem
 
   .swiper-container
     display: flex
@@ -269,11 +271,13 @@ export default {
       display: flex
       justify-content: center
       align-items: center
+      padding: 0 58px
 
       .swiper-image
-        width: 16rem
+        width: 100%
+        max-height: 19rem
         object-fit: contain
-        //height: 16rem
+    //height: 16rem
 
     .swiper-button
       width: 3rem

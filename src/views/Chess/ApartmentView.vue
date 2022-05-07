@@ -34,8 +34,11 @@
       </div>
 
       <!--   MAIN   -->
-      <div class="content-view d-flex justify-content-between flex-wrap">
+      <div class="content-view d-flex justify-content-between flex-wrap flex-lg-nowrap">
+        <!--        <div class="col-12 col-lg-5">-->
         <primary-information class="primary__information" :apartment="apartment"/>
+        <!--        </div>-->
+        <!--        <div class="col-12 col-lg-7">-->
         <div class="calculator w-100 d-flex flex-column justify-content-between">
           <div>
             <h4 class="calculator-title color-gray-600 font-craftworksans">Выберите вариант оплаты</h4>
@@ -91,7 +94,7 @@
               <div class="w-100 outputs font-inter">
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">Начальная цена</span>
-                  <span class="price d-block color-gray-600">{{ initialPrice }}</span>
+                  <span class="price d-block color-gray-600">{{ initialPrice }} {{ $t('ye') }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between">
@@ -101,7 +104,7 @@
                   <span v-if="calc.prepay_percente === 100"
                         class="price d-block color-gray-600"
                   >
-                    {{ pricePrettier(calc.total) }}
+                    {{ pricePrettier(calc.total) }} {{ $t('ye') }}
                   </span>
                   <span
                       v-else
@@ -113,17 +116,21 @@
 
                 <div v-if="discount.amount > 0" class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">{{ $t('contracts.view.remainder') }}</span>
-                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.debt) }}</span>
+                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.debt) }} {{ $t('ye') }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">{{ $t('apartments.view.price_for_m2') }}</span>
-                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.price_for_m2) }}</span>
+                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.price_for_m2) }} {{
+                      $t('ye')
+                    }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
-                  <span class="price d-block color-violet-600 total-price">{{ pricePrettier(calc.total) }}</span>
+                  <span class="price d-block color-violet-600 total-price">{{
+                      pricePrettier(calc.total)
+                    }}  {{ $t('ye') }}</span>
                 </div>
               </div>
             </div>
@@ -181,6 +188,8 @@
             </div>
           </div>
         </div>
+        <!--        </div>-->
+
       </div>
     </div>
 
@@ -305,7 +314,6 @@ export default {
       const {apartment, me, userPermission} = this
       const {order} = apartment
       const {apartments} = userPermission
-
       const forSale = apartment['is_sold']
       const authorityUser = order?.user?.id === me?.user?.id
       const rootContract = userPermission?.apartments?.root_contract
@@ -318,10 +326,10 @@ export default {
       const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
 
       const permissionOrder = () => {
-        const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
-        return forSale && permissionOne
-      }
 
+        const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
+        return !forSale && permissionOne
+      }
       const permissionContinueOrder = () => {
         const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || apartments.contract)
         const permissionTwo = isStatusBooked && authorityUser && apartments.contract
@@ -751,4 +759,13 @@ input[type="number"]
 @media only screen and (max-width: 1390px)
   .calculator
     max-width: 640px
+  .primary__information
+    width: 30rem
+
+@media (max-width: 992px)
+  .primary__information
+    margin: 0 auto
+    width: 42rem
+  .calculator
+    margin: 0 auto
 </style>
