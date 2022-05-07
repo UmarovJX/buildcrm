@@ -126,6 +126,8 @@ export default {
     completion_date: 'Tugallanish vaqti',
     plan_area: 'Loyiha maydoni',
     balcony: 'Balkon',
+    number_of_rooms: 'Xonalar soni',
+    number_of_floors_of_the_block: 'Blokning qavatlar soni',
 
     tab_status: {
         all: "Hammasi",

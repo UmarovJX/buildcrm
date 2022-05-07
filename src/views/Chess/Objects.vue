@@ -48,7 +48,6 @@
 </template>
 
 <script>
-
 import api from "@/services/api";
 import ObjectSort from "@/components/Objects/ObjectSort";
 import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
@@ -57,6 +56,7 @@ import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
 import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
 import ClickOutside from "vue-click-outside";
+import {isPrimitiveValue} from "@/util/reusable";
 
 export default {
   name: "Objects",
@@ -84,15 +84,7 @@ export default {
       plans: [],
       currentTab: 'ObjectBlock',
       statusList: [
-        /*
-        * available
-          contract
-          waiting
-          sold
-          closed
-          booked
-          hold
-        * */
+        /* available,contract,waiting,sold,closed,booked,hold */
         {
           label: this.$t('object.status.available'),
           class: 'teal',
@@ -116,7 +108,7 @@ export default {
         {
           label: this.$t('object.status.disable'),
           class: 'disabled',
-          value: 'closed'
+          value: 'unavailable'
         },
       ],
       statusFilter: [],
@@ -125,48 +117,50 @@ export default {
     }
   },
 
-  watch: {
+  computed: {
     query() {
       return Object.assign({}, this.$route.query)
     },
-    statusFilter(status) {
-      this.$router.push({
-        query: {
-          ...this.query,
-          status: status
-        }
-      })
+    hasQuery() {
+      return Object.keys(this.$route.query).length > 0
     },
-    '$route.query'(query) {
+    accessToFilter() {
       const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
-      const accessToFilter = tabsActiveToFilter.includes(this.currentTab)
-      if (accessToFilter) {
-        this.filterItems(query)
-      }
+      return tabsActiveToFilter.includes(this.currentTab)
     }
   },
 
-  mounted() {
-    // this.popupItem = this.$el
-
-    // window.addEventListener('click', (event) => {
-    //   const modalOverlay = document.getElementsByClassName('app-content')
-    //   const modalContent = document.getElementById('apartment-express-view')
-    //   const mountedContent = modalContent === event.target
-    //   const mountedOverlay = modalOverlay === event.target
-    //   console.log('ishladi')
-    //   if (mountedOverlay) {
-    //     console.log('mountedOverlay')
-    //   }
-    //   if (mountedContent) {
-    //     console.log('mountedContent');
-    //   }
-    //   if (mountedOverlay && !mountedContent) {
-    //     console.log('ishladi if icihi')
-    //     this.expressView.toggle = false
-    //
-    //   }
-    // })
+  watch: {
+    statusFilter(status) {
+      if (status.length) {
+        const isNotEqual = !this.compareArray(this.query.status, this.statusFilter)
+        if (isNotEqual) {
+          const arraySatisfaction = Array.isArray(status) && status.length > 0
+          if (arraySatisfaction) {
+            this.$router.push({
+              query: {
+                ...this.query,
+                status: status
+              }
+            })
+          }
+        }
+      } else {
+        const routeQuery = this.query
+        delete routeQuery.status
+        this.$router.push({
+          query: routeQuery
+        })
+      }
+    },
+    '$route.query': {
+      async handler(query) {
+        await this.compareStatus(query)
+        if (this.accessToFilter) {
+          await this.filterItems(query)
+        }
+      }
+    }
   },
 
   async created() {
@@ -214,6 +208,31 @@ export default {
     //   //   this.expressView.item = {}
     //   // }
     // },
+    compareArray(arrayOne, arrayTwo) {
+      if (Array.isArray(arrayOne) && Array.isArray(arrayTwo)) {
+        const arr1 = arrayOne.slice().sort()
+        const arr2 = arrayTwo.slice().sort()
+        const equalLength = arr1.length === arr2.length
+        const isEqualByValue = arr1.every((value, index) => value === arr2[index])
+        return equalLength && isEqualByValue
+      }
+      return false
+    },
+    compareStatus(routeQuery) {
+      const isNotEqual = routeQuery.status && !this.compareArray(routeQuery.status, this.statusFilter)
+      if (isNotEqual) {
+        const isPrimitive = isPrimitiveValue(routeQuery.status)
+        if (isPrimitive) {
+          this.statusFilter = [routeQuery.status]
+        } else {
+          this.statusFilter = routeQuery.status
+        }
+      }
+
+      if (routeQuery.status === undefined) {
+        this.statusFilter = []
+      }
+    },
     filterItems(filter) {
       this.apartments = this.apartments.map(mainConstructor => {
         let filterBlocks
@@ -275,7 +294,7 @@ export default {
               let floorApartments = filterFloor.apartments
               floorApartments = floorApartments.map(floorApartment => {
                 let apartment = floorApartment
-                const {price_m2, number, price, plan, rooms, order} = apartment
+                const {price_m2, number, price, plan, rooms, order, is_sold} = apartment
                 const filterResult = []
                 const filterQueryLength = Object.keys(filter).length > 0
                 if (filterQueryLength) {
@@ -323,8 +342,21 @@ export default {
                     }
 
                     if (key === 'status') {
-                      const isSatisfy = value.includes(order.status)
-                      filterResult.push(isSatisfy)
+                      if (value === 'unavailable') {
+                        if (is_sold === false) {
+                          filterResult.push(true)
+                        } else {
+                          filterResult.push(false)
+                        }
+                      } else {
+                        const isStatusPrimitive = isPrimitiveValue(value)
+                        let values = value
+                        if (isStatusPrimitive) {
+                          values = [value]
+                        }
+                        const isSatisfy = values.includes(order.status)
+                        filterResult.push(isSatisfy)
+                      }
                       continue
                     }
 
@@ -386,8 +418,12 @@ export default {
     async getApartments() {
       this.getLoading = true
       const id = this.$route.params.objectId
-      await api.objectsV2.getApartments(id).then((res) => {
+      await api.objectsV2.getApartments(id).then(async (res) => {
         this.apartments = res.data.data
+        if (this.hasQuery) {
+          await this.compareStatus(this.query)
+          await this.filterItems(this.query)
+        }
       }).catch(err => {
         this.toastedWithErrorCode(err)
       }).finally(() => {

@@ -123,3 +123,9 @@ export function clearObjectProperties(context) {
     })
     return loopPassage
 }
+
+export function isPrimitiveValue(value) {
+    const primitiveTypes = ['number', 'string', 'boolean', 'symbol', 'null', 'undefined']
+    const type = typeof value
+    return primitiveTypes.includes(type)
+}

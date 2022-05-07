@@ -389,7 +389,10 @@ export default {
       const values = sortInFirstRelationship(this.form)
       const params = this.$route.params
       this.$router.push({
-        query: values,
+        query: {
+          ...this.$route.query,
+          ...values
+        },
         params
       })
     },
