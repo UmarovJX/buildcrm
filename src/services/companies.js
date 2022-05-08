@@ -10,6 +10,10 @@ class Companies extends Core {
         return this.get('companies')
     }
 
+    getCompany(companyId) {
+        return this.get(`companies/${companyId}`)
+    }
+
     getCompanyBranch(branchId) {
         return this.get(`companies/${branchId}`)
     }

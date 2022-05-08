@@ -128,6 +128,8 @@ export default {
     balcony: 'Balkon',
     number_of_rooms: 'Xonalar soni',
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
+    search_placeholder: 'ФИО, телефон, номер договора',
+
 
     tab_status: {
         all: "Hammasi",

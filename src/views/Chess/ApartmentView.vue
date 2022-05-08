@@ -138,13 +138,13 @@
 
           <div class="align-self-stretch d-flex justify-content-end">
             <!--   ACTIONS     -->
-            <div class="d-flex flex-wrap mt-4 pb-4">
+            <div class="action-block">
               <!--      CHECKOUT        -->
               <base-button
                   v-if="permission.order"
                   @click="orderApartment"
                   :text="`${ $t('apartments.list.confirm') }`"
-                  class="checkout__button bg-gradient-violet color-white mr-3 mb-4"
+                  class="checkout__button violet-gradient"
               />
 
               <!--      CONTINUE CHECKOUT        -->
@@ -152,7 +152,7 @@
                   v-if="permission.continueOrder"
                   @click="continueApartmentOrder"
                   :text="`${ $t('continue_registration') }`"
-                  class="checkout__button bg-gradient-violet color-white mr-3 mb-4"
+                  class="checkout__button violet-gradient"
               />
 
               <!--       MAKE A RESERVATION       -->
@@ -160,7 +160,7 @@
                   v-if="permission.reserve"
                   @click="showReservationModal = true"
                   :text="`${ $t('apartments.list.book') }`"
-                  class="checkout__button bg-gray-100 color-gray-600 mr-3 mb-4"
+                  class="checkout__button gray-button"
                   v-b-modal.modal-reserve-create
               />
 
@@ -168,23 +168,24 @@
               <base-button
                   v-if="permission.cancelReserve"
                   :text="`${ $t('apartments.list.cancel_reserve') }`"
-                  class="reserve__button mr-3 mb-4"
+                  class="reserve__button"
                   @click="cancelReservation"
               />
 
               <button
+                  id="print"
                   @click="printApartmentInformation"
-                  class="print__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
+                  class="print__button bg-gray-100 d-flex justify-content-center align-items-center "
               >
                 <base-print-icon :square="20" fill="#4B5563"/>
               </button>
 
-              <button
-                  @click="hideApartmentSidebar"
-                  class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
-              >
-                <base-minus-circle-icon :square="20" fill="#4B5563"/>
-              </button>
+              <!--              <button-->
+              <!--                  @click="hideApartmentSidebar"-->
+              <!--                  class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"-->
+              <!--              >-->
+              <!--                <base-minus-circle-icon :square="20" fill="#4B5563"/>-->
+              <!--              </button>-->
             </div>
           </div>
         </div>
@@ -214,7 +215,7 @@ import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInformation";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
-import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
+// import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
 import BaseInput from "@/components/Reusable/BaseInput";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import {formatToPrice} from "@/util/reusable";
@@ -231,7 +232,7 @@ export default {
     BaseArrowRight,
     BasePrintIcon,
     PrimaryInformation,
-    BaseMinusCircleIcon,
+    // BaseMinusCircleIcon,
     Reserve,
     BaseButton
   },
@@ -368,9 +369,9 @@ export default {
           })
     },
 
-    hideApartmentSidebar() {
-      this.$emit('hide-apartment-sidebar-view')
-    },
+    // hideApartmentSidebar() {
+    //   this.$emit('hide-apartment-sidebar-view')
+    // },
 
     printApartmentInformation() {
       window.print()
@@ -718,6 +719,14 @@ input[type="number"]
 .checkout__button
   padding: 1rem 3rem
 
+.action-block
+  display: flex
+  flex-wrap: wrap
+  margin-top: 1rem
+  margin-bottom: .5rem
+  gap: .5rem
+
+
 .print__button,
 .cancel__button,
 .view__button
@@ -738,7 +747,10 @@ input[type="number"]
     background-color: var(--yellow-100) !important
     color: var(--yellow-600) !important
 
-  &-contract,
+  &-contract
+    background-color: var(--blue-100) !important
+    color: var(--blue-600) !important
+
   &-booked
     background-color: var(--yellow-100) !important
     color: var(--yellow-600) !important
@@ -752,8 +764,8 @@ input[type="number"]
     color: var(--teal-600) !important
 
   &-sold
-    background-color: var(--light-blue-100) !important
-    color: var(--light-blue-600) !important
+    background-color: var(--gray-100) !important
+    color: var(--gray-600) !important
 
 
 @media only screen and (max-width: 1390px)
