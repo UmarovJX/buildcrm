@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+
     user: {
         first_name: "Ism",
         last_name: "Familiya",
@@ -15,6 +16,7 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
+
     quarter: 'chorak',
     of_the_year: 'yil',
     thank_you: 'Rahmat',
