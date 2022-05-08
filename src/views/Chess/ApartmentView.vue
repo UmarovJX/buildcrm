@@ -326,9 +326,8 @@ export default {
       const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
 
       const permissionOrder = () => {
-
         const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
-        return !forSale && permissionOne
+        return forSale && permissionOne
       }
       const permissionContinueOrder = () => {
         const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || apartments.contract)

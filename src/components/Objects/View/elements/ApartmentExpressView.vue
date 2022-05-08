@@ -123,21 +123,21 @@
               </p>
             </b-tooltip>
 
-            <button
-                id="closeModal"
-                @click="hideApartmentSidebar"
-                class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
-            >
-              <base-minus-circle-icon :square="20" fill="#4B5563"/>
-            </button>
-            <b-tooltip
-                target="closeModal"
-                triggers="hover"
-            >
-              <p class="tooltip-text">
-                {{ $t('close') }}
-              </p>
-            </b-tooltip>
+            <!--            <button-->
+            <!--                id="closeModal"-->
+            <!--                @click="hideApartmentSidebar"-->
+            <!--                class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"-->
+            <!--            >-->
+            <!--              <base-minus-circle-icon :square="20" fill="#4B5563"/>-->
+            <!--            </button>-->
+            <!--            <b-tooltip-->
+            <!--                target="closeModal"-->
+            <!--                triggers="hover"-->
+            <!--            >-->
+            <!--              <p class="tooltip-text">-->
+            <!--                {{ $t('close') }}-->
+            <!--              </p>-->
+            <!--            </b-tooltip>-->
           </div>
         </section>
       </vue-html2pdf>
@@ -159,7 +159,7 @@ import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInform
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
-import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
+// import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
@@ -178,7 +178,7 @@ export default {
     BaseLoading,
     BaseArrowLeftIcon,
     PrimaryInformation,
-    BaseMinusCircleIcon,
+    /*BaseMinusCircleIcon,*/
     Reserve,
     VueHtml2pdf,
     BaseEyeIcon

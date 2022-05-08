@@ -533,7 +533,6 @@ export default {
     writing-mode: vertical-lr;
     -webkit-writing-mode: vertical-lr;
     background-color: var(--white);
-
   }
 }
 
