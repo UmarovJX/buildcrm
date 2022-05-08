@@ -93,8 +93,18 @@
               <!--     OUTPUTS     -->
               <div class="w-100 outputs font-inter">
                 <div class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">Начальная цена</span>
+                  <span class="property d-block color-gray-400">
+                    Начальная цена
+                  </span>
                   <span class="price d-block color-gray-600">{{ initialPrice }} {{ $t('ye') }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <span class="property d-block color-gray-400">
+                    {{ $t('selling_price') }} m<sup>2</sup>
+                  </span>
+                  <span class="price d-block color-gray-600">
+                    {{ pricePrettier(calc.price_for_m2) }} {{ $t('ye') }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between">
@@ -120,17 +130,10 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">{{ $t('apartments.view.price_for_m2') }}</span>
-                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.price_for_m2) }} {{
-                      $t('ye')
-                    }}</span>
-                </div>
-
-                <div class="d-flex justify-content-between">
                   <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
-                  <span class="price d-block color-violet-600 total-price">{{
-                      pricePrettier(calc.total)
-                    }}  {{ $t('ye') }}</span>
+                  <span class="price d-block color-violet-600 total-price">
+                    {{ pricePrettier(calc.total) }}  {{ $t('ye') }}
+                  </span>
                 </div>
               </div>
             </div>

@@ -131,6 +131,7 @@ export default {
     number_of_rooms: 'Xonalar soni',
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
     clear: 'Tozalash',
+    selling_price: 'Sotuv narxi',
 
     tab_status: {
         all: "Hammasi",

@@ -115,6 +115,7 @@ export default {
     number_of_rooms: 'Количество комнат',
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
     clear:'Очистить',
+    selling_price: 'Цена продажи',
 
     tab_status: {
         all: "Все",
