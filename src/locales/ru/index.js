@@ -114,6 +114,7 @@ export default {
     balcony: 'Балкон',
     number_of_rooms: 'Количество комнат',
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
+    clear:'Очистить',
 
     tab_status: {
         all: "Все",

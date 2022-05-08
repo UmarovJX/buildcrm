@@ -157,9 +157,11 @@ export default {
       return value.toLocaleString()
     },
     levelLarge(index) {
-      return Math.max(...this.apartments[index].blocks.map(item => {
-        return item.floors.length
-      }))
+      const apartmentFloorsNumbers = this.apartments[index].blocks.map(item => item.floors.length)
+      if (apartmentFloorsNumbers.length) {
+        return Math.max(...apartmentFloorsNumbers)
+      }
+      return 0
     },
     showExpressSidebar(item, floorActive, blockActive) {
       const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)

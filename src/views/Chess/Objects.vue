@@ -23,7 +23,7 @@
     </b-form-checkbox-group>
 
     <component
-        v-if="apartments"
+        v-if="apartments.length"
         :loading="getLoading"
         :plans="plans"
         :plan-load="planLoading"
@@ -82,7 +82,6 @@ export default {
       plans: [],
       currentTab: 'ObjectBlock',
       statusList: [
-        /* available,contract,waiting,sold,closed,booked,hold */
         {
           label: this.$t('object.status.available'),
           class: 'teal',
