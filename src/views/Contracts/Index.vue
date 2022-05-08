@@ -431,14 +431,14 @@ export default {
       const hasQueryStatus = this.query.hasOwnProperty('status')
       if (hasQueryStatus) {
         const {status} = this.query
-        this.replaceRouter({
+        this.pushRouter({
           ...searchQuery,
           status
         })
         return
       }
 
-      this.replaceRouter(searchQuery)
+      this.pushRouter(searchQuery)
     },
     replaceRouter(query) {
       const sortQuery = sortObjectValues(query)
@@ -446,6 +446,7 @@ export default {
     },
     pushRouter(query) {
       const sortQuery = sortObjectValues(query)
+      this.$router.push({query: {}})
       this.$router.push({query: sortQuery})
     }
   }

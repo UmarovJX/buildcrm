@@ -188,7 +188,7 @@ import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import {debounce, sortInFirstRelationship} from "@/util/reusable";
+import {debounce, isPrimitiveValue, sortInFirstRelationship} from "@/util/reusable";
 import api from "@/services/api";
 
 export default {
@@ -348,7 +348,11 @@ export default {
         }*/
 
         if (property === 'object_id' && query) {
-          this.filter[property] = query.map(value => parseInt(value))
+          if (isPrimitiveValue(query)) {
+            this.filter[property] = [parseInt(query)]
+          } else {
+            this.filter[property] = query.map(value => parseInt(value))
+          }
           continue
         }
 
