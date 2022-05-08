@@ -114,6 +114,8 @@ export default {
     balcony: 'Балкон',
     number_of_rooms: 'Количество комнат',
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
+    search_placeholder: 'ФИО, телефон, номер договора',
+
     clear:'Очистить',
     selling_price: 'Цена продажи',
 

@@ -51,13 +51,35 @@
           <primary-information class="pdf-item" v-if="visible" :apartment="sidebarApartment"/>
 
           <!--   ACTIONS     -->
-          <div class="d-flex flex-wrap mt-4">
+          <div class="action-block">
+
+            <!-- VIEW MORE-->
+            <base-button
+                id="learnMore"
+                :text="$t('more_info')"
+                class="violet-gradient"
+                @click="viewMore"
+            >
+
+              <template #left-icon>
+                <base-eye-icon :square="20" fill="#fff"/>
+              </template>
+            </base-button>
+            <b-tooltip
+                target="learnMore"
+                triggers="hover"
+            >
+              <p class="tooltip-text">
+                {{ $t('more_info') }}
+              </p>
+            </b-tooltip>
+
             <!--      CHECKOUT        -->
             <base-button
                 v-if="permission.order"
                 @click="orderApartment"
                 :text="`${ $t('apartments.list.confirm') }`"
-                class="checkout__button bg-gradient-violet color-white mr-3 mb-4"
+                class="checkout__button violet-gradient"
             />
 
             <!--      CONTINUE CHECKOUT        -->
@@ -65,7 +87,7 @@
                 v-if="permission.continueOrder"
                 @click="continueApartmentOrder"
                 :text="`${ $t('continue_registration') }`"
-                class="checkout__button bg-gradient-violet color-white mr-3 mb-4"
+                class="checkout__button violet-gradient"
             />
 
             <!--       MAKE A RESERVATION       -->
@@ -73,22 +95,28 @@
                 v-if="permission.reserve"
                 @click="showReservationModal = true"
                 :text="`${ $t('apartments.list.book') }`"
-                class="checkout__button bg-gray-100 color-gray-600 mr-3 mb-4"
+                class="gray-button"
                 v-b-modal.modal-reserve-create
-            />
+            >
+              <template #left-icon>
+                <base-minus-circle-icon :square="20" fill="#4B5563"/>
+              </template>
+            </base-button>
 
             <!-- CANCEL RESERVE -->
             <base-button
                 v-if="permission.cancelReserve"
                 :text="`${ $t('apartments.list.cancel_reserve') }`"
-                class="reserve__button mr-3 mb-4"
+                class="reserve__button "
                 @click="cancelReservation"
             />
 
+
+            <!--PRINT-->
             <button
                 id="print"
                 @click="printApartmentInformation"
-                class="print__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
+                class="print__button bg-gray-100 d-flex justify-content-center align-items-center "
             >
               <base-print-icon :square="20" fill="#4B5563"/>
             </button>
@@ -101,27 +129,6 @@
               </p>
             </b-tooltip>
 
-            <router-link
-                id="learnMore"
-                :to="{
-                    name: 'apartment-view-clone',
-                    params:{
-                      object: sidebarApartment.object.id,
-                      id: apartment.uuid
-                    }
-                  }"
-                class="view__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
-            >
-              <base-eye-icon :square="20" fill="#4B5563"/>
-            </router-link>
-            <b-tooltip
-                target="learnMore"
-                triggers="hover"
-            >
-              <p class="tooltip-text">
-                {{ $t('more_info') }}
-              </p>
-            </b-tooltip>
 
             <!--            <button-->
             <!--                id="closeModal"-->
@@ -310,6 +317,12 @@ export default {
 
   /* METHODS */
   methods: {
+    viewMore() {
+      this.$router.push({
+        name: 'apartment-view-clone',
+        params: {object: this.sidebarApartment.object.id, id: this.apartment.uuid}
+      })
+    },
     async fetchSidebarItem() {
       this.appLoading = true
       const {objectId} = this.$route.params
@@ -461,6 +474,14 @@ export default {
 
 .checkout__button
   padding: 1rem 3rem
+
+.action-block
+  display: flex
+  flex-wrap: wrap
+  margin-top: 1rem
+  margin-bottom: .5rem
+  gap: .5rem
+
 
 .print__button,
 .cancel__button,

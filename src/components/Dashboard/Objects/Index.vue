@@ -17,10 +17,10 @@
                   type="button"
                   class="dropdown-toggle card-link"
                   data-toggle="dropdown"
-                  style="background-color: transparent; box-shadow: none"
+                  style="background-color: transparent; "
               >
-                <!--                    <i class="far fa-ellipsis-h"></i>-->
-                <base-edit-icon fill="#7C3AED"/>
+                <!-- <base-edit-icon fill="#7C3AED"/>-->
+                <base-dots-icon fill="#7C3AED"/>
               </button>
               <div class="dropdown-menu">
                 <router-link
@@ -158,7 +158,7 @@ import {mapGetters, mapActions} from "vuex";
 import UploadLogo from "./Components/UploadLogo";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
 
 export default {
@@ -166,7 +166,7 @@ export default {
   components: {
     // 'filter-form': Filter,
     "upload-logo": UploadLogo,
-    BaseEditIcon,
+    BaseDotsIcon,
     BaseBreadCrumb
   },
 

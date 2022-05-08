@@ -3,7 +3,7 @@
     <div class="app-content">
 
       <div class="d-flex align-items-center">
-        <base-search-input @trigger-input="setSearchValue"/>
+        <base-search-input placeholder="ФИО, телефон, email" @trigger-input="setSearchValue"/>
         <base-button v-if="getPermission.users.create"
                      design="violet-gradient mb-3"
                      :text="$t('add')"
@@ -48,9 +48,9 @@
 
 
           <!-- INDEX COLUMN -->
-          <template #cell(index)="data">
+          <template #cell(id)="data">
             <span>
-              {{ data.index + 1 }}
+              {{ data.item.id }}
             </span>
           </template>
 
@@ -246,7 +246,7 @@ export default {
       sortDesc: false,
       fields: [
         {
-          key: "index",
+          key: "id",
           label: "#",
         },
         {

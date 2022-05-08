@@ -9,7 +9,7 @@
           type="search"
           id="search-input"
           ref="search-input"
-          placeholder="ФИО, телефон, номер договора"
+          :placeholder="placeholder"
           @input="triggerInputEvent"
       />
       <span
@@ -34,6 +34,12 @@ export default {
   components: {
     BaseSearchIcon,
     BaseTimesCircleIcon,
+  },
+  props: {
+    placeholder: {
+      type: String,
+      default: 'ФИО, телефон, номер договора',
+    }
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
@@ -119,12 +125,14 @@ export default {
     input {
       width: 95%;
       background-color: transparent;
-      margin-left: 1.25rem;
+      margin-left: 1rem;
+      padding-left: .25rem;
       height: 100%;
       outline: none;
       border: none;
       font-weight: 700;
       color: var(--gray-600);
+      border-radius: 0 2rem 2rem 0;
 
       &::placeholder {
         font-weight: 600;

@@ -338,7 +338,7 @@ export default {
         areas: [],
         rooms: [],
         floors: [],
-        numbers: []
+        number: []
       },
       options: [1, 2, 3, 4, 5, 6, 7],
       currencyOptions: ["UZS", "USD"],
@@ -383,7 +383,7 @@ export default {
       })
     },
     setApartmentNumbers(apartments) {
-      this.form.numbers = apartments
+      this.form.number = apartments
     },
     setFormProperty(property, value) {
       this.form[property] = value
@@ -429,9 +429,9 @@ export default {
     },
     initSelectedApartments() {
       const filterQuery = Object.assign({}, this.$route.query)
-      const hasApartments = filterQuery.hasOwnProperty('numbers')
+      const hasApartments = filterQuery.hasOwnProperty('number')
       if (hasApartments) {
-        const value = filterQuery['numbers']
+        const value = filterQuery['number']
         const isQueryPrimitive = typeof value === 'number' || typeof value === 'string'
         if (isQueryPrimitive)
           this.defaultApartments = parseInt(value)

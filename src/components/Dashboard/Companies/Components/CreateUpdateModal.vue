@@ -248,7 +248,7 @@ export default {
         other_phone: null,
         first_name: null,
         address: null,
-        code: 0,
+        code: null,
         oked: null
       }
 
@@ -260,10 +260,19 @@ export default {
       this.handleSubmit();
     },
 
-    setFormProperties() {
+    async setFormProperties() {
+      let companyData = {}
+      await api.companies.getCompany(this.historyEditInfo.id).then((res) => {
+        companyData = res.data
+      }).catch(() => {
+        companyData = {}
+      })
       this.createPosition = false
-      const {id, name, phone, type, inn} = this.historyEditInfo
-      this.company = {...this.company, id, inn, name, phone, type_id: type.id}
+
+      this.company = {
+        ...this.company,
+        ...companyData
+      }
     },
 
     submitForm() {

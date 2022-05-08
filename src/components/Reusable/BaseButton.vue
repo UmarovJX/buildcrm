@@ -69,9 +69,11 @@ export default {
     font-family: Inter, serif
 
   .left__icon
+    display: flex
     margin-right: .5rem
 
   .right__icon
+    display: flex
     margin-left: .5rem
 
 .gray-button
@@ -79,9 +81,10 @@ export default {
 
 .violet
   background-color: var(--violet-700)
-  color: var(--white)
+  color: var(--white) !important
 
 .violet-gradient
   background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
-  color: var(--white)
+  color: var(--white) !important
+
 </style>
