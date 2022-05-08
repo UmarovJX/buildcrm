@@ -483,7 +483,7 @@ export default {
       }
       const {objectId} = this.$route.params
       console.log(query, 'query');
-      await api.objects.fetchObjectApartments(objectId, query)
+      await api.objectsV2.fetchObjectApartments(objectId, query)
           .then((response) => {
             this.apartments = response.data.items
             this.pagination = response.data.pagination

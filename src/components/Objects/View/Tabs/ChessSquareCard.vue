@@ -37,7 +37,7 @@
                     <div
                         :id="'tolltip'+elem.number"
                         class="box"
-                        @click="showExpressSidebar(elem.apartmentActive,item.floorActive,value.blockActive)"
+                        @click="showExpressSidebar(elem)"
                     >
                       <h5 class="apartment-number">
                         {{ elem.number }}
@@ -109,6 +109,8 @@
 
 <script>
 
+import {formatToPrice} from "@/util/reusable";
+
 export default {
   name: "ChessSquareCard",
   props: {
@@ -154,7 +156,7 @@ export default {
       }
     },
     price(value) {
-      return value.toLocaleString()
+      return formatToPrice(value)
     },
     levelLarge(index) {
       const apartmentFloorsNumbers = this.apartments[index].blocks.map(item => item.floors.length)
@@ -163,11 +165,11 @@ export default {
       }
       return 0
     },
-    showExpressSidebar(item, floorActive, blockActive) {
-      const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
-      if (isActive) {
-        this.$emit('show-express-sidebar', item)
-      }
+    showExpressSidebar(item) {
+      // const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
+      // if (isActive) {
+      this.$emit('show-express-sidebar', item)
+      // }
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {
       return !(blockActive && floorActive && apartmentActive)
@@ -494,6 +496,7 @@ export default {
     height: 56px;
     background-color: var(--gray-50);
     border: 1px solid var(--gray-100);
+    cursor: pointer;
   }
 }
 

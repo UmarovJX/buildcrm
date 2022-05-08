@@ -586,7 +586,8 @@ export default {
             block: 'Blok',
             number_flat: 'Kvartira raqami',
             number_rooms: 'Xonalar soni',
-            apply: "Qo'llash"
+            apply: "Qo'llash",
+            clear: "Tozalash"
         },
         chess: 'Shaxmatka',
         list: "Ro'yxat",

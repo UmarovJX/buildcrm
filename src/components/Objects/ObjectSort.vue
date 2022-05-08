@@ -448,6 +448,7 @@ export default {
     clearFilter() {
       this.form = clearObjectProperties(this.form)
       this.clearApartments()
+      this.$emit('clear-status')
       const query = {}
       this.$router.push({
         query

@@ -1,6 +1,6 @@
 <template>
   <b-sidebar
-      v-model="visible"
+      v-model="visibleComp"
       sidebar-class="sidebar__apartment"
       body-class="sidebar__apartment-body"
       aria-labelledby="sidebar-no-header-title"
@@ -86,13 +86,23 @@
             />
 
             <button
+                id="print"
                 @click="printApartmentInformation"
                 class="print__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
             >
               <base-print-icon :square="20" fill="#4B5563"/>
             </button>
+            <b-tooltip
+                target="print"
+                triggers="hover"
+            >
+              <p class="tooltip-text">
+                {{ $t('apartments.view.print') }}
+              </p>
+            </b-tooltip>
 
             <router-link
+                id="learnMore"
                 :to="{
                     name: 'apartment-view-clone',
                     params:{
@@ -104,13 +114,30 @@
             >
               <base-eye-icon :square="20" fill="#4B5563"/>
             </router-link>
+            <b-tooltip
+                target="learnMore"
+                triggers="hover"
+            >
+              <p class="tooltip-text">
+                {{ $t('more_info') }}
+              </p>
+            </b-tooltip>
 
             <button
+                id="closeModal"
                 @click="hideApartmentSidebar"
                 class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"
             >
               <base-minus-circle-icon :square="20" fill="#4B5563"/>
             </button>
+            <b-tooltip
+                target="closeModal"
+                triggers="hover"
+            >
+              <p class="tooltip-text">
+                {{ $t('close') }}
+              </p>
+            </b-tooltip>
           </div>
         </section>
       </vue-html2pdf>
@@ -185,7 +212,7 @@ export default {
       },
       sidebarApartment: {},
       appLoading: true,
-      variant: 'light',
+      variant: 'none',
       visibleModal: true,
       showReservationModal: false
     }
@@ -197,7 +224,20 @@ export default {
       me: "getMe",
       userPermission: "getPermission",
       reserveClient: "getReserveClient",
+
     }),
+    visibleComp: {
+      get() {
+        return this.visible
+      },
+      set(value) {
+        if (value) {
+          this.fetchSidebarItem()
+        } else {
+          this.$emit('hide-apartment-sidebar-view')
+        }
+      },
+    },
     hasApartment() {
       return Object.keys(this.sidebarApartment).length > 0
     },
@@ -258,15 +298,15 @@ export default {
     }
   },
 
-  watch: {
-    visible(visibleValue) {
-      if (visibleValue) {
-        this.fetchSidebarItem()
-      } else {
-        this.$emit('hide-apartment-sidebar-view')
-      }
-    }
-  },
+  // watch: {
+  // visible(visibleValue) {
+  //   if (visibleValue) {
+  //     this.fetchSidebarItem()
+  //   } else {
+  //     this.$emit('hide-apartment-sidebar-view')
+  //   }
+  // }
+  // },
 
   /* METHODS */
   methods: {
@@ -436,7 +476,10 @@ export default {
     background-color: var(--yellow-100) !important
     color: var(--yellow-600) !important
 
-  &-contract,
+  &-contract
+    background-color: var(--blue-100) !important
+    color: var(--blue-600) !important
+
   &-booked
     background-color: var(--yellow-100) !important
     color: var(--yellow-600) !important
@@ -450,6 +493,12 @@ export default {
     color: var(--teal-600) !important
 
   &-sold
-    background-color: var(--light-blue-100) !important
-    color: var(--light-blue-600) !important
+    background-color: var(--gray-100) !important
+    color: var(--gray-600) !important
+
+::v-deep .b-tooltip
+  .tooltip-text
+    color: #fff !important
+    margin-bottom: 0
+
 </style>

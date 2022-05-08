@@ -596,7 +596,8 @@ export default {
             block: 'Блок',
             number_flat: 'Номер квартиры',
             number_rooms: 'Номер помещения',
-            apply: 'Применить'
+            apply: 'Применить',
+            clear: 'Очистить'
         },
         chess: 'Шахматка',
         list: 'Список',

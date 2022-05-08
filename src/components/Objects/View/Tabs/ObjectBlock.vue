@@ -95,6 +95,8 @@
 
 <script>
 
+import {formatToPrice} from "@/util/reusable";
+
 export default {
   name: "ObjectBlock",
   props: {
@@ -138,7 +140,7 @@ export default {
       }
     },
     price(value) {
-      return value.toLocaleString()
+      return formatToPrice(value)
     },
     levelLarge(index) {
       const apartmentFloorsNumbers = this.apartments[index].blocks.map(item => item.floors.length)

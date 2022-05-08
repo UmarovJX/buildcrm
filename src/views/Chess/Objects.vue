@@ -1,8 +1,10 @@
 <template>
   <main class="app-content">
+
     <object-sort
         :filter-fields="filterFields"
         :app-loading="finishLoading"
+        @clear-status="clearStatus"
         @current-tab="changeTab"
     />
 
@@ -184,6 +186,27 @@ export default {
     changeTab(name) {
       this.currentTab = name.name
     },
+    clearStatus() {
+      this.statusFilter = []
+    },
+    // hideModal() {
+    //   console.log('ishladi');
+    //
+    //   if (this.expressView.toggle) {
+    //     console.log('ifni ichi');
+    //     this.expressView.toggle = false
+    //     this.expressView.item = {}
+    //   }
+    // },
+    // hideExpressModal() {
+    //   this.expressView.toggle = false
+    //   this.expressView.item = {}
+    //   // const accessToClose = openedApartment.uuid === this.expressView.item.uuid
+    //   // if (accessToClose) {
+    //   //   this.expressView.toggle = false
+    //   //   this.expressView.item = {}
+    //   // }
+    // },
     compareArray(arrayOne, arrayTwo) {
       if (Array.isArray(arrayOne) && Array.isArray(arrayTwo)) {
         const arr1 = arrayOne.slice().sort()
