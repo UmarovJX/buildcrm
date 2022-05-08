@@ -149,8 +149,11 @@ export default {
       }
       return 0
     },
-    showExpressSidebar(item) {
-      this.$emit('show-express-sidebar', item)
+    showExpressSidebar(item, floorActive, blockActive) {
+      const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
+      if (isActive) {
+        this.$emit('show-express-sidebar', item)
+      }
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {
       if (apartmentActive === undefined || floorActive === undefined || blockActive === undefined)
@@ -402,8 +405,9 @@ export default {
     &-square-price,
     &-price,
     &-status,
-    &-number {
-      display: none;
+    &-number,
+    &-promo-icon img{
+      display: none !important;
     }
   }
 }

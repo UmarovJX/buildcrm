@@ -25,7 +25,6 @@
     </b-form-checkbox-group>
 
     <component
-        v-if="apartments.length"
         :loading="getLoading"
         :plans="plans"
         :plan-load="planLoading"

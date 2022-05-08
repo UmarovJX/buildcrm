@@ -537,8 +537,11 @@ export default {
   }
 }
 
-.inactive-apartment .apartment-number {
-  display: none;
+.inactive-apartment {
+  .square-header .apartment-number,
+  .square-header .apartment-promo-icon img{
+    display: none !important;
+  }
 }
 
 .apartment-inactive {
