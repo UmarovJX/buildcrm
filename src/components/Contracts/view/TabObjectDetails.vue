@@ -86,8 +86,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.number_level') }}</span>
-              <span>
-              </span>
+              <span>{{ apartment.apartment.floor }}</span>
             </div>
           </div>
 
