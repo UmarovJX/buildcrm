@@ -118,7 +118,7 @@
         >
           <b-form-input
               type="password"
-              min="5"
+              min="8"
               v-model="manager.password"
               id="password"
               autocomplete="off"
