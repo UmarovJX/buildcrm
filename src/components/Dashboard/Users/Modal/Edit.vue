@@ -183,7 +183,7 @@ import api from "@/services/api";
 export default {
   props: {
     managerId: {
-      type: String,
+      type: [String, Number],
       required: true
     },
     editHistoryContext: {

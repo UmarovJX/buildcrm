@@ -22,7 +22,9 @@
           >
 
             <div class="header">
-              {{ value.name }}
+              <span>
+                {{ value.name }}
+              </span>
             </div>
 
             <div class="item" style="margin-right: 30px">
@@ -343,13 +345,22 @@ export default {
 
 
 .header {
-  position: sticky;
+  position: relative;
   font-weight: 600;
   font-size: 14px;
   line-height: 20px;
   color: var(--gray-400);
   text-transform: capitalize;
   width: 100%;
+
+  span {
+    display: block;
+    position: sticky;
+    left: 30px;
+    margin-right: 30px;
+    top: 0;
+    width: max-content;
+  }
 }
 
 .vertical {

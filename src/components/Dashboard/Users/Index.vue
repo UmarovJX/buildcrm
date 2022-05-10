@@ -106,7 +106,7 @@
 
                   <b-button
                       class="dropdown-item dropdown-item--inside"
-                      @click="Delete(data.item.id)"
+                      @click="Delete(data.item.uuid)"
                   >
                     <i class="far fa-trash"></i> {{ $t("delete") }}
                   </b-button>
@@ -233,7 +233,7 @@ export default {
       page: 1,
       currentPage: 1,
       manager: {},
-      manager_id: '',
+      manager_id: null,
       editHistoryContext: {
         id: 0
       },
@@ -393,7 +393,7 @@ export default {
     },
 
     clickManager(data) {
-      this.manager_id = data.item.id;
+      this.manager_id = data.item.uuid;
       this.editHistoryContext = data.item
     },
 
