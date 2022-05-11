@@ -177,7 +177,6 @@
 </template>
 
 <script>
-
 import Create from "./Modal/Create";
 import Edit from "./Modal/Edit";
 import api from "@/services/api";
