@@ -14,7 +14,6 @@ import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
 import VueYandexMetrika from 'vue-yandex-metrika'
 import "sweetalert2/dist/sweetalert2.min.css";
-import VueSilentbox from 'vue-silentbox'
 
 import "./components";
 // import "./util/validation"
@@ -48,18 +47,16 @@ Object.keys(rules).forEach((rule) => {
 })
 
 
-
 Vue.component("ValidationObserver", ValidationObserver)
 Vue.component("ValidationProvider", ValidationProvider)
 
-Vue.use(VueSilentbox)
+
+
 
 Vue.use(VueMask);
 Vue.use(vueMoment);
 Vue.use(VueLazyload, {
-    preLoad: 1.3, error: require("@/assets/img/no-image.jpg"),
-    loading: require("@/assets/img/loading.gif"),
-    attempt: 1
+    preLoad: 1.3, error: require("@/assets/img/no-image.jpg"), loading: require("@/assets/img/loading.gif"), attempt: 1
 });
 
 Vue.use(BootstrapVue);

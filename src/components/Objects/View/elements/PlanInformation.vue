@@ -15,7 +15,6 @@
             </div>
           </div>
         </div>
-
         <!--     DOTS PAGINATION       -->
         <div class="swiper-pagination"></div>
 
@@ -51,65 +50,14 @@
           <p>{{ item.plan.area }} M<sup>2</sup></p>
         </div>
         <div class="plan-item">
-          <h5>{{ item.price }} сум</h5>
-          <p>{{ item.price_m2 }} сум/M <sup>2</sup></p>
+          <h5>{{ price(item.price) }} {{ $t('ye') }}</h5>
+          <p>{{ price(item.price_m2) }} {{ $t('ye') }}/M <sup>2</sup></p>
         </div>
         <div class="apartment-promo-icon">
           <img v-if="item.is_promo" src="../../../../assets/icons/bonuses.svg" alt="">
         </div>
       </div>
-      <!--      <div class="plan-block">-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>2 этаж</h5>-->
-      <!--          <p>166.2 M<sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>330 000 000 сум</h5>-->
-      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="apartment-promo-icon">-->
-      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--      <div class="plan-block">-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>2 этаж</h5>-->
-      <!--          <p>166.2 M<sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>330 000 000 сум</h5>-->
-      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="apartment-promo-icon">-->
-      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--      <div class="plan-block">-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>2 этаж</h5>-->
-      <!--          <p>166.2 M<sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>330 000 000 сум</h5>-->
-      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="apartment-promo-icon">-->
-      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <!--      <div class="plan-block">-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>2 этаж</h5>-->
-      <!--          <p>166.2 M<sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="plan-item">-->
-      <!--          <h5>330 000 000 сум</h5>-->
-      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
-      <!--        </div>-->
-      <!--        <div class="apartment-promo-icon">-->
-      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
-      <!--        </div>-->
-      <!--      </div>-->
+
     </div>
 
 
@@ -122,7 +70,6 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import {formatToPrice} from "@/util/reusable";
 import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
-// import VueSilentbox from 'vue-silentbox'
 
 export default {
   name: "PrimaryInformation",
@@ -142,7 +89,6 @@ export default {
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
-    // VueSilentbox
   },
 
   /* DIRECTIVES */
@@ -175,41 +121,29 @@ export default {
   },
 
   computed: {
-    price() {
-      return formatToPrice(this.apartment.price) + ' ' + this.$t('ye')
-    },
+    // price() {
+    //   return formatToPrice(this.plan.price) + ' ' + this.$t('ye')
+    // },
 
-    squareMetrePrice() {
-      return formatToPrice(this.apartment.price_m2) + ' ' + this.$t('ye')
-    },
+    // squareMetrePrice() {
+    //   return formatToPrice(this.plan.price_m2) + ' ' + this.$t('ye')
+    // },
   },
 
   methods: {
     openModal(item) {
       this.$emit('open-express', item)
     },
-    buildingDate(time) {
-      const date = new Date(time)
-      const year = date.getFullYear()
-      let month = date.getMonth()
-      if (month < 3) {
-        month = '1'
-      } else if (month >= 3 && month < 6) {
-        month = '2'
-      } else if (month >= 6 && month < 9) {
-        month = '3'
-      } else {
-        month = '4'
-      }
-
-      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t('of_the_year')}`
+    price(value) {
+      return formatToPrice(value)
     },
-
   }
+
 }
 </script>
 
 <style lang="sass" scoped>
+
 ::v-deep .main__content
   .slider__image
     object-fit: contain
@@ -313,6 +247,10 @@ export default {
   background: #F3F4F6
   border-radius: 32px
   padding: 24px 32px
+  cursor: pointer
+
+  &:hover
+    background-color: var(--violet-100)
 
   .plan-item
     h5

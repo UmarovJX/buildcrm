@@ -87,6 +87,7 @@ import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import {formatToPrice} from "@/util/reusable";
 // import BaseEditIcon from "@/components/icons/BaseEditIcon";
 
 
@@ -139,10 +140,9 @@ export default {
   },
   methods: {
     price(value) {
-      return value.toLocaleString()
+      return formatToPrice(value)
     },
     showExpressSidebar(item) {
-      console.log(item);
       this.$emit('show-plan-sidebar', item)
     },
   }

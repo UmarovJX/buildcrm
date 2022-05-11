@@ -62,7 +62,7 @@ import PlanExpressView from "@/components/Objects/View/elements/PlanExpressView"
 import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
 import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
-import ClickOutside from "vue-click-outside";
+// import ClickOutside from "vue-click-outside";
 import {isPrimitiveValue} from "@/util/reusable";
 
 export default {
@@ -76,9 +76,9 @@ export default {
     ApartmentExpressView,
     PlanExpressView,
   },
-  directives: {
-    ClickOutside
-  },
+  // directives: {
+  //   ClickOutside
+  // },
   data() {
     return {
       expressView: {
@@ -175,6 +175,8 @@ export default {
   },
 
   async created() {
+    this.getLoading = true
+    this.planLoading = true
     await Promise.allSettled([
       await this.fetchFilterFields(),
       await this.getApartments(),
@@ -427,7 +429,7 @@ export default {
       })
     },
     async getApartments() {
-      this.getLoading = true
+
       const id = this.$route.params.objectId
       await api.objectsV2.getApartments(id).then(async (res) => {
         this.apartments = res.data.data
@@ -442,7 +444,7 @@ export default {
       })
     },
     async getObjectPlans() {
-      this.planLoading = true
+
       await api.objectsV2.getObjectPlans(18)
           .then((response) => {
             this.plans = response.data
@@ -461,7 +463,6 @@ export default {
       // }
     },
     planExpressReview(item) {
-      console.log(item);
       this.planView.item = item
       this.planView.toggle = true
     },

@@ -789,6 +789,7 @@ export default {
   .disable {
     color: var(--gray-300);
     background-color: var(--gray-100);
+    min-width: max-content;
   }
 
 }
