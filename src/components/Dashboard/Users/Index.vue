@@ -14,7 +14,6 @@
         </base-button>
       </div>
 
-
       <div class="pt-2">
         <b-table
             thead-tr-class="row__head__bottom-border"
