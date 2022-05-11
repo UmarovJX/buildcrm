@@ -17,139 +17,161 @@
         </ul>
       </b-alert>
 
-      <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.first_name')"
-            label-for="first_name"
+      <ValidationObserver
+          ref="validation-observer"
+          v-slot="{ handleSubmit }"
+      >
+        <form
+            ref="form"
+            @submit.stop.prevent="handleSubmit(submitForm)"
         >
-          <b-form-input
-              id="first_name"
-              v-model="manager.first_name"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('user.first_name')"
+              label-for="first_name"
+          >
+            <b-form-input
+                id="first_name"
+                v-model="manager.first_name"
+            ></b-form-input>
+          </b-form-group>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.last_name')"
-            label-for="last_name"
-        >
-          <b-form-input
-              id="last_name"
-              v-model="manager.last_name"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('user.last_name')"
+              label-for="last_name"
+          >
+            <b-form-input
+                id="last_name"
+                v-model="manager.last_name"
+            ></b-form-input>
+          </b-form-group>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.second_name')"
-            label-for="second_name"
-        >
-          <b-form-input
-              id="second_name"
-              v-model="manager.second_name"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('user.second_name')"
+              label-for="second_name"
+          >
+            <b-form-input
+                id="second_name"
+                v-model="manager.second_name"
+            ></b-form-input>
+          </b-form-group>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.phone')"
-            label-for="phone"
-        >
-          <b-form-input id="phone" v-model="manager.phone"></b-form-input>
-        </b-form-group>
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('user.phone')"
+              label-for="phone"
+          >
+            <b-form-input id="phone" v-model="manager.phone"></b-form-input>
+          </b-form-group>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.email')"
-            label-for="email"
-        >
-          <b-form-input
-              type="email"
-              v-model="manager.email"
-              id="email"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('user.email')"
+              label-for="email"
+          >
+            <b-form-input
+                type="email"
+                v-model="manager.email"
+                id="email"
+            ></b-form-input>
+          </b-form-group>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.role')"
-            label-for="roles"
-        >
-          <b-form-select v-model="manager.role_id" id="roles" class="mb-3">
-            <b-form-select-option
-                v-for="(role, index) in getRoles"
-                :key="index"
-                :value="role.id"
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('user.role')"
+              label-for="roles"
+          >
+            <b-form-select v-model="manager.role_id" id="roles" class="mb-3">
+              <b-form-select-option
+                  v-for="(role, index) in getRoles"
+                  :key="index"
+                  :value="role.id"
+              >
+                {{ getName(role.name) }}
+              </b-form-select-option>
+            </b-form-select>
+          </b-form-group>
+
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('branches.name')"
+              label-for="branches"
+          >
+            <b-form-select v-model="manager.branch_id" id="branches" class="mb-3">
+              <b-form-select-option
+                  v-for="(branch, index) in branches"
+                  :key="index"
+                  :value="branch.id"
+              >
+                {{ branch.name }}
+              </b-form-select-option>
+            </b-form-select>
+          </b-form-group>
+
+          <ValidationProvider
+              rules="required|min:8"
+              v-slot="{ errors }"
+              :name="`${ $t('user.password') }`"
+              tag="div"
+          >
+            <b-form-group
+                label-cols="4"
+                label-cols-lg="2"
+                :label="$t('user.password')"
+                label-for="password"
             >
-              {{ getName(role.name) }}
-            </b-form-select-option>
-          </b-form-select>
-        </b-form-group>
+              <b-form-input
+                  type="password"
+                  min="5"
+                  v-model="manager.password"
+                  id="password"
+              ></b-form-input>
+            </b-form-group>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('branches.name')"
-            label-for="branches"
-        >
-          <b-form-select v-model="manager.branch_id" id="branches" class="mb-3">
-            <b-form-select-option
-                v-for="(branch, index) in branches"
-                :key="index"
-                :value="branch.id"
+            <span
+                v-if="errors[0]"
+                class="error__provider d-flex justify-content-end mb-3"
             >
-              {{ branch.name }}
-            </b-form-select-option>
-          </b-form-select>
-        </b-form-group>
+              {{ errors[0] }}
+            </span>
+          </ValidationProvider>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.password')"
-            label-for="password"
-        >
-          <b-form-input
-              type="password"
-              min="8"
-              v-model="manager.password"
-              id="password"
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group
+              label-cols="4"
+              label-cols-lg="2"
+              :label="$t('objects.title')"
+              label-for="objects"
+          >
+            <b-form-checkbox-group
+                v-model="manager.objects"
+                :options="getObjects"
+                class="mb-3"
+                value-field="id"
+                text-field="name"
+                switches
+            ></b-form-checkbox-group>
+          </b-form-group>
 
-        <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('objects.title')"
-            label-for="objects"
-        >
-          <b-form-checkbox-group
-              v-model="manager.objects"
-              :options="getObjects"
-              class="mb-3"
-              value-field="id"
-              text-field="name"
-              switches
-          ></b-form-checkbox-group>
-        </b-form-group>
+          <div class="d-flex justify-content-end">
+            <b-button variant="light" @click="resetModal">
+              {{ $t("cancel") }}
+            </b-button>
 
-        <div class="d-flex justify-content-end">
-          <b-button variant="light" @click="resetModal">
-            {{ $t("cancel") }}
-          </b-button>
-
-          <b-button type="submit" class="ml-1" variant="success">
-            <i class="fas fa-save"></i> {{ $t("save") }}
-          </b-button>
-        </div>
-      </form>
+            <b-button type="submit" class="ml-1" variant="success">
+              <i class="fas fa-save"></i> {{ $t("save") }}
+            </b-button>
+          </div>
+        </form>
+      </ValidationObserver>
     </b-modal>
 
     <b-overlay :show="getLoading" no-wrap opacity="0.5" style="z-index: 2222">
@@ -245,7 +267,7 @@ export default {
       this.handleSubmit();
     },
 
-    async handleSubmit() {
+    async submitForm() {
       this.getLoading = true;
       try {
         const response = await api.userV2.addNewUserToDB(this.manager)
@@ -314,3 +336,9 @@ export default {
 };
 </script>
 
+
+<style scoped>
+.error__provider {
+  color: red;
+}
+</style>

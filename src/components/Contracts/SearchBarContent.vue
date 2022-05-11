@@ -49,6 +49,7 @@
 
         <div class="modal__content-main">
           <div class="filter__inputs">
+
             <!--    Object Selection      -->
             <!--
                   <div class="filter__inputs-input">
@@ -97,25 +98,32 @@
             </div>
 
             <!--    Contract Date    -->
-            <div class="filter__inputs-input d-flex justify-content-between">
-              <span class="placeholder">{{ $t('contracts.agreement_date') }}</span>
-              <!--
-              <input
-                  type="date"
-                  v-model="filter.date"
-                  class="input__date"
-              >
-              -->
-              <date-picker
-                  id="filter-by-date"
-                  v-model="filter.date"
-                  type="date"
-                  value-type="format"
-                  format="YYYY-MM-DD"
-                  placeholder="Select date range"
-                  class="input__date"
-                  range
-              ></date-picker>
+            <!--            <div class="filter__inputs-input d-flex justify-content-between">
+                          <span class="placeholder">{{ $t('contracts.agreement_date') }}</span>
+                          <input
+                              type="date"
+                              v-model="filter.date"
+                              class="input__date"
+                          >
+                          <date-picker
+                              id="filter-by-date"
+                              v-model="filter.date"
+                              type="date"
+                              value-type="format"
+                              format="YYYY-MM-DD"
+                              placeholder="Select date range"
+                              class="input__date"
+                              range
+                          ></date-picker>
+                        </div>-->
+
+            <div class="mt-3">
+              <base-date-picker
+                  class="w-100"
+                  :default-value="filter.date"
+                  :placeholder="`${$t('contracts.agreement_date')}`"
+                  @input=" filter.date = $event "
+              />
             </div>
 
             <!--     Apartment Price     -->
@@ -186,22 +194,22 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
-import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {debounce, isPrimitiveValue, sortInFirstRelationship} from "@/util/reusable";
 import api from "@/services/api";
 
 export default {
   name: "SearchBarContent",
   components: {
-    DatePicker,
     BaseSearchIcon,
     BaseFilterIcon,
     BaseArrowLeftIcon,
     BaseTimesCircleIcon,
     BaseNumericInput,
     BaseFormTagInput,
-    BaseMultiselect
+    BaseMultiselect,
+    BaseDatePicker
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {

@@ -183,18 +183,15 @@ export default {
     }
   },
 
-  /* COMPONENTS */
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
   },
 
-  /* DIRECTIVES */
   directives: {
     swiper: directive,
   },
 
-  /* DATA */
   data() {
     return {
       /* SLIDER OPTION */

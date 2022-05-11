@@ -14,7 +14,6 @@
         </base-button>
       </div>
 
-
       <div class="pt-2">
         <b-table
             thead-tr-class="row__head__bottom-border"
@@ -177,7 +176,6 @@
 </template>
 
 <script>
-
 import Create from "./Modal/Create";
 import Edit from "./Modal/Edit";
 import api from "@/services/api";

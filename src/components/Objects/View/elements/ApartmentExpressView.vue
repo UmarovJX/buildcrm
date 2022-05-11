@@ -250,7 +250,7 @@ export default {
       return Object.keys(this.sidebarApartment).length > 0
     },
     price() {
-      return formatToPrice(this.sidebarApartment.price) + ' ' + this.$t('ye')
+      return formatToPrice(this.sidebarApartment.price, 2) + ' ' + this.$t('ye')
     },
     squareMetrePrice() {
       return formatToPrice(this.sidebarApartment.price_m2) + ' ' + this.$t('ye')

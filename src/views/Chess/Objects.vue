@@ -174,16 +174,25 @@ export default {
     }
   },
 
-  async created() {
+  async mounted() {
+    await this.getObjectPlans()
+      .finally(() => {
+        this.planLoading = true
+      })
+  },
+
+  created() {
     this.getLoading = true
-    this.planLoading = true
-    await Promise.allSettled([
-      await this.fetchFilterFields(),
-      await this.getApartments(),
-      await this.getObjectPlans(),
-    ]).finally(() => {
-      this.finishLoading = true
-    })
+    this.fetchFilterFields()
+    this.getApartments()
+        .finally(() => {
+          this.finishLoading = true
+        })
+    // await Promise.allSettled([
+    //
+    // ]).finally(() => {
+    //   this.finishLoading = true
+    // })
   },
 
 
@@ -342,7 +351,7 @@ export default {
                       continue
                     }
 
-                    if (key === 'areas') {
+                    if (key === 'area') {
                       const isSatisfy = value.includes(plan.area)
                       filterResult.push(isSatisfy)
                       continue
