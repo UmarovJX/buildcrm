@@ -13,6 +13,7 @@
       <template #default="{ hide }">
 
         <vue-html2pdf
+            v-if="hasApartment"
             :show-layout="false"
             :float-layout="true"
             :enable-download="true"
@@ -70,7 +71,6 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 // import BaseButton from "@/components/Reusable/BaseButton";
 // import BaseLoading from "@/components/Reusable/BaseLoading";
 import VueHtml2pdf from 'vue-html2pdf'
-import {formatToPrice} from "@/util/reusable";
 import {mapGetters} from "vuex";
 import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
 // import api from "@/services/api";
@@ -143,74 +143,12 @@ export default {
       },
     },
     hasApartment() {
-      return Object.keys(this.sidebarApartment).length > 0
+      return Object.keys(this.plan).length > 0
     },
-    price() {
-      return formatToPrice(this.sidebarApartment.price) + ' ' + this.$t('ye')
-    },
-    squareMetrePrice() {
-      return formatToPrice(this.sidebarApartment.price_m2) + ' ' + this.$t('ye')
-    },
-    // status() {
-    //   return this.sidebarApartment.order.status
-    // },
-    // permission() {
-    //   const context = {
-    //     cancelReserve: false,
-    //     reserve: false,
-    //     continueOrder: false,
-    //     order: false
-    //   }
-    //
-    //   if (!this.hasApartment) return context
-    //
-    //   const {sidebarApartment, me, userPermission} = this
-    //   const {order} = sidebarApartment
-    //   const {apartments} = userPermission
-    //
-    //   const forSale = sidebarApartment['is_sold']
-    //   const authorityUser = order?.user?.id === me?.user?.id
-    //   const rootContract = userPermission?.apartments?.root_contract
-    //   const isMainRole = me?.role?.id === 1
-    //   const isStatusBooked = order.status === 'booked'
-    //   const isStatusAvailable = order.status === 'available'
-    //   const isStatusHold = order.status === 'hold'
-    //
-    //   const permissionCancelReserve = isStatusBooked && (authorityUser || rootContract || isMainRole)
-    //   const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
-    //
-    //   const permissionOrder = () => {
-    //     const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
-    //     return forSale && permissionOne
-    //   }
-    //
-    //   const permissionContinueOrder = () => {
-    //     const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || apartments.contract)
-    //     const permissionTwo = isStatusBooked && authorityUser && apartments.contract
-    //     return permissionOne || permissionTwo
-    //   }
-    //
-    //   const effectContext = (property) => {
-    //     context[property] = true
-    //   }
-    //
-    //   permissionCancelReserve && effectContext('cancelReserve')
-    //   permissionReserve && effectContext('reserve')
-    //   permissionOrder() && effectContext('order')
-    //   permissionContinueOrder() && effectContext('continueOrder')
-    //   return context
-    // }
+
+
   },
 
-  // watch: {
-  // visible(visibleValue) {
-  //   if (visibleValue) {
-  //     this.fetchSidebarItem()
-  //   } else {
-  //     this.$emit('hide-apartment-sidebar-view')
-  //   }
-  // }
-  // },
 
   /* METHODS */
   methods: {
@@ -221,24 +159,6 @@ export default {
       this.expressView.item = item
       this.expressView.toggle = true
     },
-    viewMore() {
-      this.$router.push({
-        name: 'apartment-view-clone',
-        params: {object: this.sidebarApartment.object.id, id: this.apartment.uuid}
-      })
-    },
-    // async fetchSidebarItem() {
-    //   this.appLoading = true
-    //   const {objectId} = this.$route.params
-    //   await api.apartments.getApartmentView(objectId, this.apartmentUuid)
-    //       .then(response => {
-    //         this.sidebarApartment = response.data
-    //       }).catch((error) => {
-    //         this.toastedWithErrorCode(error)
-    //       }).finally(() => {
-    //         this.appLoading = false
-    //       })
-    // },
     hidePlanSidebar() {
       this.$emit('hide-plan-sidebar-view')
     },
@@ -247,37 +167,9 @@ export default {
       this.htmlToPdfOptions.filename = object.name + ' , ' + block.name + ' , ' + entrance + '/' + number
       this.$refs.html2Pdf.generatePdf()
     },
-    // async orderApartment() {
-    //   this.appLoading = true
-    //   const apartments = [this.sidebarApartment.uuid]
-    //   await api.orders.holdOrder(apartments)
-    //       .then((response) => {
-    //         if (response?.data) {
-    //           this.$router.push({
-    //             name: "confirm-apartment",
-    //             params: {id: response.data.uuid}
-    //           })
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         this.toastedWithErrorCode(error)
-    //       })
-    //       .finally(() => {
-    //         this.appLoading = false
-    //       })
-    // },
-    // continueApartmentOrder() {
-    //   this.$router.push({
-    //     name: "confirm-apartment",
-    //     params: {
-    //       id: this.sidebarApartment.order.id
-    //     },
-    //   })
-    // },
     updateContent() {
       this.$emit('update-content')
     },
-
   }
 }
 </script>

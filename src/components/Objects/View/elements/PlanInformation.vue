@@ -204,6 +204,7 @@ export default {
 
       return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t('of_the_year')}`
     },
+
   }
 }
 </script>
