@@ -52,7 +52,7 @@
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
                 id="checkbox-group-2"
-                v-model="form.areas"
+                v-model="form.area"
                 :aria-describedby="ariaDescribedby"
                 name="flavour-2"
             >
@@ -335,7 +335,7 @@ export default {
         area_from: null,
         area_to: null,
         blocks: [],
-        areas: [],
+        area: [],
         rooms: [],
         floors: [],
         number: []
@@ -375,10 +375,7 @@ export default {
       const values = sortInFirstRelationship(this.form)
       const params = this.$route.params
       this.$router.push({
-        query: {
-          ...this.$route.query,
-          ...values
-        },
+        query: values,
         params
       })
     },
