@@ -14,6 +14,7 @@ import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
 import VueYandexMetrika from 'vue-yandex-metrika'
 import "sweetalert2/dist/sweetalert2.min.css";
+import VueSilentbox from 'vue-silentbox'
 
 import "./components";
 // import "./util/validation"
@@ -46,8 +47,12 @@ Object.keys(rules).forEach((rule) => {
     extend(rule, rules[rule]);
 })
 
+
+
 Vue.component("ValidationObserver", ValidationObserver)
 Vue.component("ValidationProvider", ValidationProvider)
+
+Vue.use(VueSilentbox)
 
 Vue.use(VueMask);
 Vue.use(vueMoment);

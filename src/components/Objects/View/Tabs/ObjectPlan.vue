@@ -1,7 +1,8 @@
 <template>
   <div class="position-relative" style="min-height: 300px">
     <div v-if="!planLoad && plans.length" class="object-cards">
-      <div class="card" v-for="plan in plans" :key="plan.id">
+      <div class="card" v-for="plan in plans" :key="plan.id"
+           @click="showExpressSidebar(plan)">
         <div class="card-body">
           <div class="card-top">
             <div class="card-top__content">
@@ -88,6 +89,7 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 // import BaseEditIcon from "@/components/icons/BaseEditIcon";
 
+
 export default {
   name: "ObjectPlan",
 
@@ -139,7 +141,10 @@ export default {
     price(value) {
       return value.toLocaleString()
     },
-
+    showExpressSidebar(item) {
+      console.log(item);
+      this.$emit('show-plan-sidebar', item)
+    },
   }
 }
 </script>

@@ -41,6 +41,7 @@
     "vue-multiselect": "^2.1.6",
     "vue-numeric": "^2.4.3",
     "vue-router": "^3.5.1",
+    "vue-silentbox": "^2.4.5",
     "vue-sweetalert2": "^3.0.8",
     "vue-toasted": "^1.1.28",
     "vue-yandex-maps": "^0.11.1",

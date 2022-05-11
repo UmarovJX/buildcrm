@@ -31,6 +31,7 @@
         :is="currentTab"
         :apartments="apartments"
         @show-express-sidebar="apartmentExpressReview"
+        @show-plan-sidebar="planExpressReview"
     />
 
 
@@ -43,6 +44,12 @@
         @hide-apartment-sidebar-view="hideApartmentSidebarView"
     />
 
+    <plan-express-view
+        :visible="planView.toggle"
+        :plan="planView.item"
+        @hide-plan-sidebar-view="hidePlanSidebarView"
+    />
+
   </main>
 </template>
 
@@ -51,6 +58,7 @@ import api from "@/services/api";
 import ObjectSort from "@/components/Objects/ObjectSort";
 import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
 import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
+import PlanExpressView from "@/components/Objects/View/elements/PlanExpressView";
 import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
 import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
@@ -65,7 +73,8 @@ export default {
     ObjectSort,
     ObjectBlock,
     ObjectPlan,
-    ApartmentExpressView
+    ApartmentExpressView,
+    PlanExpressView,
   },
   directives: {
     ClickOutside
@@ -73,6 +82,10 @@ export default {
   data() {
     return {
       expressView: {
+        toggle: false,
+        item: {}
+      },
+      planView: {
         toggle: false,
         item: {}
       },
@@ -447,8 +460,16 @@ export default {
       this.expressView.toggle = true
       // }
     },
+    planExpressReview(item) {
+      console.log(item);
+      this.planView.item = item
+      this.planView.toggle = true
+    },
     hideApartmentSidebarView() {
       this.expressView.toggle = false
+    },
+    hidePlanSidebarView() {
+      this.planView.toggle = false
     },
     updateContent() {
       this.getApartments()

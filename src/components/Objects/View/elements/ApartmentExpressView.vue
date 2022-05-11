@@ -12,7 +12,7 @@
     <template #default="{ hide }">
 
       <vue-html2pdf
-          v-if="(hasApartment && !appLoading)"
+          v-if="hasApartment && !appLoading"
           :show-layout="false"
           :float-layout="true"
           :enable-download="true"
@@ -150,44 +150,6 @@
         </section>
       </vue-html2pdf>
 
-      <vue-html2pdf
-          v-else
-          :show-layout="false"
-          :float-layout="true"
-          :enable-download="true"
-          :preview-modal="true"
-          :pdf-quality="2"
-          :manual-pagination="false"
-          pdf-format="a5"
-          :paginate-elements-by-height="3000"
-          pdf-orientation="portrait"
-          pdf-content-width="560px"
-          :html-to-pdf-options="htmlToPdfOptions"
-          ref="html2Pdf"
-      >
-        <section slot="pdf-content">
-          <!--  HEAD    -->
-          <div v-if="visible" class="head d-flex justify-content-between pdf-item">
-            <span class="d-flex justify-content-center align-items-center">
-              <span
-                  @click="hideApartmentSidebar"
-                  class="close__button d-flex justify-content-center align-items-center"
-              >
-                <base-arrow-left-icon :width="32" :height="32"/>
-              </span>
-              <span class="section__title">
-                {{ sidebarApartment.object.name }}
-              </span>
-            </span>
-          </div>
-
-          <!--  MAIN    -->
-          <plan-information class="pdf-item" v-if="visible" :apartment="sidebarApartment"/>
-
-          <!--   ACTIONS     -->
-        </section>
-      </vue-html2pdf>
-
       <!--  MAKE A RESERVATION MODAL    -->
       <reserve
           v-if="showReservationModal"
@@ -201,7 +163,6 @@
   </b-sidebar>
 </template>
 <script>
-import PlanInformation from "@/components/Objects/View/elements/PlanInformation";
 import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInformation";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
@@ -224,7 +185,6 @@ export default {
     BasePrintIcon,
     BaseLoading,
     BaseArrowLeftIcon,
-    PlanInformation,
     PrimaryInformation,
     /*BaseMinusCircleIcon,*/
     Reserve,

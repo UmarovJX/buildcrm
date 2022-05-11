@@ -6,12 +6,12 @@
         <!--     MAIN CONTENT OF SLIDE       -->
         <div class="swiper-wrapper">
           <div
-              v-for="(image,index) in apartment.plan.image"
+              v-for="(image,index) in plan.image"
               :key="index"
               class="swiper-slide"
           >
             <div class="d-flex justify-content-center align-items-center">
-              <img class="swiper-image" :src="image" alt="img">
+              <img class="swiper-image" :src="image" alt="img"/>
             </div>
           </div>
         </div>
@@ -40,76 +40,76 @@
 
     <!--   PRICE CONTENT     -->
     <div class="plan-text">
-      <h5>Квартира: 82 М<sup>2</sup></h5>
-      <p>Найдено 7 помещений</p>
+      <h5>Квартира: {{ plan.area }} 82 М<sup>2</sup></h5>
+      <p>Найдено {{ plan.rooms }} помещений</p>
     </div>
 
     <div class="plans">
-      <div class="plan-block">
+      <div v-for="item in plan.apartments" :key="item.id" class="plan-block" @click="openModal(item)">
         <div class="plan-item">
-          <h5>2 этаж</h5>
-          <p>166.2 M<sup>2</sup></p>
+          <h5>{{ item.entrance }} этаж</h5>
+          <p>{{ item.plan.area }} M<sup>2</sup></p>
         </div>
         <div class="plan-item">
-          <h5>330 000 000 сум</h5>
-          <p>3,180,000 сум/M <sup>2</sup></p>
+          <h5>{{ item.price }} сум</h5>
+          <p>{{ item.price_m2 }} сум/M <sup>2</sup></p>
         </div>
         <div class="apartment-promo-icon">
-          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">
+          <img v-if="item.is_promo" src="../../../../assets/icons/bonuses.svg" alt="">
         </div>
       </div>
-      <div class="plan-block">
-        <div class="plan-item">
-          <h5>2 этаж</h5>
-          <p>166.2 M<sup>2</sup></p>
-        </div>
-        <div class="plan-item">
-          <h5>330 000 000 сум</h5>
-          <p>3,180,000 сум/M <sup>2</sup></p>
-        </div>
-        <div class="apartment-promo-icon">
-          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">
-        </div>
-      </div>
-      <div class="plan-block">
-        <div class="plan-item">
-          <h5>2 этаж</h5>
-          <p>166.2 M<sup>2</sup></p>
-        </div>
-        <div class="plan-item">
-          <h5>330 000 000 сум</h5>
-          <p>3,180,000 сум/M <sup>2</sup></p>
-        </div>
-        <div class="apartment-promo-icon">
-          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">
-        </div>
-      </div>
-      <div class="plan-block">
-        <div class="plan-item">
-          <h5>2 этаж</h5>
-          <p>166.2 M<sup>2</sup></p>
-        </div>
-        <div class="plan-item">
-          <h5>330 000 000 сум</h5>
-          <p>3,180,000 сум/M <sup>2</sup></p>
-        </div>
-        <div class="apartment-promo-icon">
-          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">
-        </div>
-      </div>
-      <div class="plan-block">
-        <div class="plan-item">
-          <h5>2 этаж</h5>
-          <p>166.2 M<sup>2</sup></p>
-        </div>
-        <div class="plan-item">
-          <h5>330 000 000 сум</h5>
-          <p>3,180,000 сум/M <sup>2</sup></p>
-        </div>
-        <div class="apartment-promo-icon">
-          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">
-        </div>
-      </div>
+      <!--      <div class="plan-block">-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>2 этаж</h5>-->
+      <!--          <p>166.2 M<sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>330 000 000 сум</h5>-->
+      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="apartment-promo-icon">-->
+      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div class="plan-block">-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>2 этаж</h5>-->
+      <!--          <p>166.2 M<sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>330 000 000 сум</h5>-->
+      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="apartment-promo-icon">-->
+      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div class="plan-block">-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>2 этаж</h5>-->
+      <!--          <p>166.2 M<sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>330 000 000 сум</h5>-->
+      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="apartment-promo-icon">-->
+      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div class="plan-block">-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>2 этаж</h5>-->
+      <!--          <p>166.2 M<sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="plan-item">-->
+      <!--          <h5>330 000 000 сум</h5>-->
+      <!--          <p>3,180,000 сум/M <sup>2</sup></p>-->
+      <!--        </div>-->
+      <!--        <div class="apartment-promo-icon">-->
+      <!--          <img v-if="false" src="../../../../assets/icons/bonuses.svg" alt="">-->
+      <!--        </div>-->
+      <!--      </div>-->
     </div>
 
 
@@ -122,15 +122,17 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import {formatToPrice} from "@/util/reusable";
 import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
+// import VueSilentbox from 'vue-silentbox'
 
 export default {
   name: "PrimaryInformation",
+
   props: {
     visible: {
       type: Boolean,
       default: true
     },
-    apartment: {
+    plan: {
       type: Object,
       required: true
     }
@@ -140,6 +142,7 @@ export default {
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
+    // VueSilentbox
   },
 
   /* DIRECTIVES */
@@ -182,6 +185,9 @@ export default {
   },
 
   methods: {
+    openModal(item) {
+      this.$emit('open-express', item)
+    },
     buildingDate(time) {
       const date = new Date(time)
       const year = date.getFullYear()
@@ -281,12 +287,18 @@ export default {
     color: var(--gray-600)
     margin-bottom: 1rem
 
+    sup
+      color: var(--gray-600)
+
   p
     font-weight: 600
     font-size: 16px
     line-height: 22px
     color: var(--gray-400)
     margin-bottom: 0
+
+    sup
+      color: var(--gray-400)
 
 .plans
   display: flex
@@ -309,6 +321,9 @@ export default {
       margin-bottom: .5rem
       color: var(--gray-600)
 
+      sup
+        color: var(--gray-600)
+
 
     p
       font-weight: 600
@@ -316,6 +331,9 @@ export default {
       line-height: 22px
       margin-bottom: 0
       color: var(--gray-500)
+
+      sup
+        color: var(--gray-500)
 
 
 </style>
