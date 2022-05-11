@@ -1,8 +1,18 @@
-export function formatToPrice(rawPrice) {
+export function formatToPrice(rawPrice, decimalCount = 0) {
     if (!rawPrice) return 0
+
     const dollarUSLocale = Intl.NumberFormat('en-US')
     const price = dollarUSLocale.format(parseInt(rawPrice))
-    return price.toLocaleString().replace(/,/g, '  ')
+    const result = price.toLocaleString().replace(/,/g, '  ')
+
+    if (decimalCount) {
+        const decimalValue = (rawPrice % 1).toFixed(decimalCount)
+        if (decimalValue > 0) {
+            return result + decimalValue
+        }
+    }
+
+    return result
 }
 
 export function formatDateWithDot(rawDate) {

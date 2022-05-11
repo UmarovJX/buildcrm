@@ -140,7 +140,7 @@ export default {
       }
     },
     price(value) {
-      return formatToPrice(value)
+      return formatToPrice(value, 2)
     },
     levelLarge(index) {
       const apartmentFloorsNumbers = this.apartments[index].blocks.map(item => item.floors.length)
@@ -406,7 +406,7 @@ export default {
     &-price,
     &-status,
     &-number,
-    &-promo-icon img{
+    &-promo-icon img {
       display: none !important;
     }
   }
