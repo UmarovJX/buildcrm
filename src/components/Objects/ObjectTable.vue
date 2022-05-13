@@ -68,7 +68,7 @@
         </template>
 
         <template #cell(price)="data">
-          <span v-if="data.item.order.status !== 'sold'">
+          <span v-if="data.item.order.status !== 'sold' && data.item.order.status !== 'closed' && data.item.is_sold">
             {{
               data.item.prices.price
                   | number("0,0.00", {
@@ -81,9 +81,9 @@
         </template>
 
         <template #cell(status)="data">
-                    <span v-if="!data.item.is_sold" class="disable">
-                      {{ $t('not_for_sale') }}
-                    </span>
+          <span v-if="!data.item.is_sold" class="disable">
+            {{ $t('not_for_sale') }}
+          </span>
           <span v-else :class="getStatus(data.item.order.status).class">
               {{ getStatus(data.item.order.status).statusText }}
           </span>
@@ -551,7 +551,6 @@ export default {
         case 'available': {
           return {statusText: this.$t('object.status.available'), class: 'teal'}
         }
-        case 'contract':
         case 'waiting':
         case 'sold':
         case 'closed': {
@@ -560,7 +559,7 @@ export default {
         case 'booked': {
           return {statusText: this.$t('object.status.booked'), class: 'yellow'}
         }
-        case 'hold': {
+        case 'contract': {
           return {statusText: this.$t('object.status.contract'), class: 'blue'}
         }
         default:

@@ -438,7 +438,7 @@ export default {
           s += items[i] + ',';
         }
       }
-      return s
+      return s.slice(0, -1)
     },
     filterApartments() {
       const values = sortInFirstRelationship(this.form)

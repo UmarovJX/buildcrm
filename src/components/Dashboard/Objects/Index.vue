@@ -6,7 +6,7 @@
       >
       </base-bread-crumb>
 
-      <div class="object-cards ">
+      <div class="object-cards">
         <div class="card"
              v-for="(object, index) in getObjects"
              :key="index"
@@ -118,6 +118,12 @@
             <img v-if="object.image" v-lazy="object.image" alt="">
             <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="">
           </router-link>
+        </div>
+        <div class="card">
+          <div class="card-body card-empty" @click="createBlock">
+            <img :src="require('@/assets/icons/icon-plus.svg')" alt="">
+            <p>Добавить объект</p>
+          </div>
         </div>
       </div>
 
@@ -278,6 +284,7 @@ export default {
 .object-cards {
   margin-top: 3rem;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 24px;
 }
@@ -289,11 +296,12 @@ export default {
   border: none;
   display: flex;
 
+
   &-body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-radius: 1rem 1rem 0 0;
+    border-radius: 2rem 2rem 0 0;
     padding: 28px;
     background-color: var(--gray-100)
   }
@@ -314,6 +322,26 @@ export default {
     }
   }
 
+  &-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2rem;
+    min-height: 450px;
+    height: 100%;
+
+    p {
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 30px;
+      margin-bottom: 0;
+      margin-top: 23px;
+      color: var(--violet-600);
+    }
+  }
+
+
   &-title {
     color: var(--violet-600);
     font-weight: 900;
@@ -323,6 +351,7 @@ export default {
   }
 
   &-subtitle {
+    min-height: 72px;
     margin: 0;
   }
 
@@ -368,7 +397,7 @@ export default {
     height: 206px;
 
     img {
-      border-radius: 0 0 1rem 1rem;
+      border-radius: 0 0 2rem 2rem;
       max-height: 100%;
       width: 100%;
       object-fit: cover;

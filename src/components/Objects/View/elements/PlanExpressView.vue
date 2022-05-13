@@ -175,13 +175,25 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
+::v-deep .b-sidebar
+  filter: drop-shadow(-16px 0px 64px rgba(0, 0, 0, 0.16)) drop-shadow(-16px 0px 24px rgba(0, 0, 0, 0.06));
+
+  &.b-sidebar-right
+    border-radius: 56px 0 0 56px
+
+  & > .b-sidebar-body
+    border-radius: 1rem
+
+
 ::v-deep .sidebar__apartment
   width: 42rem
   font-family: CraftworkSans, serif
 
   &-body
-    margin: 0 3.5rem
-    padding: 3.5rem 0
+    //margin: 0 3.5rem
+    //padding: 3.5rem 0
+    padding: 3.5rem
     -ms-overflow-style: none
     scrollbar-width: none
 

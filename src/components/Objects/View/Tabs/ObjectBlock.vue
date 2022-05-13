@@ -41,7 +41,7 @@
                     }"
                   >
                     <div class="square" @click="showExpressSidebar(elem,item.floorActive,value.blockActive)"
-                         :class="status(elem.order.status).class">
+                         :class="[status(elem.order.status).class, elem.is_sold ? '' : 'gray']">
                       <div class="square-header">
                         <p class="apartment-number">Кв. № {{ elem.number }}</p>
                         <div v-if="elem.is_promo" class="h-auto d-flex apartment-promo-icon">
@@ -49,11 +49,18 @@
                         </div>
                       </div>
                       <div class="square-body">
-                        <h5>
+                        <h5 v-if="!elem.is_sold">
+                          <template>
+                            <span class="apartment-status">
+                              {{ $t('not_for_sale') }}
+                            </span>
+                          </template>
+                        </h5>
+                        <h5 v-else>
                           <template v-if="status(elem.order.status).statusText">
-                          <span class="apartment-status">
-                            {{ status(elem.order.status).statusText }}
-                          </span>
+                            <span class="apartment-status">
+                              {{ status(elem.order.status).statusText }}
+                            </span>
                           </template>
                           <template v-else>
                             <span class="apartment-price">{{ price(elem.prices.price, 2) }} сум</span>
@@ -64,7 +71,7 @@
                         <p class="apartment-area">{{ elem.plan.area }} M<sup>2</sup></p>
                         <p
                             class="apartment-square-price"
-                            v-if="elem.order.status !== 'sold'"
+                            v-if="elem.order.status !== 'sold' && elem.is_sold"
                         >
                           {{ price(elem.prices.price_m2) }} сум/M<sup>2</sup>
                         </p>

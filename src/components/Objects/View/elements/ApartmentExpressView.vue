@@ -48,6 +48,7 @@
             </span>
           </div>
 
+
           <!--  MAIN    -->
           <primary-information class="pdf-item" v-if="visible" :apartment="sidebarApartment"/>
 
@@ -189,7 +190,7 @@ export default {
     BaseMinusCircleIcon,
     Reserve,
     VueHtml2pdf,
-    BaseEyeIcon
+    BaseEyeIcon,
   },
 
   /* PROPS */
@@ -217,6 +218,20 @@ export default {
       htmlToPdfOptions: {
         margin: 6,
         filename: ''
+      },
+      tabList() {
+        return [
+          {
+            name: 'Успешные',
+            status: 'success',
+            counts: 2
+          },
+          {
+            name: 'Ошибка загрузки',
+            status: 'failed',
+            counts: 3
+          }
+        ]
       },
       sidebarApartment: {},
       appLoading: true,
@@ -318,6 +333,17 @@ export default {
 
   /* METHODS */
   methods: {
+    changeTabOfUploadList(status) {
+      const {status: queryStatus} = this.$route.query
+      if (queryStatus !== status) {
+        this.$router.replace({
+          query: {
+            ...this.$route.query,
+            status
+          }
+        })
+      }
+    },
     viewMore() {
       this.$router.push({
         name: 'apartment-view',
@@ -425,13 +451,24 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
+::v-deep .b-sidebar
+  filter: drop-shadow(-16px 0px 64px rgba(0, 0, 0, 0.16)) drop-shadow(-16px 0px 24px rgba(0, 0, 0, 0.06));
+
+  &.b-sidebar-right
+    border-radius: 56px 0 0 56px
+
+  & > .b-sidebar-body
+    border-radius: 1rem
+
 ::v-deep .sidebar__apartment
   width: 42rem
   font-family: CraftworkSans, serif
 
   &-body
-    margin: 0 3.5rem
-    padding: 3.5rem 0
+    //margin: 0 3.5rem
+    //padding: 3.5rem 0
+    padding: 3.5rem
     -ms-overflow-style: none
     scrollbar-width: none
 

@@ -31,7 +31,7 @@
                       :class="[
                         hasQuery && inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
                         ? 'apartment-inactive'
-                        : status(elem.order.status).class
+                        : [status(elem.order.status).class, elem.is_sold ? '' : 'gray']
                     ]"
                   >
                     <div
@@ -43,7 +43,8 @@
                         {{ elem.number }}
                       </h5>
                     </div>
-                    <span class="tooltip-content" :class="status(elem.order.status).class+'-tool'">
+                    <span class="tooltip-content"
+                          :class="[status(elem.order.status).class + '-tool', elem.is_sold ? '' : 'disable-tool']">
                       <b-tooltip
                           class="custom-tooltip"
                           :target="'tolltip' + elem.number"
@@ -51,7 +52,7 @@
                           placement="bottomright"
                       >
                         <div class="square"
-                             :class="status(elem.order.status).class+'-tool'">
+                             :class="[status(elem.order.status).class + '-tool', elem.is_sold ? '' : 'disable-tool']">
                         <div class="square-header">
                           <p>Кв. №{{ elem.number }}</p>
                           <div v-if="elem.is_promo" class="h-auto d-flex">
@@ -59,7 +60,14 @@
                           </div>
                         </div>
                         <div class="square-body">
-                          <h5>
+                          <h5 v-if="!elem.is_sold">
+                            <template>
+                              <span class="apartment-status">
+                                {{ $t('not_for_sale') }}
+                              </span>
+                            </template>
+                          </h5>
+                          <h5 v-else>
                             <template v-if="status(elem.order.status).statusText">
                               {{ status(elem.order.status).statusText }}
                             </template>
@@ -431,6 +439,18 @@ export default {
       border-left-color: var(--gray-500);
     }
   }
+
+  .disable-tool {
+    background-color: var(--gray-500) !important;
+
+    p, h5 {
+      color: var(--white) !important;
+    }
+
+    &::before {
+      border-left-color: var(--gray-500) !important;
+    }
+  }
 }
 
 
@@ -540,7 +560,7 @@ export default {
 
 .inactive-apartment {
   .square-header .apartment-number,
-  .square-header .apartment-promo-icon img{
+  .square-header .apartment-promo-icon img {
     display: none !important;
   }
 }
