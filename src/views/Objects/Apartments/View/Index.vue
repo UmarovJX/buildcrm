@@ -554,7 +554,7 @@ export default {
     },
     getBasePrice() {
       let totalDiscount = this.getDiscount()
-      console.log(totalDiscount)
+      // console.log(totalDiscount)
       switch (this.discount.type) {
         case 'promo':
         case 'fixed':

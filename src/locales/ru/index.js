@@ -70,7 +70,7 @@ export default {
     object_details: 'Детали объекта',
     client_details: 'Детали клиента',
     contract_details: 'Детали договора',
-    floor: 'Этаж',
+    floor: 'этаж',
     paid: 'Оплачено',
     waiting_to_payment: 'На оплате',
     partially: 'Частично оплачено',
@@ -115,8 +115,8 @@ export default {
     number_of_rooms: 'Количество комнат',
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
     search_placeholder: 'ФИО, телефон, номер договора',
-
-    clear:'Очистить',
+    apartment_rooms: 'Найдено { msg } помещений',
+    clear: 'Очистить',
     selling_price: 'Цена продажи',
 
     tab_status: {

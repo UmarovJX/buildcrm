@@ -90,7 +90,7 @@ export default {
     contract_details: 'Shartnoma tafsilotlari',
     initial_payment: "Boshlang'ich to'lov",
     monthly_pay: "Oylik to'lov",
-    floor: 'Qavat',
+    floor: 'qavat',
     paid: "To'langan",
     waiting_to_payment: 'Kutilmoqda',
     partially: "Qisman to'langan",
@@ -133,7 +133,7 @@ export default {
     number_of_rooms: 'Xonalar soni',
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
     search_placeholder: 'ФИО, телефон, номер договора',
-
+    apartment_rooms: `{msg} ta xonadon topildi`,
     clear: 'Tozalash',
     selling_price: 'Sotuv narxi',
 
