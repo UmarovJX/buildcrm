@@ -17,6 +17,8 @@ export default {
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
 
+    apartment: "Xonadon",
+
     quarter: 'chorak',
     of_the_year: 'yil',
     thank_you: 'Rahmat',

@@ -698,8 +698,6 @@ export default {
       const vm = this;
       await this.fetchApartments(vm)
     },
-
-
   },
 
 };
