@@ -39,7 +39,7 @@
     </div>
 
     <!--   PRICE CONTENT     -->
-    <div class="price__section d-flex justify-content-between align-items-center">
+    <div v-if="statusSold" class="price__section d-flex justify-content-between align-items-center">
       <span class="price__section-amount">{{ price }}</span>
       <span class="price__section-square-amount">
         {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
@@ -223,6 +223,10 @@ export default {
     squareMetrePrice() {
       return formatToPrice(this.apartment.price_m2) + ' ' + this.$t('ye')
     },
+
+    statusSold() {
+      return this.apartment.order.status === 'sold'
+    }
   },
 
   methods: {

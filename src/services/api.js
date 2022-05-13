@@ -37,6 +37,7 @@ export default {
     authV1: new Auth.AuthV1(),
     auth: new Auth.AuthV2(),
     companies: new Companies(),
-    apartments: new Apartments(),
+    apartments: new Apartments.ApartmentsV1(),
+    apartmentsV2: new Apartments.ApartmentsV2(),
     accountants: new Accountants(),
 }

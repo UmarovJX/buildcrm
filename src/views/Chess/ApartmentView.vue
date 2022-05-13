@@ -276,7 +276,7 @@ export default {
       return Object.keys(this.apartment).length > 0
     },
     initialPrice() {
-      return this.pricePrettier(this.apartment.price)
+      return this.pricePrettier(this.apartment.prices.price)
     },
     showMonthlyCalculation() {
       return this.calc.prepay_percente !== 100
@@ -361,7 +361,7 @@ export default {
     async fetchApartmentView() {
       this.appLoading = true
       const {object, id} = this.$route.params
-      await api.apartments.getApartmentView(object, id)
+      await api.apartmentsV2.getApartmentView(object, id)
           .then(response => {
             this.apartment = response.data
           }).catch((error) => {
@@ -463,7 +463,7 @@ export default {
 
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
-          this.calc.price_for_m2 = this.apartment.price_m2;
+          this.calc.price_for_m2 = this.apartment.prices.price_m2;
         } else {
           this.calc.price_for_m2 =
               this.getTotalForPercente() / this.apartment.plan.area;
@@ -490,9 +490,9 @@ export default {
       if (this.discount.type === "fixed" || this.discount.type === "promo") {
         await this.initialCalc();
       } else if (this.discount.prepay === 100) {
-        this.calc.total = this.apartment.price;
-        this.calc.prepay = this.apartment.price;
-        this.calc.price_for_m2 = this.apartment.price_m2;
+        this.calc.total = this.apartment.prices.price;
+        this.calc.prepay = this.apartment.prices.price;
+        this.calc.price_for_m2 = this.apartment.prices.price_m2;
 
         this.calForPrint = this.calc;
         this.$emit("getCalData", this.calForPrint);
@@ -566,7 +566,7 @@ export default {
           }
           break;
         default:
-          total = this.apartment.price / total_discount;
+          total = this.apartment.prices.price / total_discount;
           if (this.calc.discount_price) {
             total -=
                 parseFloat(this.calc.discount_price) * this.apartment.plan.area;
@@ -591,7 +591,7 @@ export default {
           }
           break;
         default:
-          total = this.apartment.price / total_discount;
+          total = this.apartment.prices.price / total_discount;
           break;
       }
 

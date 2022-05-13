@@ -59,6 +59,7 @@ import Contracts from "@/views/Contracts/Index"
 import ContractView from "@/views/Contracts/View/Index"
 import ApartmentCloneView from '@/views/Chess/ApartmentView'
 import ChessObjects from "./views/Chess/Objects"
+import DebtorsClone from "@/views/Debtors/Index"
 import ObjectTable from "@/components/Objects/ObjectTable";
 
 
@@ -158,6 +159,16 @@ const routes = [
         name: "debtors",
         path: "/debtors",
         component: Debtors,
+        meta: {
+            requiresAuth: "debtors",
+        },
+    },
+
+    {
+        /* DEBTORS CLONE */
+        name: "debtors-clone",
+        path: "/debtors/clone",
+        component: DebtorsClone,
         meta: {
             requiresAuth: "debtors",
         },
