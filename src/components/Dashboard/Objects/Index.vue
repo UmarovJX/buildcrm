@@ -84,7 +84,7 @@
           </div>
           <router-link class="card-body"
                        v-if="getPermission.objects.apartments"
-                       :to="{name: 'apartments', params: {object: object.id}}"
+                       :to="{name: 'chess', params: {objectId: object.id}}"
           >
             <div class="card-top">
               <div class="card-top__content">
@@ -111,7 +111,7 @@
 
           <router-link class="card-img"
                        v-if="getPermission.objects.apartments"
-                       :to="{name: 'apartments', params: {object: object.id}}"
+                       :to="{name: 'chess', params: {objectId: object.id}}"
           >
             <img v-if="object.image" v-lazy="object.image" alt="">
             <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="">

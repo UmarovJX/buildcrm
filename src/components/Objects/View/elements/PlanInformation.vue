@@ -11,7 +11,8 @@
               class="swiper-slide"
           >
             <div class="d-flex justify-content-center align-items-center">
-              <img class="swiper-image" :src="image" alt="img"/>
+              <img v-if="image" class="swiper-image" :src="image" alt="img">
+              <img v-else class="swiper-image" :src="require('@/assets/img/no-image.jpg')" alt="img">
             </div>
           </div>
         </div>
