@@ -1,7 +1,7 @@
 import Core from '@/services/core/index'
-import {axiosV1CRM} from '@/services/core/base'
+import {axiosV1CRM, axiosV2} from '@/services/core/base'
 
-class Apartments extends Core {
+class ApartmentsV1 extends Core {
     constructor(axios = axiosV1CRM) {
         super(axios);
     }
@@ -16,10 +16,6 @@ class Apartments extends Core {
                 status
             }
         })
-    }
-
-    getApartmentView(object, id) {
-        return this.get(`objects/${object}/apartments/${id}`)
     }
 
     bookingApartments(body) {
@@ -43,4 +39,18 @@ class Apartments extends Core {
     }
 }
 
-export default Apartments
+class ApartmentsV2 extends Core {
+    constructor(axios = axiosV2) {
+        super(axios)
+    }
+
+    getApartmentView(object, id) {
+        return this.get(`apartments/objects/${object}/apartments/${id}`)
+    }
+
+}
+
+export default {
+    ApartmentsV2,
+    ApartmentsV1
+}

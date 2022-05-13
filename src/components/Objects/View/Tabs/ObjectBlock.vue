@@ -54,13 +54,18 @@
                           </span>
                           </template>
                           <template v-else>
-                            <span class="apartment-price">{{ price(elem.price) }} сум</span>
+                            <span class="apartment-price">{{ price(elem.prices.price, 2) }} сум</span>
                           </template>
                         </h5>
                       </div>
                       <div class="square-footer">
                         <p class="apartment-area">{{ elem.plan.area }} M<sup>2</sup></p>
-                        <p class="apartment-square-price">{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                        <p
+                            class="apartment-square-price"
+                            v-if="elem.order.status !== 'sold'"
+                        >
+                          {{ price(elem.prices.price_m2) }} сум/M<sup>2</sup>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -139,8 +144,8 @@ export default {
           return {statusText: '', class: 'teal'}
       }
     },
-    price(value) {
-      return formatToPrice(value, 2)
+    price(value, decimalCount = 0) {
+      return formatToPrice(value, decimalCount)
     },
     levelLarge(index) {
       const apartmentFloorsNumbers = this.apartments[index].blocks.map(item => item.floors.length)

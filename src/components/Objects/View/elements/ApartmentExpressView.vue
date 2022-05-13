@@ -166,7 +166,7 @@ import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInform
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
-// import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
+import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
@@ -185,7 +185,7 @@ export default {
     BaseLoading,
     BaseArrowLeftIcon,
     PrimaryInformation,
-    /*BaseMinusCircleIcon,*/
+    BaseMinusCircleIcon,
     Reserve,
     VueHtml2pdf,
     BaseEyeIcon
@@ -326,7 +326,7 @@ export default {
     async fetchSidebarItem() {
       this.appLoading = true
       const {objectId} = this.$route.params
-      await api.apartments.getApartmentView(objectId, this.apartmentUuid)
+      await api.apartmentsV2.getApartmentView(objectId, this.apartmentUuid)
           .then(response => {
             this.sidebarApartment = response.data
           }).catch((error) => {

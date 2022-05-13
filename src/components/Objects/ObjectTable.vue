@@ -68,14 +68,16 @@
         </template>
 
         <template #cell(price)="data">
-          {{
-            data.item.price
-                | number("0,0.00", {
-              thousandsSeparator: " ",
-              decimalSeparator: ",",
-            })
-          }}
+          <span v-if="data.item.order.status !== 'sold'">
+            {{
+              data.item.prices.price
+                  | number("0,0.00", {
+                thousandsSeparator: " ",
+                decimalSeparator: ",",
+              })
+            }}
           {{ $t("ye") }}
+          </span>
         </template>
 
         <template #cell(status)="data">
