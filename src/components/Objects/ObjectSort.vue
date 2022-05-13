@@ -3,8 +3,18 @@
     <div class="sort-top ">
       <!--   Комнат    -->
       <b-dropdown left>
-        <template #button-content>
-          {{ $t('object.sort.flat') }}
+        <template v-if="form.rooms && form.rooms.length" #button-content>
+          <div class="input-block">
+            <span class="input-label">{{ $t('object.sort.flat') }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(form.rooms) }}
+            </p>
+          </div>
+        </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t('object.sort.flat') }}
+          </p>
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -24,9 +34,22 @@
 
       <!--  Этаж    -->
       <b-dropdown left>
-        <template #button-content>
-          {{ $t('object.level') }}
+        <template v-if="form.floors && form.floors.length" #button-content>
+          <div class="input-block">
+            <span class="input-label">{{ $t('object.level') }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(form.floors) }}
+            </p>
+          </div>
         </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t('object.level') }}
+          </p>
+        </template>
+        <!--        <template #button-content>-->
+        <!--          {{ $t('object.level') }}-->
+        <!--        </template>-->
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
@@ -45,8 +68,18 @@
 
       <!--   Жилая площадь    -->
       <b-dropdown left>
-        <template #button-content>
-          {{ $t('object.sort.area') }}
+        <template v-if="form.area && form.area.length" #button-content>
+          <div class="input-block">
+            <span class="input-label">{{ $t('object.sort.area') }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(form.area) }}
+            </p>
+          </div>
+        </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t('object.sort.area') }}
+          </p>
         </template>
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
@@ -99,9 +132,20 @@
 
       <!--   Блок    -->
       <b-dropdown v-show="sortBar" left>
-        <template #button-content>
-          {{ $t('object.sort.block') }}
+        <template v-if="form.blocks && form.blocks.length" #button-content>
+          <div class="input-block">
+            <span class="input-label">{{ $t('object.sort.block') }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(form.blocks) }}
+            </p>
+          </div>
         </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t('object.sort.block') }}
+          </p>
+        </template>
+
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
@@ -371,6 +415,25 @@ export default {
   },
 
   methods: {
+    formatSelectPlaceholder(items) {
+      // let outputPlaceholder = ''
+      // const sortItem = items.sort((a, b) => a - b)
+      // for (let i = 0; i < items.length; i++) {
+      //   const diffBetweenNext = Math.abs(items[i + 1] - items[i])
+      //   if (diffBetweenNext === 1) {
+      //     continue
+      //   } else {
+      //     if (i !== 0) {
+      //       const diffBetweenPrev = Math.abs(items[i] - items[i - 1])
+      //       if (diffBetweenPrev === 1) {
+      //
+      //       }
+      //     }
+      //   }
+      // }
+      return items
+      // 1 - 3 , 6-9 , 11 , 15 , 21-23
+    },
     filterApartments() {
       const values = sortInFirstRelationship(this.form)
       const params = this.$route.params
@@ -484,6 +547,8 @@ export default {
 .sort-top {
   display: flex;
   flex-wrap: wrap;
+
+
 }
 
 .chess-tab {
@@ -692,6 +757,42 @@ export default {
       -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
       box-shadow: 0 8px 25px -8px var(--gray-400) !important;
     }
+
+    .input-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .input-label {
+      font-weight: 900;
+      font-size: 8px;
+      line-height: 10px;
+      margin: 0 2px 0 0;
+      //margin-bottom: 2px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gray-400);
+    }
+
+    .input-text {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      color: var(--gray-600);
+      margin: 0;
+      max-width: 150px;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .default-label {
+      line-height: 22px;
+      font-size: 1rem;
+      color: var(--gray-400);
+      margin: 0;
+    }
+
   }
 
   .dropdown-toggle::after {
