@@ -257,7 +257,8 @@ export default {
         prepay: 0,
         debt: 0,
         total: 0,
-        prepay_percente: 0
+        prepay_percente: 0,
+        base_price: 0
       },
       monthly_price: 0,
       calForPrint: {},
@@ -276,7 +277,7 @@ export default {
       return Object.keys(this.apartment).length > 0
     },
     initialPrice() {
-      return this.pricePrettier(this.apartment.prices.price)
+      return this.pricePrettier(this.calc.base_price)
     },
     showMonthlyCalculation() {
       return this.calc.prepay_percente !== 100
@@ -478,6 +479,7 @@ export default {
       this.monthly_price = this.calc.monthly_price;
       this.calc.debt = this.getDebt();
       this.calc.total = this.getTotal();
+      this.calc.base_price = this.getBasePrice()
 
       this.calForPrint = this.calc;
       this.$emit("getCalData", this.calForPrint);
@@ -493,7 +495,7 @@ export default {
         this.calc.total = this.apartment.prices.price;
         this.calc.prepay = this.apartment.prices.price;
         this.calc.price_for_m2 = this.apartment.prices.price_m2;
-
+        this.calc.base_price = this.apartment.prices.price
         this.calForPrint = this.calc;
         this.$emit("getCalData", this.calForPrint);
       } else {
@@ -550,6 +552,17 @@ export default {
     getDebt() {
       return this.getTotal() - this.getPrepay();
     },
+    getBasePrice() {
+      let totalDiscount = this.getDiscount()
+      console.log(totalDiscount)
+      switch (this.discount.type) {
+        case 'promo':
+        case 'fixed':
+          return this.discount.amount * this.apartment.plan.area
+        default:
+          return this.apartment.prices.price / totalDiscount
+      }
+    },
     getTotal() {
       let total_discount = this.getDiscount();
       let total = 0;
@@ -595,7 +608,7 @@ export default {
           break;
       }
 
-      return total;
+      return total
     },
   }
 }

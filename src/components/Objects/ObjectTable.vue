@@ -480,12 +480,11 @@ export default {
     async fetchContractList() {
       this.showLoading = true
       const query = sortObjectValues(this.query)
-      if (query.hasOwnProperty('objectId') && typeof query.objectId === 'string') {
-        query.objectId = [query.objectId]
+      if (query.hasOwnProperty('object') && typeof query.objectId === 'string') {
+        query.object = [query.object]
       }
-      const {objectId} = this.$route.params
-      console.log(query, 'query');
-      await api.objectsV2.fetchObjectApartments(objectId, query)
+      const {object} = this.$route.params
+      await api.objectsV2.fetchObjectApartments(object, query)
           .then((response) => {
             this.apartments = response.data.items
             this.pagination = response.data.pagination
@@ -520,8 +519,6 @@ export default {
     },
 
     onRowSelected(items) {
-      console.log(items);
-
       this.$router.push({
         name: "objects",
         params: {id: items[0].id},
@@ -536,7 +533,7 @@ export default {
 
       this.$router.push({
         name: "chess",
-        params: this.$route.params.objectId,
+        params: this.$route.params.object,
         query: this.filter,
       }).then(() => {
         const element = document.getElementById("my-table");
