@@ -111,17 +111,6 @@
                     {{ pricePrettier(calc.price_for_m2) }} {{ $t('ye') }}</span>
                 </div>
 
-                <!--
-                         [Forwarded from Ulug`bek Tukhtaev]
-                          Umumiy narx:  500 000 000.00 so`m
-                          Sotuv narxi m2: 4 500 000.00 so`m
-                          Birinchi to`lov: 250 000 000.00 so`m
-                          Oylik to`lov: 12 oy 9 500 000.00 so`m dan
-                          Umumiy chegirma: 5 000 000.00 so`m
-                          Jami: 999 999 999.00 so`m
-                         -->
-
-                <!--       Initial Payment         -->
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">
                     {{ $t('apartments.view.prepayment') }} {{ calc.prepay_percente }}%

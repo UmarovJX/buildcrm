@@ -40,14 +40,14 @@
 
     <!--   PRICE CONTENT     -->
     <div class="plan-text">
-      <h5>Квартира: {{ plan.area }} 82 М<sup>2</sup></h5>
-      <p>Найдено {{ plan.rooms }} помещений</p>
+      <h5>{{ $t('apartment') }}: {{ plan.area }} М<sup>2</sup></h5>
+      <p>{{ $t('apartment_rooms', {msg: `${plan.apartments_count}`}) }}</p>
     </div>
 
     <div class="plans">
       <div v-for="item in plan.apartments" :key="item.id" class="plan-block" @click="openModal(item)">
         <div class="plan-item">
-          <h5>{{ item.entrance }} этаж</h5>
+          <h5>{{ item.entrance }} {{ $t('floor') }}</h5>
           <p>{{ item.plan.area }} M<sup>2</sup></p>
         </div>
         <div class="plan-item">

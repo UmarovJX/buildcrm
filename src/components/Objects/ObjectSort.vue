@@ -415,24 +415,30 @@ export default {
   },
 
   methods: {
-    formatSelectPlaceholder(items) {
-      // let outputPlaceholder = ''
-      // const sortItem = items.sort((a, b) => a - b)
-      // for (let i = 0; i < items.length; i++) {
-      //   const diffBetweenNext = Math.abs(items[i + 1] - items[i])
-      //   if (diffBetweenNext === 1) {
-      //     continue
-      //   } else {
-      //     if (i !== 0) {
-      //       const diffBetweenPrev = Math.abs(items[i] - items[i - 1])
-      //       if (diffBetweenPrev === 1) {
-      //
-      //       }
-      //     }
-      //   }
-      // }
-      return items
-      // 1 - 3 , 6-9 , 11 , 15 , 21-23
+    formatSelectPlaceholder(array) {
+      const items = [...array].sort((a, b) => a - b);
+      let s = '';
+      for (let i = 0; i < items.length; i++) {
+        const distinctWithNext = Math.abs(items[i + 1] - items[i]);
+        const distinctWithPrevious = Math.abs(items[i] - items[i - 1]);
+        if (distinctWithNext === 1) {
+          if (distinctWithPrevious === 1) {
+            if (i === 0) {
+              s += '-';
+            }
+          } else {
+            s += items[i] + '-';
+          }
+        } else if (distinctWithPrevious === 1) {
+          if (i === 0) {
+            s += '-';
+          }
+          s += items[i] + ',';
+        } else {
+          s += items[i] + ',';
+        }
+      }
+      return s
     },
     filterApartments() {
       const values = sortInFirstRelationship(this.form)

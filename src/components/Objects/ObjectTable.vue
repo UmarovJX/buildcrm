@@ -171,7 +171,7 @@
                 <!--  Подробная информация  -->
                 <router-link
                     :to="{name: 'apartment-view',
-                          params: {object: $route.params.objectId, id: data.item.id}}"
+                          params: {object: $route.params.object, id: data.item.id}}"
                     :class="'dropdown-item dropdown-item--inside'"
                 >
                   <i class="far fa-eye"></i>
@@ -520,8 +520,8 @@ export default {
 
     onRowSelected(items) {
       this.$router.push({
-        name: "objects",
-        params: {id: items[0].id},
+        name: "apartment-view",
+        params: {object: this.$route.params.object, id: items[0].id},
       });
     },
 
@@ -532,7 +532,7 @@ export default {
       this.filter.order_by = val.sortDesc ? "desc" : "asc";
 
       this.$router.push({
-        name: "chess",
+        name: "aparments",
         params: this.$route.params.object,
         query: this.filter,
       }).then(() => {
@@ -574,7 +574,7 @@ export default {
       this.edit = false;
 
       await this.$router.push({
-        name: "chess",
+        name: "apartments",
         query: this.filter,
       });
 
