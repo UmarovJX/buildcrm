@@ -176,9 +176,7 @@ export default {
 
   async mounted() {
     await this.getObjectPlans()
-      .finally(() => {
-        this.planLoading = true
-      })
+      
   },
 
   created() {

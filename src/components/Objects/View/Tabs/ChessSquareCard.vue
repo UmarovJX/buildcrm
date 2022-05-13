@@ -64,13 +64,13 @@
                               {{ status(elem.order.status).statusText }}
                             </template>
                             <template v-else>
-                              {{ price(elem.price) }} сум
+                              {{ price(elem.prices.price) }} сум
                             </template>
                           </h5>
                         </div>
                         <div class="square-footer">
                           <p>{{ elem.plan.area }} M<sup>2</sup></p>
-                          <p>{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                          <p>{{ price(elem.prices.price_m2) }} сум/M<sup>2</sup></p>
                         </div>
                       </div>
                       </b-tooltip>

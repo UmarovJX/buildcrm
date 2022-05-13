@@ -56,13 +56,13 @@
                           </span>
                           </template>
                           <template v-else>
-                            <span class="apartment-price">{{ price(elem.price) }} сум</span>
+                            <span class="apartment-price">{{ price(elem.prices.price) }} сум</span>
                           </template>
                         </h5>
                       </div>
                       <div class="square-footer">
                         <p class="apartment-area">{{ elem.plan.area }} M<sup>2</sup></p>
-                        <p class="apartment-square-price">{{ price(elem.price_m2) }} сум/M<sup>2</sup></p>
+                        <p class="apartment-square-price">{{ price(elem.prices.price_m2) }} сум/M<sup>2</sup></p>
                       </div>
                     </div>
                   </div>
