@@ -11,8 +11,9 @@
              v-for="(object, index) in getObjects"
              :key="index"
         >
-          <div v-if="getPermission.objects.delete || getPermission.objects.update"
-               class="object__more-info">
+          <div
+              v-if="getPermission.objects.delete || getPermission.objects.update"
+              class="object__more-info">
             <div class="my-dropdown dropleft">
               <button
                   type="button"
@@ -85,7 +86,7 @@
           </div>
           <router-link class="card-body"
                        v-if="getPermission.objects.apartments"
-                       :to="{name: 'chess', params: {objectId: object.id}}"
+                       :to="{name: 'apartments', params: {object: object.id}}"
           >
             <div class="card-top">
               <div class="card-top__content">
@@ -112,7 +113,7 @@
 
           <router-link class="card-img"
                        v-if="getPermission.objects.apartments"
-                       :to="{name: 'chess', params: {objectId: object.id}}"
+                       :to="{name: 'apartments', params: {object: object.id}}"
           >
             <img v-if="object.image" v-lazy="object.image" alt="">
             <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="">
