@@ -40,7 +40,7 @@
     </div>
 
     <!--   PRICE CONTENT     -->
-    <div v-if="statusSold" class="price__section d-flex justify-content-between align-items-center">
+    <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
       <span class="price__section-amount">{{ price }}</span>
       <span class="price__section-square-amount">
         {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
@@ -218,11 +218,11 @@ export default {
 
   computed: {
     price() {
-      return formatToPrice(this.apartment.price) + ' ' + this.$t('ye')
+      return formatToPrice(this.apartment.prices.price) + ' ' + this.$t('ye')
     },
 
     squareMetrePrice() {
-      return formatToPrice(this.apartment.price_m2) + ' ' + this.$t('ye')
+      return formatToPrice(this.apartment.prices.price_m2) + ' ' + this.$t('ye')
     },
 
     statusSold() {

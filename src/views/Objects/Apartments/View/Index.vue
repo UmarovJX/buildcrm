@@ -92,13 +92,17 @@
 
               <!--     OUTPUTS     -->
               <div class="w-100 outputs font-inter">
+                <!--      Initial Price          -->
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">
                     Начальная цена
                   </span>
-                  <span class="price d-block color-gray-600">{{ initialPrice }} {{ $t('ye') }}</span>
+                  <span class="price d-block color-gray-600">
+                    {{ pricePrettier(apartment.prices.price) }} {{ $t('ye') }}
+                  </span>
                 </div>
 
+                <!--      Price for meters square          -->
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">
                     {{ $t('selling_price') }} m<sup>2</sup>
@@ -107,6 +111,17 @@
                     {{ pricePrettier(calc.price_for_m2) }} {{ $t('ye') }}</span>
                 </div>
 
+                <!--
+                         [Forwarded from Ulug`bek Tukhtaev]
+                          Umumiy narx:  500 000 000.00 so`m
+                          Sotuv narxi m2: 4 500 000.00 so`m
+                          Birinchi to`lov: 250 000 000.00 so`m
+                          Oylik to`lov: 12 oy 9 500 000.00 so`m dan
+                          Umumiy chegirma: 5 000 000.00 so`m
+                          Jami: 999 999 999.00 so`m
+                         -->
+
+                <!--       Initial Payment         -->
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">
                     {{ $t('apartments.view.prepayment') }} {{ calc.prepay_percente }}%
@@ -124,15 +139,40 @@
                   </span>
                 </div>
 
+                <!--       Monthly Payment          -->
                 <div v-if="discount.amount > 0" class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">{{ $t('contracts.view.remainder') }}</span>
-                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.debt) }} {{ $t('ye') }}</span>
+                  <span class="property d-block color-gray-400">
+                    {{ $t('monthly_payment') }}
+                  </span>
+                  <span
+                      class="price d-block color-gray-600"
+                  >
+                    {{ $t('price_monthly', {month: calc.month, price: pricePrettier(calc.monthly_price)}) }}
+                  </span>
                 </div>
 
+                <!--                <div v-if="discount.amount > 0" class="d-flex justify-content-between">-->
+                <!--                  <span class="property d-block color-gray-400">{{ $t('contracts.view.remainder') }}</span>-->
+                <!--                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.debt) }} {{ $t('ye') }}</span>-->
+                <!--                </div>-->
+
+                <!--      Total Discount          -->
+                <div class="d-flex justify-content-between">
+                  <span class="property d-block color-gray-400">
+                    {{ $t('total_discount') }}
+                  </span>
+                  <span
+                      class="price d-block color-gray-600"
+                  >
+                    {{ totalDiscount }}
+                  </span>
+                </div>
+
+                <!--      Total Price          -->
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
                   <span class="price d-block color-violet-600 total-price">
-                    {{ pricePrettier(calc.total) }}  {{ $t('ye') }}
+                    {{ initialPrice }}  {{ $t('ye') }}
                   </span>
                 </div>
               </div>
@@ -290,6 +330,9 @@ export default {
     },
     status() {
       return this.apartment.order.status
+    },
+    totalDiscount() {
+      return this.pricePrettier(this.apartment.prices.price - this.calc.base_price)
     },
     paymentOption() {
       const discounts = [...this.apartment.discounts]
@@ -495,7 +538,7 @@ export default {
         this.calc.total = this.apartment.prices.price;
         this.calc.prepay = this.apartment.prices.price;
         this.calc.price_for_m2 = this.apartment.prices.price_m2;
-        this.calc.base_price = this.apartment.prices.price
+        this.calc.base_price = this.apartment.price
         this.calForPrint = this.calc;
         this.$emit("getCalData", this.calForPrint);
       } else {
@@ -554,13 +597,12 @@ export default {
     },
     getBasePrice() {
       let totalDiscount = this.getDiscount()
-      console.log(totalDiscount)
       switch (this.discount.type) {
         case 'promo':
         case 'fixed':
           return this.discount.amount * this.apartment.plan.area
         default:
-          return this.apartment.prices.price / totalDiscount
+          return totalDiscount
       }
     },
     getTotal() {
