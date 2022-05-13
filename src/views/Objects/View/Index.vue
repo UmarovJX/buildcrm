@@ -176,7 +176,6 @@ export default {
 
   async mounted() {
     await this.getObjectPlans()
-      
   },
 
   created() {
@@ -196,8 +195,8 @@ export default {
 
   methods: {
     async fetchFilterFields() {
-      const {objectId} = this.$route.params
-      await api.objectsV2.fetchObjectFields(objectId)
+      const {object} = this.$route.params
+      await api.objectsV2.fetchObjectFields(object)
           .then((response) => {
             this.filterFields = response.data
           }).catch((err) => {
@@ -436,8 +435,7 @@ export default {
       })
     },
     async getApartments() {
-
-      const id = this.$route.params.objectId
+      const id = this.$route.params.object
       await api.objectsV2.getApartments(id).then(async (res) => {
         this.apartments = res.data.data
         if (this.hasQuery) {
@@ -451,8 +449,8 @@ export default {
       })
     },
     async getObjectPlans() {
-
-      await api.objectsV2.getObjectPlans(18)
+      const id = this.$route.params.object
+      await api.objectsV2.getObjectPlans(id)
           .then((response) => {
             this.plans = response.data
           }).catch((err) => {

@@ -9,7 +9,8 @@
       <div class="object-cards ">
         <div class="card"
              v-for="(object, index) in getObjects"
-             :key="index">
+             :key="index"
+        >
           <div v-if="getPermission.objects.delete || getPermission.objects.update"
                class="object__more-info">
             <div class="my-dropdown dropleft">

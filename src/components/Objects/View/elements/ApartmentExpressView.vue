@@ -320,14 +320,17 @@ export default {
   methods: {
     viewMore() {
       this.$router.push({
-        name: 'apartment-view-clone',
-        params: {object: this.sidebarApartment.object.id, id: this.apartment.uuid}
+        name: 'apartment-view',
+        params: {
+          object: this.sidebarApartment.object.id,
+          id: this.apartment.uuid
+        }
       })
     },
     async fetchSidebarItem() {
       this.appLoading = true
-      const {objectId} = this.$route.params
-      await api.apartmentsV2.getApartmentView(objectId, this.apartmentUuid)
+      const {object} = this.$route.params
+      await api.apartmentsV2.getApartmentView(object, this.apartmentUuid)
           .then(response => {
             this.sidebarApartment = response.data
           }).catch((error) => {

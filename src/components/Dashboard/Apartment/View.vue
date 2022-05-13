@@ -683,7 +683,7 @@ export default {
     async fetchApartmentView() {
       this.getLoading = true
       const {object, id} = this.$route.params
-      await api.apartments.getApartmentView(object, id)
+      await api.apartmentsV2.getApartmentView(object, id)
           .then(response => {
             this.apartment = response.data
             this.setCoordinate()

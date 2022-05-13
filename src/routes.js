@@ -40,7 +40,7 @@ import TypePlan from "./components/Dashboard/TypePlan/Index";
 import TypePlanList from "./components/Dashboard/TypePlan/List";
 import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
 
-import ApartmentView from "./components/Dashboard/Apartment/View";
+// import ApartmentView from "./components/Dashboard/Apartment/View";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
@@ -57,8 +57,8 @@ import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import ImportPayments from "@/components/Contracts/view/ImportPayments";
 import Contracts from "@/views/Contracts/Index"
 import ContractView from "@/views/Contracts/View/Index"
-import ApartmentCloneView from '@/views/Chess/ApartmentView'
-import ChessObjects from "./views/Chess/Objects"
+import ApartmentView from '@/views/Objects/Apartments/View/Index'
+import ObjectsView from '@/views/Objects/View/Index'
 import DebtorsClone from "@/views/Debtors/Index"
 import ObjectTable from "@/components/Objects/ObjectTable";
 
@@ -78,15 +78,15 @@ const routes = [
         component: Auth,
     },
 
-    {
-        /* OBJECTS */
+    /*{
+        /!* OBJECTS *!/
         path: "/chess/:objectId",
         name: "chess",
         component: ChessObjects,
         meta: {
             requiresAuth: "objects"
         }
-    },
+    },*/
 
     {
         /* OBJECTS */
@@ -178,7 +178,7 @@ const routes = [
         /* APARTMENTS */
         name: "apartments",
         path: "/objects/:object/apartments",
-        component: ApartmentsList,
+        component: ObjectsView,
         meta: {
             requiresAuth: "apartments",
         },
@@ -204,15 +204,15 @@ const routes = [
         },
     },
 
-    {
-        /* CLONE APARTMENT VIEW */
-        name: "apartment-view-clone",
-        path: "/objects/:object/apartment/:id/clone",
-        component: ApartmentCloneView,
-        meta: {
-            requiresAuth: "apartments",
-        },
-    },
+    // {
+    //     /* CLONE APARTMENT VIEW */
+    //     name: "apartment-view-clone",
+    //     path: "/objects/:object/apartment/:id/clone",
+    //     component: ApartmentCloneView,
+    //     meta: {
+    //         requiresAuth: "apartments",
+    //     },
+    // },
 
     {
         /* CONFIRM APARTMENT*/
