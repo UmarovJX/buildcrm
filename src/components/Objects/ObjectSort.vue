@@ -438,6 +438,11 @@ export default {
           s += items[i] + ',';
         }
       }
+
+      if (s.slice(-1) === ',') {
+        s = s.slice(0, -1)
+      }
+
       return s
     },
     filterApartments() {

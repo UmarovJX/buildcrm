@@ -43,7 +43,7 @@
     <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
       <span class="price__section-amount">{{ price }}</span>
       <span class="price__section-square-amount">
-        {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
+        {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
       </span>
     </div>
 
@@ -90,7 +90,7 @@
     <!--   APARTMENT DETAILS     -->
     <div class="apartment__details my-3">
       <span class="apartment__details-row">
-        <span class="property">№ {{ $t('apartment_number') }}</span>
+        <span class="property">{{ $t('apartment_number') }}</span>
         <span class="value">{{ apartment.number }}</span>
       </span>
 
@@ -102,14 +102,14 @@
       <span class="apartment__details-row">
         <span class="property">{{ $t('plan_area') }}</span>
         <span class="value">
-          {{ apartment.plan.area }} M<sup>2</sup>
+          {{ apartment.plan.area }} m<sup>2</sup>
         </span>
       </span>
 
       <span class="apartment__details-row">
         <span class="property">{{ $t('balcony') }}</span>
         <span class="value">
-          {{ apartment.plan.balcony_area }} M<sup>2</sup>
+          {{ apartment.plan.balcony_area }} m<sup>2</sup>
         </span>
       </span>
 
@@ -218,11 +218,11 @@ export default {
 
   computed: {
     price() {
-      return formatToPrice(this.apartment.prices.price) + ' ' + this.$t('ye')
+      return formatToPrice(this.apartment.prices.price, 2) + ' ' + this.$t('ye')
     },
 
     squareMetrePrice() {
-      return formatToPrice(this.apartment.prices.price_m2) + ' ' + this.$t('ye')
+      return formatToPrice(this.apartment.prices.price_m2, 2) + ' ' + this.$t('ye')
     },
 
     statusSold() {
@@ -367,6 +367,7 @@ export default {
 
     .property
       color: var(--gray-400)
+      text-transform: capitalize
 
     .value
       color: var(--gray-600)

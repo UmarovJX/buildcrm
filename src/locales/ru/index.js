@@ -118,6 +118,7 @@ export default {
     apartment_rooms: 'Найдено { msg } помещений',
     price_monthly: '{month} месяцев от {price} сумов',
     total_discount: "Общая скидка",
+    starting_price: 'Начальная цена',
 
     clear: 'Очистить',
     selling_price: 'Цена продажи',

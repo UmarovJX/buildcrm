@@ -75,7 +75,7 @@
                     <div class="font-inter color-gray-600 font-weight-600">месяцев</div>
                   </div>
                   <div class="square-price font-inter color-gray-600 font-weight-600">
-                    По {{ pricePrettier(monthly_price) }} сум
+                    По {{ pricePrettier(monthly_price, 2) }} сум
                   </div>
                 </div>
 
@@ -95,10 +95,10 @@
                 <!--      Initial Price          -->
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">
-                    Начальная цена
+                    {{ $t('starting_price') }}
                   </span>
                   <span class="price d-block color-gray-600">
-                    {{ pricePrettier(apartment.prices.price) }} {{ $t('ye') }}
+                    {{ pricePrettier(apartment.prices.price, 2) }} {{ $t('ye') }}
                   </span>
                 </div>
 
@@ -108,7 +108,7 @@
                     {{ $t('selling_price') }} m<sup>2</sup>
                   </span>
                   <span class="price d-block color-gray-600">
-                    {{ pricePrettier(calc.price_for_m2) }} {{ $t('ye') }}</span>
+                    {{ pricePrettier(calc.price_for_m2 - calc.discount_price, 2) }} {{ $t('ye') }}</span>
                 </div>
 
                 <div class="d-flex justify-content-between">
@@ -118,25 +118,25 @@
                   <span v-if="calc.prepay_percente === 100"
                         class="price d-block color-gray-600"
                   >
-                    {{ pricePrettier(calc.total) }} {{ $t('ye') }}
+                    {{ pricePrettier(calc.total, 2) }} {{ $t('ye') }}
                   </span>
                   <span
                       v-else
                       class="price d-block color-gray-600"
                   >
-                    {{ pricePrettier(calc.prepay) }}
+                    {{ pricePrettier(calc.prepay, 2) }} {{ $t('ye') }}
                   </span>
                 </div>
 
                 <!--       Monthly Payment          -->
                 <div v-if="discount.amount > 0" class="d-flex justify-content-between">
                   <span class="property d-block color-gray-400">
-                    {{ $t('monthly_payment') }}
+                    {{ $t('monthly_pay') }}
                   </span>
                   <span
                       class="price d-block color-gray-600"
                   >
-                    {{ $t('price_monthly', {month: calc.month, price: pricePrettier(calc.monthly_price)}) }}
+                    {{ pricePrettier(calc.monthly_price, 2) }} {{ $t('ye') }}
                   </span>
                 </div>
 
@@ -153,7 +153,7 @@
                   <span
                       class="price d-block color-gray-600"
                   >
-                    {{ totalDiscount }}
+                    {{ totalDiscount }} {{ $t('ye') }}
                   </span>
                 </div>
 
@@ -161,7 +161,7 @@
                 <div class="d-flex justify-content-between">
                   <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
                   <span class="price d-block color-violet-600 total-price">
-                    {{ initialPrice }}  {{ $t('ye') }}
+                    {{ pricePrettier(calc.total, 2) }}  {{ $t('ye') }}
                   </span>
                 </div>
               </div>
@@ -222,7 +222,6 @@
           </div>
         </div>
         <!--        </div>-->
-
       </div>
     </div>
 
@@ -305,9 +304,6 @@ export default {
     hasApartment() {
       return Object.keys(this.apartment).length > 0
     },
-    initialPrice() {
-      return this.pricePrettier(this.calc.base_price)
-    },
     showMonthlyCalculation() {
       return this.calc.prepay_percente !== 100
     },
@@ -321,7 +317,10 @@ export default {
       return this.apartment.order.status
     },
     totalDiscount() {
-      return this.pricePrettier(this.apartment.prices.price - this.calc.base_price)
+      const {calc, apartment} = this
+      const {prices, plan} = apartment
+      const discountPerSquare = calc.discount_price * plan.area
+      return this.pricePrettier(prices.price - calc.base_price + discountPerSquare, 2)
     },
     paymentOption() {
       const discounts = [...this.apartment.discounts]
@@ -390,7 +389,7 @@ export default {
   },
 
   methods: {
-    pricePrettier: (price) => formatToPrice(price),
+    pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
     async fetchApartmentView() {
       this.appLoading = true
       const {object, id} = this.$route.params
@@ -504,6 +503,12 @@ export default {
       } else {
         this.calc.price_for_m2 = this.discount.amount;
       }
+
+      // if (this.calc.discount_price > 0) {
+      //   console.log(this.calc.price_for_m2)
+      //   this.calc.price_for_m2 -= this.calc.discount_price
+      // }
+
       this.calc.prepay_percente = this.discount.prepay;
       this.calc.prepay = this.getPrepay();
       this.calc.month = this.apartment?.object?.credit_month;
@@ -521,12 +526,13 @@ export default {
       this.discount = this.paymentOption.find(option => option.value.id === discountId).value
       this.calc.prepay_percente = this.discount.prepay;
       this.calc.discount_price = 0;
-      if (this.discount.type === "fixed" || this.discount.type === "promo") {
-        await this.initialCalc();
-      } else if (this.discount.prepay === 100) {
+      if (this.discount.prepay === 100) {
         this.calc.total = this.apartment.prices.price;
         this.calc.prepay = this.apartment.prices.price;
         this.calc.price_for_m2 = this.apartment.prices.price_m2;
+        if (this.calc.discount_price > 0) {
+          this.calc.price_for_m2 -= this.calc.discount_price
+        }
         this.calc.base_price = this.apartment.price
         this.calForPrint = this.calc;
         this.$emit("getCalData", this.calForPrint);
