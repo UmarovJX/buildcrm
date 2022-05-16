@@ -179,17 +179,11 @@ export default {
     await this.getObjectPlans()
   },
 
-  created() {
+  async created() {
     this.getLoading = true
-    this.fetchFilterFields()
-    this.getApartments()
-    // await Promise.allSettled([
-    //
-    // ]).finally(() => {
-    //   this.finishLoading = true
-    // })
+    await this.fetchFilterFields()
+    await this.getApartments()
   },
-
 
   methods: {
     async fetchFilterFields() {
@@ -199,6 +193,8 @@ export default {
             this.filterFields = response.data
           }).catch((err) => {
             this.toastedWithErrorCode(err)
+          }).finally(() => {
+            this.finishLoading = true
           })
     },
     changeTab(name) {
@@ -207,24 +203,6 @@ export default {
     clearStatus() {
       this.statusFilter = []
     },
-    // hideModal() {
-    //   console.log('ishladi');
-    //
-    //   if (this.expressView.toggle) {
-    //     console.log('ifni ichi');
-    //     this.expressView.toggle = false
-    //     this.expressView.item = {}
-    //   }
-    // },
-    // hideExpressModal() {
-    //   this.expressView.toggle = false
-    //   this.expressView.item = {}
-    //   // const accessToClose = openedApartment.uuid === this.expressView.item.uuid
-    //   // if (accessToClose) {
-    //   //   this.expressView.toggle = false
-    //   //   this.expressView.item = {}
-    //   // }
-    // },
     compareArray(arrayOne, arrayTwo) {
       if (Array.isArray(arrayOne) && Array.isArray(arrayTwo)) {
         const arr1 = arrayOne.slice().sort()
@@ -256,7 +234,17 @@ export default {
         const hasBlocks = filter.hasOwnProperty('blocks')
         if (hasBlocks) {
           filterBlocks = mainConstructor.blocks.map(block => {
-            const isActiveBlock = filter.blocks.includes(block.id)
+            if (typeof filter.blocks === 'string') {
+              filter.blocks = [filter.blocks]
+            }
+
+            const isActiveBlock = filter.blocks.map(blockId => {
+              if (typeof blockId === 'string') {
+                return parseInt(blockId)
+              }
+              return blockId
+            }).includes(block.id)
+
             if (isActiveBlock) {
               return {
                 ...block,
@@ -279,6 +267,7 @@ export default {
         }
 
         filterBlocks = filterBlocks.map(filterBlock => {
+          console.log(filterBlocks)
           let filterFloors = filterBlock.floors
           const hasFloorsQuery = filter.hasOwnProperty('floors')
           if (hasFloorsQuery) {
@@ -417,7 +406,6 @@ export default {
           }
 
           const {id, name, blockActive} = filterBlock
-
           return {
             id,
             name,

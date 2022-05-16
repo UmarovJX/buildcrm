@@ -93,7 +93,7 @@
           <div class="input-block">
             <span class="input-label">{{ $t('object.sort.block') }}</span>
             <p class="input-text">
-              {{ formatSelectPlaceholder(form.blocks) }}
+              {{ selectOutput(form.blocks) }}
             </p>
           </div>
         </template>
@@ -151,7 +151,7 @@
                   :key="option"
                   :value="option"
               >
-                {{ option }} M<sup>2</sup>
+                {{ option }} m<sup>2</sup>
               </b-form-checkbox>
             </b-form-checkbox-group>
           </b-form-group>
@@ -187,61 +187,10 @@
         ></base-numeric-input>
       </div>
 
-
-      <!--  Статус    -->
-      <!--      <b-dropdown v-if="sortBar" left>-->
-      <!--        <template #button-content>-->
-      <!--          Статус-->
-      <!--        </template>-->
-      <!--        <b-dropdown-text href="#">-->
-      <!--          <b-form-group v-slot="{ ariaDescribedby }">-->
-      <!--            <b-form-checkbox-group-->
-      <!--                id="checkbox-group-2"-->
-      <!--                v-model="form.status"-->
-      <!--                :aria-describedby="ariaDescribedby"-->
-      <!--                name="flavour-2"-->
-      <!--            >-->
-      <!--              <b-form-checkbox-->
-      <!--                  v-for="option in options"-->
-      <!--                  :key="option"-->
-      <!--                  :value="option"-->
-      <!--              >-->
-      <!--                {{ option }}-->
-      <!--              </b-form-checkbox>-->
-      <!--            </b-form-checkbox-group>-->
-      <!--          </b-form-group>-->
-      <!--        </b-dropdown-text>-->
-      <!--      </b-dropdown>-->
-
-      <!--  Стоимость кв.м    -->
-      <!--      <b-dropdown v-if="sortBar" left>-->
-      <!--        <template #button-content>-->
-      <!--          Стоимость кв.м-->
-      <!--        </template>-->
-      <!--        <b-dropdown-text href="#">-->
-      <!--          <b-form-group v-slot="{ ariaDescribedby }">-->
-      <!--            <b-form-checkbox-group-->
-      <!--                id="checkbox-group-2"-->
-      <!--                v-model="form.price_m2"-->
-      <!--                :aria-describedby="ariaDescribedby"-->
-      <!--                name="flavour-2"-->
-      <!--            >-->
-      <!--              <b-form-checkbox-->
-      <!--                  v-for="option in options"-->
-      <!--                  :key="option"-->
-      <!--                  :value="option"-->
-      <!--              >-->
-      <!--                {{ option }}-->
-      <!--              </b-form-checkbox>-->
-      <!--            </b-form-checkbox-group>-->
-      <!--          </b-form-group>-->
-      <!--        </b-dropdown-text>-->
-      <!--      </b-dropdown>-->
-
       <!--  Сум  От / До  -->
       <div v-show="sortBar" class="filter__apartment__price">
         <div class="filter-value">
-          <span>M<sup>2</sup></span>
+          <span>m<sup>2</sup></span>
         </div>
         <base-numeric-input
             v-model.number="form.area_from"
@@ -265,25 +214,6 @@
         ></base-numeric-input>
       </div>
 
-      <!--  Спецпредложения    -->
-      <!--      <b-dropdown v-if="sortBar" left>-->
-      <!--        <template #button-content>-->
-      <!--          Спецпредложения-->
-      <!--        </template>-->
-      <!--        <b-dropdown-text href="#">-->
-      <!--          <b-form-group v-slot="{ ariaDescribedby }">-->
-      <!--            <b-form-checkbox-group-->
-      <!--                id="checkbox-group-2"-->
-      <!--                v-model="form.flat"-->
-      <!--                :aria-describedby="ariaDescribedby"-->
-      <!--                name="flavour-2"-->
-      <!--            >-->
-      <!--              <b-form-checkbox v-for="option in options" :key="option" :value="option">{{ option }}</b-form-checkbox>-->
-      <!--            </b-form-checkbox-group>-->
-      <!--          </b-form-group>-->
-      <!--        </b-dropdown-text>-->
-      <!--      </b-dropdown>-->
-
       <div class="detail-button" @click="openBar" :class="sortBar ? 'active':''">
         <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'"/>
       </div>
@@ -299,7 +229,10 @@
           @click="changeProduct(tab)"
           :text="tab.title">
         <template #left-icon>
-          <component :is="tab.buttonIcon" :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"/>
+          <component
+              :is="tab.buttonIcon"
+              :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"
+          />
         </template>
       </base-button>
     </div>
@@ -368,25 +301,36 @@ export default {
           buttonIcon: 'BaseChessTwo',
           title: this.$t('object.chess') + ' 2.0'
         },
-        {id: 4, param: 'chess', name: 'ObjectTable', buttonIcon: 'BaseChessList', title: this.$t('object.list')},
-        {id: 5, param: 'chess', name: 'ObjectPlan', buttonIcon: 'BaseChessPlan', title: this.$t('object.plan')},
+        {
+          id: 4,
+          param: 'chess',
+          name: 'ObjectTable',
+          buttonIcon: 'BaseChessList',
+          title: this.$t('object.list')
+        },
+        {
+          id: 5,
+          param: 'chess',
+          name: 'ObjectPlan',
+          buttonIcon: 'BaseChessPlan',
+          title: this.$t('object.plan')
+        },
       ],
       sortBar: false,
       defaultApartments: [],
       form: {
         status: null,
-        price_m2: null,
-        price_from: null,
-        price_to: null,
-        area_from: null,
-        area_to: null,
+        price_m2: 0,
+        price_from: 0,
+        price_to: 0,
+        area_from: 0,
+        area_to: 0,
         blocks: [],
         area: [],
         rooms: [],
         floors: [],
         number: []
       },
-      options: [1, 2, 3, 4, 5, 6, 7],
       currencyOptions: ["UZS", "USD"],
       areaOptions: 'M2',
       currency: 'UZS',
@@ -417,6 +361,20 @@ export default {
   },
 
   methods: {
+    selectOutput(array, outputBy = 'name') {
+      const selectedArray = array.map(arr => {
+        const fullContext = this.filterFields.blocks.find(block => block.id === arr)
+        return fullContext ?? arr
+      })
+      let output = ''
+      for (let i = 0; i < selectedArray.length; i++) {
+        output += selectedArray[i][outputBy] + ','
+      }
+      if (output.slice(-1) === ',') {
+        output = output.slice(0, -1)
+      }
+      return output
+    },
     formatSelectPlaceholder(array) {
       const items = [...array].sort((a, b) => a - b);
       let s = '';
@@ -451,7 +409,10 @@ export default {
       const values = sortInFirstRelationship(this.form)
       const params = this.$route.params
       this.$router.push({
-        query: values,
+        query: {
+          ...this.$route.query,
+          ...values
+        },
         params
       })
     },
@@ -506,9 +467,9 @@ export default {
       if (hasApartments) {
         const value = filterQuery['number']
         const isQueryPrimitive = typeof value === 'number' || typeof value === 'string'
-        if (isQueryPrimitive)
-          this.defaultApartments = parseInt(value)
-        else
+        if (isQueryPrimitive) {
+          this.defaultApartments = [parseInt(value)]
+        } else
           this.defaultApartments = value.map(vs => parseInt(vs))
       }
     },
