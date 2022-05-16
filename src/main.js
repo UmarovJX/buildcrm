@@ -46,17 +46,17 @@ Object.keys(rules).forEach((rule) => {
     extend(rule, rules[rule]);
 })
 
-
 Vue.component("ValidationObserver", ValidationObserver)
 Vue.component("ValidationProvider", ValidationProvider)
 
-
-
-
 Vue.use(VueMask);
 Vue.use(vueMoment);
+
 Vue.use(VueLazyload, {
-    preLoad: 1.3, error: require("@/assets/img/no-image.jpg"), loading: require("@/assets/img/loading.gif"), attempt: 1
+    preLoad: 1.3,
+    error: require("@/assets/img/no-image.jpg"),
+    loading: require("@/assets/img/loading.gif"),
+    attempt: 1
 });
 
 Vue.use(BootstrapVue);
@@ -73,7 +73,6 @@ Vue.use(Toasted, {
 // Vue.config.productionTip = false;
 // Vue.prototype.$moment = moment;
 
-/* YANDEX METRIKA */
 Vue.use(VueYandexMetrika, {
     id: 86876647, router, env: process.env.NODE_ENV, options: {
         clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true

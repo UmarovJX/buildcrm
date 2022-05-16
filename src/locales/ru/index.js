@@ -118,6 +118,10 @@ export default {
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
     search_placeholder: 'ФИО, телефон, номер договора',
     apartment_rooms: 'Найдено { msg } помещений',
+    price_monthly: '{month} месяцев от {price} сумов',
+    total_discount: "Общая скидка",
+    starting_price: 'Начальная цена',
+
     clear: 'Очистить',
     selling_price: 'Цена продажи',
 

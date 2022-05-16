@@ -115,8 +115,8 @@
                        v-if="getPermission.objects.apartments"
                        :to="{name: 'apartments', params: {object: object.id}}"
           >
-            <img v-if="object.image" v-lazy="object.image" alt="">
-            <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="">
+            <img v-lazy="object.image" alt="">
+            <!--            <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="">-->
           </router-link>
         </div>
         <div class="card">
@@ -175,7 +175,7 @@ export default {
     // 'filter-form': Filter,
     "upload-logo": UploadLogo,
     BaseDotsIcon,
-    BaseBreadCrumb
+    BaseBreadCrumb,
   },
 
   data: () => ({

@@ -143,32 +143,32 @@
           <span class="apartment__details-row">
         <span class="property">{{ $t('plan_area') }}</span>
         <span class="value">
-          {{ apartment.plan.area }} M<sup>2</sup>
+          {{ apartment.plan.area }} m<sup>2</sup>
         </span>
       </span>
 
           <span class="apartment__details-row">
         <span class="property">{{ $t('balcony') }}</span>
         <span class="value">
-          {{ apartment.plan.balcony_area }} M<sup>2</sup>
+          {{ apartment.plan.balcony_area }} m<sup>2</sup>
         </span>
       </span>
 
-          <span class="apartment__details-row">
+      <span class="apartment__details-row">
         <span class="property">{{ $t('number_of_rooms') }}</span>
         <span class="value">{{ apartment.rooms }}</span>
       </span>
 
-          <span class="apartment__details-row">
+      <span class="apartment__details-row">
         <span class="property">{{ $t('floor') }}</span>
         <span class="value">{{ apartment.floor }}</span>
       </span>
 
-          <span class="apartment__details-row">
+      <span class="apartment__details-row">
         <span class="property">{{ $t('number_of_floors_of_the_block') }}</span>
         <span class="value">{{ apartment.block.floors }}</span>
       </span>
-        </div>
+    </div>
 
         <!--   PROMO SECTION -->
         <div v-if="apartment.promo.length" class="promos">
@@ -209,29 +209,28 @@
            <span class="description">Большой балкон</span>
          </div>
 
-         <div class="part">
-           <span class="image__container"></span>
-           <span class="description">Шикарный вид</span>
-         </div>
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Шикарный вид</span>
+          </div>
 
-         <div class="part">
-           <span class="image__container"></span>
-           <span class="description">Эко-парковка</span>
-         </div>
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Эко-парковка</span>
+          </div>
 
-         <div class="part">
-           <span class="image__container"></span>
-           <span class="description">Секретный шкаф</span>
-         </div>
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Секретный шкаф</span>
+          </div>
 
-         <div class="part">
-           <span class="image__container"></span>
-           <span class="description">Красный ковер</span>
-         </div>
-       </div>
-     </div>
-     -->
-
+          <div class="part">
+            <span class="image__container"></span>
+            <span class="description">Красный ковер</span>
+          </div>
+        </div>
+      </div>
+    -->
   </div>
 </template>
 
@@ -289,11 +288,11 @@ export default {
 
   computed: {
     price() {
-      return formatToPrice(this.apartment.price) + ' ' + this.$t('ye')
+      return formatToPrice(this.apartment.prices.price, 2) + ' ' + this.$t('ye')
     },
 
     squareMetrePrice() {
-      return formatToPrice(this.apartment.price_m2) + ' ' + this.$t('ye')
+      return formatToPrice(this.apartment.prices.price_m2, 2) + ' ' + this.$t('ye')
     },
 
     statusSold() {
@@ -303,9 +302,8 @@ export default {
 
   methods: {
     priceDiscount(value) {
-      console.log(value);
 
-      return formatToPrice(value)
+      return formatToPrice(value, 2)
     },
     startDate(value) {
       return formatDateWithDot(value)
@@ -556,6 +554,7 @@ export default {
 
     .property
       color: var(--gray-400)
+      text-transform: capitalize
 
     .value
       color: var(--gray-600)

@@ -136,6 +136,10 @@ export default {
     number_of_floors_of_the_block: 'Blokning qavatlar soni',
     search_placeholder: 'ФИО, телефон, номер договора',
     apartment_rooms: `{msg} ta xonadon topildi`,
+    price_monthly: "{month} oy {price} so'm dan",
+    total_discount: 'Umumiy chegirma',
+    starting_price: "Boshlang'ich narxi",
+
     clear: 'Tozalash',
     selling_price: 'Sotuv narxi',
 

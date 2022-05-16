@@ -440,7 +440,12 @@ export default {
           s += items[i] + ',';
         }
       }
-      return s.slice(0, -1)
+
+      if (s.slice(-1) === ',') {
+        s = s.slice(0, -1)
+      }
+
+      return s
     },
     filterApartments() {
       const values = sortInFirstRelationship(this.form)
