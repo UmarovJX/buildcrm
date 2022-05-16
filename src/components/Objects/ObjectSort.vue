@@ -410,7 +410,7 @@ export default {
       const params = this.$route.params
       this.$router.push({
         query: {
-          ...this.$route.query,
+          // ...this.$route.query,
           ...values
         },
         params

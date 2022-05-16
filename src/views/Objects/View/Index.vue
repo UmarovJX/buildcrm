@@ -301,12 +301,21 @@ export default {
         }
 
         filterBlocks = filterBlocks.map(filterBlock => {
-          console.log(filterBlocks)
           let filterFloors = filterBlock.floors
           const hasFloorsQuery = filter.hasOwnProperty('floors')
           if (hasFloorsQuery) {
+            if (typeof filter.floors === 'string') {
+              filter.floors = [filter.floors]
+            }
+
             filterFloors = filterFloors.map(floor => {
-              const isActiveFloor = filter.floors.includes(floor.name)
+              const isActiveFloor = filter.floors.map(floor => {
+                if (typeof floor === 'string') {
+                  return parseInt(floor)
+                }
+                return floor
+              }).includes(floor.name)
+
               if (isActiveFloor) {
                 return {
                   ...floor,
@@ -400,7 +409,10 @@ export default {
                       continue
                     }
 
-                    if (key === 'numbers') {
+                    if (key === 'number') {
+                      if (typeof value === 'string' || typeof value === 'number') {
+                        value = [value]
+                      }
                       const isSatisfy = value.includes(number)
                       filterResult.push(isSatisfy)
                     }
