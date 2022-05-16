@@ -89,14 +89,14 @@
           <span class="apartment__details-row">
         <span class="property">{{ $t('plan_area') }}</span>
         <span class="value">
-          {{ apartment.plan.area }} M<sup>2</sup>
+          {{ apartment.plan.area }} m<sup>2</sup>
         </span>
       </span>
 
           <span class="apartment__details-row">
         <span class="property">{{ $t('balcony') }}</span>
         <span class="value">
-          {{ apartment.plan.balcony_area }} M<sup>2</sup>
+          {{ apartment.plan.balcony_area }} m<sup>2</sup>
         </span>
       </span>
 
@@ -128,47 +128,7 @@
           <span class="price__section-amount">{{ price }}</span>
         </div>
 
-        <!--   APARTMENT DETAILS     -->
-        <div class="apartment__details my-3">
-      <span class="apartment__details-row">
-        <span class="property">№ {{ $t('apartment_number') }}</span>
-        <span class="value">{{ apartment.number }}</span>
-      </span>
-
-          <span class="apartment__details-row">
-        <span class="property">{{ $t('completion_date') }}</span>
-        <span class="value"> {{ buildingDate(apartment.object.build_date) }} </span>
-      </span>
-
-          <span class="apartment__details-row">
-        <span class="property">{{ $t('plan_area') }}</span>
-        <span class="value">
-          {{ apartment.plan.area }} m<sup>2</sup>
-        </span>
-      </span>
-
-          <span class="apartment__details-row">
-        <span class="property">{{ $t('balcony') }}</span>
-        <span class="value">
-          {{ apartment.plan.balcony_area }} m<sup>2</sup>
-        </span>
-      </span>
-
-      <span class="apartment__details-row">
-        <span class="property">{{ $t('number_of_rooms') }}</span>
-        <span class="value">{{ apartment.rooms }}</span>
-      </span>
-
-      <span class="apartment__details-row">
-        <span class="property">{{ $t('floor') }}</span>
-        <span class="value">{{ apartment.floor }}</span>
-      </span>
-
-      <span class="apartment__details-row">
-        <span class="property">{{ $t('number_of_floors_of_the_block') }}</span>
-        <span class="value">{{ apartment.block.floors }}</span>
-      </span>
-    </div>
+        <Calculator :apartment="apartment"/>
 
         <!--   PROMO SECTION -->
         <div v-if="apartment.promo.length" class="promos">
@@ -235,6 +195,7 @@
 </template>
 
 <script>
+import Calculator from "@/components/Objects/View/elements/Calculator";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import {formatToPrice, formatDateWithDot} from "@/util/reusable";
@@ -257,6 +218,7 @@ export default {
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
+    Calculator,
   },
 
   directives: {
@@ -302,7 +264,6 @@ export default {
 
   methods: {
     priceDiscount(value) {
-
       return formatToPrice(value, 2)
     },
     startDate(value) {
@@ -500,6 +461,7 @@ export default {
     border-bottom: 3px solid var(--gray-100)
 
 .promo__section
+  font-family: Inter, sans-serif
   padding-top: 1.5rem
   padding-bottom: 1.5rem
   border-top: 3px solid var(--gray-100)

@@ -365,6 +365,13 @@ export default {
     .total-price
       font-size: 24px
 
+  .property
+    font-size: 18px
+    font-weight: 600
+
+    sup
+      color: var(--gray-400)
+
 
 .monthly
   background-color: var(--gray-100)
@@ -404,4 +411,5 @@ export default {
   background-color: var(--gray-100)
   margin-top: 1.5rem
   width: 100%
+
 </style>
