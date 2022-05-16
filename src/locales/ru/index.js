@@ -109,7 +109,7 @@ export default {
     apartment: "Квартира",
     from: 'от',
     to: 'до',
-    square_meter: 'M<sub>2</sub>',
+    square_meter: 'm<sub>2</sub>',
     apartment_number: 'Номер квартиры',
     completion_date: 'Дата завершения',
     plan_area: 'Площадь планировки',

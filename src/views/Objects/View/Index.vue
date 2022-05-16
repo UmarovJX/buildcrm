@@ -1,5 +1,23 @@
 <template>
   <main class="app-content">
+    <!--  Header Navigation  -->
+    <div v-if="!finishLoading && objectName.length" class="navigation__content justify-content-between">
+      <div class="d-flex align-items-center">
+        <router-link class="go__back" :to="{name: 'objects'}">
+          <base-arrow-left :width="32" :height="32"></base-arrow-left>
+        </router-link>
+        <span class="breadcrumb__content">
+          <span class="d-flex align-items-center">
+            <span class="mr-2">{{ $t('objects.title') }}</span>
+            <base-arrow-right :width="16" :height="16"/>
+            <span class="ml-2">{{ objectName }}</span>
+          </span>
+          <span class="head">
+            <span class="contract__number">{{ objectName }}</span>
+          </span>
+        </span>
+      </div>
+    </div>
 
     <object-sort
         :filter-fields="filterFields"
@@ -64,10 +82,14 @@ import ObjectTable from "@/components/Objects/ObjectTable";
 import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
 // import ClickOutside from "vue-click-outside";
 import {isPrimitiveValue} from "@/util/reusable";
+import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 
 export default {
   name: "Objects",
   components: {
+    BaseArrowRight,
+    BaseArrowLeft,
     ChessSquareCard,
     ObjectTable,
     ObjectSort,
@@ -124,11 +146,23 @@ export default {
       ],
       statusFilter: [],
       filter: [],
-      filterFields: {}
+      filterFields: {},
+      objectName: ''
     }
   },
 
   computed: {
+    breadCrumbs() {
+      return [
+        {
+          routeName: 'contracts',
+          textContent: this.$t('contracts.title')
+        },
+      ]
+    },
+    activeContent() {
+      return this.$t('view')
+    },
     query() {
       return Object.assign({}, this.$route.query)
     },
@@ -435,6 +469,7 @@ export default {
     async getApartments() {
       const id = this.$route.params.object
       await api.objectsV2.getApartments(id).then(async (res) => {
+        this.objectName = res.data.object
         this.apartments = res.data.data
         if (this.hasQuery) {
           await this.compareStatus(this.query)
@@ -483,6 +518,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.navigation__content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  .go__back {
+    width: 56px;
+    height: 56px;
+    border-radius: 100%;
+    background-color: var(--gray-100);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .breadcrumb__content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+    font-weight: 600;
+    font-size: 14px;
+    color: #9CA3AF;
+  }
+
+  .head {
+    font-size: 24px;
+    line-height: 28px;
+    color: #4B5563;
+
+    .contract__number {
+      color: var(--violet-600);
+    }
+  }
+}
+
 
 .object-cards {
   display: flex;

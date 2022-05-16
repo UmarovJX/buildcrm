@@ -48,11 +48,11 @@
       <div v-for="item in plan.apartments" :key="item.id" class="plan-block" @click="openModal(item)">
         <div class="plan-item">
           <h5>{{ item.entrance }} {{ $t('floor') }}</h5>
-          <p>{{ item.plan.area }} M<sup>2</sup></p>
+          <p>{{ item.plan.area }} m<sup>2</sup></p>
         </div>
         <div class="plan-item">
           <h5>{{ price(item.price) }} {{ $t('ye') }}</h5>
-          <p>{{ price(item.price_m2) }} {{ $t('ye') }}/M <sup>2</sup></p>
+          <p>{{ price(item.price_m2) }} {{ $t('ye') }}/m <sup>2</sup></p>
         </div>
         <div class="apartment-promo-icon">
           <img v-if="item.is_promo" src="../../../../assets/icons/bonuses.svg" alt="">

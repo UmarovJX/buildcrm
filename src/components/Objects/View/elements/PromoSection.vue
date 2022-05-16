@@ -14,7 +14,7 @@
       </div>
       <span v-for="discount in item.discounts" :key="discount.promo_id" class="apartment__details-row">
             <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>
-            <span class="value">{{ priceDiscount(discount.price) }} {{ $t('ye') }}/M<sup>2</sup></span>
+            <span class="value">{{ priceDiscount(discount.price) }} {{ $t('ye') }}/m<sup>2</sup></span>
           </span>
     </div>
   </div>

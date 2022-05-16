@@ -16,7 +16,7 @@
           </div>
           <div class="card-content">
             <div class="card-block">
-              <p class="card-block__title">{{ plan.area }} М<sup>2</sup></p>
+              <p class="card-block__title">{{ plan.area }} m<sup>2</sup></p>
               <p class="card-block__subtitle">{{ price(plan.price_m2) }} {{ $t('ye') }}/M<sup>2</sup></p>
             </div>
             <div class="card-block">

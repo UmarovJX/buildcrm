@@ -151,7 +151,7 @@
                   :key="option"
                   :value="option"
               >
-                {{ option }} M<sup>2</sup>
+                {{ option }} m<sup>2</sup>
               </b-form-checkbox>
             </b-form-checkbox-group>
           </b-form-group>

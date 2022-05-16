@@ -77,9 +77,9 @@
                           </h5>
                         </div>
                         <div class="square-footer">
-                          <p>{{ elem.plan.area }} M<sup>2</sup></p>
+                          <p>{{ elem.plan.area }} m<sup>2</sup></p>
                           <p v-if="elem.order.status !== 'sold'">
-                            {{ price(elem.prices.price_m2) }} {{ $t('ye') }}/M<sup>2</sup>
+                            {{ price(elem.prices.price_m2) }} {{ $t('ye') }}/m<sup>2</sup>
                           </p>
                         </div>
                       </div>

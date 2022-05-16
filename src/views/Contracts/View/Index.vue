@@ -109,8 +109,8 @@
 import api from "@/services/api";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
+import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
 import TabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
 import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
@@ -123,9 +123,9 @@ import {mapGetters} from "vuex";
 export default {
   name: "ContractView",
   components: {
-    BaseArrowRight,
     BaseFilterTabsContent,
     BaseDeleteIcon,
+    BaseArrowRight,
     BaseArrowLeft,
     TabPaymentSchedule,
     TabObjectDetails,

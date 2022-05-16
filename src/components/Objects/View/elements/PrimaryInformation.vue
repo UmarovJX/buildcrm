@@ -47,7 +47,7 @@
         <!--   PRICE CONTENT     -->
         <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
            <span class="price__section-square-amount">
-            {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
+            {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
           </span>
           <span class="price__section-amount">{{ price }}</span>
         </div>
@@ -63,7 +63,7 @@
         <!--   PRICE CONTENT     -->
         <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
            <span class="price__section-square-amount">
-            {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
+            {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
           </span>
           <span class="price__section-amount">{{ price }}</span>
         </div>
@@ -208,7 +208,6 @@ export default {
   },
 
   methods: {
-
     buildingDate(time) {
       const date = new Date(time)
       const year = date.getFullYear()
