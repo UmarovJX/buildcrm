@@ -81,6 +81,8 @@ export default {
     main: 'Основные',
     passport: 'Паспортные данные',
     builder: 'Застройщик',
+    type_payment: 'Виды оплат',
+    details: 'Детали',
     other_details: 'Другие детали',
     fio: 'Ф.И.О',
     phone: "Номер телефона",

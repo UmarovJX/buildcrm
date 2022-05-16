@@ -39,23 +39,23 @@
 
     </div>
 
-    <!--   PRICE CONTENT     -->
-    <div v-if="statusSold" class="price__section d-flex justify-content-between align-items-center">
-      <span class="price__section-amount">{{ price }}</span>
-      <span class="price__section-square-amount">
-        {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
-      </span>
-    </div>
 
-    <!--   LINK TO APARTMENT VIEW     -->
-    <!--    <div class="mt-5 mb-4">-->
-    <!--      <router-link to="/" class="button__view">Вариант оплаты</router-link>-->
-    <!--    </div>-->
+    <b-tabs card class="calculator-tab">
+      <div class="bottom__line"></div>
+      <b-tab :title="$t('details')" active>
 
-    <!--   PROMO SECTION -->
-    <div v-if="apartment.promo.length" class="promos">
-      <div v-for="promo in apartment.promo" :key="promo.id" class="promo__section">
-        <div class="d-flex justify-content-between mb-3">
+        <!--   PRICE CONTENT     -->
+        <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
+           <span class="price__section-square-amount">
+            {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
+          </span>
+          <span class="price__section-amount">{{ price }}</span>
+        </div>
+
+        <!--   PROMO SECTION -->
+        <div v-if="apartment.promo.length" class="promos">
+          <div v-for="promo in apartment.promo" :key="promo.id" class="promo__section">
+            <div class="d-flex justify-content-between mb-3">
              <span class="d-block">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"
@@ -63,57 +63,142 @@
             </svg>
             <span class="ml-2 promo__section-title">{{ getName(promo.name) }}</span>
           </span>
-          <span class="promo__section-subtitle">До {{ startDate(promo.start_date) }}</span>
-        </div>
-        <span v-for="discount in promo.discounts" :key="discount.promo_id" class="apartment__details-row">
+              <span class="promo__section-subtitle">До {{ startDate(promo.start_date) }}</span>
+            </div>
+            <span v-for="discount in promo.discounts" :key="discount.promo_id" class="apartment__details-row">
             <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>
             <span class="value">{{ priceDiscount(discount.price) }} {{ $t('ye') }}/M<sup>2</sup></span>
           </span>
-      </div>
-    </div>
+          </div>
+        </div>
 
 
-    <!--   APARTMENT DETAILS     -->
-    <div class="apartment__details my-3">
-      <span class="apartment__details-row">
+        <!--   APARTMENT DETAILS     -->
+        <div class="apartment__details my-3">
+          <h5 class="apartment__details-title">Характеристики</h5>
+          <span class="apartment__details-row">
         <span class="property">№ {{ $t('apartment_number') }}</span>
         <span class="value">{{ apartment.number }}</span>
       </span>
 
-      <span class="apartment__details-row">
+          <span class="apartment__details-row">
         <span class="property">{{ $t('completion_date') }}</span>
         <span class="value"> {{ buildingDate(apartment.object.build_date) }} </span>
       </span>
 
-      <span class="apartment__details-row">
+          <span class="apartment__details-row">
         <span class="property">{{ $t('plan_area') }}</span>
         <span class="value">
           {{ apartment.plan.area }} M<sup>2</sup>
         </span>
       </span>
 
-      <span class="apartment__details-row">
+          <span class="apartment__details-row">
         <span class="property">{{ $t('balcony') }}</span>
         <span class="value">
           {{ apartment.plan.balcony_area }} M<sup>2</sup>
         </span>
       </span>
 
-      <span class="apartment__details-row">
+          <span class="apartment__details-row">
         <span class="property">{{ $t('number_of_rooms') }}</span>
         <span class="value">{{ apartment.rooms }}</span>
       </span>
 
-      <span class="apartment__details-row">
+          <span class="apartment__details-row">
         <span class="property">{{ $t('floor') }}</span>
         <span class="value">{{ apartment.floor }}</span>
       </span>
 
-      <span class="apartment__details-row">
+          <span class="apartment__details-row">
         <span class="property">{{ $t('number_of_floors_of_the_block') }}</span>
         <span class="value">{{ apartment.block.floors }}</span>
       </span>
-    </div>
+        </div>
+
+      </b-tab>
+
+      <b-tab :title="$t('type_payment')">
+
+        <!--   PRICE CONTENT     -->
+        <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
+           <span class="price__section-square-amount">
+            {{ squareMetrePrice }} / M<sup class="color-gray-400">2</sup>
+          </span>
+          <span class="price__section-amount">{{ price }}</span>
+        </div>
+
+        <!--   APARTMENT DETAILS     -->
+        <div class="apartment__details my-3">
+      <span class="apartment__details-row">
+        <span class="property">№ {{ $t('apartment_number') }}</span>
+        <span class="value">{{ apartment.number }}</span>
+      </span>
+
+          <span class="apartment__details-row">
+        <span class="property">{{ $t('completion_date') }}</span>
+        <span class="value"> {{ buildingDate(apartment.object.build_date) }} </span>
+      </span>
+
+          <span class="apartment__details-row">
+        <span class="property">{{ $t('plan_area') }}</span>
+        <span class="value">
+          {{ apartment.plan.area }} M<sup>2</sup>
+        </span>
+      </span>
+
+          <span class="apartment__details-row">
+        <span class="property">{{ $t('balcony') }}</span>
+        <span class="value">
+          {{ apartment.plan.balcony_area }} M<sup>2</sup>
+        </span>
+      </span>
+
+          <span class="apartment__details-row">
+        <span class="property">{{ $t('number_of_rooms') }}</span>
+        <span class="value">{{ apartment.rooms }}</span>
+      </span>
+
+          <span class="apartment__details-row">
+        <span class="property">{{ $t('floor') }}</span>
+        <span class="value">{{ apartment.floor }}</span>
+      </span>
+
+          <span class="apartment__details-row">
+        <span class="property">{{ $t('number_of_floors_of_the_block') }}</span>
+        <span class="value">{{ apartment.block.floors }}</span>
+      </span>
+        </div>
+
+        <!--   PROMO SECTION -->
+        <div v-if="apartment.promo.length" class="promos">
+          <div v-for="promo in apartment.promo" :key="promo.id" class="promo__section">
+            <div class="d-flex justify-content-between mb-3">
+             <span class="d-block">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"
+                    stroke-width="0.815217"/>
+            </svg>
+            <span class="ml-2 promo__section-title">{{ getName(promo.name) }}</span>
+          </span>
+              <span class="promo__section-subtitle">До {{ startDate(promo.start_date) }}</span>
+            </div>
+            <span v-for="discount in promo.discounts" :key="discount.promo_id" class="apartment__details-row">
+            <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>
+            <span class="value">{{ priceDiscount(discount.price) }} {{ $t('ye') }}/M<sup>2</sup></span>
+          </span>
+          </div>
+        </div>
+
+      </b-tab>
+    </b-tabs>
+
+
+    <!--   LINK TO APARTMENT VIEW     -->
+    <!--    <div class="mt-5 mb-4">-->
+    <!--      <router-link to="/" class="button__view">Вариант оплаты</router-link>-->
+    <!--    </div>-->
+
 
     <!--      PARTICULAR QUALITIES-->
     <!-- <div class="particular__qualities font-inter">
@@ -320,18 +405,85 @@ export default {
         background-color: var(--violet-400)
 
 
+::v-deep .calculator-tab
+  .card-header
+    padding: 0
+    background-color: transparent
+    margin: 0
+    border-bottom: none
+
+  .tab-content
+    padding-top: 12px
+
+  .card-body
+    padding: 0
+
+  .card-header-tabs
+    margin: 0
+
+  .nav-tabs
+    display: flex
+    flex-wrap: nowrap
+    column-gap: .5rem
+    justify-content: space-around
+    position: relative
+
+    &:after
+      content: ''
+      height: 6px
+      width: 100%
+      position: absolute
+      bottom: 0
+      left: 0
+      border-radius: 1rem 1rem 0 0
+      background-color: var(--gray-100)
+
+    .nav-item
+      width: 100%
+
+
+    .nav-link
+      display: flex
+      justify-content: center
+      align-items: center
+      border: none
+      padding: 0 12px 12px
+
+      &.active
+        position: relative
+
+        &:after
+          content: ''
+          height: 6px
+          width: 100%
+          position: absolute
+          bottom: 0
+          left: 0
+          border-radius: 1rem 1rem 0 0
+          background-color: var(--violet-600)
+          z-index: 3
+
+//.bottom__line
+//  width: 100%
+//  height: 6px
+//  margin-top: 20px
+//  border-bottom: 8px solid var(--gray-100)
+
+
 .price__section
-  font-family: Inter, sans-serif
+  font-family: CraftworkSans, serif
   font-size: 1.5rem
-  line-height: 1.5rem
-  font-weight: 600
+  font-weight: 900
+  margin: 1.5rem 0
 
   &-amount
     color: var(--gray-600) !important
+    line-height: 28px
 
   &-square-amount
     color: var(--gray-500) !important
     font-size: 18px
+    line-height: 22px
 
 
 .button__view
@@ -354,8 +506,6 @@ export default {
   padding-bottom: 1.5rem
   border-top: 3px solid var(--gray-100)
   font-weight: 600
-  row-gap: 16px
-
 
   &-title
     color: var(--violet-600) !important
@@ -388,6 +538,14 @@ export default {
 .apartment__details
   padding-top: 1rem
   padding-bottom: 1rem
+
+  &-title
+    font-family: CraftworkSans, serif
+    font-weight: 900
+    font-size: 24px
+    line-height: 28px
+    margin-bottom: 1.5rem
+    color: var(--gray-400) !important
 
   &-row
     font-family: Inter, sans-serif

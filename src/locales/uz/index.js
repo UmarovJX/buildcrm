@@ -101,6 +101,8 @@ export default {
     main: 'Asosiy',
     passport: "Pasport ma'lumotlar",
     builder: 'Quruvchi',
+    type_payment: "To'lov turlari",
+    details: 'Tafsilotlar',
     other_details: 'Boshqa tafsilotlar',
     phone: "Telefon",
     other_phone: "Qo'shimcha telefon raqami",

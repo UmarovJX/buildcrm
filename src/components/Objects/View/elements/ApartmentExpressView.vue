@@ -9,7 +9,11 @@
       backdrop
       right no-header shadow
   >
+
+
     <template #default="{ hide }">
+
+
 
       <vue-html2pdf
           v-if="hasApartment && !appLoading"
