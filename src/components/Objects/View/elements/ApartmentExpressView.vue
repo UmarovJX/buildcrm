@@ -14,7 +14,6 @@
     <template #default="{ hide }">
 
 
-
       <vue-html2pdf
           v-if="hasApartment && !appLoading"
           :show-layout="false"
@@ -379,10 +378,10 @@ export default {
     },
     async orderApartment() {
       this.appLoading = true
-      const apartments = [this.sidebarApartment.uuid]
+      const apartments = [this.sidebarApartment.id]
       await api.orders.holdOrder(apartments)
           .then((response) => {
-            if (response?.data) {
+            if (response.data) {
               this.$router.push({
                 name: "confirm-apartment",
                 params: {id: response.data.uuid}
