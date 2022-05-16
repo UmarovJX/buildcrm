@@ -118,7 +118,7 @@
           </b-form-group>
 
           <ValidationProvider
-              rules="required|min:8"
+              rules="min:8"
               v-slot="{ errors }"
               :name="`${ $t('user.password') }`"
               tag="div"
