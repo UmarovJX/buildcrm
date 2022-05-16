@@ -111,7 +111,7 @@
         disabled
         read-only-class="true"
       ></base-numeric-input>
-      <span style="position: absolute; right: 20px; top: 6px">месяцев</span>
+      <span style="position: absolute; right: 20px; top: 6px">{{$t('month')}}</span>
     </b-form-group>
 
     <!-- Остаток -->

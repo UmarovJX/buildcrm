@@ -21,7 +21,7 @@
     <div class="apartment__info mt-2" v-if="discount.amount > 0">
       Ежемесячный:
       <span
-        >{{ apartment.object.credit_month }} месяцев
+        >{{ apartment.object.credit_month }} {{ $t('month') }}
         {{
           getMonth()
             | number("0,0.00", {

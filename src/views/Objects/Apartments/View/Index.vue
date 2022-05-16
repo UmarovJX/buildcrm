@@ -82,7 +82,9 @@
         <!--        <div class="col-12 col-lg-7">-->
         <div class="calculator w-100 d-flex flex-column justify-content-between">
           <div>
-            <h4 class="calculator-title color-gray-600 font-craftworksans">Выберите вариант оплаты</h4>
+            <h4 class="calculator-title color-gray-600 font-craftworksans">
+              {{ $t("apartments.agree.placeholder.enter_discount") }}
+            </h4>
             <calculator :apartment="apartment" :has-apartment="hasApartment"/>
           </div>
 

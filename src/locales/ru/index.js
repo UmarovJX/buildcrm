@@ -46,7 +46,7 @@ export default {
     category: 'Категория',
     full: 'Полный',
     monthly: 'Ежемесячно',
-    month: 'Месяцев',
+    month: 'месяцев',
     without_initial: 'Без первоначального платежа',
     payment_type: 'Способ оплаты',
     created_at: 'Время создания',
@@ -115,15 +115,17 @@ export default {
     plan_area: 'Площадь планировки',
     balcony: 'Балкон',
     number_of_rooms: 'Количество комнат',
-    number_of_floors_of_the_block: 'Blokning qavatlar soni',
+    number_of_floors_of_the_block: 'Количество этажей в блоке',
     search_placeholder: 'ФИО, телефон, номер договора',
     apartment_rooms: 'Найдено { msg } помещений',
     price_monthly: '{month} месяцев от {price} сумов',
     total_discount: "Общая скидка",
     starting_price: 'Начальная цена',
-
+    characters: 'Характеристики',
     clear: 'Очистить',
     selling_price: 'Цена продажи',
+    payment_discount: 'Вариант оплаты',
+    by_price: `По {price} сум`,
 
     tab_status: {
         all: "Все",

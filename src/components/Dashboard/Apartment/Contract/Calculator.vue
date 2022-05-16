@@ -174,7 +174,7 @@
             read-only-class="true"
         ></base-numeric-input>
         <span style="position: absolute; right: 40px; top: 6px"
-        >месяцев</span
+        >{{ $t('month') }}</span
         >
       </b-form-group>
 
@@ -224,8 +224,19 @@
 
 <script>
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-const { getTotal, getMonth, getPrice, getPricePerM2, getPrepay, editedCreditMonths, getDebt, CreditMonths, getTotalDiscount } = require("../../../../util/calculator");
-import { mapGetters } from "vuex";
+
+const {
+  getTotal,
+  getMonth,
+  getPrice,
+  getPricePerM2,
+  getPrepay,
+  editedCreditMonths,
+  getDebt,
+  CreditMonths,
+  getTotalDiscount
+} = require("../../../../util/calculator");
+import {mapGetters} from "vuex";
 import Vue from 'vue';
 
 export default {
@@ -264,7 +275,7 @@ export default {
     },
 
     'contract.month': function () {
-        this.InitialCalc();
+      this.InitialCalc();
     },
 
     'contract.edited': function () {
@@ -311,37 +322,37 @@ export default {
   },
 
   methods: {
-      InitialCalc() {
-          // console.log("EDITED " + this.contract.prepay_edited)
-          getTotalDiscount(this.apartments, this.contract)
-          getPrice(this.apartments, this.contract)
-          this.total = getTotal(this.apartments, this.contract)
-          this.monthly = getMonth(this.apartments, this.contract)
-          this.per_square = getPricePerM2(this.apartments, this.contract)
+    InitialCalc() {
+      // console.log("EDITED " + this.contract.prepay_edited)
+      getTotalDiscount(this.apartments, this.contract)
+      getPrice(this.apartments, this.contract)
+      this.total = getTotal(this.apartments, this.contract)
+      this.monthly = getMonth(this.apartments, this.contract)
+      this.per_square = getPricePerM2(this.apartments, this.contract)
 
-          // let prepay =
-          // if (!this.contract.prepay_edited)
-          this.contract.prepay_amount = getPrepay(this.apartments, this.contract);
-          // else
-          //   getPrepay(this.apartments, this.contract);
+      // let prepay =
+      // if (!this.contract.prepay_edited)
+      this.contract.prepay_amount = getPrepay(this.apartments, this.contract);
+      // else
+      //   getPrepay(this.apartments, this.contract);
 
-          this.calc.debt = getDebt(this.apartments, this.contract)
+      this.calc.debt = getDebt(this.apartments, this.contract)
 
-          // this.contract.discount_amount = 0 //getTotalDiscount(this.apartments);
+      // this.contract.discount_amount = 0 //getTotalDiscount(this.apartments);
 
-          editedCreditMonths(this.apartments, this.contract)
-      },
+      editedCreditMonths(this.apartments, this.contract)
+    },
 
-      changeDiscount() {
-          this.contract.discount_amount = 0;
-          this.contract.discount_square = 0;
+    changeDiscount() {
+      this.contract.discount_amount = 0;
+      this.contract.discount_square = 0;
 
-          this.contract.prepay_edited = false;
-          this.InitialCalc();
-          CreditMonths(this.apartments, this.contract)
-          Vue.set(this.contract, 'discount', this.contract.discount)
-          this.$emit("changeDiscount", {})
-      },
+      this.contract.prepay_edited = false;
+      this.InitialCalc();
+      CreditMonths(this.apartments, this.contract)
+      Vue.set(this.contract, 'discount', this.contract.discount)
+      this.$emit("changeDiscount", {})
+    },
 
     changeDiscountMonth() {
       this.InitialCalc();

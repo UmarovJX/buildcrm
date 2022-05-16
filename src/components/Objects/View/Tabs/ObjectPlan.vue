@@ -140,7 +140,7 @@ export default {
   },
   methods: {
     price(value) {
-      return formatToPrice(value)
+      return formatToPrice(value, 2)
     },
     showExpressSidebar(item) {
       this.$emit('show-plan-sidebar', item)

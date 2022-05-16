@@ -163,7 +163,7 @@
                         <table class="table">
                           <thead class="thead-dark">
                           <tr>
-                            <th>Вариант оплаты</th>
+                            <th>{{ $t('payment_discount') }}</th>
                             <th>Цена продажы за м2</th>
                             <th>Скидка за м2</th>
                             <th>Итого</th>
@@ -234,7 +234,7 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>{{ calc.month }} месяцев</td>
+                            <td>{{ calc.month }} {{ $t('month') }}</td>
                             <td>Ежемесячная</td>
                             <td>
                               {{

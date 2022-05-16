@@ -12,13 +12,13 @@
             :value="discount"
             value-field="id"
             @change="changeDiscount"
-            placeholder="Вариант оплаты"
+            :placeholder="$t('payment_discount')"
         ></base-select>
       </div>
 
       <!--     INPUT MONTHLY PAYMENT       -->
       <div class="monthly" v-show="showMonthlyCalculation">
-        <div class="placeholder font-weight-600">Ежемесячный платеж</div>
+        <div class="placeholder font-weight-600">{{ $t('monthly_payment') }}</div>
         <div class="input d-flex justify-content-between">
           <input
               v-if="discount.amount > 0"
@@ -29,10 +29,11 @@
               :placeholder="$t('monthly_payment')"
           >
           <span v-else class="d-block">{{ $t('monthly_payment') }}</span>
-          <div class="font-inter color-gray-600 font-weight-600">месяцев</div>
+          <div class="font-inter color-gray-600 font-weight-600">{{ $t('month') }}</div>
         </div>
         <div class="square-price font-inter color-gray-600 font-weight-600">
-          По {{ pricePrettier(monthly_price, 2) }} сум
+          {{ $t('by_price', {price: `${pricePrettier(monthly_price, 2)}`}) }}
+          <!--          По {{ pricePrettier(monthly_price, 2) }} сум-->
         </div>
       </div>
 
@@ -42,7 +43,7 @@
           type="number"
           :label="true"
           :currency="`${$t('ye')}`"
-          placeholder="Скидка за м2"
+          :placeholder="$t('apartments.view.discount_per_m2')"
           @trigger-input="changeDiscount_price"
       />
     </div>

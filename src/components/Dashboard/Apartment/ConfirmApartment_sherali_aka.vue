@@ -1230,7 +1230,7 @@
                           read-only-class="true"
                       ></base-numeric-input>
                       <span style="position: absolute; right: 40px; top: 6px"
-                      >месяцев</span
+                      >{{ $t('month') }}</span
                       >
                     </b-form-group>
 

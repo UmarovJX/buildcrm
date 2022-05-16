@@ -9,12 +9,12 @@
       <div class="apartment__info">
         Первый взнос -
         <span
-          >{{
+        >{{
             getPrepay()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
+                | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
           }}
           {{ $t("ye") }}</span
         >
@@ -23,13 +23,13 @@
       <div class="apartment__info" v-if="discount.amount > 0">
         Ежемесячный:
         <span
-          >{{ apartments[0].object.credit_month }} месяцев
+        >{{ apartments[0].object.credit_month }} {{ $t('payments.month') }}
           {{
             getMonth()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
+                | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
           }}
           {{ $t("ye") }}
         </span>
@@ -38,12 +38,12 @@
       <div class="apartment__info" v-if="discount.amount > 0">
         Остаток:
         <span
-          >{{
+        >{{
             getDebt()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
+                | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
           }}
           {{ $t("ye") }}</span
         >
@@ -52,12 +52,12 @@
       <div class="apartment__info">
         Итого:
         <span
-          >{{
+        >{{
             getTotal()
-              | number("0,0.00", {
-                thousandsSeparator: " ",
-                decimalSeparator: ",",
-              })
+                | number("0,0.00", {
+              thousandsSeparator: " ",
+              decimalSeparator: ",",
+            })
           }}
           {{ $t("ye") }}</span
         >
@@ -82,7 +82,7 @@ export default {
         case "fixed":
           for (let i = 0; this.apartments.length > i; i++) {
             let a = this.apartments[i].discounts.find(
-              (i) => i.prepay == this.discount.prepay
+                (i) => i.prepay == this.discount.prepay
             ).amount;
             price.push(parseFloat(a * this.apartments[i].plan.area));
           }
@@ -124,8 +124,8 @@ export default {
 
     getMonth() {
       return (
-        (this.getTotal() - this.getPrepay()) /
-        this.apartments[0].object.credit_month
+          (this.getTotal() - this.getPrepay()) /
+          this.apartments[0].object.credit_month
       );
     },
 

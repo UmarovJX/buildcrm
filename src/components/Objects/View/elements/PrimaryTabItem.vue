@@ -1,29 +1,29 @@
 <template>
   <div class="main__content">
 
-<!--    &lt;!&ndash;   PROMO SECTION &ndash;&gt;-->
-<!--    <div v-if="apartment.promo.length" class="promos">-->
-<!--      <div v-for="promo in apartment.promo" :key="promo.id" class="promo__section">-->
-<!--        <div class="d-flex justify-content-between mb-3">-->
-<!--             <span class="d-block">-->
-<!--            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">-->
-<!--              <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"-->
-<!--                    stroke-width="0.815217"/>-->
-<!--            </svg>-->
-<!--            <span class="ml-2 promo__section-title">{{ getName(promo.name) }}</span>-->
-<!--          </span>-->
-<!--          <span class="promo__section-subtitle">До {{ startDate(promo.start_date) }}</span>-->
-<!--        </div>-->
-<!--        <span v-for="discount in promo.discounts" :key="discount.promo_id" class="apartment__details-row">-->
-<!--            <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>-->
-<!--            <span class="value">{{ priceDiscount(discount.price) }} {{ $t('ye') }}/M<sup>2</sup></span>-->
-<!--          </span>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    &lt;!&ndash;   PROMO SECTION &ndash;&gt;-->
+    <!--    <div v-if="apartment.promo.length" class="promos">-->
+    <!--      <div v-for="promo in apartment.promo" :key="promo.id" class="promo__section">-->
+    <!--        <div class="d-flex justify-content-between mb-3">-->
+    <!--             <span class="d-block">-->
+    <!--            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+    <!--              <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"-->
+    <!--                    stroke-width="0.815217"/>-->
+    <!--            </svg>-->
+    <!--            <span class="ml-2 promo__section-title">{{ getName(promo.name) }}</span>-->
+    <!--          </span>-->
+    <!--          <span class="promo__section-subtitle">До {{ startDate(promo.start_date) }}</span>-->
+    <!--        </div>-->
+    <!--        <span v-for="discount in promo.discounts" :key="discount.promo_id" class="apartment__details-row">-->
+    <!--            <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>-->
+    <!--            <span class="value">{{ priceDiscount(discount.price) }} {{ $t('ye') }}/M<sup>2</sup></span>-->
+    <!--          </span>-->
+    <!--      </div>-->
+    <!--    </div>-->
 
     <!--   APARTMENT DETAILS     -->
     <div class="apartment__details my-3">
-      <h5 class="apartment__details-title">Характеристики</h5>
+      <h5 class="apartment__details-title">{{ $t('characters') }}</h5>
       <span class="apartment__details-row">
         <span class="property">№ {{ $t('apartment_number') }}</span>
         <span class="value">{{ apartment.number }}</span>
