@@ -407,9 +407,11 @@ export default {
       align-items: center
       border: none
       padding: 0 12px 12px
+      color: var(--gray-600)
 
       &.active
         position: relative
+        color: var(--violet-600)
 
         &:after
           content: ''
@@ -454,7 +456,7 @@ export default {
 
 
 .promos
-  margin-top: 1.5rem
+  margin-top: .5rem
   margin-bottom: 1rem
 
   .promo__section:last-child

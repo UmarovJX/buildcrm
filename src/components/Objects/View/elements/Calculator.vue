@@ -351,11 +351,11 @@ export default {
 
 <style lang="sass" scoped>
 .inputs
-  margin-right: 2.25rem
+  //margin-right: 2.25rem
   margin-bottom: 2.5rem
 
 .outputs
-  margin-right: 2.25rem
+  //margin-right: 2.25rem
 
   & > div
     margin-bottom: 2rem

@@ -175,6 +175,7 @@ export default {
   },
 
   async mounted() {
+    this.planLoading = true
     await this.getObjectPlans()
   },
 
@@ -182,9 +183,6 @@ export default {
     this.getLoading = true
     this.fetchFilterFields()
     this.getApartments()
-        .finally(() => {
-          this.finishLoading = true
-        })
     // await Promise.allSettled([
     //
     // ]).finally(() => {
