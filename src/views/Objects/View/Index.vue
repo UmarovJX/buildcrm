@@ -391,21 +391,23 @@ export default {
                     }
 
                     if (key === 'status') {
-                      if (value === 'unavailable') {
+                      let firstLogic = false
+                      const isUnavailable = value.includes('unavailable')
+                      if (isUnavailable) {
                         if (is_sold === false) {
-                          filterResult.push(true)
-                        } else {
-                          filterResult.push(false)
+                          firstLogic = true
                         }
-                      } else {
-                        const isStatusPrimitive = isPrimitiveValue(value)
-                        let values = value
-                        if (isStatusPrimitive) {
-                          values = [value]
-                        }
-                        const isSatisfy = values.includes(order.status)
-                        filterResult.push(isSatisfy)
                       }
+
+                      const isStatusPrimitive = isPrimitiveValue(value)
+                      let values = value
+                      if (isStatusPrimitive) {
+                        values = [value]
+                      }
+                      const isSatisfy = values.includes(order.status)
+
+                      filterResult.push(isSatisfy || firstLogic)
+
                       continue
                     }
 
