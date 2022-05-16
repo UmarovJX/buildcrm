@@ -421,6 +421,7 @@ export default {
         clone_tariff: 'Дублировать тариф',
         delete_tariff: 'Удалить тариф',
         add_tariff: 'Добавить тариф',
+        first_payment: 'Первый взнос',
 
         status: {
             cancelled: 'Отменен',

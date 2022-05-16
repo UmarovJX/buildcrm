@@ -496,7 +496,7 @@ export default {
   display: flex;
   column-gap: 30px;
   margin-bottom: 21px;
-
+  font-family: Inter, sans-serif;
 
   .teal {
     color: var(--teal-500);

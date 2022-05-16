@@ -52,40 +52,26 @@
     <!--      <router-link to="/" class="button__view">Вариант оплаты</router-link>-->
     <!--    </div>-->
 
-    <!--   PROMO SECTION
-    <div class="promo__section font-inter">
-          <span class="d-block mb-2">
+    <!--   PROMO SECTION -->
+    <div v-if="apartment.promo.length" class="promos">
+      <div v-for="promo in apartment.promo" :key="promo.id" class="promo__section">
+        <div class="d-flex justify-content-between mb-3">
+             <span class="d-block">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"
                     stroke-width="0.815217"/>
             </svg>
-            <span class="ml-2 promo__section-title">День Рождения застройщика</span>
+            <span class="ml-2 promo__section-title">{{ getName(promo.name) }}</span>
           </span>
-      <span class="d-flex justify-content-between mb-2">
-            <span class="color-gray-600">Цена по акции</span>
-            <span class="color-gray-400">Осталось 215 дней</span>
+          <span class="promo__section-subtitle">До {{ startDate(promo.start_date) }}</span>
+        </div>
+        <span v-for="discount in promo.discounts" :key="discount.promo_id" class="apartment__details-row">
+            <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>
+            <span class="value">{{ priceDiscount(discount.price) }} {{ $t('ye') }}/M<sup>2</sup></span>
           </span>
-      <span class="d-flex justify-content-between align-items-center mb-2">
-            <span class="color-violet-600 total__sum">328 500 000 сум</span>
-            <span class="color-violet-600">2 500 000 сум/M2</span>
-          </span>
-      <span class="mortgage">
-            <span class="d-flex justify-content-between align-items-center mb-2">
-              <span class="d-block mb-2">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"
-                        stroke-width="0.815217"/>
-                </svg>
-                <span class="ml-2 promo__section-title color-violet-600">Ипотека 5.4%</span>
-              </span>
-              <span class="color-gray-400">До 31.12</span>
-            </span>
-            <span class="color-violet-600 mortgage__title">
-              Ипотека 5.4%
-            </span>
-          </span>
+      </div>
     </div>
-    -->
+
 
     <!--   APARTMENT DETAILS     -->
     <div class="apartment__details my-3">
@@ -129,45 +115,45 @@
       </span>
     </div>
 
-    <!--
-      PARTICULAR QUALITIES
-      <div class="particular__qualities font-inter">
-        <h3 class="title color-gray-600">Особенности</h3>
-        <div class="particular__qualities-content">
-          <div class="part">
-            <span class="image__container"></span>
-            <span class="description">Большой балкон</span>
-          </div>
+    <!--      PARTICULAR QUALITIES-->
+    <!-- <div class="particular__qualities font-inter">
+       <h3 class="title color-gray-600">Особенности</h3>
+       <div class="particular__qualities-content">
+         <div class="part">
+           <span class="image__container"></span>
+           <span class="description">Большой балкон</span>
+         </div>
 
-          <div class="part">
-            <span class="image__container"></span>
-            <span class="description">Шикарный вид</span>
-          </div>
+         <div class="part">
+           <span class="image__container"></span>
+           <span class="description">Шикарный вид</span>
+         </div>
 
-          <div class="part">
-            <span class="image__container"></span>
-            <span class="description">Эко-парковка</span>
-          </div>
+         <div class="part">
+           <span class="image__container"></span>
+           <span class="description">Эко-парковка</span>
+         </div>
 
-          <div class="part">
-            <span class="image__container"></span>
-            <span class="description">Секретный шкаф</span>
-          </div>
+         <div class="part">
+           <span class="image__container"></span>
+           <span class="description">Секретный шкаф</span>
+         </div>
 
-          <div class="part">
-            <span class="image__container"></span>
-            <span class="description">Красный ковер</span>
-          </div>
-        </div>
-      </div>
-    -->
+         <div class="part">
+           <span class="image__container"></span>
+           <span class="description">Красный ковер</span>
+         </div>
+       </div>
+     </div>
+     -->
+
   </div>
 </template>
 
 <script>
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import {formatToPrice} from "@/util/reusable";
+import {formatToPrice, formatDateWithDot} from "@/util/reusable";
 import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
@@ -231,6 +217,33 @@ export default {
   },
 
   methods: {
+    priceDiscount(value) {
+      console.log(value);
+
+      return formatToPrice(value)
+    },
+    startDate(value) {
+      return formatDateWithDot(value)
+    },
+    getName(name) {
+      let locale = localStorage.locale;
+      let value = "";
+
+      if (locale) {
+        switch (locale) {
+          case "ru":
+            value = name.ru;
+            break;
+          case "uz":
+            value = name.uz;
+            break;
+        }
+      } else {
+        value = name.ru;
+      }
+
+      return value;
+    },
     buildingDate(time) {
       const date = new Date(time)
       const year = date.getFullYear()
@@ -328,16 +341,34 @@ export default {
   border-radius: 2rem
   font-family: Inter, sans-serif
 
-.promo__section
+
+.promos
   margin-top: 1.5rem
-  padding-top: 1rem
-  padding-bottom: 1rem
+  margin-bottom: 1rem
+
+  .promo__section:last-child
+    border-bottom: 3px solid var(--gray-100)
+
+.promo__section
+  padding-top: 1.5rem
+  padding-bottom: 1.5rem
   border-top: 3px solid var(--gray-100)
-  border-bottom: 3px solid var(--gray-100)
   font-weight: 600
+  row-gap: 16px
+
 
   &-title
     color: var(--violet-600) !important
+    font-weight: 600
+    font-size: 18px
+    line-height: 24px
+    text-transform: capitalize
+
+  &-subtitle
+    color: var(--gray-400) !important
+    font-weight: 600
+    font-size: 14px
+    line-height: 20px
 
   .total__sum
     font-size: 1.5rem

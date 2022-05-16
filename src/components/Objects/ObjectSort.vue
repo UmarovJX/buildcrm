@@ -1,6 +1,27 @@
 <template>
   <div class="sort-list">
     <div class="sort-top ">
+
+      <!--   Номер квартиры   -->
+      <div class="filter__inputs-input">
+        <base-form-tag-input
+            @set-tags="setApartmentNumbers"
+            :default-tags="defaultApartments"
+            ref="base-form-tag-input"
+            :placeholder="$t('object.sort.number_flat')"
+        >
+          <template #delete-content>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="10" fill="#9CA3AF"/>
+              <path d="M13.125 6.875L6.875 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
+              <path d="M6.875 6.875L13.125 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          </template>
+        </base-form-tag-input>
+      </div>
+
       <!--   Комнат    -->
       <b-dropdown left>
         <template v-if="form.rooms && form.rooms.length" #button-content>
@@ -66,72 +87,8 @@
         </b-dropdown-text>
       </b-dropdown>
 
-      <!--   Жилая площадь    -->
-      <b-dropdown left>
-        <template v-if="form.area && form.area.length" #button-content>
-          <div class="input-block">
-            <span class="input-label">{{ $t('object.sort.area') }}</span>
-            <p class="input-text">
-              {{ formatSelectPlaceholder(form.area) }}
-            </p>
-          </div>
-        </template>
-        <template v-else #button-content>
-          <p class="default-label">
-            {{ $t('object.sort.area') }}
-          </p>
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-                id="checkbox-group-2"
-                v-model="form.area"
-                :aria-describedby="ariaDescribedby"
-                name="flavour-2"
-            >
-              <b-form-checkbox
-                  v-for="option in filterFields.area"
-                  :key="option"
-                  :value="option"
-              >
-                {{ option }} M<sup>2</sup>
-              </b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-
-      <div class="filter__apartment__price">
-        <b-form-select
-            v-model="currency"
-            :options="currencyOptions"
-            class="inline price__currency"
-        />
-        <base-numeric-input
-            v-model.number="form.price_from"
-            :currency="` `"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
-            :placeholder="$t('from')"
-            class="filter__price"
-        ></base-numeric-input>
-
-        <base-numeric-input
-            v-model.number="form.price_to"
-            :currency="` `"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
-            :placeholder="$t('to')"
-            class="filter__price"
-        ></base-numeric-input>
-      </div>
-
       <!--   Блок    -->
-      <b-dropdown v-show="sortBar" left>
+      <b-dropdown left>
         <template v-if="form.blocks && form.blocks.length" #button-content>
           <div class="input-block">
             <span class="input-label">{{ $t('object.sort.block') }}</span>
@@ -166,25 +123,70 @@
         </b-dropdown-text>
       </b-dropdown>
 
-      <!--   Номер квартиры   -->
-      <div v-show="sortBar" class="filter__inputs-input">
-        <base-form-tag-input
-            @set-tags="setApartmentNumbers"
-            :default-tags="defaultApartments"
-            ref="base-form-tag-input"
-            :placeholder="$t('object.sort.number_flat')"
-        >
-          <template #delete-content>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="10" fill="#9CA3AF"/>
-              <path d="M13.125 6.875L6.875 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round"/>
-              <path d="M6.875 6.875L13.125 13.125" stroke="white" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round"/>
-            </svg>
-          </template>
-        </base-form-tag-input>
+      <!--   Жилая площадь    -->
+      <b-dropdown v-show="sortBar" left>
+        <template v-if="form.area && form.area.length" #button-content>
+          <div class="input-block">
+            <span class="input-label">{{ $t('object.sort.area') }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(form.area) }}
+            </p>
+          </div>
+        </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t('object.sort.area') }}
+          </p>
+        </template>
+        <b-dropdown-text href="#">
+          <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+                id="checkbox-group-2"
+                v-model="form.area"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
+            >
+              <b-form-checkbox
+                  v-for="option in filterFields.area"
+                  :key="option"
+                  :value="option"
+              >
+                {{ option }} M<sup>2</sup>
+              </b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-dropdown-text>
+      </b-dropdown>
+
+      <div v-show="sortBar" class="filter__apartment__price">
+        <b-form-select
+            v-model="currency"
+            :options="currencyOptions"
+            class="inline price__currency"
+        />
+        <base-numeric-input
+            v-model.number="form.price_from"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            :placeholder="$t('from')"
+            class="filter__price"
+        ></base-numeric-input>
+
+        <base-numeric-input
+            v-model.number="form.price_to"
+            :currency="` `"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            :placeholder="$t('to')"
+            class="filter__price"
+        ></base-numeric-input>
       </div>
+
 
       <!--  Статус    -->
       <!--      <b-dropdown v-if="sortBar" left>-->
@@ -538,7 +540,6 @@ export default {
   gap: 1rem;
   background-color: var(--white);
   font-family: Inter, sans-serif;
-
 }
 
 .sort-top, .sort-hide, .chess-tab {
@@ -548,6 +549,7 @@ export default {
   gap: 1rem .5rem;
   color: var(--gray-600) !important;
   background-color: var(--white);
+  font-family: Inter, sans-serif;
 }
 
 .sort-top {
@@ -741,7 +743,7 @@ export default {
 
 ::v-deep {
   .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-    font-family: Inter, serif;
+    font-family: Inter, sans-serif;
     padding: 1rem 1rem 1rem 1.5rem !important;
     height: 56px;
     font-style: normal;

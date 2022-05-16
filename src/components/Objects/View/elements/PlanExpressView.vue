@@ -56,6 +56,7 @@
       </template>
     </b-sidebar>
 
+
     <apartment-express-view
         :visible="expressView.toggle"
         :apartment="expressView.item"

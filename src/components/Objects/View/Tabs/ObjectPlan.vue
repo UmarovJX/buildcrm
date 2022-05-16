@@ -159,7 +159,7 @@ export default {
 
 .card {
   border-radius: 1rem;
-  max-width: 412px;
+  width: 412px;
   border: none;
   cursor: pointer;
   font-family: Inter, sans-serif;

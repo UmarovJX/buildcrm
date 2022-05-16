@@ -417,6 +417,8 @@ export default {
         clone_tariff: 'Tarifdan nusxa olish',
         delete_tariff: "Tarifni o'chirish",
         add_tariff: "Tarif qo'shish",
+        first_payment: "Boshlang'ich to'lov",
+
 
         status: {
             cancelled: 'Bekor qilingan',

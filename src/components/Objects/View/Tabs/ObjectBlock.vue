@@ -73,7 +73,7 @@
                             class="apartment-square-price"
                             v-if="elem.order.status !== 'sold' && elem.is_sold"
                         >
-                          {{ price(elem.prices.price_m2) }} сум/M<sup>2</sup>
+                          {{ price(elem.prices.price_m2) }} {{ $t('ye') }}/M<sup>2</sup>
                         </p>
                       </div>
                     </div>
