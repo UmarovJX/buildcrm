@@ -42,130 +42,7 @@
         <div class="calculator w-100 d-flex flex-column justify-content-between">
           <div>
             <h4 class="calculator-title color-gray-600 font-craftworksans">Выберите вариант оплаты</h4>
-            <div class="d-flex flex-wrap justify-content-between">
-              <!--    INPUTS      -->
-              <div class="w-100 inputs">
-
-                <!--    PAYMENT OPTIONS       -->
-                <div>
-                  <base-select
-                      :label="true"
-                      :options="paymentOption"
-                      :no-placeholder="true"
-                      :value="discount"
-                      value-field="id"
-                      @change="changeDiscount"
-                      placeholder="Вариант оплаты"
-                  ></base-select>
-                </div>
-
-                <!--     INPUT MONTHLY PAYMENT       -->
-                <div class="monthly" v-show="showMonthlyCalculation">
-                  <div class="placeholder font-weight-600">Ежемесячный платеж</div>
-                  <div class="input d-flex justify-content-between">
-                    <input
-                        v-if="discount.amount > 0"
-                        v-model="calc.month"
-                        @input="changeDiscount_month"
-                        type="number"
-                        class="input-monthly-payment color-gray-600 w-100"
-                        :placeholder="$t('monthly_payment')"
-                    >
-                    <span v-else class="d-block">{{ $t('monthly_payment') }}</span>
-                    <div class="font-inter color-gray-600 font-weight-600">месяцев</div>
-                  </div>
-                  <div class="square-price font-inter color-gray-600 font-weight-600">
-                    По {{ pricePrettier(monthly_price, 2) }} сум
-                  </div>
-                </div>
-
-                <!--     DISCOUNT PER M2       -->
-                <base-input
-                    class="discount-per-m2"
-                    type="number"
-                    :label="true"
-                    :currency="`${$t('ye')}`"
-                    placeholder="Скидка за м2"
-                    @trigger-input="changeDiscount_price"
-                />
-              </div>
-
-              <!--     OUTPUTS     -->
-              <div class="w-100 outputs font-inter">
-                <!--      Initial Price          -->
-                <div class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">
-                    {{ $t('starting_price') }}
-                  </span>
-                  <span class="price d-block color-gray-600">
-                    {{ pricePrettier(apartment.prices.price, 2) }} {{ $t('ye') }}
-                  </span>
-                </div>
-
-                <!--      Price for meters square          -->
-                <div class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">
-                    {{ $t('selling_price') }} m<sup>2</sup>
-                  </span>
-                  <span class="price d-block color-gray-600">
-                    {{ pricePrettier(calc.price_for_m2 - calc.discount_price, 2) }} {{ $t('ye') }}</span>
-                </div>
-
-                <div class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">
-                    {{ $t('apartments.view.prepayment') }} {{ calc.prepay_percente }}%
-                  </span>
-                  <span v-if="calc.prepay_percente === 100"
-                        class="price d-block color-gray-600"
-                  >
-                    {{ pricePrettier(calc.total, 2) }} {{ $t('ye') }}
-                  </span>
-                  <span
-                      v-else
-                      class="price d-block color-gray-600"
-                  >
-                    {{ pricePrettier(calc.prepay, 2) }} {{ $t('ye') }}
-                  </span>
-                </div>
-
-                <!--       Monthly Payment          -->
-                <div v-if="discount.amount > 0" class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">
-                    {{ $t('monthly_pay') }}
-                  </span>
-                  <span
-                      class="price d-block color-gray-600"
-                  >
-                    {{ pricePrettier(calc.monthly_price, 2) }} {{ $t('ye') }}
-                  </span>
-                </div>
-
-                <!--                <div v-if="discount.amount > 0" class="d-flex justify-content-between">-->
-                <!--                  <span class="property d-block color-gray-400">{{ $t('contracts.view.remainder') }}</span>-->
-                <!--                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.debt) }} {{ $t('ye') }}</span>-->
-                <!--                </div>-->
-
-                <!--      Total Discount          -->
-                <div class="d-flex justify-content-between">
-                  <span class="property d-block color-gray-400">
-                    {{ $t('total_discount') }}
-                  </span>
-                  <span
-                      class="price d-block color-gray-600"
-                  >
-                    {{ totalDiscount }} {{ $t('ye') }}
-                  </span>
-                </div>
-
-                <!--      Total Price          -->
-                <div class="d-flex justify-content-between">
-                  <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
-                  <span class="price d-block color-violet-600 total-price">
-                    {{ pricePrettier(calc.total, 2) }}  {{ $t('ye') }}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <calculator :apartment="apartment" :has-apartment="hasApartment"/>
           </div>
 
           <div class="align-self-stretch d-flex justify-content-end">
@@ -239,16 +116,14 @@
 
 <script>
 import api from "@/services/api";
-import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInformation";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
-// import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
-import BaseInput from "@/components/Reusable/BaseInput";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
+import Calculator from "@/components/Objects/View/elements/Calculator";
 import {formatToPrice} from "@/util/reusable";
 import {mapGetters} from "vuex";
 
@@ -256,14 +131,12 @@ export default {
   name: "ApartmentView",
 
   components: {
-    BaseInput,
-    BaseSelect,
     BaseLoading,
     BaseArrowLeft,
     BaseArrowRight,
     BasePrintIcon,
     PrimaryInformation,
-    // BaseMinusCircleIcon,
+    Calculator,
     Reserve,
     BaseButton
   },
@@ -271,25 +144,8 @@ export default {
   data() {
     return {
       selectedOption: null,
-      monthlyPayment: null,
       discountPerM2: null,
       apartment: {},
-      discount: {
-        amount: 0
-      },
-      calc: {
-        amount: 0,
-        price_for_m2: 0,
-        discount_price: 0,
-        monthly_price: 0,
-        prepay: 0,
-        debt: 0,
-        total: 0,
-        prepay_percente: 0,
-        base_price: 0
-      },
-      monthly_price: 0,
-      calForPrint: {},
       appLoading: false,
       showReservationModal: false,
     }
@@ -304,38 +160,8 @@ export default {
     hasApartment() {
       return Object.keys(this.apartment).length > 0
     },
-    showMonthlyCalculation() {
-      return this.calc.prepay_percente !== 100
-    },
-    getApartmentDiscounts() {
-      const hasDiscount = this.hasApartment && this.apartment.hasOwnProperty('discounts')
-      if (!hasDiscount) return []
-      const discounts = [...this.apartment.discounts]
-      return discounts.sort((a, b) => a.prepay - b.prepay)
-    },
     status() {
       return this.apartment.order.status
-    },
-    totalDiscount() {
-      const {calc, apartment} = this
-      const {prices, plan} = apartment
-      const discountPerSquare = calc.discount_price * plan.area
-      return this.pricePrettier(prices.price - calc.base_price + discountPerSquare, 2)
-    },
-    paymentOption() {
-      const discounts = [...this.apartment.discounts]
-      if (!this.hasApartment) return
-      return discounts.sort((a, b) => a.prepay - b.prepay)
-          .map((discount, index) => {
-            let text = this.$t("apartments.view.variant")
-            if (discount.type === 'promo') text += ' ' + `( ${this.$t('promo.by_promo')} )`
-            text += ' ' + (index + 1) + ' - ' + discount.prepay + '%'
-            return {
-              text,
-              value: discount,
-              id: discount.id
-            }
-          })
     },
     permission() {
       const context = {
@@ -402,15 +228,9 @@ export default {
             this.appLoading = false
           })
     },
-
-    // hideApartmentSidebar() {
-    //   this.$emit('hide-apartment-sidebar-view')
-    // },
-
     printApartmentInformation() {
       window.print()
     },
-
     async orderApartment() {
       this.appLoading = true
       const apartments = [this.apartment.id]
@@ -430,7 +250,6 @@ export default {
             this.appLoading = false
           })
     },
-
     continueApartmentOrder() {
       this.$router.push({
         name: "confirm-apartment",
@@ -439,11 +258,9 @@ export default {
         },
       })
     },
-
     updateContent() {
       this.$emit('update-content')
     },
-
     async cancelReservation() {
       this.appLoading = true
       await api.orders.fetchOrderClient(this.apartment.order.id)
@@ -486,166 +303,6 @@ export default {
           .finally(() => {
             this.appLoading = false
           })
-    },
-
-    async initialCalc() {
-      if (Object.keys(this.discount).length < 1) {
-        this.discount = this.getApartmentDiscounts ? this.getApartmentDiscounts[0] : {amount: 0}
-      }
-
-      if (this.discount.type === "percent") {
-        if (this.discount.prepay === 100) {
-          this.calc.price_for_m2 = this.apartment.prices.price_m2;
-        } else {
-          this.calc.price_for_m2 =
-              this.getTotalForPercente() / this.apartment.plan.area;
-        }
-      } else {
-        this.calc.price_for_m2 = this.discount.amount;
-      }
-
-      // if (this.calc.discount_price > 0) {
-      //   console.log(this.calc.price_for_m2)
-      //   this.calc.price_for_m2 -= this.calc.discount_price
-      // }
-
-      this.calc.prepay_percente = this.discount.prepay;
-      this.calc.prepay = this.getPrepay();
-      this.calc.month = this.apartment?.object?.credit_month;
-      this.calc.monthly_price = this.getMonth();
-      this.monthly_price = this.calc.monthly_price;
-      this.calc.debt = this.getDebt();
-      this.calc.total = this.getTotal();
-      this.calc.base_price = this.getBasePrice()
-
-      this.calForPrint = this.calc;
-      this.$emit("getCalData", this.calForPrint);
-    },
-
-    async changeDiscount(discountId) {
-      this.discount = this.paymentOption.find(option => option.value.id === discountId).value
-      this.calc.prepay_percente = this.discount.prepay;
-      this.calc.discount_price = 0;
-      if (this.discount.prepay === 100) {
-        this.calc.total = this.apartment.prices.price;
-        this.calc.prepay = this.apartment.prices.price;
-        this.calc.price_for_m2 = this.apartment.prices.price_m2;
-        if (this.calc.discount_price > 0) {
-          this.calc.price_for_m2 -= this.calc.discount_price
-        }
-        this.calc.base_price = this.apartment.price
-        this.calForPrint = this.calc;
-        this.$emit("getCalData", this.calForPrint);
-      } else {
-        await this.initialCalc();
-      }
-    },
-    async changeDiscount_price(discountPrice) {
-      this.calc.discount_price = discountPrice
-      await this.initialCalc()
-    },
-    changeDiscount_month() {
-      this.monthly_price = this.getMonth()
-      this.calForPrint.monthly_price = this.monthly_price
-    },
-    getPrepay() {
-      if (this.discount.prepay === 100) return 0;
-
-      let total_discount = this.getDiscount();
-
-      let total = 0;
-
-      switch (this.discount.type) {
-        case "promo":
-        case "fixed":
-          if (this.calc.discount_price) {
-            total =
-                (this.discount.amount - parseFloat(this.calc.discount_price)) *
-                this.apartment.plan.area;
-          } else {
-            total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
-          }
-          break;
-        default:
-          total = this.getTotalForPercente() / total_discount;
-
-          break;
-      }
-
-      return (this.discount.prepay * total) / 100;
-    },
-    getDiscount() {
-      if (this.discount.prepay === 100) return 1;
-
-      return 1 - this.discount.prepay / 100
-
-      /*return 1 - this.discount.amount / 100;*/
-    },
-    getMonth() {
-      if (this.calc.month) {
-        return (this.getTotal() - this.getPrepay()) / this.calc.month;
-      }
-      return 0
-    },
-    getDebt() {
-      return this.getTotal() - this.getPrepay();
-    },
-    getBasePrice() {
-      let totalDiscount = this.getDiscount()
-      switch (this.discount.type) {
-        case 'promo':
-        case 'fixed':
-          return this.discount.amount * this.apartment.plan.area
-        default:
-          return totalDiscount
-      }
-    },
-    getTotal() {
-      let total_discount = this.getDiscount();
-      let total = 0;
-
-      switch (this.discount.type) {
-        case 'promo':
-        case "fixed":
-          if (this.calc.discount_price) {
-            total =
-                (this.discount.amount - parseFloat(this.calc.discount_price)) *
-                this.apartment.plan.area;
-          } else {
-            total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
-          }
-          break;
-        default:
-          total = this.apartment.prices.price / total_discount;
-          if (this.calc.discount_price) {
-            total -=
-                parseFloat(this.calc.discount_price) * this.apartment.plan.area;
-          }
-          break;
-      }
-
-      return total;
-    },
-    getTotalForPercente() {
-      let total_discount = this.getDiscount();
-      let total = 0;
-
-      switch (this.discount.type) {
-        case "fixed":
-          if (this.calc.discount_price) {
-            total =
-                (this.discount.amount - parseFloat(this.calc.discount_price)) *
-                this.apartment.plan.area;
-          } else {
-            total = this.discount.amount * this.apartment.plan.area;
-          }
-          break;
-        default:
-          total = this.apartment.prices.price / total_discount;
-          break;
-      }
-
-      return total
     },
   }
 }
