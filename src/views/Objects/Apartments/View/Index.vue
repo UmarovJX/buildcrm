@@ -35,8 +35,49 @@
 
       <!--   MAIN   -->
       <div class="content-view d-flex justify-content-between flex-wrap flex-lg-nowrap">
-        <!--        <div class="col-12 col-lg-5">-->
-        <primary-information class="primary__information" :apartment="apartment"/>
+        <div class="main__content">
+          <div class="slider-content">
+            <div class="swiper" v-swiper="swiperOption">
+              <!--     MAIN CONTENT OF SLIDE       -->
+              <div class="swiper-wrapper">
+                <div
+                    v-for="(image,index) in apartment.plan.image"
+                    :key="index"
+                    class="swiper-slide"
+                >
+                  <div class="d-flex justify-content-center align-items-center">
+                    <img v-if="image" class="swiper-image" :src="image" alt="img">
+                    <img v-else class="swiper-image" :src="require('@/assets/img/no-image.jpg')" alt="img">
+                  </div>
+                </div>
+              </div>
+
+              <!--     DOTS PAGINATION       -->
+              <div class="swiper-pagination"></div>
+
+              <!--     BUTTON PREVIOUS       -->
+              <div
+                  slot="button-prev"
+                  class="swiper-button-prev swiper-button d-flex justify-content-center align-items-center"
+              >
+                <base-arrow-left-icon/>
+              </div>
+
+              <!--     BUTTON NEXT       -->
+              <div
+                  slot="button-next"
+                  class="swiper-button-next swiper-button d-flex justify-content-center align-items-center"
+              >
+                <base-arrow-right-icon/>
+              </div>
+            </div>
+
+          </div>
+          <!--        <div class="col-12 col-lg-5">-->
+          <PrimaryTabItem class="primary__information" :apartment="apartment"/>
+          <PromoSection :promo="apartment.promo"/>
+        </div>
+        <!--        <primary-information class="primary__information" :apartment="apartment"/>-->
         <!--        </div>-->
         <!--        <div class="col-12 col-lg-7">-->
         <div class="calculator w-100 d-flex flex-column justify-content-between">
@@ -120,29 +161,59 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
-import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInformation";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import Calculator from "@/components/Objects/View/elements/Calculator";
 import {formatToPrice} from "@/util/reusable";
 import {mapGetters} from "vuex";
+import PrimaryTabItem from "@/components/Objects/View/elements/PrimaryTabItem";
+import {directive} from "vue-awesome-swiper";
+import 'swiper/css/swiper.css'
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import PromoSection from "@/components/Objects/View/elements/PromoSection";
 
 export default {
   name: "ApartmentView",
 
   components: {
+    PromoSection,
     BaseLoading,
     BaseArrowLeft,
     BaseArrowRight,
     BasePrintIcon,
-    PrimaryInformation,
+    PrimaryTabItem,
     Calculator,
     Reserve,
-    BaseButton
-  },
+    BaseButton,
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
 
+  },
+  directives: {
+    swiper: directive,
+  },
   data() {
     return {
+      /* SLIDER OPTION */
+      swiperOption: {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        direction: 'horizontal',
+        pagination: {
+          el: '.swiper-pagination',
+          type: 'bullets',
+          clickable: true
+        },
+        paginationClickable: true,
+        draggable: true,
+        loop: false,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }
+      },
+      /* SLIDER END */
       selectedOption: null,
       discountPerM2: null,
       apartment: {},
@@ -309,6 +380,62 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
+::v-deep .main__content
+  .slider__image
+    object-fit: contain
+
+::v-deep .slider-content
+  margin: 1rem
+  //margin-left: 1rem
+  //margin-right: 1rem
+  //margin-bottom: 1rem
+
+  .swiper-container
+    display: flex
+    align-items: center
+    justify-content: center
+    height: 24rem
+
+    .swiper-slide
+      cursor: grab
+      display: flex
+      justify-content: center
+      align-items: center
+      padding: 0 58px
+
+      .swiper-image
+        width: 100%
+        max-height: 19rem
+        object-fit: contain
+    //height: 16rem
+
+    .swiper-button
+      width: 3rem
+      height: 3rem
+      border-radius: 50%
+      background-color: var(--gray-100)
+
+    .swiper-button-next::after,
+    .swiper-button-prev::after
+      content: none
+
+  .swiper-pagination
+    margin-top: 3rem
+
+    &-bullets
+      bottom: 1rem
+
+    &-bullet
+      width: 0.75rem
+      height: 0.75rem
+      margin-right: 0.3rem
+      background-color: var(--gray-400)
+
+      &-active
+        background-color: var(--violet-400)
+
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button
