@@ -81,6 +81,16 @@
                   @click="cancelReservation"
               />
 
+              <!--     CONTRACT VIEW         -->
+              <router-link
+                  v-if="permission.contract"
+                  :to="{name:'contracts-view', params:{ id: apartment.order.id } }"
+                  class="contract_view_btn color-white d-flex align-items-center justify-content-center"
+              >
+                <i class="far fa-file-signature mr-2" style="color: #FFFFFF"></i>
+                {{ $t("apartments.list.contract") }}
+              </router-link>
+
               <button
                   id="print"
                   @click="printApartmentInformation"
@@ -124,7 +134,6 @@ import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInform
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import Calculator from "@/components/Objects/View/elements/Calculator";
-import {formatToPrice} from "@/util/reusable";
 import {mapGetters} from "vuex";
 
 export default {
@@ -168,7 +177,8 @@ export default {
         cancelReserve: false,
         reserve: false,
         continueOrder: false,
-        order: false
+        order: false,
+        contract: false
       }
 
       if (!this.hasApartment) return context
@@ -183,9 +193,16 @@ export default {
       const isStatusBooked = order.status === 'booked'
       const isStatusAvailable = order.status === 'available'
       const isStatusHold = order.status === 'hold'
+      const isStatusSold = order.status === 'sold'
+      const isStatusContract = order.status === 'contract'
 
       const permissionCancelReserve = isStatusBooked && (authorityUser || rootContract || isMainRole)
       const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
+
+      const permissionContract = () => {
+        const permissionOne = apartments.contract && authorityUser
+        return (isStatusSold || isStatusContract) && (permissionOne || rootContract)
+      }
 
       const permissionOrder = () => {
         const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
@@ -205,6 +222,8 @@ export default {
       permissionReserve && effectContext('reserve')
       permissionOrder() && effectContext('order')
       permissionContinueOrder() && effectContext('continueOrder')
+      permissionContract() && effectContext('contract')
+
       return context
     }
   },
@@ -215,7 +234,6 @@ export default {
   },
 
   methods: {
-    pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
     async fetchApartmentView() {
       this.appLoading = true
       const {object, id} = this.$route.params
@@ -444,6 +462,12 @@ input[type="number"]
   width: 3.5rem
   height: 3.5rem
   border-radius: 50%
+
+.contract_view_btn
+  height: 3.5rem
+  border-radius: 2rem
+  padding: 1rem 2rem
+  background-color: var(--blue-600)
 
 .apartment__status
   font-family: Inter, sans-serif
