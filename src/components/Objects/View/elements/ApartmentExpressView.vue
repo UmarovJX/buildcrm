@@ -116,6 +116,16 @@
                 @click="cancelReservation"
             />
 
+            <!--     CONTRACT VIEW         -->
+            <router-link
+                v-if="permission.contract"
+                :to="{name:'contracts-view', params:{ id: apartment.order.id } }"
+                class="contract_view_btn color-white d-flex align-items-center justify-content-center"
+            >
+              <i class="far fa-file-signature mr-2" style="color: #FFFFFF"></i>
+              {{ $t("apartments.list.contract") }}
+            </router-link>
+
 
             <!--PRINT-->
             <button
@@ -281,31 +291,37 @@ export default {
         cancelReserve: false,
         reserve: false,
         continueOrder: false,
-        order: false
+        order: false,
+        contract: false
       }
 
       if (!this.hasApartment) return context
 
-      const {sidebarApartment, me, userPermission} = this
-      const {order} = sidebarApartment
+      const {apartment, me, userPermission} = this
+      const {order} = apartment
       const {apartments} = userPermission
-
-      const forSale = sidebarApartment['is_sold']
+      const forSale = apartment['is_sold']
       const authorityUser = order?.user?.id === me?.user?.id
       const rootContract = userPermission?.apartments?.root_contract
       const isMainRole = me?.role?.id === 1
       const isStatusBooked = order.status === 'booked'
       const isStatusAvailable = order.status === 'available'
       const isStatusHold = order.status === 'hold'
+      const isStatusSold = order.status === 'sold'
+      const isStatusContract = order.status === 'contract'
 
       const permissionCancelReserve = isStatusBooked && (authorityUser || rootContract || isMainRole)
       const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
+
+      const permissionContract = () => {
+        const permissionOne = apartments.contract && authorityUser
+        return (isStatusSold || isStatusContract) && (permissionOne || rootContract)
+      }
 
       const permissionOrder = () => {
         const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
         return forSale && permissionOne
       }
-
       const permissionContinueOrder = () => {
         const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || apartments.contract)
         const permissionTwo = isStatusBooked && authorityUser && apartments.contract
@@ -320,6 +336,8 @@ export default {
       permissionReserve && effectContext('reserve')
       permissionOrder() && effectContext('order')
       permissionContinueOrder() && effectContext('continueOrder')
+      permissionContract() && effectContext('contract')
+
       return context
     }
   },
@@ -535,6 +553,12 @@ export default {
   width: 3.5rem
   height: 3.5rem
   border-radius: 50%
+
+.contract_view_btn
+  height: 3.5rem
+  border-radius: 2rem
+  padding: 1rem 2rem
+  background-color: var(--blue-600)
 
 .status
   &-waiting
