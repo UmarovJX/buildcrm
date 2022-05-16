@@ -385,29 +385,38 @@ export default {
                     }
 
                     if (key === 'rooms') {
-                      const isSatisfy = value.includes(rooms)
+                      const isSatisfy = value.map(vs => {
+                        if (typeof vs === 'string') {
+                          return parseInt(vs)
+                        }
+                        return vs
+                      }).includes(rooms)
                       filterResult.push(isSatisfy)
                       continue
                     }
 
                     if (key === 'status') {
-                      let firstLogic = false
                       const isUnavailable = value.includes('unavailable')
                       if (isUnavailable) {
-                        if (is_sold === false) {
-                          firstLogic = true
+                        if (!is_sold) {
+                          filterResult.push(true)
+                          continue
                         }
                       }
 
-                      const isStatusPrimitive = isPrimitiveValue(value)
-                      let values = value
-                      if (isStatusPrimitive) {
-                        values = [value]
+                      if (is_sold) {
+                        const isStatusPrimitive = isPrimitiveValue(value)
+                        let values = value
+
+                        if (isStatusPrimitive) {
+                          values = [value]
+                        }
+
+                        const isSatisfy = values.includes(order.status)
+                        filterResult.push(isSatisfy)
+                      } else {
+                        filterResult.push(false)
                       }
-                      const isSatisfy = values.includes(order.status)
-
-                      filterResult.push(isSatisfy || firstLogic)
-
                       continue
                     }
 
