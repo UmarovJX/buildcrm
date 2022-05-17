@@ -15,6 +15,7 @@
       v-else
       ref="readOnly"
   >{{ amount }}</span>
+
 </template>
 
 <script>
