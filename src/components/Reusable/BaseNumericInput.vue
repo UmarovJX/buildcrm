@@ -464,6 +464,11 @@ export default {
      */
     isDeliberatelyZero() {
       return this.valueNumber === 0 && this.value !== '';
+    },
+
+    setVModalValue(value) {
+      this.amount = value
+      this.formatAmount()
     }
   }
 }

@@ -37,9 +37,10 @@
         </div>
       </div>
 
-      <!--     DISCOUNT PER M2       -->
       <div class="d-flex justify-content-between align-items-center" style="column-gap: .5rem">
+        <!--     DISCOUNT PER M2       -->
         <base-input
+            ref="discount-per-square"
             class="discount-per-m2"
             type="number"
             :label="true"
@@ -47,13 +48,15 @@
             :placeholder="$t('apartments.view.discount_per_m2')"
             @trigger-input="changeDiscount_price"
         />
+        <!--    DISCOUNT TOTAL PRICE    -->
         <base-input
+            ref="all-discount-price"
             class="discount-per-m2"
             type="number"
             :label="true"
             :currency="`${$t('ye')}`"
             :placeholder="$t('apartments.view.discount_all')"
-            @trigger-input="changeDiscount_price"
+            @trigger-input="setTotalDiscountPrice"
         />
       </div>
 
@@ -122,7 +125,7 @@
         <span
             class="price d-block color-gray-600"
         >
-          {{ totalDiscount }} {{ $t('ye') }}
+          {{ this.pricePrettier(totalDiscount, 2) }} {{ $t('ye') }}
         </span>
       </div>
 
@@ -197,7 +200,7 @@ export default {
       const {calc, apartment} = this
       const {prices, plan} = apartment
       const discountPerSquare = calc.discount_price * plan.area
-      return this.pricePrettier(prices.price - calc.base_price + discountPerSquare, 2)
+      return prices.price - calc.base_price + discountPerSquare
     },
     getApartmentDiscounts() {
       const hasDiscount = this.hasApartment && this.apartment.hasOwnProperty('discounts')
@@ -251,9 +254,23 @@ export default {
         await this.initialCalc();
       }
     },
+    setTotalDiscountPrice(totalDiscountPrice) {
+      this.calc.discount_price = totalDiscountPrice / this.apartment.plan.area
+      if (this.calc.discount_price) {
+        this.$refs['discount-per-square'].setTriggerValue(this.calc.discount_price.toFixed(2))
+        this.initialCalc()
+      } else {
+        this.$refs['discount-per-square'].setTriggerValue(null)
+      }
+    },
     async changeDiscount_price(discountPrice) {
       this.calc.discount_price = discountPrice
       await this.initialCalc()
+      if (discountPrice) {
+        this.$refs['all-discount-price'].setTriggerValue(this.totalDiscount)
+      } else {
+        this.$refs['all-discount-price'].setTriggerValue(null)
+      }
     },
     changeDiscount_month() {
       this.monthly_price = this.getMonth()

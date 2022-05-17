@@ -115,8 +115,11 @@ export default {
     triggerNumberEvent($event) {
       this.debounceInput = $event
       this.$emit('trigger-input', $event)
-    }
-  }
+    },
+    setTriggerValue(value) {
+      this.$refs['base-input'].setVModalValue(value)
+    },
+  },
 }
 </script>
 
