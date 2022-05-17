@@ -75,8 +75,15 @@ export default {
     downloadContractLink() {
       const {id} = this.$route.params
       api.contract.downloadContract(id)
-          .then(() => {
-            window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`)
+          .then(({data, headers}) => {
+            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
+            const fileURL = window.URL.createObjectURL(new Blob([data]))
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            fileLink.setAttribute('download', filename)
+            document.body.appendChild(fileLink)
+            fileLink.click()
+            // window.open(process.env.VUE_APP_URL + `/orders/${id}/contract`)
           })
           .catch(() => {
             const message = `${this.$t('contract_file_not_found')}`

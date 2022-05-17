@@ -303,7 +303,9 @@ export default {
   methods: {
     formatAmount() {
       let newValue = this.amount
-
+      if (typeof this.amount === 'string') {
+        newValue = this.amount?.replace('.', ',')
+      }
       const findDecimalSeparator = newValue?.indexOf(',')
       const unFormatValue = accounting.unformat(newValue, this.decimalSeparatorSymbol)
       let formattingValue = this.formatWithoutSeparator(unFormatValue)?.slice(0, -1)
@@ -331,7 +333,7 @@ export default {
         if (formattingValue === '0') {
           this.amount = null
         } else {
-          this.amount = formattingValue
+          this.amount = formattingValue.replace('.', ',')
         }
       }
     },

@@ -495,9 +495,9 @@ export default {
       if (this.client.passport_series.length === 9) {
         this.loading = true;
         try {
-          console.log(api.clientsV2, 'api 2');
+          // console.log(api.clientsV2, 'api 2');
           const {data} = await api.clientsV2.fetchClientData(this.client.passport_series)
-          console.log(data, 'data');
+          // console.log(data, 'data');
           this.client = {
             id: data.id,
             first_name: data.first_name ?? {

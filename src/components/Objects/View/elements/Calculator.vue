@@ -264,10 +264,11 @@ export default {
       }
     },
     async changeDiscount_price(discountPrice) {
+      const totalDiscount = discountPrice * this.apartment.plan.area
       this.calc.discount_price = discountPrice
-      await this.initialCalc()
       if (discountPrice) {
-        this.$refs['all-discount-price'].setTriggerValue(this.totalDiscount)
+        await this.initialCalc()
+        this.$refs['all-discount-price'].setTriggerValue(totalDiscount.toFixed(2))
       } else {
         this.$refs['all-discount-price'].setTriggerValue(null)
       }

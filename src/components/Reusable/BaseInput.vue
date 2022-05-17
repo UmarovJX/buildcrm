@@ -9,7 +9,6 @@
         currency-symbol-position="suffix"
         separator="space"
         :placeholder="placeholder"
-        id="base-input"
         ref="base-input"
         @input="triggerNumberEvent"
     />

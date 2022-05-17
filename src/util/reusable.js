@@ -8,7 +8,7 @@ export function formatToPrice(rawPrice, decimalCount = 0) {
     if (decimalCount) {
         const decimalValue = (rawPrice % 1).toFixed(decimalCount)
         if (decimalValue > 0) {
-            return result + decimalValue.slice(1)
+            return (result + decimalValue.slice(1)).replace('.', ',')
         }
     }
 
