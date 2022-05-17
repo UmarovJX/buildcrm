@@ -1,7 +1,7 @@
 <template>
   <main class="app-content">
     <!--  Header Navigation  -->
-    <div v-if="!finishLoading && objectName.length" class="navigation__content justify-content-between">
+    <div v-if="finishLoading && objectName.length" class="navigation__content justify-content-between">
       <div class="d-flex align-items-center">
         <router-link class="go__back" :to="{name: 'objects'}">
           <base-arrow-left :width="32" :height="32"></base-arrow-left>
