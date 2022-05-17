@@ -207,7 +207,7 @@ export default {
 
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
-          this.calc.price_for_m2 = this.apartment.prices.price_m2;
+          this.calc.price_for_m2 = this.apartment.price_m2;
         } else {
           this.calc.price_for_m2 =
               this.getTotalForPercente() / this.apartment.plan.area;
@@ -229,9 +229,9 @@ export default {
       this.discount = this.paymentOption.find(option => option.value.id === discountId).value
       this.calc.prepay_percente = this.discount.prepay;
       if (this.discount.prepay === 100) {
-        this.calc.total = this.apartment.prices.price;
-        this.calc.prepay = this.apartment.prices.price;
-        this.calc.price_for_m2 = this.apartment.prices.price_m2;
+        this.calc.total = this.apartment.price;
+        this.calc.prepay = 100;
+        this.calc.price_for_m2 = this.apartment.price_m2;
         if (this.calc.discount_price > 0) {
           this.calc.price_for_m2 -= this.calc.discount_price
         }
