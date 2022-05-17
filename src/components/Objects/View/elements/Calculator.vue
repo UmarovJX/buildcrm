@@ -108,7 +108,7 @@
         <span
             class="price d-block color-gray-600"
         >
-          {{ pricePrettier(calc.monthly_price, 2) }} {{ $t('ye') }}
+          {{ pricePrettier(monthly_price, 2) }} {{ $t('ye') }}
         </span>
       </div>
 
@@ -269,8 +269,8 @@ export default {
     async changeDiscount_price(discountPrice) {
       const totalDiscount = discountPrice * this.apartment.plan.area
       this.calc.discount_price = discountPrice
+      await this.initialCalc()
       if (discountPrice) {
-        await this.initialCalc()
         this.$refs['all-discount-price'].setTriggerValue(totalDiscount.toFixed(2))
       } else {
         this.$refs['all-discount-price'].setTriggerValue(null)

@@ -143,7 +143,7 @@ export default {
     clear: 'Tozalash',
     selling_price: 'Sotuv narxi',
     payment_discount: "to'lov turi",
-    by_price: `{price} so'mdan`,
+    by_price: "{price} so`mdan",
 
     tab_status: {
         all: "Hammasi",
@@ -504,7 +504,7 @@ export default {
             address: "Manzil", // asd
             completion_date: "Qurib bitkazish sanasi", // asd
             price_for_m2: "1м2 narxi:", // asd
-            discount_per_m2: 'м2 uchun chegirma:', // asd
+            discount_per_m2: 'm2 uchun chegirma:', // asd
             discount_all: 'Umumiy chegirma',
             prepayment: "Oldindan to'lov", // asd
             total: "Jami", // asd
