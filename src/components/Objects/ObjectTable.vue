@@ -463,8 +463,7 @@ export default {
 
   watch: {
     '$route.query': {
-      handler(val) {
-        console.log(val, 'value');
+      handler() {
         this.fetchContractList()
       },
       deep: true

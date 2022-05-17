@@ -2339,7 +2339,7 @@ export default {
                 this.client.discount.prepay
             ) {
               const currentPrice = defaultAllApartments[index].discounts[y].amount * parseFloat(defaultAllApartments[index].plan.area) - price
-              console.log(currentPrice);
+              // console.log(currentPrice);
               if (currentPrice > 0) {
                 this.calc.discount_price = parseFloat(this.calc.discount_price) + Math.abs(currentPrice) / parseFloat(defaultAllApartments[index].plan.area);
               }

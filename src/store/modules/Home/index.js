@@ -5,7 +5,7 @@ export default {
         async fetchCounts(ctx, vm) {
             try {
                 const response = await api.home.fetchHome()
-                console.log('response',response)
+                // console.log('response',response)
                 const counts = response.data;
                 ctx.commit('getUpdateCounts', counts);
             } catch (error) {

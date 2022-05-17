@@ -203,7 +203,7 @@ export default {
 
   mounted() {
     this.fetchObjects(this);
-    console.log(this.getPermission);
+    // console.log(this.getPermission);
   },
 
   computed: {
