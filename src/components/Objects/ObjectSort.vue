@@ -504,7 +504,6 @@ export default {
   padding-bottom: 1rem;
   //margin-bottom: 1rem;
   gap: 1rem;
-  background-color: var(--white);
   font-family: Inter, sans-serif;
 }
 
@@ -514,7 +513,6 @@ export default {
   flex-wrap: wrap;
   gap: 1rem .5rem;
   color: var(--gray-600) !important;
-  background-color: var(--white);
   font-family: Inter, sans-serif;
 }
 
