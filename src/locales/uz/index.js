@@ -505,6 +505,7 @@ export default {
             completion_date: "Qurib bitkazish sanasi", // asd
             price_for_m2: "1м2 narxi:", // asd
             discount_per_m2: 'м2 uchun chegirma:', // asd
+            discount_all: 'Umumiy chegirma',
             prepayment: "Oldindan to'lov", // asd
             total: "Jami", // asd
             print: "Chop etish",// asd

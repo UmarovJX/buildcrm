@@ -38,14 +38,25 @@
       </div>
 
       <!--     DISCOUNT PER M2       -->
-      <base-input
-          class="discount-per-m2"
-          type="number"
-          :label="true"
-          :currency="`${$t('ye')}`"
-          :placeholder="$t('apartments.view.discount_per_m2')"
-          @trigger-input="changeDiscount_price"
-      />
+      <div class="d-flex justify-content-between align-items-center" style="column-gap: .5rem">
+        <base-input
+            class="discount-per-m2"
+            type="number"
+            :label="true"
+            :currency="`${$t('ye')}`"
+            :placeholder="$t('apartments.view.discount_per_m2')"
+            @trigger-input="changeDiscount_price"
+        />
+        <base-input
+            class="discount-per-m2"
+            type="number"
+            :label="true"
+            :currency="`${$t('ye')}`"
+            :placeholder="$t('apartments.view.discount_all')"
+            @trigger-input="changeDiscount_price"
+        />
+      </div>
+
     </div>
 
     <!--     OUTPUTS     -->

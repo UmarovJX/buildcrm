@@ -509,6 +509,7 @@ export default {
             completion_date: "Дата завершения строительства", // asd
             price_for_m2: "Цена продажы за м2", // asd
             discount_per_m2: "Скидка за м2:", // asd
+            discount_all: 'Общая скидка',
             prepayment: "Предоплата", // asd
             total: "Итого", // asd
             print: "Печатать", // asd
