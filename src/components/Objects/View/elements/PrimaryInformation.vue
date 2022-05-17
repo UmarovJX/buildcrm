@@ -44,6 +44,7 @@
       <div class="bottom__line"></div>
       <b-tab :title="$t('details')" active>
 
+
         <!--   PRICE CONTENT     -->
         <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
            <span class="price__section-square-amount">

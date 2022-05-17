@@ -443,9 +443,7 @@ export default {
 
   async created() {
     this.filter = this.query
-
     this.currentPage = Number(this.filter.page);
-
     await this.fetchContractList()
   },
   computed: {

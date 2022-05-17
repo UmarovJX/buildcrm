@@ -34,7 +34,7 @@
       </div>
 
       <!--   MAIN   -->
-      <div class="content-view d-flex justify-content-between flex-wrap flex-lg-nowrap">
+      <div class="content-view d-flex justify-content-between">
         <div class="main__content">
           <div class="slider-content">
             <div class="swiper" v-swiper="swiperOption">
@@ -73,6 +73,18 @@
             </div>
 
           </div>
+
+          <div class="main__content primary__information">
+            <!--   PRICE CONTENT     -->
+            <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
+               <span class="price__section-square-amount">
+                {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
+                </span>
+              <span class="price__section-amount">{{ price }}</span>
+            </div>
+          </div>
+
+
           <!--        <div class="col-12 col-lg-5">-->
           <PrimaryTabItem class="primary__information" :apartment="apartment"/>
           <PromoSection :promo="apartment.promo"/>
@@ -183,6 +195,7 @@ import 'swiper/css/swiper.css'
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import PromoSection from "@/components/Objects/View/elements/PromoSection";
+import {formatToPrice} from "@/util/reusable";
 
 export default {
   name: "ApartmentView",
@@ -298,6 +311,19 @@ export default {
       permissionContract() && effectContext('contract')
 
       return context
+    },
+
+
+    price() {
+      return formatToPrice(this.apartment.prices.price, 2) + ' ' + this.$t('ye')
+    },
+
+    squareMetrePrice() {
+      return formatToPrice(this.apartment.prices.price_m2, 2) + ' ' + this.$t('ye')
+    },
+
+    statusSold() {
+      return this.apartment.order.status === 'sold'
     }
   },
 
@@ -630,16 +656,47 @@ input[type="number"]
     color: var(--gray-600) !important
 
 
+.price__section
+  font-family: CraftworkSans, serif
+  font-size: 1.5rem
+  font-weight: 900
+  margin: 1.5rem 0
+
+  &-amount
+    color: var(--gray-600) !important
+    line-height: 28px
+
+  &-square-amount
+    color: var(--gray-500) !important
+    font-size: 18px
+    line-height: 22px
+
+
 @media only screen and (max-width: 1390px)
+  .content-view
+    flex-wrap: wrap
+    row-gap: 2rem
+    justify-content: center !important
   .calculator
     max-width: 640px
   .primary__information
     width: 30rem
+  .price__section
+    font-size: 1.2rem
 
-@media (max-width: 992px)
+    &-amount
+      line-height: 25px
+
+    &-square-amount
+      font-size: 15px
+      line-height: 18px
+
+@media (max-width: 1024px)
   .primary__information
     margin: 0 auto
     width: 42rem
   .calculator
     margin: 0 auto
+
+
 </style>

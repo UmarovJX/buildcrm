@@ -51,7 +51,6 @@
             </span>
           </div>
 
-
           <!--  MAIN    -->
           <primary-information class="pdf-item" v-if="visible" :apartment="sidebarApartment"/>
 

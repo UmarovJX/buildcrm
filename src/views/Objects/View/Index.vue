@@ -205,12 +205,13 @@ export default {
           await this.filterItems(query)
         }
       }
+    },
+    currentTab(val) {
+      if (!this.plans.length && val === 'ObjectPlan') {
+        this.planLoading = true
+        this.getObjectPlans()
+      }
     }
-  },
-
-  async mounted() {
-    this.planLoading = true
-    await this.getObjectPlans()
   },
 
   async created() {
