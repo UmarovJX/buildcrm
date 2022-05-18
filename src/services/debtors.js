@@ -11,7 +11,7 @@ class Debtors extends Core {
     }
 
     filterDebtors(page, body) {
-        return this.post(`debtors?page=${page}`, body)
+        return this.get(`debtors?page=${page}`, {params: body})
     }
 
     createPayment(id, body) {

@@ -321,6 +321,7 @@ export default {
     ChangeDate() {
       if (this.date.length > 0) {
         this.fetchDebtorsFilter(this);
+
       } else {
         this.fetchDebtors(this);
       }

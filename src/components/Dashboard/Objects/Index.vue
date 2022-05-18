@@ -138,7 +138,7 @@
 
       <!-- <filter-form v-if="getPermission.apartments.filter"></filter-form> -->
       <upload-logo
-          v-if="(getPermission.objects && getPermission.objects.update)"
+          v-if="getPermission.objects && getPermission.objects.update"
           :object-id="object_id"
           @UploadLogo="uploadLogo"
       />

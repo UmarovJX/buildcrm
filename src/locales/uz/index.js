@@ -771,7 +771,8 @@ export default {
         number: "Shartnoma raqami",
         language: "Til",
         date: "Sana",
-        search: "Shartnoma raqami yoki mijozning telefon raqami orqali qidirish",
+        // search: "Shartnoma raqami yoki mijozning telefon raqami orqali qidirish",
+        search: "Shartnoma raqami orqali qidirish",
     },
 
 
