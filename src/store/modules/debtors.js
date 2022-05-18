@@ -5,7 +5,7 @@ export default {
         async fetchDebtors(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
             try {
-                const {data} = api.debtors.fetchDebtors(vm.page)
+                const {data} = await api.debtors.fetchDebtors(vm.page)
                 ctx.commit("updateDebtors", data.items);
                 ctx.commit("updatePagination", data.pagination);
             } catch (error) {
@@ -27,7 +27,7 @@ export default {
                 }
 
                 const {data} = await api.debtors.filterDebtors(vm.page, body)
-
+                console.log(data, 'data filter');
                 ctx.commit("updateDebtors", data.items);
                 ctx.commit("updatePagination", data.pagination);
             } catch (error) {

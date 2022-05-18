@@ -283,6 +283,7 @@ export default {
   },
 
   created() {
+    console.log(this.getDebtors, 'getDebtors');
     this.fetchDebtors(this);
   },
 
