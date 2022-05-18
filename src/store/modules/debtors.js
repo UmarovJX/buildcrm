@@ -27,7 +27,6 @@ export default {
                 }
 
                 const {data} = await api.debtors.filterDebtors(vm.page, body)
-                console.log(data, 'data filter');
                 ctx.commit("updateDebtors", data.items);
                 ctx.commit("updatePagination", data.pagination);
             } catch (error) {
