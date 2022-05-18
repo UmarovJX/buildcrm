@@ -609,7 +609,7 @@ export default {
         },
         chess: 'Shaxmatka',
         list: "Ro'yxat",
-        plan: "Tartiblar",
+        plan: "Rejalar",
         flats: "kvartiralar",
         rooms: 'xonalar',
         status: {
