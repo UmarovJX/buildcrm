@@ -58,17 +58,25 @@
           <div class="action-block">
 
             <!-- VIEW MORE-->
-            <base-button
-                id="learnMore"
-                :text="$t('more_info')"
-                class="violet-gradient"
-                @click="viewMore"
+            <router-link :to="{
+                            name: 'apartment-view',
+                            params: {
+                              object: sidebarApartment.object.id,
+                              id: apartment.uuid
+                            }
+                          }"
             >
+              <base-button
+                  id="learnMore"
+                  :text="$t('more_info')"
+                  class="violet-gradient"
+              >
+                <template #left-icon>
+                  <base-eye-icon :square="20" fill="#fff"/>
+                </template>
+              </base-button>
+            </router-link>
 
-              <template #left-icon>
-                <base-eye-icon :square="20" fill="#fff"/>
-              </template>
-            </base-button>
             <b-tooltip
                 target="learnMore"
                 triggers="hover"
@@ -87,12 +95,16 @@
             />
 
             <!--      CONTINUE CHECKOUT        -->
-            <base-button
-                v-if="permission.continueOrder"
-                @click="continueApartmentOrder"
-                :text="`${ $t('continue_registration') }`"
-                class="checkout__button violet-gradient"
-            />
+            <router-link v-if="permission.continueOrder"
+                         :to="{
+                name: 'confirm-apartment',
+                params: {id: sidebarApartment.order.id}}"
+            >
+              <base-button
+                  :text="`${ $t('continue_registration') }`"
+                  class="checkout__button violet-gradient"
+              />
+            </router-link>
 
             <!--       MAKE A RESERVATION       -->
             <base-button

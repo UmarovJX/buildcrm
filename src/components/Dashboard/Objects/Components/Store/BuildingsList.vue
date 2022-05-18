@@ -178,7 +178,7 @@
     <edit-block
         :type-plans="plans"
         :building="building"
-        @SaveEditBlock="SaveEditBlock"
+        @save-edit-block="SaveEditBlock"
         :block="block_edit"
     ></edit-block>
   </div>

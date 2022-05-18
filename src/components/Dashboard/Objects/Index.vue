@@ -287,121 +287,127 @@ export default {
   align-items: center;
   flex-wrap: wrap;
   gap: 24px;
-}
 
-.card {
-  border-radius: 1rem;
-  width: 100%;
-  max-width: 400px;
-  border: none;
-  display: flex;
-
-
-  &-body {
+  .card {
+    //border-radius: 1rem;
+    width: 100%;
+    max-width: 400px;
+    border: none;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 2rem 2rem 0 0;
-    padding: 28px;
-    background-color: var(--gray-100)
-  }
-
-  &-content {
-    padding-top: 15px;
-    border-top: 2px solid var(--gray-200);
-  }
-
-  &-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 15px;
-
-    &__content {
-      width: 100%;
-    }
-  }
-
-  &-empty {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     border-radius: 2rem;
-    min-height: 450px;
-    height: 100%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
 
-    p {
-      font-weight: 600;
+
+    &-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 2rem 2rem 0 0;
+      padding: 28px;
+      background-color: var(--gray-100);
+
+    }
+
+    &-content {
+      padding-top: 15px;
+      border-top: 2px solid var(--gray-200);
+    }
+
+    &-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 15px;
+
+      &__content {
+        width: 100%;
+      }
+    }
+
+    &-empty {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 2rem;
+      min-height: 450px;
+      height: 100%;
+
+      p {
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 30px;
+        margin-bottom: 0;
+        margin-top: 23px;
+        color: var(--violet-600);
+      }
+    }
+
+
+    &-title {
+      color: var(--violet-600);
+      font-weight: 900;
       font-size: 24px;
-      line-height: 30px;
-      margin-bottom: 0;
-      margin-top: 23px;
-      color: var(--violet-600);
+      line-height: 28px;
+      margin-bottom: 12px;
     }
-  }
 
+    &-subtitle {
+      min-height: 72px;
+      margin: 0;
+    }
 
-  &-title {
-    color: var(--violet-600);
-    font-weight: 900;
-    font-size: 24px;
-    line-height: 28px;
-    margin-bottom: 12px;
-  }
-
-  &-subtitle {
-    min-height: 72px;
-    margin: 0;
-  }
-
-  &-button {
-    width: max-content;
-    border-radius: 1rem;
-    background-color: var(--white);
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-    color: var(--gray-400);
-    margin-bottom: 12px;
-    padding: 5px 10px;
-  }
-
-  &-block {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-
-
-    p {
-      margin-bottom: 0;
+    &-button {
+      width: max-content;
+      border-radius: 1rem;
+      background-color: var(--white);
       font-weight: 600;
-      font-size: 16px;
-      line-height: 22px;
-      color: var(--gray-500);
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--gray-400);
+      margin-bottom: 12px;
+      padding: 5px 10px;
     }
 
-    .price {
-      font-size: 18px;
-      line-height: 24px;
-      color: var(--violet-600);
+    &-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+
+
+      p {
+        margin-bottom: 0;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 22px;
+        color: var(--gray-500);
+      }
+
+      .price {
+        font-size: 18px;
+        line-height: 24px;
+        color: var(--violet-600);
+      }
+
+      &__title {
+
+      }
     }
 
-    &__title {
+    &-img {
 
-    }
-  }
+      height: 206px;
 
-  &-img {
-    height: 206px;
-
-    img {
-      border-radius: 0 0 2rem 2rem;
-      max-height: 100%;
-      width: 100%;
-      object-fit: cover;
+      img {
+        border-radius: 0 0 2rem 2rem;
+        max-height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
     }
   }
 }
+
+
 </style>

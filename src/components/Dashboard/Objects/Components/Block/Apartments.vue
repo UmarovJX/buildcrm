@@ -27,7 +27,6 @@
           <div class="apartment__info">
             {{ $t("objects.create.apartment") }} <span>{{ index + 1 }}</span>
           </div>
-
           <div class="apartment__info">
             <div class="dropdown my-dropdown__two">
               {{ $t("objects.create.plan.name") }}
@@ -35,7 +34,6 @@
                   class="custom-select"
                   v-model="apartment.plan"
                   @change="ApartmentUpdate(apartment, 'plan')"
-                  required
               >
                 <option
                     disabled
@@ -50,7 +48,6 @@
                 >
                   {{ $t("objects.create.choose_plan") }}
                 </option>
-
                 <option
                     v-for="(plan, index) in typePlans"
                     :value="{
@@ -71,24 +68,22 @@
           <div class="apartment__info">
             {{ $t("objects.create.rooms") }}:
             <input
+                v-model="apartment.rooms"
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 @change="ApartmentUpdate(apartment, 'rooms')"
-                v-model="apartment.rooms"
             />
           </div>
 
           <div class="apartment__info">
             {{ $t("objects.create.entrance") }}:
             <input
+                v-model="apartment.entrance"
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 @change="ApartmentUpdate(apartment, 'entrance')"
-                v-model="apartment.entrance"
             />
           </div>
 
@@ -97,7 +92,6 @@
             <input
                 type="number"
                 min="0"
-                required
                 class="form-control"
                 disabled
                 v-if="apartment.plan.id === null"
@@ -105,7 +99,6 @@
             <input
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 disabled
                 v-else
@@ -119,7 +112,6 @@
               <input
                   type="number"
                   min="0"
-                  required
                   class="form-control"
                   disabled
                   v-if="apartment.plan.id === null"
@@ -127,7 +119,6 @@
               <input
                   type="number"
                   min="1"
-                  required
                   class="form-control"
                   disabled
                   v-else
@@ -157,7 +148,6 @@
             <input
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 @change="ApartmentUpdate(apartment, 'price')"
                 v-model="apartment.other_price"
@@ -321,28 +311,31 @@ export default {
     },
 
     apartmentsSetPrice() {
-      for (var apartment = 0; apartment < this.apartments.length; apartment++) {
-        if (this.apartments[apartment].check_other_price) {
-          this.apartments[apartment].price_id = null;
-        } else {
-          for (var prices = 0; prices < this.block.prices.length; prices++) {
-            if (this.block.prices[prices].floors) {
-              for (
-                  var floors = 0;
-                  floors < this.block.prices[prices].floors.length;
-                  floors++
-              ) {
-                if (
-                    this.block.prices[prices].floors[floors] ===
-                    this.apartments[apartment].floor
+      if (this.apartments !== undefined) {
+        for (let apartment = 0; apartment < this.apartments.length; apartment++) {
+          if (this.apartments[apartment].check_other_price) {
+            this.apartments[apartment].price_id = null;
+          } else {
+            for (let prices = 0; prices < this.block.prices.length; prices++) {
+              if (this.block.prices[prices].floors) {
+                for (
+                    let floors = 0;
+                    floors < this.block.prices[prices].floors.length;
+                    floors++
                 ) {
-                  this.apartments[apartment].price = this.block.prices[prices];
-                  // price = apartment.price.price;
+                  if (
+                      this.block.prices[prices].floors[floors] ===
+                      this.apartments[apartment].floor
+                  ) {
+                    this.apartments[apartment].price = this.block.prices[prices];
+                    // price = apartment.price.price;
+                  }
                 }
               }
             }
           }
         }
+
       }
     },
 
@@ -351,7 +344,7 @@ export default {
     },
 
     calcApartmentPrice(index, apartment, currency) {
-      var price = 0;
+      let price = 0;
       const area = apartment.plan;
 
       if (area.area === 0 || area.area === null) return 0;

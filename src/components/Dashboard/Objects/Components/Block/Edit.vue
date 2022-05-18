@@ -20,7 +20,6 @@
                 </label>
                 <input
                     v-model="block.name"
-                    required
                     :placeholder="$t('objects.placeholder.block_name')"
                     id="new_block_title"
                     class="my-form__input"
@@ -37,7 +36,6 @@
                     </label>
                     <input
                         v-model="block.floor"
-                        required
                         class="my-form__input"
                         type="number"
                         value="15"
@@ -89,7 +87,6 @@
                       @change="updatePrice(price)"
                       type="number"
                       v-model="price.price"
-                      required
                       min="1"
                   />
                 </div>
@@ -130,7 +127,7 @@
 
           <div
               class="alert alert-info"
-              v-if="disabled.settings && block.prices.length === 0"
+              v-if="disabled.settings && block.prices && block.prices.length === 0"
           >
             <i class="fa fa-info-circle"></i>
             {{ $t("objects.create.alert_price") }}
@@ -138,7 +135,7 @@
 
           <div
               class="object__item object__item--inside object__item-last"
-              v-if="disabled.settings && block.prices.length === 0"
+              v-if="disabled.settings && block.prices &&  block.prices.length === 0"
           >
             <b-link class="object__link" @click="addPrice">
               <div class="object__add object__add--inside">
@@ -152,7 +149,7 @@
 
           <div
               class="mt-4 d-flex justify-content-md-start justify-content-center"
-              v-if="disabled.settings && block.prices.length > 0"
+              v-if="disabled.settings && block.prices && block.prices.length > 0"
           >
             <button type="button" class="btn btn-primary" @click="addPrice">
               <i class="fal fa-plus mr-2"></i>
@@ -164,6 +161,7 @@
         <div class="accordion mt-3" id="floors" v-if="disabled.apartments">
           <div class="card" v-for="(floor, index) in block.floors" :key="index">
             <div class="card-header" :id="'headingOne' + index">
+              <!--              {{ settings.apartments[index].length + 'lalalal' }}-->
               <h2 class="mb-0">
                 <button
                     class="btn btn-link btn-block text-left apartment__list"
@@ -174,9 +172,9 @@
                     :aria-controls="'collapseOne' + index"
                 >
                   {{ floor }}-{{ $t("objects.create.floor") }} -
-                  {{ $t("objects.create.apartments") }} ({{
-                    settings.apartments[index].length
-                  }})
+                  {{ $t("objects.create.apartments") }} (
+                  {{ settings.apartments[index].length }}
+                  )
                 </button>
               </h2>
             </div>
@@ -219,8 +217,8 @@
                     <div
                         class="apartment apartment-last"
                         v-if="
-                        block.apartments.length > 0 &&
-                        settings.apartments[index].length === 0
+                        block.apartments.length > 0 && settings.apartments[index] &&
+                        !settings.apartments[index].length
                       "
                     >
                       <a
@@ -244,8 +242,8 @@
                   <div
                       class="col-md-12"
                       v-if="
-                      block.apartments.length > 0 &&
-                      settings.apartments[index].length === 0
+                      block.apartments.length > 0 && settings.apartments[index] &&
+                      !settings.apartments[index].length
                     "
                   >
                     <div class="collapse" :id="'collapseCopy' + index">
@@ -381,7 +379,7 @@ export default {
 
   watch: {
     "block.name": function () {
-      if (this.block.id != null) {
+      if (this.block.id !== null) {
         this.disabled.create = true;
 
         this.updateBlock();
@@ -397,12 +395,12 @@ export default {
       }
     },
 
-    "block.floors": function () {
-      //this.setFloors();
-    },
+    // "block.floors": function () {
+    //   //this.setFloors();
+    // },
 
     "block.floor": function (newVal, oldVal) {
-      var old = parseInt(oldVal);
+      let old = parseInt(oldVal);
 
       if (newVal === old) {
         return;
@@ -415,8 +413,7 @@ export default {
       if (this.block.floor > 0) {
         this.disabled.btn_save = true;
       }
-
-      if (this.block.name.length > 0 && this.block.floor > 0) {
+      if (this.block.name && this.block.name.length > 0 && this.block.floor > 0) {
         this.settings.btn_save = true;
       }
     },
@@ -426,7 +423,7 @@ export default {
 
   methods: {
     saveBlock() {
-      this.$emit("SaveEditBlock", this.block);
+      this.$emit("save-edit-block", this.block);
       this.clearPreviewBlock();
     },
 
@@ -468,7 +465,7 @@ export default {
 
     removeBlock() {
       this.$bvModal.hide("modal-edit-block");
-      this.$emit("SaveEditBlock");
+      this.$emit("save-edit-block");
       this.clearPreviewBlock();
     },
 
@@ -537,6 +534,7 @@ export default {
         btn_save: false,
         price_update: true,
       };
+
     },
 
     async AddApartment(floor) {
@@ -608,7 +606,7 @@ export default {
     },
 
     setFloors() {
-      if (this.block.prices.length === 0) {
+      if (this.block.prices && !this.block.prices.length) {
         for (let i = 1; i <= this.block.floor; i++) {
           this.settings.available_floors.push(i);
         }
@@ -679,14 +677,14 @@ export default {
     },
 
     rr_diff(a1, a2) {
-      var a = [],
+      let a = [],
           diff = [];
 
-      for (var c = 0; c < a1.length; c++) {
+      for (let c = 0; c < a1.length; c++) {
         a[a1[c]] = true;
       }
 
-      for (var i = 0; i < a2.length; i++) {
+      for (let i = 0; i < a2.length; i++) {
         if (a[a2[i]]) {
           delete a[a2[i]];
         } else {
@@ -694,7 +692,7 @@ export default {
         }
       }
 
-      for (var k in a) {
+      for (let k in a) {
         diff.push(k);
       }
 
