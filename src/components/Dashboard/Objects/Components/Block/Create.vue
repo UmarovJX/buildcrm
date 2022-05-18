@@ -385,7 +385,7 @@ export default {
         this.disabled.create = true;
 
         this.updateBlock();
-        if (this.block.name.length > 0 && this.block.floor > 0) {
+        if (this.block.name?.length > 0 && this.block.floor > 0) {
           this.settings.btn_save = true;
         }
       }

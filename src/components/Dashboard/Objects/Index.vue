@@ -12,7 +12,7 @@
              :key="index"
         >
           <div
-              v-if="getPermission.objects.delete || getPermission.objects.update"
+              v-if="getPermission.objects.delete || (getPermission.objects && getPermission.objects.update)"
               class="object__more-info">
             <div class="my-dropdown dropleft">
               <button
@@ -26,7 +26,7 @@
               </button>
               <div class="dropdown-menu">
                 <router-link
-                    v-if="getPermission.objects.update"
+                    v-if="getPermission.objects && (getPermission.objects && getPermission.objects.update)"
                     :class="'dropdown-item'"
                     :to="{name: 'objectsEdit', params: {id: object.id}}"
                 >
@@ -66,7 +66,7 @@
 
                 <b-link
                     class="dropdown-item"
-                    v-if="getPermission.objects.update"
+                    v-if="(getPermission.objects && getPermission.objects.update)"
                     @click="object_id = object.id"
                     v-b-modal.modal-upload-logo
                 >
@@ -138,7 +138,7 @@
 
       <!-- <filter-form v-if="getPermission.apartments.filter"></filter-form> -->
       <upload-logo
-          v-if="getPermission.objects.update"
+          v-if="(getPermission.objects && getPermission.objects.update)"
           :object-id="object_id"
           @UploadLogo="uploadLogo"
       />

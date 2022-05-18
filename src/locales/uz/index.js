@@ -717,6 +717,7 @@ export default {
 
             block_name: "Blok nomi",
 
+            build_date: "20.12.2020",
             building_name: "Korpus nomi", credit_month: "Oylik to'lov uchun oylar soni",
         },
     },

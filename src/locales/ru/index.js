@@ -722,7 +722,7 @@ export default {
             type_plan: "Название планировки",
 
             block_name: "Названия блока",
-
+            build_date: "20.12.2020",
             building_name: "Названия корпуса",
             credit_month: "Месяц на рассрочку",
         },
