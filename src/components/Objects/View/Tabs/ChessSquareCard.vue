@@ -531,6 +531,7 @@ export default {
   color: var(--gray-400);
   text-transform: capitalize;
   width: 100%;
+  min-height: 20px;
 }
 
 .vertical {
