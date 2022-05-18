@@ -20,7 +20,6 @@
                 </label>
                 <input
                     v-model="block.name"
-                    required
                     :placeholder="$t('objects.placeholder.block_name')"
                     id="new_block_title"
                     class="my-form__input"
@@ -37,7 +36,6 @@
                     </label>
                     <input
                         v-model="block.floor"
-                        required
                         class="my-form__input"
                         type="number"
                         value="15"
@@ -61,7 +59,7 @@
                     <button
                         type="button"
                         @click="createFloor"
-                        :disabled="!block.floor ? true : false"
+                        :disabled="!block.floor"
                         class="btn btn-primary"
                     >
                       {{ $t("create") }}
@@ -89,7 +87,6 @@
                       @change="updatePrice(price)"
                       type="number"
                       v-model="price.price"
-                      required
                       min="1"
                   />
                 </div>
@@ -116,7 +113,7 @@
                       <button
                           type="button"
                           class="btn btn-danger ml-2"
-                          v-if="block.prices.length != 1"
+                          v-if="block.prices.length !== 1"
                           @click="removePrice(price, index)"
                       >
                         <i class="far fa-trash"></i>
@@ -174,9 +171,7 @@
                     :aria-controls="'collapseOne' + index"
                 >
                   {{ floor }}-{{ $t("objects.create.floor") }} -
-                  {{ $t("objects.create.apartments") }} ({{
-                    settings.apartments[index].length
-                  }})
+                  {{ $t("objects.create.apartments") }} ({{settings.apartments[index].length }})
                 </button>
               </h2>
             </div>
@@ -264,7 +259,7 @@
                                   v-for="(
                                   floor, index_clone
                                 ) in settings.apartments"
-                                  :disabled="index_clone === index ? true : false"
+                                  :disabled="index_clone === index"
                                   :value="index_clone"
                                   :key="index_clone"
                               >
@@ -402,7 +397,7 @@ export default {
     },
 
     "block.floor": function (newVal, oldVal) {
-      var old = parseInt(oldVal);
+      let old = parseInt(oldVal);
 
       if (newVal === old) {
         return;
@@ -426,6 +421,7 @@ export default {
 
   methods: {
     saveBlock() {
+      console.log('k')
       this.$emit("SaveEditBlock", this.block);
       this.clearPreviewBlock();
     },

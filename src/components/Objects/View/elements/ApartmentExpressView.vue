@@ -31,7 +31,7 @@
       >
         <section slot="pdf-content">
           <!--  HEAD    -->
-          <div v-if="visible" class="head d-flex justify-content-between pdf-item">
+          <div class="head d-flex justify-content-between pdf-item">
             <span class="d-flex justify-content-center align-items-center">
               <span
                   @click="hideApartmentSidebar"
@@ -52,7 +52,7 @@
           </div>
 
           <!--  MAIN    -->
-          <primary-information class="pdf-item" v-if="visible" :apartment="sidebarApartment"/>
+          <primary-information class="pdf-item" :apartment="sidebarApartment"/>
 
           <!--   ACTIONS     -->
           <div class="action-block">

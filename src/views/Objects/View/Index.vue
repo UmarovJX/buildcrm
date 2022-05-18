@@ -217,7 +217,7 @@ export default {
   async created() {
     this.getLoading = true
     await this.fetchFilterFields()
-    await this.getApartments()
+    await this.getApartmentsFromLocaleMachine()
   },
 
   methods: {
@@ -483,6 +483,7 @@ export default {
       await api.objectsV2.getApartments(id).then(async (res) => {
         this.objectName = res.data.object
         this.apartments = res.data.data
+        this.saveToLocalStorage(res.data)
         if (this.hasQuery) {
           await this.compareStatus(this.query)
           await this.filterItems(this.query)
@@ -492,6 +493,40 @@ export default {
       }).finally(() => {
         this.getLoading = false
       })
+    },
+    saveToLocalStorage(data) {
+      const expiryDate = (new Date()).getTime() + 20 * 60 * 1000
+      localStorage.setItem('apartments_expiry_date', JSON.stringify(expiryDate))
+      localStorage.setItem('object_apartment_list', JSON.stringify(data.data))
+      localStorage.setItem('object_information', JSON.stringify({
+        name: data.object,
+        id: data.id
+      }))
+    },
+    async getApartmentsFromLocaleMachine() {
+      const objectApartmentList = localStorage.getItem('object_apartment_list')
+      const objectInformation = localStorage.getItem('object_information')
+      if (objectApartmentList && objectInformation) {
+        const storeId = JSON.parse(objectInformation).id.toString()
+        if (this.$route.params.object === storeId) {
+          const apartmentsExpiryDate = localStorage.getItem('apartments_expiry_date')
+          const currentTime = (new Date()).getTime()
+          const intervalTime = 20 * 60 * 1000
+          const distinction = currentTime - parseFloat(apartmentsExpiryDate)
+          if (distinction < intervalTime) {
+            this.objectName = JSON.parse(objectInformation).name
+            this.apartments = JSON.parse(objectApartmentList)
+            if (this.hasQuery) {
+              await this.compareStatus(this.query)
+              await this.filterItems(this.query)
+            }
+            this.getLoading = false
+            return
+          }
+        }
+      }
+
+      await this.getApartments()
     },
     async getObjectPlans() {
       const id = this.$route.params.object

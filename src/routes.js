@@ -60,8 +60,8 @@ import ContractView from "@/views/Contracts/View/Index"
 import ApartmentView from '@/views/Objects/Apartments/View/Index'
 import ObjectsView from '@/views/Objects/View/Index'
 import DebtorsClone from "@/views/Debtors/Index"
-import ObjectTable from "@/components/Objects/ObjectTable";
-
+// import ObjectTable from "@/components/Objects/ObjectTable";
+import Experiment from "@/views/Experiment";
 
 const routes = [
     {
@@ -69,6 +69,12 @@ const routes = [
         path: "/home",
         name: "home",
         component: Dashboard,
+    },
+
+    {
+        path: '/experiment',
+        name: 'experiment',
+        component: Experiment
     },
 
     {

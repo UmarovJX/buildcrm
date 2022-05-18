@@ -35,7 +35,6 @@
                   class="custom-select"
                   v-model="apartment.plan"
                   @change="ApartmentUpdate(apartment, 'plan')"
-                  required
               >
                 <option
                     disabled
@@ -73,7 +72,6 @@
             <input
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 @change="ApartmentUpdate(apartment, 'rooms')"
                 v-model="apartment.rooms"
@@ -85,7 +83,6 @@
             <input
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 @change="ApartmentUpdate(apartment, 'entrance')"
                 v-model="apartment.entrance"
@@ -97,7 +94,6 @@
             <input
                 type="number"
                 min="0"
-                required
                 class="form-control"
                 disabled
                 v-if="apartment.plan.id === null"
@@ -105,7 +101,6 @@
             <input
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 disabled
                 v-else
@@ -119,7 +114,6 @@
               <input
                   type="number"
                   min="0"
-                  required
                   class="form-control"
                   disabled
                   v-if="apartment.plan.id === null"
@@ -127,7 +121,6 @@
               <input
                   type="number"
                   min="1"
-                  required
                   class="form-control"
                   disabled
                   v-else
@@ -157,7 +150,6 @@
             <input
                 type="number"
                 min="1"
-                required
                 class="form-control"
                 @change="ApartmentUpdate(apartment, 'price')"
                 v-model="apartment.other_price"
@@ -351,7 +343,7 @@ export default {
     },
 
     calcApartmentPrice(index, apartment, currency) {
-      var price = 0;
+      let price = 0;
       const area = apartment.plan;
 
       if (area.area === 0 || area.area === null) return 0;
