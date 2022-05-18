@@ -1,9 +1,9 @@
 <template>
   <div class="custom__container">
-    <div class="row">
+    <div v-for="item in apartment" :key="item.id" class="row">
       <div class="object__details_layout col-5">
         <div class="object__details_layout_img">
-          <img :src="imageUrl" alt="apartment image">
+          <img :src="imageUrl(item)" alt="apartment image">
         </div>
         <button @click="openMapModal">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,17 +15,17 @@
         </button>
       </div>
 
-      <div class="object__details_info col-6" v-if="haveApartment">
+      <div class="object__details_info col-6" v-if="haveApartment(item)">
         <div class="breadcrumb__head">
           <span class="name">
-            {{ apartment.building.name }}
+            {{ item.building.name }}
           </span>
           <span class="slash"> / </span>
           <span class="name">
-            {{ apartment.block.name }}
+            {{ item.block.name }}
           </span>
         </div>
-        <span class="breadcrumb__location">{{ apartment.object.name }}</span>
+        <span class="breadcrumb__location">{{ item.object.name }}</span>
 
         <div class="object__details_info_cards">
           <div class="object__details_info_card d-flex align-items-center">
@@ -39,7 +39,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.home') }}</span>
-              <span>{{ apartment.apartment.floor }}</span>
+              <span>{{ item.apartment.floor }}</span>
             </div>
           </div>
 
@@ -55,7 +55,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.entrance') }}</span>
-              <span>{{ apartment.apartment.entrance }}</span>
+              <span>{{ item.apartment.entrance }}</span>
             </div>
           </div>
 
@@ -71,7 +71,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.level') }}</span>
-              <span>{{ apartment.apartment.floor }}</span>
+              <span>{{ item.apartment.floor }}</span>
             </div>
           </div>
 
@@ -86,7 +86,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.number_level') }}</span>
-              <span>{{ apartment.apartment.floor }}</span>
+              <span>{{ item.apartment.floor }}</span>
             </div>
           </div>
 
@@ -102,7 +102,7 @@
             <div class="object__details_info_card_text">
               <span>{{ $t('object.flat') }}</span>
               <span>
-                {{ apartment.apartment.number }}
+                {{ item.apartment.number }}
               </span>
             </div>
           </div>
@@ -119,7 +119,7 @@
             <div class="object__details_info_card_text">
               <span>{{ $t('object.number_flat') }}</span>
               <span>
-                {{ apartment.apartment.rooms }}
+                {{ item.apartment.rooms }}
               </span>
             </div>
           </div>
@@ -136,8 +136,8 @@
             <div class="object__details_info_card_text">
               <span>{{ $t('object.area') }}</span>
               <span class="d-flex">
-                  <span v-if="havePlan" class="mr-2 font-normal">
-                    {{ parseFloat(apartment.apartment.plan.area).toFixed(1) }}</span>
+                  <span v-if="havePlan(item)" class="mr-2 font-normal">
+                    {{ parseFloat(item.apartment.plan.area).toFixed(1) }}</span>
                   <span class="lowercase">м2</span>
               </span>
             </div>
@@ -154,8 +154,8 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.balcony') }}</span>
-              <span v-if="havePlan && apartment.apartment.plan.balcony" class="d-flex font-normal">
-                    <span class="mr-2">{{ parseFloat(apartment.apartment.plan.balcony_area).toFixed(1) }}</span>
+              <span v-if="havePlan(item) && item.apartment.plan.balcony" class="d-flex font-normal">
+                    <span class="mr-2">{{ parseFloat(item.apartment.plan.balcony_area).toFixed(1) }}</span>
                     <span class="lowercase">м2</span>
               </span>
               <span v-else>Нет</span>
@@ -175,7 +175,7 @@
             <div class="object__details_info_card_text">
               <span>{{ $t('object.complete') }}</span>
               <span>
-                {{ buildingDate(apartment.object.build_date) }}
+                {{ buildingDate(item.object.build_date) }}
               </span>
             </div>
           </div>
@@ -235,24 +235,11 @@ export default {
   emits: ['start-loading', 'finish-loading'],
   data() {
     return {
-      apartment: {}
+      apartment: []
     }
   },
   computed: {
-    haveApartment() {
-      return Object.keys(this.apartment).length
-    },
-    havePlan() {
-      return this.haveApartment && this.apartment.apartment?.plan
-    },
-    imageUrl() {
-      const {apartment} = this.apartment
-      if (!(this.havePlan && apartment.plan)) {
-        return ''
-      }
 
-      return apartment.plan?.image
-    },
     coordinates() {
       const {latitude, longitude} = this.order.object.location
       return [latitude, longitude]
@@ -262,6 +249,22 @@ export default {
     this.fetchObjectDetails()
   },
   methods: {
+    haveApartment(item) {
+      return Object.keys(item).length
+    },
+    havePlan(item) {
+      return this.haveApartment && item.apartment?.plan
+    },
+    imageUrl(item) {
+      console.log(item, 'item');
+      const {apartment} = item
+      console.log(apartment, 'apartment');
+      if (!(this.havePlan && apartment.plan)) {
+        return ''
+      }
+
+      return apartment.plan?.image
+    },
     datePrettier: (rawDate) => {
       const date = new Date(rawDate)
       const year = date.getFullYear()
@@ -282,7 +285,6 @@ export default {
       } else {
         month = '4'
       }
-
       return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t('of_the_year')}`
     },
     async fetchObjectDetails() {
@@ -290,7 +292,8 @@ export default {
       const {id} = this.$route.params
       await api.contractV2.getContractApartments(id)
           .then(response => {
-            this.apartment = response.data[0]
+            console.log(response.data, 'response.data');
+            this.apartment = response.data
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
@@ -325,6 +328,9 @@ export default {
 }
 
 .custom__container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 3rem;
   margin: 2rem 0;
 }
 
