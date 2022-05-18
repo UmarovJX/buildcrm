@@ -280,27 +280,13 @@ export default {
   data() {
     return {
       currentTab: {
-        id: 2,
+        id: 4,
         param: 'chess',
-        name: 'ObjectBlock',
-        buttonIcon: 'BaseChessOne',
-        title: this.$t('object.chess') + ' 1.0'
+        name: 'ObjectTable',
+        buttonIcon: 'BaseChessList',
+        title: this.$t('object.list')
       },
       tabs: [
-        {
-          id: 2,
-          param: 'chess',
-          name: 'ObjectBlock',
-          buttonIcon: 'BaseChessOne',
-          title: this.$t('object.chess') + ' 1.0'
-        },
-        {
-          id: 3,
-          param: 'chess',
-          name: 'ChessSquareCard',
-          buttonIcon: 'BaseChessTwo',
-          title: this.$t('object.chess') + ' 2.0'
-        },
         {
           id: 4,
           param: 'chess',
@@ -315,6 +301,21 @@ export default {
           buttonIcon: 'BaseChessPlan',
           title: this.$t('object.plan')
         },
+        {
+          id: 2,
+          param: 'chess',
+          name: 'ObjectBlock',
+          buttonIcon: 'BaseChessOne',
+          title: this.$t('object.chess') + ' 1.0'
+        },
+        {
+          id: 3,
+          param: 'chess',
+          name: 'ChessSquareCard',
+          buttonIcon: 'BaseChessTwo',
+          title: this.$t('object.chess') + ' 2.0'
+        },
+
       ],
       sortBar: false,
       defaultApartments: [],

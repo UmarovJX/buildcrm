@@ -216,10 +216,11 @@ export default {
 
   async created() {
     this.getLoading = true
-    await this.fetchFilterFields()
     await this.getApartmentsFromLocaleMachine()
   },
-
+  mounted() {
+    this.fetchFilterFields()
+  },
   methods: {
     async fetchFilterFields() {
       const {object} = this.$route.params
