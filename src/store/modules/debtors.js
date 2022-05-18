@@ -5,7 +5,7 @@ export default {
         async fetchDebtors(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
             try {
-                const {data} = api.debtors.fetchDebtors(vm.page)
+                const {data} = await api.debtors.fetchDebtors(vm.page)
                 ctx.commit("updateDebtors", data.items);
                 ctx.commit("updatePagination", data.pagination);
             } catch (error) {
@@ -17,17 +17,15 @@ export default {
 
         async fetchDebtorsFilter(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
-
             try {
 
                 const body = {
-                    search: vm.search,
+                    contract_number: vm.search,
                     date: vm.date,
                     orderBy: vm.orderBy,
                 }
 
                 const {data} = await api.debtors.filterDebtors(vm.page, body)
-
                 ctx.commit("updateDebtors", data.items);
                 ctx.commit("updatePagination", data.pagination);
             } catch (error) {

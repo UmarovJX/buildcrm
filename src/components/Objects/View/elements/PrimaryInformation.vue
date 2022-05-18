@@ -11,7 +11,7 @@
               class="swiper-slide"
           >
             <div class="d-flex justify-content-center align-items-center">
-              <img v-if="image" class="swiper-image" :src="image" alt="img">
+              <img v-if="image" :data-fancybox="image" class="swiper-image" :src="image" alt="img">
               <img v-else class="swiper-image" :src="require('@/assets/img/no-image.jpg')" alt="img">
             </div>
           </div>
@@ -145,6 +145,8 @@ import {formatToPrice} from "@/util/reusable";
 import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 import PromoSection from "@/components/Objects/View/elements/PromoSection";
+import {Fancybox} from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox.css";
 
 export default {
   name: "PrimaryInformation",
@@ -171,6 +173,7 @@ export default {
     swiper: directive,
   },
 
+
   data() {
     return {
       /* SLIDER OPTION */
@@ -193,7 +196,9 @@ export default {
       },
     }
   },
-
+  mounted() {
+    Fancybox.bind("[data-fancybox]");
+  },
   computed: {
     price() {
       return formatToPrice(this.apartment.prices.price, 2) + ' ' + this.$t('ye')

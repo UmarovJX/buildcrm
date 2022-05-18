@@ -776,7 +776,7 @@ export default {
 
         if (status === 200) {
           this.plans = [];
-          this.plans = data.plans;
+          this.plans = data;
         }
 
         this.getLoading = false

@@ -183,7 +183,7 @@ class ObjectsV1Crm extends Core {
     }
 
     fetchObjectPlans(objectId) {
-        return this.get(`objects/${objectId}/plans`)
+        return this.get(`v2/objects/${objectId}/plans`)
     }
 }
 

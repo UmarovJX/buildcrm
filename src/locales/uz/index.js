@@ -609,7 +609,7 @@ export default {
         },
         chess: 'Shaxmatka',
         list: "Ro'yxat",
-        plan: "Tartiblar",
+        plan: "Rejalar",
         flats: "kvartiralar",
         rooms: 'xonalar',
         status: {
@@ -717,6 +717,7 @@ export default {
 
             block_name: "Blok nomi",
 
+            build_date: "20.12.2020",
             building_name: "Korpus nomi", credit_month: "Oylik to'lov uchun oylar soni",
         },
     },
@@ -770,7 +771,8 @@ export default {
         number: "Shartnoma raqami",
         language: "Til",
         date: "Sana",
-        search: "Shartnoma raqami yoki mijozning telefon raqami orqali qidirish",
+        // search: "Shartnoma raqami yoki mijozning telefon raqami orqali qidirish",
+        search: "Shartnoma raqami orqali qidirish",
     },
 
 

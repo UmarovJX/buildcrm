@@ -46,7 +46,7 @@
                     class="swiper-slide"
                 >
                   <div class="d-flex justify-content-center align-items-center">
-                    <img v-if="image" class="swiper-image" :src="image" alt="img">
+                    <img v-if="image" class="swiper-image" :data-fancybox="image" :src="image" alt="img">
                     <img v-else class="swiper-image" :src="require('@/assets/img/no-image.jpg')" alt="img">
                   </div>
                 </div>
@@ -196,6 +196,8 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import PromoSection from "@/components/Objects/View/elements/PromoSection";
 import {formatToPrice} from "@/util/reusable";
+import {Fancybox} from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox.css";
 
 export default {
   name: "ApartmentView",
@@ -325,6 +327,10 @@ export default {
     statusSold() {
       return this.apartment.order.status === 'sold'
     }
+  },
+
+  mounted() {
+    Fancybox.bind("[data-fancybox]");
   },
 
   async created() {
