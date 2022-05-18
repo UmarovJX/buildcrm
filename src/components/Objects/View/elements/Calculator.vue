@@ -200,8 +200,8 @@ export default {
       const {calc, apartment} = this
       const {prices, plan, price} = apartment
       const discountPerSquare = calc.discount_price * plan.area
-      console.log((prices.price - price), 'all cals');
-      console.log(discountPerSquare, 'discountPerSquare');
+      // console.log((prices.price - price), 'all cals');
+      // console.log(discountPerSquare, 'discountPerSquare');
       return ((prices.price - calc.base_price).toFixed(2) + discountPerSquare)
     },
     getApartmentDiscounts() {
