@@ -416,6 +416,16 @@ export default {
         },
         params
       })
+
+      // let haveFiels = []
+      // for (let key of Object.keys(values)) {
+      //   haveFiels.push(key)
+      // }
+      // if (haveFiels.includes('area_to', 'area_from', 'area')) {
+      //   console.log('ishladi')
+      //   this.sortBar = true
+      // }
+
       if (Object.keys(values).length) {
         this.clearButton = true
       } else this.clearButton = false

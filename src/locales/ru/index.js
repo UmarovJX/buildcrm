@@ -441,7 +441,7 @@ export default {
             hold: 'Оставайтесь',
             closed: 'Закрыто',
             available: 'Свободно',
-            unavailable: 'Sotilmaydi',
+            unavailable: 'Hе продается',
         },
 
         list: {
