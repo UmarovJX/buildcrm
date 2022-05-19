@@ -305,7 +305,7 @@ import api from "@/services/api"
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import {sortObjectValues} from "@/util/reusable";
+import {isPrimitiveValue, sortObjectValues} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import {mapActions, mapGetters} from "vuex";
 // import Filter from "@/components/Dashboard/Apartment/Components/ApartmentsFilter";
@@ -477,18 +477,17 @@ export default {
     async fetchContractList() {
       this.showLoading = true
       let query = sortObjectValues(this.query)
+      const queryArrayFareList = ['area', 'rooms', 'floors', 'number', 'object', 'blocks']
 
-      for (let [key, value] of Object.entries(query)) {
-        if (typeof value === 'string' || typeof value === 'number') {
-          query[`${key}`] = [value]
-        } else {
-          query[`${key}`] = value
+      const queryPair = Object.entries(query)
+      queryPair.forEach(([key, value]) => {
+        const isNotPrimitive = queryArrayFareList.includes(key)
+        const valueFare = isPrimitiveValue(value)
+        if (isNotPrimitive && valueFare) {
+          query[key] = [value]
         }
-      }
+      })
 
-      if (query.hasOwnProperty('object') && typeof query.object === 'object') {
-        query.object = [query.object]
-      }
       const {object} = this.$route.params
       await api.objectsV2.fetchObjectApartments(object, query)
           .then((response) => {
@@ -664,7 +663,7 @@ export default {
 
     allowViewWhenProcessing(data) {
       const status = data.item.order.status
-      const userId = data.item.order?.user_id
+      const userId = data.item.order['user_id']
 
       const permissionApartment = this.getPermission.apartments
       const sameUserId = userId === this.getMe.user.id

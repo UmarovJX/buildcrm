@@ -200,9 +200,7 @@ export default {
       const {calc, apartment} = this
       const {prices, plan} = apartment
       const discountPerSquare = calc.discount_price * plan.area
-      // console.log((prices.price - price), 'all cals');
-      // console.log(discountPerSquare, 'discountPerSquare');
-      return ((prices.price - calc.base_price).toFixed(2) + discountPerSquare)
+      return (prices.price - calc.base_price + discountPerSquare).toFixed(2)
     },
     getApartmentDiscounts() {
       const hasDiscount = this.hasApartment && this.apartment.hasOwnProperty('discounts')
@@ -253,7 +251,7 @@ export default {
         }
         this.calc.base_price = this.apartment.price
       } else {
-        await this.initialCalc();
+        await this.initialCalc()
       }
     },
     setTotalDiscountPrice(totalDiscountPrice) {
