@@ -403,9 +403,7 @@ export default {
         params
       })
 
-      if (Object.keys(values).length) {
-        this.clearButton = true
-      } else this.clearButton = false
+      this.clearButton = !!Object.keys(values).length
     },
     setApartmentNumbers(apartments) {
       this.form.number = apartments

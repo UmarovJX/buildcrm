@@ -477,7 +477,7 @@ export default {
     async fetchContractList() {
       this.showLoading = true
       let query = sortObjectValues(this.query)
-      const queryArrayFareList = ['area', 'rooms', 'floors', 'number', 'object']
+      const queryArrayFareList = ['area', 'rooms', 'floors', 'number', 'object', 'blocks']
 
       const queryPair = Object.entries(query)
       queryPair.forEach(([key, value]) => {

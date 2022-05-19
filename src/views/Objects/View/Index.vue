@@ -250,8 +250,10 @@ export default {
     this.fetchFilterFields()
   },
   async created() {
-    const {object} = this.$route.params
-    const historyTab = sessionStorageGetItem(`object_history_of_tab_${object}`)
+    const historyTab = sessionStorageGetItem(
+        'object_history_of_tab_' + this.$route.params.object
+    )
+
     if (historyTab) {
       this.currentTab = historyTab
     }
@@ -281,6 +283,8 @@ export default {
     },
     changeTab({name}) {
       this.currentTab = name
+      const {object} = this.$route.params
+      sessionStorageSetItem(`object_history_of_tab_${object}`, this.currentTab)
     },
     clearStatus() {
       this.statusFilter = []
