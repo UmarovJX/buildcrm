@@ -639,7 +639,7 @@ export default {
     },
 
     async toggleApartmentToSale(item) {
-      const id = this.$route.params.objectId
+      const id = this.$route.params.object
       const apartmentUID = item.id
       await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
         const updatingIndex = this.apartments.findIndex((apartment) => apartment.id === response.data.id)
