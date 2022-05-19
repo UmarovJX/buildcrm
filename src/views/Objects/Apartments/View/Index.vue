@@ -335,7 +335,6 @@ export default {
 
   async created() {
     await this.fetchApartmentView()
-    await this.initialCalc()
   },
 
   methods: {

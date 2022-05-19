@@ -250,6 +250,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import {clearObjectProperties} from "@/util/reusable";
 import {sortInFirstRelationship} from "@/util/reusable";
+import {sessionStorageGetItem} from "@/util/storage";
 
 export default {
   name: "ObjectSort",
@@ -265,6 +266,10 @@ export default {
   },
 
   props: {
+    tabs: {
+      type: Array,
+      required: true
+    },
     filterFields: {
       type: Object,
       required: true
@@ -274,50 +279,29 @@ export default {
       required: true
     }
   },
-
   emits: ['filter-values'],
-
   data() {
-    return {
-      currentTab: {
-        id: 4,
-        param: 'chess',
-        name: 'ObjectTable',
-        buttonIcon: 'BaseChessList',
-        title: this.$t('object.list')
-      },
-      tabs: [
-        {
-          id: 4,
-          param: 'chess',
-          name: 'ObjectTable',
-          buttonIcon: 'BaseChessList',
-          title: this.$t('object.list')
-        },
-        {
-          id: 5,
-          param: 'chess',
-          name: 'ObjectPlan',
-          buttonIcon: 'BaseChessPlan',
-          title: this.$t('object.plan')
-        },
-        {
-          id: 2,
-          param: 'chess',
-          name: 'ObjectBlock',
-          buttonIcon: 'BaseChessOne',
-          title: this.$t('object.chess') + ' 1.0'
-        },
-        {
-          id: 3,
-          param: 'chess',
-          name: 'ChessSquareCard',
-          buttonIcon: 'BaseChessTwo',
-          title: this.$t('object.chess') + ' 2.0'
-        },
+    const {object} = this.$route.params
+    const historyTab = sessionStorageGetItem(`object_history_of_tab_${object}`)
+    let currentTab = {
+      id: 4,
+      param: 'chess',
+      name: 'ObjectTable',
+      buttonIcon: 'BaseChessList',
+      title: this.$t('object.list'),
+      view: 'list'
+    }
 
-      ],
+    if (historyTab) {
+      const getTabInfo = this.tabs.find((tab) => tab.name === historyTab)
+      if (getTabInfo) {
+        currentTab = getTabInfo
+      }
+    }
+
+    return {
       sortBar: false,
+      currentTab,
       defaultApartments: [],
       form: {
         status: null,
@@ -337,16 +321,17 @@ export default {
       currency: 'UZS',
     }
   },
-
+  computed: {
+    query() {
+      return Object.assign({}, this.$route.query)
+    }
+  },
   watch: {
     appLoading(finishLoading) {
       finishLoading && this.setRouteQuery()
     },
-    currentTab: {
-      handler(val) {
-        this.$emit('current-tab', val)
-      },
-      immediate: true,
+    currentTab(val) {
+      this.$emit('current-tab', val)
     },
     form: {
       handler() {
@@ -491,7 +476,7 @@ export default {
     },
     changeProduct(name) {
       this.currentTab = name
-    },
+    }
   }
 }
 </script>

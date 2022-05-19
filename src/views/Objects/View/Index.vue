@@ -22,6 +22,7 @@
     <object-sort
         :filter-fields="filterFields"
         :app-loading="finishLoading"
+        :tabs="componentTabs"
         @clear-status="clearStatus"
         @current-tab="changeTab"
     />
@@ -80,10 +81,10 @@ import PlanExpressView from "@/components/Objects/View/elements/PlanExpressView"
 import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
 import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
-// import ClickOutside from "vue-click-outside";
-import {isPrimitiveValue} from "@/util/reusable";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
+import {isPrimitiveValue} from "@/util/reusable";
+import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 
 export default {
   name: "Objects",
@@ -98,9 +99,11 @@ export default {
     ApartmentExpressView,
     PlanExpressView,
   },
-  // directives: {
-  //   ClickOutside
-  // },
+  beforeRouteLeave(to, from, next) {
+    const id = from.params.object
+    sessionStorageSetItem(`object_history_of_tab_${id}`, this.currentTab)
+    next()
+  },
   data() {
     return {
       expressView: {
@@ -116,7 +119,7 @@ export default {
       planLoading: false,
       apartments: [],
       plans: [],
-      currentTab: 'ObjectBlock',
+      currentTab: 'ObjectTable',
       statusList: [
         {
           label: this.$t('object.status.available'),
@@ -147,10 +150,43 @@ export default {
       statusFilter: [],
       filter: [],
       filterFields: {},
-      objectName: ''
+      objectName: '',
+      componentTabs: [
+        {
+          id: 4,
+          param: 'chess',
+          name: 'ObjectTable',
+          buttonIcon: 'BaseChessList',
+          title: this.$t('object.list'),
+          view: 'list'
+        },
+        {
+          id: 5,
+          param: 'chess',
+          name: 'ObjectPlan',
+          buttonIcon: 'BaseChessPlan',
+          title: this.$t('object.plan'),
+          view: 'plan',
+        },
+        {
+          id: 2,
+          param: 'chess',
+          name: 'ObjectBlock',
+          buttonIcon: 'BaseChessOne',
+          title: this.$t('object.chess') + ' 1.0',
+          view: 'architecture',
+        },
+        {
+          id: 3,
+          param: 'chess',
+          name: 'ChessSquareCard',
+          buttonIcon: 'BaseChessTwo',
+          title: this.$t('object.chess') + ' 2.0',
+          view: 'chess'
+        }
+      ]
     }
   },
-
   computed: {
     breadCrumbs() {
       return [
@@ -206,22 +242,32 @@ export default {
         }
       }
     },
-    currentTab(val) {
-      if (!this.plans.length && val === 'ObjectPlan') {
-        this.planLoading = true
-        this.getObjectPlans()
-      }
+    currentTab() {
+      this.initRelatedToComponent()
     }
-  },
-
-  async created() {
-    this.getLoading = true
-    await this.getApartmentsFromLocaleMachine()
   },
   mounted() {
     this.fetchFilterFields()
   },
+  async created() {
+    const {object} = this.$route.params
+    const historyTab = sessionStorageGetItem(`object_history_of_tab_${object}`)
+    if (historyTab) {
+      this.currentTab = historyTab
+    }
+  },
   methods: {
+    async initRelatedToComponent() {
+      if (this.currentTab === 'ObjectPlan' && !this.plans.length) {
+        await this.getObjectPlans()
+        return
+      }
+
+      const isGraphComponent = ['ObjectBlock', 'ChessSquareCard'].includes(this.currentTab)
+      if (isGraphComponent && !this.apartments.length) {
+        await this.getApartmentsFromLocaleMachine()
+      }
+    },
     async fetchFilterFields() {
       const {object} = this.$route.params
       await api.objectsV2.fetchObjectFields(object)
@@ -233,8 +279,8 @@ export default {
             this.finishLoading = true
           })
     },
-    changeTab(name) {
-      this.currentTab = name.name
+    changeTab({name}) {
+      this.currentTab = name
     },
     clearStatus() {
       this.statusFilter = []
@@ -350,6 +396,12 @@ export default {
                 const filterQueryLength = Object.keys(filter).length > 0
                 if (filterQueryLength) {
                   for (let [key, value] of Object.entries(filter)) {
+                    const arrayFareList = ['area', 'rooms', 'number']
+                    const isThereFareList = arrayFareList.includes(key)
+                    if (isThereFareList && isPrimitiveValue(value)) {
+                      value = [value]
+                    }
+
                     if (key === 'price_m2') {
                       const isSatisfy = value === price_m2
                       filterResult.push(isSatisfy)
@@ -423,9 +475,6 @@ export default {
                     }
 
                     if (key === 'number') {
-                      if (typeof value === 'string' || typeof value === 'number') {
-                        value = [value]
-                      }
                       const isSatisfy = value.includes(number)
                       filterResult.push(isSatisfy)
                     }
@@ -481,6 +530,7 @@ export default {
     },
     async getApartments() {
       const id = this.$route.params.object
+      this.getLoading = true
       await api.objectsV2.getApartments(id).then(async (res) => {
         this.objectName = res.data.object
         this.apartments = res.data.data
@@ -505,29 +555,30 @@ export default {
       }))
     },
     async getApartmentsFromLocaleMachine() {
-      const objectApartmentList = localStorage.getItem('object_apartment_list')
-      const objectInformation = localStorage.getItem('object_information')
-      if (objectApartmentList && objectInformation) {
-        const storeId = JSON.parse(objectInformation).id.toString()
-        if (this.$route.params.object === storeId) {
-          const apartmentsExpiryDate = localStorage.getItem('apartments_expiry_date')
-          const currentTime = (new Date()).getTime()
-          const intervalTime = 20 * 60 * 1000
-          const distinction = currentTime - parseFloat(apartmentsExpiryDate)
-          if (distinction < intervalTime) {
-            this.objectName = JSON.parse(objectInformation).name
-            this.apartments = JSON.parse(objectApartmentList)
-            if (this.hasQuery) {
-              await this.compareStatus(this.query)
-              await this.filterItems(this.query)
+      if (!this.apartments.length) {
+        const objectApartmentList = localStorage.getItem('object_apartment_list')
+        const objectInformation = localStorage.getItem('object_information')
+        if (objectApartmentList && objectInformation) {
+          const storeId = JSON.parse(objectInformation).id.toString()
+          if (this.$route.params.object.toString() === storeId) {
+            const apartmentsExpiryDate = localStorage.getItem('apartments_expiry_date')
+            const currentTime = (new Date()).getTime()
+            const intervalTime = 20 * 60 * 1000
+            const distinction = currentTime - parseFloat(apartmentsExpiryDate)
+            if (distinction < intervalTime) {
+              this.objectName = JSON.parse(objectInformation).name
+              this.apartments = JSON.parse(objectApartmentList)
+              if (this.hasQuery) {
+                await this.compareStatus(this.query)
+                await this.filterItems(this.query)
+              }
+              return
             }
-            this.getLoading = false
-            return
           }
         }
-      }
 
-      await this.getApartments()
+        await this.getApartments()
+      }
     },
     async getObjectPlans() {
       const id = this.$route.params.object
@@ -559,14 +610,13 @@ export default {
       this.planView.toggle = false
     },
     updateContent() {
-      this.getApartments()
+      this.getApartmentsFromLocaleMachine()
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
 .navigation__content {
   display: flex;
   align-items: center;
