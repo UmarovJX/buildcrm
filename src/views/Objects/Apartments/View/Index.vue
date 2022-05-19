@@ -258,6 +258,9 @@ export default {
       return Object.keys(this.apartment).length > 0
     },
     status() {
+      if (!this.apartment.is_sold) {
+        return 'unavailable'
+      }
       return this.apartment.order.status
     },
     permission() {
@@ -659,6 +662,10 @@ input[type="number"]
   &-sold
     background-color: var(--gray-100) !important
     color: var(--gray-600) !important
+
+  &-unavailable
+    background-color: var(--gray-500) !important
+    color: var(--white) !important
 
 
 .price__section
