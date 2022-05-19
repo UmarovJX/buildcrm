@@ -476,8 +476,17 @@ export default {
     },
     async fetchContractList() {
       this.showLoading = true
-      const query = sortObjectValues(this.query)
-      if (query.hasOwnProperty('object') && typeof query.objectId === 'string') {
+      let query = sortObjectValues(this.query)
+
+      for (let [key, value] of Object.entries(query)) {
+        if (typeof value === 'string' || typeof value === 'number') {
+          query[`${key}`] = [value]
+        } else {
+          query[`${key}`] = value
+        }
+      }
+
+      if (query.hasOwnProperty('object') && typeof query.object === 'object') {
         query.object = [query.object]
       }
       const {object} = this.$route.params

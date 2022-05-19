@@ -436,7 +436,8 @@ export default {
             booked: 'Band qilingan',
             hold: 'Band qilinmoqda',
             closed: 'Yopilgan',
-            available: 'Sotuvda'
+            available: 'Sotuvda',
+            unavailable: 'Sotilmaydi',
         },
 
         list: {

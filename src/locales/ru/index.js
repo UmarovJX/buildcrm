@@ -440,7 +440,8 @@ export default {
             booked: 'Забронировано',
             hold: 'Оставайтесь',
             closed: 'Закрыто',
-            available: 'Свободно'
+            available: 'Свободно',
+            unavailable: 'Sotilmaydi',
         },
 
         list: {

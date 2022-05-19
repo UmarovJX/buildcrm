@@ -295,6 +295,9 @@ export default {
       return formatToPrice(this.sidebarApartment.price_m2) + ' ' + this.$t('ye')
     },
     status() {
+      if (!this.sidebarApartment.is_sold) {
+        return 'unavailable'
+      }
       return this.sidebarApartment.order.status
     },
     permission() {
@@ -595,6 +598,11 @@ export default {
   &-sold
     background-color: var(--gray-100) !important
     color: var(--gray-600) !important
+
+  &-unavailable
+    background-color: var(--gray-500) !important
+    color: var(--white) !important
+
 
 ::v-deep .b-tooltip
   .tooltip-text

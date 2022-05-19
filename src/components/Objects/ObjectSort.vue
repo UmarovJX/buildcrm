@@ -218,7 +218,7 @@
         <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'"/>
       </div>
 
-      <base-button @click="clearFilter" :text="$t('clear')" design="violet-gradient"/>
+      <base-button v-if="clearButton" @click="clearFilter" :text="$t('clear')" design="violet-gradient"/>
     </div>
 
     <div class="chess-tab">
@@ -317,6 +317,7 @@ export default {
         },
       ],
       sortBar: false,
+      clearButton: false,
       defaultApartments: [],
       form: {
         status: null,
@@ -415,6 +416,9 @@ export default {
         },
         params
       })
+      if (Object.keys(values).length) {
+        this.clearButton = true
+      } else this.clearButton = false
     },
     setApartmentNumbers(apartments) {
       this.form.number = apartments
