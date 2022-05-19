@@ -161,14 +161,6 @@ export default {
           view: 'list'
         },
         {
-          id: 5,
-          param: 'chess',
-          name: 'ObjectPlan',
-          buttonIcon: 'BaseChessPlan',
-          title: this.$t('object.plan'),
-          view: 'plan',
-        },
-        {
           id: 2,
           param: 'chess',
           name: 'ObjectBlock',
@@ -183,7 +175,15 @@ export default {
           buttonIcon: 'BaseChessTwo',
           title: this.$t('object.chess') + ' 2.0',
           view: 'chess'
-        }
+        },
+        {
+          id: 5,
+          param: 'chess',
+          name: 'ObjectPlan',
+          buttonIcon: 'BaseChessPlan',
+          title: this.$t('object.plan'),
+          view: 'plan',
+        },
       ]
     }
   },
