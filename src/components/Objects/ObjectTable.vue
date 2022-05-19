@@ -529,7 +529,7 @@ export default {
       this.filter.order_by = val.sortDesc ? "desc" : "asc";
 
       this.$router.push({
-        name: "aparments",
+        name: "apartments",
         params: this.$route.params.object,
         query: this.filter,
       }).then(() => {
