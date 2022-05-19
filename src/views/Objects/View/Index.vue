@@ -265,7 +265,8 @@ export default {
         return
       }
 
-      const isGraphComponent = ['ObjectBlock', 'ChessSquareCard'].includes(this.currentTab)
+      const graphComponentList = ['ObjectBlock', 'ChessSquareCard']
+      const isGraphComponent = graphComponentList.includes(this.currentTab)
       if (isGraphComponent && !this.apartments.length) {
         await this.getApartmentsFromLocaleMachine()
       }
@@ -314,8 +315,15 @@ export default {
         this.statusFilter = []
       }
     },
-    filterItems(filter) {
-      this.apartments = this.apartments.map(mainConstructor => {
+    filterItems(filter, apartments = []) {
+      let localApartments = []
+
+      if (apartments.length) {
+        localApartments = apartments
+      } else {
+        localApartments = this.apartments
+      }
+      this.apartments = localApartments.map(mainConstructor => {
         let filterBlocks
         const hasBlocks = filter.hasOwnProperty('blocks')
         if (hasBlocks) {
@@ -571,10 +579,12 @@ export default {
             const distinction = currentTime - parseFloat(apartmentsExpiryDate)
             if (distinction < intervalTime) {
               this.objectName = JSON.parse(objectInformation).name
-              this.apartments = JSON.parse(objectApartmentList)
+              const apartments = JSON.parse(objectApartmentList)
               if (this.hasQuery) {
                 await this.compareStatus(this.query)
-                await this.filterItems(this.query)
+                await this.filterItems(this.query, apartments)
+              } else {
+                this.apartments = apartments
               }
               return
             }
