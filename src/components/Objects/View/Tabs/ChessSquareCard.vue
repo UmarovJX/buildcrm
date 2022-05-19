@@ -17,7 +17,9 @@
         <template v-for="value in apartment.blocks">
           <div v-if="showBlock(value.blockActive)" :key="value.id" class="d-flex flex-column position-relative">
             <div class="header">
-              {{ value.name }}
+               <span>
+                {{ value.name }}
+              </span>
             </div>
 
             <div class="item" style="margin-right: 30px">
@@ -524,7 +526,7 @@ export default {
 
 
 .header {
-  position: sticky;
+  position: relative;
   font-weight: 600;
   font-size: 14px;
   line-height: 20px;
@@ -532,6 +534,15 @@ export default {
   text-transform: capitalize;
   width: 100%;
   min-height: 20px;
+
+  span {
+    display: block;
+    position: sticky;
+    left: 30px;
+    margin-right: 30px;
+    top: 0;
+    width: max-content;
+  }
 }
 
 .vertical {
