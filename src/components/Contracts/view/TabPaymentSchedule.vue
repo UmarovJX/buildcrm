@@ -855,6 +855,7 @@ export default {
       this.getPaymentSchedule()
     },
     changeScheduleShowingLimit() {
+      this.paymentSchedule.params.page = 1
       this.getPaymentSchedule()
     },
     openPaymentAdditionModal() {
