@@ -295,13 +295,6 @@ export default {
           title: this.$t('object.list')
         },
         {
-          id: 5,
-          param: 'chess',
-          name: 'ObjectPlan',
-          buttonIcon: 'BaseChessPlan',
-          title: this.$t('object.plan')
-        },
-        {
           id: 2,
           param: 'chess',
           name: 'ObjectBlock',
@@ -315,7 +308,13 @@ export default {
           buttonIcon: 'BaseChessTwo',
           title: this.$t('object.chess') + ' 2.0'
         },
-
+        {
+          id: 5,
+          param: 'chess',
+          name: 'ObjectPlan',
+          buttonIcon: 'BaseChessPlan',
+          title: this.$t('object.plan')
+        },
       ],
       sortBar: false,
       defaultApartments: [],
