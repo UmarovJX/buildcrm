@@ -202,9 +202,9 @@ export default {
           name: this.$t('branches.date_contract'),
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.branch_address'),
+          label: this.$t('branches.date_contract'),
           bind: 'date_contract',
-          placeholder: this.$t('branches.branch_address'),
+          placeholder: this.$t('branches.date_contract'),
           id: 'date_contract',
           icon: 'address'
         },
@@ -213,9 +213,9 @@ export default {
           name: this.$t('branches.number_contract'),
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.branch_phone'),
+          label: this.$t('branches.number_contract'),
           bind: 'number_contract',
-          placeholder: this.$t('branches.branch_phone'),
+          placeholder: this.$t('branches.number_contract'),
           id: 'number_contract',
           icon: 'phone'
         },
@@ -224,9 +224,9 @@ export default {
           name: this.$t('branches.date_implementation'),
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.branch_phone'),
+          label: this.$t('branches.date_implementation'),
           bind: 'date_implementation',
-          placeholder: this.$t('branches.branch_phone'),
+          placeholder: this.$t('branches.date_implementation'),
           id: 'date_implementation',
           icon: 'phone'
         },
@@ -235,9 +235,9 @@ export default {
           name: this.$t('branches.number_implementation'),
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.branch_phone'),
+          label: this.$t('branches.number_implementation'),
           bind: 'number_implementation',
-          placeholder: this.$t('branches.branch_phone'),
+          placeholder: this.$t('branches.number_implementation'),
           id: 'number_implementation',
           icon: 'phone'
         }
