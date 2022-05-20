@@ -307,6 +307,8 @@ export default {
       if (typeof this.amount === 'string') {
         newValue = this.amount?.replace('.', ',')
       }
+      console.log(newValue, 'amount');
+      // if(typeof this.amount === 'float')
       const findDecimalSeparator = newValue?.indexOf(',')
       const unFormatValue = accounting.unformat(newValue, this.decimalSeparatorSymbol)
       let formattingValue = this.formatWithoutSeparator(unFormatValue)?.slice(0, -1)
@@ -326,7 +328,9 @@ export default {
         if (matchDots.length > 1) {
           decimalSide = decimalSide.slice(0, -1)
         }
-
+        console.log(this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1), 'his.formatWithoutSeparator(unFormatWholeSide).slice(0, -1)');
+        console.log(decimalSide, 'decimalSide');
+        // formattingValue = this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1) + decimalSide
         formattingValue = this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1) + decimalSide
       }
 
