@@ -1,6 +1,6 @@
 <template>
   <input
-      type="number"
+      type="text"
       ref="price-input"
       :placeholder="placeholderFormat"
       v-model="priceAmount"
@@ -13,6 +13,7 @@
 
 <script>
 import {isPrimitiveValue} from "@/util/reusable";
+import accounting from "accounting-js";
 
 export default {
   name: "BasePriceInput",
@@ -33,13 +34,11 @@ export default {
     },
     decimalSeparator: {
       type: String,
-      default: ',',
-      required: false
+      default: ','
     },
     thousandSeparator: {
-      default: undefined,
-      required: false,
-      type: String
+      type: String,
+      default: ' ',
     },
     outputType: {
       required: false,
@@ -65,12 +64,30 @@ export default {
       type: Number,
       default: Number.MIN_SAFE_INTEGER || -9007199254740991,
       required: false
+    },
+    setValue: {
+      type: Boolean,
+      default: false
     }
   },
+  emits: ['input'],
   data() {
     return {
       priceAmount: null,
       placeholderFormat: null
+    }
+  },
+  watch: {
+    priceAmount(lastAmount) {
+      this.formatPriceAmount(lastAmount)
+    },
+    value: {
+      handler(last) {
+        if (this.setValue) {
+          this.priceAmount = last
+        }
+      },
+      immediate: true
     }
   },
   created() {
@@ -92,6 +109,101 @@ export default {
         }
       }
     },
+    splitString: (value) => value.toString().split(''),
+    isDotSymbol: (symbol) => (symbol === '.'),
+    isCommaSymbol: (symbol) => (symbol === ','),
+    isNumberSymbol: (symbol) => !isNaN(parseInt(symbol)),
+    isGapSymbol: (symbol) => (symbol === ' '),
+    isSatisfySeparator(symbol) {
+      return this.isGapSymbol(symbol) || this.isCommaSymbol(symbol) || this.isDotSymbol(symbol)
+    },
+    isSatisfyInput(symbol) {
+      return this.isNumberSymbol(symbol) || this.isSatisfySeparator(symbol)
+    },
+    formatPriceAmount(value) {
+      const {baseVersion, formatVersion} = this.formatAmount(value)
+      if (formatVersion) {
+        this.priceAmount = formatVersion
+        this.emitInput(baseVersion)
+      } else {
+        this.emitInput(0)
+      }
+    },
+    formatAmount(amount) {
+      if (amount) {
+        const splitAmount = this.splitString(amount)
+        const getAllowSymbols = splitAmount.filter(peace => !!this.isSatisfyInput(peace))
+        const removeExcessSymbol = this.removeExcessDotAndComma(getAllowSymbols, 'array')
+        const {formatVersion, baseVersion} = this.formatByConfiguration(removeExcessSymbol)
+        return {
+          formatVersion,
+          baseVersion
+        }
+      }
+
+      return {
+        formatVersion: '',
+        baseVersion: ''
+      }
+    },
+    emitInput(value) {
+      this.$emit('input', value)
+    },
+    formatByConfiguration(array) {
+      const {decimalSeparator, thousandSeparator} = this
+      let thousandIndex = array.findIndex(value => this.isSatisfySeparator(value))
+      let thousandValue = array[thousandIndex]
+      let decimalIndex = array.findIndex((value) => {
+        return value !== thousandValue && this.isSatisfySeparator(value)
+      })
+
+      if (decimalIndex === -1 && thousandSeparator !== thousandValue) {
+        decimalIndex = thousandIndex
+        thousandIndex = null
+        thousandValue = thousandSeparator
+      }
+
+      const decimalValue = array[decimalIndex]
+      if (decimalIndex !== -1) {
+        let loopPackage = []
+        for (let i = decimalIndex + 1; i < array.length; i++) {
+          const loopValue = array[i]
+          if (!(loopValue === decimalValue || loopValue === thousandValue)) {
+            loopPackage.push(loopValue)
+          }
+        }
+        const removeCount = array.length - decimalIndex + 1
+        array.splice(decimalIndex + 1, removeCount, ...loopPackage)
+      }
+
+      let decimalSide = ''
+      let thousandSide = ''
+      if (decimalIndex !== -1) {
+        decimalSide = array.slice(decimalIndex + 1).join('')
+        thousandSide = array.slice(0, decimalIndex).join('').replaceAll(thousandValue, '')
+        thousandSide.replace(' ', '')
+      } else {
+        thousandSide = array.slice(0).join('').replaceAll(thousandValue, '')
+      }
+
+      let result = accounting.formatNumber(thousandSide, {
+        precision: 0,
+        thousand: thousandSeparator,
+        separator: decimalSeparator
+      })
+
+      if (decimalValue) {
+        result += decimalSeparator
+        if (decimalSide.length) {
+          result += decimalSide.replace('.', '')
+        }
+      }
+
+      return {
+        formatVersion: result,
+        baseVersion: thousandSide + '.' + decimalSide
+      }
+    },
     setInitialAmountValue() {
       if (this.value) {
         this.priceAmount = this.formatNumber(this.value)
@@ -99,33 +211,11 @@ export default {
     },
     formatNumber(primitiveValue) {
       if (!primitiveValue) return
-      /* types of value
-      * 12,1111.22222
-      * !!!! 234.2121 , .... qayta takrorlanish oldi olindi
-      * 0.45,21212
-      * 0,57.999
-      * */
-      const valueToString = primitiveValue.toString()
+      const valueToString = primitiveValue.toString().split('')
       primitiveValue = this.removeExcessDotAndComma(valueToString)
       return primitiveValue
     },
-    formatToPrice(rawPrice, decimalCount = 0) {
-      if (!rawPrice) return 0
-
-      const dollarUSLocale = Intl.NumberFormat('en-US')
-      const price = dollarUSLocale.format(parseInt(rawPrice))
-      const result = price.toLocaleString().replace(/,/g, '  ')
-
-      if (decimalCount) {
-        const decimalValue = (rawPrice % 1).toFixed(decimalCount)
-        if (decimalValue > 0) {
-          return (result + decimalValue.slice(1)).replace('.', ',')
-        }
-      }
-
-      return result
-    },
-    removeExcessDotAndComma(array) {
+    removeExcessDotAndComma(array, givenType = 'string') {
       const hasDotOrComma = array.some(arr => arr === '.' || arr === ',')
       if (!hasDotOrComma) {
         return array
@@ -133,9 +223,13 @@ export default {
 
       const remover = (list) => {
         return list.filter((value, index) => {
-          const previousArr = array.slice(0, index)
-          const isDotOrComma = value === ',' || value === '.'
-          if (isDotOrComma) {
+          const previousArr = array.slice(index - 1, index)
+          const isComma = value === ','
+          const isDot = value === '.'
+          if (isComma) {
+            const hasBefore = previousArr.includes(value)
+            return !hasBefore
+          } else if (isDot) {
             const hasBefore = previousArr.includes(value)
             return !hasBefore
           }
@@ -143,12 +237,11 @@ export default {
         })
       }
 
-      if (typeof array === 'string') {
-        const list = array.split('')
-        return remover(list).join('')
+      if (givenType === 'array') {
+        return remover(array)
       }
 
-      return remover(array)
+      return remover(array).join('')
     },
     onBlurHandler() {
 
@@ -162,6 +255,45 @@ export default {
     onChangeHandler() {
 
     },
+    setTriggerValue(value) {
+      if (value) {
+        // const {decimalSeparator, thousandSeparator} = this
+        // const array = value.toString().split('')
+        // const decimalIndex = array.findIndex(arr => arr === '.')
+        // let decimalValue = ''
+        // if (decimalIndex) {
+        //   decimalValue = array.slice(decimalIndex + 1).join('')
+        // }
+        //
+        // let thousandValue = array.slice(0, decimalIndex).join('')
+        // let result = accounting.formatNumber(thousandValue, {
+        //   precision: 0,
+        //   thousand: thousandSeparator,
+        //   separator: decimalSeparator
+        // })
+        //
+        // if (decimalValue) {
+        //   result += decimalSeparator + decimalValue
+        // }
+        let decimalValue = value % 1
+
+        if (decimalValue > 0) {
+          decimalValue = decimalValue.toString().slice(3)
+          value += parseInt(decimalValue).toFixed(2).toString().slice(0, 2)
+        }
+        const {formatVersion} = this.formatAmount(value)
+        const splitAmount = this.splitString(formatVersion)
+        const decimalIndex = splitAmount.findIndex(arr => arr === this.decimalSeparator)
+        if (decimalIndex !== -1) {
+          const decimalValue = splitAmount.slice(decimalIndex + 1).join('').slice(0, 2)
+          this.priceAmount = splitAmount.slice(0, decimalIndex + 1).join('') + decimalValue
+        } else {
+          this.priceAmount = formatVersion
+        }
+      } else {
+        this.priceAmount = null
+      }
+    }
   }
 }
 </script>

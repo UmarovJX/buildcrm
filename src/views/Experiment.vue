@@ -4,7 +4,8 @@
       <base-price-input
           class="input-component"
           placeholder="input price"
-          :value="100"
+          value="100,2121.2121"
+          :precision="2"
       />
     </div>
   </main>

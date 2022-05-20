@@ -39,24 +39,27 @@
 
       <div class="d-flex justify-content-between align-items-center" style="column-gap: .5rem">
         <!--     DISCOUNT PER M2       -->
-        <base-input
+        <base-price-input
             ref="discount-per-square"
             class="discount-per-m2"
             type="number"
             :label="true"
             :currency="`${$t('ye')}`"
-            :placeholder="$t('apartments.view.discount_per_m2')"
-            @trigger-input="changeDiscount_price"
+            :placeholder="$t('apartments.view.discount_per_m2')" \
+            :value="discountPriceValue"
+            :set-value="setTotalValue"
+            @input="changeDiscount_price"
         />
         <!--    DISCOUNT TOTAL PRICE    -->
-        <base-input
+        <base-price-input
             ref="all-discount-price"
             class="discount-per-m2"
-            type="number"
             :label="true"
             :currency="`${$t('ye')}`"
             :placeholder="$t('apartments.view.discount_all')"
-            @trigger-input="setTotalDiscountPrice"
+            @input="setTotalDiscountPrice"
+            :value="allDiscountValue"
+            :set-value="setAllTotalValue"
         />
       </div>
 
@@ -141,9 +144,9 @@
 </template>
 
 <script>
-import BaseInput from "@/components/Reusable/BaseInput";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import {formatToPrice} from "@/util/reusable";
+import BasePriceInput from "@/components/Reusable/BasePriceInput";
 
 export default {
   name: "Calculator",
@@ -158,8 +161,8 @@ export default {
     }
   },
   components: {
-    BaseInput,
-    BaseSelect
+    BaseSelect,
+    BasePriceInput
   },
   data() {
     return {
@@ -178,6 +181,10 @@ export default {
         prepay_percente: 0,
         base_price: 0
       },
+      setTotalValue: false,
+      setAllTotalValue: false,
+      discountPriceValue: null,
+      allDiscountValue: null
     }
   },
   computed: {
@@ -257,21 +264,22 @@ export default {
     setTotalDiscountPrice(totalDiscountPrice) {
       this.calc.discount_price = totalDiscountPrice / this.apartment.plan.area
       this.initialCalc()
+      this.setTotalValue = true
       if (this.calc.discount_price) {
-        // console.log(this.calc.discount_price.toFixed(2), 'dsadadada');
-        this.$refs['discount-per-square'].setTriggerValue(this.calc.discount_price.toFixed(2))
+        this.discountPriceValue = this.calc.discount_price.toFixed(2)
       } else {
-        this.$refs['discount-per-square'].setTriggerValue(null)
+        this.discountPriceValue = null
       }
     },
     async changeDiscount_price(discountPrice) {
       const totalDiscount = discountPrice * this.apartment.plan.area
       this.calc.discount_price = discountPrice
       await this.initialCalc()
+      this.setAllTotalValue = true
       if (discountPrice) {
-        this.$refs['all-discount-price'].setTriggerValue(totalDiscount.toFixed(2))
+        this.allDiscountValue = totalDiscount.toFixed(2)
       } else {
-        this.$refs['all-discount-price'].setTriggerValue(null)
+        this.allDiscountValue = null
       }
     },
     changeDiscount_month() {

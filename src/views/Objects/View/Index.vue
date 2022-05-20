@@ -545,11 +545,12 @@ export default {
       this.getLoading = true
       await api.objectsV2.getApartments(id).then(async (res) => {
         this.objectName = res.data.object
-        this.apartments = res.data.data
         this.saveToLocalStorage(res.data)
         if (this.hasQuery) {
           await this.compareStatus(this.query)
-          await this.filterItems(this.query)
+          await this.filterItems(this.query, res.data.data)
+        } else {
+          this.apartments = res.data.data
         }
       }).catch(err => {
         this.toastedWithErrorCode(err)
