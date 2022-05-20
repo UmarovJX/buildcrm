@@ -824,6 +824,11 @@ export default {
         manager_phone_number: 'Номер телефона менеджера',
         manager_email: 'Почта менеджера',
         manager_avatar: 'Аватар менеджера',
+        date_contract: 'Дата соглашения',
+        number_contract: 'Номер соглашения',
+        date_implementation: 'Дата поручения',
+        number_implementation: 'Номер поручения',
+
     },
 
     filter_names: {

@@ -68,6 +68,43 @@
               </span>
             </ValidationProvider>
 
+
+            <div class="companies" v-for="(company,index) in companies" :key="company.id">
+              <div class="company">
+                <div class="company-button">
+                  <b-button @click="company.active = !company.active" variant="btn-primary"
+                            class="company-button__item">
+                    {{ company.name }}
+                  </b-button>
+                </div>
+                <div v-if="company.active" class="company-input">
+                  <ValidationProvider
+                      v-for="{type,name,rules,extraClass,id,label,placeholder,bind} in companySchema"
+                      :key="name+id"
+                      :name="name"
+                      :rules="rules"
+                      :class="extraClass"
+                      v-slot="{ errors }"
+                      class="mt-3"
+                  >
+                    <label :for="id">{{ label }}</label>
+                    <b-input-group>
+                      <b-form-input
+                          v-model="companiesForm[index][bind]"
+                          :type="type"
+                          :id="id"
+                          :placeholder="placeholder"
+                      >
+                      </b-form-input>
+                    </b-input-group>
+                    <span class="error__provider">{{ errors[0] }}</span>
+                  </ValidationProvider>
+                </div>
+              </div>
+
+            </div>
+
+
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
                 {{ submitButtonText }}
@@ -88,9 +125,13 @@
 
 <script>
 import api from "@/services/api";
+// import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: "BranchFormContent",
+  components: {
+    // BaseButton
+  },
   props: {
     historyForm: {
       type: Object,
@@ -119,6 +160,7 @@ export default {
         managerId: null,
         branchPhone: null
       },
+      companiesForm: [],
       providerSchema: [
         {
           type: 'text',
@@ -153,12 +195,62 @@ export default {
           id: 'branchPhone',
           icon: 'phone'
         }
-      ]
+      ],
+      companySchema: [
+        {
+          type: 'date',
+          name: this.$t('branches.date_contract'),
+          rules: '',
+          extraClass: 'validation__provider',
+          label: this.$t('branches.branch_address'),
+          bind: 'date_contract',
+          placeholder: this.$t('branches.branch_address'),
+          id: 'date_contract',
+          icon: 'address'
+        },
+        {
+          type: 'text',
+          name: this.$t('branches.number_contract'),
+          rules: '',
+          extraClass: 'validation__provider',
+          label: this.$t('branches.branch_phone'),
+          bind: 'number_contract',
+          placeholder: this.$t('branches.branch_phone'),
+          id: 'number_contract',
+          icon: 'phone'
+        },
+        {
+          type: 'date',
+          name: this.$t('branches.date_implementation'),
+          rules: '',
+          extraClass: 'validation__provider',
+          label: this.$t('branches.branch_phone'),
+          bind: 'date_implementation',
+          placeholder: this.$t('branches.branch_phone'),
+          id: 'date_implementation',
+          icon: 'phone'
+        },
+        {
+          type: 'text',
+          name: this.$t('branches.number_implementation'),
+          rules: '',
+          extraClass: 'validation__provider',
+          label: this.$t('branches.branch_phone'),
+          bind: 'number_implementation',
+          placeholder: this.$t('branches.branch_phone'),
+          id: 'number_implementation',
+          icon: 'phone'
+        }
+      ],
+      companies: [],
+      history: this.$route.params.historyForm.companies,
     }
   },
   async created() {
     await this.getManagersList()
+    await this.fetchCompaniesList()
   },
+
   computed: {
     managersOption() {
       const managers = this.managersList
@@ -177,6 +269,54 @@ export default {
     }
   },
   methods: {
+    getDifference(array1, array2) {
+      return array1.filter((object1, index1) => {
+        return array2.some((object2, index2) => {
+          if (object1.company_id === object2.company_id) {
+            this.companiesForm[index1] = {
+              company_id: this.history[index2].company_id,
+              date_contract: this.history[index2].date_contract,
+              number_contract: this.history[index2].number_contract,
+              date_implementation: this.history[index2].date_implementation,
+              number_implementation: this.history[index2].number_implementation,
+            }
+          }
+        });
+      });
+    },
+
+    collapseActive(id) {
+      this.companies.forEach((item) => {
+        if (item.id === id) {
+          item.active = !item.active
+        }
+      })
+    },
+    async fetchCompaniesList() {
+      // this.loading = true
+      await api.companies.getCompaniesList()
+          .then((response) => {
+                const items = response.data
+                items.forEach((item) => {
+                  this.companies.push({...item, active: false})
+                  this.companiesForm.push({
+                    company_id: item.id,
+                    date_contract: '',
+                    number_contract: '',
+                    date_implementation: '',
+                    number_implementation: '',
+                  })
+                })
+                this.getDifference(this.companiesForm, this.history)
+              }
+          )
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+      // .finally(() => {
+      //
+      // })
+    },
     async getManagersList() {
       await api.userV2.getUsersAll()
           .then(response => {
@@ -206,11 +346,13 @@ export default {
     },
     async submitNewBranch() {
       const {branchName, branchAddress, branchPhone, managerId} = this.form
+      const result = this.companiesForm.filter(item => (item.date_contract && item.number_contract && item.date_implementation && item.number_implementation))
       const data = {
         name: branchName,
         address: branchAddress,
         phone: branchPhone,
-        manager_id: managerId
+        manager_id: managerId,
+        companies: result
       }
       this.$emit('submit-form', data)
     },
@@ -230,6 +372,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.company-input {
+  display: grid;
+  grid-gap: .5rem;
+  grid-template-columns: 50% 50%;
+}
+
 .create__branch {
   max-width: 720px;
   margin-top: 1rem;
@@ -241,6 +389,16 @@ export default {
 
 .success__alert {
   max-width: 640px;
+}
+
+.company-button {
+  display: flex;
+  align-items: center;
+
+  &__item {
+    background-color: #007bff !important;
+  }
+
 }
 
 .form__password {

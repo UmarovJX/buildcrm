@@ -812,6 +812,10 @@ export default {
         manager_phone_number: 'Menedjerning telefon raqami',
         manager_email: 'Menedjerning elektron pochtasi',
         manager_avatar: 'Menedjerning profil surati',
+        date_contract: 'Shartnoma sanasi',
+        number_contract: 'Shartnoma raqami',
+        date_implementation: 'Buyurtma sanasi',
+        number_implementation: 'Buyurtma raqami',
     },
 
     filter_names: {
