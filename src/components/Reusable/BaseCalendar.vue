@@ -9,9 +9,6 @@
           placeholder="ФИО, телефон, номер договора"
           @input="triggerInputEvent"
       />
-<!--      <data-picker v-model="searchInput">-->
-
-<!--      </data-picker>-->
       <span
           class="clear__icon"
           @click="clearSearchInput"
@@ -59,9 +56,6 @@ export default {
       this.triggerInputEvent()
     }
   },
-  // async created() {
-  //   await this.fetchObjects()
-  // },
   mounted() {
     if (this.searchInput?.length) {
       this.toggleClearIcon()

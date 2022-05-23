@@ -1,25 +1,19 @@
 <template>
-  <main class="app-content">
-    <base-calendar-navigation/>
+  <div>
     <base-pagination
-        :pagination-current="2"
+        :pagination-current="1"
         :pagination-count="10"
     />
-  </main>
+  </div>
 </template>
 
 <script>
-import BaseCalendarNavigation from "@/components/Reusable/Calendar/BaseCalendarNavigation";
 import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 
 export default {
-  name: "Debtors",
+  name: "BaseTableList",
   components: {
-    BaseCalendarNavigation,
     BasePagination
-  },
-  methods: {
-
   }
 }
 </script>
