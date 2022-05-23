@@ -86,11 +86,14 @@
       </div>
 
       <div class="d-flex justify-content-between">
-        <span class="property d-block color-gray-400">
+        <span
+            class="property d-block color-gray-400"
+        >
           {{ $t('apartments.view.prepayment') }} {{ calc.prepay_percente }}%
         </span>
-        <span v-if="calc.prepay_percente === 100"
-              class="price d-block color-gray-600"
+        <span
+            v-if="calc.prepay_percente === 100"
+            class="price d-block color-gray-600"
         >
           {{ pricePrettier(calc.total, 2) }} {{ $t('ye') }}
         </span>
@@ -127,7 +130,7 @@
         <span
             class="price d-block color-gray-600"
         >
-          {{ this.pricePrettier(totalDiscount, 2) }} {{ $t('ye') }}
+          {{ pricePrettier(totalDiscount, 2) }} {{ $t('ye') }}
         </span>
       </div>
 
@@ -135,7 +138,7 @@
       <div class="d-flex justify-content-between">
         <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
         <span class="price d-block color-violet-600 total-price">
-          {{ pricePrettier(calc.total) }}  {{ $t('ye') }}
+          {{ pricePrettier(calc.total, 2) }}  {{ $t('ye') }}
         </span>
       </div>
     </div>
@@ -143,8 +146,8 @@
 </template>
 
 <script>
-import BaseSelect from "@/components/Reusable/BaseSelect";
 import {formatToPrice} from "@/util/reusable";
+import BaseSelect from "@/components/Reusable/BaseSelect";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 
 export default {
@@ -220,7 +223,7 @@ export default {
     },
     showMonthlyCalculation() {
       return this.calc.prepay_percente !== 100
-    },
+    }
   },
   methods: {
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),

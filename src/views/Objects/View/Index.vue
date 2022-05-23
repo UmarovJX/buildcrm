@@ -240,7 +240,8 @@ export default {
         if (this.accessToFilter) {
           await this.filterItems(query)
         }
-      }
+      },
+      immediate: true
     },
     currentTab() {
       this.initRelatedToComponent()
