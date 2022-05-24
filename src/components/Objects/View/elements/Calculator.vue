@@ -45,7 +45,7 @@
             type="number"
             :label="true"
             :currency="`${$t('ye')}`"
-            :placeholder="$t('apartments.view.discount_per_m2')" \
+            :placeholder="$t('apartments.view.discount_per_m2')"
             :value="discountPriceValue"
             :set-value="setTotalValue"
             @input="changeDiscount_price"

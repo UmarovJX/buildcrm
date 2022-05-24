@@ -66,6 +66,7 @@ export default {
       width: 40rem !important
       height: 30rem !important
 
+
 ::v-deep .base__modal
   overflow-y: hidden
   background: rgba(156, 163, 175, 0.32)
@@ -86,10 +87,10 @@ export default {
       justify-content: center
       align-items: center
       width: auto
-      max-width: 90vw;
+      max-width: 90vw
       height: auto
       border-radius: 3.5rem
-      padding: 3.5rem
+      padding: 2.5rem
 
 
       .main
@@ -99,7 +100,7 @@ export default {
         input
           border-radius: 2rem
           background-color: var(--gray-100)
-          padding: 1rem 1.25rem
+          //padding: 1rem 1.25rem
           border: none
 
           &::placeholder
@@ -109,10 +110,21 @@ export default {
         font-size: 1.75rem
         line-height: 1.75rem
         display: block
-        margin-left: 1rem
+        //margin-left: 1rem
         color: var(--gray-600)
         padding: 0.5rem 0
         font-family: CraftworkSans, serif
+
+::v-deep .large-modal
+  .modal-dialog
+    .modal-content
+      max-width: 70rem !important
+
+@media screen and (max-width: 1200px)
+  ::v-deep .large-modal
+    .modal-dialog
+      .modal-content
+        max-width: 90vw !important
 
 
 @media screen and (min-width: 500px)

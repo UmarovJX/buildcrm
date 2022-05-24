@@ -488,7 +488,7 @@ export default {
 <style lang="sass" scoped>
 
 ::v-deep .b-sidebar
-  filter: drop-shadow(-16px 0px 64px rgba(0, 0, 0, 0.16)) drop-shadow(-16px 0px 24px rgba(0, 0, 0, 0.06));
+  filter: drop-shadow(-16px 0px 64px rgba(0, 0, 0, 0.16)) drop-shadow(-16px 0px 24px rgba(0, 0, 0, 0.06))
 
   &.b-sidebar-right
     border-radius: 56px 0 0 56px

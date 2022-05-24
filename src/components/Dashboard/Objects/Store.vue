@@ -427,9 +427,11 @@
       </div>
 
       <!--        <create-block v-if="disabled.block.create" :data-object="object" :balcony="building_balcony_price" :currency="getCurrency" @InsertBlock="InsertBlock" @RemoveBlock="disabledBlock"></create-block>-->
+
       <!--        <edit-block v-if="disabled.block.edit" :data-object="object" :balcony="building_balcony_price" :currency="getCurrency" :block_preview="edit.block" @CancelEditBlock="CancelEditBlock" @SaveEditBlock="saveEditBlock"></edit-block>-->
+
+      <!--      v-if="step === 4"-->
       <create-discount
-          v-if="step === 4"
           :object="object"
           @RemoveDiscount="disabled.discount.create = false"
           @SaveDiscount="SaveDiscount"
@@ -611,6 +613,8 @@ export default {
     //     edit: false,
     //     blocks: []
     // });
+
+    this.$bvModal.show("modal-create-discount");
 
     this.fetchCurrency(this);
     this.fetchCompanies(this);

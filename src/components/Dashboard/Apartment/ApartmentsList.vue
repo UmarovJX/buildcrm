@@ -426,7 +426,7 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api"
 
 export default {
-  name:'ApartmentList',
+  name: 'ApartmentList',
   components: {
     "filter-form": Filter,
     "reserve-add": ReserveAdd,
@@ -1005,7 +1005,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .booking__button {
   background-color: #fab005 !important;
 }
@@ -1061,10 +1061,12 @@ table tbody th {
 }
 
 .apartment-list-filter {
-  @media screen and (max-width: 576px) {
-    .btn {
-      width: 100%;
-    }
+
+@media screen and (max-width: 576px) {
+  .btn {
+    width: 100%;
   }
+}
+
 }
 </style>

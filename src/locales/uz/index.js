@@ -620,7 +620,7 @@ export default {
             contract: 'Rasmiylashtirilgan',
             disable: 'Mavjud emas',
 
-        }
+        },
     },
 
 

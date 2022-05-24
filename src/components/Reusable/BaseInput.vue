@@ -152,9 +152,7 @@ export default {
     background-color: var(--gray-100);
   }
 
-  &:hover {
-    background-color: var(--gray-200);
-  }
+
 
   input {
     width: 95%;
@@ -168,6 +166,14 @@ export default {
     &::placeholder {
       font-weight: 600;
       color: var(--gray-400);
+    }
+  }
+
+  &:hover {
+    background-color: var(--gray-200);
+
+    input {
+      background-color: var(--gray-200) !important;
     }
   }
 
