@@ -288,7 +288,7 @@ export default {
       type: Object,
       default: () => {
       }
-    }
+    },
   },
 
   data: () => ({
@@ -321,7 +321,7 @@ export default {
         {
           type: 'other_price',
           amount: null,
-          currency: 'USD',
+          currency: 'usd',
           floors: []
         }
       ],
@@ -339,15 +339,12 @@ export default {
   },
   watch: {
     discount: {
-      handler(old, last) {
-        if (old !== last) {
-
-          this.editDiscount()
-        }
-      },
       deep: true,
       immediate: true,
-    }
+      handler() {
+        this.editDiscount()
+      }
+    },
   },
   computed: {
     tariffType() {
@@ -360,8 +357,7 @@ export default {
   },
   methods: {
     editDiscount() {
-      console.log(this.discount);
-      if (this.discount) {
+      if (Object.keys(this.discount).length) {
         const {prepay, type, amount, prices} = this.discount
         this.tariff.prepay = prepay
 
@@ -390,18 +386,16 @@ export default {
       })
     },
     deleteOtherPrice(index) {
-      console.log(index);
       this.tariff.otherTariff.splice(index, 1)
     },
     deleteDefaultPrice(index) {
-      console.log(index);
       this.tariff.defaultTariff.splice(index, 1)
     },
     addDefaultPrice() {
       this.tariff.defaultTariff.push({
         type: 'default',
         amount: null,
-        currency: 'USD',
+        currency: 'usd',
         floors: []
       })
     },
@@ -409,11 +403,32 @@ export default {
       this.tariff.otherTariff.push({
         type: 'other_price',
         amount: null,
-        currency: 'USD',
+        currency: 'usd',
         floors: []
       })
     },
     closeModal() {
+      this.tariff = {
+        prepay: '',
+        type: '',
+        discount: 0,
+        defaultTariff: [
+          {
+            type: 'default',
+            amount: null,
+            currency: 'usd',
+            floors: []
+          }
+        ],
+        otherTariff: [
+          {
+            type: 'other_price',
+            amount: null,
+            currency: 'usd',
+            floors: []
+          }
+        ],
+      }
       this.$emit("RemoveDiscount");
       this.$refs["create"].closeModal()
     },
@@ -444,12 +459,10 @@ export default {
       if (this.tariffType === 'fixed') {
 
         const otherFilter = this.tariff.otherTariff.filter((item) => {
-              console.log(item.floors.length > 0, item.amount > 0, item.amount.length > 0);
               return item.floors.length > 0 && item.amount > 0
             }
         )
         const defaultFilter = this.tariff.defaultTariff.filter((item) => {
-              console.log(item.floors.length > 0, item.amount > 0, item.amount.length > 0);
               return item.floors.length > 0 && item.amount > 0
             }
         )

@@ -439,12 +439,12 @@
           @RemoveDiscount="disabled.discount.create = false"
           @SaveDiscount="SaveDiscount"
       ></create-discount>
-<!--      <edit-discount-->
-<!--          v-if="step === 4"-->
-<!--          :discount="discount_data"-->
-<!--          :object="object"-->
-<!--          @CancelDiscount="CancelDiscount"-->
-<!--      ></edit-discount>-->
+      <!--      <edit-discount-->
+      <!--          v-if="step === 4"-->
+      <!--          :discount="discount_data"-->
+      <!--          :object="object"-->
+      <!--          @CancelDiscount="CancelDiscount"-->
+      <!--      ></edit-discount>-->
       <!--        <edit-discount v-if="disabled.discount.edit" @cancelDiscount="disabled.discount.edit = false" @SaveDiscount="disabled.discount.edit = false" :data-discount="edit.discount"></edit-discount>-->
 
       <type-plan-create
@@ -529,7 +529,7 @@ export default {
     buildings: [],
 
     discounts: [],
-
+    // createNew: false,
     discount_data: {
       id: null,
       prepay_from: 0,
@@ -722,6 +722,8 @@ export default {
     },
 
     DiscountCreate() {
+      this.discount_data = {}
+      // this.createNew = true
       this.disabled.discount.create = true;
       // this.$refs['create-modal'].openModal()
       // this.$bvModal.show("modal-create-discount");

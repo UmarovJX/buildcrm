@@ -256,9 +256,9 @@ export default {
       return this.haveApartment && item.apartment?.plan
     },
     imageUrl(item) {
-      console.log(item, 'item');
+      // console.log(item, 'item');
       const {apartment} = item
-      console.log(apartment, 'apartment');
+      // console.log(apartment, 'apartment');
       if (!(this.havePlan && apartment.plan)) {
         return ''
       }
@@ -292,7 +292,7 @@ export default {
       const {id} = this.$route.params
       await api.contractV2.getContractApartments(id)
           .then(response => {
-            console.log(response.data, 'response.data');
+            // console.log(response.data, 'response.data');
             this.apartment = response.data
           })
           .catch((error) => {
