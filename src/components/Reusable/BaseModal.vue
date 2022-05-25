@@ -68,7 +68,7 @@ export default {
 
 
 ::v-deep .base__modal
-  overflow-y: hidden
+  overflow-y: auto !important
   background: rgba(156, 163, 175, 0.32)
   backdrop-filter: blur(8px)
   font-family: CraftworkSans, serif
