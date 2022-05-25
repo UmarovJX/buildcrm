@@ -1,38 +1,34 @@
 <template>
-  <div>
-    <b-modal
-        ref="base-modal"
-        title="Using Component Methods"
-        modal-class="filter__modal"
-        id="base-modal"
-        @show="filterModalOpened"
-        @hidden="hideFilterModal"
-        hide-header
-        hide-footer
-    >
-      <div class="modal__content">
-        <!--   Go Back     -->
-        <span class="d-flex align-items-center">
+  <b-modal
+      ref="base-modal"
+      title="Using Component Methods"
+      modal-class="filter__modal"
+      id="base-modal"
+      @show="filterModalOpened"
+      @hidden="hideFilterModal"
+      hide-header
+      hide-footer
+  >
+    <div class="modal__content">
+      <!--   Go Back     -->
+      <span class="d-flex align-items-center">
           <span class="go__back" @click="hideFilterModal">
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
-          <!--    Title      -->
+        <!--    Title      -->
           <span class="title"> {{ $t('contracts.filter_title') }} </span>
         </span>
 
-        <div class="modal__content-main">
-          <!--    MAIN CONTENT     -->
-          <slot/>
-
-          <!--  Modal Footer    -->
-          <div class="modal__footer">
-            <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
-            <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
-          </div>
+      <div class="modal__content-main">
+        <slot name="main"/>
+        <!--  Modal Footer    -->
+        <div class="modal__footer">
+          <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
+          <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
         </div>
       </div>
-    </b-modal>
-  </div>
+    </div>
+  </b-modal>
 </template>
 
 <script>
