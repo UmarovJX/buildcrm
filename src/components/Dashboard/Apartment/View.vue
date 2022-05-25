@@ -470,7 +470,7 @@
                       class="btn btn-primary ml-md-1 mr-0 mr-md-2"
                   >
                     <i class="far fa-ballot-check"></i>
-                    Продолжить оформление
+                      Продолжить оформление
                   </b-link>
 
                   <router-link

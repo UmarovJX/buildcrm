@@ -42,12 +42,11 @@
         <base-price-input
             ref="discount-per-square"
             class="discount-per-m2"
-            type="number"
             :label="true"
             :currency="`${$t('ye')}`"
             :placeholder="$t('apartments.view.discount_per_m2')"
-            :value="discountPriceValue"
-            :set-value="setTotalValue"
+            :value="discountPerSquare.value"
+            :permission-change="discountPerSquare.permissionChange"
             @input="changeDiscount_price"
         />
         <!--    DISCOUNT TOTAL PRICE    -->
@@ -57,9 +56,9 @@
             :label="true"
             :currency="`${$t('ye')}`"
             :placeholder="$t('apartments.view.discount_all')"
+            :value="discountSumSquare.value"
+            :permission-change="discountSumSquare.permissionChange"
             @input="setTotalDiscountPrice"
-            :value="allDiscountValue"
-            :set-value="setAllTotalValue"
         />
       </div>
 
@@ -87,11 +86,14 @@
       </div>
 
       <div class="d-flex justify-content-between">
-        <span class="property d-block color-gray-400">
+        <span
+            class="property d-block color-gray-400"
+        >
           {{ $t('apartments.view.prepayment') }} {{ calc.prepay_percente }}%
         </span>
-        <span v-if="calc.prepay_percente === 100"
-              class="price d-block color-gray-600"
+        <span
+            v-if="calc.prepay_percente === 100"
+            class="price d-block color-gray-600"
         >
           {{ pricePrettier(calc.total, 2) }} {{ $t('ye') }}
         </span>
@@ -128,7 +130,7 @@
         <span
             class="price d-block color-gray-600"
         >
-          {{ this.pricePrettier(totalDiscount, 2) }} {{ $t('ye') }}
+          {{ pricePrettier(totalDiscount, 2) }} {{ $t('ye') }}
         </span>
       </div>
 
@@ -144,8 +146,8 @@
 </template>
 
 <script>
-import BaseSelect from "@/components/Reusable/BaseSelect";
 import {formatToPrice} from "@/util/reusable";
+import BaseSelect from "@/components/Reusable/BaseSelect";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 
 export default {
@@ -181,10 +183,14 @@ export default {
         prepay_percente: 0,
         base_price: 0
       },
-      setTotalValue: false,
-      setAllTotalValue: false,
-      discountPriceValue: null,
-      allDiscountValue: null
+      discountPerSquare: {
+        value: null,
+        permissionChange: false,
+      },
+      discountSumSquare: {
+        value: null,
+        permissionChange: false,
+      }
     }
   },
   computed: {
@@ -217,7 +223,7 @@ export default {
     },
     showMonthlyCalculation() {
       return this.calc.prepay_percente !== 100
-    },
+    }
   },
   methods: {
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
@@ -264,22 +270,22 @@ export default {
     setTotalDiscountPrice(totalDiscountPrice) {
       this.calc.discount_price = totalDiscountPrice / this.apartment.plan.area
       this.initialCalc()
-      this.setTotalValue = true
+      this.discountPerSquare.permissionChange = true
       if (this.calc.discount_price) {
-        this.discountPriceValue = this.calc.discount_price.toFixed(2)
+        this.discountPerSquare.value = this.calc.discount_price.toFixed(2)
       } else {
-        this.discountPriceValue = null
+        this.discountPerSquare.value = null
       }
     },
     async changeDiscount_price(discountPrice) {
       const totalDiscount = discountPrice * this.apartment.plan.area
       this.calc.discount_price = discountPrice
       await this.initialCalc()
-      this.setAllTotalValue = true
+      this.discountSumSquare.permissionChange = true
       if (discountPrice) {
-        this.allDiscountValue = totalDiscount.toFixed(2)
+        this.discountSumSquare.value = totalDiscount.toFixed(2)
       } else {
-        this.allDiscountValue = null
+        this.discountSumSquare.value = null
       }
     },
     changeDiscount_month() {
@@ -328,13 +334,14 @@ export default {
       return this.getTotal() - this.getPrepay();
     },
     getBasePrice() {
-      let totalDiscount = this.getDiscount()
+      // let totalDiscount = this.getDiscount()
       switch (this.discount.type) {
         case 'promo':
         case 'fixed':
           return this.discount.amount * this.apartment.plan.area
         default:
-          return totalDiscount
+          return this.apartment.price
+          // return totalDiscount
       }
     },
     getTotal() {
@@ -353,7 +360,7 @@ export default {
           }
           break;
         default:
-          total = this.apartment.prices.price / total_discount;
+          total = this.apartment.prices.price / total_discount - this.totalDiscount;
           if (this.calc.discount_price) {
             total -=
                 parseFloat(this.calc.discount_price) * this.apartment.plan.area;
@@ -450,5 +457,7 @@ export default {
   background-color: var(--gray-100)
   margin-top: 1.5rem
   width: 100%
+  border: none
+  padding: 0.75rem 1.25rem
 
 </style>
