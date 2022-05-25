@@ -632,7 +632,7 @@ export default {
       try {
 
         if (this.object.id === null) {
-          const {data, status} = await api.objects.createObject(this.object)
+          const {data, status} = await api.objectsV2.createObject(this.object)
 
           if (status === 201 || status === 202) {
             this.step = 2;
