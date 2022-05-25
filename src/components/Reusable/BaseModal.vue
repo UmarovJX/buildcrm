@@ -72,14 +72,15 @@ export default {
   background: rgba(156, 163, 175, 0.32)
   backdrop-filter: blur(8px)
   font-family: CraftworkSans, serif
+  height: 100%
 
   .modal-dialog
     display: flex
     align-items: center
     justify-content: center
-    overflow-y: hidden
-    margin: 0 auto
-    height: 100%
+    overflow-y: auto
+    margin: 50px auto
+    //height: 100%
     width: 100%
 
     .modal-content
@@ -98,10 +99,10 @@ export default {
         margin: 3.5rem 0
 
         input
-          border-radius: 2rem
+          //border-radius: 2rem
           background-color: var(--gray-100)
           //padding: 1rem 1.25rem
-          border: none
+          //border: none
 
           &::placeholder
             color: var(--gray-400)
@@ -118,7 +119,7 @@ export default {
 ::v-deep .large-modal
   .modal-dialog
     .modal-content
-      max-width: 70rem !important
+      max-width: 77rem !important
 
 @media screen and (max-width: 1200px)
   ::v-deep .large-modal

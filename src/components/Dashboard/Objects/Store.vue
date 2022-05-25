@@ -307,21 +307,21 @@
                                 class="my-form__input"
                                 disabled
                                 type="text"
-                                :value="discount.prepay_from + '%'"
+                                :value="discount.prepay + '%'"
                             />
                           </div>
-                          <div class="mx-2 long-horizontal-line">
-                            &#8213;
-                          </div>
-                          <div class="">
-                            <input
-                                id="new_block_prepay_to"
-                                class="my-form__input"
-                                disabled
-                                type="text"
-                                :value="discount.prepay_to + '%'"
-                            />
-                          </div>
+                          <!--                          <div class="mx-2 long-horizontal-line">-->
+                          <!--                            &#8213;-->
+                          <!--                          </div>-->
+                          <!--                          <div class="">-->
+                          <!--                            <input-->
+                          <!--                                id="new_block_prepay_to"-->
+                          <!--                                class="my-form__input"-->
+                          <!--                                disabled-->
+                          <!--                                type="text"-->
+                          <!--                                :value="discount.prepay_to + '%'"-->
+                          <!--                            />-->
+                          <!--                          </div>-->
                         </div>
                       </div>
                     </div>
@@ -339,7 +339,7 @@
                                 class="my-form__input"
                                 disabled
                                 type="text"
-                                :value="discount.discount + '%'"
+                                :value="discount.amount + '%'"
                             />
                           </div>
                           <div>
@@ -374,7 +374,7 @@
                   class="btn btn-primary"
                   @click="DiscountCreate"
                   v-if="
-                  disabled.discount.create === false && discounts.length > 0
+                  !disabled.discount.create && discounts.length > 0
                 "
                   v-b-modal.modal-create-discount
               >
@@ -386,7 +386,7 @@
             <div
                 class="object__item object__item--inside object__item-last"
                 v-if="
-                disabled.discount.create === false && discounts.length === 0
+                disabled.discount.create && discounts.length === 0
               "
             >
               <b-link class="object__link" @click="DiscountCreate">
@@ -432,16 +432,19 @@
 
       <!--      v-if="step === 4"-->
       <create-discount
+          v-if="step === 4 && disabled.discount.create"
+          ref="create-modal"
           :object="object"
+          :discount="discount_data"
           @RemoveDiscount="disabled.discount.create = false"
           @SaveDiscount="SaveDiscount"
       ></create-discount>
-      <edit-discount
-          v-if="step === 4"
-          :discount="discount_data"
-          :object="object"
-          @CancelDiscount="CancelDiscount"
-      ></edit-discount>
+<!--      <edit-discount-->
+<!--          v-if="step === 4"-->
+<!--          :discount="discount_data"-->
+<!--          :object="object"-->
+<!--          @CancelDiscount="CancelDiscount"-->
+<!--      ></edit-discount>-->
       <!--        <edit-discount v-if="disabled.discount.edit" @cancelDiscount="disabled.discount.edit = false" @SaveDiscount="disabled.discount.edit = false" :data-discount="edit.discount"></edit-discount>-->
 
       <type-plan-create
@@ -476,7 +479,7 @@ import BuildingStore from "./Components/Store/BuildingStore";
 import BuildingList from "./Components/Store/BuildingsList";
 
 import CreateDiscount from "./Components/Discount/Create";
-import EditDiscount from "./Components/Discount/Edit";
+// import EditDiscount from "./Components/Discount/Edit";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import {mapGetters, mapActions} from "vuex";
 import api from "@/services/api";
@@ -490,7 +493,7 @@ export default {
     "buildings-list": BuildingList,
     "plans-table": TypePlanList,
     "create-discount": CreateDiscount,
-    "edit-discount": EditDiscount,
+    // "edit-discount": EditDiscount,
     BaseBreadCrumb
   },
 
@@ -614,7 +617,7 @@ export default {
     //     blocks: []
     // });
 
-    this.$bvModal.show("modal-create-discount");
+    // this.$bvModal.show("modal-create-discount");
 
     this.fetchCurrency(this);
     this.fetchCompanies(this);
@@ -667,14 +670,9 @@ export default {
     },
 
     DiscountEdit(discount) {
-      this.discount_data = {
-        id: discount.id,
-        prepay_from: discount.prepay_from,
-        prepay_to: discount.prepay_to,
-        discount: discount.discount,
-      };
-
-      this.$bvModal.show("modal-edit-discount");
+      this.discount_data = discount;
+      this.disabled.discount.create = true;
+      // this.$bvModal.show("modal-edit-discount");
     },
 
     CancelDiscount(event) {
@@ -725,7 +723,8 @@ export default {
 
     DiscountCreate() {
       this.disabled.discount.create = true;
-      this.$bvModal.show("modal-create-discount");
+      // this.$refs['create-modal'].openModal()
+      // this.$bvModal.show("modal-create-discount");
     },
 
     saveBuilding(event) {

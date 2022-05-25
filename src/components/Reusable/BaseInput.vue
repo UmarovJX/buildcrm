@@ -75,9 +75,12 @@ export default {
   computed: {
     searchInput: {
       get() {
+        console.log(this.value);
         return this.value
       },
       set(val) {
+        console.log(val);
+
         this.$emit('input', val)
       }
     }
@@ -151,7 +154,6 @@ export default {
     border: 0.25rem solid var(--gray-200);
     background-color: var(--gray-100);
   }
-
 
 
   input {
