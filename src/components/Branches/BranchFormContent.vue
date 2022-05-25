@@ -254,7 +254,7 @@ export default {
   computed: {
     managersOption() {
       const managers = this.managersList
-      if (managers.length) {
+      if (managers && managers.length) {
         return this.managersList.map((manager) => {
           return {
             value: manager.id,

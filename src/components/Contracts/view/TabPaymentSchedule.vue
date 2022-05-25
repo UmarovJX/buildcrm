@@ -601,7 +601,7 @@ export default {
     },
     increasedPrice() {
       const {overbalance} = this.warningForPayInitialPayment
-      return formatToPrice((overbalance / 100).toFixed(0))
+      return formatToPrice(overbalance, 2)
     },
     paymentTypeOptionsPermission() {
       const listOption = []

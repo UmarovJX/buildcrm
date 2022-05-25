@@ -13,6 +13,7 @@
 </template>
 
 <script>
+
 export default {
   name: "CurrencyChart",
   props: {
@@ -27,7 +28,7 @@ export default {
         'first__chart': this.context.index === 0
       }
     }
-  }
+  },
 }
 </script>
 
