@@ -538,5 +538,8 @@ export default {
   background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
 }
 
-
+.base-search-input {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
 </style>

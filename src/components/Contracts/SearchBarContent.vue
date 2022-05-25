@@ -50,24 +50,6 @@
         <div class="modal__content-main">
           <div class="filter__inputs">
 
-            <!--    Object Selection      -->
-            <!--
-                  <div class="filter__inputs-input">
-                    <b-form-select v-model="filter.object_id" class="inline" :options="objectOptions">
-                      <template #first>
-                        <b-form-select-option
-                            :value="null"
-                            disabled
-                        >
-                        <span class="disabled__option">
-                          Название объекта
-                        </span>
-                        </b-form-select-option>
-                      </template>
-                    </b-form-select>
-                  </div>
-            -->
-
             <base-multiselect
                 :default-values="filter.object_id"
                 :options="objectOptions"
@@ -96,26 +78,6 @@
                 </template>
               </base-form-tag-input>
             </div>
-
-            <!--    Contract Date    -->
-            <!--            <div class="filter__inputs-input d-flex justify-content-between">
-                          <span class="placeholder">{{ $t('contracts.agreement_date') }}</span>
-                          <input
-                              type="date"
-                              v-model="filter.date"
-                              class="input__date"
-                          >
-                          <date-picker
-                              id="filter-by-date"
-                              v-model="filter.date"
-                              type="date"
-                              value-type="format"
-                              format="YYYY-MM-DD"
-                              placeholder="Select date range"
-                              class="input__date"
-                              range
-                          ></date-picker>
-                        </div>-->
 
             <div class="mt-3">
               <base-date-picker

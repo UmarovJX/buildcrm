@@ -1,0 +1,32 @@
+::v-deep .table__list {
+  max-height: none;
+
+  table {
+    color: var(--gray-600);
+
+    thead tr th {
+      font-family: CraftworkSans, serif;
+      font-weight: 600;
+      line-height: 14px;
+      letter-spacing: 1px;
+      color: var(--gray-400) !important;
+      padding: 1.25rem 1rem;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+  }
+
+  .table.b-table[aria-busy=true] {
+    opacity: 1 !important;
+  }
+}
+
+::v-deep .row__head__bottom-border {
+  border-bottom: 2px solid var(--gray-200) !important;
+}
+
+::v-deep .row__body__bottom-border:not(:last-child) {
+  border-bottom: 2px solid var(--gray-200) !important;
+}

@@ -435,7 +435,7 @@ export default {
       currentPage: 1,
       showLoading: false,
       selectMode: "single",
-      unsfinishedContracts: [],
+      unfinishedContracts: [],
       contract: {},
       selectable: true,
       selected: {

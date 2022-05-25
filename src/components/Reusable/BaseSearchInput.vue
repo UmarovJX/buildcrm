@@ -97,13 +97,11 @@ export default {
 
 <style lang="scss" scoped>
 .search__content {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  width: 100%;
+  width: auto;
   display: flex;
 
   &-input {
-    width: 75%;
+    width: 100%;
     height: 3.5rem;
     border: 0.25rem solid transparent;
     border-radius: 2rem;
@@ -184,9 +182,9 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   transform: translateY(-60%);
 }
 
-@media (max-width: 996px) {
-  .search__content-input {
-    width: 60%;
-  }
-}
+//@media (max-width: 996px) {
+//  .search__content-input {
+//    width: 60%;
+//  }
+//}
 </style>

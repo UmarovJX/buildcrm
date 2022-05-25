@@ -1,5 +1,8 @@
 <template>
-  <div class="filter__inputs-input select-container" :class="error ? 'error' : ''">
+  <div
+      class="filter__inputs-input select-container"
+      :class="[{'error':error,'justify-content-center align-items-center':!label}]"
+  >
     <span v-if="value && label" class="input-label">{{ placeholder }}</span>
     <select
         :name="name"
@@ -96,9 +99,9 @@ export default {
 
 .base-select
   border: none
-  width: 95%
-  height: 100%
-  padding: 0.25rem 1.25rem 1rem 1.25rem
+  //width: 95%
+  //padding: 0.25rem 1.25rem 1rem 1.25rem
+  padding-right: 0.5rem
   overflow: hidden
   background-color: transparent
   -moz-appearance: none
@@ -139,10 +142,13 @@ export default {
     height: 3.5rem
     background-color: var(--gray-100)
     border-radius: 2rem
-    width: 100%
+    //width: 100%
     border: .25rem solid transparent
     color: var(--gray-600)
     position: relative
+    padding-left: 1.5rem
+    padding-right: 1.5rem
+
 
     ::placeholder
       color: var(--gray-600)

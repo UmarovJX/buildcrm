@@ -153,6 +153,7 @@ export default {
     selling_price: 'Sotuv narxi',
     payment_discount: "to'lov turi",
     by_price: "{price} so`mdan",
+    contract_number_or_full_name: 'Shartnoma raqami yoki FIO',
     by_price_m2: "{price} so`m/M.dan",
     selected_variant: "Tanlangan to'lov turi",
 

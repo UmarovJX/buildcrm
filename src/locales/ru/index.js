@@ -136,6 +136,7 @@ export default {
     selling_price: 'Цена продажи',
     payment_discount: 'Вариант оплаты',
     by_price: `По {price} сум`,
+    contract_number_or_full_name: 'Номер договора или ФИО',
     by_price_m2: "По {price} сум/M.",
     selected_variant: "Выбранный вариант оплаты",
 
