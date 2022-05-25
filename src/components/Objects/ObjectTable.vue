@@ -401,6 +401,11 @@ export default {
           label: this.$t('apartments.list.area'),
           sortable: true,
         },
+        {
+          key: "balcony",
+          label: this.$t('objects.create.plan.balcony_area'),
+          sortable: true,
+        },
         // {
         //   key: "price_area",
         //   label: this.$t('apartments.list.price'),
@@ -477,7 +482,7 @@ export default {
     async fetchContractList() {
       this.showLoading = true
       let query = sortObjectValues(this.query)
-      const queryArrayFareList = ['area', 'rooms', 'floors', 'number', 'object', 'blocks']
+      const queryArrayFareList = ['area', 'rooms', 'floors', 'number', 'object', 'blocks','status']
 
       const queryPair = Object.entries(query)
       queryPair.forEach(([key, value]) => {
