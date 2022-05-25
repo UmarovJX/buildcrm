@@ -1,176 +1,55 @@
 <template>
   <main class="app-content">
     <!--  FILTER CONTENT  -->
-    <filter-content
-        :query="query"
-        :default-type-of-view="typeOfView"
-        @change-view-type="changeViewType"
-        @change-date="changeCalendarDate"
-        @sort-items="filterDebts"
-        @go-to-today="showCurrentDay"
-        @reset-filter-fields="disableFilter"
-    />
+    <filter-content/>
 
-    <!--  TABLE UI  -->
-    <template v-if="showListOfDebtorsTable">
-      <b-table
-          :busy="appLoading"
-          :items="tableItems"
-          :fields="fields"
-          :empty-text="$t('no_data')"
-          @row-clicked="showDebtorViewModal"
-          class="table__list"
-          thead-tr-class="row__head__bottom-border"
-          tbody-tr-class="row__body__bottom-border cursor-pointer"
-          show-empty
-          borderless
-          responsive
-          sticky-header
-          sort-icon-left
-      >
-
-        <!--  LOADING ANIMATION    -->
-        <template #table-busy>
-          <base-loading/>
-        </template>
-
-        <!--  SHOW EMPTY MESSAGE WHEN CONTENT NOT FOUND   -->
-        <template class="text-center" #empty>
-          <div class="d-flex justify-content-center align-items-center flex-column not__found">
-            <p class="head">Должники не были найдены</p>
-            <p>Попробуйте ввести другие данные для поиска</p>
-          </div>
-        </template>
-      </b-table>
-
-      <!-- PAGINATION   -->
-      <base-pagination
-          v-if="tableItemsExist"
-          :pagination-count="tablePagination.total"
-          :pagination-current="tablePagination.current"
-          @change-page="changeCurrentPage"
-          @change-view="changeCountOfView"
-      />
-    </template>
-
-    <!-- MONTHLY UI   -->
-    <base-huge-calendar-ui
-        class="mt-4"
-        v-if="showMonthly"
-        :items="month.items"
-        :starter="month.starter"
-        :get-full-name="getFullName"
-        @show-debtor-view-modal="showDebtorViewModal"
+    <b-table
+        :busy="appLoading"
+        :items="items"
+        :fields="fields"
+        :empty-text="$t('no_data')"
+        @row-clicked="clickRowAction"
+        class="table__list"
+        thead-tr-class="row__head__bottom-border"
+        tbody-tr-class="row__body__bottom-border cursor-pointer"
+        show-empty
+        borderless
+        responsive
+        sticky-header
+        sort-icon-left
     >
-    </base-huge-calendar-ui>
 
-    <!--  WEEKLY UI   -->
-    <weekly-debts-ui
-        class="mt-4"
-        v-if="showWeeklyDebts"
-        :items="week.items"
-        :get-full-name="getFullName"
-        @show-debtor-view-modal="showDebtorViewModal"
-    />
-
-    <base-loading v-if="appLoading"/>
-    <!--  DEBTOR VIEW MODAL  -->
-    <base-right-modal
-        ref="debtor-view-modal"
-    >
-      <template #modal-title>
-        <span class="pl-3 modal-title">
-          {{ $t('payments.contract') }}
-          <span class="color-violet-600">{{ debtorViewModalItem.order.contract }}</span>
-        </span>
+      <!--  LOADING ANIMATION    -->
+      <template #table-busy>
+        <base-loading/>
       </template>
 
-      <div class="contract-details">
-        <p class="contract-details-title">{{ $t('contract_details') }}</p>
-        <!--  CLIENT INFORMATION      -->
-        <output-information
-            :property="`${ $t('client') }`"
-            :value="getFullName(debtorViewModalItem.client)"
-            class="mt-4 mb-4"
-        />
-        <!--    PHONE NUMBER    -->
-        <output-information
-            :property="`${ $t('phone') }`"
-            :value="phonePrettier(debtorViewModalItem.client.phone)"
-            class="mt-4 mb-4"
-        />
-        <!--   CLIENT TYPE     -->
-        <output-information
-            :property="`${ $t('client_type') }`"
-            :value="getClientType(debtorViewModalItem.order)"
-            class="mt-4 mb-4"
-        />
-        <!--   CONTRACT PRICE     -->
-        <output-information
-            :price="true"
-            :property="`${ $t('contract_price') }`"
-            :value="pricePrettier(debtorViewModalItem.amount)"
-            class="mt-4 mb-4"
-        />
-        <!--   INITIAL PRICE     -->
-        <output-information
-            :price="true"
-            :property="`${ $t('payments.initial_fee') }`"
-            value="700 000 000"
-            class="mt-4 mb-4"
-        />
-        <!--   INSTALLMENT PRICE    -->
-        <output-information
-            :price="true"
-            :property="`${ $t('payments.installment') } ( 12 ${ $t('month') })`"
-            value="200 000 000"
-            class="mt-4 mb-4"
-        />
-      </div>
-
-      <!--    DEBT DETAILS    -->
-      <div class="contract-details">
-        <!--    TITLE    -->
-        <p class="contract-details-title">{{ $t('debt_details') }}</p>
-        <!--   DEBT PRICE    -->
-        <output-information
-            :price="true"
-            :property="`${ $t('debt') }`"
-            :value="pricePrettier(debtorViewModalItem.amount - debtorViewModalItem.amount_paid)"
-            class="mt-4 mb-4"
-        />
-        <!--   DEBT DATE    -->
-        <output-information
-            :property="`${ $t('date') }`"
-            :value="formatDateWithDot(debtorViewModalItem.date)"
-            class="mt-4 mb-4"
-        />
-      </div>
-
-      <template #modal-footer>
-        <router-link
-            class="d-flex align-items-center justify-content-center go-to-contract"
-            :to="{ name: 'contracts-view', params:{ id:debtorViewModalItem.order.uuid } }"
-        >
-          {{ $t('go_to_contract') }}
-        </router-link>
+      <!--  SHOW EMPTY MESSAGE WHEN CONTENT NOT FOUND   -->
+      <template class="text-center" #empty>
+        <div class="d-flex justify-content-center align-items-center flex-column not__found">
+          <p class="head">Должники не были найдены</p>
+          <p>Попробуйте ввести другие данные для поиска</p>
+        </div>
       </template>
-    </base-right-modal>
+    </b-table>
+
+    <!-- PAGINATION   -->
+    <base-pagination
+        v-if="itemsExist"
+        :pagination-count="pagination.total"
+        :pagination-current="pagination.current"
+    />
+
   </main>
 </template>
 
 <script>
 // import BaseCalendarNavigation from "@/components/Reusable/Calendar/BaseCalendarNavigation";
-import {formatDateWithDot, formatToPrice, phonePrettier, sortInFirstRelationship} from "@/util/reusable";
-import {dateConvertor, dateProperties, formatDateToYMD} from "@/util/calendar";
-import {debtorsV2} from "@/services/api";
+import api from "@/services/api";
+import {formatToPrice} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 import FilterContent from "@/components/Debtors/FilterContent";
-import BaseHugeCalendarUi from "@/components/Debtors/BaseHugeCalendarUi";
-import BaseRightModal from "@/components/Reusable/BaseRightModal";
-import OutputInformation from "@/components/Elements/outputs/OutputInformation";
-import WeeklyDebtsUi from "@/components/Debtors/WeeklyDebtsUi";
 
 export default {
   name: "Debtors",
@@ -178,48 +57,15 @@ export default {
     // BaseCalendarNavigation,
     BaseLoading,
     BasePagination,
-    FilterContent,
-    BaseHugeCalendarUi,
-    BaseRightModal,
-    OutputInformation,
-    WeeklyDebtsUi
+    FilterContent
   },
   data() {
-    const hasStarterMoment = this.$route.query.hasOwnProperty('starter_moment')
-    const {month, year} = dateProperties(new Date())
-    let starter = formatDateToYMD(new Date(year, month, 1))
-    if (hasStarterMoment) {
-      starter = this.$route.query.starter_moment
-    }
     return {
-      list: {
-        items: [],
-        pagination: {
-          total: 1,
-          current: 1
-        },
+      items: [],
+      pagination: {
+        total: 1,
+        current: 1
       },
-      month: {
-        starter,
-        items: []
-      },
-      week: {
-        starter,
-        items: []
-      },
-      day: {
-        starter,
-        items: [],
-        pagination: {
-          total: 1,
-          current: 1
-        },
-      },
-      debtorViewModalItem: {
-        order: {},
-        client: {}
-      },
-      typeOfView: 'week', /* list / month / week / day */
       appLoading: false
     }
   },
@@ -227,7 +73,7 @@ export default {
     fields() {
       return [
         {
-          key: "order.contract",
+          key: "contract",
           label: this.$t("contracts.table.contract"),
         },
         {
@@ -236,377 +82,63 @@ export default {
           formatter: (client) => client.last_name.lotin + ' ' + client.first_name.lotin
         },
         {
-          key: "client.phone",
-          label: this.$t("contracts.table.phone_number"),
-          formatter: (phone) => phonePrettier(phone)
+          key: "phone",
+          label: this.$t("contracts.table.phone_number")
         },
         {
-          key: "amount",
+          key: "status",
+          label: this.$t("contracts.table.status"),
+        },
+        {
+          key: "payments.transaction_price",
           label: this.$t("contracts.table.cost"),
           formatter: (price) => formatToPrice(price) + ' ' + this.$t('ye')
         },
         {
+          key: "object",
+          label: this.$t("contracts.table.object"),
+          formatter: (object) => object.name
+        },
+        {
           key: "date",
           label: this.$t("contracts.table.date"),
-          formatter: (date) => formatDateWithDot(date)
         },
-        /*
-          {
-            key: "object",
-            label: this.$t("contracts.table.object"),
-            formatter: (object) => object.name
-          },
-        */
+        {
+          key: "actions",
+          label: '',
+        }
       ]
     },
-    tableItems() {
-      if (this.typeOfView === 'day') {
-        return this.day.items
-      }
-      return this.list.items
-    },
-    tablePagination() {
-      if (this.typeOfView === 'day') {
-        return this.day.pagination
-      }
-      return this.list.pagination
-    },
-    tableItemsExist() {
-      return this.tableItems.length > 0
-    },
-    showListOfDebtorsTable() {
-      return this.type === 'list'
-    },
-    showMonthly() {
-      return this.typeOfView === 'month' && this.month.items.length
-    },
-    showWeeklyDebts() {
-      return this.typeOfView === 'week' && this.week.items.length
-    },
-    query() {
-      return Object.assign({}, this.$route.query)
-    },
-    type() {
-      switch (this.typeOfView) {
-        case 'month':
-        case 'week': {
-          return 'calendar'
-        }
-        default: {
-          return 'list'
-        }
-      }
+    itemsExist() {
+      return this.items.length > 0
     }
   },
-  watch: {
-    'month.starter'(moment) {
-      this.setStarterMoment(moment)
-      this.initDebtorUi()
-    },
-    'week.starter'(moment) {
-      this.setStarterMoment(moment)
-      this.initDebtorUi()
-    },
-    'day.starter'(moment) {
-      this.setStarterMoment(moment)
-      this.initDebtorUi()
-    },
-    '$route.query.price_from'() {
-      this.initDebtorUi()
-    },
-    '$route.query.price_to'() {
-      this.initDebtorUi()
-    },
-    '$route.query.date'() {
-      this.initDebtorUi()
-    },
-  },
   created() {
-    this.initStarterMoment()
-    this.initDebtorUi()
+    this.fetchItems()
   },
   methods: {
-    phonePrettier: (phone) => formatToPrice(phone),
-    pricePrettier: (price) => formatToPrice(price),
-    formatDateWithDot,
-    getFullName(client) {
-      if (client && Object.keys(client).length) {
-        const {first_name, last_name} = client
-        const language = this.$i18n.locale === 'ru' ? 'kirill' : 'lotin'
-        return last_name[language] + ' ' + first_name[language]
-      }
-      return ''
-    },
-    getClientType(order) {
-      if (order.client_type) {
-        return this.$t('familiar')
-      } else {
-        return this.$t('unfamiliar')
-      }
-    },
-    changeTypeOfView(type) {
-      this.typeOfView = type
-    },
-    initStarterMoment() {
-      const hasStarterTime = this.query.hasOwnProperty('starter_moment')
-      if (hasStarterTime) {
-        this.setStarterByTypeOfView(this.query.starter_moment)
-      } else {
-        const starter_moment = formatDateToYMD(new Date())
-        this.changeRouterQuery({starter_moment})
-      }
-    },
-    setStarterMoment(starter_moment) {
-      this.changeRouterQuery({starter_moment})
-    },
-    async initDebtorUi() {
-      const {starterPoint: monthStarter, endPoint: monthEnd} = this.getDateDistance(41, this.month.starter)
-      const {starterPoint: weekStarter, endPoint: weekEnd} = this.getDateDistance(6, this.week.starter)
-      const sortQuery = sortInFirstRelationship(this.query)
-
-      let params = {
-        type: this.type
-      }
-
-      if (this.typeOfView === 'month') {
-        params.date = [monthStarter.ymd, monthEnd.ymd]
-      } else if (this.typeOfView === 'week') {
-        params.date = [weekStarter.ymd, weekEnd.ymd]
-      }
-
-      params = {...params, ...sortQuery}
-      const items = await this.fetchItems(params)
-      switch (this.typeOfView) {
-        case 'list': {
-          await this.initListItems(items)
-          break
-        }
-        case 'month': {
-          await this.initMonthItems(items)
-          break
-        }
-        case 'week': {
-          await this.initWeekItems(items)
-          break
-        }
-        case 'day': {
-          await this.initDayItems(items)
-          break
-        }
-      }
-    },
-    async fetchItems(params) {
-      this.appLoading = true
-      return await debtorsV2.fetchDebtorsList(params)
-          .then((response) => response.data)
+    async fetchItems() {
+      this.appLoading = false
+      await api.contractV2.fetchContractsList()
+          .then((response) => {
+            this.items = response.data.items
+            this.pagination = response.data.pagination
+          })
           .catch((error) => {
             this.toastedWithErrorCode(error)
-            return []
           })
           .finally(() => {
             this.appLoading = false
           })
     },
-    getDateDistance(distanceLength, ymd) {
-      const moment = dateConvertor(ymd)
-      const getMomentDate = moment.getDate()
-      const getCurrentDate = moment.getDay()
-      let countOfBackDate = (getCurrentDate - 1)
-      if (countOfBackDate === -1) {
-        countOfBackDate = 6
-      }
-      const getStarterPoint = dateConvertor(moment).setDate(getMomentDate - countOfBackDate)
-      const starterPoint = dateConvertor(getStarterPoint)
-      const getStarterPointDate = starterPoint.getDate()
-      const getEndPoint = dateConvertor(starterPoint).setDate(getStarterPointDate + distanceLength)
-      const endPoint = dateConvertor(getEndPoint)
-      return {
-        starterPoint: {
-          date: starterPoint,
-          ymd: formatDateToYMD(starterPoint)
-        },
-        endPoint: {
-          date: endPoint,
-          ymd: formatDateToYMD(endPoint)
-        }
-      }
-    },
-    initListItems({items, pagination}) {
-      this.list.items = items
-      this.list.pagination = pagination
-    },
-    initMonthItems(items) {
-      const {starterPoint} = this.getDateDistance(41, this.month.starter)
-      let loopItems = []
-      loopItems.push({
-        ymd: starterPoint.ymd,
-        dayOfMonth: starterPoint.date.getDate(),
-        dayOfWeek: starterPoint.date.getDay(),
-        debts: items[starterPoint.ymd],
-        show: false
-      })
-      for (let i = 1; i < 42; i++) {
-        const nextMoment = starterPoint.date.setDate(starterPoint.date.getDate() + 1)
-        const loopDate = dateConvertor(nextMoment)
-        const loopPoint = formatDateToYMD(loopDate)
-        loopItems.push({
-          ymd: loopPoint,
-          dayOfMonth: loopDate.getDate(),
-          dayOfWeek: loopDate.getDay(),
-          debts: items[loopPoint],
-          show: false
-        })
-      }
-      this.month.items = loopItems
-    },
-    initWeekItems(items) {
-      const {starterPoint} = this.getDateDistance(6, this.week.starter)
-      let loopItems = []
-      loopItems.push({
-        ymd: starterPoint.ymd,
-        dayOfMonth: starterPoint.date.getDate(),
-        dayOfWeek: starterPoint.date.getDay(),
-        debts: items[starterPoint.ymd],
-        show: false
-      })
-      for (let i = 1; i < 7; i++) {
-        const nextMoment = starterPoint.date.setDate(starterPoint.date.getDate() + 1)
-        const loopDate = dateConvertor(nextMoment)
-        const loopPoint = formatDateToYMD(loopDate)
-        loopItems.push({
-          ymd: loopPoint,
-          dayOfMonth: loopDate.getDate(),
-          dayOfWeek: loopDate.getDay(),
-          debts: items[loopPoint],
-          show: false
-        })
-      }
-      this.week.items = loopItems
-    },
-    initDayItems({items, pagination}) {
-      this.day.items = items
-      this.day.pagination = pagination
-    },
-    changeCurrentPage(page) {
-      this.changeRouterQuery({
-        page
-      })
-    },
-    changeCountOfView(limit) {
-      this.changeRouterQuery({
-        limit
-      })
-    },
-    changeViewType(type) {
-      this.typeOfView = type
-      const starter = this.query.starter_moment
-      const {year, month} = dateProperties(dateConvertor(starter))
-      if (type === 'day') {
-        this.changeRouterQuery({
-          date: [starter, starter]
-        })
-      } else {
-        const starter = formatDateToYMD(new Date(year, month, 1))
-        this.changeRouterQuery({
-          date: undefined,
-          starter_moment: starter
-        })
-        // this.month.starter = starter
-        // this.week.starter = starter
-      }
-      this.initDebtorUi()
-    },
-    showDebtorViewModal(debt) {
-      this.debtorViewModalItem = debt
-      this.$refs['debtor-view-modal'].show()
-    },
-    changeCalendarDate(lastDate) {
-      const {year, month, dayOfMonth, ymd} = dateProperties(lastDate)
-      switch (this.typeOfView) {
-        case 'month': {
-          this.month.starter = formatDateToYMD(new Date(year, month, 1))
-          this.month.items = []
-          break
-        }
-        case 'week': {
-          this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
-          this.week.items = []
-          break
-        }
-        case 'day': {
-          this.day.starter = ymd
-          this.changeRouterQuery({
-            date: [this.day.starter, this.day.starter]
-          })
-          this.day.items = []
-        }
-      }
-    },
-    filterDebts({date, price_from, price_to, client_type}) {
-      const type = this.typeOfView
-      const query = {price_from, price_to, client_type}
-      for (let [key, value] of Object.entries(query)) {
-        if (value === null) {
-          query[key] = undefined
-        }
-      }
-      switch (type) {
-        case 'month':
-        case 'week' : {
-          this.changeRouterQuery(query)
-          break
-        }
-        default: {
-          if (date === null) {
-            query.date = undefined
-          } else {
-            query.date = date
-          }
-          this.changeRouterQuery(query)
-        }
-      }
-    },
-    showCurrentDay() {
-      const {month, year} = dateProperties(new Date())
-      const firstOfCurrentDay = formatDateToYMD(new Date(year, month, 1))
-      this.setStarterByTypeOfView(firstOfCurrentDay)
-    },
-    disableFilter() {
-      const resetQuery = {
-        date: undefined,
-        price_from: undefined,
-        price_to: undefined,
-        client_type: undefined
-      }
+    clickRowAction() {
 
-      if (this.type === 'calendar') {
-        delete resetQuery.date
-      }
+    },
+    changeCurrentPage() {
 
-      this.changeRouterQuery(resetQuery)
     },
-    setStarterByTypeOfView(moment) {
-      switch (this.typeOfView) {
-        case 'month': {
-          this.month.starter = moment
-          break
-        }
-        case 'week': {
-          this.week.starter = moment
-          break
-        }
-        case 'day': {
-          this.day.starter = moment
-        }
-      }
-    },
-    changeRouterQuery(query) {
-      this.$router.push({
-        query: {
-          ...this.query,
-          ...query
-        }
-      })
+    changeCountOfView() {
+
     }
   }
 }
@@ -614,28 +146,4 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../assets/scss/reusable/table-depend-on-design";
-
-.go-to-contract {
-  width: 100%;
-  border-radius: 2rem;
-  background-color: var(--gray-100);
-  color: var(--gray-600);
-  padding: 1rem 0;
-}
-
-.contract-details {
-  margin-top: 3.5rem;
-
-  &-title {
-    font-size: 1.5rem;
-    color: var(--gray-400);
-    font-family: CraftworkSans, serif;
-  }
-}
-
-.modal-title {
-  font-size: 1.5rem;
-  color: var(--gray-600);
-  font-family: CraftworkSans, serif;
-}
 </style>
