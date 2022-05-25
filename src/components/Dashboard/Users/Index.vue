@@ -393,7 +393,6 @@ export default {
     },
 
     clickManager(data) {
-      // console.log(data);
       this.manager_id = data.item.uuid;
       this.editHistoryContext = data.item
     },
