@@ -1,34 +1,38 @@
 <template>
-  <b-modal
-      ref="base-modal"
-      title="Using Component Methods"
-      modal-class="filter__modal"
-      id="base-modal"
-      @show="filterModalOpened"
-      @hidden="hideFilterModal"
-      hide-header
-      hide-footer
-  >
-    <div class="modal__content">
-      <!--   Go Back     -->
-      <span class="d-flex align-items-center">
+  <div>
+    <b-modal
+        ref="base-modal"
+        title="Using Component Methods"
+        modal-class="filter__modal"
+        id="base-modal"
+        @show="filterModalOpened"
+        @hidden="hideFilterModal"
+        hide-header
+        hide-footer
+    >
+      <div class="modal__content">
+        <!--   Go Back     -->
+        <span class="d-flex align-items-center">
           <span class="go__back" @click="hideFilterModal">
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
-        <!--    Title      -->
+          <!--    Title      -->
           <span class="title"> {{ $t('contracts.filter_title') }} </span>
         </span>
 
-      <div class="modal__content-main">
-        <slot name="main"/>
-        <!--  Modal Footer    -->
-        <div class="modal__footer">
-          <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
-          <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
+        <div class="modal__content-main">
+          <!--    MAIN CONTENT     -->
+          <slot/>
+
+          <!--  Modal Footer    -->
+          <div class="modal__footer">
+            <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
+            <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
+          </div>
         </div>
       </div>
-    </div>
-  </b-modal>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -159,4 +163,42 @@ export default {
   }
 }
 
+.modal__footer {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+
+  .clear__button {
+    border: none;
+    outline: none;
+    color: var(--gray-600);
+    padding: 1rem 4rem;
+    font-size: 1.2rem;
+    border-radius: 2rem;
+    background-color: var(--gray-100);
+  }
+
+  .search__button {
+    border: none;
+    outline: none;
+    color: #FFFFFF;
+    font-size: 1.2rem;
+    padding: 1rem 4rem;
+    border-radius: 2rem;
+    background-color: var(--violet-600);
+  }
+}
+
+.go__back {
+  width: 56px;
+  height: 56px;
+  border-radius: 100%;
+  background-color: var(--gray-100);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
 </style>
