@@ -17,10 +17,7 @@
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
           <!--    Title      -->
-          <slot name="modal-title"/>
-          <span v-if="!hasModalTitleSlot" class="title">
-            {{ $t(title) }}
-          </span>
+          <span class="title"> {{ $t('contracts.filter_title') }} </span>
         </span>
 
         <div class="modal__content-main">
@@ -28,8 +25,7 @@
           <slot/>
 
           <!--  Modal Footer    -->
-          <slot name="modal-footer"/>
-          <div v-if="!hasFooterModal" class="modal__footer">
+          <div class="modal__footer">
             <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
             <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
           </div>
@@ -47,40 +43,24 @@ export default {
   components: {
     BaseArrowLeftIcon
   },
-  props: {
-    title: {
-      type: String,
-      default: 'contracts.filter_title'
-    }
-  },
-  emits: ['show', 'reset-fields', 'start-filtering'],
-  computed: {
-    hasModalTitleSlot() {
-      return !!this.$slots['modal-title']
-    },
-    hasFooterModal() {
-      return !!this.$slots['modal-footer']
-    }
-  },
   methods: {
     show() {
-      this.$refs['base-modal'].show()
+      this.$bvModal.show('base-modal')
     },
     hide() {
-      this.$refs['base-modal'].hide()
+      this.$bvModal.hide('base-modal')
     },
     clearFilter() {
-      this.$emit('reset-fields')
+
     },
     searchByFilterField() {
-      this.$emit('start-filtering')
-      this.hide()
+
     },
     filterModalOpened() {
-      this.$emit('show')
+
     },
     hideFilterModal() {
-      this.hide()
+
     }
   }
 }
