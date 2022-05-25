@@ -78,7 +78,7 @@ export default {
     display: flex
     align-items: center
     justify-content: center
-    overflow-y: auto
+    overflow-y: auto !important
     margin: 50px auto
     //height: 100%
     width: 100%
