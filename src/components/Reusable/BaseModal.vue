@@ -116,6 +116,14 @@ export default {
         padding: 0.5rem 0
         font-family: CraftworkSans, serif
 
+::v-deep .base__modal .modal-dialog
+  display: flex
+  align-items: center
+  justify-content: center
+  overflow-y: auto
+  margin: 50px auto
+  width: 100%
+
 ::v-deep .large-modal
   .modal-dialog
     .modal-content

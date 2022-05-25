@@ -367,14 +367,16 @@ export default {
         } else {
           this.tariffIndex = 0
         }
+        if (prices.length) {
+          prices.forEach((item) => {
+            if (item.type === 'default') {
+              this.tariff.defaultTariff.unshift(item)
+            } else {
+              this.tariff.otherTariff.unshift(item)
+            }
+          })
+        }
 
-        prices.forEach(item => {
-          if (item.type === 'default') {
-            this.tariff.defaultTariff = [item]
-          } else {
-            this.tariff.otherTariff = [item]
-          }
-        })
       }
     },
     getFloors() {
