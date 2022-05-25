@@ -852,11 +852,6 @@ export default {
 }
 
 
-::v-deep {
-
-}
-
-
 @media (max-width: 1200px) {
   .add-inputs {
     width: 50rem;
