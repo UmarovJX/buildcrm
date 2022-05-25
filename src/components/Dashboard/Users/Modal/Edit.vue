@@ -305,7 +305,7 @@ export default {
     async submitForm() {
       this.getLoading = true
       try {
-        // console.log(this.managerId, 'this.managerId');
+        console.log(this.managerId, 'this.managerId');
         const response = await api.userV2.updateUserData(this.managerId, this.manager)
         this.toasted(response.data.message, "success");
         this.$nextTick(() => {

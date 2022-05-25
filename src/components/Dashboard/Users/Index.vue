@@ -4,7 +4,7 @@
 
       <div class="d-flex align-items-center">
         <base-search-input placeholder="ФИО, телефон, email" @trigger-input="setSearchValue"/>
-        <base-button v-if="getPermission.users.create"
+        <base-button v-if="getPermission.users && getPermission.users.create"
                      design="violet-gradient mb-3"
                      :text="$t('add')"
                      v-b-modal.modal-create>
@@ -64,7 +64,7 @@
           <template #cell(objects)="data">
 
             <span>
-              <span v-for="object in showByCollapse(data.item)" :key="object.id">
+              <span v-for="object in showByCollapse(data.item)" :key="object.uuid">
                 {{ object.name }},
               </span>
               <div v-if="data.item.objects.length > 3 && !data.item.toggleCollapse"
@@ -117,11 +117,11 @@
       </div>
 
       <create-modal
-          v-if="getPermission.users.create"
+          v-if="getPermission.users && getPermission.users.create"
           @CreateManager="CreateManager"
       ></create-modal>
       <edit-modal
-          v-if="getPermission.users.update"
+          v-if="manager_id && getPermission.users.update"
           :manager-id="manager_id"
           :edit-history-context="editHistoryContext"
           @EditManager="EditManager"
@@ -391,6 +391,7 @@ export default {
     },
 
     clickManager(data) {
+      // console.log(data);
       this.manager_id = data.item.uuid;
       this.editHistoryContext = data.item
     },
