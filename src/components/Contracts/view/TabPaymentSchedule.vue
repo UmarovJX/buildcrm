@@ -98,6 +98,13 @@
                   class="w-50 mr-3 content__form__select"
                   :class="{'warning__border':validationWarnings.amount}"
               >
+                <base-price-input
+                    :value="appendPayment.amount"
+                    :placeholder="`${ $t('payments.table.balance') }`"
+                    @input="appendPayment.amount = parseFloat($event)"
+                    class="w-100"
+                />
+                <!--
                 <base-numeric-input
                     v-model="appendPayment.amount"
                     :currency="`${$t('ye')}`"
@@ -107,6 +114,7 @@
                     :placeholder="$t('payments.table.balance')"
                     class="w-100"
                 ></base-numeric-input>
+                -->
               </ValidationProvider>
               <ValidationProvider
                   name="payment_type"
@@ -458,7 +466,6 @@ import ImportPaymentsModal from "@/components/Contracts/view/ImportPaymentsModal
 import CurrencyChart from "@/components/Contracts/view/CurrencyChart";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
@@ -467,6 +474,7 @@ import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
+import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
 
@@ -475,7 +483,7 @@ export default {
   components: {
     ModifyPaymentTransaction,
     ImportPaymentsModal,
-    BaseNumericInput,
+    BasePriceInput,
     BaseArrowRightIcon,
     BaseArrowDownIcon,
     BaseArrowLeftIcon,

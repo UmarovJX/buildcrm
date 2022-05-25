@@ -22,11 +22,7 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                {{
-                  order.company && order.company.type && order.company.type.name
-                      ? order.company.type.name.kr
-                      : ""
-                }}
+                {{order.company && order.company.type && order.company.type.name ? order.company.type.name.kr : "" }}
                 "{{ order.company ? order.company.name : "" }}"<br/>
                 {{ order.company.first_name }} {{ order.company.last_name }}
                 {{ order.company.second_name }} <br/>
@@ -51,9 +47,8 @@
                 <div
                     class="mb-3 ml-auto col-md-5 d-flex justify-content-end flex-column"
                 >
-                  <label class="d-block" for="type_client">{{
-                      $t("apartments.agree.type_client")
-                    }}</label>
+                  <label class="d-block" for="type_client">
+                    {{ $t("apartments.agree.type_client") }}</label>
                   <select
                       class="form-control"
                       id="type_client"
