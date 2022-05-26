@@ -289,6 +289,10 @@ export default {
       default: () => {
       }
     },
+    visible: {
+      type: Boolean,
+      default: () => false
+    }
   },
 
   data: () => ({
@@ -303,8 +307,8 @@ export default {
     tariffIndex: 0,
     floors: [],
     price: null,
-    currencyOptions: ["uzs", "usd"],
-    currency: 'uzs',
+    currencyOptions: ["UZS", "USD"],
+    currency: 'UZS',
     tariff: {
       prepay: '',
       type: '',
@@ -313,7 +317,7 @@ export default {
         {
           type: 'default',
           amount: null,
-          currency: 'usd',
+          currency: 'USD',
           floors: []
         }
       ],
@@ -321,7 +325,7 @@ export default {
         {
           type: 'other_price',
           amount: null,
-          currency: 'usd',
+          currency: 'USD',
           floors: []
         }
       ],
@@ -338,13 +342,23 @@ export default {
     this.getFloors()
   },
   watch: {
-    discount: {
-      deep: true,
+    // discount: {
+    //   deep: true,
+    //   immediate: true,
+    //   handler() {
+    //     this.editDiscount()
+    //   }
+    // },
+    visible: {
       immediate: true,
-      handler() {
-        this.editDiscount()
+      handler(val) {
+        console.log(val);
+        if (val) {
+          this.editDiscount()
+        }
       }
-    },
+
+    }
   },
   computed: {
     tariffType() {
@@ -376,7 +390,6 @@ export default {
             }
           })
         }
-
       }
     },
     getFloors() {
@@ -397,7 +410,7 @@ export default {
       this.tariff.defaultTariff.push({
         type: 'default',
         amount: null,
-        currency: 'usd',
+        currency: 'USD',
         floors: []
       })
     },
@@ -405,7 +418,7 @@ export default {
       this.tariff.otherTariff.push({
         type: 'other_price',
         amount: null,
-        currency: 'usd',
+        currency: 'USD',
         floors: []
       })
     },
@@ -418,7 +431,7 @@ export default {
           {
             type: 'default',
             amount: null,
-            currency: 'usd',
+            currency: 'USD',
             floors: []
           }
         ],
@@ -426,7 +439,7 @@ export default {
           {
             type: 'other_price',
             amount: null,
-            currency: 'usd',
+            currency: 'USD',
             floors: []
           }
         ],
@@ -484,7 +497,7 @@ export default {
         }
       }
 
-      if (checkTariff) {
+      if (checkTariff && !Object.keys(this.discount).length) {
         try {
           await api.objects.createDiscount(this.object.id, filteredData).then((res) => {
             if (res.status === 201) {
@@ -492,6 +505,8 @@ export default {
               this.$refs["create"].closeModal()
               // this.$bvModal.hide("modal-create-discount");
               this.clearDiscount();
+              this.toasted('discount created', 'success');
+
             }
           }).catch((error) => {
             if (error.status === 422) {
@@ -505,6 +520,29 @@ export default {
           this.toastedWithErrorCode(this.error);
         }
 
+      } else {
+        // filteredData = {...filteredData, id: this.discount.id}
+        try {
+          await api.objects.updateDiscount(this.object.id, this.discount.id, filteredData).then((res) => {
+            if (res.status === 201) {
+              this.$emit("SaveDiscount", res.data);
+              this.$refs["create"].closeModal()
+              // this.$bvModal.hide("modal-create-discount");
+              this.clearDiscount();
+              this.toasted('discount update', 'success');
+
+            }
+          }).catch((error) => {
+            if (error.status === 422) {
+              this.error = true;
+              this.errors = error.response.data;
+              this.toastedWithErrorCode(error);
+            }
+
+          })
+        } catch {
+          this.toastedWithErrorCode(this.error);
+        }
       }
 
     },

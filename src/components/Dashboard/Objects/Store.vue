@@ -432,9 +432,10 @@
 
       <!--      v-if="step === 4"-->
       <create-discount
-          v-if="step === 4 && disabled.discount.create"
+          v-if="(step === 4 && disabled.discount.create)"
           ref="create-modal"
           :object="object"
+          :visible="disabled.discount.create"
           :discount="discount_data"
           @RemoveDiscount="disabled.discount.create = false"
           @SaveDiscount="SaveDiscount"
@@ -632,7 +633,7 @@ export default {
       try {
 
         if (this.object.id === null) {
-          const {data, status} = await api.objects.createObject(this.object)
+          const {data, status} = await api.objects  .createObject(this.object)
 
           if (status === 201 || status === 202) {
             this.step = 2;
