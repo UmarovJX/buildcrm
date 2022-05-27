@@ -69,6 +69,7 @@ export function debounce(fn, delay) {
 
 export function sortObjectValues(obj) {
     const loopPackage = {}
+
     for (let [key, value] of Object.entries(obj)) {
         if (value) {
             loopPackage[key] = value
@@ -109,6 +110,7 @@ export function sortInFirstRelationship(obj) {
         }
     }
     return loopPackage
+
 }
 
 export function clearObjectProperties(context) {

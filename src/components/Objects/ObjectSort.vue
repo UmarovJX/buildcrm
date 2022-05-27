@@ -320,6 +320,7 @@ export default {
       currencyOptions: ["UZS", "USD"],
       areaOptions: 'M2',
       currency: 'UZS',
+      timeoutId: null,
     }
   },
   computed: {
@@ -336,7 +337,7 @@ export default {
     },
     form: {
       handler() {
-        this.filterApartments()
+        this.filterDebounce()
       },
       deep: true,
       immediate: false
@@ -348,6 +349,14 @@ export default {
   },
 
   methods: {
+    filterDebounce(debounceDuration = 500) {
+      if (this.timeoutId !== null) {
+        clearTimeout(this.timeoutId)
+      }
+      this.timeoutId = setTimeout(() => {
+        this.filterApartments()
+      }, debounceDuration)
+    },
     selectOutput(array, outputBy = 'name') {
       const selectedArray = array.map(arr => {
         const fullContext = this.filterFields.blocks.find(block => block.id === arr)
@@ -395,6 +404,7 @@ export default {
     filterApartments() {
       const values = sortInFirstRelationship(this.form)
       const params = this.$route.params
+
       this.$router.push({
         query: {
           // ...this.$route.query,
@@ -402,7 +412,6 @@ export default {
         },
         params
       })
-
       this.clearButton = !!Object.keys(values).length
     },
     setApartmentNumbers(apartments) {

@@ -75,12 +75,9 @@ export default {
   computed: {
     searchInput: {
       get() {
-        console.log(this.value);
         return this.value
       },
       set(val) {
-        console.log(val);
-
         this.$emit('input', val)
       }
     }
