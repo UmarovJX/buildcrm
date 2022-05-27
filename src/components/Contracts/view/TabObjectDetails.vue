@@ -39,8 +39,8 @@
               </svg>
             </div>
             <div class="object__details_info_card_text">
-              <span>{{ $t('object.home') }}</span>
-              <span>{{ item.apartment.floor }}</span>
+              <span>{{ $t('object.sort.block') }}</span>
+              <span>{{ item.object.name }}</span>
             </div>
           </div>
 
@@ -87,7 +87,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.number_level') }}</span>
-              <span>{{ item.apartment.floor }}</span>
+              <span>{{ item.apartment.floors }}</span>
             </div>
           </div>
 
