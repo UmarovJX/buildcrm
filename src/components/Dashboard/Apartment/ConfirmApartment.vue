@@ -483,6 +483,7 @@ export default {
     this.expiry_at = expired;
 
     const time = new Date(current) - new Date(expired);
+    console.log(time);
     if (time > 0) {
       this.timeElapsedHandler();
     }
@@ -614,7 +615,7 @@ export default {
 
     timeElapsedHandler() {
       console.log("Time is up!");
-      // this.expiredConfirm();
+      this.expiredConfirm();
     },
 
     async expiredConfirm() {

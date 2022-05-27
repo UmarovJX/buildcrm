@@ -32,7 +32,7 @@
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label>{{ $t('pc') }}</label>
-            <b-form-input disabled value=""/>
+            <b-form-input disabled :value="companyDetails.payment_account"/>
           </div>
           <div class="client__details_info_card">
             <label>{{ $t('date') }}</label>
@@ -54,7 +54,7 @@
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label>{{ $t('mfo') }}</label>
-            <b-form-input disabled :value="otherDetails.mfo" id="firstname"/>
+            <b-form-input disabled :value="companyDetails.mfo" id="firstname"/>
           </div>
           <div class="client__details_info_card">
             <label>{{ $t('status') }}</label>
