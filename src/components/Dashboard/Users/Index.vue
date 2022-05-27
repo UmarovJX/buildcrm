@@ -188,7 +188,6 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseArrowDownIcon";
 import {mapGetters} from "vuex";
 
-
 export default {
   name: 'Users',
   components: {

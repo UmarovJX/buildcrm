@@ -9,6 +9,7 @@ export default {
     remove_payment: "Удалить оплату ?",
     deleted: "Удалено",
     successfully: 'Успешно!',
+    payment_change: "Платеж изменен",
     other: 'Другие',
     booked: 'Забронировать',
     not_for_sale: "Hе продается",
@@ -40,6 +41,8 @@ export default {
     usd: "$",
     _usd: 'USD',
     uzs: 'UZS',
+    price_from: `от {msg} сум`,
+    price_from_m2: `от {msg} сум/м<sup>2</sup>`,
     general: "Общие",
     edit_password: "Изменить пароль",
     profile: 'Профиль',
@@ -78,6 +81,7 @@ export default {
     error: "Ошибка!",
     view_map: 'Показать на карте',
     object_map: 'Локация объекта',
+    object_create: 'Добавить объект',
     main: 'Основные',
     passport: 'Паспортные данные',
     builder: 'Застройщик',
@@ -643,6 +647,9 @@ export default {
         booking: 'Бронирование',
         make_it_main_contract: 'Сделать основным договором',
         unfinished_contract: 'Незавершенный контракт',
+        view_apartments: 'квартиры',
+        view_level: 'этажей',
+
         deal_template: {
             name: 'Шаблон договора',
             type: 'Тип',
@@ -745,6 +752,7 @@ export default {
         canceled_contract: "Контракт расторгнуть",
         payment_success: "Оплата успешно принята",
         payment_success_added: "Оплата успешно создана",
+        payment_list_add: 'Успешно добавлено в список платежей',
 
         text_cancel_agree: "Вы действительно хотите закрыть?",
         text_agree: "Вы действительно хотите заключить договор ?",

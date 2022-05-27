@@ -27,6 +27,7 @@ export default {
     remove_payment: "To'lov o'chirilsinmi ?",
     deleted: "O'chirildi",
     successfully: 'Muvaffaqiyatli!',
+    payment_change: "To'lov tahrirlandi",
     other: 'Boshqa',
     booked: 'Band qilingan',
     not_for_sale: "Sotilmaydi",
@@ -58,6 +59,8 @@ export default {
     usd: "$",
     _usd: 'USD',
     uzs: 'UZS',
+    price_from: `{msg} so'm dan`,
+    price_from_m2: `{msg} so'm/m<sup>2</sup> dan`,
     general: "Umumiy",
     edit_password: "Parolni o'zgartirish",
     profile: 'Profil',
@@ -98,6 +101,7 @@ export default {
     error: "Xatolik!",
     view_map: "Xaritada ko'rsatish",
     object_map: "Obyekt joylashuvi",
+    object_create: 'Obyekt yaratish',
     main: 'Asosiy',
     passport: "Pasport ma'lumotlar",
     builder: 'Quruvchi',
@@ -637,6 +641,8 @@ export default {
         booking: 'Band qilish',
         make_it_main_contract: 'Asosiy shartnoma qilib belgilash',
         unfinished_contract: 'Tugallanmagan shartnomalar',
+        view_apartments: 'xonadonlar',
+        view_level: 'qavatlar',
 
         deal_template: {
             name: 'Shartoma andozasi',
@@ -738,6 +744,8 @@ export default {
         canceled_contract: "Shartnoma bekor qilindi",
         payment_success: "To'lov muvaffaqiyatli qabul qilindi",
         payment_success_added: "To'lov muvaffaqiyatli qo'shildi",
+        payment_list_add: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+
         success_create_payment: "Hisob raqam qo'shildi",
         success_update_payment: "Hisob raqam yangilandi",
         text_cancel_agree: "Rostdan ham bekor qilishni xoxlaysizmi?",

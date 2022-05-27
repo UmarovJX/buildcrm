@@ -362,7 +362,7 @@ export default {
       fields: [
         {
           key: "number",
-          label: this.$t('object.sort.number_rooms'),
+          label: this.$t('object.sort.number_flat'),
           sortable: true,
         },
         // {
@@ -482,7 +482,7 @@ export default {
     async fetchContractList() {
       this.showLoading = true
       let query = sortObjectValues(this.query)
-      const queryArrayFareList = ['area', 'rooms', 'floors', 'number', 'object', 'blocks','status']
+      const queryArrayFareList = ['area', 'rooms', 'floors', 'number', 'object', 'blocks', 'status']
 
       const queryPair = Object.entries(query)
       queryPair.forEach(([key, value]) => {

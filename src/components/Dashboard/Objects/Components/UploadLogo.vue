@@ -26,6 +26,7 @@
               type="file"
               @change="posterFile($event)"
               class="form-control"
+              accept="image/*"
               id="image"
           />
         </div>

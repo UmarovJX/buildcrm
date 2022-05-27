@@ -101,12 +101,15 @@
             </div>
             <div class="card-content">
               <div class="card-block">
-                <p class="card-block__title">{{ object.apartments_count }} квартиры</p>
-                <p class="card-block__subtitle price">от {{ priceFormat(object.apartment_price) }} сум</p>
+                <p class="card-block__title">{{ object.apartments_count }} {{ $t('objects.view_apartments') }} </p>
+                <p class="card-block__subtitle price">
+                  {{ $t('price_from', {msg: priceFormat(object.apartment_price)}) }}</p>
               </div>
               <div class="card-block">
-                <p class="card-block__title">{{ object.floors_count }} этажей</p>
-                <p class="card-block__subtitle">от {{ priceFormat(object.apartment_price_m2) }} сум/м<sup>2</sup></p>
+                <p class="card-block__title">{{ object.floors_count }} {{ $t('objects.view_level') }}</p>
+                <p class="card-block__subtitle"
+                   v-html="$t('price_from_m2', {msg: `${priceFormat(object.apartment_price_m2)}`})"
+                />
               </div>
             </div>
           </router-link>
@@ -122,7 +125,7 @@
         <div class="card">
           <div class="card-body card-empty" @click="createBlock">
             <img :src="require('@/assets/icons/icon-plus.svg')" alt="">
-            <p>Добавить объект</p>
+            <p>{{ $t('object_create') }}</p>
           </div>
         </div>
       </div>

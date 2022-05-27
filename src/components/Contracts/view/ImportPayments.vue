@@ -391,8 +391,8 @@ export default {
               name: 'contracts-view'
             })
             this.$swal({
-              title: "Muvaffaqiyatli!",
-              text: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
+              title: this.$t('successfully'),
+              text: this.$t('sweetAlert.payment_list_add'),
               icon: "success"
             })
           })
@@ -636,7 +636,7 @@ export default {
     height: 3.5rem
     letter-spacing: 1px
     text-transform: uppercase
-    //padding-left: 1rem
+//padding-left: 1rem
 
 .main__section
   .main__row

@@ -49,7 +49,7 @@
                   <td width="50%">
                     <input
                         class="form-control"
-                        v-model="role.ru"
+                        v-model="role.name.ru"
                         type="text"
                         :placeholder="$t('roles.permissions.placeholder_ru')"
                     />
@@ -63,7 +63,7 @@
                   <td width="50%">
                     <input
                         class="form-control"
-                        v-model="role.uz"
+                        v-model="role.name.uz"
                         type="text"
                         :placeholder="$t('roles.permissions.placeholder_uz')"
                     />

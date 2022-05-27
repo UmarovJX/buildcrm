@@ -53,19 +53,18 @@ export default {
       default: '#9CA3AF'
     }
   },
-  mounted() {
-    this.dateValue = this.defaultValue
-  },
-  data() {
-    return {
-      dateValue: []
+
+  computed: {
+    dateValue: {
+      get() {
+        return this.defaultValue
+      },
+      set(value) {
+        this.$emit('input', value)
+      }
     }
   },
-  watch: {
-    dateValue(value) {
-      this.$emit('input', value)
-    }
-  },
+
 }
 </script>
 

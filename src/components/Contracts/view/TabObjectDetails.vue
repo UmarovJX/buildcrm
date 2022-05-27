@@ -3,7 +3,8 @@
     <div v-for="item in apartment" :key="item.id" class="row">
       <div class="object__details_layout col-5">
         <div class="object__details_layout_img">
-          <img :src="imageUrl(item)" alt="apartment image">
+          <img v-if="imageUrl(item)" :src="imageUrl(item)" alt="apartment image">
+          <img v-else :src="require('@/assets/img/no-image.jpg')" alt="apartment image">
         </div>
         <button @click="openMapModal">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -194,8 +194,8 @@ export default {
               this.hideModal()
               this.updateContent()
               this.$swal({
-                title: "Muvaffaqiyatli!",
-                text: "To'lov tahrirlandi",
+                title: this.$t('successfully'),
+                text: this.$t('payment_change'),
                 icon: "success"
               })
             })

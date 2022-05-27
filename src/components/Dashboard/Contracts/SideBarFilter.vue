@@ -1,24 +1,24 @@
 <template>
   <b-sidebar
-    id="contracts-list-filter"
-    right
-    shadow
-    width="420px"
-    backdrop
-    :title="$t('apartments.list.filter')"
-    ref="mySidebarFilter"
-    :no-close-on-route-change="true"
+      id="contracts-list-filter"
+      right
+      shadow
+      width="420px"
+      backdrop
+      :title="$t('apartments.list.filter')"
+      ref="mySidebarFilter"
+      :no-close-on-route-change="true"
   >
     <div class="container">
       <!-- Номер контракта -->
       <label for="contract-number">{{ $t("apartments.filter.contract_number") }}: </label>
       <div class="mb-3">
         <input
-          id="contract-number"
-          class="my-form__input"
-          type="text"
-          v-model="filter.contract_number"
-          :placeholder="$t('apartments.filter.contract_number')"
+            id="contract-number"
+            class="my-form__input"
+            type="text"
+            v-model="filter.contract_number"
+            :placeholder="$t('apartments.filter.contract_number')"
         />
       </div>
 
@@ -27,16 +27,16 @@
         <label for="object-number">{{ $t("apartments.view.object") }}: </label>
         <!-- fetchObjects -->
         <select
-          id="status"
-          class="form-control"
-          v-model="filter.object_id"
-          multiple
-          style="height: 100px !important"
+            id="status"
+            class="form-control"
+            v-model="filter.object_id"
+            multiple
+            style="height: 100px !important"
         >
           <option
-            :value="obj.id"
-            v-for="obj in getObjects"
-            :key="'obj' + obj.id"
+              :value="obj.id"
+              v-for="obj in getObjects"
+              :key="'obj' + obj.id"
           >
             {{ obj.name }}
           </option>
@@ -47,15 +47,15 @@
       <div class="mb-3">
         <label for="apartment-number">{{ $t("apartments.filter.apartment_number") }}: </label>
         <b-form-tags
-          input-id="apartment-number"
-          v-model="filter.apartment_number"
-          separator=" "
-          remove-on-delete
-          tag-pills
-          inputType="tel"
-          addButtonVariant="primary"
-          addButtonText="+"
-          :placeholder="$t('apartments.filter.apartment_number')"
+            input-id="apartment-number"
+            v-model="filter.apartment_number"
+            separator=" "
+            remove-on-delete
+            tag-pills
+            inputType="tel"
+            addButtonVariant="primary"
+            addButtonText="+"
+            :placeholder="$t('apartments.filter.apartment_number')"
         ></b-form-tags>
       </div>
 
@@ -63,11 +63,11 @@
       <div class="mb-3" v-if="false">
         <label for="status">Статус: </label>
         <select
-          id="status"
-          class="form-control"
-          v-model="filter.status"
-          multiple
-          style="height: 100px !important"
+            id="status"
+            class="form-control"
+            v-model="filter.status"
+            multiple
+            style="height: 100px !important"
         >
           <option value="sold">Проданные</option>
           <option value="contract">Неоплаченные</option>
@@ -79,11 +79,11 @@
       <div class="mb-3">
         <label for="phone-number">{{ $t('apartments.agree.phone') }}: </label>
         <input
-          id="phone-number"
-          class="my-form__input"
-          type="tel"
-          v-model="filter.phone"
-          :placeholder="$t('apartments.agree.phone')"
+            id="phone-number"
+            class="my-form__input"
+            type="tel"
+            v-model="filter.phone"
+            :placeholder="$t('apartments.agree.phone')"
         />
       </div>
 
@@ -91,11 +91,11 @@
       <div class="mb-3">
         <label for="full_name">{{ $t('contracts.f_i_o') }}: </label>
         <input
-          id="full_name"
-          class="my-form__input"
-          type="tel"
-          v-model="filter.full_name"
-          :placeholder="$t('contracts.f_i_o')"
+            id="full_name"
+            class="my-form__input"
+            type="tel"
+            v-model="filter.full_name"
+            :placeholder="$t('contracts.f_i_o')"
         />
       </div>
 
@@ -103,36 +103,37 @@
       <div class="mb-3">
         <label for="filter-by-date">{{ $t('contracts.filter_with_date') }}: </label>
         <date-picker
-          id="filter-by-date"
-          v-model="filter.date"
-          type="date"
-          range
-          value-type="format"
-          format="YYYY-MM-DD"
-          placeholder="Select date range"
-          class="w-100"
+            id="filter-by-date"
+            v-model="filter.date"
+            type="date"
+            range
+            value-type="format"
+            format="YYYY-MM-DD"
+            placeholder="Select date range"
+            class="w-100"
         ></date-picker>
       </div>
     </div>
     <template #footer>
       <div class="d-flex justify-content-center align-items-center my-2">
         <button
-          class="btn btn-default mr-2 mt-0"
-          type="reset"
-          @click="filterContractsClear"
+            class="btn btn-default mr-2 mt-0"
+            type="reset"
+            @click="filterContractsClear"
         >
           <i class="far fa-times"></i> {{ $t("apartments.filter.clear") }}
         </button>
 
         <b-button
-          class="mt-0 mr-0"
-          variant="primary"
-          size="md"
-          type="button"
-          @click="contractsFilter"
+            class="mt-0 mr-0"
+            variant="primary"
+            size="md"
+            type="button"
+            @click="contractsFilter"
         >
           <i class="far fa-sliders-h mr-2"></i>
-          {{ $t("apartments.filter.filter_btn") }}</b-button
+          {{ $t("apartments.filter.filter_btn") }}
+        </b-button
         >
       </div>
     </template>
@@ -143,6 +144,7 @@
 import {mapActions, mapGetters} from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+
 export default {
   data() {
     return {
@@ -199,23 +201,23 @@ export default {
     }
 
     this.filter.contract_number = this.filtered.contract_number
-      ? this.filtered.contract_number
-      : this.filter.contract_number;
+        ? this.filtered.contract_number
+        : this.filter.contract_number;
     this.filter.full_name = this.filtered.full_name
-      ? this.filtered.full_name
-      : this.filter.full_name;
+        ? this.filtered.full_name
+        : this.filter.full_name;
     this.filter.phone = this.filtered.phone
-      ? this.filtered.phone
-      : this.filter.phone;
+        ? this.filtered.phone
+        : this.filter.phone;
     this.filter.sort_by = this.filtered.sort_by
-      ? this.filtered.sort_by
-      : this.filter.sort_by;
+        ? this.filtered.sort_by
+        : this.filter.sort_by;
     this.filter.order_by = this.filtered.order_by
-      ? this.filtered.order_by
-      : this.filter.order_by;
+        ? this.filtered.order_by
+        : this.filter.order_by;
     this.filter.page = this.filtered.page
-      ? this.filtered.page
-      : this.filter.page;
+        ? this.filtered.page
+        : this.filter.page;
     this.fetchObjects(this);
   },
 
