@@ -61,7 +61,7 @@
             <router-link :to="{
                             name: 'apartment-view',
                             params: {
-                              object: sidebarApartment.object.id,
+                              object: apartment.object.id,
                               id: apartment.uuid
                             }
                           }"
@@ -130,7 +130,7 @@
             <!--     CONTRACT VIEW         -->
             <router-link
                 v-if="permission.contract"
-                :to="{name:'contracts-view', params:{ id: apartment.order.id } }"
+                :to="{name:'contracts-view', params:{ id: sidebarApartment.order.id } }"
                 class="contract_view_btn color-white d-flex align-items-center justify-content-center"
             >
               <i class="far fa-file-signature mr-2" style="color: #FFFFFF"></i>
@@ -178,7 +178,7 @@
       <!--  MAKE A RESERVATION MODAL    -->
       <reserve
           v-if="showReservationModal"
-          :apartment="apartment.uuid"
+          :apartment="sidebarApartment.uuid"
           @CreateReserve="updateContent"
       />
 
@@ -311,10 +311,10 @@ export default {
 
       if (!this.hasApartment) return context
 
-      const {apartment, me, userPermission} = this
-      const {order} = apartment
+      const {sidebarApartment, me, userPermission} = this
+      const {order} = sidebarApartment
       const {apartments} = userPermission
-      const forSale = apartment['is_sold']
+      const forSale = sidebarApartment['is_sold']
       const authorityUser = order?.user?.id === me?.user?.id
       const rootContract = userPermission?.apartments?.root_contract
       const isMainRole = me?.role?.id === 1

@@ -215,9 +215,11 @@ export default {
     statusFilter(status) {
       if (status.length) {
         const isNotEqual = !this.compareArray(this.query.status, this.statusFilter)
+        console.log(isNotEqual, 'isNotEqual');
         if (isNotEqual) {
           const arraySatisfaction = Array.isArray(status) && status.length > 0
           if (arraySatisfaction) {
+            console.log(arraySatisfaction, 'arraySatisfaction');
             this.$router.push({
               query: {
                 ...this.query,
@@ -232,6 +234,7 @@ export default {
         this.$router.push({
           query: routeQuery
         })
+
       }
     },
     '$route.query': {
@@ -292,19 +295,25 @@ export default {
       this.statusFilter = []
     },
     compareArray(arrayOne, arrayTwo) {
+      // console.log(arrayOne, arrayTwo, 'compareArray');
       if (Array.isArray(arrayOne) && Array.isArray(arrayTwo)) {
         const arr1 = arrayOne.slice().sort()
         const arr2 = arrayTwo.slice().sort()
         const equalLength = arr1.length === arr2.length
         const isEqualByValue = arr1.every((value, index) => value === arr2[index])
+        // console.log(isEqualByValue, 'isEqualByValue');
         return equalLength && isEqualByValue
       }
       return false
     },
     compareStatus(routeQuery) {
-      const isNotEqual = routeQuery.status && !this.compareArray(routeQuery.status, this.statusFilter)
+      // console.log(routeQuery, 'compareStatus');
+      const isNotEqual = (Object.keys(routeQuery).length && routeQuery.status) && !this.compareArray(routeQuery.status, this.statusFilter)
+      // console.log(routeQuery.status, !this.compareArray(routeQuery.status, this.statusFilter));
+      // console.log(isNotEqual, 'isNotEqual');
       if (isNotEqual) {
         const isPrimitive = isPrimitiveValue(routeQuery.status)
+        // console.log(isPrimitive, 'isPrimitive');
         if (isPrimitive) {
           this.statusFilter = [routeQuery.status]
         } else {
