@@ -215,11 +215,9 @@ export default {
     statusFilter(status) {
       if (status.length) {
         const isNotEqual = !this.compareArray(this.query.status, this.statusFilter)
-        console.log(isNotEqual, 'isNotEqual');
         if (isNotEqual) {
           const arraySatisfaction = Array.isArray(status) && status.length > 0
           if (arraySatisfaction) {
-            console.log(arraySatisfaction, 'arraySatisfaction');
             this.$router.push({
               query: {
                 ...this.query,
@@ -308,12 +306,18 @@ export default {
     },
     compareStatus(routeQuery) {
       // console.log(routeQuery, 'compareStatus');
-      const isNotEqual = (Object.keys(routeQuery).length && routeQuery.status) && !this.compareArray(routeQuery.status, this.statusFilter)
-      // console.log(routeQuery.status, !this.compareArray(routeQuery.status, this.statusFilter));
-      // console.log(isNotEqual, 'isNotEqual');
+      let isNotEqual = false
+      if (Object.keys(routeQuery).length) {
+        if (routeQuery.status) {
+          if (!this.compareArray(routeQuery.status, this.statusFilter)) {
+            return isNotEqual = true
+          }
+          return isNotEqual = false
+        }
+        return isNotEqual = false
+      }
       if (isNotEqual) {
         const isPrimitive = isPrimitiveValue(routeQuery.status)
-        // console.log(isPrimitive, 'isPrimitive');
         if (isPrimitive) {
           this.statusFilter = [routeQuery.status]
         } else {
