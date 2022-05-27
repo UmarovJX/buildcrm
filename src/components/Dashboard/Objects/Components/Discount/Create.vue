@@ -307,8 +307,8 @@ export default {
     tariffIndex: 0,
     floors: [],
     price: null,
-    currencyOptions: ["UZS", "USD"],
-    currency: 'UZS',
+    currencyOptions: ["uzs", "usd"],
+    currency: 'uzs',
     tariff: {
       prepay: '',
       type: '',
@@ -317,7 +317,7 @@ export default {
         {
           type: 'default',
           amount: null,
-          currency: 'USD',
+          currency: 'usd',
           floors: []
         }
       ],
@@ -325,7 +325,7 @@ export default {
         {
           type: 'other_price',
           amount: null,
-          currency: 'USD',
+          currency: 'usd',
           floors: []
         }
       ],
@@ -352,7 +352,6 @@ export default {
     visible: {
       immediate: true,
       handler(val) {
-        console.log(val);
         if (val) {
           this.editDiscount()
         }
@@ -410,7 +409,7 @@ export default {
       this.tariff.defaultTariff.push({
         type: 'default',
         amount: null,
-        currency: 'USD',
+        currency: 'usd',
         floors: []
       })
     },
@@ -418,7 +417,7 @@ export default {
       this.tariff.otherTariff.push({
         type: 'other_price',
         amount: null,
-        currency: 'USD',
+        currency: 'usd',
         floors: []
       })
     },
@@ -431,7 +430,7 @@ export default {
           {
             type: 'default',
             amount: null,
-            currency: 'USD',
+            currency: 'usd',
             floors: []
           }
         ],
@@ -439,7 +438,7 @@ export default {
           {
             type: 'other_price',
             amount: null,
-            currency: 'USD',
+            currency: 'usd',
             floors: []
           }
         ],
@@ -500,7 +499,7 @@ export default {
       if (checkTariff && !Object.keys(this.discount).length) {
         try {
           await api.objects.createDiscount(this.object.id, filteredData).then((res) => {
-            if (res.status === 201) {
+            if (res.status === 200) {
               this.$emit("SaveDiscount", res.data);
               this.$refs["create"].closeModal()
               // this.$bvModal.hide("modal-create-discount");
@@ -524,7 +523,7 @@ export default {
         // filteredData = {...filteredData, id: this.discount.id}
         try {
           await api.objects.updateDiscount(this.object.id, this.discount.id, filteredData).then((res) => {
-            if (res.status === 201) {
+            if (res.status === 200) {
               this.$emit("SaveDiscount", res.data);
               this.$refs["create"].closeModal()
               // this.$bvModal.hide("modal-create-discount");
@@ -826,6 +825,11 @@ export default {
       }
     }
 
+  }
+
+
+  .create .base__modal input {
+    padding: 0 !important;
   }
 
 }
