@@ -40,7 +40,7 @@
             </div>
             <div class="object__details_info_card_text">
               <span>{{ $t('object.sort.block') }}</span>
-              <span>{{ item.object.name }}</span>
+              <span>{{ item.block.name }}</span>
             </div>
           </div>
 
