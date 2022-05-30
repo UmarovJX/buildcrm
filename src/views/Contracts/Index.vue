@@ -54,7 +54,7 @@
 
       <!--   Date   -->
       <template #cell(date)="data">
-        <span>{{ dateReverser(data.item.object.build_date) }}</span>
+        <span>{{ dateReverser(data.item.created_at) }}</span>
       </template>
 
       <!--   Client LFP   -->
