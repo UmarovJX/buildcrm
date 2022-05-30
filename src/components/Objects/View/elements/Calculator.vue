@@ -255,7 +255,7 @@ export default {
     async changeDiscount(discountId) {
       this.discount = this.paymentOption.find(option => option.value.id === discountId).value
       this.calc.prepay_percente = this.discount.prepay;
-      if (this.discount.prepay === 100) {
+      if (this.discount.type === 'percent' && this.discount.prepay === 100) {
         this.calc.total = this.apartment.price;
         this.calc.prepay = 100;
         this.calc.price_for_m2 = this.apartment.price_m2;
@@ -292,6 +292,7 @@ export default {
       this.monthly_price = this.getMonth()
     },
     getPrepay() {
+      // if (this.discount.type == 'percent')
       if (this.discount.prepay === 100) return 0;
 
       let total_discount = this.getDiscount();
@@ -318,7 +319,9 @@ export default {
       return (this.discount.prepay * total) / 100;
     },
     getDiscount() {
-      if (this.discount.prepay === 100) return 1;
+      if (this.discount.type === 'percent') {
+        if (this.discount.prepay === 100) return 1;
+      }
 
       return 1 - this.discount.prepay / 100
 
@@ -376,6 +379,7 @@ export default {
 
       switch (this.discount.type) {
         case "fixed":
+        case "promo":
           if (this.calc.discount_price) {
             total =
                 (this.discount.amount - parseFloat(this.calc.discount_price)) *
