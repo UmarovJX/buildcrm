@@ -203,7 +203,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            :placeholder="$t('from')"
+            :placeholder="`${ $t('from') }`"
             class="filter__price"
         ></base-numeric-input>
         <base-numeric-input
@@ -214,7 +214,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            :placeholder="$t('to')"
+            :placeholder="`${ $t('to') }`"
             class="filter__price"
         ></base-numeric-input>
       </div>
@@ -409,12 +409,13 @@ export default {
     filterApartments() {
       const values = sortInFirstRelationship(this.form)
       const params = this.$route.params
-
+      const statusQuery = this.query.status
+      let routeQuery = values
+      if (statusQuery) {
+        routeQuery.status = statusQuery
+      }
       this.$router.push({
-        query: {
-          // ...this.$route.query,
-          ...values
-        },
+        query: routeQuery,
         params
       })
       this.clearButton = !!Object.keys(values).length
