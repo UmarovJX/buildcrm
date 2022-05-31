@@ -3,7 +3,7 @@
     <div class="app-content">
 
       <div class="d-flex align-items-center">
-        <base-search-input placeholder="ФИО, телефон, email" @trigger-input="setSearchValue"/>
+        <base-search-input :placeholder="$t('users.placeholder')" @trigger-input="setSearchValue"/>
         <base-button v-if="getPermission.users && getPermission.users.create"
                      design="violet-gradient mb-3"
                      :text="$t('add')"
@@ -45,6 +45,9 @@
             </div>
           </template>
 
+          <template #head()="data">
+            <span>{{ $t(data.label) }}</span>
+          </template>
 
           <!-- INDEX COLUMN -->
           <template #cell(id)="data">
@@ -248,29 +251,29 @@ export default {
         },
         {
           key: "first_name",
-          label: this.$t("users.name"),
+          label: "users.name",
           sortable: true,
         },
         {
           key: "branch",
-          label: this.$t("users.branch"),
+          label: "users.branch",
         },
         {
           key: "objects",
-          label: this.$t("users.object"),
+          label: "users.object",
         },
         {
           key: "phone",
-          label: this.$t("users.phone"),
+          label: "users.phone",
           sortable: true,
         },
         {
           key: "role",
-          label: this.$t("users.roles"),
+          label: "users.roles",
         },
         {
           key: "email",
-          label: this.$t("users.login"),
+          label: "users.login",
           sortable: true,
         },
         {

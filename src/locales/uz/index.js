@@ -793,6 +793,7 @@ export default {
         object: "Obyekt",
         branch: "Filial",
         login: "Login",
+        placeholder: "FIO, telefon raqami, email",
     },
 
     accountants: {

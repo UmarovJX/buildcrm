@@ -804,6 +804,7 @@ export default {
         object: "Объект",
         branch: "Филиал",
         login: "Логин",
+        placeholder: "ФИО, телефон, email",
     },
 
     accountants: {
