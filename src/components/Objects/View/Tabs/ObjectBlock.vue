@@ -342,7 +342,7 @@ export default {
 
   &-item {
     color: var(--teal-500);
-    width: 100%;
+    //width: 100%;
     height: auto;
     min-height: 56px;
     //border-color: var(--gray-100);

@@ -167,6 +167,7 @@
         <base-numeric-input
             v-model.number="form.price_from"
             :currency="` `"
+            :precision="2"
             :minus="false"
             :value="null"
             currency-symbol-position="suffix"
@@ -178,6 +179,7 @@
         <base-numeric-input
             v-model.number="form.price_to"
             :currency="` `"
+            :precision="2"
             :minus="false"
             :value="null"
             currency-symbol-position="suffix"
@@ -195,6 +197,7 @@
         <base-numeric-input
             v-model.number="form.area_from"
             :currency="` `"
+            :precision="2"
             :minus="false"
             :value="null"
             currency-symbol-position="suffix"
@@ -205,6 +208,7 @@
         <base-numeric-input
             v-model.number="form.area_to"
             :currency="` `"
+            :precision="2"
             :minus="false"
             :value="null"
             currency-symbol-position="suffix"
@@ -465,6 +469,8 @@ export default {
       if (hasApartments) {
         const value = filterQuery['number']
         const isQueryPrimitive = typeof value === 'number' || typeof value === 'string'
+        console.log(isQueryPrimitive, 'isQueryPrimitive');
+
         if (isQueryPrimitive) {
           this.defaultApartments = [parseInt(value)]
         } else

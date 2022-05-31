@@ -237,7 +237,7 @@ export default {
     },
     '$route.query': {
       async handler(query) {
-        await this.compareStatus(query)
+        this.compareStatus(query)
         if (this.accessToFilter) {
           await this.filterItems(query)
         }
@@ -304,18 +304,40 @@ export default {
       }
       return false
     },
+
     compareStatus(routeQuery) {
-      // console.log(routeQuery, 'compareStatus');
-      let isNotEqual = false
-      if (Object.keys(routeQuery).length) {
-        if (routeQuery.status) {
-          if (!this.compareArray(routeQuery.status, this.statusFilter)) {
-            return isNotEqual = true
-          }
-          return isNotEqual = false
-        }
-        return isNotEqual = false
-      }
+      // console.log(routeQuery, 'routeQuery');
+      // let isNotEqual = false
+      // // if (Object.keys(routeQuery).length) {
+      // //   console.log('first if')
+      // //   if (routeQuery.status)
+      // //     console.log('second if')
+      // if (routeQuery.status && !this.compareArray(routeQuery.status, this.statusFilter))
+      //     // console.log('three if')
+      //   return isNotEqual = true
+      // // return isNotEqual = false
+      // // }
+      // console.log(isNotEqual, 'isNotEqual last');
+      //
+      // console.log(routeQuery, 'isPrimitive');
+      //
+      // if (isNotEqual) {
+      //
+      //   const isPrimitive = isPrimitiveValue(routeQuery.status)
+      //   console.log(Object.keys(isPrimitive).length, 'isPrimitive');
+      //   if (isPrimitive && Object.keys(isPrimitive).length) {
+      //     this.statusFilter = [routeQuery.status]
+      //   } else {
+      //     this.statusFilter = routeQuery.status
+      //   }
+      // }
+      // console.log(routeQuery.status, 'routeQuery.status ');
+      // if (routeQuery.status === undefined) {
+      //   this.statusFilter = []
+      // }
+
+      const isNotEqual = routeQuery.status && !this.compareArray(routeQuery.status, this.statusFilter)
+
       if (isNotEqual) {
         const isPrimitive = isPrimitiveValue(routeQuery.status)
         if (isPrimitive) {
@@ -328,6 +350,8 @@ export default {
       if (routeQuery.status === undefined) {
         this.statusFilter = []
       }
+
+
     },
     filterItems(filter, apartments = []) {
       let localApartments = []
@@ -423,8 +447,11 @@ export default {
                 if (filterQueryLength) {
                   for (let [key, value] of Object.entries(filter)) {
                     const arrayFareList = ['area', 'rooms', 'number']
+
                     const isThereFareList = arrayFareList.includes(key)
+                    console.log(isThereFareList, 'isThereFareList');
                     if (isThereFareList && isPrimitiveValue(value)) {
+                      console.log(value, 'value');
                       value = [value]
                     }
 
@@ -561,7 +588,7 @@ export default {
         this.objectName = res.data.object
         this.saveToLocalStorage(res.data)
         if (this.hasQuery) {
-          await this.compareStatus(this.query)
+          this.compareStatus(this.query)
           await this.filterItems(this.query, res.data.data)
         } else {
           this.apartments = res.data.data
@@ -596,7 +623,7 @@ export default {
               this.objectName = JSON.parse(objectInformation).name
               const apartments = JSON.parse(objectApartmentList)
               if (this.hasQuery) {
-                await this.compareStatus(this.query)
+                this.compareStatus(this.query)
                 await this.filterItems(this.query, apartments)
               } else {
                 this.apartments = apartments
