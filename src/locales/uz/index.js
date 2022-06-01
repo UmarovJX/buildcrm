@@ -149,6 +149,12 @@ export default {
     payment_discount: "to'lov turi",
     by_price: "{price} so`mdan",
     contract_number_or_full_name: 'Shartnoma raqami yoki FIO',
+    base_price_from: "So`m (dan)",
+    base_price_to: 'So`m (gacha)',
+    client: 'Foydalanuvchi',
+    debt_details: "Qarz tafsilotlari",
+    debt: 'Qarz',
+    go_to_contract: "Shartnomaga o'tish",
 
     tab_status: {
         all: "Hammasi",
