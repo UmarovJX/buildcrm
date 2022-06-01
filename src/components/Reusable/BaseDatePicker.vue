@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
+import DatePicker from "vue2-datepicker";
 
 export default {
   name: "BaseDatePicker",
@@ -53,18 +53,26 @@ export default {
       default: '#9CA3AF'
     }
   },
-
-  computed: {
-    dateValue: {
-      get() {
-        return this.defaultValue
-      },
-      set(value) {
-        this.$emit('input', value)
-      }
+  data() {
+    return {
+      dateValue: null
     }
   },
-
+  watch: {
+    dateValue(lastValue) {
+      this.$emit('input', lastValue)
+    }
+  },
+  mounted() {
+    this.initDefaultValue()
+  },
+  methods: {
+    initDefaultValue() {
+      if (this.defaultValue.length) {
+        this.dateValue = this.defaultValue
+      }
+    }
+  }
 }
 </script>
 
@@ -85,7 +93,7 @@ export default {
 
         &::placeholder {
           background-color: transparent;
-          color: var(--gray-600);
+          color: var(--gray-400);
           font-family: CraftworkSans, serif;
         }
       }

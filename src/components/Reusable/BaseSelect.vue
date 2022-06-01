@@ -122,6 +122,8 @@ export default {
   line-height: 10px
   letter-spacing: 1px
   padding: 0.5rem 1.25rem 0 1.5rem
+  //padding-top: 0.5rem
+  //padding-bottom: 0.5rem
   text-transform: uppercase
   color: var(--gray-400)
 
@@ -173,5 +175,4 @@ export default {
 
 .error
   border: .25rem solid var(--red-500) !important
-
 </style>

@@ -156,6 +156,12 @@ export default {
     contract_number_or_full_name: 'Shartnoma raqami yoki FIO',
     by_price_m2: "{price} so`m/M.dan",
     selected_variant: "Tanlangan to'lov turi",
+    base_price_from: "So`m (dan)",
+    base_price_to: 'So`m (gacha)',
+    client: 'Foydalanuvchi',
+    debt_details: "Qarz tafsilotlari",
+    debt: 'Qarz',
+    go_to_contract: "Shartnomaga o'tish",
 
     tab_status: {
         all: "Hammasi",

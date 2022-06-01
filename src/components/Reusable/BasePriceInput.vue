@@ -1,13 +1,30 @@
 <template>
-  <input
-      type="text"
-      ref="price-input"
-      :placeholder="placeholderFormat"
-      v-model="priceAmount"
-      @blur="onBlurHandler"
-      @input="onInputHandler"
-      @focus="onFocusHandler"
-  >
+  <div class="price-input-content">
+    <span
+        v-if="topPlaceholder"
+        class="top-placeholder"
+        :class="[
+            { 'hide-content': topPlaceholder },
+            { 'show-content': priceAmount }
+        ]"
+    >
+      {{ placeholderFormat }}
+    </span>
+    <input
+        type="text"
+        ref="price-input"
+        class="price-input"
+        v-bind="$attrs"
+        :placeholder="placeholderFormat"
+        v-model="priceAmount"
+        @blur="onBlurHandler"
+        @input="onInputHandler"
+        @focus="onFocusHandler"
+    >
+    <span v-if="priceAmount" @click="clearPriceAmountValue" class="delete-button">
+      <base-times-circle-icon/>
+    </span>
+  </div>
 </template>
 
 <script>
@@ -18,9 +35,14 @@ import {
   removeExcessDotAndComma,
 } from "@/util/base-input";
 import {isPrimitiveValue} from "@/util/reusable";
+import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 
 export default {
   name: "BasePriceInput",
+  inheritAttrs: false,
+  components: {
+    BaseTimesCircleIcon
+  },
   props: {
     value: {
       type: [Number, String],
@@ -72,6 +94,10 @@ export default {
     permissionChange: {
       type: Boolean,
       default: false
+    },
+    topPlaceholder: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['input', 'focus-on'],
@@ -99,6 +125,10 @@ export default {
     this.initComponent()
   },
   methods: {
+    clearPriceAmountValue() {
+      this.priceAmount = null
+      this.$emit('input', null)
+    },
     formatNumber(primitiveValue) {
       if (!primitiveValue) return
       const valueToString = primitiveValue.toString().split('')
@@ -160,7 +190,11 @@ export default {
     },
     extendEvent(eventName, eventObject) {
       const {baseVersion} = this.formatAmount(this.priceAmount)
-      this.$emit(eventName, baseVersion, eventObject)
+      let amount = baseVersion
+      if (amount) {
+        amount = parseFloat(baseVersion)
+      }
+      this.$emit(eventName, amount, eventObject)
     },
     onBlurHandler(event) {
       this.extendEvent('blur', event)
@@ -177,3 +211,46 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.price-input-content {
+  position: relative;
+}
+
+.top-placeholder {
+  font-family: CraftworkSans, serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.price-input {
+  border: none;
+  background-color: transparent;
+
+  &::placeholder {
+    color: var(--gray-400);
+  }
+}
+
+.delete-button {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: transform ease-in-out;
+}
+
+.hide-content {
+  visibility: hidden;
+}
+
+.show-content {
+  color: var(--gray-400);
+  visibility: visible;
+  padding-top: 0.5rem;
+  font-weight: 900;
+}
+</style>

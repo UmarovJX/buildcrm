@@ -139,6 +139,13 @@ export default {
     contract_number_or_full_name: 'Номер договора или ФИО',
     by_price_m2: "По {price} сум/M.",
     selected_variant: "Выбранный вариант оплаты",
+    base_price_from: 'Сумма (от)',
+    base_price_to: 'Сумма (до)',
+    client: 'Клиент',
+    debt_details: "Детали долга",
+    debt: 'Долг',
+    go_to_contract: "Перейти к договору",
+
 
     tab_status: {
         all: "Все",

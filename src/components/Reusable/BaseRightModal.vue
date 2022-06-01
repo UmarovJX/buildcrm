@@ -1,34 +1,42 @@
 <template>
-  <b-modal
-      ref="base-modal"
-      title="Using Component Methods"
-      modal-class="filter__modal"
-      id="base-modal"
-      @show="filterModalOpened"
-      @hidden="hideFilterModal"
-      hide-header
-      hide-footer
-  >
-    <div class="modal__content">
-      <!--   Go Back     -->
-      <span class="d-flex align-items-center">
+  <div>
+    <b-modal
+        ref="base-modal"
+        title="Using Component Methods"
+        modal-class="filter__modal"
+        id="base-modal"
+        @show="filterModalOpened"
+        @hidden="hideFilterModal"
+        hide-header
+        hide-footer
+    >
+      <div class="modal__content">
+        <!--   Go Back     -->
+        <span class="d-flex align-items-center">
           <span class="go__back" @click="hideFilterModal">
             <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
           </span>
-        <!--    Title      -->
-          <span class="title"> {{ $t('contracts.filter_title') }} </span>
+          <!--    Title      -->
+          <slot name="modal-title"/>
+          <span v-if="!hasModalTitleSlot" class="title">
+            {{ $t(title) }}
+          </span>
         </span>
 
-      <div class="modal__content-main">
-        <slot name="main"/>
-        <!--  Modal Footer    -->
-        <div class="modal__footer">
-          <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
-          <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
+        <div class="modal__content-main">
+          <!--    MAIN CONTENT     -->
+          <slot/>
+
+          <!--  Modal Footer    -->
+          <slot name="modal-footer"/>
+          <div v-if="!hasFooterModal" class="modal__footer">
+            <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
+            <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
+          </div>
         </div>
       </div>
-    </div>
-  </b-modal>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -39,12 +47,26 @@ export default {
   components: {
     BaseArrowLeftIcon
   },
+  props: {
+    title: {
+      type: String,
+      default: 'contracts.filter_title'
+    }
+  },
+  computed: {
+    hasModalTitleSlot() {
+      return !!this.$slots['modal-title']
+    },
+    hasFooterModal() {
+      return !!this.$slots['modal-footer']
+    }
+  },
   methods: {
     show() {
-      this.$bvModal.show('base-modal')
+      this.$refs['base-modal'].show()
     },
     hide() {
-      this.$bvModal.hide('base-modal')
+      this.$refs['base-modal'].hide()
     },
     clearFilter() {
 
@@ -56,7 +78,7 @@ export default {
 
     },
     hideFilterModal() {
-
+      this.hide()
     }
   }
 }
