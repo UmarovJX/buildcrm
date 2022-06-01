@@ -196,10 +196,12 @@ export default {
     },
 
     payments: {
+        payment_total: "Общий оплачено",
         payment: 'Сумма договора',
         course: 'Курс',
         balance: 'Остаток',
         initial_fee: 'Первоначальный взнос',
+        initial_fee_pay: 'Оплаченный первоначальный взнос',
         installment: 'Рассрочка',
         month: 'месяцев',
         course_name: 'сум',

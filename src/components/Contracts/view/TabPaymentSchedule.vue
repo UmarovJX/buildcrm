@@ -14,7 +14,13 @@
     <div class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
-        <h3 class="title">{{ $t('payments.payment_list') }}</h3>
+        <h3 class="title">
+          {{ $t('payments.payment_list') }}
+          <span class="total-payments">
+            || {{ $t('payments.payment_total') }}:
+            {{ totalPayment }}
+          </span>
+        </h3>
         <div class="d-flex">
           <base-button
               v-if="paidPermission"
@@ -589,7 +595,8 @@ export default {
       warningForPayInitialPayment: {
         price: 0,
         overbalance: 0
-      }
+      },
+      totalPayment: 0
     }
   },
   computed: {
@@ -642,7 +649,7 @@ export default {
       return {
         index: 0,
         title: this.$t('payments.payment'),
-        price: formatToPrice(payments.transaction_price?.toFixed(0)),
+        price: formatToPrice(payments.transaction_price?.toFixed(0), 2),
         bottom,
         progress: 0
       }
@@ -652,8 +659,8 @@ export default {
       return {
         index: 1,
         title: this.$t('payments.initial_fee'),
-        price: formatToPrice(initial_payment),
-        bottom: `${this.$t('payments.initial_fee')}: ${formatToPrice(initial_payment_remained)} ${this.$t('payments.course_name')}`,
+        price: formatToPrice(initial_payment, 2),
+        bottom: `${this.$t('payments.balance')}: ${formatToPrice(initial_payment_remained, 2)} ${this.$t('payments.course_name')}`,
         progress: initial_payment_percent
       }
     },
@@ -667,8 +674,8 @@ export default {
       return {
         index: 2,
         title: `${this.$t('payments.installment')} (${monthly_payments_count} ${this.$t('payments.month')})`,
-        price: formatToPrice(installment_price),
-        bottom: `${this.$t('payments.balance')} : ${formatToPrice(installment_price_remained)} ${this.$t('payments.course_name')} `,
+        price: formatToPrice(installment_price, 2),
+        bottom: `${this.$t('payments.balance')} : ${formatToPrice(installment_price_remained, 2)} ${this.$t('payments.course_name')} `,
         progress: installment_price_remained_percent
       }
     },
@@ -692,7 +699,7 @@ export default {
         {
           key: 'amount',
           label: this.$t('contracts.view.sum'),
-          formatter: (amount) => (formatToPrice(amount) + ' ' + this.$t('ye'))
+          formatter: (amount) => (formatToPrice(amount, 2) + ' ' + this.$t('ye'))
         },
         {
           key: 'type',
@@ -702,7 +709,7 @@ export default {
         {
           key: 'balance',
           label: this.$t('contracts.view.paid'),
-          formatter: (balance) => (formatToPrice(balance) + ' ' + this.$t('ye'))
+          formatter: (balance) => (formatToPrice(balance, 2) + ' ' + this.$t('ye'))
         },
         {
           key: 'status',
@@ -724,7 +731,7 @@ export default {
         {
           key: 'amount',
           label: this.$t('payments.table.balance'),
-          formatter: (amount) => (formatToPrice(amount) + ' ' + this.$t('ye'))
+          formatter: (amount) => (formatToPrice(amount, 2) + ' ' + this.$t('ye'))
         },
         {
           key: 'type',
@@ -833,6 +840,7 @@ export default {
       const {params: historyParams} = this.paymentHistory
       await api.contractV2.fetchPayments(id, historyParams)
           .then((response) => {
+            this.totalPayment = formatToPrice((response.data.total / 100).toFixed(2), 2)
             this.paymentHistory.items = response.data.items
             this.paymentHistory.pagination = response.data.pagination
           })
@@ -1084,6 +1092,9 @@ export default {
   gap: 24px;
 
   .currency__chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     //width: 306px;
     //height: 160px;
     max-width: 32rem;
@@ -1110,6 +1121,12 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .total-payments {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--violet-500);
+    }
 
     .import__button {
       background-color: var(--gray-100);

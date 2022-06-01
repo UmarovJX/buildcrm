@@ -211,10 +211,12 @@ export default {
     },
 
     payments: {
+        payment_total: "Jami to'langan",
         payment: 'Shartnoma summasi',
         course: 'Kurs',
         balance: 'Qoldiq',
         initial_fee: "Boshlang'ich to'lov",
+        initial_fee_remains: "To'langan boshlang'ich to'lov",
         installment: "Bo'lib to'lash rejasi",
         month: 'oy',
         course_name: "so'm",

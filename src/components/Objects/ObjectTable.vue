@@ -652,10 +652,12 @@ export default {
     },
 
     async toggleApartmentToSale(item) {
+      console.log(item);
       const id = this.$route.params.object
       const apartmentUID = item.id
       await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
         const updatingIndex = this.apartments.findIndex((apartment) => apartment.id === response.data.id)
+        console.log(updatingIndex, 'updatingIndex');
         if (updatingIndex !== -1) {
           this.apartments.splice(updatingIndex, 1, response.data)
         }
