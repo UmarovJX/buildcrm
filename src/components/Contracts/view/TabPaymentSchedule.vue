@@ -18,7 +18,7 @@
           {{ $t('payments.payment_list') }}
           <span class="total-payments">
             || {{ $t('payments.payment_total') }}:
-            {{ totalPayment }}
+            {{ totalPayment }} {{ $t('ye') }}
           </span>
         </h3>
         <div class="d-flex">

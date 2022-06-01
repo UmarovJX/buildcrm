@@ -374,7 +374,7 @@
                   class="btn btn-primary"
                   @click="DiscountCreate"
                   v-if="
-                  !disabled.discount.create && discounts.length > 0
+                  !disabled.discount.create
                 "
                   v-b-modal.modal-create-discount
               >
