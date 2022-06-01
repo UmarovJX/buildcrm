@@ -15,12 +15,11 @@ export default {
       type: Array,
       required: true
     },
-    defaultValue: {
-      type: [String, Number],
+    value: {
+      type: Object,
       default: null
     }
   },
-  emits: ['select'],
   data() {
     return {
       localValue: null
@@ -35,8 +34,8 @@ export default {
     }
   },
   mounted() {
-    if (this.defaultValue) {
-      this.localValue = this.defaultValue
+    if (this.value) {
+      this.localValue = this.value
     }
   }
 }
