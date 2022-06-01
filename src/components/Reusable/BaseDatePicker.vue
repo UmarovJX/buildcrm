@@ -71,9 +71,6 @@ export default {
       if (this.defaultValue.length) {
         this.dateValue = this.defaultValue
       }
-    },
-    clearField() {
-      this.dateValue = undefined
     }
   }
 }

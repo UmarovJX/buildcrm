@@ -2,23 +2,19 @@
   <div class="input-price-group">
     <!-- PRICE FROM   -->
     <base-price-input
-        ref="input-price-from"
         :currency="`${$t('ye')}`"
         :placeholder="$t('base_price_from')"
         :value="defaultFrom"
-        :permission-change="true"
         :top-placeholder="true"
         @input="price.from = $event"
         class="price-from"
     />
     <!--  PRICE TO  -->
     <base-price-input
-        ref="input-price-to"
         :currency="`${$t('ye')}`"
         :placeholder="$t('base_price_to')"
         :value="defaultTo"
         :top-placeholder="true"
-        :permission-change="true"
         @input="price.to = $event"
         class="price-to"
     />
@@ -36,11 +32,11 @@ export default {
   emits: ['input'],
   props: {
     defaultFrom: {
-      type: [String, Number],
+      type: String,
       default: null
     },
     defaultTo: {
-      type: [String, Number],
+      type: String,
       default: null
     },
   },
@@ -58,19 +54,6 @@ export default {
         this.$emit('input', value)
       },
       deep: true
-    }
-  },
-  created() {
-    this.setDefaultFields()
-  },
-  methods: {
-    setDefaultFields() {
-      this.price.to = this.defaultTo
-      this.price.from = this.defaultFrom
-    },
-    resetFields() {
-      this.$refs['input-price-from'].clearPriceAmountValue()
-      this.$refs['input-price-to'].clearPriceAmountValue()
     }
   }
 }
