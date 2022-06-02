@@ -1,16 +1,21 @@
 <template>
   <div>
     <div class="d-flex align-items-center justify-content-between flex-wrap">
-      <base-button :text="`${ $t('today') }`" @click="showTodayEvent"/>
-      <calendar-navigation/>
-      <!--      <base-search-input-->
-      <!--          class="base-search-input mr-2 mb-4"-->
-      <!--          :placeholder="`${ $t('contract_number_or_full_name') }`"-->
-      <!--      />-->
+      <base-button
+          v-if="showTodayButtonLink"
+          :text="`${ $t('today') }`"
+          @click="showTodayEvent"
+      />
+      <calendar-navigation v-if="showCalendarNavigation"/>
+      <base-search-input
+          v-if="showSearchContent"
+          class="base-search-input mr-2"
+          :placeholder="`${ $t('contract_number_or_full_name') }`"
+      />
       <div class="d-flex align-items-center">
-        <base-filter-button class="mr-2 base-filter-button mb-4" @click="openFilterContent"/>
+        <base-filter-button class="mr-2 base-filter-button" @click="openFilterContent"/>
         <bootstrap-select
-            class="mb-4 client-type"
+            class="client-type"
             :default-value="defaultTypeOfView"
             :options="viewTypes"
             @select="changeTypeOfView"
@@ -120,7 +125,7 @@
 </template>
 
 <script>
-// import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseFilterButton from "@/components/Elements/BaseFilterButton";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
@@ -133,7 +138,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 export default {
   name: "FilterContent",
   components: {
-    // BaseSearchInput,
+    BaseSearchInput,
     BaseFilterButton,
     BaseRightModal,
     BaseDatePicker,
@@ -156,6 +161,16 @@ export default {
     }
   },
   computed: {
+    showTodayButtonLink() {
+      const allowedToShow = ['month', 'week']
+      return allowedToShow.includes(this.typeOfView)
+    },
+    showSearchContent() {
+      return this.typeOfView === 'list'
+    },
+    showCalendarNavigation() {
+      return !this.showSearchContent
+    },
     defaultTypeOfView() {
       return this.viewTypes[0].value
     },
@@ -190,7 +205,7 @@ export default {
       this.$refs['filter-modal'].show()
     },
     changeTypeOfView(type) {
-      console.log(type)
+      this.typeOfView = type
     },
     showTodayEvent() {
 
