@@ -6,7 +6,10 @@
           :text="`${ $t('today') }`"
           @click="showTodayEvent"
       />
-      <calendar-navigation v-if="showCalendarNavigation"/>
+      <calendar-navigation
+          v-if="showCalendarNavigation"
+          :type-of-view="typeOfView"
+      />
       <base-search-input
           v-if="showSearchContent"
           class="base-search-input mr-2"
@@ -162,7 +165,7 @@ export default {
   },
   computed: {
     showTodayButtonLink() {
-      const allowedToShow = ['month', 'week']
+      const allowedToShow = ['month', 'week', 'day']
       return allowedToShow.includes(this.typeOfView)
     },
     showSearchContent() {
@@ -172,7 +175,7 @@ export default {
       return !this.showSearchContent
     },
     defaultTypeOfView() {
-      return this.viewTypes[0].value
+      return this.viewTypes[2].value
     },
     viewTypes() {
       return [
@@ -190,6 +193,11 @@ export default {
           id: 2,
           value: 'week',
           text: this.$t('week')
+        },
+        {
+          id: 3,
+          value: 'day',
+          text: this.$t('day')
         }
       ]
     }
