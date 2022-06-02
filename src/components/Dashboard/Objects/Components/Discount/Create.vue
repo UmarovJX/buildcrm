@@ -17,33 +17,34 @@
 
       <template #main>
         <div class="create">
-          <h5 class="create-title">Основные</h5>
+          <h5 class="create-title">{{ $t('objects.create.tariff.main') }}</h5>
           <ValidationProvider
-              name="Название тарифа"
+              :name="$t('objects.create.tariff.type_name')"
               ref="tariff-name"
               rules="required"
               v-slot="{ errors }"
               class="w-100 create-input"
               tag="div"
           >
-            <base-input type="text" class="w-100" v-model="tariff.prepay" placeholder="Название тарифа" required
+            <base-input type="text" class="w-100" v-model="tariff.prepay"
+                        :placeholder="$t('objects.create.tariff.type_name')" required
                         :label="true"/>
             <span class="error__provider" v-if="errors[0]">
               {{ errors[0] }}
             </span>
           </ValidationProvider>
           <p class="create-tab__name">
-            Тип тарифа
+            {{ $t('objects.create.tariff.type') }}
           </p>
         </div>
 
         <b-tabs v-model="tariffIndex" pills nav-class="tariff-header" content-class="tariff-item" id="tariff">
 
-          <b-tab title="Фиксированный" active>
+          <b-tab :title="$t('objects.create.tariff.fixed')" active>
 
             <div class="price-block">
 
-              <h5 class="create-title">Цены</h5>
+              <h5 class="create-title">{{ $t('objects.create.tariff.price') }}</h5>
 
               <div class="add-inputs">
                 <div v-for="(deflt,index) in tariff.defaultTariff" :key="`default`+index" class="add-inputs__row">
@@ -51,7 +52,7 @@
                   <b-dropdown left>
                     <template v-if="true" #button-content>
                       <div class="input-block">
-                        <span class="input-label">Этажи или спецификации</span>
+                        <span class="input-label">{{ $t('objects.create.tariff.floor_placeholder') }}</span>
                         <p class="input-text">
                           {{ formatSelectPlaceholder(deflt.floors) }}
                           <!--                          Этажи или спецификации-->
@@ -111,7 +112,7 @@
 
               </div>
 
-              <base-button @click="addDefaultPrice" text="Добавить цену">
+              <base-button @click="addDefaultPrice" :text="$t('objects.create.tariff.add_price')">
                 <template #left-icon>
                   <base-plus-icon fill="var(--violet-600)"/>
                 </template>
@@ -121,7 +122,7 @@
 
             <div class="price-block">
 
-              <h5 class="create-title">Цены balkoni</h5>
+              <h5 class="create-title">{{ $t('objects.create.tariff.price_balcony') }}</h5>
 
               <div class="add-inputs">
                 <div v-for="(other,index) in tariff.otherTariff" :key="`other`+index" class="add-inputs__row">
@@ -129,7 +130,7 @@
                   <b-dropdown left>
                     <template v-if="true" #button-content>
                       <div class="input-block">
-                        <span class="input-label">Этажи или спецификации</span>
+                        <span class="input-label">{{ $t('objects.create.tariff.floor_placeholder') }}</span>
                         <p class="input-text">
                           {{ formatSelectPlaceholder(other.floors) }}
                           <!--                          Этажи или спецификации-->
@@ -189,7 +190,7 @@
 
               </div>
 
-              <base-button @click="addOtherPrice" text="Добавить цену">
+              <base-button @click="addOtherPrice" :text="$t('objects.create.tariff.add_price')">
                 <template #left-icon>
                   <base-plus-icon fill="var(--violet-600)"/>
                 </template>
@@ -199,11 +200,11 @@
 
           </b-tab>
 
-          <b-tab title="Процентный">
+          <b-tab :title="$t('objects.create.tariff.percent')">
 
             <div class="price-block">
 
-              <h5 class="create-title">Цены</h5>
+              <h5 class="create-title">{{ $t('objects.create.tariff.price') }}</h5>
 
               <div class="add-inputs">
                 <div class="add-inputs__row">
@@ -224,7 +225,7 @@
                                           :state="errors[0]"
                                           currency-symbol-position="suffix"
                                           separator="space"
-                                          placeholder="Добавичный процент" class="filter__price"
+                                          :placeholder="$t('objects.create.tariff.add_percent')" class="filter__price"
                                           style="border:none"/>
 
                     </ValidationProvider>
@@ -251,8 +252,8 @@
 
       <template #footer>
         <div class="footer-btn">
-          <base-button @click="closeModal" text="Отменить"/>
-          <base-button @click="saveDiscount" class="violet-gradient" text="Добавить"/>
+          <base-button @click="closeModal" :text="$t('cancel')"/>
+          <base-button @click="saveDiscount" class="violet-gradient" :text="$t('add')"/>
         </div>
       </template>
 

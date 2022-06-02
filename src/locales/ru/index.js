@@ -724,6 +724,20 @@ export default {
             discounts: "Тарифы продаж",
 
             choose_plan: "Выберите планировку",
+
+            tariff: {
+                main: 'Оснавной',
+                type: 'Тип тарифа',
+                type_name: 'Название тарифа',
+                price: 'Narx',
+                price_balcony: 'Цена с балконом',
+                add_price: 'Добавить цену',
+                floor_placeholder: 'Этажи или спецификации',
+                add_percent: 'Добавичный процент',
+                fixed: 'Фиксированный',
+                percent: 'Процентный',
+            }
+
         },
 
         placeholder: {

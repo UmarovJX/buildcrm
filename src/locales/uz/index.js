@@ -718,6 +718,20 @@ export default {
             discounts: "Sotuv tarifi",
 
             choose_plan: "Xonadon rejasini tanlang",
+
+            tariff: {
+                main: 'Asosiy',
+                type: 'Tarif turi',
+                type_name: 'Tarif nomi',
+                price: 'Narx',
+                price_balcony: 'Balkonli narx',
+                add_price: "Narx qo'shish",
+                floor_placeholder: 'Qavatlar yoki spetsifikatsiyalar',
+                add_percent: "Qo'shiladigan foiz",
+                fixed: "Belgilangan",
+                percent: 'Foizli',
+            }
+
         },
 
         placeholder: {
