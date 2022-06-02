@@ -87,6 +87,9 @@ export default {
       this.debounceInput = newValue
     }, 350),
     debounceInput() {
+      setTimeout(() => {
+        this.focusOnSearchInput()
+      }, 100)
       if (this.type === 'text' || this.type === 'search') {
         this.toggleClearIcon()
         this.triggerInputEvent()

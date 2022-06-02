@@ -37,7 +37,7 @@
                         @click="openDetails(data.item)">
 
                 <i class="fas fa-info-circle"></i>
-                {{ $t("more_info") }}
+                {{ $t("companies.more") }}
               </b-button>
 
               <b-button

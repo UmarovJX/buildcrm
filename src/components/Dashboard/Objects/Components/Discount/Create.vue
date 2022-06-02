@@ -26,7 +26,7 @@
               class="w-100 create-input"
               tag="div"
           >
-            <base-input class="w-100" v-model="tariff.prepay" placeholder="Название тарифа" required
+            <base-input type="text" class="w-100" v-model="tariff.prepay" placeholder="Название тарифа" required
                         :label="true"/>
             <span class="error__provider" v-if="errors[0]">
               {{ errors[0] }}

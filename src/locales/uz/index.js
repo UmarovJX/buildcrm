@@ -421,9 +421,10 @@ export default {
         code: "To'lovchining ro'yxatga olish kodi",
         oked: 'Oked',
         addPayment: "Hisob qo'shish",
-        bank_name_uz: 'Название банка (Узб.)',
-        bank_name_ru: 'Название банка (Рус.)',
-        check_account: 'Расчетный счет',
+        bank_name_uz: 'Bank nomi (Узб.)',
+        bank_name_ru: 'Bank nomi (Рус.)',
+        check_account: 'Hisob raqami',
+        more: 'Kompaniya tafsilotlari',
     },
 
     apartments: {

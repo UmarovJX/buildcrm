@@ -285,7 +285,7 @@
 
                           <button
                               type="button"
-                              class="btn"
+                              class="btn btn-secondary"
                               data-toggle="collapse"
                               :data-target="'#collapseCopy' + index"
                               aria-expanded="false"

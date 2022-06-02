@@ -429,6 +429,7 @@ export default {
         bank_name_uz: 'Название банка (Узб.)',
         bank_name_ru: 'Название банка (Рус.)',
         check_account: 'Расчетный счет',
+        more: 'Реквизиты компании',
     },
 
     apartments: {
