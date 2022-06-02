@@ -112,7 +112,7 @@
                     <div>
                       <button
                           type="button"
-                          class="btn btn-danger ml-2"
+                          class="btn btn-danger ml-2 mt-0"
                           v-if="block.prices.length != 1"
                           @click="removePrice(price, index)"
                       >
