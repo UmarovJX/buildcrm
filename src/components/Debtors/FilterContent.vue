@@ -1,13 +1,21 @@
 <template>
   <div>
-    <div class="d-flex align-items-center flex-wrap">
-      <base-search-input class="base-search-input mr-2 mb-4" :placeholder="`${ $t('contract_number_or_full_name') }`"/>
-      <base-filter-button class="mr-2 base-filter-button mb-4" @click="openFilterContent"/>
-      <bootstrap-select
-          class="mb-4 client-type"
-          :options="listOptions"
-          @select="(newValue) => filter.client_type = newValue"
-      />
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+      <base-button :text="`${ $t('today') }`" @click="showTodayEvent"/>
+      <calendar-navigation/>
+      <!--      <base-search-input-->
+      <!--          class="base-search-input mr-2 mb-4"-->
+      <!--          :placeholder="`${ $t('contract_number_or_full_name') }`"-->
+      <!--      />-->
+      <div class="d-flex align-items-center">
+        <base-filter-button class="mr-2 base-filter-button mb-4" @click="openFilterContent"/>
+        <bootstrap-select
+            class="mb-4 client-type"
+            :default-value="defaultTypeOfView"
+            :options="viewTypes"
+            @select="changeTypeOfView"
+        />
+      </div>
     </div>
     <!--  FILTER MODAL  -->
     <base-right-modal ref="filter-modal">
@@ -23,7 +31,7 @@
             class="mb-4"
         />
         <bootstrap-select
-            :options="listOptions"
+            :options="viewTypes"
             @select="(newValue) => filter.client_type = newValue"
         />
       </div>
@@ -112,54 +120,80 @@
 </template>
 
 <script>
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+// import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseFilterButton from "@/components/Elements/BaseFilterButton";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import InputPriceFromTo from "@/components/Elements/Inputs/InputPriceFromTo";
 import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
 import OutputInformation from "@/components/Elements/outputs/OutputInformation";
+import CalendarNavigation from "@/components/Debtors/Elements/CalendarNavigation";
+import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: "FilterContent",
   components: {
-    BaseSearchInput,
+    // BaseSearchInput,
     BaseFilterButton,
     BaseRightModal,
     BaseDatePicker,
     InputPriceFromTo,
     BootstrapSelect,
-    OutputInformation
+    OutputInformation,
+    CalendarNavigation,
+    BaseButton
   },
   data() {
     return {
-      listOptions: [
-        {
-          text: this.$t('contracts.client_type'),
-          value: null
-        },
-        {
-          text: 'Komron',
-          value: 1,
-        },
-        {
-          text: 'Jahongir',
-          value: 2
-        }
-      ],
       filter: {
         date: null,
         price: {
           from: null,
           to: null
-        },
-        client_type: null
-      }
+        }
+      },
+      typeOfView: null
     }
   },
+  computed: {
+    defaultTypeOfView() {
+      return this.viewTypes[0].value
+    },
+    viewTypes() {
+      return [
+        {
+          id: 0,
+          value: 'list',
+          text: this.$t('list'),
+        },
+        {
+          id: 1,
+          value: 'month',
+          text: this.$t('month'),
+        },
+        {
+          id: 2,
+          value: 'week',
+          text: this.$t('week')
+        }
+      ]
+    }
+  },
+  created() {
+    this.initTypeOfView()
+  },
   methods: {
+    initTypeOfView() {
+      this.typeOfView = this.viewTypes[0].value
+    },
     openFilterContent() {
       this.$refs['filter-modal'].show()
+    },
+    changeTypeOfView(type) {
+      console.log(type)
+    },
+    showTodayEvent() {
+
     }
   }
 }

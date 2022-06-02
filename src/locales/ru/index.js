@@ -2,9 +2,6 @@ export default {
     home: {
         title: "Главная",
     },
-    xonsaroy: 'Хонсарой',
-    address_office: 'город Ташкент, Юнусабадский район, улица Янги шахар, дом 64А',
-    motto: 'Уверенный шаг к вашим мечтам!',
     quarter: 'четверть',
     of_the_year: 'года',
     no_cancel: "Нет, отменить",
@@ -46,8 +43,6 @@ export default {
     uzs: 'UZS',
     price_from: `от {msg} сум`,
     price_from_m2: `от {msg} сум/м<sup>2</sup>`,
-    price_sold_m2: 'Цена продажи за {msg}:',
-    total_price: 'Общая цена',
     general: "Общие",
     edit_password: "Изменить пароль",
     profile: 'Профиль',
@@ -55,7 +50,6 @@ export default {
     full: 'Полный',
     monthly: 'Ежемесячно',
     month: 'Месяц',
-    duration: 'Продолжителность',
     without_initial: 'Без первоначального платежа',
     payment_type: 'Способ оплаты',
     created_at: 'Время создания',
@@ -98,7 +92,7 @@ export default {
     phone: "Номер телефона",
     other_phone: "Дополнительный номер телефона",
     extra: "Дополнительный",
-    client_type: "Тип клиента",
+    client_type: "тип клиента",
     birth_day: "Дата рождения",
     series: 'СЕРИЯ',
     given: 'ВЫДАН',
@@ -143,6 +137,8 @@ export default {
     debt_details: "Детали долга",
     debt: 'Долг',
     go_to_contract: "Перейти к договору",
+    week: 'Неделя',
+    today:'Сегодня',
 
 
     tab_status: {
