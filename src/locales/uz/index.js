@@ -162,6 +162,28 @@ export default {
     go_to_contract: "Shartnomaga o'tish",
     week: 'Hafta',
     today: 'Bugun',
+    day: 'Kun',
+
+    monday: 'Dushanba',
+    tuesday: 'Seshanba',
+    wednesday: 'Chorshanba',
+    thursday: 'Payshanba',
+    friday: 'Juma',
+    saturday: 'Shanba',
+    sunday: 'Yakshanba',
+
+    january: 'Yanvar',
+    february: 'Fevral',
+    march: 'Mart',
+    april: 'Aprel',
+    may: 'May',
+    june: 'Iyun',
+    july: 'Iyul',
+    august: 'Avgust',
+    september: 'Sentyabr',
+    october: 'Oktyabr',
+    november: 'Noyabr',
+    december: 'Dekabr',
 
     tab_status: {
         all: "Hammasi",
