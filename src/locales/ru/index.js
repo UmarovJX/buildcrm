@@ -54,7 +54,7 @@ export default {
     category: 'Категория',
     full: 'Полный',
     monthly: 'Ежемесячно',
-    month: 'месяцев',
+    month: 'Месяц',
     duration: 'Продолжителность',
     without_initial: 'Без первоначального платежа',
     payment_type: 'Способ оплаты',
@@ -145,6 +145,8 @@ export default {
     debt_details: "Детали долга",
     debt: 'Долг',
     go_to_contract: "Перейти к договору",
+    week: 'Неделя',
+    today:'Сегодня',
 
 
     tab_status: {

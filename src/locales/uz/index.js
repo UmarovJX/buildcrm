@@ -162,6 +162,8 @@ export default {
     debt_details: "Qarz tafsilotlari",
     debt: 'Qarz',
     go_to_contract: "Shartnomaga o'tish",
+    week: 'Hafta',
+    today: 'Сегодня',
 
     tab_status: {
         all: "Hammasi",
