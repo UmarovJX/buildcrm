@@ -381,7 +381,7 @@ export default {
     "block.name": function () {
       if (this.block.id !== null) {
         this.disabled.create = true;
-
+        this.setFloors()
         this.updateBlock();
         if (this.block.name.length > 0 && this.block.floor > 0) {
           this.settings.btn_save = true;
