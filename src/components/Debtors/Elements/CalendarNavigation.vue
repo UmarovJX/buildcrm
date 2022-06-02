@@ -8,7 +8,7 @@
         </circle-button-generator>
 
         <!--    LEFT ICON    -->
-        <circle-button-generator>
+        <circle-button-generator class="ml-3 mr-4">
           <base-left-icon/>
         </circle-button-generator>
 
@@ -18,7 +18,7 @@
         </div>
 
         <!--   RIGHT ICON     -->
-        <circle-button-generator>
+        <circle-button-generator class="mr-3 ml-4">
           <base-right-icon/>
         </circle-button-generator>
 
@@ -47,9 +47,7 @@ export default {
     BaseRightIcon,
     BaseRightDoubleIcon
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
