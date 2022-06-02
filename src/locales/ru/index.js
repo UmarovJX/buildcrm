@@ -782,6 +782,7 @@ export default {
         success_create_payment: "Счет успешно создана",
         success_update_payment: "Счет успешно редактировано",
         success_update_company: "Компания успешно редактировано",
+        success_delete_company: "Компания успешно удалено",
         success_update_role: "Роль успешно редактирована",
         are_you_sure_delete_role:
             "Если удалите роль вы должны назначить новый роль для пользователей текущей роли",

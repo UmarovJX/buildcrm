@@ -135,7 +135,14 @@ export default {
       await api.companies.deleteCompany(id)
           .then((response) => {
             const {message} = response.data
-            this.updatedCompany({message})
+            this.fetchCompaniesList(false)
+            this.$swal({
+              title: this.$t("sweetAlert.success_delete_company"),
+              text: message,
+              icon: "success",
+              showCancelButton: false,
+              confirmButtonText: this.$t("next"),
+            })
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)

@@ -773,6 +773,8 @@ export default {
         canceled_reserve: "Bandlik bekor qilindi",
         success_create_role: "Rol muvaffaqiyatli yaratildi",
         success_update_role: "Rol muvaffaqiyatli taxrirlandi",
+        success_update_company: "Kompaniya muvaffaqiyatli o'zgartirildi",
+        success_delete_company: "Kompaniya muvaffaqiyatli o'chirildi",
         are_you_sure_delete_role: "Agar rolni o'chirmoqchi bo'lsangiz bu ro'ldagi foydalanuvchilar uchun yangi rol tanlashingiz kerak!", // 'text_cancel_contract': 'Вы действительно хотите расторгнуть контракт',
         payment_edit: "To'lovni taxrirlash",
         debtors: {
