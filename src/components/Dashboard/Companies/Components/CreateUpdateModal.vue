@@ -11,7 +11,7 @@
       <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
         <form ref="form" @submit.prevent="handleSubmit(submitForm)">
           <ValidationProvider
-              name="type"
+              :name="$t('companies.type')"
               rules="required"
               v-slot="{ errors }"
           >
