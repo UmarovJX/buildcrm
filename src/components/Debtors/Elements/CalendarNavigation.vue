@@ -3,27 +3,50 @@
     <div class="navigation-content-head w-100">
       <div class="d-flex align-items-center justify-content-center">
         <!--    LEFT DOUBLE ICON    -->
-        <circle-button-generator>
+        <circle-button-generator @click="buttonDoubleIconsTrigger(-1)">
           <base-left-double-icon/>
         </circle-button-generator>
 
         <!--    LEFT ICON    -->
-        <circle-button-generator class="ml-3 mr-4">
+        <circle-button-generator @click="buttonIconsTrigger(-1)" class="ml-3">
           <base-left-icon/>
         </circle-button-generator>
 
         <!--   MAIN CONTENT     -->
-        <div>
-          Navigation
+        <div class="pr-4 pl-4 cursor-pointer">
+          <div class="navigation-date-picker">
+            <div class="output-content d-flex justify-content-center align-items-center">
+              <div class="d-flex align-items-center justify-content-center">
+                <template v-if="typeOfView === 'day'">
+                  <!--       VIEW BY DAY         -->
+                  <span class="d-flex output-content-text">
+                    <span class="d-block">{{ dayFormat.day }}</span>
+                    <span class="d-block mr-2 ml-2">{{ dayFormat.month }}</span>
+                  <span class="d-block">{{ dayFormat.year }}</span>
+                  </span>
+                  <span class="d-block ml-2">
+                    <base-down-icon/>
+                  </span>
+                </template>
+                <template v-else>
+                  <span class="d-flex output-content-text">
+                    <span class="d-block mr-2">{{ dayFormat.month }}</span>
+                    <span class="d-block">{{ dayFormat.year }}</span>
+                  </span>
+                </template>
+              </div>
+            </div>
+            <date-picker :type="datePickerType" v-model="navigationDate"/>
+          </div>
         </div>
 
         <!--   RIGHT ICON     -->
-        <circle-button-generator class="mr-3 ml-4">
+        <circle-button-generator @click="buttonIconsTrigger(1)" class="mr-3">
           <base-right-icon/>
         </circle-button-generator>
 
         <!--    RIGHT DOUBLE ICON    -->
-        <circle-button-generator>
+        <circle-button-generator @click="buttonDoubleIconsTrigger(1)">
           <base-right-double-icon/>
         </circle-button-generator>
       </div>
@@ -37,6 +60,8 @@ import BaseRightIcon from "@/components/icons/BaseRightIcon";
 import BaseLeftDoubleIcon from "@/components/icons/BaseLeftDoubleIcon";
 import BaseRightDoubleIcon from "@/components/icons/BaseRightDoubleIcon";
 import CircleButtonGenerator from "@/components/Elements/Buttons/CircleButtonGenerator";
+import BaseDownIcon from "@/components/icons/BaseDownIcon";
+import DatePicker from "vue2-datepicker";
 
 export default {
   name: "CalendarNavigation",
@@ -45,12 +70,131 @@ export default {
     BaseLeftIcon,
     CircleButtonGenerator,
     BaseRightIcon,
-    BaseRightDoubleIcon
+    BaseRightDoubleIcon,
+    DatePicker,
+    BaseDownIcon
   },
-  methods: {}
+  props: {
+    typeOfView: {
+      type: String,
+      default: 'month'
+    }
+  },
+  data() {
+    return {
+      navigationDate: null,
+      months: [
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december',
+      ]
+    }
+  },
+  computed: {
+    dayFormat() {
+      const date = new Date(this.navigationDate)
+      const day = date.getDate()
+      const month = date.getMonth()
+      const monthToText = this.months[month]
+      const translateMonth = this.$t(monthToText)
+      const year = date.getFullYear()
+      return {
+        day,
+        month: translateMonth,
+        year
+      }
+    },
+    dateCount() {
+      return (new Date(this.navigationDate)).getDate()
+    },
+    datePickerType() {
+      if (this.typeOfView === 'month') {
+        return 'month'
+      }
+      return 'date'
+    }
+  },
+  created() {
+    this.initOutputTime()
+  },
+  methods: {
+    initOutputTime() {
+      this.navigationDate = new Date()
+    },
+    buttonDoubleIconsTrigger(count) {
+      const lastDate = new Date(this.navigationDate)
+      const date = lastDate.getDate()
+      const month = lastDate.getMonth()
+      const fullYear = lastDate.getFullYear()
+      switch (this.typeOfView) {
+        case 'day': {
+          this.navigationDate = lastDate.setDate(this.dateCount + count)
+          break
+        }
+        case 'week': {
+          this.navigationDate = new Date(fullYear, month + count, date)
+          break
+        }
+        case 'month': {
+          this.navigationDate = new Date(fullYear + count, month, date)
+        }
+      }
+    },
+    buttonIconsTrigger(count) {
+      const lastDate = new Date(this.navigationDate)
+      const date = lastDate.getDate()
+      const month = lastDate.getMonth()
+      const fullYear = lastDate.getFullYear()
+      switch (this.typeOfView) {
+        case 'day': {
+          this.navigationDate = lastDate.setDate(this.dateCount + count)
+          break
+        }
+        case 'week': {
+          this.navigationDate = lastDate.setDate(this.dateCount + count * 7)
+          break
+        }
+        case 'month': {
+          this.navigationDate = new Date(fullYear, month + count, date)
+        }
+      }
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+::v-deep .navigation-date-picker {
+  position: relative;
+  width: 100%;
 
+  .mx-icon-calendar,
+  .mx-icon-clear,
+  .mx-input {
+    visibility: hidden;
+  }
+
+  .output-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    &-text {
+      font-family: CraftworkSans, serif;
+      color: var(--gray-600);
+      font-size: 1.5rem;
+      white-space: nowrap;
+    }
+  }
+}
 </style>
