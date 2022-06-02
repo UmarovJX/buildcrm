@@ -9,9 +9,9 @@
         @show="resetModal"
     >
       <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
-        <form ref="form" @submit.stop.prevent="handleSubmit(submitForm)">
+        <form ref="form" @submit.prevent="handleSubmit(submitForm)">
           <ValidationProvider
-              name="roles"
+              name="type"
               rules="required"
               v-slot="{ errors }"
           >
@@ -21,7 +21,7 @@
             >
               <b-form-select
                   class="mb-2"
-                  id="roles"
+                  id="type"
                   :label-for="$t('companies.type')"
                   :name="$t('companies.type')"
                   v-model="company.type_id"
@@ -29,7 +29,7 @@
               >
                 <template #first>
                   <b-form-select-option
-                      :value="0"
+                      :value="null"
                       disabled
                   >
                     {{ $t("companies.type_enter") }}
@@ -108,12 +108,20 @@ export default {
         name: null,
         phone: null,
         other_phone: null,
-        type_id: 0,
+        type_id: null,
         address: null,
         code: null,
         oked: null,
       },
       providerSchema: [
+        // {
+        //   mask: '',
+        //   type: 'text',
+        //   bind: 'type',
+        //   labelFor: 'type',
+        //   rules: 'required',
+        //   label: this.$t('companies.type_id')
+        // },
         {
           mask: '',
           type: 'text',
@@ -239,7 +247,7 @@ export default {
 
     resetModal() {
       this.company = {
-        type_id: 0,
+        type_id: null,
         inn: null,
         name: null,
         phone: null,
@@ -276,6 +284,7 @@ export default {
     },
 
     submitForm() {
+      console.log(this.$refs['validation-observer'], 'submitForm');
       /*
 
           const {bank_name_ru, bank_name_uz} = this.company
