@@ -529,7 +529,8 @@ export default {
 
 .current__status {
   display: inline-flex;
-  justify-content: flex-start;
+  justify-content: center;
+  //justify-content: flex-start;
   align-items: center;
   min-width: 9rem;
   border-radius: 2rem;

@@ -81,9 +81,31 @@
       </template>
 
       <template #main>
-          <span class="warning__before__delete-main">
+          <span class="warning__before__delete-main mb-2">
             {{ $t('contracts.warn_before_delete_contract') }}
           </span>
+        <ValidationProvider
+            :name="`'${$t('apartments.agree.passport_series')}'`"
+            rules="required|min:3"
+            v-slot="{errors}"
+            class="mb-3"
+        >
+          <b-form-group
+              class="delete-comment__title"
+              label="O'chirish sababini ko'rsating"
+              label-for="comment"
+              desclass="mb-0"
+          >
+            <b-form-textarea
+                class="delete-comment"
+                id="comment"
+                v-model="deleteComment"
+            />
+          </b-form-group>
+          <span class="error__provider" v-if="errors[0]">
+            {{ errors[0] }}
+          </span>
+        </ValidationProvider>
       </template>
 
       <template #footer>
@@ -140,7 +162,9 @@ export default {
       order: {},
       showLoading: false,
       activeTab: 'TabPaymentSchedule',
-      tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails']
+      tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails'],
+      deleteComment: '',
+      errors: []
     }
   },
   computed: {
@@ -188,20 +212,23 @@ export default {
   },
   methods: {
     async downloadContact() {
-      const {id} = this.$route.params
-      await api.contract.downloadContract(id)
-          .then(({data, headers}) => {
-            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
-            const fileURL = window.URL.createObjectURL(new Blob([data]))
-            const fileLink = document.createElement('a')
-            fileLink.href = fileURL
-            fileLink.setAttribute('download', filename)
-            document.body.appendChild(fileLink)
-            fileLink.click()
-          })
-          .catch(() => {
-            return '#'
-          })
+      if (this.deleteComment.length) {
+        const {id} = this.$route.params
+        await api.contract.downloadContract(id)
+            .then(({data, headers}) => {
+              const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
+              const fileURL = window.URL.createObjectURL(new Blob([data]))
+              const fileLink = document.createElement('a')
+              fileLink.href = fileURL
+              fileLink.setAttribute('download', filename)
+              document.body.appendChild(fileLink)
+              fileLink.click()
+            })
+            .catch(() => {
+              return '#'
+            })
+      }
+
     },
     openPaymentDeletionModal() {
       this.$refs['payment-deletion-warning'].openModal()
@@ -324,6 +351,17 @@ export default {
   }
 }
 
+.delete-comment {
+  width: 100%;
+  height: 100px;
+
+  &__title {
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--gray-600);
+    margin-top: 1.5rem;
+  }
+}
 
 ::v-deep {
   .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
@@ -399,7 +437,7 @@ export default {
     max-width: 60%;
     font-family: Inter, sans-serif;
     color: var(--gray-600);
-    margin-left: 0.5rem;
+    //margin-left: 0.5rem;
   }
 
   &-footer {
