@@ -293,7 +293,7 @@ export default {
 
     .square-footer {
       p {
-        color: var(--red-600);
+        color: var(--gray-500);
       }
     }
 
