@@ -561,6 +561,7 @@ export default {
         case 'available': {
           return {statusText: this.$t('object.status.available'), class: 'teal'}
         }
+
         case 'waiting':
         case 'sold':
         case 'closed': {
@@ -571,6 +572,9 @@ export default {
         }
         case 'contract': {
           return {statusText: this.$t('object.status.contract'), class: 'blue'}
+        }
+        case 'hold': {
+          return {statusText: this.$t('object.status.hold'), class: 'yellow'}
         }
         default:
           return {statusText: this.$t('object.status.available'), class: 'teal'}
@@ -772,6 +776,7 @@ export default {
     align-items: center;
     padding: 9px;
     border-radius: 24px;
+    min-width: max-content;
   }
 
   .yellow {
@@ -790,12 +795,12 @@ export default {
   }
 
   .gray {
-    color: var(--gray-600);
-    background-color: var(--gray-100);
+    color: var(--red-600);
+    background-color: var(--red-100);
   }
 
   .disable {
-    color: var(--gray-300);
+    color: var(--gray-400);
     background-color: var(--gray-100);
     min-width: max-content;
   }

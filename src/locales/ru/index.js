@@ -631,7 +631,8 @@ export default {
             sold: 'Продано',
             booked: 'Забронировано',
             contract: 'Оформлено',
-            disable: 'Недоступно',
+            disable: 'Hе продается',
+            hold: 'Оставайтесь',
 
         }
     },

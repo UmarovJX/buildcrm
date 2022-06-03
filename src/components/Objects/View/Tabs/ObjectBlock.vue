@@ -138,6 +138,9 @@ export default {
         case 'available': {
           return {statusText: '', class: 'teal'}
         }
+        case 'hold': {
+          return {statusText: this.$t('object.status.hold'), class: 'yellow'}
+        }
         case 'waiting':
         case 'sold':
         case 'closed': {

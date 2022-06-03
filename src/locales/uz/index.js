@@ -441,10 +441,10 @@ export default {
             contract: 'Shartnomada',
             sold: 'Sotilgan',
             booked: 'Band qilingan',
-            hold: 'Band qilinmoqda',
             closed: 'Yopilgan',
             available: 'Sotuvda',
             unavailable: 'Sotilmaydi',
+            hold: 'Band qilinmoqda',
         },
 
         list: {
@@ -621,12 +621,12 @@ export default {
         flats: "kvartiralar",
         rooms: 'xonalar',
         status: {
-            available: "Bo'sh",
+            available: "Sotuvda",
             sold: 'Sotilgan',
             booked: 'Band qilingan',
             contract: 'Rasmiylashtirilgan',
-            disable: 'Mavjud emas',
-
+            disable: 'Sotilmaydi',
+            hold: 'Band qilinmoqda',
         },
     },
 

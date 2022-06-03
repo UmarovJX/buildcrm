@@ -449,7 +449,6 @@ export default {
                     const arrayFareList = ['area', 'rooms', 'number']
 
                     const isThereFareList = arrayFareList.includes(key)
-                    console.log(isThereFareList, 'isThereFareList');
                     if (isThereFareList && isPrimitiveValue(value)) {
                       console.log(value, 'value');
                       value = [value]
