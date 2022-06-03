@@ -188,7 +188,7 @@
             <button
                 type="button"
                 @click="nextStep(3)"
-                :disabled="plans.length > 0 ? false : true"
+                :disabled="plans.plans.length > 0 ? false : true"
                 v-if="!loading"
                 class="btn btn-primary"
             >
@@ -633,7 +633,7 @@ export default {
       try {
 
         if (this.object.id === null) {
-          const {data, status} = await api.objects  .createObject(this.object)
+          const {data, status} = await api.objects.createObject(this.object)
 
           if (status === 201 || status === 202) {
             this.step = 2;

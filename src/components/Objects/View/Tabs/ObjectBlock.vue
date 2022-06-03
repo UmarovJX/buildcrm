@@ -41,7 +41,7 @@
                     }"
                   >
                     <div class="square" @click="showExpressSidebar(elem,item.floorActive,value.blockActive)"
-                         :class="[status(elem.order.status).class, elem.is_sold ? '' : 'gray']">
+                         :class="[status(elem.order.status).class, elem.is_sold ? '' : 'disable']">
                       <div class="square-header">
                         <p class="apartment-number">Кв. № {{ elem.number }}</p>
                         <div v-if="elem.is_promo" class="h-auto d-flex apartment-promo-icon">
@@ -235,11 +235,11 @@ export default {
 
   &.yellow {
     h5 {
-      color: var(--yellow-500);
+      color: var(--yellow-600);
     }
 
     &:hover {
-      background-color: var(--yellow-500);
+      background-color: var(--yellow-600);
 
       p, h5 {
         color: var(--white);
@@ -249,11 +249,11 @@ export default {
 
   &.teal {
     h5 {
-      color: var(--teal-500);
+      color: var(--teal-600);
     }
 
     &:hover {
-      background-color: var(--teal-500);
+      background-color: var(--teal-600);
 
       p, h5 {
         color: var(--white);
@@ -264,16 +264,16 @@ export default {
   &.blue {
     .square-footer {
       p {
-        color: var(--gray-400);
+        color: var(--gray-600);
       }
     }
 
     h5 {
-      color: var(--light-blue-500);
+      color: var(--light-blue-600);
     }
 
     &:hover {
-      background-color: var(--light-blue-500);
+      background-color: var(--light-blue-600);
 
       p, h5 {
         color: var(--white);
@@ -285,12 +285,32 @@ export default {
 
   &.gray {
     h5 {
+      color: var(--red-600);
+    }
+
+    .square-footer {
+      p {
+        color: var(--red-600);
+      }
+    }
+
+    &:hover {
+      background-color: var(--red-600);
+
+      p, h5 {
+        color: var(--white);
+      }
+    }
+  }
+
+  &.disable {
+    h5 {
       color: var(--gray-500);
     }
 
     .square-footer {
       p {
-        color: var(--gray-400);
+        color: var(--gray-500);
       }
     }
 

@@ -723,46 +723,58 @@ export default {
   font-family: Inter, sans-serif;
 
   .teal {
-    color: var(--teal-500);
+    color: var(--teal-600);
 
     .custom-control-label {
       &::before {
-        border: 1px solid var(--teal-500);
-        background-color: var(--teal-500);
+        border: 2px solid var(--teal-600);
       }
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: var(--teal-600);
     }
   }
 
   .yellow {
-    color: var(--yellow-500);
+    color: var(--yellow-600);
 
     .custom-control-label {
       &::before {
-        border: 1px solid var(--yellow-500);
-        background-color: var(--yellow-500);
+        border: 2px solid var(--yellow-600);
       }
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: var(--yellow-600);
     }
   }
 
   .blue {
-    color: var(--light-blue-500);
+    color: var(--light-blue-600);
 
     .custom-control-label {
       &::before {
-        border: 1px solid var(--light-blue-500);
-        background-color: var(--light-blue-500);
+        border: 2px solid var(--light-blue-600);
       }
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: var(--light-blue-600);
     }
   }
 
   .gray {
-    color: var(--gray-600);
+    color: var(--red-600);
 
     .custom-control-label {
       &::before {
-        border: 1px solid var(--gray-600);
-        background-color: var(--gray-600);
+        border: 2px solid var(--red-600);
       }
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: var(--red-600);
     }
   }
 
@@ -771,9 +783,12 @@ export default {
 
     .custom-control-label {
       &::before {
-        border: 1px solid var(--gray-400);
-        background-color: var(--gray-400);
+        border: 2px solid var(--gray-400);
       }
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: var(--gray-400);
     }
   }
 }

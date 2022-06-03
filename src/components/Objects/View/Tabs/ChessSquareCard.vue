@@ -33,7 +33,7 @@
                       :class="[
                         hasQuery && inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
                         ? 'apartment-inactive'
-                        : [status(elem.order.status).class, elem.is_sold ? '' : 'gray']
+                        : [status(elem.order.status).class, elem.is_sold ? '' : 'disable']
                     ]"
                   >
                     <div
@@ -202,7 +202,7 @@ export default {
 .block-content {
   .yellow {
     h5 {
-      color: var(--yellow-500);
+      color: var(--yellow-600);
     }
 
     &:hover {
@@ -211,14 +211,14 @@ export default {
       }
 
       .box {
-        background-color: var(--yellow-500);
+        background-color: var(--yellow-600);
       }
     }
   }
 
   .teal {
     h5 {
-      color: var(--teal-500);
+      color: var(--teal-600);
     }
 
     &:hover {
@@ -227,7 +227,7 @@ export default {
       }
 
       .box {
-        background-color: var(--teal-500);
+        background-color: var(--teal-600);
 
       }
     }
@@ -235,7 +235,7 @@ export default {
 
   .blue {
     h5 {
-      color: var(--light-blue-500);
+      color: var(--light-blue-600);
     }
 
     &:hover {
@@ -244,7 +244,7 @@ export default {
       }
 
       .box {
-        background-color: var(--light-blue-500);
+        background-color: var(--light-blue-600);
 
       }
     }
@@ -252,7 +252,7 @@ export default {
 
   .gray {
     h5 {
-      color: var(--gray-500);
+      color: var(--red-600);
     }
 
     &:hover {
@@ -261,7 +261,24 @@ export default {
       }
 
       .box {
-        background-color: var(--gray-500);
+        background-color: var(--red-600);
+
+      }
+    }
+  }
+
+  .disable {
+    h5 {
+      color: var(--gray-500) !important;
+    }
+
+    &:hover {
+      h5 {
+        color: var(--white) !important;
+      }
+
+      .box {
+        background-color: var(--gray-500) !important;
 
       }
     }
@@ -351,17 +368,17 @@ export default {
 
     &.yellow {
       color: var(--white) !important;
-      background-color: var(--yellow-500) !important;
+      background-color: var(--yellow-600) !important;
 
 
       h5 {
-        color: var(--yellow-500);
+        color: var(--yellow-600);
       }
     }
 
     &.teal {
       h5 {
-        color: var(--teal-500);
+        color: var(--teal-600);
       }
     }
 
@@ -373,7 +390,7 @@ export default {
       }
 
       h5 {
-        color: var(--light-blue-500);
+        color: var(--light-blue-600);
       }
 
 
@@ -381,7 +398,7 @@ export default {
 
     &.gray {
       h5 {
-        color: var(--gray-500);
+        color: var(--gray-600);
       }
 
       .square-footer {
@@ -390,55 +407,65 @@ export default {
         }
       }
     }
+
+    &.disable {
+      color: var(--white) !important;
+      background-color: var(--gray-500) !important;
+
+
+      h5 {
+        color: var(--gray-500);
+      }
+    }
   }
 
 
   .yellow-tool {
-    background-color: var(--yellow-500);
+    background-color: var(--yellow-600);
 
     p, h5 {
       color: var(--white) !important;
     }
 
     &::before {
-      border-left-color: var(--yellow-500);
+      border-left-color: var(--yellow-600);
     }
 
   }
 
   .teal-tool {
-    background-color: var(--teal-500);
+    background-color: var(--teal-600);
 
     p, h5 {
       color: var(--white) !important;
     }
 
     &::before {
-      border-left-color: var(--teal-500);
+      border-left-color: var(--teal-600);
     }
   }
 
   .blue-tool {
-    background-color: var(--light-blue-500);
+    background-color: var(--light-blue-600);
 
     p, h5 {
       color: var(--white) !important;
     }
 
     &::before {
-      border-left-color: var(--light-blue-500);
+      border-left-color: var(--light-blue-600);
     }
   }
 
   .gray-tool {
-    background-color: var(--gray-500);
+    background-color: var(--red-600);
 
     p, h5 {
       color: var(--white) !important;
     }
 
     &::before {
-      border-left-color: var(--gray-500);
+      border-left-color: var(--red-600);
     }
   }
 

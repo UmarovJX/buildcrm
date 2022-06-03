@@ -1,5 +1,5 @@
 <template>
-  <table class="table table-striped" v-if="plans.plans.length > 0">
+  <table class="table table-striped" v-if="plans.plans && plans.plans.length > 0">
     <thead>
     <tr>
       <th scope="col" width="10">#</th>
