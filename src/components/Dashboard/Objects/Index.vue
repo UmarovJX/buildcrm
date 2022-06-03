@@ -7,122 +7,123 @@
       </base-bread-crumb>
 
       <div class="object-cards">
-        <div class="card"
-             v-for="(object, index) in getObjects"
-             :key="index"
+        <template v-if="getPermission.objects.view"
         >
-          <div
-              v-if="getPermission.objects.delete || (getPermission.objects && getPermission.objects.update)"
-              class="object__more-info">
-            <div class="my-dropdown dropleft">
-              <button
-                  type="button"
-                  class="dropdown-toggle card-link"
-                  data-toggle="dropdown"
-                  style="background-color: transparent; "
-              >
-                <!-- <base-edit-icon fill="#7C3AED"/>-->
-                <base-dots-icon fill="#7C3AED"/>
-              </button>
-              <div class="dropdown-menu">
-                <router-link
-                    v-if="getPermission.objects && (getPermission.objects && getPermission.objects.update)"
-                    :class="'dropdown-item'"
-                    :to="{name: 'objectsEdit', params: {id: object.id}}"
+          <div class="card"
+               v-for="(object, index) in getObjects"
+               :key="index"
+          >
+            <div
+                v-if="getPermission.objects.delete || (getPermission.objects && getPermission.objects.update)"
+                class="object__more-info">
+              <div class="my-dropdown dropleft">
+                <button
+                    type="button"
+                    class="dropdown-toggle card-link"
+                    data-toggle="dropdown"
+                    style="background-color: transparent; "
                 >
-                  <i class="fas fa-pen"></i> {{ $t("edit") }}
-                </router-link>
+                  <!-- <base-edit-icon fill="#7C3AED"/>-->
+                  <base-dots-icon fill="#7C3AED"/>
+                </button>
+                <div class="dropdown-menu">
+                  <router-link
+                      v-if="getPermission.objects && (getPermission.objects && getPermission.objects.update)"
+                      :class="'dropdown-item'"
+                      :to="{name: 'objectsEdit', params: {id: object.id}}"
+                  >
+                    <i class="fas fa-pen"></i> {{ $t("edit") }}
+                  </router-link>
 
-                <!--                <router-link-->
-                <!--                    v-if="getPermission.objects.update"-->
-                <!--                    :to="{name:'object-deal-template',params:{id:object.id}}"-->
-                <!--                    :class="'dropdown-item'"-->
-                <!--                >-->
-                <!--                  <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}-->
-                <!--                </router-link>-->
+                  <!--                <router-link-->
+                  <!--                    v-if="getPermission.objects.update"-->
+                  <!--                    :to="{name:'object-deal-template',params:{id:object.id}}"-->
+                  <!--                    :class="'dropdown-item'"-->
+                  <!--                >-->
+                  <!--                  <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}-->
+                  <!--                </router-link>-->
 
 
-                <router-link
-                    v-if="getPermission.objects.view"
-                    :to="{name:'objects-promo',params:{id:object.id}}"
-                    :class="'dropdown-item'"
-                >
-                  <i class="fas fa-gift"></i>
-                  <span>
+                  <router-link
+                      v-if="getPermission.objects.view"
+                      :to="{name:'objects-promo',params:{id:object.id}}"
+                      :class="'dropdown-item'"
+                  >
+                    <i class="fas fa-gift"></i>
+                    <span>
                     {{ $t('promo.promos') }}
                   </span>
-                </router-link>
+                  </router-link>
 
-                <router-link
-                    v-if="getPermission.type_plan.view"
-                    :to="{name:'type-plan-view',params:{id:object.id}}"
-                    :class="'dropdown-item'"
-                >
-                  <i class="fal fa-credit-card"></i>
-                  <span>
+                  <router-link
+                      v-if="getPermission.type_plan.view"
+                      :to="{name:'type-plan-view',params:{id:object.id}}"
+                      :class="'dropdown-item'"
+                  >
+                    <i class="fal fa-credit-card"></i>
+                    <span>
                     {{ $t("type_plan.title") }}
                   </span>
-                </router-link>
+                  </router-link>
 
-                <b-link
-                    class="dropdown-item"
-                    v-if="(getPermission.objects && getPermission.objects.update)"
-                    @click="object_id = object.id"
-                    v-b-modal.modal-upload-logo
-                >
-                  <i class="fas fa-image"></i> {{ $t("upload_logo") }}
-                </b-link>
+                  <b-link
+                      class="dropdown-item"
+                      v-if="(getPermission.objects && getPermission.objects.update)"
+                      @click="object_id = object.id"
+                      v-b-modal.modal-upload-logo
+                  >
+                    <i class="fas fa-image"></i> {{ $t("upload_logo") }}
+                  </b-link>
 
-                <a
-                    class="dropdown-item"
-                    v-if="getPermission.objects.delete"
-                    @click="DeleteObject(object.id)"
-                    href="#"
-                >
-                  <i class="fas fa-trash"></i> {{ $t("delete") }}
-                </a>
-              </div>
-            </div>
-          </div>
-          <router-link class="card-body"
-                       v-if="getPermission.objects.view"
-                       :to="{name: 'apartments', params: {object: object.id}}"
-          >
-            <div class="card-top">
-              <div class="card-top__content">
-                <h5 class="card-title">
-                  {{ object.name }}
-                </h5>
-                <div class="card-subtitle">
-                  {{ object.address }}
+                  <a
+                      class="dropdown-item"
+                      v-if="getPermission.objects.delete"
+                      @click="DeleteObject(object.id)"
+                      href="#"
+                  >
+                    <i class="fas fa-trash"></i> {{ $t("delete") }}
+                  </a>
                 </div>
               </div>
-
             </div>
-            <div class="card-content">
-              <div class="card-block">
-                <p class="card-block__title">{{ object.apartments_count }} {{ $t('objects.view_apartments') }} </p>
-                <p class="card-block__subtitle price">
-                  {{ $t('price_from', {msg: priceFormat(object.apartment_price)}) }}</p>
-              </div>
-              <div class="card-block">
-                <p class="card-block__title">{{ object.floors_count }} {{ $t('objects.view_level') }}</p>
-                <p class="card-block__subtitle"
-                   v-html="$t('price_from_m2', {msg: `${priceFormat(object.apartment_price_m2)}`})"
-                />
-              </div>
-            </div>
-          </router-link>
+            <router-link class="card-body"
+                         :to="{name: 'apartments', params: {object: object.id}}"
+            >
+              <div class="card-top">
+                <div class="card-top__content">
+                  <h5 class="card-title">
+                    {{ object.name }}
+                  </h5>
+                  <div class="card-subtitle">
+                    {{ object.address }}
+                  </div>
+                </div>
 
-          <router-link class="card-img"
-                       v-if="getPermission.objects.view"
-                       :to="{name: 'apartments', params: {object: object.id}}"
-          >
-            <img v-if="object.image" v-lazy="object.image" alt="">
-            <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="">
-          </router-link>
-        </div>
-        <div class="card">
+              </div>
+              <div class="card-content">
+                <div class="card-block">
+                  <p class="card-block__title">{{ object.apartments_count }} {{ $t('objects.view_apartments') }} </p>
+                  <p class="card-block__subtitle price">
+                    {{ $t('price_from', {msg: priceFormat(object.apartment_price)}) }}</p>
+                </div>
+                <div class="card-block">
+                  <p class="card-block__title">{{ object.floors_count }} {{ $t('objects.view_level') }}</p>
+                  <p class="card-block__subtitle"
+                     v-html="$t('price_from_m2', {msg: `${priceFormat(object.apartment_price_m2)}`})"
+                  />
+                </div>
+              </div>
+            </router-link>
+
+            <router-link class="card-img"
+                         :to="{name: 'apartments', params: {object: object.id}}"
+            >
+              <img v-if="object.image" v-lazy="object.image" alt="">
+              <img v-else v-lazy="require('@/assets/img/not-found.png')" alt="">
+            </router-link>
+          </div>
+        </template>
+        <div class="card" v-if="getPermission.objects.create">
           <div class="card-body card-empty" @click="createBlock">
             <img :src="require('@/assets/icons/icon-plus.svg')" alt="">
             <p>{{ $t('object_create') }}</p>
