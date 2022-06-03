@@ -102,11 +102,10 @@ export default {
       })
     },
 
-    updatedPayments({message}) {
+    updatedPayments() {
       this.getPaymentList()
       this.$swal({
         title: this.$t("sweetAlert.success_update_payment"),
-        text: message,
         icon: "success",
         showCancelButton: false,
         confirmButtonText: this.$t("next"),

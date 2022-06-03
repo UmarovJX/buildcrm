@@ -346,7 +346,7 @@
                             <button
                                 type="button"
                                 @click="DiscountEdit(discount)"
-                                class="btn btn-primary ml-2"
+                                class="btn btn-primary ml-4 mt-0"
                             >
                               <i class="far fa-pen"></i>
                             </button>
@@ -355,7 +355,7 @@
                             <button
                                 type="button"
                                 @click="RemoveDiscount(discount, index)"
-                                class="btn btn-primary ml-2"
+                                class="btn btn-primary m-0"
                             >
                               <i class="far fa-trash"></i>
                             </button>

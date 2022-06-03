@@ -237,6 +237,7 @@ export default {
         add_payment_successfully: "Оплата проведена",
         deleted_payment_successfully: "Оплата успешно удалена",
         warn_before_delete_contract: 'Вы уверены, что хотите удалить договор? Данное действие нельзя отменить.',
+        comment_delete_contract: "Укажите причину удаления",
         warn_before_delete_payment: 'Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.',
         warning_in_payment: 'Первоначальный взнос имеет излишек в размере {price} сумов. Вы хотите перевести данную сумму в ежемесячный платеж?',
         title: "Договоры", download: "Скачать договор", f_i_o: 'Ф.И.О', // asd
@@ -730,7 +731,7 @@ export default {
                 main: 'Оснавной',
                 type: 'Тип тарифа',
                 type_name: 'Название тарифа',
-                price: 'Narx',
+                price: 'Цена',
                 price_balcony: 'Цена с балконом',
                 add_price: 'Добавить цену',
                 floor_placeholder: 'Этажи или спецификации',

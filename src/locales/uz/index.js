@@ -250,6 +250,7 @@ export default {
         warning: 'Ogohlantirish',
         edit_payment: "To'lovni tahrirlash",
         warn_before_delete_contract: 'Shartnomani oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',
+        comment_delete_contract: "O'chirish sababini ko'rsating",
         add_payment_successfully: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
         deleted_payment_successfully: "Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.",
         warn_before_delete_payment: 'Toʻlovni oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.',

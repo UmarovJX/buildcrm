@@ -84,8 +84,8 @@ class ContractV2 extends Core {
         })
     }
 
-    deleteContract(contractId) {
-        return this.delete(`contracts/${contractId}`)
+    deleteContract(contractId, body) {
+        return this.post(`contracts/${contractId}`, body)
     }
 }
 

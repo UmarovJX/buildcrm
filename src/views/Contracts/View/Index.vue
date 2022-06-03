@@ -84,28 +84,30 @@
           <span class="warning__before__delete-main mb-2">
             {{ $t('contracts.warn_before_delete_contract') }}
           </span>
-        <ValidationProvider
-            :name="`'${$t('apartments.agree.passport_series')}'`"
-            rules="required|min:3"
-            v-slot="{errors}"
-            class="mb-3"
-        >
-          <b-form-group
-              class="delete-comment__title"
-              label="O'chirish sababini ko'rsating"
-              label-for="comment"
-              desclass="mb-0"
+        <validation-observer ref="comment">
+          <ValidationProvider
+              :name="`'${$t('apartments.agree.passport_series')}'`"
+              rules="required|min:3"
+              v-slot="{errors}"
+              class="mb-3"
           >
-            <b-form-textarea
-                class="delete-comment"
-                id="comment"
-                v-model="deleteComment"
-            />
-          </b-form-group>
-          <span class="error__provider" v-if="errors[0]">
+            <b-form-group
+                class="delete-comment__title"
+                :label="$t('contracts.comment_delete_contract')"
+                label-for="comment"
+                desclass="mb-0"
+            >
+              <b-form-textarea
+                  class="delete-comment"
+                  ref="comment-area"
+                  v-model="deleteComment"
+              />
+            </b-form-group>
+            <span class="error__provider" v-if="errors[0]">
             {{ errors[0] }}
           </span>
-        </ValidationProvider>
+          </ValidationProvider>
+        </validation-observer>
       </template>
 
       <template #footer>
@@ -163,7 +165,7 @@ export default {
       showLoading: false,
       activeTab: 'TabPaymentSchedule',
       tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails'],
-      deleteComment: '',
+      deleteComment: null,
       errors: []
     }
   },
@@ -210,53 +212,65 @@ export default {
   async created() {
     await this.fetchContractData()
   },
+  mounted() {
+    console.log(this.$refs['comment'], 'comment');
+
+  },
   methods: {
     async downloadContact() {
-      if (this.deleteComment.length) {
-        const {id} = this.$route.params
-        await api.contract.downloadContract(id)
-            .then(({data, headers}) => {
-              const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
-              const fileURL = window.URL.createObjectURL(new Blob([data]))
-              const fileLink = document.createElement('a')
-              fileLink.href = fileURL
-              fileLink.setAttribute('download', filename)
-              document.body.appendChild(fileLink)
-              fileLink.click()
-            })
-            .catch(() => {
-              return '#'
-            })
-      }
+      const {id} = this.$route.params
+      await api.contract.downloadContract(id)
+          .then(({data, headers}) => {
+            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
+            const fileURL = window.URL.createObjectURL(new Blob([data]))
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            fileLink.setAttribute('download', filename)
+            document.body.appendChild(fileLink)
+            fileLink.click()
+          })
+          .catch(() => {
+            return '#'
+          })
 
     },
     openPaymentDeletionModal() {
       this.$refs['payment-deletion-warning'].openModal()
     },
     closePaymentDeletionModal() {
+      // deleteComment
       this.$refs['payment-deletion-warning'].closeModal()
     },
     async deleteContact() {
-      const {id} = this.$route.params
-      this.showLoading = true
-      this.closePaymentDeletionModal()
-      await api.contractV2.deleteContract(id)
-          .then(() => {
-            this.$router.push({
-              name: 'contracts'
+      if (this.$refs['comment'].flags.valid) {
+        const {id} = this.$route.params
+        const body = {
+          comment: this.deleteComment
+        }
+        this.showLoading = true
+        this.closePaymentDeletionModal()
+        await api.contractV2.deleteContract(id, body)
+            .then(() => {
+              this.$router.push({
+                name: 'contracts'
+              })
+              this.$swal({
+                title: this.$t('successfully'),
+                icon: "success",
+                button: this.$t('yes')
+              })
             })
-            this.$swal({
-              title: this.$t('successfully'),
-              icon: "success",
-              button: this.$t('yes')
+            .catch((error) => {
+              this.toastedWithErrorCode(error)
             })
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
-            this.showLoading = false
-          })
+            .finally(() => {
+              this.deleteComment = null
+              this.showLoading = false
+            })
+      } else {
+        this.$refs['comment-area'].focus()
+      }
+
     },
     async fetchContractData() {
       this.showLoading = true
