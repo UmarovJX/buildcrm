@@ -27,21 +27,28 @@
         @current-tab="changeTab"
     />
 
-    <b-form-checkbox-group
-        id="checkbox-sort"
-        class="status-sort"
-        v-model="statusFilter"
-        name="sort"
-    >
-      <b-form-checkbox
-          v-for="status in statusList"
-          :key="status.label"
-          :value="status.value"
-          :class="status.class"
+    <div class="d-flex justify-content-between align-items-center">
+      <b-form-checkbox-group
+          id="checkbox-sort"
+          class="status-sort"
+          v-model="statusFilter"
+          name="sort"
       >
-        {{ status.label }}
-      </b-form-checkbox>
-    </b-form-checkbox-group>
+        <b-form-checkbox
+            v-for="status in statusList"
+            :key="status.label"
+            :value="status.value"
+            :class="status.class"
+        >
+          {{ status.label }}
+        </b-form-checkbox>
+      </b-form-checkbox-group>
+      <base-button class="price-button" text="Цены">
+        <template slot="right-icon">
+          <img :src="require('@/assets/icons/question.svg')" alt="">
+        </template>
+      </base-button>
+    </div>
 
     <component
         :loading="getLoading"
@@ -83,6 +90,7 @@ import ObjectTable from "@/components/Objects/ObjectTable";
 import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
+import BaseButton from "@/components/Reusable/BaseButton";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 
@@ -98,6 +106,7 @@ export default {
     ObjectPlan,
     ApartmentExpressView,
     PlanExpressView,
+    BaseButton
   },
   beforeRouteLeave(to, from, next) {
     const id = from.params.object
@@ -708,6 +717,12 @@ export default {
   }
 }
 
+.price-button {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  background-color: transparent !important;
+}
 
 .object-cards {
   display: flex;

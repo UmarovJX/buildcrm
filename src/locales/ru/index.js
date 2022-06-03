@@ -236,6 +236,7 @@ export default {
         edit_payment: "Редактировать оплату",
         add_payment_successfully: "Оплата проведена",
         deleted_payment_successfully: "Оплата успешно удалена",
+        comment: 'Комментарий',
         warn_before_delete_contract: 'Вы уверены, что хотите удалить договор? Данное действие нельзя отменить.',
         comment_delete_contract: "Укажите причину удаления",
         warn_before_delete_payment: 'Вы уверены, что хотите удалить оплату? Данное действие нельзя отменить.',

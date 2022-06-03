@@ -86,7 +86,7 @@
           </span>
         <validation-observer ref="comment">
           <ValidationProvider
-              :name="`'${$t('apartments.agree.passport_series')}'`"
+              :name="$t('contracts.comment')"
               rules="required|min:3"
               v-slot="{errors}"
               class="mb-3"
