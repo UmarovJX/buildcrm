@@ -97,7 +97,7 @@ export default {
     phone: "Номер телефона",
     other_phone: "Дополнительный номер телефона",
     extra: "Дополнительный",
-    client_type: "тип клиента",
+    client_type: "Тип клиента",
     birth_day: "Дата рождения",
     series: 'СЕРИЯ',
     given: 'ВЫДАН',
