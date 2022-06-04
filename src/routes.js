@@ -44,7 +44,7 @@ import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
-import Debtors from "./components/Dashboard/Debtors/DebtorsList";
+// import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
 import Promo from './components/Dashboard/Objects/Promo/Index'
 /* PAGES */
@@ -59,7 +59,7 @@ import Contracts from "@/views/Contracts/Index"
 import ContractView from "@/views/Contracts/View/Index"
 import ApartmentView from '@/views/Objects/Apartments/View/Index'
 import ObjectsView from '@/views/Objects/View/Index'
-import DebtorsClone from "@/views/Debtors/Index"
+import Debtors from "@/views/Debtors/Index"
 // import ObjectTable from "@/components/Objects/ObjectTable";
 import Experiment from "@/views/Experiment";
 
@@ -165,16 +165,6 @@ const routes = [
         name: "debtors",
         path: "/debtors",
         component: Debtors,
-        meta: {
-            requiresAuth: "debtors",
-        },
-    },
-
-    {
-        /* DEBTORS CLONE */
-        name: "debtors-clone",
-        path: "/debtors/clone",
-        component: DebtorsClone,
         meta: {
             requiresAuth: "debtors",
         },

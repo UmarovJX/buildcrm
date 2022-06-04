@@ -16,7 +16,10 @@
           :placeholder="`${ $t('contract_number_or_full_name') }`"
       />
       <div class="d-flex align-items-center">
-        <base-filter-button class="mr-2 base-filter-button" @click="openFilterContent"/>
+        <base-filter-button
+            class="mr-2 base-filter-button"
+            @click="openFilterContent"
+        />
         <bootstrap-select
             class="client-type"
             :default-value="defaultTypeOfView"
@@ -25,6 +28,7 @@
         />
       </div>
     </div>
+
     <!--  FILTER MODAL  -->
     <base-right-modal ref="filter-modal">
       <div class="filter-modal-content">
@@ -39,11 +43,13 @@
             class="mb-4"
         />
         <bootstrap-select
-            :options="viewTypes"
+            :class="{ 'client-type-selection' : !filter.client_type }"
+            :options="clientTypes"
             @select="(newValue) => filter.client_type = newValue"
         />
       </div>
     </base-right-modal>
+
     <!--  DEBTOR VIEW MODAL  -->
     <base-right-modal
         ref="debtor-view"
@@ -119,7 +125,10 @@
       </div>
 
       <template #modal-footer>
-        <router-link class="d-flex align-items-center justify-content-center go-to-contract" :to="{ name:'home' }">
+        <router-link
+            class="d-flex align-items-center justify-content-center go-to-contract"
+            :to="{ name:'home' }"
+        >
           {{ $t('go_to_contract') }}
         </router-link>
       </template>
@@ -151,6 +160,7 @@ export default {
     CalendarNavigation,
     BaseButton
   },
+  emits: ['change-view-type'],
   data() {
     return {
       filter: {
@@ -158,12 +168,29 @@ export default {
         price: {
           from: null,
           to: null
-        }
+        },
+        client_type: null
       },
       typeOfView: null
     }
   },
   computed: {
+    clientTypes() {
+      return [
+        {
+          value: null,
+          text: this.$t('client_type')
+        },
+        {
+          value: 'friend',
+          text: this.$t('familiar')
+        },
+        {
+          value: 'unknown',
+          text: this.$t('unfamiliar')
+        }
+      ]
+    },
     showTodayButtonLink() {
       const allowedToShow = ['month', 'week', 'day']
       return allowedToShow.includes(this.typeOfView)
@@ -175,7 +202,7 @@ export default {
       return !this.showSearchContent
     },
     defaultTypeOfView() {
-      return this.viewTypes[2].value
+      return this.viewTypes[0].value
     },
     viewTypes() {
       return [
@@ -214,6 +241,7 @@ export default {
     },
     changeTypeOfView(type) {
       this.typeOfView = type
+      this.$emit('change-view-type', type)
     },
     showTodayEvent() {
 
@@ -257,6 +285,10 @@ export default {
     color: var(--gray-400);
     font-family: CraftworkSans, serif;
   }
+}
+
+.client-type-selection {
+  color: var(--gray-400) !important;
 }
 
 .go-to-contract {

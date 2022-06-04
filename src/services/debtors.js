@@ -1,7 +1,7 @@
-import {axiosV1CRM} from '@/services/core/base'
+import {axiosV1CRM, axiosV2} from '@/services/core/base'
 import Core from '@/services/core/index'
 
-class Debtors extends Core {
+class DebtorsV1 extends Core {
     constructor(axios = axiosV1CRM) {
         super(axios)
     }
@@ -31,4 +31,19 @@ class Debtors extends Core {
     }
 }
 
-export default Debtors
+class DebtorsV2 extends Core {
+    constructor(axios = axiosV2) {
+        super(axios)
+    }
+
+    fetchDebtorsList(params) {
+        return this.get('debtors', {params})
+    }
+
+}
+
+
+export default {
+    DebtorsV1,
+    DebtorsV2
+}

@@ -15,6 +15,8 @@ import Roles from "@/services/roles"
 import Accountants from "@/services/accountants";
 import Promo from "@/services/promo"
 
+export const debtorsV2 = new Debtors.DebtorsV2()
+
 export default {
     home: new Home(),
     user: new User.User(),
@@ -28,7 +30,8 @@ export default {
     clientsV2: new Clients.ClientsV2(),
     objects: new Objects.ObjectsV1Crm(),
     objectsV2: new Objects.ObjectsV2(),
-    debtors: new Debtors(),
+    debtors: new Debtors.DebtorsV1(),
+    debtorsV2: new Debtors.DebtorsV1(),
     contract: new Contract.Contract(),
     contractV2: new Contract.ContractV2(),
     branches: new Branches(),

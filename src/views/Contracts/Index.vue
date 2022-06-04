@@ -150,7 +150,12 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import api from "@/services/api";
-import {formatDateWithDot, formatToPrice, phonePrettier, sortObjectValues} from "@/util/reusable";
+import {
+  formatDateWithDot,
+  formatToPrice,
+  phonePrettier,
+  sortObjectValues
+} from "@/util/reusable";
 
 export default {
   name: "Contracts",
