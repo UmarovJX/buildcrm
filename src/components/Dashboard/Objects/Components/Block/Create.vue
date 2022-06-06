@@ -777,4 +777,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.btn-block {
+  color: #000;
+}
+</style>

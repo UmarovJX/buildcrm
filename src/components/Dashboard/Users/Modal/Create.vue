@@ -67,7 +67,7 @@
               :label="$t('user.phone')"
               label-for="phone"
           >
-            <b-form-input id="phone" v-model="manager.phone"></b-form-input>
+            <b-form-input type="tel" id="phone" v-model="manager.phone"></b-form-input>
           </b-form-group>
 
           <b-form-group
@@ -250,7 +250,7 @@ export default {
       this.manager.first_name = null;
       this.manager.last_name = null;
       this.manager.second_name = null,
-      this.manager.phone = null;
+          this.manager.phone = null;
       this.manager.password = null;
       this.manager.email = null;
 

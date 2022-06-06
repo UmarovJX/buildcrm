@@ -44,12 +44,22 @@
                     {{ $t("roles.permissions.name_ru") }}
                   </td>
                   <td width="50%">
-                    <input
-                        class="form-control"
-                        v-model="role.ru"
-                        type="text"
-                        :placeholder="$t('roles.permissions.placeholder_ru')"
-                    />
+                    <ValidationProvider
+                        :name="$t('roles.permissions.placeholder_uz')"
+                        ref="roleName-ru"
+                        rules="required|min:3"
+                        v-slot="{ errors }"
+                    >
+                      <b-form-input
+                          class="form-control"
+                          v-model="role.name.ru"
+                          type="text"
+                          :placeholder="$t('roles.permissions.placeholder_ru')"
+                      />
+                    </ValidationProvider>
+                    <span class="error__provider" v-if="errors[0]">
+                      {{ errors[0] }}
+                    </span>
                   </td>
                 </tr>
 
@@ -58,12 +68,22 @@
                     {{ $t("roles.permissions.name_uz") }}
                   </td>
                   <td width="50%">
-                    <input
-                        class="form-control"
-                        v-model="role.uz"
-                        type="text"
-                        :placeholder="$t('roles.permissions.placeholder_uz')"
-                    />
+                    <ValidationProvider
+                        :name="$t('roles.permissions.placeholder_uz')"
+                        ref="roleName-uz"
+                        rules="required|min:3"
+                        v-slot="{ errors }"
+                    >
+                      <b-form-input
+                          class="form-control"
+                          v-model="role.name.uz"
+                          type="text"
+                          :placeholder="$t('roles.permissions.placeholder_uz')"
+                      />
+                    </ValidationProvider>
+                    <span class="error__provider" v-if="errors[0]">
+                      {{ errors[0] }}
+                    </span>
                   </td>
                 </tr>
 
@@ -809,7 +829,7 @@ import api from "@/services/api";
 export default {
   data: () => ({
     role: {},
-
+    errors: [],
     header: {
       headers: {
         Authorization: "Bearer " + localStorage.token,

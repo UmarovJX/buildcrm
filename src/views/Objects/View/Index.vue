@@ -27,7 +27,7 @@
         @current-tab="changeTab"
     />
 
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="status-row">
       <b-form-checkbox-group
           id="checkbox-sort"
           class="status-sort"
@@ -43,12 +43,37 @@
           {{ status.label }}
         </b-form-checkbox>
       </b-form-checkbox-group>
-      <base-button class="price-button" text="Цены">
-        <template slot="right-icon">
-          <img :src="require('@/assets/icons/question.svg')" alt="">
-        </template>
-      </base-button>
+<!--      <base-button @click="openPriceList" class="price-button" text="Цены">-->
+<!--        <template slot="right-icon">-->
+<!--          <img :src="require('@/assets/icons/question.svg')" alt="">-->
+<!--        </template>-->
+<!--      </base-button>-->
     </div>
+
+    <base-modal ref="price-table">
+      <template #main>
+        <b-table
+            v-if="priceFields.length"
+            :items="priceList"
+            :fields="priceFields"
+            class="table__list"
+            :empty-text="$t('no_data')"
+            thead-tr-class="row__head__bottom-border"
+            tbody-tr-class="row__body__bottom-border"
+            head-variant="light"
+            show-empty
+            sticky-header
+            bordered
+            responsive
+        >
+          <!--    CELL OF COMMENT      -->
+          <template #cell(comment)="{item}">
+            <span v-if="item.comment">{{ item.comment }}</span>
+            <span v-else class=""> - </span>
+          </template>
+        </b-table>
+      </template>
+    </base-modal>
 
     <component
         :loading="getLoading"
@@ -91,6 +116,7 @@ import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
+import BaseModal from "@/components/Reusable/BaseModal";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 
@@ -106,7 +132,8 @@ export default {
     ObjectPlan,
     ApartmentExpressView,
     PlanExpressView,
-    BaseButton
+    BaseButton,
+    BaseModal
   },
   beforeRouteLeave(to, from, next) {
     const id = from.params.object
@@ -129,6 +156,11 @@ export default {
       apartments: [],
       plans: [],
       currentTab: 'ObjectTable',
+      priceList: [],
+      priceFields: [{
+        key: 'level',
+        label: 'Дата',
+      }],
       statusList: [
         {
           label: this.$t('object.status.available'),
@@ -259,6 +291,7 @@ export default {
   },
   mounted() {
     this.fetchFilterFields()
+    this.getPriceList()
   },
   async created() {
     const historyTab = sessionStorageGetItem(
@@ -270,6 +303,27 @@ export default {
     }
   },
   methods: {
+    getPriceList() {
+      const {object} = this.$route.params
+      api.objectsV2.fetchObjectPrice(object).then((res) => {
+
+
+        res.data.map((item) => {
+          console.log(item.prepay);
+          this.priceFields = [
+            ...this.priceFields,
+            {
+              key: item.prepay,
+              label: item.prepay
+            }
+          ]
+        })
+        console.log(this.priceFields, 'this.priceFields');
+      })
+    },
+    openPriceList() {
+      this.$refs['price-table'].openModal()
+    },
     async initRelatedToComponent() {
       if (this.currentTab === 'ObjectPlan' && !this.plans.length) {
         await this.getObjectPlans()
@@ -717,9 +771,16 @@ export default {
   }
 }
 
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
 .price-button {
   display: flex;
-  padding: 0;
+  padding-right: 0;
+  padding-top: 3px;
   margin: 0;
   background-color: transparent !important;
 }

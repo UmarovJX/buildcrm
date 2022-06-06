@@ -704,7 +704,10 @@ export default {
         {
           key: 'type',
           label: this.$t('contracts.view.type'),
-          formatter: (type) => this.$t(type)
+          formatter: (type) => {
+            console.log(type)
+            this.$t(type)
+          }
         },
         {
           key: 'balance',
@@ -743,6 +746,7 @@ export default {
           label: this.$t('payments.table.method'),
           formatter: (paymentType) => {
             if (paymentType === 'cash') return this.$t('cash')
+            if (paymentType === 'other') return this.$t('other')
             if (paymentType === 'transfer') return this.$t('contracts.transfer')
             if (!paymentType) return '-'
             return paymentType

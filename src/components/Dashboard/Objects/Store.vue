@@ -150,7 +150,6 @@
                 variant="success"
                 @click="disabled.plan.create = true"
                 v-b-modal.modal-create-type-plan
-                v-if="plans.length > 0"
             >
               <i class="fas fa-plus-circle"></i>
               {{ $t("objects.create.new_type_plan") }}
@@ -736,7 +735,7 @@ export default {
     },
 
     async savePlan(event) {
-      this.plans.push(event);
+      this.plans.plans.push(event);
     },
 
     getData() {

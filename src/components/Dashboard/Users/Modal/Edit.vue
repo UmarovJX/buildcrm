@@ -67,7 +67,7 @@
               :label="$t('user.phone')"
               label-for="phone"
           >
-            <b-form-input id="phone" v-model="manager.phone"></b-form-input>
+            <b-form-input type="tel" id="phone" v-model="manager.phone"></b-form-input>
           </b-form-group>
 
           <b-form-group

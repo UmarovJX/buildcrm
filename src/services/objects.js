@@ -228,6 +228,10 @@ class ObjectsV2 extends Core {
         return this.get(`apartments/objects/${objectId}/filter-fields`)
     }
 
+    fetchObjectPrice(objectId) {
+        return this.get(`apartments/objects/${objectId}/prices-fields`)
+    }
+
     fetchObjectApartments(object, params) {
         return this.get(`apartments/objects/${object}/apartments`, {params})
     }
