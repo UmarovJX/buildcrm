@@ -69,7 +69,7 @@
           <span class="price__section-amount">{{ price }}</span>
         </div>
 
-        <Calculator :apartment="apartment"/>
+        <Calculator @for-print="forPrint" :apartment="apartment"/>
 
         <PromoSection :promo="apartment.promo"/>
         <!--        &lt;!&ndash;   PROMO SECTION &ndash;&gt;-->
@@ -214,6 +214,9 @@ export default {
   },
 
   methods: {
+    forPrint(value) {
+      this.$emit('for-print', value)
+    },
     buildingDate(time) {
       const date = new Date(time)
       const year = date.getFullYear()

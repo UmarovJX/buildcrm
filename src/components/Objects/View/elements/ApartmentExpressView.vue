@@ -14,24 +14,9 @@
     <template #default="{ hide }">
 
 
-      <vue-html2pdf
-          v-if="hasApartment && !appLoading"
-          :show-layout="false"
-          :float-layout="true"
-          :enable-download="true"
-          :preview-modal="true"
-          :pdf-quality="2"
-          :manual-pagination="false"
-          pdf-format="a5"
-          :paginate-elements-by-height="3000"
-          pdf-orientation="portrait"
-          pdf-content-width="560px"
-          :html-to-pdf-options="htmlToPdfOptions"
-          ref="html2Pdf"
-      >
-        <section slot="pdf-content">
-          <!--  HEAD    -->
-          <div class="head d-flex justify-content-between pdf-item">
+      <section v-if="hasApartment && !appLoading">
+        <!--  HEAD    -->
+        <div class="head d-flex justify-content-between pdf-item">
             <span class="d-flex justify-content-center align-items-center">
               <span
                   @click="hideApartmentSidebar"
@@ -43,137 +28,156 @@
                 {{ sidebarApartment.object.name }} , {{ sidebarApartment.block.name }}
               </span>
             </span>
-            <span
-                class="apartment__status d-flex justify-content-center align-items-center"
-                :class="`status-${status}`"
-            >
+          <span
+              class="apartment__status d-flex justify-content-center align-items-center"
+              :class="`status-${status}`"
+          >
               {{ $t(`apartments.status.${status}`) }}
             </span>
-          </div>
+        </div>
 
-          <!--  MAIN    -->
-          <primary-information class="pdf-item" :apartment="sidebarApartment"/>
+        <!--  MAIN    -->
+        <primary-information class="pdf-item" @for-print="getCalc" :apartment="sidebarApartment"/>
 
-          <!--   ACTIONS     -->
-          <div class="action-block">
+        <!--   ACTIONS     -->
+        <div class="action-block">
 
-            <!-- VIEW MORE-->
-            <router-link :to="{
+          <!-- VIEW MORE-->
+          <router-link :to="{
                             name: 'apartment-view',
                             params: {
                               object: apartment.object.id,
                               id: apartment.uuid
                             }
                           }"
-            >
-              <base-button
-                  id="learnMore"
-                  :text="$t('more_info')"
-                  class="violet-gradient"
-              >
-                <template #left-icon>
-                  <base-eye-icon :square="20" fill="#fff"/>
-                </template>
-              </base-button>
-            </router-link>
-
-            <b-tooltip
-                target="learnMore"
-                triggers="hover"
-            >
-              <p class="tooltip-text">
-                {{ $t('more_info') }}
-              </p>
-            </b-tooltip>
-
-            <!--      CHECKOUT        -->
+          >
             <base-button
-                v-if="permission.order"
-                @click="orderApartment"
-                :text="`${ $t('apartments.list.confirm') }`"
-                class="checkout__button violet-gradient"
-            />
-
-            <!--      CONTINUE CHECKOUT        -->
-            <router-link v-if="permission.continueOrder"
-                         :to="{
-                name: 'confirm-apartment',
-                params: {id: sidebarApartment.order.id}}"
-            >
-              <base-button
-                  :text="`${ $t('continue_registration') }`"
-                  class="checkout__button violet-gradient"
-              />
-            </router-link>
-
-            <!--       MAKE A RESERVATION       -->
-            <base-button
-                v-if="permission.reserve"
-                @click="showReservationModal = true"
-                :text="`${ $t('apartments.list.book') }`"
-                class="gray-button"
-                v-b-modal.modal-reserve-create
+                id="learnMore"
+                :text="$t('more_info')"
+                class="violet-gradient"
             >
               <template #left-icon>
-                <base-minus-circle-icon :square="20" fill="#4B5563"/>
+                <base-eye-icon :square="20" fill="#fff"/>
               </template>
             </base-button>
+          </router-link>
 
-            <!-- CANCEL RESERVE -->
+          <b-tooltip
+              target="learnMore"
+              triggers="hover"
+          >
+            <p class="tooltip-text">
+              {{ $t('more_info') }}
+            </p>
+          </b-tooltip>
+
+          <!--      CHECKOUT        -->
+          <base-button
+              v-if="permission.order"
+              @click="orderApartment"
+              :text="`${ $t('apartments.list.confirm') }`"
+              class="checkout__button violet-gradient"
+          />
+
+          <!--      CONTINUE CHECKOUT        -->
+          <router-link v-if="permission.continueOrder"
+                       :to="{
+                name: 'confirm-apartment',
+                params: {id: sidebarApartment.order.id}}"
+          >
             <base-button
-                v-if="permission.cancelReserve"
-                :text="`${ $t('apartments.list.cancel_reserve') }`"
-                class="reserve__button "
-                @click="cancelReservation"
+                :text="`${ $t('continue_registration') }`"
+                class="checkout__button violet-gradient"
             />
+          </router-link>
 
-            <!--     CONTRACT VIEW         -->
-            <router-link
-                v-if="permission.contract"
-                :to="{name:'contracts-view', params:{ id: sidebarApartment.order.id } }"
-                class="contract_view_btn color-white d-flex align-items-center justify-content-center"
-            >
-              <i class="far fa-file-signature mr-2" style="color: #FFFFFF"></i>
-              {{ $t("apartments.list.contract") }}
-            </router-link>
+          <!--       MAKE A RESERVATION       -->
+          <base-button
+              v-if="permission.reserve"
+              @click="showReservationModal = true"
+              :text="`${ $t('apartments.list.book') }`"
+              class="gray-button"
+              v-b-modal.modal-reserve-create
+          >
+            <template #left-icon>
+              <base-minus-circle-icon :square="20" fill="#4B5563"/>
+            </template>
+          </base-button>
+
+          <!-- CANCEL RESERVE -->
+          <base-button
+              v-if="permission.cancelReserve"
+              :text="`${ $t('apartments.list.cancel_reserve') }`"
+              class="reserve__button "
+              @click="cancelReservation"
+          />
+
+          <!--     CONTRACT VIEW         -->
+          <router-link
+              v-if="permission.contract"
+              :to="{name:'contracts-view', params:{ id: sidebarApartment.order.id } }"
+              class="contract_view_btn color-white d-flex align-items-center justify-content-center"
+          >
+            <i class="far fa-file-signature mr-2" style="color: #FFFFFF"></i>
+            {{ $t("apartments.list.contract") }}
+          </router-link>
 
 
-            <!--PRINT-->
-            <button
-                id="print"
-                @click="printApartmentInformation"
-                class="print__button bg-gray-100 d-flex justify-content-center align-items-center "
-            >
-              <base-print-icon :square="20" fill="#4B5563"/>
-            </button>
-            <b-tooltip
-                target="print"
-                triggers="hover"
-            >
-              <p class="tooltip-text">
-                {{ $t('apartments.view.print') }}
-              </p>
-            </b-tooltip>
+          <!--PRINT-->
+          <button
+              id="print"
+              @click="printApartmentInformation"
+              class="print__button bg-gray-100 d-flex justify-content-center align-items-center "
+          >
+            <base-print-icon :square="20" fill="#4B5563"/>
+          </button>
+          <b-tooltip
+              target="print"
+              triggers="hover"
+          >
+            <p class="tooltip-text">
+              {{ $t('apartments.view.print') }}
+            </p>
+          </b-tooltip>
 
 
-            <!--            <button-->
-            <!--                id="closeModal"-->
-            <!--                @click="hideApartmentSidebar"-->
-            <!--                class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"-->
-            <!--            >-->
-            <!--              <base-minus-circle-icon :square="20" fill="#4B5563"/>-->
-            <!--            </button>-->
-            <!--            <b-tooltip-->
-            <!--                target="closeModal"-->
-            <!--                triggers="hover"-->
-            <!--            >-->
-            <!--              <p class="tooltip-text">-->
-            <!--                {{ $t('close') }}-->
-            <!--              </p>-->
-            <!--            </b-tooltip>-->
-          </div>
-        </section>
-      </vue-html2pdf>
+          <!--            <button-->
+          <!--                id="closeModal"-->
+          <!--                @click="hideApartmentSidebar"-->
+          <!--                class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"-->
+          <!--            >-->
+          <!--              <base-minus-circle-icon :square="20" fill="#4B5563"/>-->
+          <!--            </button>-->
+          <!--            <b-tooltip-->
+          <!--                target="closeModal"-->
+          <!--                triggers="hover"-->
+          <!--            >-->
+          <!--              <p class="tooltip-text">-->
+          <!--                {{ $t('close') }}-->
+          <!--              </p>-->
+          <!--            </b-tooltip>-->
+        </div>
+      </section>
+
+      <!--      <vue-html2pdf-->
+      <!--          v-if="hasApartment && !appLoading"-->
+      <!--          :show-layout="false"-->
+      <!--          :float-layout="true"-->
+      <!--          :enable-download="true"-->
+      <!--          :preview-modal="true"-->
+      <!--          :pdf-quality="2"-->
+      <!--          :manual-pagination="false"-->
+      <!--          pdf-format="a5"-->
+      <!--          :paginate-elements-by-height="3000"-->
+      <!--          pdf-orientation="portrait"-->
+      <!--          pdf-content-width="560px"-->
+      <!--          :html-to-pdf-options="htmlToPdfOptions"-->
+      <!--          ref="html2Pdf"-->
+      <!--      >-->
+      <!--        <section slot="pdf-content">-->
+
+      <!--        </section>-->
+      <!--      </vue-html2pdf>-->
 
       <!--  MAKE A RESERVATION MODAL    -->
       <reserve
@@ -181,6 +185,10 @@
           :apartment="sidebarApartment.uuid"
           @CreateReserve="updateContent"
       />
+
+      <PdfTemplate ref="html2Pdf" :apartment="apartment"
+                   :print-calc="printCalc"/>
+
 
       <!--  LOADING    -->
       <base-loading class="h-100" v-if="appLoading"/>
@@ -196,10 +204,10 @@ import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
-import VueHtml2pdf from 'vue-html2pdf'
 import {formatToPrice} from "@/util/reusable";
 import {mapGetters} from "vuex";
 import api from "@/services/api";
+import PdfTemplate from "@/components/PdfTemplate";
 
 export default {
   name: "ApartmentExpressView",
@@ -213,8 +221,8 @@ export default {
     PrimaryInformation,
     BaseMinusCircleIcon,
     Reserve,
-    VueHtml2pdf,
     BaseEyeIcon,
+    PdfTemplate
   },
 
   /* PROPS */
@@ -261,7 +269,8 @@ export default {
       appLoading: true,
       variant: 'none',
       visibleModal: true,
-      showReservationModal: false
+      showReservationModal: false,
+      printCalc: {}
     }
   },
 
@@ -368,6 +377,13 @@ export default {
 
   /* METHODS */
   methods: {
+    printPdf() {
+      this.pdfVisible = true
+      this.$refs.html2Pdf.generatePdf()
+    },
+    getCalc(value) {
+      this.printCalc = value
+    },
     changeTabOfUploadList(status) {
       const {status: queryStatus} = this.$route.query
       if (queryStatus !== status) {
@@ -515,6 +531,7 @@ export default {
       line-height: 1.75rem
 
       .close__button
+        min-width: 3.5rem
         width: 3.5rem
         height: 3.5rem
         cursor: pointer

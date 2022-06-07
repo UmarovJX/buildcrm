@@ -18,7 +18,8 @@ export default {
     },
 
     apartment: "Xonadon",
-
+    xonsaroy: 'Xonsaroy',
+    motto: 'Orzular sari ishonchli qadam!',
     quarter: 'chorak',
     of_the_year: 'yil',
     thank_you: 'Rahmat',
@@ -61,6 +62,8 @@ export default {
     uzs: 'UZS',
     price_from: `{msg} so'm dan`,
     price_from_m2: `{msg} so'm/m<sup>2</sup> dan`,
+    price_sold_m2: '{msg} uchun sotish narxi:',
+    total_price: 'Umumiy narx',
     general: "Umumiy",
     edit_password: "Parolni o'zgartirish",
     profile: 'Profil',
@@ -68,6 +71,7 @@ export default {
     full: "To'liqligicha",
     monthly: "Oylik",
     month: 'Oy',
+    duration: 'Davomiyligi',
     more_info: "Batafsil ma'lumot",
     payment_type: "To'lov sharti",
     created_at: "Yaratilgan vaqti",
@@ -148,6 +152,7 @@ export default {
     selling_price: 'Sotuv narxi',
     payment_discount: "to'lov turi",
     by_price: "{price} so`mdan",
+    selected_variant: "Tanlangan to'lov turi",
 
     tab_status: {
         all: "Hammasi",

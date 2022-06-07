@@ -777,7 +777,7 @@ export default {
     async getPlans() {
       this.getLoading = true
       try {
-        const {data, status} = await api.objects.fetchObjectPlans(this.object.id)
+        const {data, status} = await api.objectsV2.fetchObjectPlans(this.object.id)
 
         if (status === 200) {
           this.plans = [];

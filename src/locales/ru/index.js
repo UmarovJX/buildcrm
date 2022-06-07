@@ -2,6 +2,8 @@ export default {
     home: {
         title: "Главная",
     },
+    xonsaroy: 'Хонсарой',
+    motto: 'Уверенный шаг к вашим мечтам!',
     quarter: 'четверть',
     of_the_year: 'года',
     no_cancel: "Нет, отменить",
@@ -43,6 +45,8 @@ export default {
     uzs: 'UZS',
     price_from: `от {msg} сум`,
     price_from_m2: `от {msg} сум/м<sup>2</sup>`,
+    price_sold_m2: 'Цена продажи за {msg}:',
+    total_price: 'Общая цена',
     general: "Общие",
     edit_password: "Изменить пароль",
     profile: 'Профиль',
@@ -50,6 +54,7 @@ export default {
     full: 'Полный',
     monthly: 'Ежемесячно',
     month: 'месяцев',
+    duration: 'Продолжителность',
     without_initial: 'Без первоначального платежа',
     payment_type: 'Способ оплаты',
     created_at: 'Время создания',
@@ -130,6 +135,7 @@ export default {
     selling_price: 'Цена продажи',
     payment_discount: 'Вариант оплаты',
     by_price: `По {price} сум`,
+    selected_variant: "Выбранный вариант оплаты",
 
     tab_status: {
         all: "Все",

@@ -181,7 +181,7 @@ export default {
         debt: 0,
         total: 0,
         prepay_percente: 0,
-        base_price: 0
+        base_price: 0,
       },
       discountPerSquare: {
         value: null,
@@ -192,6 +192,9 @@ export default {
         permissionChange: false,
       }
     }
+  },
+  mounted() {
+    this.$emit('for-print', this.calc)
   },
   computed: {
     paymentOption() {
@@ -208,6 +211,9 @@ export default {
               id: discount.id
             }
           })
+    },
+    lessPrice() {
+      return this.total - this.calc.prepay
     },
     totalDiscount() {
       const {calc, apartment} = this
@@ -251,6 +257,10 @@ export default {
       this.calc.debt = this.getDebt();
       this.calc.total = this.getTotal();
       this.calc.base_price = this.getBasePrice()
+
+      this.calc.total_discount = parseInt(formatToPrice(this.totalDiscount, 2))
+      this.calc.less_price = formatToPrice(this.lessPrice, 2)
+      this.$emit('for-print', this.calc)
     },
     async changeDiscount(discountId) {
       this.discount = this.paymentOption.find(option => option.value.id === discountId).value

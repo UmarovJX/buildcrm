@@ -97,7 +97,7 @@
             <h4 class="calculator-title color-gray-600 font-craftworksans">
               {{ $t("apartments.agree.placeholder.enter_discount") }}
             </h4>
-            <calculator :apartment="apartment" :has-apartment="hasApartment"/>
+            <calculator @for-print="getCalc" :apartment="apartment" :has-apartment="hasApartment"/>
           </div>
 
           <div class="align-self-stretch d-flex justify-content-end">
@@ -148,7 +148,7 @@
 
               <button
                   id="print"
-                  @click="printApartmentInformation"
+                  @click="printPdf"
                   class="print__button bg-gray-100 d-flex justify-content-center align-items-center "
               >
                 <base-print-icon :square="20" fill="#4B5563"/>
@@ -176,6 +176,12 @@
 
     <!--  LOADING    -->
     <base-loading v-if="appLoading"/>
+
+
+    <PdfTemplate ref="html2Pdf" :apartment="apartment"
+                 :print-calc="printCalc"/>
+
+
   </main>
 </template>
 
@@ -195,9 +201,10 @@ import 'swiper/css/swiper.css'
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import PromoSection from "@/components/Objects/View/elements/PromoSection";
-import {formatToPrice} from "@/util/reusable";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
+import PdfTemplate from "@/components/PdfTemplate";
+import {formatToPrice} from "@/util/reusable";
 
 export default {
   name: "ApartmentView",
@@ -214,7 +221,7 @@ export default {
     BaseButton,
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
-
+    PdfTemplate
   },
   directives: {
     swiper: directive,
@@ -245,6 +252,7 @@ export default {
       apartment: {},
       appLoading: false,
       showReservationModal: false,
+      printCalc: {},
     }
   },
 
@@ -341,6 +349,13 @@ export default {
   },
 
   methods: {
+    getCalc(value) {
+      this.printCalc = value
+    },
+    printPdf() {
+      this.pdfVisible = true
+      this.$refs.html2Pdf.generatePdf()
+    },
     async fetchApartmentView() {
       this.appLoading = true
       const {object, id} = this.$route.params
@@ -434,6 +449,22 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
+//vue-html2pdf
+//  .layout-container
+//    position: relative
+//    width: auto
+//    height: auto
+//    left: 0
+//    z-index: 0
+//    background: #FFFFFF
+//    display: block
+
+
+
+
+
+
 
 ::v-deep .main__content
   .slider__image
