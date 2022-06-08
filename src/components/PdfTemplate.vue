@@ -42,7 +42,7 @@
           <div class="row pdf-features">
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                Обьект:
+                {{ $t('users.object') }}:
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-facade.svg')" alt="">
@@ -64,12 +64,12 @@
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-area.svg')" alt="">
-                <p>{{ apartment.plan.area }} M <sup>2</sup></p>
+                <p>{{ apartment.plan.area }} m<sup>2</sup></p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                Блок:
+                {{ $t('object.sort.block') }}:
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-flat.svg')" alt="">
@@ -78,7 +78,7 @@
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                Этаж:
+                {{ $t('object.level') }}:
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-floor.svg')" alt="">
@@ -87,7 +87,7 @@
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                Количество комнат:
+                {{ $t('number_of_rooms') }}:
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-door.svg')" alt="">
@@ -96,7 +96,7 @@
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                Дата завершения строительства:
+                {{ $t('apartments.view.completion_date') }}:
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-construction.svg')" alt="">
@@ -105,7 +105,7 @@
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                Этажность блока:
+                {{ $t('apartments.view.number_of_blocks') }}:
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-flat.svg')" alt="">
@@ -114,11 +114,11 @@
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                Площадь балкона:
+                {{ $t('objects.create.plan.balcony_area') }}:
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-area.svg')" alt="">
-                <p v-if="apartment.plan.balcony">{{ apartment.plan.balcony_area }} M <sup>2</sup></p>
+                <p v-if="apartment.plan.balcony">{{ apartment.plan.balcony_area }} m<sup>2</sup></p>
                 <p v-else>-</p>
               </div>
             </div>
@@ -250,7 +250,7 @@
                 <!--                </template>-->
 
                 <template #head()="data">
-                  <span :class="data.class" v-html="data.label"/>
+                  <span :class="data.class" v-html="$t(data.label, {msg: `m<sup>2</sup>`})"/>
                 </template>
 
                 <template #cell(type)="{item}">
@@ -364,22 +364,22 @@ export default {
         {
           key: "type",
           class: 'text-capitalize',
-          label: this.$t('payment_discount'),
+          label: ('payment_discount'),
         },
         {
           key: "priceMeter",
           class: 'text-right',
-          label: this.$t('price_sold_m2', {msg: `m<sup>2</sup>`}),
+          label: ('price_sold_m2'),
         },
         {
           key: "price",
           class: 'text-right',
-          label: this.$t('total_price'),
+          label: ('total_price'),
         },
         {
           key: "priceTotal",
           class: 'text-right',
-          label: this.$t('total_discount'),
+          label: ('total_discount'),
         },
       ],
       visibleMode: false,
