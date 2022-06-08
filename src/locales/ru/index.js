@@ -162,6 +162,19 @@ export default {
     november: 'Ноябрь',
     december: 'Декабрь',
 
+    weekDayAbbreviation: {
+        0: 'ВС',
+        1: 'ПН',
+        2: 'ВТ',
+        3: 'СР',
+        4: 'ЧТ',
+        5: 'ПТ',
+        6: 'СБ',
+    },
+
+    more: 'Еще',
+    go_to_day: 'Перейти к дню',
+
     tab_status: {
         all: "Все",
         available: "Доступные",

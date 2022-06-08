@@ -17,8 +17,8 @@
           <div class="navigation-date-picker">
             <div class="output-content d-flex justify-content-center align-items-center">
               <div class="d-flex align-items-center justify-content-center">
+                <!--       VIEW BY DAY         -->
                 <template v-if="typeOfView === 'day'">
-                  <!--       VIEW BY DAY         -->
                   <span class="d-flex output-content-text">
                     <span class="d-block">{{ dayFormat.day }}</span>
                     <span class="d-block mr-2 ml-2">{{ dayFormat.month }}</span>
@@ -62,6 +62,7 @@ import BaseRightDoubleIcon from "@/components/icons/BaseRightDoubleIcon";
 import CircleButtonGenerator from "@/components/Elements/Buttons/CircleButtonGenerator";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import DatePicker from "vue2-datepicker";
+import {dateConvertor, monthsNameList} from "@/util/calendar";
 
 export default {
   name: "CalendarNavigation",
@@ -74,6 +75,7 @@ export default {
     DatePicker,
     BaseDownIcon
   },
+  emits: ['change-date'],
   props: {
     typeOfView: {
       type: String,
@@ -81,22 +83,14 @@ export default {
     }
   },
   data() {
+    const hasStarterMoment = this.$route.query.hasOwnProperty('starter_moment')
+    let navigationDate = new Date()
+    if (hasStarterMoment) {
+      navigationDate = dateConvertor(this.$route.query.starter_moment)
+    }
     return {
-      navigationDate: null,
-      months: [
-        'january',
-        'february',
-        'march',
-        'april',
-        'may',
-        'june',
-        'july',
-        'august',
-        'september',
-        'october',
-        'november',
-        'december',
-      ]
+      navigationDate,
+      months: monthsNameList
     }
   },
   computed: {
@@ -123,11 +117,13 @@ export default {
       return 'date'
     }
   },
-  created() {
-    this.initOutputTime()
+  watch: {
+    navigationDate(lastValue) {
+      this.$emit('change-date', dateConvertor(lastValue))
+    }
   },
   methods: {
-    initOutputTime() {
+    setMomentToCurrent() {
       this.navigationDate = new Date()
     },
     buttonDoubleIconsTrigger(count) {
@@ -137,7 +133,7 @@ export default {
       const fullYear = lastDate.getFullYear()
       switch (this.typeOfView) {
         case 'day': {
-          this.navigationDate = lastDate.setDate(this.dateCount + count)
+          this.navigationDate = lastDate.setDate(this.dateCount + count * 7)
           break
         }
         case 'week': {
