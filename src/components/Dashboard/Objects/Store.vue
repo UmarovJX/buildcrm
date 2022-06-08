@@ -735,7 +735,7 @@ export default {
     },
 
     async savePlan(event) {
-      this.plans.plans.push(event);
+      this.plans.push(event);
     },
 
     getData() {
