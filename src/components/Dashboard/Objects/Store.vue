@@ -187,7 +187,7 @@
             <button
                 type="button"
                 @click="nextStep(3)"
-                :disabled="plans.plans.length > 0 ? false : true"
+                :disabled="plans.length > 0 ? false : true"
                 v-if="!loading"
                 class="btn btn-primary"
             >
@@ -777,7 +777,7 @@ export default {
     async getPlans() {
       this.getLoading = true
       try {
-        const {data, status} = await api.objectsV2.fetchObjectPlans(this.object.id)
+        const {data, status} = await api.objects.fetchObjectPlans(this.object.id)
 
         if (status === 200) {
           this.plans = [];

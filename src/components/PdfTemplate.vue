@@ -137,25 +137,34 @@
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__item">
                     <p class="option">{{ $t('starting_price') }}: </p>
-                    <p class="value">{{ pricePrettier(printCalc.base_price) }} {{ $t('ye') }}</p>
+                    <p class="value">{{ pricePrettier(apartment.prices.price) }} {{ $t('ye') }}</p>
                   </div>
                   <div class="pdf-payment__item">
                     <p class="option" v-html="$t('price_sold_m2', {msg: `M<sup>2</sup>`})"/>
-                    <p class="value">{{ pricePrettier(printCalc.price_for_m2) }} {{ $t('ye') }}</p>
+                    <p class="value">{{ pricePrettier(printCalc.price_for_m2 - printCalc.discount_price) }} {{
+                        $t('ye')
+                      }}</p>
                   </div>
                   <div class="pdf-payment__subtotal pdf-payment__item">
-                    <p class="option">{{ $t('apartments.view.discount_per_m2') }}:</p>
+                    <p class="option">{{ $t('apartments.view.discount_per_m2') }}</p>
                     <p class="value">{{ pricePrettier(printCalc.discount_price) }} {{ $t('ye') }}</p>
                   </div>
                 </div>
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__item">
                     <p class="option">{{ $t('apartments.view.prepayment') }} {{ printCalc.prepay_percente }}%: </p>
-                    <p class="value">{{ pricePrettier(apartment.prices.price) }} {{ $t('ye') }}</p>
+                    <p class="value" v-if="printCalc.prepay_percente === 100">{{ pricePrettier(printCalc.total) }} {{
+                        $t('ye')
+                      }}</p>
+                    <p class="value" v-else>{{ pricePrettier(printCalc.prepay) }} {{
+                        $t('ye')
+                      }}</p>
                   </div>
                   <div class="pdf-payment__item">
                     <p class="option">{{ $t('payments.balance') }}: </p>
-                    <p class="value">{{ pricePrettier(printCalc.less_price) }} {{ $t('ye') }}</p>
+                    <p class="value" v-if="printCalc.prepay_percente === 100">0
+                      {{ $t('ye') }}</p>
+                    <p class="value" v-else>{{ pricePrettier(printCalc.less_price) }} {{ $t('ye') }}</p>
                   </div>
                   <div class="pdf-payment__subtotal pdf-payment__item">
                     <p class="option">{{ $t('total_discount') }}: </p>
@@ -171,11 +180,17 @@
                   </div>
                   <div class="pdf-payment__item">
                     <p class="option">{{ $t('monthly_payment') }}: </p>
-                    <p class="value">по {{ pricePrettier(printCalc.monthly_price) }} {{ $t('ye') }}/м.</p>
+                    <p class="value" v-if="printCalc.prepay_percente === 100">
+                      {{ $t('by_price_m2', {price: 0}) }}
+                    </p>
+                    <p class="value" v-else>{{ $t('by_price_m2', {price: pricePrettier(printCalc.monthly_price)}) }}</p>
                   </div>
                   <div class=" pdf-payment__item">
                     <p class="option">{{ $t('duration') }}: </p>
-                    <p class="value">{{ pricePrettier(printCalc.month) }} {{ $t('month') }}</p>
+                    <p class="value" v-if="printCalc.prepay_percente === 100">
+                      0 {{ $t('month') }}
+                    </p>
+                    <p class="value" v-else>{{ pricePrettier(printCalc.month) }} {{ $t('month') }}</p>
                   </div>
                 </div>
               </div>
@@ -242,13 +257,21 @@
                   <span>{{ item.prepay }}% {{ $t('apartments.view.prepayment') }}</span>
                 </template>
                 <template #cell(priceMeter)="{item}">
-                  <span class="table-item">{{ item.amount }}</span>
+                  <span class="table-item" v-if="item.prepay === 100">{{
+                      pricePrettier(apartment.prices.price_m2, 2)
+                    }}</span>
+                  <span class="table-item" v-else>{{ pricePrettier(item.amount - printCalc.discount_price, 2) }}</span>
                 </template>
                 <template #cell(price)="{item}">
-                  <span class="table-item">{{ totalPrintPrice(item.amount) }}</span>
+                  <span class="table-item" v-if="item.prepay === 100">{{
+                      totalPrintPrice(apartment.prices.price)
+                    }}</span>
+                  <span class="table-item" v-else>{{ totalPrintPrice(item.amount) }}</span>
                 </template>
                 <template #cell(priceTotal)="{item}">
-                  <span class="table-item table-item__teal">{{ totalPrintDiscount(item.amount) }}</span>
+                  <span class="table-item table-item__teal">{{
+                      totalPrintDiscount(item.amount)
+                    }}</span>
                 </template>
 
               </b-table>
@@ -346,7 +369,7 @@ export default {
         {
           key: "priceMeter",
           class: 'text-right',
-          label: this.$t('price_sold_m2', {msg: `M<sup>2</sup>`}),
+          label: this.$t('price_sold_m2', {msg: `m<sup>2</sup>`}),
         },
         {
           key: "price",
@@ -385,10 +408,11 @@ export default {
     },
 
     totalPrintDiscount(value) {
-      return this.apartment.price - (this.totalPrintPrice(value))
+      return formatToPrice(this.apartment.prices.price - ((parseFloat(this.printCalc.discount_price) + value) * this.apartment.plan.area), 2
+      )
     },
     totalPrintPrice(value) {
-      return value * this.apartment.plan.area
+      return formatToPrice(this.apartment.plan.area * (value + parseFloat(this.printCalc.discount_price)), 2)
     },
   },
 
@@ -449,8 +473,8 @@ export default {
         margin-bottom: 0;
 
         img {
-          width: 8px;
-          height: 8px;
+          width: 14px;
+          height: 14px;
           margin-right: 4px;
         }
       }

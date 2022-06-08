@@ -1,5 +1,5 @@
 <template>
-  <table class="table table-striped" v-if="plans.plans && plans.plans.length > 0">
+  <table class="table table-striped" v-if="plans && plans.length > 0">
     <thead>
     <tr>
       <th scope="col" width="10">#</th>
@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="(plan, index) in plans.plans" :key="index">
+    <tr v-for="(plan, index) in plans" :key="index">
       <th scope="row">{{ index + 1 }}</th>
       <td>{{ plan.name }}</td>
       <td>{{ plan.area }}</td>

@@ -152,6 +152,7 @@ export default {
     selling_price: 'Sotuv narxi',
     payment_discount: "to'lov turi",
     by_price: "{price} so`mdan",
+    by_price_m2: "{price} so`m/M.dan",
     selected_variant: "Tanlangan to'lov turi",
 
     tab_status: {

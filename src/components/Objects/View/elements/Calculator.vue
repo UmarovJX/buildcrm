@@ -213,7 +213,7 @@ export default {
           })
     },
     lessPrice() {
-      return this.total - this.calc.prepay
+      return this.calc.total - this.calc.prepay
     },
     totalDiscount() {
       const {calc, apartment} = this
@@ -258,8 +258,8 @@ export default {
       this.calc.total = this.getTotal();
       this.calc.base_price = this.getBasePrice()
 
-      this.calc.total_discount = parseInt(formatToPrice(this.totalDiscount, 2))
-      this.calc.less_price = formatToPrice(this.lessPrice, 2)
+      this.calc.total_discount = this.totalDiscount
+      this.calc.less_price = this.lessPrice
       this.$emit('for-print', this.calc)
     },
     async changeDiscount(discountId) {
