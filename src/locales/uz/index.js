@@ -19,6 +19,7 @@ export default {
 
     apartment: "Xonadon",
     xonsaroy: 'Xonsaroy',
+    address_office: 'Toshkent shahri, Yunusobod tumani, Yangi shahar ko‘chasi, 64A-uy',
     motto: 'Orzular sari ishonchli qadam!',
     quarter: 'chorak',
     of_the_year: 'yil',

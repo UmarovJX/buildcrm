@@ -288,7 +288,7 @@
               <div class="pdf-footer__contact">
                 <p class="pdf-footer__link">
                   <img :src="require('@/assets/icons/location.svg')" alt="">
-                  город Ташкент, Юнусабадский район, улица Янги шахар, дом 64А
+                  {{ $t('address_office') }}
                 </p>
                 <p class="pdf-footer__link">
                   <img :src="require('@/assets/icons/phone.svg')" alt="">
