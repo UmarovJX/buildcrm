@@ -294,13 +294,14 @@ export default {
       const isStatusHold = order.status === 'hold'
       const isStatusSold = order.status === 'sold'
       const isStatusContract = order.status === 'contract'
+      const isStatusClosed = order.status === 'closed'
 
       const permissionCancelReserve = isStatusBooked && (authorityUser || rootContract || isMainRole)
       const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
 
       const permissionContract = () => {
         const permissionOne = apartments.contract && authorityUser
-        return (isStatusSold || isStatusContract) && (permissionOne || rootContract)
+        return (isStatusSold || isStatusContract || isStatusClosed) && (permissionOne || rootContract)
       }
 
       const permissionOrder = () => {
