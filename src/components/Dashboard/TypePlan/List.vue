@@ -81,10 +81,11 @@
           <template #cell(image)="data">
             <img
                 style="cursor: pointer; object-fit: contain"
-                :data-fancybox="data.value"
-                v-lazy="data.value"
+                :data-fancybox="data.value[0]"
+                :src="data.value[0]"
                 width="150"
                 height="100"
+                alt="plan_image"
                 fluid
             />
           </template>
@@ -176,7 +177,7 @@ export default {
         {
           key: "image",
           label: this.$t('type_plan.title'),
-          image: true,
+          // image: false,
         },
         {
           key: "name",

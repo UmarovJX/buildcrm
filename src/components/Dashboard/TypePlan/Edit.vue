@@ -252,7 +252,7 @@ export default {
       let vm = this;
 
       const {object, id} = this.$route.params
-      api.objectsV2.updateObjectPlan(object, id, formData)
+      api.objects.updateObjectPlan(object, id, formData)
           .then((response) => {
             if (response.status === 202) {
               vm.$router.back(-1);

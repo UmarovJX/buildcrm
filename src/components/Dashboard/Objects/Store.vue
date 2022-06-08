@@ -144,7 +144,7 @@
           </div>
 
           <div class="card-body">
-            <plans-table :plans="this.plans"></plans-table>
+            <plans-table :plans="plans"></plans-table>
 
             <b-button
                 variant="success"

@@ -187,7 +187,7 @@ class ObjectsV1Crm extends Core {
     }
 
     getObjectPlans(objectId) {
-        return this.get(`v2/objects/${objectId}/plans`)
+        return this.get(`objects/${objectId}/plans`)
     }
 }
 
