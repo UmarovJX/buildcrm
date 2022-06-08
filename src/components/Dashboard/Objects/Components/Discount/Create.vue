@@ -241,6 +241,165 @@
 
             </div>
 
+          </b-tab>
+
+          <b-tab :title="$t('objects.create.tariff.addition')">
+
+            <div class="price-block">
+
+              <h5 class="create-title">{{ $t('objects.create.tariff.price') }}</h5>
+
+              <div class="add-inputs">
+                <div v-for="(deflt,index) in tariff.defaultTariff" :key="`default`+index" class="add-inputs__row">
+
+                  <b-dropdown left>
+                    <template v-if="true" #button-content>
+                      <div class="input-block">
+                        <span class="input-label">{{ $t('objects.create.tariff.floor_placeholder') }}</span>
+                        <p class="input-text">
+                          {{ formatSelectPlaceholder(deflt.floors) }}
+                          <!--                          Этажи или спецификации-->
+                        </p>
+
+                      </div>
+                    </template>
+                    <template v-else #button-content>
+                      <p class="default-label">
+                        {{ $t('object.level') }}
+                      </p>
+                    </template>
+                    <!--        <template #button-content>-->
+                    <!--          {{ $t('object.level') }}-->
+                    <!--        </template>-->
+                    <b-dropdown-text href="#">
+                      <b-form-group v-slot="{ ariaDescribedby }">
+                        <b-form-checkbox-group
+                            id="checkbox-group-2"
+                            v-model="deflt.floors"
+                            :aria-describedby="ariaDescribedby"
+                            name="flavour-2"
+                        >
+                          <b-form-checkbox v-for="option in floors" :key="`default`+option" :value="option">
+                            {{ option }}
+                          </b-form-checkbox>
+                        </b-form-checkbox-group>
+                      </b-form-group>
+                    </b-dropdown-text>
+                  </b-dropdown>
+
+                  <!--  Сум  -->
+                  <div class="filter__apartment__price">
+                    <b-form-select
+                        v-model="deflt.currency"
+                        :options="currencyOptions"
+                        class="inline price__currency"
+                    />
+
+                    <base-numeric-input
+                        v-model.number="deflt.amount"
+                        :currency="` `"
+                        :minus="false"
+                        :value="null"
+                        currency-symbol-position="suffix"
+                        separator="space"
+                        :placeholder="$t('objects.create.price_m2')"
+                        class="filter__price"
+                    ></base-numeric-input>
+
+                  </div>
+
+                  <div @click="deleteDefaultPrice(index)" class="price-delete">
+                    <img :src="require('@/assets/icons/delete.svg')" alt="">
+                  </div>
+                </div>
+
+              </div>
+
+              <base-button @click="addDefaultPrice" :text="$t('objects.create.tariff.add_price')">
+                <template #left-icon>
+                  <base-plus-icon fill="var(--violet-600)"/>
+                </template>
+              </base-button>
+
+            </div>
+
+            <div class="price-block">
+
+              <h5 class="create-title">{{ $t('objects.create.tariff.price_balcony') }}</h5>
+
+              <div class="add-inputs">
+                <div v-for="(other,index) in tariff.otherTariff" :key="`other`+index" class="add-inputs__row">
+
+                  <b-dropdown left>
+                    <template v-if="true" #button-content>
+                      <div class="input-block">
+                        <span class="input-label">{{ $t('objects.create.tariff.floor_placeholder') }}</span>
+                        <p class="input-text">
+                          {{ formatSelectPlaceholder(other.floors) }}
+                          <!--                          Этажи или спецификации-->
+                        </p>
+
+                      </div>
+                    </template>
+                    <template v-else #button-content>
+                      <p class="default-label">
+                        {{ $t('object.level') }}
+                      </p>
+                    </template>
+                    <!--        <template #button-content>-->
+                    <!--          {{ $t('object.level') }}-->
+                    <!--        </template>-->
+                    <b-dropdown-text href="#">
+                      <b-form-group v-slot="{ ariaDescribedby }">
+                        <b-form-checkbox-group
+                            id="checkbox-group-2"
+                            v-model="other.floors"
+                            :aria-describedby="ariaDescribedby"
+                            name="flavour-2"
+                        >
+                          <b-form-checkbox v-for="option in floors" :key="`other`+option" :value="option">
+                            {{ option }}
+                          </b-form-checkbox>
+                        </b-form-checkbox-group>
+                      </b-form-group>
+                    </b-dropdown-text>
+                  </b-dropdown>
+
+                  <!--  Сум  -->
+                  <div class="filter__apartment__price">
+                    <b-form-select
+                        v-model="other.currency"
+                        :options="currencyOptions"
+                        class="inline price__currency"
+                    />
+                    <base-numeric-input
+                        v-model.number="other.amount"
+                        :currency="` `"
+                        :minus="false"
+                        :value="null"
+                        currency-symbol-position="suffix"
+                        separator="space"
+                        :placeholder="$t('objects.create.price_m2')"
+                        class="filter__price"
+                    ></base-numeric-input>
+
+                  </div>
+
+                  <div @click="deleteOtherPrice(index)" class="price-delete">
+                    <img :src="require('@/assets/icons/delete.svg')" alt="">
+                  </div>
+
+                </div>
+
+              </div>
+
+              <base-button @click="addOtherPrice" :text="$t('objects.create.tariff.add_price')">
+                <template #left-icon>
+                  <base-plus-icon fill="var(--violet-600)"/>
+                </template>
+              </base-button>
+
+            </div>
 
           </b-tab>
 
@@ -253,7 +412,8 @@
       <template #footer>
         <div class="footer-btn">
           <base-button @click="closeModal" :text="$t('cancel')"/>
-          <base-button @click="saveDiscount" class="violet-gradient" :text="$t('add')"/>
+          <base-button v-if="checkStatus === 'create'" @click="saveDiscount" class="violet-gradient" :text="$t('add')"/>
+          <base-button v-else @click="saveDiscount" class="violet-gradient" :text="$t('save')"/>
         </div>
       </template>
 
@@ -357,15 +517,22 @@ export default {
           this.editDiscount()
         }
       }
-
     }
   },
   computed: {
+    checkStatus() {
+      if (Object.keys(this.discount).length) {
+        return 'update'
+      }
+      return 'create'
+    },
     tariffType() {
       if (this.tariffIndex === 0)
         return 'fixed'
       if (this.tariffIndex === 1)
         return 'percent'
+      if (this.tariffIndex === 2)
+        return 'addition'
       return 'percent'
     }
   },
@@ -457,21 +624,39 @@ export default {
     },
 
     clearDiscount() {
-      this.discount.prepay_from = 0;
-      this.discount.prepay_to = 0;
-      this.discount.discount = 0;
+      this.tariff = {
+        prepay: '',
+        type: '',
+        discount: 0,
+        defaultTariff: [
+          {
+            type: 'default',
+            amount: null,
+            currency: 'usd',
+            floors: []
+          }
+        ],
+        otherTariff: [
+          {
+            type: 'other_price',
+            amount: null,
+            currency: 'usd',
+            floors: []
+          }
+        ],
+      }
     },
 
     async saveDiscount() {
       const checkTariff = await this.$refs['tariff-name'].validate().then((res) => {
         this.errors = res.errors
-        return res.valid
+        return res.valid && this.tariff.prepay.length > 0
       })
 
       const {discount, prepay} = this.tariff
 
       let filteredData = {}
-      if (this.tariffType === 'fixed') {
+      if (this.tariffType !== 'percent') {
 
         const otherFilter = this.tariff.otherTariff.filter((item) => {
               return item.floors.length > 0 && item.amount > 0
@@ -481,14 +666,41 @@ export default {
               return item.floors.length > 0 && item.amount > 0
             }
         )
-
-        filteredData = {
-          type: this.tariffType,
-          prepay: prepay,
-          prices: [...otherFilter.length > 0 ? otherFilter : null,
-            ...defaultFilter.length > 0 ? defaultFilter : null,
-          ],
+        if (otherFilter.length && defaultFilter.length) {
+          filteredData = {
+            type: this.tariffType,
+            prepay: prepay,
+            prices: [...otherFilter, ...defaultFilter],
+          }
+        } else if (otherFilter.length) {
+          filteredData = {
+            type: this.tariffType,
+            prepay: prepay,
+            prices: [...otherFilter],
+          }
+        } else if (defaultFilter.length > 0) {
+          filteredData = {
+            type: this.tariffType,
+            prepay: prepay,
+            prices: [...defaultFilter],
+          }
+        } else {
+          filteredData = {
+            type: this.tariffType,
+            prepay: prepay,
+            prices: [],
+          }
         }
+
+        // filteredData = {
+        //   type: this.tariffType,
+        //   prepay: prepay,
+        //   prices: [...(otherFilter.length > 0 ? otherFilter : null),
+        //     ...(defaultFilter.length > 0 ? defaultFilter : null)
+        //   ],
+        // }
+
+
       } else {
         filteredData = {
           type: this.tariffType,

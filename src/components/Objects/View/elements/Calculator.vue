@@ -312,6 +312,7 @@ export default {
       switch (this.discount.type) {
         case "promo":
         case "fixed":
+        case "addition":
           if (this.calc.discount_price) {
             total =
                 (this.discount.amount - parseFloat(this.calc.discount_price)) *
@@ -351,6 +352,7 @@ export default {
       switch (this.discount.type) {
         case 'promo':
         case 'fixed':
+        case "addition":
           return this.discount.amount * this.apartment.plan.area
         default:
           return this.apartment.price
@@ -364,6 +366,7 @@ export default {
       switch (this.discount.type) {
         case 'promo':
         case "fixed":
+        case "addition":
           if (this.calc.discount_price) {
             total =
                 (this.discount.amount - parseFloat(this.calc.discount_price)) *
@@ -390,6 +393,7 @@ export default {
       switch (this.discount.type) {
         case "fixed":
         case "promo":
+        case "addition":
           if (this.calc.discount_price) {
             total =
                 (this.discount.amount - parseFloat(this.calc.discount_price)) *

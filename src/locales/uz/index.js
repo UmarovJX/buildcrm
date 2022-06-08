@@ -739,6 +739,7 @@ export default {
                 add_percent: "Qo'shiladigan foiz",
                 fixed: "Belgilangan",
                 percent: 'Foizli',
+                addition: "Bo'lingan",
             }
 
         },

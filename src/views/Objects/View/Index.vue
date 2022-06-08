@@ -318,7 +318,7 @@ export default {
             }
           ]
         })
-        console.log(this.priceFields, 'this.priceFields');
+        // console.log(this.priceFields, 'this.priceFields');
       })
     },
     openPriceList() {

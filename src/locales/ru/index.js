@@ -747,6 +747,7 @@ export default {
                 add_percent: 'Добавичный процент',
                 fixed: 'Фиксированный',
                 percent: 'Процентный',
+                addition: 'Разделенный',
             }
 
         },
