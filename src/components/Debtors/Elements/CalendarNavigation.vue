@@ -120,6 +120,11 @@ export default {
   watch: {
     navigationDate(lastValue) {
       this.$emit('change-date', dateConvertor(lastValue))
+    },
+    typeOfView(lastViewType) {
+      if (lastViewType === 'week') {
+        this.dateCount = 1
+      }
     }
   },
   methods: {

@@ -500,8 +500,9 @@ export default {
     changeViewType(type) {
       this.typeOfView = type
       const starter = this.query.starter_moment
-      const {year, month} = dateProperties(dateConvertor(starter))
+      const {year, month, dayOfMonth} = dateProperties(dateConvertor(starter))
       if (type === 'day') {
+        this.day.starter = starter
         this.changeRouterQuery({
           date: [starter, starter]
         })
@@ -511,8 +512,11 @@ export default {
           date: undefined,
           starter_moment: starter
         })
-        // this.month.starter = starter
-        // this.week.starter = starter
+        if (type === 'month') {
+          this.month.starter = starter
+        } else if (type === 'week') {
+          this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
+        }
       }
       this.initDebtorUi()
     },
