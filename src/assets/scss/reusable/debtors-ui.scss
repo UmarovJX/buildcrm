@@ -1,0 +1,83 @@
+.cell-top-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.25rem 0.75rem;
+  color: var(--gray-600);
+}
+
+.view-all-debts {
+  top: 0;
+  left: 0;
+  z-index: 100;
+  position: absolute;
+  border-radius: 0.25rem;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16), 0 4px 18px rgba(0, 0, 0, 0.06);
+  font-size: 14px;
+  width: 100%;
+
+  &-head {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem;
+    color: var(--gray-600);
+  }
+
+  &-footer {
+    color: var(--gray-600);
+    margin: 1.5rem 2rem 1.5rem 1.5rem;
+  }
+
+  .debt-card {
+    display: block;
+    background-color: var(--violet-600);
+    border-radius: 0.25rem;
+    margin: 0 0.25rem;
+    color: white;
+    padding: 0.5rem;
+    font-size: 14px;
+  }
+}
+
+.disable-cell {
+  background-color: var(--gray-50);
+}
+
+.full-name {
+  display: inline-block;
+  width: calc(95%);
+}
+
+.debt-card {
+  display: block;
+  background-color: var(--violet-600);
+  border-radius: 0.25rem;
+  margin: 0 0.25rem;
+  color: white;
+  padding: 0.5rem;
+  font-size: 14px;
+}
+
+.hide-content {
+  visibility: hidden;
+}
+
+.more-button {
+  border: none;
+  background-color: var(--violet-600);
+  color: white;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  margin: 0.25rem;
+  font-size: 14px;
+}
+
+.today-cell {
+  background-color: var(--violet-50);
+
+  .day-of-month,
+  .day-of-week {
+    color: var(--violet-600) !important;
+  }
+}

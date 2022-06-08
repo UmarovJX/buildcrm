@@ -132,7 +132,7 @@ export default {
     formatNumber(primitiveValue) {
       if (!primitiveValue) return
       const valueToString = primitiveValue.toString().split('')
-      primitiveValue = this.removeExcessDotAndComma(valueToString)
+      primitiveValue = removeExcessDotAndComma(valueToString)
       return primitiveValue
     },
     initComponent() {
@@ -153,7 +153,8 @@ export default {
     setInitialAmountValue() {
       if (this.value && this.permissionChange) {
         this.sideEffect = false
-        this.priceAmount = this.formatNumber(this.value)
+        const {formatVersion} = this.formatAmount(this.value)
+        this.priceAmount = formatVersion
       }
     },
     formatPriceAmount(value) {

@@ -187,6 +187,19 @@ export default {
     november: 'Noyabr',
     december: 'Dekabr',
 
+    weekDayAbbreviation: {
+        0: 'YK',
+        1: 'DSH',
+        2: 'SE',
+        3: 'CHR',
+        4: 'PY',
+        5: 'JM',
+        6: 'SHN',
+    },
+
+    more: 'Yana',
+    go_to_day: "Batafsil ko'rish",
+
     tab_status: {
         all: "Hammasi",
         available: "Mavjud",
