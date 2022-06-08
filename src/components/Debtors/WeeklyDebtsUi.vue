@@ -14,7 +14,7 @@
           <span v-if="index < 7" class="day-of-week">{{ $t(`weekDayAbbreviation.${item.dayOfWeek}`) }}</span>
         </span>
         <span
-            class="view-all-debts-main h-100 mt-1 d-flex flex-column align-content-between"
+            class="week-debts-column view-all-debts-main h-100 pt-1 d-flex flex-column align-content-between"
             :class="{'today-cell': equalToTodayDate(item.ymd)}"
         >
           <span
@@ -82,13 +82,23 @@ export default {
   gap: 0;
   height: 80vh;
 
-  &-column {
-    border: 2px solid var(--gray-100);
-  }
+  //&-column {
+  //  border: 2px solid var(--gray-100);
+  //}
 }
 
 .content-days-of-week {
+  border-bottom: 1px solid var(--gray-100);
+  border-left: 2px solid var(--gray-100);
+  border-right: 2px solid var(--gray-100);
+  border-top: 2px solid var(--gray-100);
+}
+
+.week-debts-column{
   border-bottom: 2px solid var(--gray-100);
+  border-left: 2px solid var(--gray-100);
+  border-right: 2px solid var(--gray-100);
+  border-top: 1px solid var(--gray-100);
 }
 
 .today-cell {
