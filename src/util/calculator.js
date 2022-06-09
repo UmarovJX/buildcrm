@@ -10,6 +10,7 @@ export function getPrepay(apartments, contract) {
     let total;
 
     switch (contract.discount.type) {
+        case "addition":
         case "promo":
         case "fixed":
             // if (parseFloat(this.calc.discount_price)) {
@@ -59,6 +60,7 @@ export function getPricePerM2(apartments, contract) {
 export function getPrice(apartments, contract) {
     let price = [];
     switch (contract.discount.type) {
+        case "addition":
         case "promo":
         case "fixed":
             for (let i = 0; apartments.length > i; i++) {
@@ -272,6 +274,7 @@ export function getTotal(apartments, contract) {
 
     switch (contract.discount.type) {
         case "promo":
+        case "addition":
         case "fixed":
             // if (parseFloat(contract.discount_amount) > 0) {
             //     total = (this.client.discount.amount - parseFloat(this.calc.discount_price)) * this.planAreas();
@@ -302,6 +305,8 @@ export function getTotalForPercent(apartments, contract) {
     let total = 0;
     let price = 0;
     switch (contract.discount.type) {
+        case "addition":
+        case "promo":
         case "fixed":
             // if (parseFloat(this.calc.discount_price)) {
             //     total =

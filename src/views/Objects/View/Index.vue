@@ -41,19 +41,32 @@
             :class="status.class"
         >
           {{ status.label }}
+<!--          <b-badge>-->
+<!--            {{ statusCounter[`${status.value}`] }}-->
+<!--          </b-badge>-->
         </b-form-checkbox>
       </b-form-checkbox-group>
-<!--      <base-button @click="openPriceList" class="price-button" text="Цены">-->
-<!--        <template slot="right-icon">-->
-<!--          <img :src="require('@/assets/icons/question.svg')" alt="">-->
-<!--        </template>-->
-<!--      </base-button>-->
+      <!--      <base-button @click="openPriceList" class="price-button" text="Цены">-->
+      <!--        <template slot="right-icon">-->
+      <!--          <img :src="require('@/assets/icons/question.svg')" alt="">-->
+      <!--        </template>-->
+      <!--      </base-button>-->
     </div>
 
     <base-modal ref="price-table">
+      <template #header>
+        <!--   GO BACK     -->
+        <span class="d-flex align-items-center justify-content-between">
+          <!--    TITLE      -->
+            <span class="title">{{ $t('objects.create.prices') }}</span>
+          <!--          CLOSE-->
+          <span class="go__back" @click="closeMapModal">
+              <BaseCLose :width="40" :height="40"/>
+            </span>
+        </span>
+      </template>
       <template #main>
         <b-table
-            v-if="priceFields.length"
             :items="priceList"
             :fields="priceFields"
             class="table__list"
@@ -62,15 +75,26 @@
             tbody-tr-class="row__body__bottom-border"
             head-variant="light"
             show-empty
-            sticky-header
             bordered
-            responsive
         >
           <!--    CELL OF COMMENT      -->
-          <template #cell(comment)="{item}">
-            <span v-if="item.comment">{{ item.comment }}</span>
-            <span v-else class=""> - </span>
+          <template #cell(level)="data">
+            <!--            {{ data }}-->
+            <span>{{ data.item.type }}</span>
+            <!--            <span v-else class=""> - </span>-->
           </template>
+          <template #cell(price_m2)="data">
+            <!--            {{ data }}-->
+            <span>{{ data.item.amount }}</span>
+            <!--            <span v-else class=""> - </span>-->
+          </template>
+
+
+          <template v-for="(price) of priceList" v-slot:cell()="data">
+            <slot :name="price.id" v-bind="data">{{ data.item.prices }}</slot>
+          </template>
+
+
         </b-table>
       </template>
     </base-modal>
@@ -119,10 +143,12 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseModal from "@/components/Reusable/BaseModal";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
+import BaseCLose from "@/components/icons/BaseClose";
 
 export default {
   name: "Objects",
   components: {
+    BaseCLose,
     BaseArrowRight,
     BaseArrowLeft,
     ChessSquareCard,
@@ -157,10 +183,16 @@ export default {
       plans: [],
       currentTab: 'ObjectTable',
       priceList: [],
-      priceFields: [{
-        key: 'level',
-        label: 'Дата',
-      }],
+      priceFields: [
+        {
+          key: 'level',
+          label: 'Дата',
+        },
+        {
+          key: 'price_m2',
+          label: 'price_m2',
+        },
+      ],
       statusList: [
         {
           label: this.$t('object.status.available'),
@@ -225,10 +257,38 @@ export default {
           title: this.$t('object.plan'),
           view: 'plan',
         },
-      ]
+      ],
+      otherPrices: [],
+      defaultPrices: [],
+      allApartments: [],
+      statusCounter: {
+        unavailable: 0,
+        available: 0,
+        contract: 0,
+        sold: 0,
+        booked: 0,
+        hold: 0,
+        none: 0,
+      },
+      filtered: false
     }
   },
   computed: {
+    // allFloors() {
+    //   return this.apartments.map(item => {
+    //     console.log(item, 'item');
+    //     return item.blocks.map(block => {
+    //       console.log(block, 'block');
+    //       return block.floors.map(floor => {
+    //         console.log(floor, 'floor');
+    //         return floor.apartments.map(apartment => {
+    //           console.log(apartment, 'apartment');
+    //           return apartment
+    //         })
+    //       })
+    //     })
+    //   })
+    // },
     breadCrumbs() {
       return [
         {
@@ -281,6 +341,7 @@ export default {
         this.compareStatus(query)
         if (this.accessToFilter) {
           await this.filterItems(query)
+          this.filtered = true
         }
       },
       immediate: true
@@ -290,6 +351,11 @@ export default {
     }
   },
   mounted() {
+    setTimeout(() => {
+      this.getAllApartment()
+    }, 2000)
+    // this.getAllApartment()
+    // console.log(this.allApartments.length);
     this.fetchFilterFields()
     this.getPriceList()
   },
@@ -303,22 +369,108 @@ export default {
     }
   },
   methods: {
+    getAllApartment() {
+      console.log(this.apartments, 'functions')
+      if (this.filtered) {
+        this.apartments.map(item => {
+          item.blocks.map(block => {
+            console.log(block.blockActive);
+            block.floors.map(floor => {
+              floor.apartments.map(apartment => {
+                this.allApartments.push(apartment)
+                console.log(apartment, 'apartment');
+                if (apartment.is_sold) {
+                  switch (apartment.order.status) {
+                    case 'available': {
+                      return this.statusCounter.available += 1
+                    }
+                    case 'hold': {
+                      return this.statusCounter.hold += 1
+                    }
+                    case 'sold':
+                    case 'closed': {
+                      return this.statusCounter.sold += 1
+                    }
+                    case 'booked': {
+                      return this.statusCounter.booked += 1
+                    }
+                    case 'contract': {
+                      return this.statusCounter.contract += 1
+                    }
+                    default:
+                      return this.statusCounter.none += 1
+                  }
+                } else {
+                  this.statusCounter.unavailable += 1
+                }
+                // this.allApartments = [...this.allApartments, apartment]
+              })
+            })
+          })
+        })
+      } else {
+        this.apartments.map(item => {
+          item.blocks.map(block => {
+            console.log(block.blockActive);
+            block.floors.map(floor => {
+              floor.apartments.map(apartment => {
+                this.allApartments.push(apartment)
+                console.log(apartment, 'apartment');
+                if (apartment.is_sold) {
+                  switch (apartment.order.status) {
+                    case 'available': {
+                      return this.statusCounter.available += 1
+                    }
+                    case 'hold': {
+                      return this.statusCounter.hold += 1
+                    }
+                    case 'sold':
+                    case 'closed': {
+                      return this.statusCounter.sold += 1
+                    }
+                    case 'booked': {
+                      return this.statusCounter.booked += 1
+                    }
+                    case 'contract': {
+                      return this.statusCounter.contract += 1
+                    }
+                    default:
+                      return this.statusCounter.none += 1
+                  }
+                } else {
+                  this.statusCounter.unavailable += 1
+                }
+                // this.allApartments = [...this.allApartments, apartment]
+              })
+            })
+          })
+        })
+      }
+
+    },
+    cellAttributes(slot) {
+      return ['#cell(' + slot.id + ')="data"'];
+    },
+    closeMapModal() {
+      this.$refs["price-table"].closeModal()
+    },
     getPriceList() {
       const {object} = this.$route.params
       api.objectsV2.fetchObjectPrice(object).then((res) => {
 
-
+        this.priceList = res.data
         res.data.map((item) => {
-          console.log(item.prepay);
+          // console.log(item.prepay);
+          // this.otherPrices = [...this.otherPrices, ...item.prices.filter(price => price.type === 'other_price')]
+          // this.defaultPrices = [...this.defaultPrices, ...item.prices.filter(price => price.type === 'default')]
           this.priceFields = [
             ...this.priceFields,
             {
-              key: item.prepay,
-              label: item.prepay
+              key: `${item.id}`,
+              label: item.id
             }
           ]
         })
-        // console.log(this.priceFields, 'this.priceFields');
       })
     },
     openPriceList() {
@@ -658,6 +810,7 @@ export default {
       }).catch(err => {
         this.toastedWithErrorCode(err)
       }).finally(() => {
+        this.getAllApartment()
         this.getLoading = false
       })
     },
@@ -797,8 +950,23 @@ export default {
   margin-bottom: 21px;
   font-family: Inter, sans-serif;
 
+  .badge {
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    border-radius: 2rem;
+    padding: .25px .5rem;
+    margin-left: .5rem;
+  }
+
   .teal {
     color: var(--teal-600);
+
+    .badge {
+      color: var(--teal-600);
+      background-color: var(--teal-100);
+    }
 
     .custom-control-label {
       &::before {
@@ -814,6 +982,11 @@ export default {
   .yellow {
     color: var(--yellow-600);
 
+    .badge {
+      color: var(--yellow-600);
+      background-color: var(--yellow-100);
+    }
+
     .custom-control-label {
       &::before {
         border: 2px solid var(--yellow-600);
@@ -827,6 +1000,11 @@ export default {
 
   .blue {
     color: var(--light-blue-600);
+
+    .badge {
+      color: var(--light-blue-600);
+      background-color: var(--light-blue-100);
+    }
 
     .custom-control-label {
       &::before {
@@ -842,6 +1020,11 @@ export default {
   .gray {
     color: var(--red-600);
 
+    .badge {
+      color: var(--red-600);
+      background-color: var(--red-100);
+    }
+
     .custom-control-label {
       &::before {
         border: 2px solid var(--red-600);
@@ -855,6 +1038,11 @@ export default {
 
   .disabled {
     color: var(--gray-400);
+
+    .badge {
+      color: var(--gray-400);
+      background-color: var(--gray-100);
+    }
 
     .custom-control-label {
       &::before {
