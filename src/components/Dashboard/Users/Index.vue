@@ -3,11 +3,13 @@
     <div class="app-content">
 
       <div class="d-flex align-items-center">
-        <base-search-input :placeholder="$t('users.placeholder')" @trigger-input="setSearchValue"/>
+        <base-search-input class="w-100" :placeholder="$t('users.placeholder')" @trigger-input="setSearchValue"/>
         <base-button v-if="getPermission.users && getPermission.users.create"
-                     design="violet-gradient mb-3"
+                     design="violet-gradient"
                      :text="$t('add')"
-                     v-b-modal.modal-create>
+                     v-b-modal.modal-create
+                     class="ml-4"
+        >
           <template #left-icon>
             <i class="fal fa-plus mr-2"></i>
           </template>

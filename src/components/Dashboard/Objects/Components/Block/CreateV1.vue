@@ -172,6 +172,7 @@
                     :data-target="'#collapseOne' + index"
                     aria-expanded="true"
                     :aria-controls="'collapseOne' + index"
+                    style="color: black"
                 >
                   {{ floor }}-{{ $t("objects.create.floor") }} -
                   {{ $t("objects.create.apartments") }} ({{

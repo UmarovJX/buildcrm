@@ -61,6 +61,7 @@
         :starter="month.starter"
         :get-full-name="getFullName"
         @show-debtor-view-modal="showDebtorViewModal"
+        @go-more-detail="goMoreDetail"
     >
     </base-huge-calendar-ui>
 
@@ -219,7 +220,7 @@ export default {
         order: {},
         client: {}
       },
-      typeOfView: 'week', /* list / month / week / day */
+      typeOfView: 'month', /* list / month / week / day */
       appLoading: false
     }
   },
@@ -358,6 +359,15 @@ export default {
     },
     setStarterMoment(starter_moment) {
       this.changeRouterQuery({starter_moment})
+    },
+    goMoreDetail(ymd) {
+      this.changeRouterQuery({
+        query: {
+          ...this.query,
+          starter_moment: ymd
+        }
+      })
+      this.changeViewType('day')
     },
     async initDebtorUi() {
       const {starterPoint: monthStarter, endPoint: monthEnd} = this.getDateDistance(41, this.month.starter)
@@ -524,21 +534,29 @@ export default {
       const {year, month, dayOfMonth, ymd} = dateProperties(lastDate)
       switch (this.typeOfView) {
         case 'month': {
-          this.month.starter = formatDateToYMD(new Date(year, month, 1))
-          this.month.items = []
+          const ymd = formatDateToYMD(new Date(year, month, 1))
+          if (ymd !== this.month.starter) {
+            this.month.starter = ymd
+            this.month.items = []
+          }
           break
         }
         case 'week': {
-          this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
-          this.week.items = []
+          const ymd = formatDateToYMD(new Date(year, month, dayOfMonth))
+          if (ymd !== this.week.starter) {
+            this.week.starter = ymd
+            this.week.items = []
+          }
           break
         }
         case 'day': {
-          this.day.starter = ymd
-          this.changeRouterQuery({
-            date: [this.day.starter, this.day.starter]
-          })
-          this.day.items = []
+          if (ymd !== this.day.starter) {
+            this.day.starter = ymd
+            this.changeRouterQuery({
+              date: [this.day.starter, this.day.starter]
+            })
+            this.day.items = []
+          }
         }
       }
     },

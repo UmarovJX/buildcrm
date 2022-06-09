@@ -9,13 +9,13 @@
 .view-all-debts {
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 9999;
   position: absolute;
   border-radius: 0.25rem;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16), 0 4px 18px rgba(0, 0, 0, 0.06);
   font-size: 14px;
-  width: 100%;
+  //width: 300px;
 
   &-head {
     display: flex;
@@ -45,8 +45,10 @@
 }
 
 .full-name {
-  display: inline-block;
-  width: calc(95%);
+  //display: block;
+  //width: calc(95%);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .debt-card {
