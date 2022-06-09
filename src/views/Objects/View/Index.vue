@@ -351,7 +351,6 @@ export default {
     }
     setTimeout(() => {
       this.getAllApartment()
-
     }, 100)
 
   },
@@ -440,7 +439,6 @@ export default {
           })
         })
       }
-
     },
     cellAttributes(slot) {
       return ['#cell(' + slot.id + ')="data"'];

@@ -51,8 +51,8 @@
                           class="custom-tooltip"
                           :target="'tolltip' + elem.number"
                           triggers="hover"
-                          placement="bottomright"
                       >
+<!--                        placement="bottomright"-->
                         <div class="square"
                              :class="[status(elem.order.status).class + '-tool', elem.is_sold ? '' : 'disable-tool']">
                         <div class="square-header">
@@ -290,15 +290,18 @@ export default {
 
 ::v-deep.b-tooltip {
 
-  .arrow {
-    display: none !important;
-    left: -6px !important;
-    bottom: .5rem !important;
-    top: .5rem !important;
-    margin: 0.5rem;
-    transform: rotate(-90deg);
-  }
+  //.arrow {
+  //  display: none !important;
+  //  left: -6px !important;
+  //  bottom: .5rem !important;
+  //  top: .5rem !important;
+  //  margin: 0.5rem;
+  //  transform: rotate(-90deg);
+  //}
 
+  .bs-tooltip-bottom {
+    padding: 0.3rem 0;
+  }
 
   .tooltip-inner {
     max-width: none !important;
@@ -320,18 +323,18 @@ export default {
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
 
 
-    &::before {
-      position: absolute;
-      content: '';
-      width: .5rem;
-      height: .8rem;
-      left: 0;
-      top: 0;
-      border-color: transparent;
-      border-style: solid;
-      border-left-color: black;
-      border-width: .5rem;
-    }
+    //&::before {
+    //  position: absolute;
+    //  content: '';
+    //  width: .5rem;
+    //  height: .8rem;
+    //  left: 0;
+    //  top: 0;
+    //  border-color: transparent;
+    //  border-style: solid;
+    //  border-left-color: black;
+    //  border-width: .5rem;
+    //}
 
     p {
       font-weight: 600;

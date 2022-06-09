@@ -596,7 +596,8 @@ export default {
         price: 0,
         overbalance: 0
       },
-      totalPayment: 0
+      totalPayment: 0,
+      increasedPrice: 0
     }
   },
   computed: {
@@ -605,10 +606,6 @@ export default {
     }),
     paidPermission() {
       return this.permission?.contracts?.paid
-    },
-    increasedPrice() {
-      const {overbalance} = this.warningForPayInitialPayment
-      return formatToPrice(overbalance, 2)
     },
     paymentTypeOptionsPermission() {
       const listOption = []
@@ -915,15 +912,19 @@ export default {
                 const {available, available_amount} = response.data
                 const initialForm = Object.assign({}, this.appendPayment)
                 const overbalance = initialForm.amount * 100 - available_amount
+                this.increasedPrice = formatToPrice((initialForm.amount * 100 - available_amount) / 100, 2)
+
                 if (!available) {
                   this.warningForPayInitialPayment.price = available_amount
                   this.warningForPayInitialPayment.overbalance = overbalance
+                  this.increasedPrice = formatToPrice((initialForm.amount * 100 - available_amount) / 100, 2)
                   this.$refs['initial-payment-warning'].openModal()
                 }
               } else {
                 const {data} = error.response
                 const index = Object.keys(data)[0]
                 const text = data[index]
+
                 this.$swal({
                   text,
                   icon: "error",
