@@ -327,10 +327,8 @@ export default {
         if (this.accessToFilter) {
           await this.filterItems(query)
           this.filtered = true
-          this.getAllApartment()
-        } else {
-          this.getAllApartment()
         }
+        this.getAllApartment()
       },
       immediate: true
     },
@@ -341,15 +339,21 @@ export default {
   mounted() {
     this.fetchFilterFields()
     this.getPriceList()
+
+
   },
   async created() {
     const historyTab = sessionStorageGetItem(
         'object_history_of_tab_' + this.$route.params.object
     )
-
     if (historyTab) {
       this.currentTab = historyTab
     }
+    setTimeout(() => {
+      this.getAllApartment()
+
+    }, 100)
+
   },
   methods: {
     getAllApartment() {
@@ -362,14 +366,15 @@ export default {
         hold: 0,
         none: 0,
       }
+      console.log('ishladi');
       if (this.filtered) {
+        console.log('ifni ichi');
         this.apartments.map(item => {
           item.blocks.map(block => {
             if (block.blockActive) {
               block.floors.map(floor => {
                 if (floor.floorActive) {
                   floor.apartments.map(apartment => {
-                    // this.allApartments.push(apartment)
                     if (apartment.apartmentActive) {
                       if (apartment.is_sold) {
                         switch (apartment.order.status) {
@@ -403,12 +408,14 @@ export default {
           })
         })
       } else {
+        console.log(this.apartments, 'elseni ichi');
         this.apartments.map(item => {
+          console.log(item, 'item');
           item.blocks.map(block => {
             block.floors.map(floor => {
               floor.apartments.map(apartment => {
-                // this.allApartments.push(apartment)
                 if (apartment.is_sold) {
+                  console.log(apartment.is_sold, 'if');
                   switch (apartment.order.status) {
                     case 'available': {
                       return this.statusCounter.available += 1
@@ -430,6 +437,7 @@ export default {
                       return this.statusCounter.none += 1
                   }
                 } else {
+                  console.log(apartment.is_sold, 'else');
                   this.statusCounter.unavailable += 1
                 }
               })
@@ -797,6 +805,7 @@ export default {
         } else {
           this.apartments = res.data.data
         }
+
       }).catch(err => {
         this.toastedWithErrorCode(err)
       }).finally(() => {
