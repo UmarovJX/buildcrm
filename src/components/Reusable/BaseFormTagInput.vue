@@ -11,7 +11,7 @@
         :placeholder="placeholder"
         v-bind="$attrs"
         v-model="tagInput"
-        v-mask="'########################'"
+        v-mask="mask"
         class="tag-input__text"
         @keydown.enter="addTag"
         @keydown.188="addTag"
@@ -48,6 +48,10 @@ export default {
     defaultTags: {
       type: Array,
       required: false
+    },
+    mask:{
+      type: String,
+      default: () => ('###############')
     }
   },
   data() {
@@ -130,6 +134,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   margin-right: 0.5rem;
+  min-width: max-content;
 }
 
 .tag-input__tag > span {

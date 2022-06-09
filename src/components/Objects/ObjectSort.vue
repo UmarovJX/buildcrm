@@ -7,6 +7,7 @@
         <base-form-tag-input
             @set-tags="setApartmentNumbers"
             :default-tags="defaultApartments"
+            :mask="'XXXXXXX'"
             ref="base-form-tag-input"
             :placeholder="$t('object.sort.number_flat')"
         >
@@ -472,9 +473,9 @@ export default {
         console.log(isQueryPrimitive, 'isQueryPrimitive');
 
         if (isQueryPrimitive) {
-          this.defaultApartments = [parseInt(value)]
+          this.defaultApartments = [value]
         } else
-          this.defaultApartments = value.map(vs => parseInt(vs))
+          this.defaultApartments = value.map(vs => vs)
       }
     },
     openBar() {

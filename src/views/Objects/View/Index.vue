@@ -41,9 +41,9 @@
             :class="status.class"
         >
           {{ status.label }}
-<!--          <b-badge>-->
-<!--            {{ statusCounter[`${status.value}`] }}-->
-<!--          </b-badge>-->
+          <b-badge v-if="accessToFilter">
+            {{ statusCounter[`${status.value}`] }}
+          </b-badge>
         </b-form-checkbox>
       </b-form-checkbox-group>
       <!--      <base-button @click="openPriceList" class="price-button" text="Цены">-->
@@ -260,7 +260,7 @@ export default {
       ],
       otherPrices: [],
       defaultPrices: [],
-      allApartments: [],
+      // allApartments: [],
       statusCounter: {
         unavailable: 0,
         available: 0,
@@ -274,21 +274,6 @@ export default {
     }
   },
   computed: {
-    // allFloors() {
-    //   return this.apartments.map(item => {
-    //     console.log(item, 'item');
-    //     return item.blocks.map(block => {
-    //       console.log(block, 'block');
-    //       return block.floors.map(floor => {
-    //         console.log(floor, 'floor');
-    //         return floor.apartments.map(apartment => {
-    //           console.log(apartment, 'apartment');
-    //           return apartment
-    //         })
-    //       })
-    //     })
-    //   })
-    // },
     breadCrumbs() {
       return [
         {
@@ -342,6 +327,9 @@ export default {
         if (this.accessToFilter) {
           await this.filterItems(query)
           this.filtered = true
+          this.getAllApartment()
+        } else {
+          this.getAllApartment()
         }
       },
       immediate: true
@@ -351,11 +339,6 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      this.getAllApartment()
-    }, 2000)
-    // this.getAllApartment()
-    // console.log(this.allApartments.length);
     this.fetchFilterFields()
     this.getPriceList()
   },
@@ -370,52 +353,61 @@ export default {
   },
   methods: {
     getAllApartment() {
-      console.log(this.apartments, 'functions')
+      this.statusCounter = {
+        unavailable: 0,
+        available: 0,
+        contract: 0,
+        sold: 0,
+        booked: 0,
+        hold: 0,
+        none: 0,
+      }
       if (this.filtered) {
         this.apartments.map(item => {
           item.blocks.map(block => {
-            console.log(block.blockActive);
-            block.floors.map(floor => {
-              floor.apartments.map(apartment => {
-                this.allApartments.push(apartment)
-                console.log(apartment, 'apartment');
-                if (apartment.is_sold) {
-                  switch (apartment.order.status) {
-                    case 'available': {
-                      return this.statusCounter.available += 1
+            if (block.blockActive) {
+              block.floors.map(floor => {
+                if (floor.floorActive) {
+                  floor.apartments.map(apartment => {
+                    // this.allApartments.push(apartment)
+                    if (apartment.apartmentActive) {
+                      if (apartment.is_sold) {
+                        switch (apartment.order.status) {
+                          case 'available': {
+                            return this.statusCounter.available += 1
+                          }
+                          case 'hold': {
+                            return this.statusCounter.hold += 1
+                          }
+                          case 'sold':
+                          case 'closed': {
+                            return this.statusCounter.sold += 1
+                          }
+                          case 'booked': {
+                            return this.statusCounter.booked += 1
+                          }
+                          case 'contract': {
+                            return this.statusCounter.contract += 1
+                          }
+                          default:
+                            return this.statusCounter.none += 1
+                        }
+                      } else {
+                        this.statusCounter.unavailable += 1
+                      }
                     }
-                    case 'hold': {
-                      return this.statusCounter.hold += 1
-                    }
-                    case 'sold':
-                    case 'closed': {
-                      return this.statusCounter.sold += 1
-                    }
-                    case 'booked': {
-                      return this.statusCounter.booked += 1
-                    }
-                    case 'contract': {
-                      return this.statusCounter.contract += 1
-                    }
-                    default:
-                      return this.statusCounter.none += 1
-                  }
-                } else {
-                  this.statusCounter.unavailable += 1
+                  })
                 }
-                // this.allApartments = [...this.allApartments, apartment]
               })
-            })
+            }
           })
         })
       } else {
         this.apartments.map(item => {
           item.blocks.map(block => {
-            console.log(block.blockActive);
             block.floors.map(floor => {
               floor.apartments.map(apartment => {
-                this.allApartments.push(apartment)
-                console.log(apartment, 'apartment');
+                // this.allApartments.push(apartment)
                 if (apartment.is_sold) {
                   switch (apartment.order.status) {
                     case 'available': {
@@ -440,7 +432,6 @@ export default {
                 } else {
                   this.statusCounter.unavailable += 1
                 }
-                // this.allApartments = [...this.allApartments, apartment]
               })
             })
           })
@@ -665,7 +656,6 @@ export default {
 
                     const isThereFareList = arrayFareList.includes(key)
                     if (isThereFareList && isPrimitiveValue(value)) {
-                      console.log(value, 'value');
                       value = [value]
                     }
 
