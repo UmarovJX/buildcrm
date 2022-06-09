@@ -366,9 +366,7 @@ export default {
         hold: 0,
         none: 0,
       }
-      console.log('ishladi');
       if (this.filtered) {
-        console.log('ifni ichi');
         this.apartments.map(item => {
           item.blocks.map(block => {
             if (block.blockActive) {
@@ -408,14 +406,12 @@ export default {
           })
         })
       } else {
-        console.log(this.apartments, 'elseni ichi');
         this.apartments.map(item => {
           console.log(item, 'item');
           item.blocks.map(block => {
             block.floors.map(floor => {
               floor.apartments.map(apartment => {
                 if (apartment.is_sold) {
-                  console.log(apartment.is_sold, 'if');
                   switch (apartment.order.status) {
                     case 'available': {
                       return this.statusCounter.available += 1
@@ -437,7 +433,6 @@ export default {
                       return this.statusCounter.none += 1
                   }
                 } else {
-                  console.log(apartment.is_sold, 'else');
                   this.statusCounter.unavailable += 1
                 }
               })
