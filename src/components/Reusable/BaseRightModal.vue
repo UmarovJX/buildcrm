@@ -53,6 +53,7 @@ export default {
       default: 'contracts.filter_title'
     }
   },
+  emits: ['show', 'reset-fields', 'start-filtering'],
   computed: {
     hasModalTitleSlot() {
       return !!this.$slots['modal-title']
@@ -69,13 +70,14 @@ export default {
       this.$refs['base-modal'].hide()
     },
     clearFilter() {
-
+      this.$emit('reset-fields')
     },
     searchByFilterField() {
-
+      this.$emit('start-filtering')
+      this.hide()
     },
     filterModalOpened() {
-
+      this.$emit('show')
     },
     hideFilterModal() {
       this.hide()
