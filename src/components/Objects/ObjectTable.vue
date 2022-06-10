@@ -529,12 +529,12 @@ export default {
     },
 
     onRowSelected(items) {
-      this.$router.push({
-        name: "apartment-view",
-        params: {object: this.$route.params.object, id: items[0].id},
-      });
-      // console.log(items, 'items');
-      // this.$emit('show-express-sidebar', items[0])
+      // this.$router.push({
+      //   name: "apartment-view",
+      //   params: {object: this.$route.params.object, id: items[0].id},
+      // });
+      console.log(items, 'items');
+      this.$emit('show-express-sidebar', items[0])
     },
 
     sortingChanged(val) {
