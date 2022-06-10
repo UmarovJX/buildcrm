@@ -62,6 +62,11 @@
         <span class="property">{{ $t('number_of_floors_of_the_block') }}</span>
         <span class="value">{{ apartment.block.floors }}</span>
       </span>
+
+      <span class="apartment__details-row">
+        <span class="property">{{ $t('objects.placeholder.block_name') }}</span>
+        <span class="value">{{ apartment.block.name }}</span>
+      </span>
     </div>
 
   </div>
