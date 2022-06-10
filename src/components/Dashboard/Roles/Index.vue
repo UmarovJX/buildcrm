@@ -200,6 +200,7 @@ export default {
         text: this.$t("sweetAlert.are_you_sure_delete_role"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {

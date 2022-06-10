@@ -693,6 +693,7 @@ export default {
         text: this.$t("sweetAlert.text"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {

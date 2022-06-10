@@ -222,6 +222,7 @@ export default {
         text: '',
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         title: this.$t('promo.warn_before_delete'),
         confirmButtonText: this.$t("sweetAlert.yes_agree")
       })

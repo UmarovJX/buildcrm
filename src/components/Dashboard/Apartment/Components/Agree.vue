@@ -1214,6 +1214,7 @@ export default {
         text: this.$t("sweetAlert.text_agree"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes_agree"),
       }).then((result) => {
         this.getLoading = true
@@ -1365,6 +1366,7 @@ export default {
         text: this.$t("sweetAlert.text_cancel_agree"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes_close"),
       }).then((result) => {
         if (result.value) {

@@ -779,6 +779,7 @@ export default {
         text: this.$t("sweetAlert.text_cancel_reserve"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes_cancel_reserve"),
       }).then((result) => {
         if (result.value) {

@@ -279,6 +279,7 @@ export default {
         text: this.$t("sweetAlert.text_cancel_contract"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes_cancel_contract"),
       }).then((result) => {
         if (result.value) {
@@ -324,6 +325,7 @@ export default {
         text: this.$t("sweetAlert.text"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
