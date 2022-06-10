@@ -91,6 +91,7 @@
                   :class="{'warning__border': errors.date}"
                   @change="setFormProperty('date',$event)"
                   placeholder="Выберите поле"
+                  textField="value"
                   :options="options"
               />
             </span>
@@ -103,6 +104,7 @@
                   :class="{'warning__border': errors.type}"
                   @change="setFormProperty('type',$event)"
                   placeholder="Выберите поле"
+                  textField="value"
                   :options="options"
               />
             </span>
@@ -115,6 +117,7 @@
                   :class="{'warning__border': errors.amount}"
                   @change="setFormProperty('amount',$event)"
                   placeholder="Выберите поле"
+                  textField="value"
                   :options="options"
               />
             </span>
@@ -127,6 +130,7 @@
                   :class="{'warning__border': errors.payment_type}"
                   @change="setFormProperty('payment_type',$event)"
                   placeholder="Выберите поле"
+                  textField="value"
                   :options="options"
               />
             </span>
@@ -139,6 +143,7 @@
                   :class="{'warning__border': errors.comment}"
                   @change="setFormProperty('comment',$event)"
                   placeholder="Выберите поле"
+                  textField="value"
                   :options="options"
               />
             </span>
@@ -330,9 +335,13 @@ export default {
   },
   methods: {
     setupOptions() {
+      console.log(this.excelSheets, 'this.excelSheets');
       const {rows} = this.excelSheets
-      this.options = rows[0]
+      this.options = rows[0].map((item) => {
+        return {value: item}
+      })
       this.trackOptions = rows[0]
+
     },
     backNavigation() {
       this.$router.go(-1)

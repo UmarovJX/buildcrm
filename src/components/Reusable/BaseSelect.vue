@@ -4,7 +4,7 @@
     <select
         :name="name"
         v-model="value"
-        :class="{'base-select-initial':!value}"
+        :class="{'base-select-initial':!value, 'not-label':!label}"
         class="base-select"
     >
       <option :value="null" v-if="!noPlaceholder && placeholder">{{ placeholder }}</option>
@@ -103,6 +103,9 @@ export default {
   background-color: transparent
   -moz-appearance: none
   -webkit-appearance: none
+
+  &.not-label
+    padding: .5rem 1.25rem .5rem 1.25rem
 
   &::-ms-expand
     display: none
