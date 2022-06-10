@@ -78,10 +78,13 @@
         @show-debtor-view-modal="showDebtorViewModal"
     />
 
+    <!--  APP LOADING  -->
     <base-loading v-if="appLoading"/>
+
     <!--  DEBTOR VIEW MODAL  -->
     <base-right-modal
         ref="debtor-view-modal"
+        @show="getMoreDataAboutDebt"
     >
       <template #modal-title>
         <span class="pl-3 modal-title">
@@ -90,67 +93,77 @@
         </span>
       </template>
 
-      <div class="contract-details">
-        <p class="contract-details-title">{{ $t('contract_details') }}</p>
-        <!--  CLIENT INFORMATION      -->
-        <output-information
-            :property="`${ $t('client') }`"
-            :value="getFullName(debtorViewModalItem.client)"
-            class="mt-4 mb-4"
-        />
-        <!--    PHONE NUMBER    -->
-        <output-information
-            :property="`${ $t('phone') }`"
-            :value="phonePrettier(debtorViewModalItem.client.phone)"
-            class="mt-4 mb-4"
-        />
-        <!--   CLIENT TYPE     -->
-        <output-information
-            :property="`${ $t('client_type') }`"
-            :value="getClientType(debtorViewModalItem.order)"
-            class="mt-4 mb-4"
-        />
-        <!--   CONTRACT PRICE     -->
-        <output-information
-            :price="true"
-            :property="`${ $t('contract_price') }`"
-            :value="pricePrettier(debtorViewModalItem.amount)"
-            class="mt-4 mb-4"
-        />
-        <!--   INITIAL PRICE     -->
-        <output-information
-            :price="true"
-            :property="`${ $t('payments.initial_fee') }`"
-            value="700 000 000"
-            class="mt-4 mb-4"
-        />
-        <!--   INSTALLMENT PRICE    -->
-        <output-information
-            :price="true"
-            :property="`${ $t('payments.installment') } ( 12 ${ $t('month') })`"
-            value="200 000 000"
-            class="mt-4 mb-4"
-        />
-      </div>
+      <base-loading v-if="debtorViewModalItem.appLoading"/>
 
-      <!--    DEBT DETAILS    -->
-      <div class="contract-details">
-        <!--    TITLE    -->
-        <p class="contract-details-title">{{ $t('debt_details') }}</p>
-        <!--   DEBT PRICE    -->
-        <output-information
-            :price="true"
-            :property="`${ $t('debt') }`"
-            :value="pricePrettier(debtorViewModalItem.amount - debtorViewModalItem.amount_paid)"
-            class="mt-4 mb-4"
-        />
-        <!--   DEBT DATE    -->
-        <output-information
-            :property="`${ $t('date') }`"
-            :value="formatDateWithDot(debtorViewModalItem.date)"
-            class="mt-4 mb-4"
-        />
-      </div>
+      <template v-else>
+        <!--   CONTRACT DETAILS     -->
+        <div class="contract-details">
+          <!--    CONTRACT DETAILS    -->
+          <p class="contract-details-title">{{ $t('contract_details') }}</p>
+          <!--  CLIENT INFORMATION      -->
+          <output-information
+              :property="`${ $t('client') }`"
+              :value="getFullName(debtorViewModalItem.client)"
+              class="mt-4 mb-4"
+          />
+          <!--    PHONE NUMBER    -->
+          <output-information
+              :property="`${ $t('phone') }`"
+              :value="phonePrettier(debtorViewModalItem.client.phone)"
+              class="mt-4 mb-4"
+          />
+          <!--   CLIENT TYPE     -->
+          <output-information
+              :property="`${ $t('client_type') }`"
+              :value="getClientType(debtorViewModalItem.order)"
+              class="mt-4 mb-4"
+          />
+          <!--   CONTRACT PRICE     -->
+          <output-information
+              :price="true"
+              :property="`${ $t('contract_price') }`"
+              :value="pricePrettier(debtorViewModalItem.amount)"
+              class="mt-4 mb-4"
+          />
+          <!--   INITIAL PRICE     -->
+          <output-information
+              :price="true"
+              :property="`${ $t('payments.initial_fee') }`"
+              :value="pricePrettier(debtorViewModalItem.order.initial_payment)"
+              class="mt-4 mb-4"
+          />
+          <!--   INSTALLMENT PRICE    -->
+          <output-information
+              v-if="debtorViewModalItem.order.installment_payment"
+              :price="true"
+              :property="`
+              ${ $t('payments.installment') }
+              ( ${debtorViewModalItem.order.installment_month} ${ $t('month') })
+              `"
+              :value="pricePrettier(debtorViewModalItem.order.installment_payment)"
+              class="mt-4 mb-4"
+          />
+        </div>
+
+        <!--    DEBT DETAILS    -->
+        <div class="contract-details">
+          <!--    TITLE    -->
+          <p class="contract-details-title">{{ $t('debt_details') }}</p>
+          <!--   DEBT PRICE    -->
+          <output-information
+              :price="true"
+              :property="`${ $t('debt') }`"
+              :value="pricePrettier(subtractResult(debtorViewModalItem.amount,debtorViewModalItem.amount_paid))"
+              class="mt-4 mb-4"
+          />
+          <!--   DEBT DATE    -->
+          <output-information
+              :property="`${ $t('date') }`"
+              :value="formatDateWithDot(debtorViewModalItem.date_payment)"
+              class="mt-4 mb-4"
+          />
+        </div>
+      </template>
 
       <template #modal-footer>
         <router-link
@@ -250,7 +263,11 @@ export default {
         },
       },
       debtorViewModalItem: {
-        order: {},
+        appLoading: false,
+        order: {
+          installment_payment: null,
+          installment_month: null
+        },
         client: {}
       },
       typeOfView: 'list', /* list / month / week / day */
@@ -394,6 +411,12 @@ export default {
     phonePrettier: (phone) => formatToPrice(phone),
     pricePrettier: (price) => formatToPrice(price),
     formatDateWithDot,
+    subtractResult(a, b) {
+      if (b) {
+        return a - b
+      }
+      return a
+    },
     getFullName(client) {
       if (client && Object.keys(client).length) {
         const {first_name, last_name} = client
@@ -401,6 +424,19 @@ export default {
         return last_name[language] + ' ' + first_name[language]
       }
       return ''
+    },
+    async getMoreDataAboutDebt() {
+      this.debtorViewModalItem.appLoading = true
+      await debtorsV2.getMoreDataAboutDebt(this.debtorViewModalItem.uuid)
+          .then((response) => {
+            this.debtorViewModalItem = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.debtorViewModalItem.appLoading = false
+          })
     },
     getClientType(order) {
       if (order.client_type) {

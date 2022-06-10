@@ -40,6 +40,10 @@ class DebtorsV2 extends Core {
         return this.get('debtors', {params})
     }
 
+    getMoreDataAboutDebt(uuid) {
+        return this.get(`debtors/${uuid}`)
+    }
+
 }
 
 
