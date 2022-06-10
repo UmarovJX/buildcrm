@@ -38,6 +38,11 @@ export default {
     if (this.defaultValue) {
       this.localValue = this.defaultValue
     }
+  },
+  methods: {
+    setValue(newValue) {
+      this.localValue = newValue
+    }
   }
 }
 </script>

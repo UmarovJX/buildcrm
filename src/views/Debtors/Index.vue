@@ -2,6 +2,7 @@
   <main class="app-content">
     <!--  FILTER CONTENT  -->
     <filter-content
+        ref="filter-content"
         :query="query"
         :default-type-of-view="typeOfView"
         @change-view-type="changeViewType"
@@ -60,6 +61,7 @@
     <!-- MONTHLY UI   -->
     <base-huge-calendar-ui
         class="mt-4"
+        ref="huge-calendar-ui"
         v-if="showMonthly"
         :items="month.items"
         :starter="month.starter"
@@ -485,6 +487,8 @@ export default {
       this.changeRouterQuery({
         starter_moment: ymd
       })
+      this.$refs['filter-content'].setViewType('day')
+      this.$refs['filter-content'].setCalendarDate(ymd)
       this.changeViewType('day')
     },
     async initDebtorUi() {

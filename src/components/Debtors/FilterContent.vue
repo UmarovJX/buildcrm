@@ -27,6 +27,7 @@
             @click="openFilterContent"
         />
         <bootstrap-select
+            ref="client-type-select"
             class="client-type"
             :default-value="defaultTypeOfView"
             :options="viewTypes"
@@ -260,6 +261,13 @@ export default {
     },
     filterBySearchContent(searchingValue) {
       this.$emit('sort-by-search', searchingValue)
+    },
+    setViewType(viewType) {
+      this.typeOfView = viewType
+      this.$refs['client-type-select'].setValue(viewType)
+    },
+    setCalendarDate(moment) {
+      this.$refs['calendar-navigation'].setCalendarMoment(moment)
     }
   }
 }

@@ -123,6 +123,9 @@ export default {
     }
   },
   methods: {
+    setCalendarMoment(moment) {
+      this.navigationDate = dateConvertor(moment)
+    },
     setMomentToCurrent() {
       this.navigationDate = new Date()
     },
