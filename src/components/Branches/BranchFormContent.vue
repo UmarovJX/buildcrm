@@ -68,7 +68,6 @@
               </span>
             </ValidationProvider>
 
-
             <div class="companies" v-for="(company,index) in companies" :key="company.id">
               <div class="company">
                 <div class="company-button">
@@ -243,7 +242,7 @@ export default {
         }
       ],
       companies: [],
-      history: this.$route.params.historyForm.companies,
+      history: this.$route.params.historyForm?.companies,
     }
   },
   async created() {
@@ -285,13 +284,13 @@ export default {
       });
     },
 
-    collapseActive(id) {
-      this.companies.forEach((item) => {
-        if (item.id === id) {
-          item.active = !item.active
-        }
-      })
-    },
+    // collapseActive(id) {
+    //   this.companies.forEach((item) => {
+    //     if (item.id === id) {
+    //       item.active = !item.active
+    //     }
+    //   })
+    // },
     async fetchCompaniesList() {
       // this.loading = true
       await api.companies.getCompaniesList()
@@ -307,7 +306,9 @@ export default {
                     number_implementation: '',
                   })
                 })
-                this.getDifference(this.companiesForm, this.history)
+                if (this.companiesForm && this.history) {
+                  this.getDifference(this.companiesForm, this.history)
+                }
               }
           )
           .catch((error) => {
