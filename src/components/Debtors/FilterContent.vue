@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="d-flex align-items-center justify-content-between flex-wrap">
+    <div
+        class="d-flex align-items-center justify-content-between flex-wrap"
+        style="row-gap: 0.5rem"
+    >
       <base-button
           v-if="showTodayButtonLink"
           :text="`${ $t('today') }`"
@@ -16,6 +19,7 @@
           v-if="showSearchContent"
           class="base-search-input mr-2"
           :placeholder="`${ $t('contract_number_or_full_name') }`"
+          @trigger-input="filterBySearchContent"
       />
       <div class="d-flex align-items-center">
         <base-filter-button
@@ -39,6 +43,15 @@
         @show="setFilterProperties"
     >
       <div class="filter-modal-content">
+        <base-multiselect
+            :default-values="filter.object_id"
+            :options="objectOptions"
+            :placeholder="`${ $t('contracts.object_name') }`"
+            track-by="value"
+            label="text"
+            class="mb-4"
+            @input="inputFilterObject"
+        />
         <base-date-picker
             ref="filter-date-picker"
             v-show="showDatePicker"
@@ -74,7 +87,9 @@ import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import InputPriceFromTo from "@/components/Elements/Inputs/InputPriceFromTo";
 import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
 import CalendarNavigation from "@/components/Debtors/Elements/CalendarNavigation";
+import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import BaseButton from "@/components/Reusable/BaseButton";
+import api from "@/services/api";
 
 export default {
   name: "FilterContent",
@@ -86,7 +101,8 @@ export default {
     InputPriceFromTo,
     BootstrapSelect,
     CalendarNavigation,
-    BaseButton
+    BaseMultiselect,
+    BaseButton,
   },
   props: {
     defaultTypeOfView: {
@@ -106,6 +122,7 @@ export default {
   emits: [
     'reset-filter-fields',
     'change-view-type',
+    'sort-by-search',
     'change-date',
     'sort-items',
     'go-to-today'
@@ -116,9 +133,11 @@ export default {
         date: null,
         price_from: null,
         price_to: null,
-        client_type: null
+        client_type: null,
+        object_id: null
       },
-      typeOfView: null
+      typeOfView: null,
+      objectOptions: [],
     }
   },
   computed: {
@@ -178,8 +197,24 @@ export default {
   },
   created() {
     this.initTypeOfView()
+    this.fetchObjectsOption()
   },
   methods: {
+    inputFilterObject(selectOption) {
+      if (selectOption.length) {
+        this.filter.object_id = selectOption.map(option => parseInt(option.value))
+      }
+    },
+    async fetchObjectsOption() {
+      await api.contractV2.fetchObjectsOption()
+          .then((response) => {
+            const {objects} = response.data
+            this.objectOptions = objects.map(({id, name}) => ({value: id, text: name}))
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     setFilterPrice({from, to}) {
       this.filter.price_from = from
       this.filter.price_to = to
@@ -208,6 +243,7 @@ export default {
       this.$refs['filter-date-picker'].clearField()
       this.$refs['input-price-from-to'].resetFields()
       this.filter.client_type = null
+      this.filter.object_id = null
       if (this.typeOfView === 'list') {
         this.filter.date = null
       }
@@ -218,6 +254,12 @@ export default {
       this.filter.price_to = this.query.price_to
       this.filter.price_from = this.query.price_from
       this.filter.client_type = this.query.client_type
+      if (this.query.object_id) {
+        this.filter.object_id = this.query.object_id.map(objectId => parseInt(objectId))
+      }
+    },
+    filterBySearchContent(searchingValue) {
+      this.$emit('sort-by-search', searchingValue)
     }
   }
 }
@@ -232,6 +274,7 @@ export default {
   width: 60%;
   max-width: 85rem;
   min-width: 32rem;
+  row-gap: 0.5rem;
 }
 
 .filter-modal-content {

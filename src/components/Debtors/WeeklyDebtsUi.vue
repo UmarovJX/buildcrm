@@ -14,7 +14,7 @@
           <span v-if="index < 7" class="day-of-week">{{ $t(`weekDayAbbreviation.${item.dayOfWeek}`) }}</span>
         </span>
         <span
-            class="view-all-debts-main h-100 mt-1 d-flex flex-column align-content-between"
+            class="week-debts-column view-all-debts-main pt-1 d-flex flex-column align-content-between"
             :class="{'today-cell': equalToTodayDate(item.ymd)}"
         >
           <span
@@ -23,7 +23,7 @@
               class="debt-card mb-2"
               @click="showDebtInformationModal(debt)"
           >
-            <span class="full-name text-truncate">
+            <span class="">
               {{ debt.order.contract }} · {{ getFullName(debt.client) }}
             </span>
             <span class="d-block">{{ debtAmount(debt) }}</span>
@@ -75,21 +75,68 @@ export default {
 @import "../../assets/scss/reusable/debtors-ui";
 
 .week-content {
+  min-height: 54rem;
   display: grid;
   justify-items: stretch;
   grid-template-columns: repeat(7, 1fr);
   font-family: CraftworkSans, serif;
   gap: 0;
-  height: 80vh;
 
   &-column {
-    border: 2px solid var(--gray-100);
+    justify-self: stretch;
+    border: 1px solid var(--gray-100);
+    //min-width: 16rem;
+    min-height: 8.5rem;
+    position: relative;
+    overflow-x: hidden;
+
+    .cell-top-content {
+      //width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem;
+
+      .day-of-month {
+        color: var(--gray-400);
+      }
+
+      .day-of-week {
+        color: var(--gray-600);
+      }
+    }
+
+    .cell-middle-content {
+      display: block;
+      background-color: var(--violet-600);
+      border-radius: 0.25rem;
+      margin: 0 0.25rem;
+      color: white;
+      padding: 0.5rem;
+      font-size: 14px;
+      max-height: 100px;
+      text-overflow: ellipsis;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      white-space: nowrap;
+      line-break: anywhere;
+      overflow: hidden;
+    }
   }
 }
 
-.content-days-of-week {
-  border-bottom: 2px solid var(--gray-100);
-}
+//.content-days-of-week {
+//  border-bottom: 1px solid var(--gray-100);
+//  border-left: 2px solid var(--gray-100);
+//  border-right: 2px solid var(--gray-100);
+//  border-top: 2px solid var(--gray-100);
+//}
+//
+//.week-debts-column{
+//  border-bottom: 2px solid var(--gray-100);
+//  border-left: 2px solid var(--gray-100);
+//  border-right: 2px solid var(--gray-100);
+//  border-top: 1px solid var(--gray-100);
+//}
 
 .today-cell {
   background-color: var(--violet-50);

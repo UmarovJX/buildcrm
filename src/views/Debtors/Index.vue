@@ -9,24 +9,28 @@
         @sort-items="filterDebts"
         @go-to-today="showCurrentDay"
         @reset-filter-fields="disableFilter"
+        @sort-by-search="sortBySearchField"
     />
 
     <!--  TABLE UI  -->
     <template v-if="showListOfDebtorsTable">
       <b-table
-          :busy="appLoading"
-          :items="tableItems"
-          :fields="fields"
-          :empty-text="$t('no_data')"
-          @row-clicked="showDebtorViewModal"
-          class="table__list"
-          thead-tr-class="row__head__bottom-border"
-          tbody-tr-class="row__body__bottom-border cursor-pointer"
           show-empty
           borderless
           responsive
           sticky-header
           sort-icon-left
+          :busy="appLoading"
+          :items="tableItems"
+          :fields="fields"
+          :empty-text="$t('no_data')"
+          :sort-by.sync="table.sortBy"
+          :sort-desc.sync="table.sortDesc"
+          @sort-changed="changeSortSituation"
+          @row-clicked="showDebtorViewModal"
+          class="table__list"
+          thead-tr-class="row__head__bottom-border"
+          tbody-tr-class="row__body__bottom-border cursor-pointer"
       >
 
         <!--  LOADING ANIMATION    -->
@@ -45,7 +49,7 @@
 
       <!-- PAGINATION   -->
       <base-pagination
-          v-if="tableItemsExist"
+          :default-count-view="tablePagination.limit"
           :pagination-count="tablePagination.total"
           :pagination-current="tablePagination.current"
           @change-page="changeCurrentPage"
@@ -186,18 +190,46 @@ export default {
     WeeklyDebtsUi
   },
   data() {
-    const hasStarterMoment = this.$route.query.hasOwnProperty('starter_moment')
+    const {query} = this.$route
+    const hasStarterMoment = query.hasOwnProperty('starter_moment')
+    let sortBy = query.sort_by
+    let orderBy = query.order_by
+
+    const table = {
+      sortBy: undefined,
+      sortDesc: undefined
+    }
+
+    const fields = {
+      date: 'date',
+      price: 'amount',
+      client: 'client',
+      'contract_number': 'order.contract',
+    }
+
+    if (sortBy) {
+      table.sortBy = fields[sortBy]
+    }
+
+    if (orderBy === 'desc') {
+      table.sortDesc = true
+    } else if (orderBy === 'asc') {
+      table.sortDesc = false
+    }
+
     const {month, year} = dateProperties(new Date())
     let starter = formatDateToYMD(new Date(year, month, 1))
     if (hasStarterMoment) {
-      starter = this.$route.query.starter_moment
+      starter = query.starter_moment
     }
     return {
+      table,
       list: {
         items: [],
         pagination: {
           total: 1,
-          current: 1
+          current: 1,
+          limit: 10
         },
       },
       month: {
@@ -213,14 +245,15 @@ export default {
         items: [],
         pagination: {
           total: 1,
-          current: 1
+          current: 1,
+          limit: 10
         },
       },
       debtorViewModalItem: {
         order: {},
         client: {}
       },
-      typeOfView: 'month', /* list / month / week / day */
+      typeOfView: 'list', /* list / month / week / day */
       appLoading: false
     }
   },
@@ -230,11 +263,13 @@ export default {
         {
           key: "order.contract",
           label: this.$t("contracts.table.contract"),
+          sortable: true
         },
         {
           key: "client",
           label: this.$t("contracts.table.client"),
-          formatter: (client) => client.last_name.lotin + ' ' + client.first_name.lotin
+          formatter: (client) => client.last_name.lotin + ' ' + client.first_name.lotin,
+          sortable: true
         },
         {
           key: "client.phone",
@@ -244,12 +279,14 @@ export default {
         {
           key: "amount",
           label: this.$t("contracts.table.cost"),
-          formatter: (price) => formatToPrice(price) + ' ' + this.$t('ye')
+          formatter: (price) => formatToPrice(price) + ' ' + this.$t('ye'),
+          sortable: true
         },
         {
           key: "date",
           label: this.$t("contracts.table.date"),
-          formatter: (date) => formatDateWithDot(date)
+          formatter: (date) => formatDateWithDot(date),
+          sortable: true
         },
         /*
           {
@@ -321,6 +358,33 @@ export default {
     '$route.query.date'() {
       this.initDebtorUi()
     },
+    '$route.query.object_id'() {
+      this.initDebtorUi()
+    },
+    '$route.query.limit'(lastValue, oldValue) {
+      const absoluteValue = parseInt(lastValue)
+      if (this.typeOfView === 'list') {
+        this.list.pagination.limit = absoluteValue
+      } else if (this.typeOfView === 'day') {
+        this.day.pagination.limit = absoluteValue
+      }
+
+      if (lastValue !== oldValue) {
+        this.initDebtorUi()
+      }
+    },
+    '$route.query.page'(pageValue) {
+      const absoluteValue = parseInt(pageValue)
+      if (this.typeOfView === 'list') {
+        this.list.pagination.current = absoluteValue
+      } else if (this.typeOfView === 'day') {
+        this.day.pagination.current = absoluteValue
+      }
+      this.initDebtorUi()
+    },
+    '$route.query.search'() {
+      this.initDebtorUi()
+    }
   },
   created() {
     this.initStarterMoment()
@@ -348,11 +412,32 @@ export default {
     changeTypeOfView(type) {
       this.typeOfView = type
     },
+    sortBySearchField(searchingValue) {
+      let search = searchingValue
+      if (!search) {
+        search = undefined
+      }
+      this.changeRouterQuery({
+        search
+      })
+    },
+    changeSortSituation({sortBy, sortDesc}) {
+      const fields = {
+        'order.contract': 'contract_number',
+        amount: 'price',
+        client: 'client',
+        date: 'date'
+      }
+      const sort_by = fields[sortBy]
+      this.changeRouterQuery({
+        sort_by,
+        order_by: sortDesc ? 'desc' : 'asc'
+      })
+      this.initDebtorUi()
+    },
     initStarterMoment() {
       const hasStarterTime = this.query.hasOwnProperty('starter_moment')
-      if (hasStarterTime) {
-        this.setStarterByTypeOfView(this.query.starter_moment)
-      } else {
+      if (!hasStarterTime) {
         const starter_moment = formatDateToYMD(new Date())
         this.changeRouterQuery({starter_moment})
       }
@@ -362,16 +447,21 @@ export default {
     },
     goMoreDetail(ymd) {
       this.changeRouterQuery({
-        query: {
-          ...this.query,
-          starter_moment: ymd
-        }
+        starter_moment: ymd
       })
       this.changeViewType('day')
     },
     async initDebtorUi() {
-      const {starterPoint: monthStarter, endPoint: monthEnd} = this.getDateDistance(41, this.month.starter)
-      const {starterPoint: weekStarter, endPoint: weekEnd} = this.getDateDistance(6, this.week.starter)
+      const {
+        starterPoint: monthStarter,
+        endPoint: monthEnd
+      } = this.getDateDistance(41, this.month.starter)
+
+      const {
+        starterPoint: weekStarter,
+        endPoint: weekEnd
+      } = this.getDateDistance(6, this.week.starter)
+
       const sortQuery = sortInFirstRelationship(this.query)
 
       let params = {
@@ -382,9 +472,28 @@ export default {
         params.date = [monthStarter.ymd, monthEnd.ymd]
       } else if (this.typeOfView === 'week') {
         params.date = [weekStarter.ymd, weekEnd.ymd]
+      } else {
+        params.limit = this.tablePagination.limit
+        params.page = this.tablePagination.current
+        const hasSortBy = this.query.hasOwnProperty('sort_by')
+        const hasOrderBy = this.query.hasOwnProperty('order_by')
+        const hasSearchQuery = this.query.hasOwnProperty('search')
+
+        if (hasSortBy) {
+          params.sort_by = this.query.sort_by
+        }
+
+        if (hasOrderBy) {
+          params.order_by = this.query.order_by
+        }
+
+        if (hasSearchQuery) {
+          params.search = this.query.search
+        }
       }
 
       params = {...params, ...sortQuery}
+
       const items = await this.fetchItems(params)
       switch (this.typeOfView) {
         case 'list': {
@@ -443,7 +552,14 @@ export default {
     },
     initListItems({items, pagination}) {
       this.list.items = items
-      this.list.pagination = pagination
+      let limit = this.query.limit
+      if (!limit) {
+        limit = 10
+      }
+      this.list.pagination = {
+        limit: parseInt(limit),
+        ...pagination
+      }
     },
     initMonthItems(items) {
       const {starterPoint} = this.getDateDistance(41, this.month.starter)
@@ -495,7 +611,14 @@ export default {
     },
     initDayItems({items, pagination}) {
       this.day.items = items
-      this.day.pagination = pagination
+      let limit = this.query.limit
+      if (!limit) {
+        limit = 10
+      }
+      this.list.pagination = {
+        limit: parseInt(limit),
+        ...pagination
+      }
     },
     changeCurrentPage(page) {
       this.changeRouterQuery({
@@ -508,23 +631,29 @@ export default {
       })
     },
     changeViewType(type) {
-      this.typeOfView = type
-      const starter = this.query.starter_moment
-      const {year, month} = dateProperties(dateConvertor(starter))
-      if (type === 'day') {
-        this.changeRouterQuery({
-          date: [starter, starter]
-        })
-      } else {
-        const starter = formatDateToYMD(new Date(year, month, 1))
-        this.changeRouterQuery({
-          date: undefined,
-          starter_moment: starter
-        })
-        // this.month.starter = starter
-        // this.week.starter = starter
+      if (type !== this.typeOfView) {
+        this.typeOfView = type
+        const starter = this.query.starter_moment
+        const {year, month, dayOfMonth} = dateProperties(dateConvertor(starter))
+        if (type === 'day') {
+          this.day.starter = starter
+          this.changeRouterQuery({
+            date: [starter, starter]
+          })
+        } else {
+          const starter = formatDateToYMD(new Date(year, month, 1))
+          this.changeRouterQuery({
+            date: undefined,
+            starter_moment: starter
+          })
+          if (type === 'month') {
+            this.month.starter = starter
+          } else if (type === 'week') {
+            this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
+          }
+        }
+        this.initDebtorUi()
       }
-      this.initDebtorUi()
     },
     showDebtorViewModal(debt) {
       this.debtorViewModalItem = debt
@@ -560,14 +689,15 @@ export default {
         }
       }
     },
-    filterDebts({date, price_from, price_to, client_type}) {
+    filterDebts({date, price_from, price_to, client_type, object_id}) {
       const type = this.typeOfView
-      const query = {price_from, price_to, client_type}
+      const query = {price_from, price_to, client_type, object_id}
       for (let [key, value] of Object.entries(query)) {
         if (value === null) {
           query[key] = undefined
         }
       }
+      query.page = undefined
       switch (type) {
         case 'month':
         case 'week' : {
@@ -585,8 +715,11 @@ export default {
       }
     },
     showCurrentDay() {
-      const {month, year} = dateProperties(new Date())
-      const firstOfCurrentDay = formatDateToYMD(new Date(year, month, 1))
+      const {month, year, dayOfMonth} = dateProperties(new Date())
+      let firstOfCurrentDay = formatDateToYMD(new Date(year, month, 1))
+      if (this.typeOfView === 'week') {
+        firstOfCurrentDay = formatDateToYMD(new Date(year, month, dayOfMonth))
+      }
       this.setStarterByTypeOfView(firstOfCurrentDay)
     },
     disableFilter() {
@@ -594,7 +727,8 @@ export default {
         date: undefined,
         price_from: undefined,
         price_to: undefined,
-        client_type: undefined
+        client_type: undefined,
+        object_id: undefined
       }
 
       if (this.type === 'calendar') {
@@ -655,5 +789,26 @@ export default {
   font-size: 1.5rem;
   color: var(--gray-600);
   font-family: CraftworkSans, serif;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort="none"],
+::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
+  background-position: right calc(2rem / 2) center !important;
+  //background-position: right !important;
+  padding-right: 20px;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../assets/icons/icon-arrow-down.svg") !important;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=descending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../assets/icons/icon-arrow-up.svg") !important;
 }
 </style>
