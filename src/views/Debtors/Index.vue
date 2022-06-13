@@ -237,6 +237,9 @@ export default {
     if (hasStarterMoment) {
       starter = query.starter_moment
     }
+
+    const limit = query.limit ?? 10
+
     return {
       table,
       list: {
@@ -244,7 +247,7 @@ export default {
         pagination: {
           total: 1,
           current: 1,
-          limit: 10
+          limit
         },
       },
       month: {
@@ -261,7 +264,7 @@ export default {
         pagination: {
           total: 1,
           current: 1,
-          limit: 10
+          limit
         },
       },
       debtorViewModalItem: {
@@ -327,9 +330,6 @@ export default {
         return this.day.pagination
       }
       return this.list.pagination
-    },
-    tableItemsExist() {
-      return this.tableItems.length > 0
     },
     showListOfDebtorsTable() {
       return this.type === 'list'
@@ -460,6 +460,10 @@ export default {
       })
     },
     changeSortSituation({sortBy, sortDesc}) {
+      this.changeRouterQuery({
+        page: 1
+      })
+
       const fields = {
         'order.contract': 'contract_number',
         amount: 'price',
