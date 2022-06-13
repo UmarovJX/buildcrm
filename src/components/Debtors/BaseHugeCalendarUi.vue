@@ -4,6 +4,7 @@
       <!--            :style="item.show ? 'overflow-x: visible' : ''"    -->
       <span
           class="calendar-content-cell"
+          :ref="`calendar-content-cell-${item.ymd}`"
           :class="{
             'overflow-visible':item.show,
             'disable-cell' : !equalMonth(item.ymd),
@@ -13,36 +14,42 @@
           :key="item.ymd + index"
       >
       <span>
-        <span v-if="item.show" style="position: relative">
-           <span class="view-all-debts">
-        <span class="view-all-debts-head">
-          <span class="day-of-month">{{ item.dayOfMonth }}</span>
-          <span @click="item.show = false" class="cursor-pointer">
-            <base-times-icon/>
-          </span>
-        </span>
-        <span class="view-all-debts-main d-flex flex-column align-content-between">
-          <span
-              v-for="(debt,index) in item.debts"
-              :key="debt.order.contract + index"
-              class="debt-card mb-2"
-              @click="showDebtInformationModal(debt)"
-          >
-            <span class="full-name text-truncate">
-              {{ debt.order.contract }} · {{ getFullName(debt.client) }}
+        <span
+            v-show="item.show"
+            style="position: relative"
+        >
+          <span class="view-all-debts" :style="allDebtCardStyle">
+            <span class="view-all-debts-head">
+            <span class="day-of-month">{{ item.dayOfMonth }}</span>
+            <span @click="item.show = false" class="cursor-pointer">
+              <base-times-icon/>
             </span>
-            <span class="d-block">{{ debtAmount(debt) }}</span>
           </span>
-          <span @click="goMoreDetail(item.ymd)"
-                class="view-all-debts-footer d-flex justify-content-between cursor-pointer"
-          >
-            <span>{{ $t('go_to_day') }}</span>
-            <base-arrow-right-icon/>
+            <span class="view-all-debts-main d-flex flex-column align-content-between">
+            <span class="debt-card-content">
+              <span
+                  v-for="(debt,index) in item.debts"
+                  :key="debt.order.contract + index"
+                  class="debt-card mb-2"
+                  @click="showDebtInformationModal(debt)"
+              >
+              <span class="full-name text-truncate">
+                {{ debt.order.contract }} · {{ getFullName(debt.client) }}
+              </span>
+              <span class="d-block">{{ debtAmount(debt) }}</span>
+            </span>
+            </span>
+            <span @click="goMoreDetail(item.ymd)"
+                  class="view-all-debts-footer d-flex justify-content-between cursor-pointer"
+            >
+              <span>{{ $t('go_to_day') }}</span>
+              <base-arrow-right-icon/>
+            </span>
           </span>
-        </span>
-      </span>
+          </span>
         </span>
         <span
+            :ref="`debt-card-top-content-${item.ymd}`"
             class="cell-top-content"
         >
           <span class="day-of-month">{{ item.dayOfMonth }}</span>
@@ -99,6 +106,24 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      showBottomToTop: false,
+      calendarCellHeight: 0
+    }
+  },
+  computed: {
+    allDebtCardStyle() {
+      if (this.showBottomToTop) {
+        return {
+          top: 'auto',
+          bottom: `-${this.calendarCellHeight}px`,
+        }
+      }
+
+      return {}
+    }
+  },
   methods: {
     equalMonth(itemMonth) {
       return dateConvertor(itemMonth).getMonth() === dateConvertor(this.starter).getMonth()
@@ -110,6 +135,11 @@ export default {
       return formatToPrice(debt.amount - debt.amount_paid) + ' ' + this.$t('ye')
     },
     showDebtCard({ymd}) {
+      const windowHeight = window.innerHeight
+      const calendarCell = this.$refs[`calendar-content-cell-${ymd}`][0].getBoundingClientRect()
+      const distanceCellBetweenBottom = windowHeight - calendarCell.bottom
+      this.calendarCellHeight = calendarCell.height
+      this.showBottomToTop = distanceCellBetweenBottom < calendarCell.height * 2
       this.items.forEach((item) => {
         item.show = item.ymd === ymd
       })
@@ -140,6 +170,7 @@ export default {
   gap: 0;
 
   &-cell {
+    overflow-y: hidden;
     justify-self: stretch;
     border: 1px solid var(--gray-100);
     //min-width: 16rem;
