@@ -38,6 +38,10 @@ class ContractV2 extends Core {
         return this.get(`contracts/${id}`)
     }
 
+    getUpdateContractView(id) {
+        return this.get(`contracts/${id}/update`)
+    }
+
     fetchClientInfo(id) {
         return this.get('contracts/' + id + '/client')
     }

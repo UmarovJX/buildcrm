@@ -302,6 +302,7 @@ export default {
             no_comment: "Пока комментариев нет", // пока нету комментариев
             add_comment: "Добавить комментарий", // asd
             download_contract: "Скачать договор", // asd
+            update_contract: "Редактировать договор", // asd
             cancel_contract: "Отменить договор", // asd
             payment_by_cash: "Наличные", // asd
             payment_transaction: "Перечисление", // asd

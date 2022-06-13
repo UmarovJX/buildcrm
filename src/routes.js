@@ -42,6 +42,7 @@ import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
 
 // import ApartmentView from "./components/Dashboard/Apartment/View";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
+import EditApartment from "./components/Dashboard/Apartment/EditApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
 import Debtors from "./components/Dashboard/Debtors/DebtorsList";
@@ -225,6 +226,15 @@ const routes = [
         name: "confirm-apartment",
         path: "/objects/:object/apartment/:id/order",
         component: ConfirmApartment,
+        meta: {
+            requiresAuth: "apartments",
+        },
+    },
+    {
+        /* CONFIRM APARTMENT*/
+        name: "edit-apartment",
+        path: "/objects/apartment/:id/update",
+        component: EditApartment,
         meta: {
             requiresAuth: "apartments",
         },
