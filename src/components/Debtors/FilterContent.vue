@@ -256,7 +256,11 @@ export default {
       this.filter.price_from = this.query.price_from
       this.filter.client_type = this.query.client_type
       if (this.query.object_id) {
-        this.filter.object_id = this.query.object_id.map(objectId => parseInt(objectId))
+        if (typeof this.query.object_id === 'string') {
+          this.filter.object_id = [parseInt(this.query.object_id)]
+        } else {
+          this.filter.object_id = this.query.object_id.map(objectId => parseInt(objectId))
+        }
       }
     },
     filterBySearchContent(searchingValue) {

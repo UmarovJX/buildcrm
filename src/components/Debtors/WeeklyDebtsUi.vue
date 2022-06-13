@@ -66,7 +66,7 @@ export default {
     },
     equalToTodayDate(ymd) {
       return ymd === formatDateToYMD(new Date())
-    },
+    }
   }
 }
 </script>
@@ -75,7 +75,7 @@ export default {
 @import "../../assets/scss/reusable/debtors-ui";
 
 .week-content {
-  min-height: 54rem;
+  min-height: 45rem;
   display: grid;
   justify-items: stretch;
   grid-template-columns: repeat(7, 1fr);
@@ -88,7 +88,7 @@ export default {
     //min-width: 16rem;
     min-height: 8.5rem;
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
 
     .cell-top-content {
       //width: 100%;
@@ -122,21 +122,13 @@ export default {
       overflow: hidden;
     }
   }
-}
 
-//.content-days-of-week {
-//  border-bottom: 1px solid var(--gray-100);
-//  border-left: 2px solid var(--gray-100);
-//  border-right: 2px solid var(--gray-100);
-//  border-top: 2px solid var(--gray-100);
-//}
-//
-//.week-debts-column{
-//  border-bottom: 2px solid var(--gray-100);
-//  border-left: 2px solid var(--gray-100);
-//  border-right: 2px solid var(--gray-100);
-//  border-top: 1px solid var(--gray-100);
-//}
+  .week-debts-column {
+    height: 45rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
 
 .today-cell {
   background-color: var(--violet-50);
@@ -145,5 +137,11 @@ export default {
   .day-of-week {
     color: var(--violet-600) !important;
   }
+}
+
+.view-more-details {
+  padding: 1rem;
+  color: var(--gray-600);
+  background-color: var(--gray-50);
 }
 </style>

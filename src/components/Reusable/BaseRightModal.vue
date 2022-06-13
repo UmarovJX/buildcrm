@@ -110,10 +110,11 @@ export default {
   }
 
   .modal__content {
-    margin: 3rem;
+    padding: 3rem;
     font-family: CraftworkSans, serif;
     font-weight: 900;
-    height: 80%;
+    height: 100%;
+    overflow-y: auto;
     position: relative;
 
     &-main {

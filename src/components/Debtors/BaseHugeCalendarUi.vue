@@ -26,7 +26,7 @@
             </span>
           </span>
             <span class="view-all-debts-main d-flex flex-column align-content-between">
-            <span class="debt-card-content">
+              <span class="debt-card-content">
               <span
                   v-for="(debt,index) in item.debts"
                   :key="debt.order.contract + index"
@@ -39,13 +39,13 @@
               <span class="d-block">{{ debtAmount(debt) }}</span>
             </span>
             </span>
-            <span @click="goMoreDetail(item.ymd)"
-                  class="view-all-debts-footer d-flex justify-content-between cursor-pointer"
-            >
-              <span>{{ $t('go_to_day') }}</span>
-              <base-arrow-right-icon/>
+              <span @click="goMoreDetail(item.ymd)"
+                    class="view-all-debts-footer d-flex justify-content-between cursor-pointer"
+              >
+                <span>{{ $t('go_to_day') }}</span>
+                <base-arrow-right-icon/>
+              </span>
             </span>
-          </span>
           </span>
         </span>
         <span
@@ -109,16 +109,26 @@ export default {
   data() {
     return {
       showBottomToTop: false,
-      calendarCellHeight: 0
+      showRightToLeft: false,
+      calendarCellHeight: 0,
+      calendarCellWidth: 0
     }
   },
   computed: {
     allDebtCardStyle() {
+      const style = {}
       if (this.showBottomToTop) {
-        return {
-          top: 'auto',
-          bottom: `-${this.calendarCellHeight}px`,
-        }
+        style.top = 'auto'
+        style.bottom = `-${this.calendarCellHeight}px`
+      }
+
+      if (this.showRightToLeft) {
+        style.left = 'auto'
+        style.right = `-${this.calendarCellWidth}px`
+      }
+
+      if (this.showBottomToTop || this.showRightToLeft) {
+        return style
       }
 
       return {}
@@ -136,9 +146,13 @@ export default {
     },
     showDebtCard({ymd}) {
       const windowHeight = window.innerHeight
+      const windowWidth = window.innerWidth
       const calendarCell = this.$refs[`calendar-content-cell-${ymd}`][0].getBoundingClientRect()
       const distanceCellBetweenBottom = windowHeight - calendarCell.bottom
+      const distanceCellBetweenRight = windowWidth - calendarCell.right
       this.calendarCellHeight = calendarCell.height
+      this.calendarCellWidth = calendarCell.width
+      this.showRightToLeft = distanceCellBetweenRight < calendarCell.width * 1
       this.showBottomToTop = distanceCellBetweenBottom < calendarCell.height * 2
       this.items.forEach((item) => {
         item.show = item.ymd === ymd

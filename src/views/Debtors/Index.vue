@@ -205,7 +205,7 @@ export default {
     WeeklyDebtsUi
   },
   data() {
-    const {query} = this.$route
+    const query = Object.assign({}, this.$route.query)
     const hasStarterMoment = query.hasOwnProperty('starter_moment')
     let sortBy = query.sort_by
     let orderBy = query.order_by
@@ -238,7 +238,15 @@ export default {
       starter = query.starter_moment
     }
 
-    const limit = query.limit ?? 10
+    let limit = 10
+
+    if (typeof query.limit === 'string') {
+      if (parseInt(query.limit)) {
+        limit = parseInt(query.limit)
+      }
+    }
+
+    let typeOfView = query.type_of_view ?? 'list' /* list / month / week / day */
 
     return {
       table,
@@ -275,7 +283,7 @@ export default {
         },
         client: {}
       },
-      typeOfView: 'list', /* list / month / week / day */
+      typeOfView,
       appLoading: false
     }
   },
@@ -356,17 +364,23 @@ export default {
     }
   },
   watch: {
-    'month.starter'(moment) {
-      this.setStarterMoment(moment)
-      this.initDebtorUi()
+    'month.starter'(lastMoment, oldMoment) {
+      if (lastMoment !== oldMoment) {
+        this.setStarterMoment(lastMoment)
+        this.initDebtorUi()
+      }
     },
-    'week.starter'(moment) {
-      this.setStarterMoment(moment)
-      this.initDebtorUi()
+    'week.starter'(lastMoment, oldMoment) {
+      if (lastMoment !== oldMoment) {
+        this.setStarterMoment(lastMoment)
+        this.initDebtorUi()
+      }
     },
-    'day.starter'(moment) {
-      this.setStarterMoment(moment)
-      this.initDebtorUi()
+    'day.starter'(lastMoment, oldMoment) {
+      if (lastMoment !== oldMoment) {
+        this.setStarterMoment(lastMoment)
+        this.initDebtorUi()
+      }
     },
     '$route.query.price_from'() {
       this.initDebtorUi()
@@ -536,7 +550,14 @@ export default {
         }
       }
 
+      if (sortQuery && typeof sortQuery.object_id === 'string') {
+        sortQuery.object_id = [sortQuery.object_id]
+      }
+
       params = {...params, ...sortQuery}
+
+      /* CLEAR ITEMS ARRAY BEFORE UPDATE */
+      this[this.typeOfView].items = []
 
       const items = await this.fetchItems(params)
       switch (this.typeOfView) {
@@ -601,7 +622,7 @@ export default {
         limit = 10
       }
       this.list.pagination = {
-        limit: parseInt(limit),
+        limit: typeof limit === 'string' ? parseInt(limit) : limit,
         ...pagination
       }
     },
@@ -659,8 +680,8 @@ export default {
       if (!limit) {
         limit = 10
       }
-      this.list.pagination = {
-        limit: parseInt(limit),
+      this.day.pagination = {
+        limit: typeof limit === 'string' ? parseInt(limit) : limit,
         ...pagination
       }
     },
@@ -682,21 +703,23 @@ export default {
         if (type === 'day') {
           this.day.starter = starter
           this.changeRouterQuery({
-            date: [starter, starter]
+            date: [starter, starter],
+            type_of_view: 'day'
           })
         } else {
           const starter = formatDateToYMD(new Date(year, month, 1))
           this.changeRouterQuery({
             date: undefined,
-            starter_moment: starter
+            starter_moment: starter,
+            type_of_view: type
           })
           if (type === 'month') {
             this.month.starter = starter
           } else if (type === 'week') {
             this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
           }
+          this.initDebtorUi()
         }
-        this.initDebtorUi()
       }
     },
     showDebtorViewModal(debt) {
@@ -827,6 +850,11 @@ export default {
     color: var(--gray-400);
     font-family: CraftworkSans, serif;
   }
+}
+
+.debtor-view-modal {
+  padding: 3rem;
+  margin: 0;
 }
 
 .modal-title {
