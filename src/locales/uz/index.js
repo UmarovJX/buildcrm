@@ -353,6 +353,7 @@ export default {
             no_comment: "Hozircha izohlar yo'q", // asd
             add_comment: "Izoh qo'shish", // asd
             download_contract: "Shartnomani yuklab olish", // asd
+            update_contract: "Shartnomani o'zgartirish", // asd
             cancel_contract: "Shartnomani bekor qilish", // asd
             payment_by_cash: "Naqd pul", // asd
             payment_transaction: "Pul ko'chirish orqali", // asd
