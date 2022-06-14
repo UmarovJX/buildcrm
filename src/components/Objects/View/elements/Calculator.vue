@@ -196,6 +196,11 @@ export default {
   mounted() {
     this.$emit('for-print', this.calc)
   },
+  watch: {
+    discount() {
+      this.$emit('for-print', this.calc)
+    }
+  },
   computed: {
     paymentOption() {
       const discounts = [...this.apartment.discounts]
