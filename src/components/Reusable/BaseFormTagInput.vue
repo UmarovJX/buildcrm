@@ -49,7 +49,7 @@ export default {
       type: Array,
       required: false
     },
-    mask:{
+    mask: {
       type: String,
       default: () => ('###############')
     }
@@ -72,7 +72,10 @@ export default {
       if (val.length > 0) {
         const hasInPackage = this.tags.findIndex(tag => tag === val)
         if (hasInPackage === -1) {
-          this.tags.push(val)
+          const splitTags = this.tagInput.split(' ')
+          splitTags.forEach((tag) => {
+            this.tags.push(tag)
+          })
           event.target.value = ''
           this.tagInput = ''
           this.$emit('set-tags', this.tags)

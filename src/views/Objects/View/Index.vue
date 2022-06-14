@@ -93,8 +93,6 @@
           <template v-for="(price) of priceList" v-slot:cell()="data">
             <slot :name="price.id" v-bind="data">{{ data.item.prices }}</slot>
           </template>
-
-
         </b-table>
       </template>
     </base-modal>
@@ -108,7 +106,6 @@
         @show-express-sidebar="apartmentExpressReview"
         @show-plan-sidebar="planExpressReview"
     />
-
 
     <!-- APARTMENT QUICK VIEW   -->
     <apartment-express-view

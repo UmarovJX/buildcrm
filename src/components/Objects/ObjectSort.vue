@@ -7,7 +7,7 @@
         <base-form-tag-input
             @set-tags="setApartmentNumbers"
             :default-tags="defaultApartments"
-            :mask="'XXXXXXX'"
+            :mask="'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'"
             ref="base-form-tag-input"
             :placeholder="$t('object.sort.number_flat')"
         >
