@@ -59,7 +59,7 @@
                                 :placeholder="
                                 $t('apartments.agree.placeholder.number')
                               "
-                                v-model="contractData.contract_number"
+                                v-model="order.contract_number"
                                 :state="getValidationState(validationContext)"
                                 aria-describedby="number-feedback"
                                 disabled
@@ -72,42 +72,42 @@
                           </b-form-group>
                         </validation-provider>
                       </div>
-                      <div class="col-2 p-0 mt-2">
-                        <b-button
-                            type="button"
-                            v-if="!edited.toggle"
-                            @click="[(edited.toggle = true)]"
-                            variant="primary"
-                            size="sm"
-                            class="mt-4 ml-auto w-100"
-                            style="height: 38px"
-                        >
-                          <i class="fal fa-edit"></i>
-                        </b-button>
-                        <b-button
-                            type="button"
-                            v-else
-                            @click="
-                            [
-                              (edited.toggle = false),
-                              (edited.contract_number = true),
-                            ]
-                          "
-                            variant="success"
-                            size="sm"
-                            class="mt-4 ml-auto w-100"
-                            style="height: 38px"
-                        >
-                          <i class="fal fa-save"></i>
-                        </b-button>
-                      </div>
+                      <!--                      <div class="col-2 p-0 mt-2">-->
+                      <!--                        <b-button-->
+                      <!--                            type="button"-->
+                      <!--                            v-if="!edited.toggle"-->
+                      <!--                            @click="[(edited.toggle = true)]"-->
+                      <!--                            variant="primary"-->
+                      <!--                            size="sm"-->
+                      <!--                            class="mt-4 ml-auto w-100"-->
+                      <!--                            style="height: 38px"-->
+                      <!--                        >-->
+                      <!--                          <i class="fal fa-edit"></i>-->
+                      <!--                        </b-button>-->
+                      <!--                        <b-button-->
+                      <!--                            type="button"-->
+                      <!--                            v-else-->
+                      <!--                            @click="-->
+                      <!--                            [-->
+                      <!--                              (edited.toggle = false),-->
+                      <!--                              (edited.contract_number = true),-->
+                      <!--                            ]-->
+                      <!--                          "-->
+                      <!--                            variant="success"-->
+                      <!--                            size="sm"-->
+                      <!--                            class="mt-4 ml-auto w-100"-->
+                      <!--                            style="height: 38px"-->
+                      <!--                        >-->
+                      <!--                          <i class="fal fa-save"></i>-->
+                      <!--                        </b-button>-->
+                      <!--                      </div>-->
                     </div>
                   </div>
 
                   <div class="col-md-4">
                     <validation-provider
                         :name="`'${$t('apartments.agree.date_contract')}'`"
-                        :rules="{required: true}"
+                        :rules="{required: false}"
                         v-slot="validationContext"
                         class="mb-3"
                     >
@@ -122,7 +122,8 @@
                             :placeholder="
                             $t('apartments.agree.placeholder.date_contract')
                           "
-                            v-model="contractData.contract_number"
+                            disabled
+                            v-model="order.contract_date"
                             :state="getValidationState(validationContext)"
                             aria-describedby="date-feedback"
                             @focus="userFocused"
@@ -153,7 +154,7 @@
               <div class="col-md-4">
                 <validation-provider
                     :name="$t('apartments.agree.first_payment_date')"
-                    :rules="{required: true}"
+                    :rules="{required: false}"
                     v-slot="validationContext"
                     class="mb-3"
                 >
@@ -165,7 +166,8 @@
                         id="first_payment_date"
                         name="first_payment_date"
                         type="date"
-                        v-model="contract.first_payment_date"
+                        disabled
+                        v-model="order.first_payment_date"
                         :state="getValidationState(validationContext)"
                         aria-describedby="first_payment_date-feedback"
                         @focus="userFocused"
@@ -185,8 +187,9 @@
                     {{ $t("apartments.agree.payment_date") }}
                   </label>
                   <input
-                      v-model="contractData.payment_date"
+                      v-model="order.payment_date"
                       id="payment_date"
+                      disabled
                       type="date"
                       class="form-control"
                       @focus="userFocused"
@@ -200,7 +203,7 @@
             <base-validation-bottom-warning v-if="hasValidationError"/>
 
             <!-- removeBlock -->
-            <div class="mt-4 d-flex justify-content-end flex-md-row flex-column">
+            <div class=" d-flex justify-content-end flex-md-row flex-column">
               <button
                   type="button"
                   class="btn btn-default mx-md-2"
@@ -226,29 +229,29 @@
       </div>
 
       <!-- Step 2 -->
-      <div class="container-fluid px-0 mx-0" v-if="contract.step === 2">
-        <form ref="form" @submit.stop.prevent="sendForm">
-          <div class="row">
-            <!-- Таблица ежемесячных платежей -->
-            <div class="col-xl-8">
-              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments"
-                               @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
-            </div>
+      <!--      <div class="container-fluid px-0 mx-0" v-if="contract.step === 2">-->
+      <!--        <form ref="form" @submit.stop.prevent="sendForm">-->
+      <!--          <div class="row">-->
+      <!--            &lt;!&ndash; Таблица ежемесячных платежей &ndash;&gt;-->
+      <!--            <div class="col-xl-8">-->
+      <!--              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments"-->
+      <!--                               @MonthlyEdit="MonthlyEdit"></MonthlyPayments>-->
+      <!--            </div>-->
 
-            <div class="col-xl-4 h-auto">
-              <div class="sticky-top">
-                <ClientInformation :client="client"></ClientInformation>
-                <ApartmentsList :apartments="apartments" :contract="contract"
-                                @changePrice="initialCalc"></ApartmentsList>
-                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts"
-                            @changeDiscount="changeDiscount"></Calculator>
-                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract"
-                         :discounts="discounts" :buttons="buttons"></Confirm>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
+      <!--            <div class="col-xl-4 h-auto">-->
+      <!--              <div class="sticky-top">-->
+      <!--                <ClientInformation :client="client"></ClientInformation>-->
+      <!--                <ApartmentsList :apartments="apartments" :contract="contract"-->
+      <!--                                @changePrice="initialCalc"></ApartmentsList>-->
+      <!--                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts"-->
+      <!--                            @changeDiscount="changeDiscount"></Calculator>-->
+      <!--                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract"-->
+      <!--                         :discounts="discounts" :buttons="buttons"></Confirm>-->
+      <!--              </div>-->
+      <!--            </div>-->
+      <!--          </div>-->
+      <!--        </form>-->
+      <!--      </div>-->
 
     </div>
 
@@ -267,7 +270,7 @@
 
     <SuccessAgree
         :contract="contract"
-        :apartments="apartments.length"
+        :apartments="2"
     />
 
   </main>
@@ -281,13 +284,13 @@ import {mapActions, mapGetters} from "vuex";
 import SuccessAgree from "./Components/SuccessAgree";
 // import QuickViewApartments from "./Components/QuickViewApartments";
 import ClientInputConfirm from "./Components/ClientInputConfirm";
-import MonthlyPayments from "./Contract/MonthlyPayments";
-import ClientInformation from "./Contract/ClientInformation";
-import ApartmentsList from "./Contract/ApartmentsList";
+// import MonthlyPayments from "./Contract/MonthlyPayments";
+// import ClientInformation from "./Contract/ClientInformation";
+// import ApartmentsList from "./Contract/ApartmentsList";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
-import Calculator from "./Contract/Calculator";
-import Confirm from "./Contract/Confirm";
+// import Calculator from "./Contract/Calculator";
+// import Confirm from "./Contract/Confirm";
 
 import {
   editedCreditMonths,
@@ -303,7 +306,7 @@ import api from "@/services/api";
 // import moment from "moment";
 
 export default {
-  name: "ConfirmApartment",
+  name: "EditApartment",
 
   components: {
     // VueNumeric,
@@ -311,12 +314,12 @@ export default {
     // FlipCountdown,
     ClientInputConfirm,
     SuccessAgree,
-    MonthlyPayments,
-    ClientInformation,
-    ApartmentsList,
+    // MonthlyPayments,
+    // ClientInformation,
+    // ApartmentsList,
     BaseBreadCrumb,
-    Calculator,
-    Confirm,
+    // Calculator,
+    // Confirm,
   },
 
   data() {
@@ -358,7 +361,7 @@ export default {
         payment_date: null,
       },
 
-      contractData: {},
+      // order: {},
 
       contract: {
         step: 1,
@@ -512,7 +515,7 @@ export default {
       console.log(uuid, 'uuid');
       await api.contractV2.getUpdateContractView(uuid).then((res) => {
         console.log(res);
-        this.contractData = res.data
+        this.order = res.data
         this.apartments = res.data.apartments
         this.client = {...this.client, ...res.data.client}
       })
@@ -571,7 +574,13 @@ export default {
                 ...response.data,
                 type_client: 'unknown'
               }
-              this.onSubmit();
+              // this.onSubmit();
+              api.contractV2.orderUpdate(this.order.id, {client_id: response.data.id}).then(res => {
+                this.toasted(res.data.message, "success");
+                this.$router.push({name: 'contracts'})
+              }).catch(error => {
+                this.toasted(error.response.data.message, "error");
+              })
             }
           })
           .catch((error) => {
@@ -597,13 +606,13 @@ export default {
           });
     },
 
-    onSubmit() {
-      this.contract.step = 2;
-      this.buttons.confirm = true;
-      this.buttons.next = false;
-      this.contract.month = this.deepClone(this.apartments[0].object.credit_month)
-      this.setData();
-    },
+    // onSubmit() {
+    //   this.contract.step = 2;
+    //   this.buttons.confirm = true;
+    //   this.buttons.next = false;
+    //   this.contract.month = this.deepClone(this.apartments[0].object.credit_month)
+    //   this.setData();
+    // },
 
     getValidationState({dirty, validated, valid = null}) {
       return dirty || validated ? valid : null;
@@ -772,7 +781,7 @@ export default {
           formData.append("discount_amount", this.contract.discount_amount);
           // }
 
-          if (this.contract.discount.id === 'other') {
+          if (this.contract.discount?.id === 'other') {
             for (let index = 0; index < this.apartments.length; index++) {
               formData.append(
                   "apartments[" + index + "][id]",
@@ -842,6 +851,7 @@ export default {
           });
         }
       });
+
     },
 
     changeDiscount() {

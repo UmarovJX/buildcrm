@@ -32,8 +32,8 @@
             </span>
             {{ $t('contracts.view.download_contract') }}
           </b-dropdown-item>
-          <b-dropdown-item
-              :to="{name:'edit-apartment', params:{id:$route.params.id}}">
+          <b-dropdown-item v-if="order.status === 'sold' || order.status === 'contract'"
+                           :to="{name:'edit-apartment', params:{id:$route.params.id}}">
             <span class="mr-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path

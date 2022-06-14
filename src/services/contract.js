@@ -42,6 +42,10 @@ class ContractV2 extends Core {
         return this.get(`contracts/${id}/update`)
     }
 
+    orderUpdate(id, body) {
+        return this.put(`contracts/${id}`, body)
+    }
+
     fetchClientInfo(id) {
         return this.get('contracts/' + id + '/client')
     }
