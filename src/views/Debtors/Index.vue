@@ -692,7 +692,8 @@ export default {
     },
     changeCountOfView(limit) {
       this.changeRouterQuery({
-        limit
+        limit,
+        page: 1
       })
     },
     changeViewType(type) {
