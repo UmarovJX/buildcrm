@@ -221,7 +221,7 @@
           <div class="row pdf-payment">
             <div class="col-12">
               <h4 class="pdf-payment__title">
-                {{ $t('selected_variant') }}:
+                {{ $t('other_variant') }}:
               </h4>
             </div>
           </div>
@@ -258,13 +258,13 @@
                 </template>
                 <template #cell(priceMeter)="{item}">
                   <span class="table-item" v-if="item.prepay === 100">{{
-                      pricePrettier(apartment.prices.price_m2, 2)
+                      pricePrettier(apartment.price_m2, 2)
                     }}</span>
                   <span class="table-item" v-else>{{ pricePrettier(item.amount - printCalc.discount_price, 2) }}</span>
                 </template>
                 <template #cell(price)="{item}">
                   <span class="table-item" v-if="item.prepay === 100">{{
-                      totalPrintPrice(apartment.prices.price)
+                      pricePrettier(apartment.price)
                     }}</span>
                   <span class="table-item" v-else>{{ totalPrintPrice(item.amount) }}</span>
                 </template>
