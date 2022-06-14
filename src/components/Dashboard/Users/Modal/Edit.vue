@@ -67,7 +67,12 @@
               :label="$t('user.phone')"
               label-for="phone"
           >
-            <b-form-input type="tel" id="phone" v-model="manager.phone"></b-form-input>
+            <b-form-input
+                type="tel"
+                id="phone"
+                v-model="manager.phone"
+                v-mask="'### ## ### ## ##'"
+            ></b-form-input>
           </b-form-group>
 
           <b-form-group
@@ -305,7 +310,8 @@ export default {
     async submitForm() {
       this.getLoading = true
       try {
-        console.log(this.managerId, 'this.managerId');
+        this.manager.phone = this.manager.phone.replace(/\s/g, '')
+        this.manager.objects = this.manager.objects.filter(object => object !== null)
         const response = await api.userV2.updateUserData(this.managerId, this.manager)
         this.toasted(response.data.message, "success");
         this.$nextTick(() => {
