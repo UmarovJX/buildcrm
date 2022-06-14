@@ -25,6 +25,7 @@
             <b-form-file
                 id="form_file"
                 v-model="form.file"
+                accept=".doc,.docx"
                 value="File"
                 placeholder="Choose a file or drop it here..."
                 drop-placeholder="Drop file here..."
@@ -156,6 +157,7 @@ export default {
         category: null,
         main: 1
       },
+      errors: [],
       categoryOptions: [
         {value: 'sale', text: this.$t('objects.sale')},
         {value: 'reserve', text: this.$t('objects.booking')},
@@ -202,11 +204,16 @@ export default {
           const {id} = this.$route.params
           await api.objectsV2.addNewContract({id, form})
               .then(() => {
+                // console.log(res, 'res');
                 this.$refs["creation-content"].hide()
                 this.$emit('update-content', {category: this.form.category})
                 this.setInitialPropertyForm()
               })
               .catch((error) => {
+                // console.log(error, 'error');
+                // error.file.map(item => this.errors.push(item))
+                // console.log(error.file, 'error');
+                // this.errors.push(error)
                 this.toastedWithErrorCode(error)
               })
               .finally(() => {
