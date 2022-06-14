@@ -310,9 +310,10 @@ export default {
     async submitForm() {
       this.getLoading = true
       try {
-        this.manager.phone = this.manager.phone.replace(/\s/g, '')
-        this.manager.objects = this.manager.objects.filter(object => object !== null)
-        const response = await api.userV2.updateUserData(this.managerId, this.manager)
+        const form = Object.assign({}, this.manager)
+        form.phone = form.phone.replace(/\s/g, '')
+        form.objects = form.objects.filter(object => object !== null)
+        const response = await api.userV2.updateUserData(this.managerId, form)
         this.toasted(response.data.message, "success");
         this.$nextTick(() => {
           this.getLoading = false

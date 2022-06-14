@@ -67,7 +67,12 @@
               :label="$t('user.phone')"
               label-for="phone"
           >
-            <b-form-input type="tel" id="phone" v-model="manager.phone"></b-form-input>
+            <b-form-input
+                type="tel"
+                id="phone"
+                v-model="manager.phone"
+                v-mask="'### ## ### ## ##'"
+            ></b-form-input>
           </b-form-group>
 
           <b-form-group
@@ -270,7 +275,10 @@ export default {
     async submitForm() {
       this.getLoading = true;
       try {
-        const response = await api.userV2.addNewUserToDB(this.manager)
+        const form = Object.assign({}, this.manager)
+        form.phone = form.phone.replace(/\s/g, '')
+        form.objects = form.objects.filter(object => object !== null)
+        const response = await api.userV2.addNewUserToDB(form)
         this.toasted(response.data.message, "success");
         this.$nextTick(() => {
           this.getLoading = false;
