@@ -11,12 +11,11 @@
         :placeholder="placeholder"
         v-bind="$attrs"
         v-model="tagInput"
-        v-mask="mask"
         class="tag-input__text"
         @keydown.enter="addTag"
         @keydown.188="addTag"
         @keydown.delete="removeLastTag"
-        :class="{'w-4':this.tagInput.length > 0}"
+        :class="{'tag-input-active':this.tagInput.length > 0}"
     />
     <span
         class="addition__button"
@@ -48,10 +47,6 @@ export default {
     defaultTags: {
       type: Array,
       required: false
-    },
-    mask: {
-      type: String,
-      default: () => ('###############')
     }
   },
   data() {
@@ -170,14 +165,17 @@ export default {
   justify-content: center;
   align-items: center;
   transition: transform 150ms ease-in-out;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 
   &:hover {
     transform: scale(1.1);
   }
 }
 
-.w-4 {
-  width: 4rem;
-  min-width: 4rem !important;
+.tag-input-active {
+  min-width: 2rem !important;
+  width: auto;
 }
+
 </style>
