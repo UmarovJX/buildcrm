@@ -85,7 +85,8 @@ const routes = [
         component: Auth,
     },
 
-    /*{
+    /*
+    {
         /!* OBJECTS *!/
         path: "/chess/:objectId",
         name: "chess",
@@ -93,7 +94,8 @@ const routes = [
         meta: {
             requiresAuth: "objects"
         }
-    },*/
+    },
+    */
 
     {
         /* OBJECTS */
