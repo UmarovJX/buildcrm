@@ -93,8 +93,6 @@
           <template v-for="(price) of priceList" v-slot:cell()="data">
             <slot :name="price.id" v-bind="data">{{ data.item.prices }}</slot>
           </template>
-
-
         </b-table>
       </template>
     </base-modal>
@@ -108,7 +106,6 @@
         @show-express-sidebar="apartmentExpressReview"
         @show-plan-sidebar="planExpressReview"
     />
-
 
     <!-- APARTMENT QUICK VIEW   -->
     <apartment-express-view
@@ -373,7 +370,7 @@ export default {
                 if (floor.floorActive) {
                   floor.apartments.map(apartment => {
                     if (apartment.apartmentActive) {
-                      if (apartment.is_sold) {
+                      if (apartment['is_sold']) {
                         switch (apartment.order.status) {
                           case 'available': {
                             return this.statusCounter.available += 1
@@ -406,11 +403,10 @@ export default {
         })
       } else {
         this.apartments.map(item => {
-          console.log(item, 'item');
           item.blocks.map(block => {
             block.floors.map(floor => {
               floor.apartments.map(apartment => {
-                if (apartment.is_sold) {
+                if (apartment['is_sold']) {
                   switch (apartment.order.status) {
                     case 'available': {
                       return this.statusCounter.available += 1
@@ -448,10 +444,9 @@ export default {
     },
     getPriceList() {
       const {object} = this.$route.params
-      api.objectsV2.fetchObjectPrice(object).then((res) => {
-
-        this.priceList = res.data
-        res.data.map((item) => {
+      api.objectsV2.fetchObjectPrice(object).then((response) => {
+        this.priceList = response.data
+        response.data.map((item) => {
           // console.log(item.prepay);
           // this.otherPrices = [...this.otherPrices, ...item.prices.filter(price => price.type === 'other_price')]
           // this.defaultPrices = [...this.defaultPrices, ...item.prices.filter(price => price.type === 'default')]

@@ -180,12 +180,11 @@
   </main>
 
 </template>
-
 <script>
 import Create from "./Modal/Create";
 import Edit from "./Modal/Edit";
 import api from "@/services/api";
-import {sortObjectValues} from "@/util/reusable";
+import {phonePrettier, sortObjectValues} from "@/util/reusable";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseButton from "@/components/Reusable/BaseButton"
 import BaseLoading from "@/components/Reusable/BaseLoading"
@@ -269,6 +268,7 @@ export default {
           key: "phone",
           label: "users.phone",
           sortable: true,
+          formatter: (phone) => phonePrettier(phone)
         },
         {
           key: "role",

@@ -5,11 +5,10 @@
       <!--   Номер квартиры   -->
       <div class="filter__inputs-input">
         <base-form-tag-input
-            @set-tags="setApartmentNumbers"
-            :default-tags="defaultApartments"
-            :mask="'XXXXXXX'"
             ref="base-form-tag-input"
-            :placeholder="$t('object.sort.number_flat')"
+            :default-tags="defaultApartments"
+            :placeholder="`${ $t('object.sort.number_flat') }`"
+            @set-tags="setApartmentNumbers"
         >
           <template #delete-content>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -159,6 +158,7 @@
         </b-dropdown-text>
       </b-dropdown>
 
+      <!--  Сум  От / До  -->
       <div v-show="sortBar" class="filter__apartment__price">
         <b-form-select
             v-model="currency"
@@ -190,33 +190,25 @@
         ></base-numeric-input>
       </div>
 
-      <!--  Сум  От / До  -->
+      <!--  Area from / to  -->
       <div v-show="sortBar" class="filter__apartment__price">
         <div class="filter-value">
           <span>m<sup>2</sup></span>
         </div>
-        <base-numeric-input
-            v-model.number="form.area_from"
-            :currency="` `"
-            :precision="2"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
+        <base-price-input
+            class="filter__price"
+            :value="form.area_from"
             :placeholder="`${ $t('from') }`"
+            :permission-change="true"
+            @input="form.area_from = $event"
+        ></base-price-input>
+        <base-price-input
             class="filter__price"
-        ></base-numeric-input>
-        <base-numeric-input
-            v-model.number="form.area_to"
-            :currency="` `"
-            :precision="2"
-            :minus="false"
-            :value="null"
-            currency-symbol-position="suffix"
-            separator="space"
+            :value="form.area_to"
             :placeholder="`${ $t('to') }`"
-            class="filter__price"
-        ></base-numeric-input>
+            :permission-change="true"
+            @input="form.area_to = $event"
+        ></base-price-input>
       </div>
 
       <div class="detail-button" @click="openBar" :class="sortBar ? 'active':''">
@@ -253,6 +245,7 @@ import BaseChessList from "@/components/icons/BaseChessList";
 import BaseChessPlan from "@/components/icons/BaseChessPlan";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import {clearObjectProperties} from "@/util/reusable";
 import {sortInFirstRelationship} from "@/util/reusable";
 import {sessionStorageGetItem} from "@/util/storage";
@@ -268,6 +261,7 @@ export default {
     BaseFormTagInput,
     BaseChessList,
     BaseChessPlan,
+    BasePriceInput
   },
 
   props: {
