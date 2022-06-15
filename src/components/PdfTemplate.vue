@@ -25,7 +25,9 @@
                 </h5>
                 <p>
                   <img :src="require('@/assets/icons/location.svg')" alt="">
-                  {{ apartment.object.address }}
+                  <span v-if="apartment.object">
+                   {{ apartment.object.address }}
+                 </span>
                 </p>
               </div>
               <div class="pdf-header__logo">
@@ -34,9 +36,10 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12 pdf-img">
-              <img :src="apartment.plan.image[0]" alt="">
-              <img :src="require('@/assets/img/plan.png')" alt="">
+            <div v-if="apartment.plan" class="col-12 pdf-img">
+<!--              <img v-if="apartment.plan"-->
+<!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
+              <img :src="require('@/assets/img/plan.png')" alt="plan-image">
             </div>
           </div>
           <div class="row pdf-features">
@@ -44,7 +47,7 @@
               <h5 class="pdf-feature__title">
                 {{ $t('users.object') }}:
               </h5>
-              <div class="pdf-feature__content">
+              <div v-if="apartment.object" class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-facade.svg')" alt="">
                 <p>{{ apartment.object.name }}</p>
               </div>
@@ -62,7 +65,7 @@
               <h5 class="pdf-feature__title">
                 {{ $t('plan_area') }}:
               </h5>
-              <div class="pdf-feature__content">
+              <div v-if="apartment.plan" class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-area.svg')" alt="">
                 <p>{{ apartment.plan.area }} m<sup>2</sup></p>
               </div>
@@ -71,7 +74,7 @@
               <h5 class="pdf-feature__title">
                 {{ $t('object.sort.block') }}:
               </h5>
-              <div class="pdf-feature__content">
+              <div v-if="apartment.block" class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-flat.svg')" alt="">
                 <p>{{ apartment.block.name }}</p>
               </div>
@@ -98,7 +101,7 @@
               <h5 class="pdf-feature__title">
                 {{ $t('apartments.view.completion_date') }}:
               </h5>
-              <div class="pdf-feature__content">
+              <div v-if="apartment.object" class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-construction.svg')" alt="">
                 <p>{{ buildingDate(apartment.object.build_date) }}</p>
               </div>
@@ -107,7 +110,7 @@
               <h5 class="pdf-feature__title">
                 {{ $t('apartments.view.number_of_blocks') }}:
               </h5>
-              <div class="pdf-feature__content">
+              <div v-if="apartment.block" class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-flat.svg')" alt="">
                 <p>{{ apartment.block.floors }}</p>
               </div>
@@ -352,12 +355,13 @@ export default {
       htmlToPdfOptions: {
         margin: 0,
         filename: '',
-        html2canvas: {
-          dpi: 72,
-          scale: 4,
-          letterRendering: true,
-          useCORS: true
-        },
+        // html2canvas: {
+        //   dpi: 72,
+        //   scale: 4,
+        //   letterRendering: true,
+        //   useCORS: true
+        // },
+        // image: {type: 'png', quality: 0.99},
         jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'}
       },
       discountField: [
@@ -382,7 +386,18 @@ export default {
           label: ('total_discount'),
         },
       ],
-      visibleMode: false,
+
+
+    }
+  },
+  computed: {
+    planImage() {
+      if (this.apartment.plan.image.length) {
+        return this.apartment.plan.image[0]
+      } else {
+        return `require('@/assets/img/plan.png')`
+      }
+
     }
   },
   methods: {
@@ -500,7 +515,7 @@ export default {
       align-items: center;
       //height: 100%;
       height: 350px;
-      margin-bottom: 28px;
+      margin-bottom: 36px;
 
       img {
         //width: 100%;

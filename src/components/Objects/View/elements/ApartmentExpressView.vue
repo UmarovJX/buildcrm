@@ -186,7 +186,7 @@
           @CreateReserve="updateContent"
       />
 
-      <PdfTemplate v-if="visible" ref="html2Pdf" :apartment="sidebarApartment"
+      <PdfTemplate v-if="visible && sidebarApartment" ref="html2Pdf" :apartment="sidebarApartment"
                    :print-calc="printCalc"/>
 
 

@@ -178,7 +178,7 @@
     <base-loading v-if="appLoading"/>
 
 
-    <PdfTemplate ref="html2Pdf" :apartment="apartment"
+    <PdfTemplate v-if="pdfVisible" ref="html2Pdf" :apartment="apartment"
                  :print-calc="printCalc"/>
 
 
@@ -253,6 +253,7 @@ export default {
       appLoading: false,
       showReservationModal: false,
       printCalc: {},
+      pdfVisible: false
     }
   },
 
@@ -355,7 +356,10 @@ export default {
     },
     printPdf() {
       this.pdfVisible = true
-      this.$refs.html2Pdf.generatePdf()
+      setTimeout(() => {
+        this.$refs.html2Pdf.generatePdf()
+      }, 100)
+
     },
     async fetchApartmentView() {
       this.appLoading = true

@@ -111,6 +111,11 @@ export default {
         this.$router.push({
           name: "apartments",
         });
+      } else {
+        this.$router.push({
+          name: "apartment-view",
+          params: {id: this.$route.params.id},
+        });
       }
     },
     goApartment() {
@@ -129,6 +134,11 @@ export default {
         // }
         this.$router.push({
           name: "apartments",
+        });
+      } else {
+        this.$router.push({
+          name: "apartment-view",
+          params: {id: this.$route.params.id},
         });
       }
     },
