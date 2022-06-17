@@ -186,9 +186,12 @@
           @CreateReserve="updateContent"
       />
 
-      <PdfTemplate v-if="visible && sidebarApartment" ref="html2Pdf" :apartment="sidebarApartment"
-                   :print-calc="printCalc"/>
-
+      <PdfTemplate
+          v-if="visible && Object.keys(sidebarApartment).length"
+          ref="html2Pdf"
+          :apartment="sidebarApartment"
+          :print-calc="printCalc"
+      />
 
       <!--  LOADING    -->
       <base-loading class="h-100" v-if="appLoading"/>
@@ -304,7 +307,7 @@ export default {
       return formatToPrice(this.sidebarApartment.price_m2) + ' ' + this.$t('ye')
     },
     status() {
-      if (!this.sidebarApartment.is_sold) {
+      if (!this.sidebarApartment['is_sold']) {
         return 'unavailable'
       }
       return this.sidebarApartment.order.status
@@ -407,6 +410,7 @@ export default {
     async fetchSidebarItem() {
       this.appLoading = true
       const {object} = this.$route.params
+      console.log(this.apartmentUuid)
       await api.apartmentsV2.getApartmentView(object, this.apartmentUuid)
           .then(response => {
             this.sidebarApartment = response.data

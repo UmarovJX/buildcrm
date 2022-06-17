@@ -1,18 +1,19 @@
 <template>
   <vue-html2pdf
       v-show="false"
+      ref="html2Pdf"
+      pdf-format="a4"
+      pdf-orientation="portrait"
+      pdf-content-width="800px"
       :show-layout="false"
       :float-layout="false"
       :enable-download="true"
       :preview-modal="false"
       :pdf-quality="2"
       :manual-pagination="true"
-      pdf-format="a4"
       :paginate-elements-by-height="842"
-      pdf-orientation="portrait"
-      pdf-content-width="800px"
       :html-to-pdf-options="htmlToPdfOptions"
-      ref="html2Pdf"
+      @hasDownloaded="$emit('has-downloaded',$event)"
   >
     <section slot="pdf-content">
       <div class="html2pdf__page-break pdf-page">
@@ -37,8 +38,8 @@
           </div>
           <div class="row">
             <div v-if="apartment.plan" class="col-12 pdf-img">
-<!--              <img v-if="apartment.plan"-->
-<!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
+              <!--              <img v-if="apartment.plan"-->
+              <!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
               <img :src="require('@/assets/img/plan.png')" alt="plan-image">
             </div>
           </div>
@@ -121,7 +122,7 @@
               </h5>
               <div class="pdf-feature__content">
                 <img :src="require('@/assets/icons/icon-area.svg')" alt="">
-                <p v-if="apartment.plan.balcony">{{ apartment.plan.balcony_area }} m<sup>2</sup></p>
+                <p v-if="hasBalcony">{{ apartment.plan.balcony_area }} m<sup>2</sup></p>
                 <p v-else>-</p>
               </div>
             </div>
@@ -140,26 +141,28 @@
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__item">
                     <p class="option">{{ $t('starting_price') }}: </p>
-                    <p class="value">{{ pricePrettier(apartment.prices.price) }} {{ $t('ye') }}</p>
+                    <p class="value">{{ pricePrettier(apartment.prices.price, 2) }} {{ $t('ye') }}</p>
                   </div>
                   <div class="pdf-payment__item">
-                    <p class="option" v-html="$t('price_sold_m2', {msg: `M<sup>2</sup>`})"/>
-                    <p class="value">{{ pricePrettier(printCalc.price_for_m2 - printCalc.discount_price) }} {{
-                        $t('ye')
-                      }}</p>
+                    <p class="option" v-html="$t('price_sold_m2', {msg: `m<sup>2</sup>`})"/>
+                    <p class="value">
+                      {{ pricePrettier(printCalc.price_for_m2 - printCalc.discount_price, 2) }}
+                      {{ $t('ye') }}</p>
                   </div>
                   <div class="pdf-payment__subtotal pdf-payment__item">
                     <p class="option">{{ $t('apartments.view.discount_per_m2') }}</p>
-                    <p class="value">{{ pricePrettier(printCalc.discount_price) }} {{ $t('ye') }}</p>
+                    <p class="value">{{ pricePrettier(printCalc.discount_price, 2) }} {{ $t('ye') }}</p>
                   </div>
                 </div>
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__item">
                     <p class="option">{{ $t('apartments.view.prepayment') }} {{ printCalc.prepay_percente }}%: </p>
-                    <p class="value" v-if="printCalc.prepay_percente === 100">{{ pricePrettier(printCalc.total) }} {{
+                    <p class="value" v-if="printCalc.prepay_percente === 100">
+                      {{ pricePrettier(printCalc.total, 2) }} {{
                         $t('ye')
                       }}</p>
-                    <p class="value" v-else>{{ pricePrettier(printCalc.prepay) }} {{
+                    <p class="value" v-else>
+                      {{ pricePrettier(printCalc.prepay, 2) }} {{
                         $t('ye')
                       }}</p>
                   </div>
@@ -167,11 +170,11 @@
                     <p class="option">{{ $t('payments.balance') }}: </p>
                     <p class="value" v-if="printCalc.prepay_percente === 100">0
                       {{ $t('ye') }}</p>
-                    <p class="value" v-else>{{ pricePrettier(printCalc.less_price) }} {{ $t('ye') }}</p>
+                    <p class="value" v-else>{{ pricePrettier(printCalc.less_price, 2) }} {{ $t('ye') }}</p>
                   </div>
                   <div class="pdf-payment__subtotal pdf-payment__item">
                     <p class="option">{{ $t('total_discount') }}: </p>
-                    <p class="value">{{ pricePrettier(printCalc.total_discount) }} {{ $t('ye') }}</p>
+                    <p class="value">{{ pricePrettier(printCalc.total_discount, 2) }} {{ $t('ye') }}</p>
                   </div>
                 </div>
               </div>
@@ -260,25 +263,21 @@
                   <span>{{ item.prepay }}% {{ $t('apartments.view.prepayment') }}</span>
                 </template>
                 <template #cell(priceMeter)="{item}">
-                  <span class="table-item" v-if="item.prepay === 100">{{
-                      pricePrettier(apartment.price_m2, 2)
-                    }}</span>
-                  <span class="table-item" v-else>{{ pricePrettier(item.amount - printCalc.discount_price, 2) }}</span>
+                  <span class="table-item" v-if="item.prepay === 100">
+                    {{ pricePrettier(apartment.price_m2, 2) }}
+                  </span>
+                  <span class="table-item" v-else>
+                    {{ pricePrettier(item.amount, 2) }}
+                  </span>
                 </template>
                 <template #cell(price)="{item}">
-                  <span class="table-item" v-if="item.prepay === 100">{{
-                      pricePrettier(apartment.price)
-                    }}</span>
-                  <span class="table-item" v-else>{{ totalPrintPrice(item.amount) }}</span>
+                  <span class="table-item">{{ totalPrintPrice(item).format }}</span>
                 </template>
                 <template #cell(priceTotal)="{item}">
-                  <span class="table-item table-item__teal">{{
-                      totalPrintDiscount(item.amount)
-                    }}</span>
+                  <span class="table-item table-item__teal">
+                    {{ totalPrintDiscount(item).format }}</span>
                 </template>
-
               </b-table>
-
             </div>
           </div>
         </div>
@@ -350,6 +349,7 @@ export default {
       }
     },
   },
+  emits: ['has-downloaded'],
   data() {
     return {
       htmlToPdfOptions: {
@@ -397,7 +397,9 @@ export default {
       } else {
         return `require('@/assets/img/plan.png')`
       }
-
+    },
+    hasBalcony() {
+      return this.apartment.plan?.balcony
     }
   },
   methods: {
@@ -422,13 +424,31 @@ export default {
       return ` ${month} - ${this.$t('quarter')}, ${year}`
     },
 
-    totalPrintDiscount(value) {
-      return formatToPrice(this.apartment.prices.price - ((parseFloat(this.printCalc.discount_price) + value) * this.apartment.plan.area), 2
-      )
+    totalPrintDiscount({amount, prepay, type}) {
+      const {apartment, printCalc} = this
+      const basePriceM2 = parseFloat(apartment.price_m2)
+      const basePrice = apartment.prices.price
+      let result = 0
+      const customDiscount = printCalc.discount_price * apartment.plan.area
+      if (prepay === 100 && type === 'percent') {
+        result = basePrice - basePriceM2 * apartment.plan.area + customDiscount
+      } else {
+        result = basePrice - amount * apartment.plan.area + customDiscount
+      }
+      return {
+        format: formatToPrice(result, 2),
+        value: result
+      }
     },
-    totalPrintPrice(value) {
-      return formatToPrice(this.apartment.plan.area * (value + parseFloat(this.printCalc.discount_price)), 2)
-    },
+    totalPrintPrice(item) {
+      const basePrice = this.apartment.prices.price
+      const {value: discountPrice} = this.totalPrintDiscount(item)
+      const result = basePrice - discountPrice
+      return {
+        format: formatToPrice(result, 2),
+        value: result
+      }
+    }
   },
 
 }

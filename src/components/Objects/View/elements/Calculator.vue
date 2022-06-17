@@ -245,22 +245,22 @@ export default {
 
       if (this.discount.type === "percent") {
         if (this.discount.prepay === 100) {
-          this.calc.price_for_m2 = this.apartment.price_m2;
+          this.calc.price_for_m2 = this.apartment.price_m2
         } else {
           this.calc.price_for_m2 =
-              this.getTotalForPercente() / this.apartment.plan.area;
+              this.getTotalForPercente() / this.apartment.plan.area
         }
       } else {
-        this.calc.price_for_m2 = this.discount.amount;
+        this.calc.price_for_m2 = this.discount.amount
       }
 
-      this.calc.prepay_percente = this.discount.prepay;
-      this.calc.prepay = this.getPrepay();
-      this.calc.month = this.apartment?.object?.credit_month;
-      this.calc.monthly_price = this.getMonth();
-      this.monthly_price = this.calc.monthly_price;
-      this.calc.debt = this.getDebt();
-      this.calc.total = this.getTotal();
+      this.calc.prepay_percente = this.discount.prepay
+      this.calc.prepay = this.getPrepay()
+      this.calc.month = this.apartment?.object?.credit_month
+      this.calc.monthly_price = this.getMonth()
+      this.monthly_price = this.calc.monthly_price
+      this.calc.debt = this.getDebt()
+      this.calc.total = this.getTotal()
       this.calc.base_price = this.getBasePrice()
 
       this.calc.total_discount = this.totalDiscount
@@ -278,9 +278,8 @@ export default {
           this.calc.price_for_m2 -= this.calc.discount_price
         }
         this.calc.base_price = this.apartment.price
-      } else {
-        await this.initialCalc()
       }
+      await this.initialCalc()
     },
     setTotalDiscountPrice(totalDiscountPrice) {
       this.calc.discount_price = totalDiscountPrice / this.apartment.plan.area
@@ -380,6 +379,17 @@ export default {
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
           break;
+        case "percent":
+          if (this.discount.prepay === 100) {
+            total = this.apartment.prices.price - this.totalDiscount
+          } else {
+            total = this.apartment.prices.price / total_discount - this.totalDiscount;
+            if (this.calc.discount_price) {
+              total -=
+                  parseFloat(this.calc.discount_price) * this.apartment.plan.area;
+            }
+          }
+          break
         default:
           total = this.apartment.prices.price / total_discount - this.totalDiscount;
           if (this.calc.discount_price) {

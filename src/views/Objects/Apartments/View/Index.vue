@@ -178,8 +178,13 @@
     <base-loading v-if="appLoading"/>
 
 
-    <PdfTemplate v-if="pdfVisible" ref="html2Pdf" :apartment="apartment"
-                 :print-calc="printCalc"/>
+    <PdfTemplate
+        ref="html2Pdf"
+        v-if="pdfVisible"
+        :apartment="apartment"
+        :print-calc="printCalc"
+        @has-downloaded="completePrintingProcess"
+    />
 
 
   </main>
@@ -267,7 +272,7 @@ export default {
       return Object.keys(this.apartment).length > 0
     },
     status() {
-      if (!this.apartment.is_sold) {
+      if (!this.apartment['is_sold']) {
         return 'unavailable'
       }
       return this.apartment.order.status
@@ -328,7 +333,6 @@ export default {
       return context
     },
 
-
     price() {
       return formatToPrice(this.apartment.prices.price, 2) + ' ' + this.$t('ye')
     },
@@ -358,8 +362,10 @@ export default {
       this.pdfVisible = true
       setTimeout(() => {
         this.$refs.html2Pdf.generatePdf()
-      }, 100)
-
+      }, 10)
+    },
+    completePrintingProcess() {
+      this.pdfVisible = false
     },
     async fetchApartmentView() {
       this.appLoading = true
