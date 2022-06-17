@@ -1,15 +1,15 @@
 <template>
   <main>
     <div class="app-content">
-<!--      <div class="go__back__button">-->
-<!--        <button-->
-<!--            class="btn-back d-block"-->
-<!--            @click="goBackToLastStep"-->
-<!--        >-->
-<!--          <i class="fal fa-arrow-left mr-2"></i>-->
-<!--          <span>{{ $t('go_back') }}</span>-->
-<!--        </button>-->
-<!--      </div>-->
+      <!--      <div class="go__back__button">-->
+      <!--        <button-->
+      <!--            class="btn-back d-block"-->
+      <!--            @click="goBackToLastStep"-->
+      <!--        >-->
+      <!--          <i class="fal fa-arrow-left mr-2"></i>-->
+      <!--          <span>{{ $t('go_back') }}</span>-->
+      <!--        </button>-->
+      <!--      </div>-->
       <!--      <div class="countdown-timer" draggable="true">-->
       <!--        <flip-countdown-->
       <!--            :deadline="expiry_at"-->
@@ -25,6 +25,7 @@
           class="mb-4"
       >
       </base-bread-crumb>
+
       <!-- Step 1 -->
       <div class="new-object p-3" v-if="contract.step === 1">
         <validation-observer ref="observer" v-slot="{handleSubmit}">
@@ -122,7 +123,7 @@
                             :placeholder="
                             $t('apartments.agree.placeholder.date_contract')
                           "
-                            disabled
+                            :disabled="order.status === 'sold'"
                             v-model="order.contract_date"
                             :state="getValidationState(validationContext)"
                             aria-describedby="date-feedback"
@@ -166,7 +167,7 @@
                         id="first_payment_date"
                         name="first_payment_date"
                         type="date"
-                        :disabled="!(order.status !== 'sold')"
+                        :disabled="order.status === 'sold'"
                         v-model="order.first_payment_date"
                         :state="getValidationState(validationContext)"
                         aria-describedby="first_payment_date-feedback"
@@ -189,7 +190,7 @@
                   <input
                       v-model="order.payment_date"
                       id="payment_date"
-                      :disabled="!(order.status !== 'sold')"
+                      :disabled="order.status === 'sold'"
                       type="date"
                       class="form-control"
                       @focus="userFocused"
@@ -295,19 +296,19 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
 // import VueNumeric from "vue-numeric";
 // import FlipCountdown from "vue2-flip-countdown";
-import SuccessAgree from "./Components/SuccessAgree";
 // import QuickViewApartments from "./Components/QuickViewApartments";
+import {mapActions, mapGetters} from "vuex";
+import SuccessAgree from "./Components/SuccessAgree";
 import ClientInputConfirm from "./Components/ClientInputConfirm";
 import MonthlyPayments from "./Contract/MonthlyPayments";
 import ClientInformation from "./Contract/ClientInformation";
 import ApartmentsList from "./Contract/ApartmentsList";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
-import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
 import Calculator from "./Contract/Calculator";
 import Confirm from "./Contract/Confirm";
+import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
 
 import {
   editedCreditMonths,
@@ -327,8 +328,8 @@ export default {
 
   components: {
     // VueNumeric,
-    BaseValidationBottomWarning,
     // FlipCountdown,
+    BaseValidationBottomWarning,
     ClientInputConfirm,
     SuccessAgree,
     MonthlyPayments,
@@ -529,22 +530,22 @@ export default {
     async getClientData() {
       const uuid = this.$route.params.id
       await api.contractV2.getUpdateContractView(uuid).then((res) => {
-        // console.log(res);
-        this.order = res.data
         // this.contract.credit_months = res.data.schedule.monthly
         // this.contract.initial_payments = res.data.schedule.initial_payment
-        this.discounts = res.data.apartments[0].discounts
         // this.contract.first_payment_date = res.data.first_payment_date
-        this.contract = {
-          ...this.contract,
-          payment_date: res.data.payment_date,
-          initial_payments: res.data.schedule.initial_payment,
-          credit_months: res.data.schedule.monthly,
-          first_payment_date: res.data.first_payment_date,
-          monthly_payments: res.data.schedule.monthly,
-          discount: res.data.payment_details?.discount ?? this.discounts[0]
+        this.order = res.data
+        this.discounts = res.data.apartments[0].discounts
+        this.contract.payment_date = res.data.payment_date
+        if (res.data.status === 'contract') {
+          this.contract = {
+            ...this.contract,
+            initial_payments: res.data.schedule.initial_payment,
+            credit_months: res.data.schedule.monthly,
+            first_payment_date: res.data.first_payment_date,
+            monthly_payments: res.data.schedule.monthly,
+            discount: res.data.payment_details?.discount ?? this.discounts[0]
+          }
         }
-
         this.apartments = this.order.apartments
         this.client = {...this.client, ...res.data.client}
       })
@@ -567,9 +568,9 @@ export default {
     },
 
     backToView() {
-      if (this.order.status === "contract") {
+      if (this.order.status === "sold") {
         this.$router.push({
-          name: "apartment-view",
+          name: "contracts-view",
           params: {id: this.$route.params.id},
         });
       }
@@ -613,12 +614,14 @@ export default {
                 api.contractV2.orderUpdate(this.order.id, {client_id: response.data.id}).then(res => {
                   this.toasted(res.data.message, "success");
                   this.backToView()
+                  this.onSubmit();
                 }).catch(error => {
                   this.toasted(error.response.data.message, "error");
                 })
+              } else if (this.order.status === 'contract') {
+                this.onSubmit();
               } else {
                 this.onSubmit();
-
               }
             }
           })

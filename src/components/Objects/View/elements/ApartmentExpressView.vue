@@ -410,7 +410,6 @@ export default {
     async fetchSidebarItem() {
       this.appLoading = true
       const {object} = this.$route.params
-      console.log(this.apartmentUuid)
       await api.apartmentsV2.getApartmentView(object, this.apartmentUuid)
           .then(response => {
             this.sidebarApartment = response.data

@@ -154,9 +154,8 @@
               @focus="userFocused"
           ></b-form-input>
 
-          <b-form-invalid-feedback id="last_name_kirill-feedback" class="error__provider">{{
-              validationContext.errors[0]
-            }}
+          <b-form-invalid-feedback id="last_name_kirill-feedback" class="error__provider">
+            {{ validationContext.errors[0] }}
           </b-form-invalid-feedback>
         </b-form-group>
       </validation-provider>
