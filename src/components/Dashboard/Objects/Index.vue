@@ -78,7 +78,7 @@
                   <a
                       class="dropdown-item"
                       v-if="getPermission.objects.delete"
-                      @click="DeleteObject(object.id)"
+                      @click="deleteObject(object.id)"
                       href="#"
                   >
                     <i class="fas fa-trash"></i> {{ $t("delete") }}
@@ -86,8 +86,9 @@
                 </div>
               </div>
             </div>
-            <router-link class="card-body"
-                         :to="{name: 'apartments', params: {object: object.id}}"
+            <router-link
+                class="card-body"
+                :to="{name: 'apartments', params: {object: object.id}}"
             >
               <div class="card-top">
                 <div class="card-top__content">
@@ -230,7 +231,6 @@ export default {
 
   methods: {
     ...mapActions(["fetchObjects"]),
-
     createBlock() {
       this.$router.push({name: "objectsStore"});
     },
@@ -254,7 +254,7 @@ export default {
       this.$router.push({name: "objects-filter"});
     },
 
-    DeleteObject(object) {
+    deleteObject(object) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text"),

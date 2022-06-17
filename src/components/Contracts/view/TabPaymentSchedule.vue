@@ -58,17 +58,17 @@
               <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
             </span>
             <!--    TITLE      -->
-            <span class="title">{{ $t('payments.payment_add') }}</span>
+            <span class="title ml-3">{{ $t('payments.payment_add') }}</span>
         </span>
         </template>
 
         <template #main>
           <ValidationObserver ref="payment-observer">
-            <div class="d-flex justify-content-between mb-3">
+            <div class="payment-addition-fields">
               <ValidationProvider
                   name="payment_date"
                   rules="required"
-                  class="w-50 mr-3 content__form__select"
+                  class="content__form__select"
                   :class="{'warning__border':validationWarnings.payment_date}"
               >
                 <input type="date" v-model="appendPayment.payment_date" class="w-100"/>
@@ -96,15 +96,14 @@
                   </template>
                 </b-form-select>
               </ValidationProvider>
-            </div>
-            <div class="d-flex justify-content-between mb-3">
               <ValidationProvider
                   name="amount"
                   rules="required|min:2"
-                  class="w-50 mr-3 content__form__select"
+                  class="content__form__select"
                   :class="{'warning__border':validationWarnings.amount}"
               >
                 <base-price-input
+                    :max="10"
                     :value="appendPayment.amount"
                     :placeholder="`${ $t('payments.table.balance') }`"
                     @input="appendPayment.amount = parseFloat($event)"
@@ -146,8 +145,12 @@
                 </b-form-select>
               </ValidationProvider>
             </div>
-            <input type="text" v-model="appendPayment.comment" :placeholder="$t('payments.table.comment')"
-                   class="w-100">
+            <input
+                type="text"
+                v-model="appendPayment.comment"
+                :placeholder="$t('payments.table.comment')"
+                class="w-100"
+            >
           </ValidationObserver>
         </template>
 
@@ -701,10 +704,7 @@ export default {
         {
           key: 'type',
           label: this.$t('contracts.view.type'),
-          formatter: (type) => {
-            console.log(type)
-            this.$t(type)
-          }
+          formatter: (type) => this.$t(type)
         },
         {
           key: 'balance',
@@ -1232,7 +1232,6 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   justify-content: space-between;
   background-color: var(--gray-100);
   border-radius: 2rem;
-  width: 50%;
   border: none;
   color: var(--gray-600);
   position: relative;
@@ -1254,6 +1253,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     font-size: 24px;
     line-height: 28px;
     margin-bottom: 1rem;
+    margin-left: 1.5rem;
   }
 
   &-status {
@@ -1357,6 +1357,13 @@ input[type="date"]::-webkit-datetime-edit-year-field {
       flex-grow: 1;
     }
   }
+}
+
+.payment-addition-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 
