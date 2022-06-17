@@ -47,6 +47,7 @@
 
 <script>
 import api from "@/services/api";
+import Compressor from "compressorjs";
 
 export default {
   props: {
@@ -67,9 +68,6 @@ export default {
     },
   }),
 
-  mounted() {
-  },
-
   methods: {
     resetModal() {
       this.image = null;
@@ -78,6 +76,26 @@ export default {
 
       this.error = false;
       this.errors = [];
+    },
+
+    compressImage(file) {
+      const fileUpl = file.target.files ? file.target.files[0] : null;
+      if (!fileUpl) {
+        return;
+      }
+
+      new Compressor(fileUpl, {
+        maxWidth: 1200,
+        quality: 0.8,
+        convertSize: 5000000,
+        success: (result) => {
+          this.output = new File([result], result.name, {
+            type: result.type,
+            lastModified: Date.now(),
+          });
+          this.image = URL.createObjectURL(this.output)
+        },
+      })
     },
 
     handleOk(bvModalEvt) {
@@ -106,15 +124,11 @@ export default {
         if (!error.response) {
           this.toasted("Error: Network Error", "error");
         } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 422) {
+          if (error.response.status === 422) {
             this.error = true;
-            this.errors = error.response.data;
+            this.errors = error.response.data
+          } else if (error.response.status) {
+            console.log('lol')
           } else {
             this.toasted(error.response.data.message, "error");
           }

@@ -14,8 +14,8 @@
         type="text"
         ref="price-input"
         class="price-input"
-        v-bind="$attrs"
         :placeholder="placeholderFormat"
+        v-bind="$attrs"
         v-model="priceAmount"
         @blur="onBlurHandler"
         @input="onInputHandler"
@@ -158,7 +158,23 @@ export default {
       }
     },
     formatPriceAmount(value) {
-      const {formatVersion} = this.formatAmount(value)
+      const {max} = this
+      const {formatVersion, baseVersion} = this.formatAmount(value)
+      const stringBaseVersion = baseVersion.toString()
+      const length = stringBaseVersion.length
+      if (length > max) {
+        let setter = undefined
+        const findDotPosition = stringBaseVersion.split('').indexOf('.')
+        if (findDotPosition) {
+          setter = stringBaseVersion.slice(0, -2)
+        } else {
+          setter = stringBaseVersion.slice(0, -1)
+        }
+        const {formatVersion: lastFormatValue} = this.formatAmount(parseFloat(setter))
+        this.priceAmount = lastFormatValue
+        return
+      }
+
       if (formatVersion) {
         this.priceAmount = formatVersion
       } else {

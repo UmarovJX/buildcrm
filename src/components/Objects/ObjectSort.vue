@@ -173,7 +173,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            :placeholder="$t('from')"
+            :placeholder="`${ $t('from') }`"
             class="filter__price"
         ></base-numeric-input>
 
@@ -185,7 +185,7 @@
             :value="null"
             currency-symbol-position="suffix"
             separator="space"
-            :placeholder="$t('to')"
+            :placeholder="`${ $t('to') }`"
             class="filter__price"
         ></base-numeric-input>
       </div>

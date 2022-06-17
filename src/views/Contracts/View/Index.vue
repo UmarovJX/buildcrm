@@ -32,8 +32,10 @@
             </span>
             {{ $t('contracts.view.download_contract') }}
           </b-dropdown-item>
-          <b-dropdown-item v-if="order.status === 'sold' || order.status === 'contract'"
-                           :to="{name:'edit-apartment', params:{id:$route.params.id}}">
+          <b-dropdown-item
+              v-if="order.status === 'sold' || order.status === 'contract'"
+              :to="{name:'edit-apartment', params:{id:$route.params.id}}"
+          >
             <span class="mr-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -71,8 +73,8 @@
         @refresh-details="refreshDetails"
     >
     </component>
-    <base-loading v-if="showLoading"/>
 
+    <base-loading v-if="showLoading"/>
     <!-- WARNING BEFORE DELETE CONTRACT -->
     <base-modal ref="payment-deletion-warning">
       <template #header>
@@ -92,12 +94,12 @@
       </template>
 
       <template #main>
-          <span class="warning__before__delete-main mb-2">
-            {{ $t('contracts.warn_before_delete_contract') }}
-          </span>
+        <span class="warning__before__delete-main mb-2">
+          {{ $t('contracts.warn_before_delete_contract') }}
+        </span>
         <validation-observer ref="comment">
           <ValidationProvider
-              :name="$t('contracts.comment')"
+              :name="`${ $t('contracts.comment') }`"
               rules="required|min:3"
               v-slot="{errors}"
               class="mb-3"
@@ -175,7 +177,12 @@ export default {
       order: {},
       showLoading: false,
       activeTab: 'TabPaymentSchedule',
-      tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails'],
+      tabs: [
+        'TabPaymentSchedule',
+        'TabObjectDetails',
+        'TabClientDetails',
+        'TabContractDetails'
+      ],
       deleteComment: null,
       errors: []
     }
@@ -222,10 +229,6 @@ export default {
   },
   async created() {
     await this.fetchContractData()
-  },
-  mounted() {
-    console.log(this.$refs['comment'], 'comment');
-
   },
   methods: {
     async downloadContact() {
