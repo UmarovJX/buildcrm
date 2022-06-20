@@ -280,7 +280,11 @@
       </div>
     </div>
 
-    <b-overlay :show="buttons.loading" no-wrap opacity="0.5" style="z-index: 9999">
+    <b-overlay
+        :show="buttons.loading"
+        no-wrap opacity="0.5"
+        style="z-index: 9999"
+    >
       <template #overlay>
         <div class="d-flex justify-content-center w-100">
           <div class="lds-ellipsis">
@@ -487,6 +491,12 @@ export default {
 
   },
 
+  watch: {
+    'order.payment_date'(lastValue) {
+      this.contract.payment_date = lastValue
+    }
+  },
+
   created() {
     // this.backToView();
 
@@ -513,7 +523,8 @@ export default {
             credit_months: res.data.schedule.monthly,
             first_payment_date: res.data.first_payment_date,
             monthly_payments: res.data.schedule.monthly,
-            discount: res.data['payments_details']?.discount ?? this.discounts[0]
+            discount: res.data['payments_details']?.discount ?? this.discounts[0],
+            discount_amount: res.data.discount_amount
           }
           this.paymentDetails = res.data['payments_details']
           this.schedule = res.data.schedule
@@ -577,7 +588,10 @@ export default {
                 type_client: 'unknown'
               }
               if (this.order.status === 'sold') {
-                api.contractV2.orderUpdate(this.order.id, {client_id: response.data.id}).then(res => {
+                api.contractV2.orderUpdate(this.order.id,
+                    {
+                      client_id: response.data.id
+                    }).then(res => {
                   this.toasted(res.data.message, "success");
                   this.backToView()
                   this.onSubmit();
@@ -726,122 +740,66 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.buttons.loading = true
-          const formData = new FormData()
-          formData.append("discount_id", this.contract.discount.id);
+          const context = {}
+          context.discount_id = this.contract.discount.id
 
-          if (this.edited.contract_number)
-            formData.append("type_client", this.client.type_client);
+          if (this.edited.contract_number) {
+            context.type_client = this.client.type_client
+          }
 
-          // formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
-          formData.append("client_id", this.client?.id)
+          context.client_id = this.client?.id
 
           if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
             if (this.edited.monthly) {
               for (let monthly = 0; monthly < this.contract.monthly_payments.length; monthly++) {
                 let date = moment(this.contract.monthly_payments[monthly].month).format(
                     "YYYY-MM-DD"
-                );
-                // console.log(this.order.schedule, 'this.order.schedule');
-                formData.append(
-                    "monthly[" + monthly + "][edited]",
-                    this.contract.monthly_payments[monthly].edited ? 1 : 0
-                );
-                formData.append(
-                    "monthly[" + monthly + "][amount]",
-                    this.contract.monthly_payments[monthly].amount
-                );
-                formData.append("monthly[" + monthly + "][date]", date);
+                )
+                context.monthly[monthly]['edited'] = this.contract.monthly_payments[monthly].edited ? 1 : 0
+                context.monthly[monthly]['amount'] = this.contract.monthly_payments[monthly].amount
+                context.monthly[monthly]['date'] = date
               }
             }
           }
 
           if (this.contract.initial_payments.length > 1) {
-
-
             for (let initial_payment = 0; initial_payment < this.contract.initial_payments.length; initial_payment++) {
-              formData.append(
-                  "initial_payments[" + initial_payment + "][edited]",
-                  this.contract.initial_payments[initial_payment].edited ? 1 : 0
-              );
-              formData.append(
-                  "initial_payments[" + initial_payment + "][amount]",
-                  this.contract.initial_payments[initial_payment].amount
-              );
-              formData.append(
-                  "initial_payments[" + initial_payment + "][date]",
-                  this.contract.initial_payments[initial_payment].date
-              );
+              context.initial_payments[initial_payment]['edited'] = this.contract.initial_payments[initial_payment].edited ? 1 : 0
+              context.initial_payments[initial_payment]['amount'] = this.contract.initial_payments[initial_payment].amount
+              context.initial_payments[initial_payment]['date'] = this.contract.initial_payments[initial_payment].date
             }
           } else {
             if (this.contract.prepay_edited) {
-              formData.append("prepay_edited", 1);
-
-              formData.append(
-                  "initial_payments[0][edited]",
-                  1
-              );
-              formData.append(
-                  "initial_payments[0][amount]",
-                  this.contract.prepay_amount
-              );
-              formData.append(
-                  "initial_payments[0][date]",
-                  this.contract.first_payment_date
-              );
+              context.prepay_edited = 1
+              context.initial_payments[0]['edited'] = 1
+              context.initial_payments[0]['amount'] = this.contract.prepay_amount
+              context.initial_payments[0]['date'] = this.contract.first_payment_date
             }
           }
 
-
-          formData.append("comment", this.contract.comment);
-          formData.append("months", this.contract.month);
-
-          formData.append("first_payment_date", this.contract.first_payment_date);
-
-          formData.append("discount_amount", this.contract.discount_amount);
-          // }
+          context.comment = this.contract.comment
+          context.months = parseInt(this.contract.month)
+          context.first_payment_date = this.contract.first_payment_date
+          context.discount_amount = this.contract.discount_amount
 
           if (this.contract.discount?.id === 'other') {
             for (let index = 0; index < this.apartments.length; index++) {
-              formData.append(
-                  "apartments[" + index + "][id]",
-                  this.apartments[index].id
-              );
-
-              formData.append(
-                  "apartments[" + index + "][price]",
-                  this.apartments[index].price_calc
-              );
+              context.apartments[index]['id'] = this.apartments[index].id
+              context.apartments[index]['price'] = this.apartments[index].price_calc
             }
           }
 
-
-          // formData.append("date_change", 1);
-          formData.append("contract_date", this.order.contract_date);
+          context.contract_date = this.order.contract_date
 
           if (this.contract.payment_date) {
-            formData.append(
-                "payment_date",
-                this.contract.payment_date
-            );
+            context.payment_date = this.contract.payment_date
           }
-
-
-          // if(this.contract.discount_amount > 0) {
-          //   console.log("DDD " + this.contract.discount_amount)
-
-
-          // if (this.contract.step === 1 && this.client.discount.prepay !== 100) {
-          // formData.append("months", this.month);
-          // }
 
           if (this.edited.contract_number && this.contract.number !== this.order.contract_number) {
-            formData.append(
-                "contract_number",
-                this.contract.number
-            );
+            context.contract_number = this.contract.number
           }
 
-          api.contractV2.contractOrderUpdate(this.order.id, formData)
+          api.contractV2.contractOrderUpdate(this.order.id, context)
               .then((response) => {
                 this.toasted(response.data.message, "success");
                 this.$bvModal.hide("modal-agree");
@@ -867,20 +825,16 @@ export default {
                 }
               }).finally(() => {
             this.buttons.loading = false;
-          });
+          })
         }
       })
 
     },
-
     changeDiscount() {
       this.initialCalc()
       // this.$emit('changeApartments', this.apartments)
-
       editedCreditMonths(this.apartments, this.contract)
     }
-
-
   }
 }
 </script>

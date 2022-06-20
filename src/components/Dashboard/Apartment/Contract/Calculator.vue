@@ -30,7 +30,8 @@
 
           <b-form-select-option
               v-if="getMe.role.id === 1 || getPermission.contracts.other_price"
-              :value="{id: 'other',  type: 'percent', currency: null, amount: 0, prepay: 30}"
+              :value="{
+                id: 'other',  type: 'percent', currency: null, amount: 0, prepay: 30}"
           >
             {{ $t("apartments.view.other_variant") }}
           </b-form-select-option>
@@ -68,7 +69,7 @@
           label-for="total-discound-price"
       >
         <base-numeric-input
-            id="total-discound-price"
+            id="total-discount-price"
             v-model="contract.discount_amount"
             :currency="$t('ye')"
             :precision="2"
@@ -332,8 +333,8 @@ export default {
     },
 
     changeDiscount() {
-      this.contract.discount_amount = 0;
-      this.contract.discount_square = 0;
+      // this.contract.discount_amount = 0;
+      // this.contract.discount_square = 0;
       this.contract.prepay_edited = false;
       this.InitialCalc();
       CreditMonths(this.apartments, this.contract)

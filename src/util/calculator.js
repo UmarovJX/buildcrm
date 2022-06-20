@@ -1,12 +1,12 @@
 import Vue from 'vue'
 
 export function getPrepay(apartments, contract) {
-    if (contract.discount.prepay === 100) return getTotal(apartments, contract);
+    if (contract.discount.prepay === 100 || parseInt(contract.month) === 0) {
+        return getTotal(apartments, contract)
+    }
 
-    if (parseInt(contract.month) === 0) return getTotal(apartments, contract)
-
-    let total_discount = getDiscount(apartments, contract);
-    let total;
+    let total_discount = getDiscount(apartments, contract)
+    let total
 
     switch (contract.discount.type) {
         case "addition":
@@ -18,8 +18,8 @@ export function getPrepay(apartments, contract) {
             //             parseFloat(this.calc.discount_price)) *
             //         getAreaTotal(apartments, contract);
             // } else {
-            total = getTotal(apartments, contract);
             // }
+            total = getTotal(apartments, contract);
             break;
         default:
             total = getTotalForPercent(apartments, contract) / total_discount;
@@ -30,9 +30,9 @@ export function getPrepay(apartments, contract) {
         total = 0;
 
         for (let i = 0; contract.initial_payments.length > i; i++) {
-            total += parseFloat(contract.initial_payments[i].amount);
+            total += parseFloat(contract.initial_payments[i].amount)
         }
-
+        console.log('total', total)
         return total;
     }
 
@@ -74,7 +74,7 @@ export function getPrice(apartments, contract) {
                     } else {
                         amountApartment = apartments[i].discounts.find(
                             (val) => val.prepay === contract.discount.prepay
-                        ).amount
+                        )?.amount
                     }
                 } else {
                     amountApartment = contract.discount.amount;
@@ -183,25 +183,13 @@ export function getTotalDiscount(apartments, contract) {
         let now = parseFloat(price) - parseFloat(contract.discount_square);
         let discount = now * square
         discount = total - discount
-
         Vue.set(contract, 'discount_amount', discount)
     }
-
-    // let total = 0;
-    // for (let i = 0; apartments.length > i; i++) {
-    //     if (apartments[i].price_calc && parseFloat(apartments[i].price_calc) !== parseFloat(apartments[i].price_current)) {
-    //         total += parseFloat(apartments[i].price_calc) - parseFloat(apartments[i].price_current)
-    //     }
-    // }
-    //
-    // return total;
 }
 
 
 export function CreditMonths(apartments, contract) {
     let today = contract.payment_date ? new Date(contract.payment_date) : new Date();
-
-    // let today = new Date();
 
     contract.credit_months = [];
 
@@ -263,26 +251,26 @@ export function editedCreditMonths(apartments, contract) {
 }
 
 export function getTotal(apartments, contract) {
-    let total_discount = getDiscount(apartments, contract);
-    let total;
+    let total_discount = getDiscount(apartments, contract)
+    let total
 
     switch (contract.discount.type) {
         case "promo":
         case "addition":
         case "fixed":
             if (parseFloat(contract.discount_amount) > 0) {
-                total = getPrice(apartments, contract);
-                total = total - contract.discount_amount;
+                total = getPrice(apartments, contract)
+                total = total - contract.discount_amount
             } else {
-                total = getPrice(apartments, contract);
+                total = getPrice(apartments, contract)
             }
-            break;
+            break
         default:
             if (parseFloat(contract.discount_amount) > 0) {
-                total = getPrice(apartments, contract);
-                total = total - contract.discount_amount;
+                total = getPrice(apartments, contract)
+                total = total - contract.discount_amount
             } else {
-                total = getPrice(apartments, contract) / total_discount;
+                total = getPrice(apartments, contract) / total_discount
             }
             break;
     }

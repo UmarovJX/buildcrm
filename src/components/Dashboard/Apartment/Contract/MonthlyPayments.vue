@@ -237,7 +237,6 @@
           </td>
         </tr>
         </tbody>
-
       </table>
     </div>
   </div>
@@ -283,6 +282,12 @@ export default {
       "getPermission",
       "getMe",
     ]),
+  },
+
+  watch:{
+    'contract.payment_date'(){
+      CreditMonths(this.apartments, this.contract)
+    }
   },
 
   methods: {
