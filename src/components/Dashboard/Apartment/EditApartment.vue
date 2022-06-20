@@ -230,7 +230,10 @@
       </div>
 
       <!--      Step 2-->
-      <div class="container-fluid px-0 mx-0" v-if="(order.status !== 'sold') && contract.step === 2">
+      <div
+          v-if="(order.status !== 'sold') && contract.step === 2"
+          class="container-fluid px-0 mx-0"
+      >
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
@@ -258,6 +261,8 @@
                     :apartments="apartments"
                     :contract="contract"
                     :discounts="discounts"
+                    :payment-details="paymentDetails"
+                    :schedule="schedule"
                     @changeDiscount="changeDiscount"
                 />
                 <Confirm
@@ -424,6 +429,8 @@ export default {
       error: false,
       errors: {},
       getErrors: [],
+      paymentDetails: {},
+      schedule: {}
     }
   },
 
@@ -490,49 +497,12 @@ export default {
 
   async mounted() {
     await this.getClientData()
-
-    // await this.fetchApartmentOrder(this);
-    // this.order = this.deepClone(this.getApartmentOrder)
-    // this.contract.number = this.deepClone(this.order.contract_number);
-
-    // const current = this.$moment(new Date())
-    //     .utcOffset("+0500")
-    //     .format("YYYY-MM-DD H:mm:ss");
-    //
-    // const expired = this.$moment(this.order.expiry_at)
-    //     .utcOffset("+0500")
-    //     .format("YYYY-MM-DD H:mm:ss");
-
-
-    // this.expiry_at = expired;
-
-    // const time = new Date(current) - new Date(expired);
-    // console.log(time);
-    // if (time > 0) {
-    //   this.timeElapsedHandler();
-    // }
-
-    // this.fetchApartmentOrder(this).then(() => {
-    //   this.apartment_edit.contract_number = this.deepCloneFromApartments(
-    //       this.apartmentInfoItem.contract_number
-    //   );
-    //   this.getAllData();
-    //
-
-    //
-
-    //
-
-
   },
 
   methods: {
     async getClientData() {
       const uuid = this.$route.params.id
       await api.contractV2.getUpdateContractView(uuid).then((res) => {
-        // this.contract.credit_months = res.data.schedule.monthly
-        // this.contract.initial_payments = res.data.schedule.initial_payment
-        // this.contract.first_payment_date = res.data.first_payment_date
         this.order = res.data
         this.discounts = res.data.apartments[0].discounts
         this.contract.payment_date = res.data.payment_date
@@ -543,18 +513,14 @@ export default {
             credit_months: res.data.schedule.monthly,
             first_payment_date: res.data.first_payment_date,
             monthly_payments: res.data.schedule.monthly,
-            discount: res.data.payment_details?.discount ?? this.discounts[0]
+            discount: res.data['payments_details']?.discount ?? this.discounts[0]
           }
+          this.paymentDetails = res.data['payments_details']
+          this.schedule = res.data.schedule
         }
         this.apartments = this.order.apartments
         this.client = {...this.client, ...res.data.client}
       })
-      // api.contractV2.getContractApartments(uuid).then((res) => {
-      //   console.log(res.data);
-      //   // this.order = res.data
-      //   this.apartments = res.data.apartments
-      //   // this.client = {...this.client, ...res.data.client}
-      // })
     },
     ...mapActions(["fetchApartmentOrder"]),
 
@@ -750,7 +716,6 @@ export default {
 
     async sendForm() {
       if (this.contract.discount && this.contract.discount.id === null) return;
-
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text_agree"),
@@ -760,15 +725,15 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_agree"),
       }).then((result) => {
         if (result.value) {
-          this.buttons.loading = true;
-          const formData = new FormData();
+          this.buttons.loading = true
+          const formData = new FormData()
           formData.append("discount_id", this.contract.discount.id);
 
           if (this.edited.contract_number)
             formData.append("type_client", this.client.type_client);
 
           // formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
-          formData.append("client_id", this.client?.id);
+          formData.append("client_id", this.client?.id)
 
           if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
             if (this.edited.monthly) {
@@ -876,7 +841,7 @@ export default {
             );
           }
 
-          api.orders.reserveApartment(this.order.id, formData)
+          api.contractV2.contractOrderUpdate(this.order.id, formData)
               .then((response) => {
                 this.toasted(response.data.message, "success");
                 this.$bvModal.hide("modal-agree");
@@ -904,7 +869,7 @@ export default {
             this.buttons.loading = false;
           });
         }
-      });
+      })
 
     },
 

@@ -185,8 +185,6 @@
         :print-calc="printCalc"
         @has-downloaded="completePrintingProcess"
     />
-
-
   </main>
 </template>
 
@@ -727,15 +725,15 @@ input[type="number"]
     line-height: 22px
 
 
-@media only screen and (max-width: 1390px)
+@media only screen and (max-width: 1500px)
   .content-view
     flex-wrap: wrap
     row-gap: 2rem
     justify-content: center !important
   .calculator
     max-width: 640px
-  .primary__information
-    width: 30rem
+  //.primary__information
+  //  width: 30rem
   .price__section
     font-size: 1.2rem
 

@@ -253,7 +253,6 @@ const {getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal} = requir
 
 export default {
   name: "MonthlyPayments",
-
   components: {
     BaseNumericInput
   },
@@ -329,8 +328,6 @@ export default {
       }
 
       this.contract.initial_payments[index].edit = true;
-
-      return;
     },
 
     addInitialPayment() {

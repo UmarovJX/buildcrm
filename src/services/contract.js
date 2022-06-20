@@ -95,6 +95,10 @@ class ContractV2 extends Core {
     deleteContract(contractId, body) {
         return this.post(`contracts/${contractId}`, body)
     }
+
+    contractOrderUpdate(contractId, body) {
+        return this.put(`contracts/${contractId}`, body)
+    }
 }
 
 export default {

@@ -248,17 +248,21 @@ export default {
     client: {},
     apartments: {},
     contract: {},
-    discounts: {}
+    discounts: {
+      type: Array,
+      required: true
+    },
+    schedule: {
+      type: Object,
+      required: true
+    },
+    paymentDetails: {
+      type: Object,
+      required: true
+    }
   },
 
   watch: {
-    // apartments: {
-    //   handler() {
-    //     this.InitialCalc();
-    //   },
-    //   deep: true
-    // },
-
     'contract.credit_months': {
       handler() {
         if (parseInt(this.contract.month) > 0)
@@ -280,16 +284,7 @@ export default {
 
     'contract.edited': function () {
       this.InitialCalc();
-    },
-
-    // 'contract.discount_amount': function () {
-    //
-    // },
-    //
-    // 'contract.discount_square': function () {
-    //
-    // },
-
+    }
   },
 
   data() {
@@ -317,36 +312,28 @@ export default {
   },
 
   mounted() {
-    // console.log(this.apartments.length)
+    this.setInitialValues()
     this.InitialCalc()
   },
 
   methods: {
+    setInitialValues() {
+      this.contract.discount = this.discounts.find(({id: discountId}) => discountId === this.paymentDetails.discount.id)
+    },
     InitialCalc() {
-      // console.log("EDITED " + this.contract.prepay_edited)
       getTotalDiscount(this.apartments, this.contract)
       getPrice(this.apartments, this.contract)
       this.total = getTotal(this.apartments, this.contract)
       this.monthly = getMonth(this.apartments, this.contract)
       this.per_square = getPricePerM2(this.apartments, this.contract)
-
-      // let prepay =
-      // if (!this.contract.prepay_edited)
       this.contract.prepay_amount = getPrepay(this.apartments, this.contract);
-      // else
-      //   getPrepay(this.apartments, this.contract);
-
       this.calc.debt = getDebt(this.apartments, this.contract)
-
-      // this.contract.discount_amount = 0 //getTotalDiscount(this.apartments);
-
       editedCreditMonths(this.apartments, this.contract)
     },
 
     changeDiscount() {
       this.contract.discount_amount = 0;
       this.contract.discount_square = 0;
-
       this.contract.prepay_edited = false;
       this.InitialCalc();
       CreditMonths(this.apartments, this.contract)
@@ -370,12 +357,8 @@ export default {
 
     changePrepayAmount() {
       this.contract.prepay_edited = true;
-      this.InitialCalc();
+      this.InitialCalc()
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

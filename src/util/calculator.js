@@ -6,7 +6,6 @@ export function getPrepay(apartments, contract) {
     if (parseInt(contract.month) === 0) return getTotal(apartments, contract)
 
     let total_discount = getDiscount(apartments, contract);
-
     let total;
 
     switch (contract.discount.type) {
@@ -65,32 +64,27 @@ export function getPrice(apartments, contract) {
         case "fixed":
             for (let i = 0; apartments.length > i; i++) {
                 let amountApartment = 0;
+
                 if (contract.discount.id !== 'other') {
-                    const {prepay,type} = contract.discount
+                    const {prepay, type} = contract.discount
                     if (type === 'promo') {
                         amountApartment = apartments[i].discounts.find(
                             (val) => val.type === type && val.prepay === prepay
-                        ).amount;
+                        ).amount
                     } else {
                         amountApartment = apartments[i].discounts.find(
                             (val) => val.prepay === contract.discount.prepay
-                        ).amount;
+                        ).amount
                     }
-                } else
+                } else {
                     amountApartment = contract.discount.amount;
-                // if (contract.discount.id === apartments[i].discount_id && apartments[i].price_current && parseFloat(apartments[i].price_current) !== parseFloat(apartments[i].price_calc)) {
-                //     price.push(parseFloat(apartments[i].price_current));
-                // } else {
+                }
+
                 const totalAmount = parseFloat(amountApartment) * apartments[i].plan.area;
-                // Vue.set(apartments[i], 'price_current', totalAmount.toFixed(2))
                 Vue.set(apartments[i], 'price_calc', parseFloat(totalAmount.toFixed(2)))
                 Vue.set(apartments[i], 'price_edited', false)
                 Vue.set(apartments[i], 'discount_id', contract.discount.id)
-
-                // .price_calc = totalAmount
-                // apartments[i].price_current = totalAmount
                 price.push(parseFloat(totalAmount.toFixed(2)));
-                // }
             }
             break;
         default:
@@ -237,7 +231,7 @@ export function CreditMonths(apartments, contract) {
 }
 
 export function editedCreditMonths(apartments, contract) {
-    if (parseInt(contract.month) === 0) return contract.credit_months = [];
+    if (parseInt(contract.month) === 0) return contract.credit_months = []
 
     let total = getPrepay(apartments, contract);
     let months = 0;
@@ -276,16 +270,12 @@ export function getTotal(apartments, contract) {
         case "promo":
         case "addition":
         case "fixed":
-            // if (parseFloat(contract.discount_amount) > 0) {
-            //     total = (this.client.discount.amount - parseFloat(this.calc.discount_price)) * this.planAreas();
-            // } else {
             if (parseFloat(contract.discount_amount) > 0) {
                 total = getPrice(apartments, contract);
                 total = total - contract.discount_amount;
             } else {
                 total = getPrice(apartments, contract);
             }
-            // }
             break;
         default:
             if (parseFloat(contract.discount_amount) > 0) {
