@@ -46,11 +46,13 @@
           </b-badge>
         </b-form-checkbox>
       </b-form-checkbox-group>
+
       <!--      <base-button @click="openPriceList" class="price-button" text="Цены">-->
       <!--        <template slot="right-icon">-->
       <!--          <img :src="require('@/assets/icons/question.svg')" alt="">-->
       <!--        </template>-->
       <!--      </base-button>-->
+
     </div>
 
     <base-modal ref="price-table">

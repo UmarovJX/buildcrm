@@ -1,7 +1,8 @@
 <template>
   <main>
     <div class="app-content">
-      <!--      <div class="go__back__button">-->
+      <!--
+       <div class="go__back__button">-->
       <!--        <button-->
       <!--            class="btn-back d-block"-->
       <!--            @click="goBackToLastStep"-->
@@ -17,7 +18,8 @@
       <!--            :showHours="false"-->
       <!--            @timeElapsed="timeElapsedHandler"-->
       <!--        ></flip-countdown>-->
-      <!--      </div>-->
+      <!--      </div>
+      -->
 
       <base-bread-crumb
           :bread-crumbs="breadCrumbs"
@@ -300,6 +302,7 @@
     <SuccessAgree
         :contract="contract"
         :apartments="2"
+        @redirect-to-main-page="redirectToTheMainPage"
     />
   </main>
 </template>
@@ -553,6 +556,15 @@ export default {
       }
     },
 
+    redirectToTheMainPage() {
+      this.$router.push({
+        name: 'contracts-view',
+        params: {
+          id: this.$route.params.id
+        }
+      })
+    },
+
     goBackToLastStep() {
       if (this.contract.step === 1) {
         this.$router.go(-1)
@@ -779,7 +791,7 @@ export default {
 
           context.comment = this.contract.comment
           context.months = parseInt(this.contract.month)
-          context.first_payment_date = this.contract.first_payment_date
+          context.first_payment_date = this.order.first_payment_date
           context.discount_amount = this.contract.discount_amount
 
           if (this.contract.discount?.id === 'other') {

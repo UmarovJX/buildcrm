@@ -34,7 +34,7 @@
       </div>
 
       <!--   MAIN   -->
-      <div class="content-view d-flex justify-content-between">
+      <div class="content-view">
         <div class="main__content">
           <div class="slider-content">
             <div class="swiper" v-swiper="swiperOption">
@@ -74,7 +74,7 @@
 
           </div>
 
-          <div class="main__content primary__information">
+          <div class="primary__information">
             <!--   PRICE CONTENT     -->
             <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
                <span class="price__section-square-amount">
@@ -459,22 +459,10 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-
-//vue-html2pdf
-//  .layout-container
-//    position: relative
-//    width: auto
-//    height: auto
-//    left: 0
-//    z-index: 0
-//    background: #FFFFFF
-//    display: block
-
-
-
-
-
-
+.content-view
+  display: flex
+  //justify-content: space-between
+  gap: 4rem
 
 ::v-deep .main__content
   .slider__image
@@ -482,6 +470,7 @@ export default {
 
 ::v-deep .slider-content
   margin: 1rem
+  max-width: 42rem
   //margin-left: 1rem
   //margin-right: 1rem
   //margin-bottom: 1rem
@@ -548,7 +537,9 @@ input[type="number"]
 .main__content
   padding-left: 1rem
   padding-right: 1rem
-  max-width: 1500px !important
+  min-width: 42rem
+//width: 100%
+
 
 .main__class
   background-color: white
@@ -580,7 +571,7 @@ input[type="number"]
   color: #4B5563
 
 .primary__information
-  width: 42rem
+  max-width: 42rem
 
 
 .calculator
@@ -725,31 +716,29 @@ input[type="number"]
     line-height: 22px
 
 
-@media only screen and (max-width: 1500px)
+//@media only screen and (max-width: 1200px)
+//  .content-view
+//    flex-wrap: wrap
+//    row-gap: 2rem
+//    justify-content: center !important
+//  .calculator
+//    max-width: 640px
+//  //.primary__information
+//  //  width: 30rem
+//  .price__section
+//    font-size: 1.2rem
+//
+//    &-amount
+//      line-height: 25px
+//
+//    &-square-amount
+//      font-size: 15px
+//      line-height: 18px
+@media (max-width: 1350px)
   .content-view
     flex-wrap: wrap
-    row-gap: 2rem
-    justify-content: center !important
   .calculator
-    max-width: 640px
-  //.primary__information
-  //  width: 30rem
-  .price__section
-    font-size: 1.2rem
-
-    &-amount
-      line-height: 25px
-
-    &-square-amount
-      font-size: 15px
-      line-height: 18px
-
-@media (max-width: 1024px)
-  .primary__information
-    margin: 0 auto
-    width: 42rem
-  .calculator
-    margin: 0 auto
+    max-width: 42rem
 
 
 </style>

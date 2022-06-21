@@ -5,6 +5,7 @@
         ref="modal"
         title="Договор успешно создан!"
         hide-footer
+        @hide="closeSuccessModal"
     >
       <div class="my-3">
         <h6>№ договора - {{ contract.contract }}</h6>
@@ -68,6 +69,7 @@ export default {
       type: Number,
     },
   },
+  emits: ['redirect-to-main-page'],
   mounted() {
     this.$root.$on("bv::modal::hide");
   },
@@ -112,10 +114,7 @@ export default {
           name: "apartments",
         });
       } else {
-        this.$router.push({
-          name: "apartment-view",
-          params: {id: this.$route.params.id},
-        });
+        this.$emit('redirect-to-main-page')
       }
     },
     goApartment() {
@@ -141,6 +140,9 @@ export default {
           params: {id: this.$route.params.id},
         });
       }
+    },
+    closeSuccessModal() {
+      this.$emit('redirect-to-main-page')
     },
   },
 };
