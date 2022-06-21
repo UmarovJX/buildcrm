@@ -166,6 +166,8 @@ export default {
     week: 'Hafta',
     today: 'Bugun',
     day: 'Kun',
+    refresh_password: 'Parolni yangilash',
+    manager: "Menejer",
 
     monday: 'Dushanba',
     tuesday: 'Seshanba',

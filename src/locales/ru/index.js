@@ -149,6 +149,8 @@ export default {
     week: 'Неделя',
     today: 'Сегодня',
     day: 'День',
+    refresh_password: 'Обновить пароль',
+    manager: "Менеджер",
 
     monday: 'Понедельник',
     tuesday: 'Вторник',

@@ -26,13 +26,13 @@
             <ValidationProvider
                 v-for="{type,name,rules,extraClass,id,label,placeholder,bind,icon} in providerSchema"
                 :key="name+id"
-                :name="name"
+                :name="`${ $t(name) }`"
                 :rules="rules"
                 :class="extraClass"
                 v-slot="{ errors }"
                 class="mt-3"
             >
-              <label :for="id">{{ label }}</label>
+              <label :for="id">{{ $t(label) }}</label>
               <b-input-group>
                 <template #append>
                   <b-input-group-text class="input__text__icon">
@@ -43,7 +43,7 @@
                     v-model="form[bind]"
                     :type="type"
                     :id="id"
-                    :placeholder="placeholder"
+                    :placeholder="`${ $t(placeholder) }`"
                 >
                 </b-form-input>
               </b-input-group>
@@ -57,7 +57,7 @@
                 v-slot="{ errors }"
                 class="mt-3 validation__provider"
             >
-              <label for="select-managers"> Менеджер </label>
+              <label for="select-managers"> {{ $t('manager') }} </label>
               <b-form-select
                   id="select-managers"
                   v-model="form.managerId"
@@ -80,19 +80,19 @@
                   <ValidationProvider
                       v-for="{type,name,rules,extraClass,id,label,placeholder,bind} in companySchema"
                       :key="name+id"
-                      :name="name"
+                      :name="`${ $t(name) }`"
                       :rules="rules"
                       :class="extraClass"
                       v-slot="{ errors }"
                       class="mt-3"
                   >
-                    <label :for="id">{{ label }}</label>
+                    <label :for="id">{{ $t(label) }}</label>
                     <b-input-group>
                       <b-form-input
                           v-model="companiesForm[index][bind]"
                           :type="type"
                           :id="id"
-                          :placeholder="placeholder"
+                          :placeholder="`${ $t(placeholder) }`"
                       >
                       </b-form-input>
                     </b-input-group>
@@ -163,34 +163,34 @@ export default {
       providerSchema: [
         {
           type: 'text',
-          name: this.$t('branches.branch_name'),
+          name: 'branches.branch_name',
           rules: 'required|min:3',
           extraClass: 'validation__provider',
-          label: this.$t('branches.branch_name'),
+          label: 'branches.branch_name',
           bind: 'branchName',
-          placeholder: this.$t('branches.branch_name'),
+          placeholder: 'branches.branch_name',
           id: 'branchName',
           icon: 'location'
         },
         {
           type: 'text',
-          name: this.$t('branches.branch_address'),
+          name: 'branches.branch_address',
           rules: 'required|min:3',
           extraClass: 'validation__provider',
-          label: this.$t('branches.branch_address'),
+          label: 'branches.branch_address',
           bind: 'branchAddress',
-          placeholder: this.$t('branches.branch_address'),
+          placeholder: 'branches.branch_address',
           id: 'branchAddress',
           icon: 'address'
         },
         {
           type: 'tel',
-          name: this.$t('branches.branch_phone'),
+          name: 'branches.branch_phone',
           rules: 'required|min:5',
           extraClass: 'validation__provider',
-          label: this.$t('branches.branch_phone'),
+          label: 'branches.branch_phone',
           bind: 'branchPhone',
-          placeholder: this.$t('branches.branch_phone'),
+          placeholder: 'branches.branch_phone',
           id: 'branchPhone',
           icon: 'phone'
         }
@@ -198,45 +198,45 @@ export default {
       companySchema: [
         {
           type: 'date',
-          name: this.$t('branches.date_contract'),
+          name: 'branches.date_contract',
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.date_contract'),
+          label: 'branches.date_contract',
           bind: 'date_contract',
-          placeholder: this.$t('branches.date_contract'),
+          placeholder: 'branches.date_contract',
           id: 'date_contract',
           icon: 'address'
         },
         {
           type: 'text',
-          name: this.$t('branches.number_contract'),
+          name: 'branches.number_contract',
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.number_contract'),
+          label: 'branches.number_contract',
           bind: 'number_contract',
-          placeholder: this.$t('branches.number_contract'),
+          placeholder: 'branches.number_contract',
           id: 'number_contract',
           icon: 'phone'
         },
         {
           type: 'date',
-          name: this.$t('branches.date_implementation'),
+          name: 'branches.date_implementation',
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.date_implementation'),
+          label: 'branches.date_implementation',
           bind: 'date_implementation',
-          placeholder: this.$t('branches.date_implementation'),
+          placeholder: 'branches.date_implementation',
           id: 'date_implementation',
           icon: 'phone'
         },
         {
           type: 'text',
-          name: this.$t('branches.number_implementation'),
+          name: 'branches.number_implementation',
           rules: '',
           extraClass: 'validation__provider',
-          label: this.$t('branches.number_implementation'),
+          label: 'branches.number_implementation',
           bind: 'number_implementation',
-          placeholder: this.$t('branches.number_implementation'),
+          placeholder: 'branches.number_implementation',
           id: 'number_implementation',
           icon: 'phone'
         }

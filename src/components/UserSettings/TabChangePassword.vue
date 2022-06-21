@@ -57,7 +57,7 @@
             </ValidationProvider>
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
-                Обновить пароль
+                {{ $t('refresh_password') }}
               </b-button>
             </div>
           </form>
@@ -139,7 +139,7 @@ export default {
     }
   },
   watch: {
-    'form.oldPassword'(){
+    'form.oldPassword'() {
       this.toggleConfirmationError({show: false, id: 'oldPassword'})
     },
     'form.newPassword'(newPassword) {

@@ -17,16 +17,16 @@ import api from "@/services/api";
 import {mapGetters} from "vuex";
 import CreateBranchBreadCrumb from "@/components/Branches/CreateBranchBreadCrumb";
 import BranchFormContent from "@/components/Branches/BranchFormContent";
+
 export default {
-  name: "TabChangePassword",
-  components:{
+  name: "CreateBranchPage",
+  components: {
     CreateBranchBreadCrumb,
     BranchFormContent
   },
   data() {
     return {
       loading: false,
-      submitButtonText:this.$t('add'),
       responseAlert: {
         variant: 'success',
         dismissSecs: 10,
@@ -36,6 +36,9 @@ export default {
     }
   },
   computed: {
+    submitButtonText() {
+      return this.$t('add')
+    },
     hiddenArea() {
       return this.loading ? 'true' : null
     },
