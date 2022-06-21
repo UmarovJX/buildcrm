@@ -304,6 +304,10 @@ export default {
     },
     changeDiscount_month() {
       this.monthly_price = this.getMonth()
+      this.$emit('for-print', {
+        ...this.calc,
+        monthly_price: this.monthly_price
+      })
     },
     getPrepay() {
       // if (this.discount.type == 'percent')
