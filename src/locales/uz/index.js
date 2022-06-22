@@ -168,6 +168,8 @@ export default {
     day: 'Kun',
     refresh_password: 'Parolni yangilash',
     manager: "Menejer",
+    contract_regeneration: 'Shartnomani qayta tiklash',
+
 
     monday: 'Dushanba',
     tuesday: 'Seshanba',

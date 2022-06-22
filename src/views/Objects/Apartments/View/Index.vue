@@ -538,7 +538,7 @@ input[type="number"]
   padding-left: 1rem
   padding-right: 1rem
   min-width: 42rem
-//width: 100%
+  //width: 100%
 
 
 .main__class

@@ -151,6 +151,7 @@ export default {
     day: 'День',
     refresh_password: 'Обновить пароль',
     manager: "Менеджер",
+    contract_regeneration: 'Регенерация контракта',
 
     monday: 'Понедельник',
     tuesday: 'Вторник',

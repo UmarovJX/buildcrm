@@ -47,6 +47,9 @@
                 type="reservation"
             />
           </b-tab>
+          <b-tab :title="$t('contract_regeneration')" >
+
+          </b-tab>
           <!--          <b-tab :title="$t('free_of_charge')">-->
           <!--            <base-contract-list-table :contracts="notInitialContracts"/>-->
           <!--          </b-tab>-->

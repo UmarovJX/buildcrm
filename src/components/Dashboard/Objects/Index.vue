@@ -295,6 +295,7 @@ export default {
   .card {
     //border-radius: 1rem;
     width: 100%;
+    height: 30rem;
     max-width: 400px;
     border: none;
     display: flex;

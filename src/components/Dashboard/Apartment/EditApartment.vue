@@ -249,7 +249,7 @@
             </div>
 
             <div class="col-xl-4 h-auto">
-              <div class="sticky-top">
+              <div class="sticky-top" style="z-index: 1">
                 <ClientInformation
                     :client="client"
                 />

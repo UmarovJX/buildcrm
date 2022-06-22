@@ -15,7 +15,6 @@ Vue.use(VueRouter)
 import Auth from "./components/Auth/Login";
 import PageNotFound from "./components/PageNotFound";
 import Dashboard from "./components/Dashboard/Home";
-
 import Objects from "./components/Dashboard/Objects/Index";
 import ObjStore from "./components/Dashboard/Objects/Store";
 // import ObjFilter from './components/Dashboard/Objects/Filter';
@@ -24,9 +23,7 @@ import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedCont
 // import Managers from './components/Dashboard/Managers/Index';
 // import Accountants from './components/Dashboard/Accountants/Index';
 // import Cashiers from './components/Dashboard/Cashiers/Index';
-
 import Clients from "./components/Dashboard/Clients/Index";
-
 // import Contracts from "./components/Dashboard/Contracts/Index";
 import ContractsView from "./components/Dashboard/Contracts/View";
 
