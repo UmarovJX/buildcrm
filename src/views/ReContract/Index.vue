@@ -56,6 +56,33 @@
           <div class="row">
             <div class="col-6">
               <div class="assignee-item">
+                <div class="client__details_info_card ">
+                  <label>{{ $t('series') }}</label>
+                  <b-form-input disabled :value="oldClient['passport_series']"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="assignee-item">
+                <ValidationProvider
+                    rules="required|min:9"
+                    class="cell"
+                    :name="`${$t('series')}`"
+                    v-slot="{errors}"
+                >
+                  <base-input :class="{'error' : errors[0]}" type="text" mask="AA#######"
+                              class="client__details_info_card" :label="true"
+                              :placeholder="$t('series')"
+                              @input="fetchClientSeries"
+                              v-model="newClient['passport_series']"/>
+                </ValidationProvider>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="assignee-item">
                 <div class="client__details_info_card">
                   <label>{{ $t('user.last_name') }}</label>
                   <b-form-input disabled :value="nameDivide(oldClient.last_name)"/>
@@ -157,32 +184,7 @@
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-6">
-              <div class="assignee-item">
-                <div class="client__details_info_card ">
-                  <label>{{ $t('series') }}</label>
-                  <b-form-input disabled :value="oldClient['passport_series']"/>
-                </div>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="assignee-item">
-                <ValidationProvider
-                    rules="required|min:9"
-                    class="cell"
-                    :name="`${$t('series')}`"
-                    v-slot="{errors}"
-                >
-                  <base-input :class="{'error' : errors[0]}" type="text" mask="AA#######"
-                              class="client__details_info_card" :label="true"
-                              :placeholder="$t('series')"
-                              v-model="newClient['passport_series']"/>
-                </ValidationProvider>
-              </div>
 
-            </div>
-          </div>
           <div class="row">
             <div class="col-6">
               <div class="assignee-item">
@@ -577,7 +579,6 @@ export default {
       contractBtn: true,
     }
   },
-
   async created() {
     await this.fetchOldClient()
     if (localStorage.getItem('client_id')) {
@@ -601,6 +602,41 @@ export default {
       const isValid = await this.$refs['reContract-form'].validate()
       if (this.contract.agreement_number !== null && isValid) {
         this.confirmContract()
+      }
+    },
+
+    fetchClientSeries(value) {
+      if (value) {
+        api.clients.fetchClientData(value).then((res) => {
+          const {data} = res
+          this.newClient = {
+            ...this.newClient,
+            id: data.id,
+            first_name: data.first_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            last_name: data.last_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            second_name: data.second_name ?? {
+              lotin: null,
+              kirill: null,
+            },
+            passport_series: data.passport_series,
+            issued_by_whom: data.issued_by_whom,
+            language: data.language,
+            birth_day: data.birth_day,
+            phone: data.phone,
+            other_phone: data.other_phone,
+            date_of_issue: data.date_of_issue,
+            discount: {id: null},
+          };
+        }).catch((error) => {
+          this.toastedWithErrorCode(error);
+        })
+
       }
     },
 
@@ -916,6 +952,7 @@ export default {
             type: 'error'
           })
           localStorage.removeItem('client_id')
+          this.$router.push({name: 'contracts-view', params: {id: this.$route.params.id}})
         }
       }).finally(() => {
 
