@@ -933,8 +933,8 @@ export default {
     },
 
     confirmClient() {
-      const other_phone = parseInt(this.newClient.other_phone.slice(1).trim().replaceAll(' ', ''))
-      const phone = parseInt(this.newClient.other_phone.slice(1).trim().replaceAll(' ', ''))
+      const other_phone = parseInt(this.newClient.other_phone.trim().replaceAll(' ', '').replaceAll('+', ''))
+      const phone = parseInt(this.newClient.other_phone.trim().replaceAll(' ', '').replaceAll('+', ''))
       const data = {...this.newClient, other_phone, phone}
 
       api.clientsV2.createClient(data).then((res) => {
