@@ -161,11 +161,7 @@ export default {
       categoryOptions: [
         {value: 'sale', text: this.$t('objects.sale')},
         {value: 'reserve', text: this.$t('objects.booking')},
-      ],
-      typeOptions: [
-        {value: 'full', text: this.$t('full')},
-        {value: 'monthly', text: this.$t('monthly')},
-        {value: 'without_initial', text: this.$t('without_initial')}
+        {value: 'reissue', text: this.$t('contract_regeneration')}
       ],
       options: [
         {text: 'uz', value: 'uz'},
@@ -174,6 +170,19 @@ export default {
     }
   },
   computed: {
+    typeOptions() {
+      const option = [
+        {value: 'full', text: this.$t('full')},
+        {value: 'monthly', text: this.$t('monthly')},
+        {value: 'without_initial', text: this.$t('without_initial')}
+      ]
+
+      if (this.form.category === 'reissue') {
+        return option.slice(1)
+      }
+
+      return option
+    },
     showPaymentType() {
       const notShow = ['reserve']
       const index = notShow.findIndex(ctyType => ctyType === this.form.category)

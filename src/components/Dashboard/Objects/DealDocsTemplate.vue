@@ -47,15 +47,16 @@
                 type="reservation"
             />
           </b-tab>
-          <b-tab :title="$t('contract_regeneration')" >
-
+          <b-tab :title="$t('contract_regeneration')">
+            <base-contract-list-table
+                @update-loading="updateLoading"
+                @update-content="getDealTemplateList"
+                :contracts="reissueContracts"
+                type="reissue"
+            />
           </b-tab>
-          <!--          <b-tab :title="$t('free_of_charge')">-->
-          <!--            <base-contract-list-table :contracts="notInitialContracts"/>-->
-          <!--          </b-tab>-->
         </b-tabs>
       </b-card>
-
     </div>
 
     <!-- Creation Modal   -->
@@ -129,6 +130,9 @@ export default {
       return this.contracts.filter(contract => {
         return contract.category === 'reserve'
       })
+    },
+    reissueContracts() {
+      return this.contracts.filter(contract => contract.category === 'reissue')
     }
   },
   async created() {
@@ -145,6 +149,9 @@ export default {
         this.contractTabs = 1
       else if (category === 'not_initial')
         this.contractTabs = 2
+      else if (category === 'reissue') {
+        this.contractTabs = 3
+      }
 
       this.getDealTemplateList()
     },
