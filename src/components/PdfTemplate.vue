@@ -40,7 +40,8 @@
             <div v-if="apartment.plan" class="col-12 pdf-img">
               <!--              <img v-if="apartment.plan"-->
               <!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
-              <img :src="require('@/assets/img/plan.png')" alt="plan-image">
+              <img :src="require('@/assets/img/object__img1.png')" alt="xonsaroy logo">
+              <!--              <img :src="require('@/assets/img/plan.png')" alt="plan-image">-->
             </div>
           </div>
           <div class="row pdf-features">
@@ -395,7 +396,7 @@ export default {
       if (this.apartment.plan.image.length) {
         return this.apartment.plan.image[0]
       } else {
-        return `require('@/assets/img/plan.png')`
+        return `require('@/assets/img/object__img1.png')`
       }
     },
     hasBalcony() {

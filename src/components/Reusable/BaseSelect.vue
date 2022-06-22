@@ -121,13 +121,13 @@ export default {
   -moz-appearance: none
   -webkit-appearance: none
 
-  &.not-label
+  //&.not-label
   //padding: .5rem 1.25rem .5rem 1.25rem
 
   &::-ms-expand
     display: none
 
-  &-initial
+  //&-initial
 //padding: 0 1.25rem
 
 .input-label

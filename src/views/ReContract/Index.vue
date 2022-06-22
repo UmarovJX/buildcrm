@@ -579,6 +579,7 @@ export default {
       contractBtn: true,
     }
   },
+
   async created() {
     await this.fetchOldClient()
     if (localStorage.getItem('client_id')) {
@@ -587,6 +588,7 @@ export default {
       this.contractBtn = false
     }
   },
+
   methods: {
     async validateClientForm() {
       const isValid = await this.$refs['client-form'].validate()
@@ -606,33 +608,34 @@ export default {
     },
 
     fetchClientSeries(value) {
-      if (value) {
+      if (value && value.length === 9) {
         api.clients.fetchClientData(value).then((res) => {
           const {data} = res
-          this.newClient = {
-            ...this.newClient,
-            id: data.id,
-            first_name: data.first_name ?? {
-              lotin: null,
-              kirill: null,
-            },
-            last_name: data.last_name ?? {
-              lotin: null,
-              kirill: null,
-            },
-            second_name: data.second_name ?? {
-              lotin: null,
-              kirill: null,
-            },
-            passport_series: data.passport_series,
-            issued_by_whom: data.issued_by_whom,
-            language: data.language,
-            birth_day: data.birth_day,
-            phone: data.phone,
-            other_phone: data.other_phone,
-            date_of_issue: data.date_of_issue,
-            discount: {id: null},
-          };
+          if (data.id !== null) {
+            this.newClient = {
+              ...this.newClient,
+              first_name: data.first_name ?? {
+                lotin: null,
+                kirill: null,
+              },
+              last_name: data.last_name ?? {
+                lotin: null,
+                kirill: null,
+              },
+              second_name: data.second_name ?? {
+                lotin: null,
+                kirill: null,
+              },
+              passport_series: data.passport_series,
+              issued_by_whom: data.issued_by_whom,
+              language: data.language,
+              birth_day: data.birth_day,
+              phone: data.phone,
+              other_phone: data.other_phone,
+              date_of_issue: data.date_of_issue,
+              discount: {id: null},
+            };
+          }
         }).catch((error) => {
           this.toastedWithErrorCode(error);
         })
