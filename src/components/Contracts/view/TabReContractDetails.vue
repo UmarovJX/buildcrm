@@ -273,7 +273,7 @@ export default {
 
     downloadContact() {
       const id = this.order.uuid
-      api.contract.downloadContract(id)
+      api.contract.downloadReContract(id)
           .then(({data, headers}) => {
             const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
             const fileURL = window.URL.createObjectURL(new Blob([data]))

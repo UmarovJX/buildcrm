@@ -19,6 +19,12 @@ class Contract extends Core {
             responseType: 'blob'
         })
     }
+
+    downloadReContract(id) {
+        return this.get('contarcts/' + id + '/reissue/contract', {
+            responseType: 'blob'
+        })
+    }
 }
 
 class ContractV2 extends Core {
