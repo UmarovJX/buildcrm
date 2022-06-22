@@ -194,18 +194,11 @@
               </p>
             </template>
             <b-dropdown-text href="#">
-              <b-form-group v-slot="{ ariaDescribedby }">
-                <b-form-checkbox-group
-                    id="checkbox-group-2"
-                    v-model="reason_type"
-                    :aria-describedby="ariaDescribedby"
-                    name="flavour-2"
-                >
-                  <b-form-checkbox v-for="option in types" :key="option.id" :value="option">
-                    {{ checkLocales(option.name) }}
-                  </b-form-checkbox>
-                </b-form-checkbox-group>
-              </b-form-group>
+
+              <b-form-checkbox v-model="reason_type" v-for="option in types" :key="option.id" :value="option">
+                {{ checkLocales(option.name) }}
+              </b-form-checkbox>
+
             </b-dropdown-text>
           </b-dropdown>
         </div>
@@ -733,7 +726,7 @@ export default {
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
     border-radius: 24px;
     padding: .5rem;
-
+    width: 100%;
 
     .dropdown-item {
       font-weight: 600 !important;
@@ -761,9 +754,17 @@ export default {
   }
 
   .custom-control-label {
-    padding-left: .5rem;
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
     width: 100%;
+    height: 100%;
 
+    &:before, &:after {
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+    }
   }
 
   .custom-control-input:focus ~ .custom-control-label::before {
@@ -780,7 +781,7 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
-    padding: .15rem .15rem .15rem 2.5rem;
+    padding: .15rem .15rem .15rem 1rem;
     height: 50px;
     font-weight: 600;
     border-radius: 1rem;

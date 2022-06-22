@@ -535,16 +535,16 @@ export default {
       oldClient: {},
       newClient: {
         first_name: {
-          lotin: null,
-          kirill: null,
+          lotin: '',
+          kirill: '',
         },
         second_name: {
-          lotin: null,
-          kirill: null,
+          lotin: '',
+          kirill: '',
         },
         last_name: {
-          lotin: null,
-          kirill: null,
+          lotin: '',
+          kirill: '',
         },
         passport_series: '',
         issued_by_whom: '',
@@ -558,7 +558,7 @@ export default {
       contract: {
         date: null,
         reorder_type_id: 1,
-        agreement_number: null,
+        agreement_number: '',
         client_uuid: null,
       },
       order: {},
@@ -624,13 +624,19 @@ export default {
       this.timeoutId = setTimeout(() => {
         switch (type) {
           case 'first_name':
-            this.newClient.first_name.kirill = this.symbolLatinToCyrillic(event);
+            if (!this.newClient.first_name.kirill) {
+              this.newClient.first_name.kirill = this.symbolLatinToCyrillic(event);
+            }
             break;
           case 'last_name':
-            this.newClient.last_name.kirill = this.symbolLatinToCyrillic(event);
+            if (!this.newClient.last_name.kirill) {
+              this.newClient.last_name.kirill = this.symbolLatinToCyrillic(event);
+            }
             break;
           case 'second_name':
-            this.newClient.second_name.kirill = this.symbolLatinToCyrillic(event);
+            if (!this.newClient.second_name.kirill) {
+              this.newClient.second_name.kirill = this.symbolLatinToCyrillic(event);
+            }
             break;
         }
       }, 1000)
@@ -643,13 +649,19 @@ export default {
       this.timeoutId = setTimeout(() => {
         switch (type) {
           case 'first_name':
-            this.newClient.first_name.lotin = this.symbolCyrillicToLatin(event);
+            if (!this.newClient.first_name.kirill) {
+              this.newClient.first_name.kirill = this.symbolCyrillicToLatin(event);
+            }
             break;
           case 'last_name':
-            this.newClient.last_name.lotin = this.symbolCyrillicToLatin(event);
+            if (!this.newClient.last_name.kirill) {
+              this.newClient.last_name.kirill = this.symbolCyrillicToLatin(event);
+            }
             break;
           case 'second_name':
-            this.newClient.second_name.lotin = this.symbolCyrillicToLatin(event);
+            if (!this.newClient.second_name.kirill) {
+              this.newClient.second_name.kirill = this.symbolCyrillicToLatin(event);
+            }
             break;
         }
       }, 1000)
@@ -1348,6 +1360,7 @@ export default {
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
     border-radius: 24px;
     padding: .5rem;
+    width: 100%;
 
 
     .dropdown-item {
@@ -1376,9 +1389,17 @@ export default {
   }
 
   .custom-control-label {
-    padding-left: .5rem;
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
     width: 100%;
+    height: 100%;
 
+    &:before, &:after {
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+    }
   }
 
   .custom-control-input:focus ~ .custom-control-label::before {
@@ -1395,7 +1416,7 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
-    padding: .15rem .15rem .15rem 2.5rem;
+    padding: .15rem .15rem .15rem 1rem;
     height: 50px;
     font-weight: 600;
     border-radius: 1rem;
