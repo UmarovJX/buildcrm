@@ -239,6 +239,10 @@ class ObjectsV2 extends Core {
     fetchObjectApartments(object, params) {
         return this.get(`apartments/objects/${object}/apartments`, {params})
     }
+
+    reContract(id){
+        return this.post(`/v2/contracts/${id}/reorder`)
+    }
 }
 
 export default {

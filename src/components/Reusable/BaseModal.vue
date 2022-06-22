@@ -63,9 +63,14 @@ export default {
 ::v-deep .small-modal
   .modal-dialog
     .modal-content
-      width: 40rem !important
+      width: 41rem !important
       height: 30rem !important
 
+::v-deep .auto-height
+  .modal-dialog
+    height: 100%
+    .modal-content
+      width: 41rem !important
 
 ::v-deep .base__modal
   overflow-y: auto !important

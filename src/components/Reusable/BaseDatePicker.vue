@@ -7,7 +7,7 @@
         :placeholder="placeholder"
         v-model="dateValue"
         class="date-picker"
-        range
+        :range="range"
     ></date-picker>
     <span class="calendar-icon">
       <base-calendar-icon
@@ -33,8 +33,12 @@ export default {
   emits: ['input'],
   props: {
     defaultValue: {
-      type: Array,
+      type: [Array, String],
       default: () => []
+    },
+    range: {
+      type: Boolean,
+      default: () => true
     },
     format: {
       type: String,
@@ -61,17 +65,28 @@ export default {
   watch: {
     dateValue(lastValue) {
       this.$emit('input', lastValue)
+    },
+    defaultValue: {
+      immediate: true,
+      handler() {
+        if (this.defaultValue && this.defaultValue.length) {
+          this.dateValue = this.defaultValue
+        }
+      }
     }
   },
-  mounted() {
-    this.initDefaultValue()
-  },
+  // mounted() {
+  // this.initDefaultValue()
+  // },
   methods: {
-    initDefaultValue() {
-      if (this.defaultValue.length) {
-        this.dateValue = this.defaultValue
-      }
-    },
+    // initDefaultValue() {
+    //   console.log(this.defaultValue, 'defaultValue');
+    //   if (this.defaultValue && this.defaultValue.length) {
+    //     console.log(this.defaultValue, 'ifni ichida defaultValue');
+    //
+    //     this.dateValue = this.defaultValue
+    //   }
+    // },
     clearField() {
       this.dateValue = undefined
     }

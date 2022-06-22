@@ -1,8 +1,10 @@
 <template>
   <button
       @click="triggerEvent"
+      :type="type"
+      :disabled="disabled"
       class="base__button"
-      :class="design"
+      :class="[design, {'disabled':disabled}]"
   >
     <span v-if="hasLeftSlot" class="left__icon">
       <slot name="left-icon"/>
@@ -29,7 +31,15 @@ export default {
     size: {
       type: String,
       default: () => 'lg'
-    }
+    },
+    type: {
+      type: String,
+      default: () => 'button'
+    },
+    disabled: {
+      type: Boolean,
+      default: () => false
+    },
   },
   emits: ['click'],
   computed: {
@@ -70,11 +80,13 @@ export default {
 
   .left__icon
     display: flex
-    margin-right: .5rem
+    //margin-right: .5rem
+    margin-right: 1rem
 
   .right__icon
     display: flex
-    margin-left: .5rem
+    margin-left: 1rem
+//margin-left: .5rem
 
 .gray-button
   background-color: var(--gray-200)
@@ -87,4 +99,7 @@ export default {
   background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
   color: var(--white) !important
 
+.disabled
+  background: var(--gray-500)
+  color: var(--white) !important
 </style>

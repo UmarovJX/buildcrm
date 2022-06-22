@@ -1,6 +1,10 @@
 <template>
   <div class="base-input" :class="error ? 'error' : ''">
-    <span v-if="debounceInput && label" class="input-label">{{ placeholder }}</span>
+    <div v-if="debounceInput && label" class="input-label">
+      <span>
+        {{ placeholder }}
+      </span>
+    </div>
     <base-numeric-input
         v-if=" type === 'number' "
         :currency="currency"
@@ -13,10 +17,20 @@
         @input="triggerNumberEvent"
     />
     <input
-        v-else
+        v-else-if="!(mask)"
         v-model="searchInput"
         :type="type"
         id="base-input"
+        ref="base-input"
+        :placeholder="placeholder"
+        @input="triggerInputEvent"
+    />
+    <input
+        v-else
+        v-model="searchInput"
+        :type="type"
+        v-mask="mask"
+        id="base-input-mask"
         ref="base-input"
         :placeholder="placeholder"
         @input="triggerInputEvent"
@@ -47,7 +61,8 @@ export default {
       type: String,
     },
     value: {
-      type: [String, Number]
+      type: [String, Number, Array],
+      default: () => null
     },
     type: {
       type: String,
@@ -64,6 +79,10 @@ export default {
     currency: {
       type: String,
       default: ' '
+    },
+    mask: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -128,13 +147,25 @@ export default {
 
 <style lang="scss" scoped>
 .input-label {
-  font-weight: 900;
-  font-size: 8px;
-  line-height: 10px;
-  margin-bottom: 2px;
+  font-family: CraftworkSans, serif;
+  position: relative;
+  //margin-bottom: 2px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--gray-400);
+  width: 100%;
+  display: flex;
+  padding-left: 1rem;
+  margin-bottom: 6px;
+
+  span {
+    font-weight: 900;
+    font-size: 8px;
+    line-height: 10px;
+    position: absolute;
+    top: 6px;
+    left: 2px;
+  }
 }
 
 .base-input {
@@ -157,7 +188,7 @@ export default {
 
 
   input {
-    width: 95%;
+    width: 100%;
     background-color: transparent;
     height: 100%;
     outline: none;

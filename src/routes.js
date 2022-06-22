@@ -61,6 +61,8 @@ import Debtors from "@/views/Debtors/Index"
 // import ObjectTable from "@/components/Objects/ObjectTable";
 import Experiment from "@/views/Experiment";
 
+import ReContract from "@/views/ReContract/Index"
+
 const routes = [
     {
         /* HOME */
@@ -187,6 +189,16 @@ const routes = [
         component: UnfinishedContracts,
         meta: {
             requiresAuth: "apartments",
+        },
+    },
+
+    {
+        /* UNFINISHED CONTRACTS */
+        name: "re-contract",
+        path: "/re-contract/:id",
+        component: ReContract,
+        meta: {
+            requiresAuth: "contracts",
         },
     },
 
