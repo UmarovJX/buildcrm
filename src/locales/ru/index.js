@@ -153,6 +153,7 @@ export default {
     manager: "Менеджер",
     contract_regeneration: 'Регенерация контракта',
 
+
     monday: 'Понедельник',
     tuesday: 'Вторник',
     wednesday: 'Среда',
@@ -280,6 +281,7 @@ export default {
     },
 
     contracts: {
+        name: 'Договоры',
         object_name: 'Название объекта',
         apply_filter: 'Применить',
         client_type: 'Тип клиента',

@@ -295,6 +295,7 @@ export default {
     },
 
     contracts: {
+        name: 'Shartnomalar',
         reset_filter: "Filterni tozalash",
         apply_filter: 'Qidirish',
         object_name: 'Obyektning nomi',

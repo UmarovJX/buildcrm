@@ -19,7 +19,10 @@
               class="breadcrumb-item"
           >
             <router-link :to="{ name:routeName,params }">
-              {{ textContent }}
+              <slot :name="routeName" v-if="hasSlotContent(routeName)"/>
+              <span v-else>
+                {{ textContent }}
+              </span>
             </router-link>
           </li>
         </template>
@@ -48,9 +51,9 @@ export default {
       required: true
     },
   },
-  computed: {
-    showBreadCrumbList() {
-      return this.breadCrumbs.length > 0
+  methods: {
+    hasSlotContent(slotName) {
+      return this.$slots[slotName]
     }
   }
 }

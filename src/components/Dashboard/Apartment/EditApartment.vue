@@ -1,31 +1,14 @@
 <template>
   <main>
     <div class="app-content">
-      <!--
-       <div class="go__back__button">-->
-      <!--        <button-->
-      <!--            class="btn-back d-block"-->
-      <!--            @click="goBackToLastStep"-->
-      <!--        >-->
-      <!--          <i class="fal fa-arrow-left mr-2"></i>-->
-      <!--          <span>{{ $t('go_back') }}</span>-->
-      <!--        </button>-->
-      <!--      </div>-->
-      <!--      <div class="countdown-timer" draggable="true">-->
-      <!--        <flip-countdown-->
-      <!--            :deadline="expiry_at"-->
-      <!--            :showDays="false"-->
-      <!--            :showHours="false"-->
-      <!--            @timeElapsed="timeElapsedHandler"-->
-      <!--        ></flip-countdown>-->
-      <!--      </div>
-      -->
-
       <base-bread-crumb
           :bread-crumbs="breadCrumbs"
           :active-content="activeContent"
           class="mb-4"
       >
+        <template #contracts-view>
+          <span>{{ order.contract_number }}</span>
+        </template>
       </base-bread-crumb>
 
       <!-- Step 1 -->
@@ -437,7 +420,8 @@ export default {
       errors: {},
       getErrors: [],
       paymentDetails: {},
-      schedule: {}
+      schedule: {},
+      contract_number: ''
     }
   },
 
@@ -457,24 +441,20 @@ export default {
     breadCrumbs() {
       return [
         {
-          routeName: 'objects',
-          textContent: this.$t('objects.title')
+          routeName: 'contracts',
+          textContent: this.$t('contracts.name')
         },
         {
-          routeName: 'apartments',
-          textContent: this.objectName,
+          routeName: 'contracts-view',
+          textContent: `${this.$t('payments.contract')}`,
           params: {
             object: this.$route.params.object
           }
-        },
-        {
-          routeName: '',
-          textContent: this.$t('objects.create.apartment')
-        },
+        }
       ]
     },
     activeContent() {
-      return this.$t('objects.booking')
+      return this.$t('edit')
     },
     // apartmentInfoItem() {
     //   let val = this.getApartmentOrder;
@@ -491,7 +471,6 @@ export default {
     //   }
     //   return {};
     // },
-
   },
 
   watch: {
@@ -527,7 +506,8 @@ export default {
             first_payment_date: res.data.first_payment_date,
             monthly_payments: res.data.schedule.monthly,
             discount: res.data['payments_details']?.discount ?? this.discounts[0],
-            discount_amount: res.data.discount_amount
+            discount_amount: res.data.discount_amount,
+            contract_number: res.data.contract_number
           }
           this.paymentDetails = res.data['payments_details']
           this.schedule = res.data.schedule
