@@ -250,7 +250,9 @@ export default {
     },
 
     fullName(value) {
-      return value.first_name.lotin + ' ' + value.last_name.lotin + ' ' + value.second_name.lotin
+      if (value && value.first_name && value.last_name && value.second_name)
+        return value.first_name.lotin + ' ' + value.last_name.lotin + ' ' + value.second_name.lotin
+      return ''
     },
 
     setFormProperty(property, value) {
