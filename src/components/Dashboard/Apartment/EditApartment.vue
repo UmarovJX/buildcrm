@@ -257,6 +257,7 @@
                     :contract="contract"
                     :discounts="discounts"
                     :buttons="buttons"
+                    @redirect-to-contract="redirectToTheMainPage"
                 />
               </div>
             </div>
@@ -642,7 +643,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_close"),
       }).then((result) => {
         if (result.value) {
-          this.expiredConfirm();
+          this.redirectToTheMainPage()
         }
       });
     },

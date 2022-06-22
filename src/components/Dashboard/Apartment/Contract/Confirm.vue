@@ -81,6 +81,8 @@ export default {
     order: {}
   },
 
+  emits: ['redirect-to-contract'],
+
   data() {
     return {
       header: {
@@ -102,7 +104,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_close"),
       }).then((result) => {
         if (result.value) {
-          this.expiredConfirm();
+          this.$emit('redirect-to-contract')
         }
       });
     },

@@ -91,7 +91,6 @@
             <!--            <span v-else class=""> - </span>-->
           </template>
 
-
           <template v-for="(price) of priceList" v-slot:cell()="data">
             <slot :name="price.id" v-bind="data">{{ data.item.prices }}</slot>
           </template>
