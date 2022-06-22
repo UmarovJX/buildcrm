@@ -930,7 +930,10 @@ export default {
     },
 
     confirmClient() {
-      const data = this.newClient
+      const other_phone = parseInt(this.newClient.other_phone.slice(1).trim().replaceAll(' ', ''))
+      const phone = parseInt(this.newClient.other_phone.slice(1).trim().replaceAll(' ', ''))
+      const data = {...this.newClient, other_phone, phone}
+
       api.clientsV2.createClient(data).then((res) => {
         localStorage.setItem('client_id', res.data.id)
       }).catch((err) => {
