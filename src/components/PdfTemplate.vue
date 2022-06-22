@@ -37,9 +37,9 @@
           </div>
           <div class="row">
             <div v-if="apartment.plan" class="col-12 pdf-img">
-<!--              <img v-if="apartment.plan"-->
-<!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
-              <img :src="require('@/assets/img/plan.png')" alt="plan-image">
+              <!--              <img v-if="apartment.plan"-->
+              <!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
+              <img :src="require('@/assets/img/object__img1.png')" alt="plan-image">
             </div>
           </div>
           <div class="row pdf-features">
@@ -272,9 +272,10 @@
                   <span class="table-item" v-else>{{ totalPrintPrice(item.amount) }}</span>
                 </template>
                 <template #cell(priceTotal)="{item}">
-                  <span class="table-item table-item__teal">{{
-                      totalPrintDiscount(item.amount)
-                    }}</span>
+<!--                  <span v-if="item.prepay === 100" class="table-item table-item__teal">{{-->
+<!--                      totalPrintPriceFull(item.amount)-->
+<!--                    }}</span>-->
+                  <span class="table-item">{{ totalPrintDiscount(item.amount) }}</span>
                 </template>
 
               </b-table>
@@ -390,16 +391,16 @@ export default {
 
     }
   },
-  computed: {
-    planImage() {
-      if (this.apartment.plan.image.length) {
-        return this.apartment.plan.image[0]
-      } else {
-        return `require('@/assets/img/plan.png')`
-      }
-
-    }
-  },
+  // computed: {
+  //   planImage() {
+  //     if (this.apartment.plan.image.length) {
+  //       return this.apartment.plan.image[0]
+  //     } else {
+  //       return `require('@/assets/img/plan.png')`
+  //     }
+  //
+  //   }
+  // },
   methods: {
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
     generatePdf() {
@@ -429,6 +430,9 @@ export default {
     totalPrintPrice(value) {
       return formatToPrice(this.apartment.plan.area * (value + parseFloat(this.printCalc.discount_price)), 2)
     },
+    // totalPrintPriceFull(value) {
+    //   return formatToPrice(this.apartment.plan.area * (parseFloat(this.printCalc.discount_price)) + (this.apartment.prices.price), 2)
+    // },
   },
 
 }

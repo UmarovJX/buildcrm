@@ -702,7 +702,6 @@ export default {
           key: 'type',
           label: this.$t('contracts.view.type'),
           formatter: (type) => {
-            console.log(type)
             this.$t(type)
           }
         },

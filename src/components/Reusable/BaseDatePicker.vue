@@ -7,7 +7,7 @@
         :placeholder="placeholder"
         v-model="dateValue"
         class="date-picker"
-        range
+        :range="range"
     ></date-picker>
     <span class="calendar-icon">
       <base-calendar-icon
@@ -33,8 +33,12 @@ export default {
   emits: ['input'],
   props: {
     defaultValue: {
-      type: Array,
+      type: [Array, String],
       default: () => []
+    },
+    range: {
+      type: Boolean,
+      default: () => true
     },
     format: {
       type: String,
@@ -68,7 +72,7 @@ export default {
   },
   methods: {
     initDefaultValue() {
-      if (this.defaultValue.length) {
+      if (this.defaultValue && this.defaultValue.length) {
         this.dateValue = this.defaultValue
       }
     },

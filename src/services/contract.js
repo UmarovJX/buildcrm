@@ -95,6 +95,18 @@ class ContractV2 extends Core {
     deleteContract(contractId, body) {
         return this.post(`contracts/${contractId}`, body)
     }
+
+    reOrderDetails(id) {
+        return this.get('contracts/' + id + '/reorder')
+    }
+
+    reOrderConfirm(id, body) {
+        return this.put('contracts/' + id + '/reorder', body)
+    }
+
+    getReissue(id){
+        return this.get('contracts/' + id + '/reissue')
+    }
 }
 
 export default {

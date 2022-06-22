@@ -3,14 +3,20 @@
       class="filter__inputs-input select-container"
       :class="[{'error':error,'justify-content-center align-items-center':!label}]"
   >
-    <span v-if="value && label" class="input-label">{{ placeholder }}</span>
+    <div v-if="value && label" class="input-label">
+      <span>
+        {{ placeholder }}
+      </span>
+    </div>
+<!--    <span v-if="value && label" class="input-label">{{ placeholder }}</span>-->
     <select
         :name="name"
         v-model="value"
         :class="{'base-select-initial':!value, 'not-label':!label}"
         class="base-select"
+        @click="openSelect"
     >
-      <option :value="null" v-if="!noPlaceholder && placeholder">{{ placeholder }}</option>
+      <option :value="null" disabled v-if="!noPlaceholder && placeholder">{{ placeholder }}</option>
       <option
           v-for="selectOption in options"
           :value="selectOption[valueField]"
@@ -57,12 +63,16 @@ export default {
     textField: {
       type: String,
       default: 'text'
+    },
+    value: {
+      type: [String, Object, Array, Number],
+      default: () => null
     }
   },
   emits: ['change'],
   data() {
     return {
-      value: null
+      open: false,
     }
   },
   watch: {
@@ -83,6 +93,9 @@ export default {
       if (!this.placeholder || this.noPlaceholder) {
         this.value = this.options[0][this.valueField]
       }
+    },
+    openSelect() {
+      this.open = true
     }
   }
 }
@@ -99,7 +112,8 @@ export default {
 
 .base-select
   border: none
-  //width: 95%
+  width: 100%
+  height: 100%
   //padding: 0.25rem 1.25rem 1rem 1.25rem
   padding-right: 0.5rem
   overflow: hidden
@@ -108,24 +122,46 @@ export default {
   -webkit-appearance: none
 
   &.not-label
-    padding: .5rem 1.25rem .5rem 1.25rem
+  //padding: .5rem 1.25rem .5rem 1.25rem
 
   &::-ms-expand
     display: none
 
   &-initial
-    padding: 0 1.25rem
+//padding: 0 1.25rem
 
 .input-label
-  font-weight: 900
-  font-size: 8px
-  line-height: 10px
+  font-family: CraftworkSans, serif
+  position: relative
+  //margin-bottom: 2px;
   letter-spacing: 1px
-  padding: 0.5rem 1.25rem 0 1.5rem
-  //padding-top: 0.5rem
-  //padding-bottom: 0.5rem
   text-transform: uppercase
   color: var(--gray-400)
+  width: 100%
+  display: flex
+  padding-left: 1rem
+  margin-bottom: 6px
+
+  span
+    font-weight: 900
+    font-size: 8px
+    line-height: 10px
+    position: absolute
+    top: 6px
+    left: 0
+
+//
+//.input-label
+//  font-weight: 900
+//  font-size: 8px
+//  line-height: 10px
+//  letter-spacing: 1px
+//  padding: 0.5rem 1.25rem 0 1.5rem
+//  //padding-top: 0.5rem
+//  //padding-bottom: 0.5rem
+//  text-transform: uppercase
+//  color: var(--gray-400)
+
 
 .custom-select
   background: #fff url('../../assets/icons/icon-down.svg') right 0.5rem bottom 6.5px no-repeat
