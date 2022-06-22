@@ -933,8 +933,18 @@ export default {
     },
 
     confirmClient() {
-      const other_phone = parseInt(this.newClient.other_phone.trim().replaceAll(' ', '').replaceAll('+', ''))
-      const phone = parseInt(this.newClient.other_phone.trim().replaceAll(' ', '').replaceAll('+', ''))
+      let other_phone = ''
+      let phone = ''
+      if (typeof this.newClient.other_phone === "string") {
+        other_phone = parseInt(this.newClient.other_phone.replaceAll(' ', '').replaceAll('+', '').trim())
+      } else {
+        other_phone = this.newClient.other_phone
+      }
+      if (typeof this.newClient.phone === "string") {
+        phone = parseInt(this.newClient.phone.replaceAll(' ', '').replaceAll('+', '').trim())
+      } else {
+        phone = this.newClient.phone
+      }
       const data = {...this.newClient, other_phone, phone}
 
       api.clientsV2.createClient(data).then((res) => {
