@@ -563,6 +563,7 @@ export default {
         agreement_number: '',
         client_uuid: null,
       },
+      client_id: '',
       order: {},
       types: [],
       languages: [
@@ -582,7 +583,7 @@ export default {
 
   async created() {
     await this.fetchOldClient()
-    if (localStorage.getItem('client_id')) {
+    if (this.client_id) {
       this.tabIndex = 1
       this.tabBtnText = 're_contract'
       this.contractBtn = false
@@ -948,7 +949,7 @@ export default {
       const data = {...this.newClient, other_phone, phone}
 
       api.clientsV2.createClient(data).then((res) => {
-        localStorage.setItem('client_id', res.data.id)
+        this.client_id = res.data.id
       }).catch((err) => {
         return err
       }).finally(() => {
@@ -958,16 +959,16 @@ export default {
     },
 
     confirmContract() {
-      this.contract.client_uuid = localStorage.getItem('client_id')
+      this.contract.client_uuid = this.client_id
       api.contractV2.reOrderConfirm(this.order.uuid, this.contract).then(() => {
-        localStorage.removeItem('client_id')
+        this.client_id = ''
         this.$router.push({name: 'contracts-view', params: {id: this.$route.params.id}})
       }).catch(error => {
         if (error.response.data.message) {
           this.$toasted.show(error.response.data.message, {
             type: 'error'
           })
-          localStorage.removeItem('client_id')
+          this.client_id = ''
           this.$router.push({name: 'contracts-view', params: {id: this.$route.params.id}})
         }
       }).finally(() => {
