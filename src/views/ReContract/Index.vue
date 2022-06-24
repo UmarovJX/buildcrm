@@ -70,14 +70,17 @@
                     :name="`${$t('series')}`"
                     v-slot="{errors}"
                 >
-                  <base-input :class="{'error' : errors[0]}" type="text" mask="AA#######"
-                              class="client__details_info_card" :label="true"
-                              :placeholder="$t('series')"
-                              @input="fetchClientSeries"
-                              v-model="newClient['passport_series']"/>
+                  <base-input
+                      :class="{'error' : errors[0]}"
+                      type="text"
+                      mask="AA#######"
+                      class="client__details_info_card" :label="true"
+                      :placeholder="$t('series')"
+                      @input="fetchClientSeries"
+                      v-model="newClient['passport_series']"
+                  />
                 </ValidationProvider>
               </div>
-
             </div>
           </div>
           <div class="row">
@@ -202,9 +205,12 @@
                     :name="`${$t('apartments.agree.issued_by_whom')}`"
                     v-slot="{errors}"
                 >
-                  <base-input :class="{'error' : errors[0]}" class="client__details_info_card" :label="true"
-                              :placeholder="$t('apartments.agree.issued_by_whom')"
-                              v-model="newClient['issued_by_whom']"/>
+                  <base-input
+                      :class="{'error' : errors[0]}"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="$t('apartments.agree.issued_by_whom')"
+                      v-model="newClient['issued_by_whom']"/>
                 </ValidationProvider>
               </div>
             </div>
@@ -313,10 +319,13 @@
                     :name="`${ $t('number')} (${$t('extra')})`"
                     v-slot="{errors}"
                 >
-                  <base-input :class="{'error' : errors[0]}" type="tel" mask="+998 ## ### ## ##"
-                              class="client__details_info_card" :label="true"
-                              :placeholder="`${ $t('number')} (${$t('extra')})`"
-                              v-model="newClient['other_phone']"/>
+                  <base-input
+                      :class="{'error' : errors[0]}"
+                      type="tel" mask="+998 ## ### ## ##"
+                      class="client__details_info_card" :label="true"
+                      :placeholder="`${ $t('number')} (${$t('extra')})`"
+                      v-model="newClient['other_phone']"
+                  />
                 </ValidationProvider>
               </div>
             </div>

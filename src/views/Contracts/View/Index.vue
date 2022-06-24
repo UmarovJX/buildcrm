@@ -55,8 +55,10 @@
             </span>
             {{ $t('contracts.view.cancel_contract') }}
           </b-dropdown-item>
-          <b-dropdown-item v-if="order && order.reissue.re_order"
-                           @click="openReContractModal">
+          <b-dropdown-item
+              v-if="order && order.reissue.re_order"
+              @click="openReContractModal"
+          >
             <span class="mr-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -66,7 +68,6 @@
             </span>
             {{ $t('re_contract') }}
           </b-dropdown-item>
-
         </b-dropdown>
       </div>
     </div>
@@ -153,7 +154,7 @@
     </base-modal>
 
 
-    <!--Re - CONTRACT-->
+    <!--RE - CONTRACT-->
     <base-modal design="reContract-modal auto-height" ref="re-contract">
       <template #header>
            <span class="d-flex align-items-center justify-content-between">
@@ -162,7 +163,6 @@
             <span class="go__back" @click="closeReContractModal">
               <BaseCLose/>
             </span>
-             <!--    TITLE      -->
         </span>
       </template>
 
@@ -170,17 +170,18 @@
         <div class="reContract-modal__warning">
           <BaseWarningIcon style="min-width: 40px" fill="#F97316" :width="40" :height="40"/>
           <p>
-            Контракт может быть переоформлен только один раз. Уточните всю информацию, прежде чем продолжить
+            {{ $t('contracts.view.regenerate_warning') }}
           </p>
         </div>
         <div class="reContract-modal__select">
-          <label>Выберите причину переоформлении</label>
+          <label>{{ $t('contracts.view.regenerate_select_reason') }}</label>
           <!--          <base-select v-model="reason_type"-->
           <!--                       textField="value"-->
           <!--                       :options="options"-->
           <!--                       @change="setFormProperty('reason_type',$event)"-->
           <!--                       :placeholder="$t('reason_recontract')"-->
-          <!--                       :label="true"/>-->
+          <!--                       :label="true"/>
+          -->
           <b-dropdown left>
             <template v-if="reason_type" #button-content>
               <div class="input-block">
@@ -271,14 +272,14 @@ export default {
         {
           "id": 1,
           "name": {
-            "uz": "В целях инвестиции",
+            "uz": "Investitsiya maqsadida",
             "ru": "В целях инвестиции"
           }
         },
         {
           "id": 2,
           "name": {
-            "uz": "Полное переоформление",
+            "uz": "Qayta ro'yxatdan o'tish",
             "ru": "Полное переоформление"
           }
         }

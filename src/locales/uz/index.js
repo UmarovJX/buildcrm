@@ -350,6 +350,8 @@ export default {
         },
 
         view: {
+            regenerate_warning: "Shartnoma faqatgina bir marta o'zgartirilishi mumkin , Davom etishdan oldin barcha malumotlarni tekshiring",
+            regenerate_select_reason: "Shartnomaning o'zgartirilishi sababini tanlang",
             unfamiliar: "Notanish", // asd
             familiar: "Tanish", // asd
             edit_type: "Mijoz turini o'zgartirish", // asd
