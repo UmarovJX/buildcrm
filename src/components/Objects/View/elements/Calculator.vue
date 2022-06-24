@@ -10,9 +10,9 @@
             :options="paymentOption"
             :no-placeholder="true"
             :value="discount"
-            value-field="id"
+            value-field="value"
             @change="changeDiscount"
-            :placeholder="$t('payment_discount')"
+            :placeholder="`${ $t('payment_discount') }`"
         ></base-select>
       </div>
 
@@ -152,6 +152,10 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 
 export default {
   name: "Calculator",
+  components: {
+    BaseSelect,
+    BasePriceInput
+  },
   props: {
     apartment: {
       type: Object,
@@ -162,10 +166,7 @@ export default {
       default: true
     }
   },
-  components: {
-    BaseSelect,
-    BasePriceInput
-  },
+  emits: ['for-print'],
   data() {
     return {
       monthly_price: 0,
@@ -194,11 +195,11 @@ export default {
     }
   },
   mounted() {
-    this.$emit('for-print', this.calc)
+    this.upHillForPrint()
   },
   watch: {
     discount() {
-      this.$emit('for-print', this.calc)
+      this.upHillForPrint()
     }
   },
   computed: {
@@ -265,10 +266,10 @@ export default {
 
       this.calc.total_discount = this.totalDiscount
       this.calc.less_price = this.lessPrice
-      this.$emit('for-print', this.calc)
+      this.upHillForPrint()
     },
-    async changeDiscount(discountId) {
-      this.discount = this.paymentOption.find(option => option.value.id === discountId).value
+    async changeDiscount(selectOption) {
+      this.discount = this.paymentOption.find(option => option.value.id === selectOption.id).value
       this.calc.prepay_percente = this.discount.prepay;
       if (this.discount.type === 'percent' && this.discount.prepay === 100) {
         this.calc.total = this.apartment.price;
@@ -304,9 +305,13 @@ export default {
     },
     changeDiscount_month() {
       this.monthly_price = this.getMonth()
+      this.upHillForPrint()
+    },
+    upHillForPrint() {
       this.$emit('for-print', {
         ...this.calc,
-        monthly_price: this.monthly_price
+        monthly_price: this.monthly_price,
+        discount: this.discount
       })
     },
     getPrepay() {

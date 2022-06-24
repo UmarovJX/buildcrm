@@ -32,7 +32,6 @@ export function getPrepay(apartments, contract) {
         for (let i = 0; contract.initial_payments.length > i; i++) {
             total += parseFloat(contract.initial_payments[i].amount)
         }
-        console.log('total', total)
         return total;
     }
 

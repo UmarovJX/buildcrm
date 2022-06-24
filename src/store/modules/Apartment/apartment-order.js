@@ -12,7 +12,6 @@ export default {
                 vm.toastedWithErrorCode(error);
                 vm.$router.push("/");
             }
-
         },
     },
 

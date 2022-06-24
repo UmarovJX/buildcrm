@@ -208,7 +208,7 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
 import {formatToPrice} from "@/util/reusable";
-import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import api from "@/services/api";
 import PdfTemplate from "@/components/PdfTemplate";
 
@@ -380,12 +380,14 @@ export default {
 
   /* METHODS */
   methods: {
+    ...mapMutations(['setCalculationProperties']),
     printPdf() {
       this.pdfVisible = true
       this.$refs.html2Pdf.generatePdf()
     },
     getCalc(value) {
       this.printCalc = value
+      this.setCalculationProperties(value)
     },
     changeTabOfUploadList(status) {
       const {status: queryStatus} = this.$route.query

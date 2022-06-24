@@ -1,6 +1,19 @@
 import api from "@/services/api";
 
 export default {
+    state: {
+        apartment: {}, calc: {}
+    },
+
+    getters: {
+        getApartment(state) {
+            return state.apartment;
+        },
+        getCalcData(state) {
+            return state.calc
+        }
+    },
+
     actions: {
         async fetchApartment(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
@@ -16,18 +29,10 @@ export default {
     },
 
     mutations: {
-        updateApartmentView(state, apartment) {
-            state.apartment = apartment;
+        setCalculationProperties(state, calc) {
+            state.calc = calc
+        }, updateApartmentView(state, apartment) {
+            state.apartment = apartment
         },
-    },
-
-    state: {
-        apartment: {},
-    },
-
-    getters: {
-        getApartment(state) {
-            return state.apartment;
-        },
-    },
-};
+    }
+}

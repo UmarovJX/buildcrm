@@ -238,10 +238,18 @@
             <div class="col-xl-4 h-auto">
               <div class="sticky-top">
                 <ClientInformation :client="client"></ClientInformation>
-                <ApartmentsList :apartments="apartments" :contract="contract"
-                                @changePrice="initialCalc"></ApartmentsList>
-                <Calculator :client="client" :apartments="apartments" :contract="contract" :discounts="discounts"
-                            @changeDiscount="changeDiscount"></Calculator>
+                <ApartmentsList
+                    :apartments="apartments"
+                    :contract="contract"
+                    @changePrice="initialCalc"
+                ></ApartmentsList>
+                <Calculator
+                    :client="client"
+                    :apartments="apartments"
+                    :contract="contract"
+                    :discounts="discounts"
+                    @changeDiscount="changeDiscount"
+                ></Calculator>
                 <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract"
                          :discounts="discounts" :buttons="buttons"></Confirm>
               </div>

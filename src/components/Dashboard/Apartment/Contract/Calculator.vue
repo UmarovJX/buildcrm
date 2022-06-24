@@ -309,17 +309,30 @@ export default {
     ...mapGetters([
       "getPermission",
       "getMe",
+      'getCalcData'
     ]),
   },
 
-  mounted() {
+  created() {
     this.setInitialValues()
     this.InitialCalc()
   },
 
   methods: {
     setInitialValues() {
-      this.contract.discount = this.discounts.find(({id: discountId}) => discountId === this.paymentDetails.discount.id)
+      const hasLength = Object.keys(this.getCalcData).length
+      if (hasLength) {
+        const {month, discount, discount_price} = this.getCalcData
+        this.contract.discount = this.getDiscount(discount.id)
+        this.contract.discount_amount = discount_price * this.apartments[0].plan.area
+        this.contract.discount_square = discount_price
+        this.contract.month = parseInt(month)
+      } else {
+        this.contract.discount = this.getDiscount(this.paymentDetails.discount.id)
+      }
+    },
+    getDiscount(id) {
+      return this.discounts.find(({id: discountId}) => discountId === id)
     },
     InitialCalc() {
       getTotalDiscount(this.apartments, this.contract)

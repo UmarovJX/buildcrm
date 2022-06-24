@@ -153,13 +153,6 @@
               >
                 <base-print-icon :square="20" fill="#4B5563"/>
               </button>
-
-              <!--              <button-->
-              <!--                  @click="hideApartmentSidebar"-->
-              <!--                  class="cancel__button bg-gray-100 d-flex justify-content-center align-items-center mr-3 mb-4"-->
-              <!--              >-->
-              <!--                <base-minus-circle-icon :square="20" fill="#4B5563"/>-->
-              <!--              </button>-->
             </div>
           </div>
         </div>
@@ -176,7 +169,6 @@
 
     <!--  LOADING    -->
     <base-loading v-if="appLoading"/>
-
 
     <PdfTemplate
         ref="html2Pdf"
@@ -197,7 +189,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
 import Calculator from "@/components/Objects/View/elements/Calculator";
-import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import PrimaryTabItem from "@/components/Objects/View/elements/PrimaryTabItem";
 import {directive} from "vue-awesome-swiper";
 import 'swiper/css/swiper.css'
@@ -211,7 +203,6 @@ import {formatToPrice} from "@/util/reusable";
 
 export default {
   name: "ApartmentView",
-
   components: {
     PromoSection,
     BaseLoading,
@@ -330,15 +321,12 @@ export default {
 
       return context
     },
-
     price() {
       return formatToPrice(this.apartment.prices.price, 2) + ' ' + this.$t('ye')
     },
-
     squareMetrePrice() {
       return formatToPrice(this.apartment.prices.price_m2, 2) + ' ' + this.$t('ye')
     },
-
     statusSold() {
       return this.apartment.order.status === 'sold'
     }
@@ -353,8 +341,12 @@ export default {
   },
 
   methods: {
+    ...mapMutations([
+      'setCalculationProperties'
+    ]),
     getCalc(value) {
       this.printCalc = value
+      this.setCalculationProperties(value)
     },
     printPdf() {
       this.pdfVisible = true
@@ -538,7 +530,7 @@ input[type="number"]
   padding-left: 1rem
   padding-right: 1rem
   min-width: 42rem
-  //width: 100%
+//width: 100%
 
 
 .main__class

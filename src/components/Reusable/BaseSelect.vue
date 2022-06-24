@@ -3,24 +3,30 @@
       class="filter__inputs-input select-container"
       :class="[{'error':error,'justify-content-center align-items-center':!label}]"
   >
-    <div v-if="value && label" class="input-label">
+    <div v-if="inlineValue && label" class="input-label">
       <span>
         {{ placeholder }}
       </span>
     </div>
-<!--    <span v-if="value && label" class="input-label">{{ placeholder }}</span>-->
+    <!--    <span v-if="value && label" class="input-label">{{ placeholder }}</span>-->
     <select
         :name="name"
-        v-model="value"
+        v-model="inlineValue"
         :class="{'base-select-initial':!value, 'not-label':!label}"
         class="base-select"
         @click="openSelect"
     >
-      <option :value="null" disabled v-if="!noPlaceholder && placeholder">{{ placeholder }}</option>
       <option
-          v-for="selectOption in options"
+          disabled
+          :value="null"
+          v-if="!noPlaceholder && placeholder"
+      >
+        {{ placeholder }}
+      </option>
+      <option
+          v-for="(selectOption,index) in options"
           :value="selectOption[valueField]"
-          :key="selectOption[valueField]"
+          :key="index"
       >
         {{ selectOption[textField] }}
       </option>
@@ -73,10 +79,11 @@ export default {
   data() {
     return {
       open: false,
+      inlineValue: Object.assign({}, this.value)
     }
   },
   watch: {
-    value: {
+    inlineValue: {
       handler() {
         this.triggerEvent()
       }
@@ -87,11 +94,11 @@ export default {
   },
   methods: {
     triggerEvent() {
-      this.$emit('change', this.value)
+      this.$emit('change', this.inlineValue)
     },
     settingUp() {
       if (!this.placeholder || this.noPlaceholder) {
-        this.value = this.options[0][this.valueField]
+        this.inlineValue = this.options[0][this.valueField]
       }
     },
     openSelect() {
@@ -127,7 +134,7 @@ export default {
   &::-ms-expand
     display: none
 
-  //&-initial
+//&-initial
 //padding: 0 1.25rem
 
 .input-label
