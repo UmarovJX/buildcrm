@@ -160,10 +160,12 @@ export default {
     refresh_password: 'Обновить пароль',
     manager: "Менеджер",
     contract_regeneration: 'Регенерация контракта',
-
-
     lotin_compress: '(лат.)',
     cyrill_compress: '(кир.)',
+    details_of_the_agreement: 'Детали соглашения',
+    date_of_the_agreement: 'Дата составления',
+    agreement_number: 'Номер соглашения',
+    reason_for_reissuing: 'Причина переоформлении',
 
     monday: 'Понедельник',
     tuesday: 'Вторник',

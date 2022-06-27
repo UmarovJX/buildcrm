@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-6">
           <div class="assignee-header">
-            <p class="assignee-header__title">Детали соглашения</p>
+            <p class="assignee-header__title">{{ $t('details_of_the_agreement') }}</p>
           </div>
         </div>
 
@@ -15,7 +15,7 @@
             <div class="col-12">
               <div class="assignee-item">
                 <div class="client__details_info_card mr-5">
-                  <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
+                  <label>{{ $t('date_of_the_agreement') }}</label>
                   <b-form-input disabled :value="order.date"/>
                 </div>
               </div>
@@ -23,7 +23,7 @@
             <div class="col-12">
               <div class="assignee-item">
                 <div class="client__details_info_card mr-5">
-                  <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
+                  <label>{{ $t('agreement_number') }}</label>
                   <b-form-input disabled :value="order.contract_number"/>
                 </div>
               </div>
@@ -31,8 +31,8 @@
             <div class="col-12">
               <div class="assignee-item">
                 <div class="client__details_info_card mr-5">
-                  <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
-                  <b-form-input v-if="order.reorder_type" disabled :value="checkLocales(order.reorder_type.name)"/>
+                  <label>{{ $t('reason_for_reissuing') }}</label>
+                  <b-form-input v-if="order['reorder_type']" disabled :value="checkLocales(order.reorder_type.name)"/>
                 </div>
               </div>
             </div>

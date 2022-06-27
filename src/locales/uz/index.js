@@ -176,7 +176,12 @@ export default {
     refresh_password: 'Parolni yangilash',
     manager: "Menejer",
     contract_regeneration: 'Shartnomani qayta tiklash',
-
+    lotin_compress: '(lotin.)',
+    cyrill_compress: '(kirill.)',
+    details_of_the_agreement: 'Kelishuv tafsilotlari',
+    date_of_the_agreement: 'Kelishuv sanasi',
+    reason_for_reissuing: 'Qayta rasmiylashtirish sababi',
+    agreement_number: 'Shartnoma raqami',
 
     monday: 'Dushanba',
     tuesday: 'Seshanba',

@@ -221,7 +221,6 @@
     </base-modal>
   </main>
 </template>
-
 <script>
 import api from "@/services/api";
 import BaseLoading from "@/components/Reusable/BaseLoading";
