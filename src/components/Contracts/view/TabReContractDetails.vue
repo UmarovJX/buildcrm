@@ -45,7 +45,6 @@
             </template>
           </base-button>
         </div>
-
       </div>
     </div>
     <div class="assignee">

@@ -838,6 +838,7 @@ export default {
         payment_success_added: "To'lov muvaffaqiyatli qo'shildi",
         payment_list_add: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
 
+        successfully_edited: "Muvaffaqiyatli tahrirlandi",
         success_create_payment: "Hisob raqam qo'shildi",
         success_update_payment: "Hisob raqam yangilandi",
         text_cancel_agree: "Rostdan ham bekor qilishni xoxlaysizmi?",

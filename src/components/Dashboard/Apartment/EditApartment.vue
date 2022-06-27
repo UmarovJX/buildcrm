@@ -586,13 +586,16 @@ export default {
                       client_id: response.data.id
                     }).then(res => {
                   this.toasted(res.data.message, "success");
-                  this.backToView()
-                  this.onSubmit();
+                  this.$swal({
+                    title: this.$t('successfully'),
+                    text: this.$t('sweetAlert.successfully_edited'),
+                    icon: "success"
+                  }).then(() => {
+                    this.backToView()
+                  })
                 }).catch(error => {
                   this.toasted(error.response.data.message, "error");
                 })
-              } else if (this.order.status === 'contract') {
-                this.onSubmit();
               } else {
                 this.onSubmit();
               }
@@ -625,8 +628,7 @@ export default {
       this.contract.step = 2;
       this.buttons.confirm = true;
       this.buttons.next = false;
-      this.contract.month = this.deepClone(this.order.payments_details.month)
-      // this.setData();
+      this.contract.month = this.deepClone(this.order['payments_details'].month)
     },
 
     getValidationState({dirty, validated, valid = null}) {

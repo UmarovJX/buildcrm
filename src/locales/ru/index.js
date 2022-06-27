@@ -834,6 +834,7 @@ export default {
         text_cancel_reserve: "Вы действительно хотите отменить бронь?",
         yes_cancel_reserve: "Да, отменить",
         canceled_reserve: "Бронь отменена",
+        successfully_edited: "Успешно изменено",
         success_create_role: "Роль успешно создана",
         success_create_company: "Компания успешно создано",
         success_create_payment: "Счет успешно создана",
