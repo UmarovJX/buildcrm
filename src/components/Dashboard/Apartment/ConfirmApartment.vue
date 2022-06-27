@@ -250,8 +250,14 @@
                     :discounts="discounts"
                     @changeDiscount="changeDiscount"
                 ></Calculator>
-                <Confirm :order="order" :client="client" :apartments="apartments" :contract="contract"
-                         :discounts="discounts" :buttons="buttons"></Confirm>
+                <Confirm
+                    :order="order"
+                    :client="client"
+                    :apartments="apartments"
+                    :contract="contract"
+                    :discounts="discounts"
+                    :buttons="buttons">
+                </Confirm>
               </div>
             </div>
           </div>
@@ -419,6 +425,7 @@ export default {
       "getPermission",
       "getMe",
       "getApartmentOrder",
+      "getCalcData"
     ]),
     objectName() {
       if (this.order.apartments?.length) {
@@ -447,23 +454,7 @@ export default {
     },
     activeContent() {
       return this.$t('objects.booking')
-    },
-    // apartmentInfoItem() {
-    //   let val = this.getApartmentOrder;
-    //   if (val) {
-    //     return {
-    //       contract_number: val.contract_number,
-    //       created_by: val.created_by,
-    //       expiry_at: this.$moment(val.expiry_at)
-    //           .utcOffset("+0500")
-    //           .format("YYYY-MM-DD h:mm:ss"),
-    //       status: val.status,
-    //       uuid: val.uuid,
-    //     };
-    //   }
-    //   return {};
-    // },
-
+    }
   },
 
   created() {
@@ -491,23 +482,9 @@ export default {
     this.expiry_at = expired;
 
     const time = new Date(current) - new Date(expired);
-    console.log(time);
     if (time > 0) {
       this.timeElapsedHandler();
     }
-
-    // this.fetchApartmentOrder(this).then(() => {
-    //   this.apartment_edit.contract_number = this.deepCloneFromApartments(
-    //       this.apartmentInfoItem.contract_number
-    //   );
-    //   this.getAllData();
-    //
-
-    //
-
-    //
-
-
   },
 
   methods: {
@@ -595,7 +572,12 @@ export default {
       this.contract.step = 2;
       this.buttons.confirm = true;
       this.buttons.next = false;
-      this.contract.month = this.deepClone(this.order.apartments[0].object.credit_month)
+      const hasLength = Object.keys(this.getCalcData).length
+      if (hasLength) {
+        this.contract.month = parseInt(this.getCalcData.month)
+      } else {
+        this.contract.month = this.deepClone(this.order.apartments[0].object.credit_month)
+      }
       this.setData();
     },
 

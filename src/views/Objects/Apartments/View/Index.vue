@@ -346,7 +346,7 @@ export default {
     ]),
     getCalc(value) {
       this.printCalc = value
-      this.setCalculationProperties(value)
+      this.setCalculationProperties(Object.assign({}, value))
     },
     printPdf() {
       this.pdfVisible = true
@@ -380,7 +380,9 @@ export default {
             if (response?.data) {
               this.$router.push({
                 name: "confirm-apartment",
-                params: {id: response.data.uuid}
+                params: {
+                  id: response.data.uuid
+                }
               })
             }
           })

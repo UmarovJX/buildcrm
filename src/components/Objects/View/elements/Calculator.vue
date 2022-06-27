@@ -183,6 +183,7 @@ export default {
         total: 0,
         prepay_percente: 0,
         base_price: 0,
+        month: 0
       },
       discountPerSquare: {
         value: null,
@@ -191,10 +192,12 @@ export default {
       discountSumSquare: {
         value: null,
         permissionChange: false,
-      }
+      },
+      monthlyPaymentDuration: 0
     }
   },
   mounted() {
+    this.calc.month = this.apartment?.object?.credit_month
     this.upHillForPrint()
   },
   watch: {
@@ -257,7 +260,6 @@ export default {
 
       this.calc.prepay_percente = this.discount.prepay
       this.calc.prepay = this.getPrepay()
-      this.calc.month = this.apartment?.object?.credit_month
       this.calc.monthly_price = this.getMonth()
       this.monthly_price = this.calc.monthly_price
       this.calc.debt = this.getDebt()
@@ -304,6 +306,7 @@ export default {
       }
     },
     changeDiscount_month() {
+      this.monthlyPaymentDuration = this.calc.month
       this.monthly_price = this.getMonth()
       this.upHillForPrint()
     },
@@ -311,7 +314,8 @@ export default {
       this.$emit('for-print', {
         ...this.calc,
         monthly_price: this.monthly_price,
-        discount: this.discount
+        discount: this.discount,
+        month: this.monthlyPaymentDuration
       })
     },
     getPrepay() {
