@@ -41,7 +41,7 @@
                         class="box"
                         @click="showExpressSidebar(elem)"
                     >
-                      <h5 class="apartment-number">
+                      <h5 class="apartment-number" style="white-space: nowrap">
                         {{ elem.number }}
                       </h5>
                     </div>
