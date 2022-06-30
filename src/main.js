@@ -16,7 +16,6 @@ import VueYandexMetrika from 'vue-yandex-metrika'
 import "sweetalert2/dist/sweetalert2.min.css";
 
 import "./components";
-// import "./util/validation"
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
@@ -69,9 +68,6 @@ Vue.use(VueAxios, axios);
 Vue.use(Toasted, {
     iconPack: 'custom-class', theme: "toasted-primary", position: "top-right", duration: 5000,
 });
-
-// Vue.config.productionTip = false;
-// Vue.prototype.$moment = moment;
 
 Vue.use(VueYandexMetrika, {
     id: 86876647, router, env: process.env.NODE_ENV, options: {

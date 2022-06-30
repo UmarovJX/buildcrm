@@ -1,5 +1,8 @@
 <template>
-  <div class="position-relative" style="min-height: 300px">
+  <div
+      class="position-relative"
+      style="min-height: 300px"
+  >
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>

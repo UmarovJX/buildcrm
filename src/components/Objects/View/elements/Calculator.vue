@@ -311,6 +311,10 @@ export default {
       this.upHillForPrint()
     },
     upHillForPrint() {
+      if (this.monthlyPaymentDuration === 0) {
+        this.monthlyPaymentDuration = this.calc.month
+      }
+
       this.$emit('for-print', {
         ...this.calc,
         monthly_price: this.monthly_price,

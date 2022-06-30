@@ -87,6 +87,7 @@ export function axiosRequestInterceptResponse(config) {
     if (!config.headers['Authorization'] && config.url !== 'oauth/login') {
         requestConfig.headers['Authorization'] = `Bearer ${access_token}`
     }
+
     return requestConfig
 }
 
