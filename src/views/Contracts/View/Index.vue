@@ -267,22 +267,7 @@ export default {
       tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'TabReContractDetails'],
       deleteComment: null,
       errors: [],
-      types: [
-        {
-          "id": 1,
-          "name": {
-            "uz": "Investitsiya maqsadida",
-            "ru": "В целях инвестиции"
-          }
-        },
-        {
-          "id": 2,
-          "name": {
-            "uz": "Qayta ro'yxatdan o'tish",
-            "ru": "Полное переоформление"
-          }
-        }
-      ],
+      types: [],
       reason_type: ''
     }
   },
@@ -357,6 +342,15 @@ export default {
     },
     openReContractModal() {
       this.$refs['re-contract'].openModal()
+      this.getType()
+    },
+    getType() {
+      const id = this.$route.params.id
+      api.contractV2.reOrderDetails(id).then(res => {
+        this.types = res.data.types
+      }).catch(err =>
+          console.log(err)
+      )
     },
     closeReContractModal() {
       this.$refs['re-contract'].closeModal()
