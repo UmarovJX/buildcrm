@@ -717,6 +717,7 @@ export default {
         select_category: 'Turini tanlash',
         sale: 'Sotuv',
         booking: 'Band qilish',
+        contract: 'Rasmiylashtirish',
         make_it_main_contract: 'Asosiy shartnoma qilib belgilash',
         unfinished_contract: 'Tugallanmagan shartnomalar',
         view_apartments: 'xonadonlar',

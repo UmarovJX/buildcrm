@@ -29,7 +29,7 @@
               design="import__button"
           >
             <template #left-icon>
-              <span class="mr-3">
+              <span>
                 <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED"/>
               </span>
             </template>
@@ -41,7 +41,7 @@
               design="add__button"
           >
             <template #left-icon>
-              <span class="mr-3">
+              <span>
                 <base-plus-icon :width="20" :height="20" fill="#ffffff"/>
               </span>
             </template>
