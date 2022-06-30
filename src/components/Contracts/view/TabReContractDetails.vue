@@ -179,7 +179,7 @@
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
               <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
-              <b-form-input disabled :value="assignor['phone']"/>
+              <b-form-input disabled :value="phone(assignor['phone'])"/>
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
               <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
-              <b-form-input disabled :value="assignee['phone']"/>
+              <b-form-input disabled :value="phone(assignee['phone'])"/>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
               <label>{{ $t('number') }} ({{ $t('extra') }})</label>
-              <b-form-input disabled :value="assignor['other_phone']"/>
+              <b-form-input disabled :value="phone(assignor['other_phone'])"/>
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
               <label>{{ $t('number') }} ({{ $t('extra') }})</label>
-              <b-form-input disabled :value="assignee['other_phone']"/>
+              <b-form-input disabled :value="phone(assignee['other_phone'])"/>
             </div>
           </div>
         </div>
@@ -219,6 +219,7 @@ w
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import api from "@/services/api";
+import {phonePrettier} from "@/util/reusable";
 
 export default {
   name: "TabReContractDetails",
@@ -246,6 +247,10 @@ export default {
         return name[localStorage.locale]
       else
         return name['ru']
+    },
+
+    phone(value) {
+      return phonePrettier(value)
     },
 
     fullName(value) {
