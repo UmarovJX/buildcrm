@@ -42,6 +42,14 @@ export default {
       currentStatus: ''
     }
   },
+  watch: {
+    '$route.query': {
+      handler: function () {
+        this.setCurrentStatus()
+      },
+      deep: true
+    },
+  },
   methods: {
     getFilteredContent(status) {
       this.currentStatus = status
