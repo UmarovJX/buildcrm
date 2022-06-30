@@ -32,6 +32,7 @@ export default {
     back: "Назад",
     next: "Продолжить",
     create_agree: "Оформить",
+    save_changes: "Сохранить изменения",
     reason_recontract: 'Причина переоформлении',
     number_agree: "Номер соглошения",
     create_date: 'Дата cоставления',

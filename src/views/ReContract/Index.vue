@@ -351,6 +351,7 @@
                       :class="{'error' : errors[0]}"
                       class="client__details_info_card"
                       @change="setFormProperty('language',$event)"
+                      :noPlaceholder="true"
                       :placeholder="$t('clients.language')"
                       v-model="newClient.language"
                       :label="true"
@@ -490,7 +491,8 @@
 
           <base-button
               v-show="tabIndex !== 0"
-              @click="tabIndex--"
+              type="div"
+              @click="backTab"
               :text="$t(`back`)"
               style="margin-right: .5rem;"
           >
@@ -499,13 +501,13 @@
             </template>
           </base-button>
 
-          <base-button v-show="tabIndex === 0" @click="validateClientForm" class="violet-gradient"
+          <base-button v-show="tabIndex === 0" @click="validateClientForm" type="submit" class="violet-gradient"
                        :text="$t(`${tabBtnText}`)">
             <template #right-icon>
               <BaseArrowRightIcon fill="#fff"/>
             </template>
           </base-button>
-          <base-button v-show="tabIndex === 1" @click="validateContractForm" :disabled="contractBtn"
+          <base-button v-show="tabIndex === 1" @click="validateContractForm" type="submit" :disabled="contractBtn"
                        class="violet-gradient"
                        :text="$t(`${tabBtnText}`)">
           </base-button>
@@ -568,7 +570,7 @@ export default {
       },
       contract: {
         date: null,
-        reorder_type_id: 1,
+        reorder_type_id: null,
         agreement_number: '',
         client_uuid: null,
       },
@@ -577,21 +579,28 @@ export default {
       types: [],
       languages: [
         {
-          value: 'ru',
-          text: 'Russian'
-        },
-        {
           value: 'uz',
           text: 'Uzbek',
+        },
+        {
+          value: 'ru',
+          text: 'Russian'
         }
       ],
       timeoutId: null,
       contractBtn: true,
+      back: false,
     }
   },
 
   async created() {
     await this.fetchOldClient()
+    if (this.$route.params?.type) {
+      this.contract.reorder_type_id = this.$route.params.type
+    } else {
+      this.contract.reorder_type_id = 1
+    }
+
     if (this.client_id) {
       this.tabIndex = 1
       this.tabBtnText = 're_contract'
@@ -612,9 +621,16 @@ export default {
 
     async validateContractForm() {
       const isValid = await this.$refs['reContract-form'].validate()
-      if (this.contract.agreement_number !== null && isValid) {
+      if (!this.back && this.contract.agreement_number !== null && isValid) {
         this.confirmContract()
       }
+      this.back = false
+    },
+
+    backTab() {
+      this.tabIndex = 0
+      this.tabBtnText = 'next'
+      this.back = true
     },
 
     fetchClientSeries(value) {
@@ -1002,7 +1018,8 @@ export default {
 
     setFormProperty(property, value) {
       this.newClient[property] = value
-      this.errors[property] = false
+      // this.errors[property] = false
+
     },
 
     setContractProperty(property, value) {
