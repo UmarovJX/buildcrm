@@ -192,12 +192,12 @@ export default {
       },
       {
         name: 'tab_status.sold',
-        status: 'sold',
+        status: 'contract',
         counts: 0
       },
       {
         name: 'tab_status.on_payment',
-        status: 'contract',
+        status: 'sold',
         counts: 0
       },
       {

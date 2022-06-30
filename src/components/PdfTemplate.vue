@@ -8,12 +8,13 @@
       :show-layout="false"
       :float-layout="false"
       :enable-download="true"
-      :preview-modal="false"
+      :preview-modal="true"
       :pdf-quality="2"
       :manual-pagination="true"
       :paginate-elements-by-height="842"
       :html-to-pdf-options="htmlToPdfOptions"
-      @hasDownloaded="$emit('has-downloaded',$event)"
+      @beforeDownload="beforeDownloadPdf"
+      @hasDownloaded="hasDownloadedPdf"
   >
     <section slot="pdf-content">
       <div class="html2pdf__page-break pdf-page">
@@ -353,6 +354,7 @@ export default {
   emits: ['has-downloaded'],
   data() {
     return {
+      showPdfContent: false,
       htmlToPdfOptions: {
         margin: 0,
         filename: '',
@@ -405,6 +407,13 @@ export default {
   },
   methods: {
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
+    beforeDownloadPdf() {
+      // this.showPdfContent = true
+    },
+    hasDownloadedPdf($event) {
+      this.$emit('has-downloaded', $event)
+      // this.showPdfContent = false
+    },
     generatePdf() {
       this.htmlToPdfOptions.filename = this.apartment.object.name + ', ' + this.apartment.number + ' - ' + this.$t('apartment')
       this.$refs.html2Pdf.generatePdf()
