@@ -351,6 +351,7 @@
                       :class="{'error' : errors[0]}"
                       class="client__details_info_card"
                       @change="setFormProperty('language',$event)"
+                      :noPlaceholder="true"
                       :placeholder="$t('clients.language')"
                       v-model="newClient.language"
                       :label="true"
@@ -577,12 +578,12 @@ export default {
       types: [],
       languages: [
         {
-          value: 'ru',
-          text: 'Russian'
-        },
-        {
           value: 'uz',
           text: 'Uzbek',
+        },
+        {
+          value: 'ru',
+          text: 'Russian'
         }
       ],
       timeoutId: null,
@@ -1002,7 +1003,8 @@ export default {
 
     setFormProperty(property, value) {
       this.newClient[property] = value
-      this.errors[property] = false
+      // this.errors[property] = false
+
     },
 
     setContractProperty(property, value) {

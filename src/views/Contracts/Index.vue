@@ -318,8 +318,8 @@ export default {
       if (this.$i18n.locale === 'uz') {
         language = 'lotin'
       }
-      const {last_name, first_name} = client
-      return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language)
+      const {last_name, first_name, second_name} = client
+      return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
     },
     contractView({id}, index, event) {
       const clickedDownloadBtn = event.target.classList.contains('download__icon')

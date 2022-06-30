@@ -257,6 +257,7 @@
                     :contract="contract"
                     :discounts="discounts"
                     :buttons="buttons"
+                    :edit="true"
                     @redirect-to-contract="redirectToTheMainPage"
                 />
               </div>

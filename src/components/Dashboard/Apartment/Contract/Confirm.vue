@@ -43,23 +43,43 @@
           {{ $t("back") }}
         </button>
 
+        <template v-if="!edit">
+          <button
+              type="submit"
+              class="btn btn-success mr-0"
+              v-if="!buttons.loading && buttons.confirm"
+          >
+            {{ $t("create_agree") }}
+            <i class="fa fa-file-contract"></i>
+          </button>
+          <button
+              v-if="buttons.loading && buttons.confirm"
+              type="button"
+              class="btn btn-success mr-0"
+          >
+            {{ $t("create_agree") }}
+            <i class="fas fa-spinner fa-spin"></i>
+          </button>
+        </template>
+        <template v-else>
+          <button
+              type="submit"
+              class="btn btn-success mr-0"
+              v-if="!buttons.loading && buttons.confirm"
+          >
+            {{ $t("save_changes") }}
+            <i class="fa fa-file-contract"></i>
+          </button>
+          <button
+              v-if="buttons.loading && buttons.confirm"
+              type="button"
+              class="btn btn-success mr-0"
+          >
+            {{ $t("save_changes") }}
+            <i class="fas fa-spinner fa-spin"></i>
+          </button>
+        </template>
 
-        <button
-            type="submit"
-            class="btn btn-success mr-0"
-            v-if="!buttons.loading && buttons.confirm"
-        >
-          {{ $t("create_agree") }}
-          <i class="fa fa-file-contract"></i>
-        </button>
-        <button
-            v-if="buttons.loading && buttons.confirm"
-            type="button"
-            class="btn btn-success mr-0"
-        >
-          {{ $t("create_agree") }}
-          <i class="fas fa-spinner fa-spin"></i>
-        </button>
       </div>
 
     </div>
@@ -73,6 +93,10 @@ export default {
   name: "Confirm",
 
   props: {
+    edit: {
+      type: Boolean,
+      default: false,
+    },
     client: {},
     apartments: {},
     contract: {},

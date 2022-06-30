@@ -5,11 +5,11 @@ input.my-input,
   border-width: 1px;
   border-color: var(--border-color);
   border-radius: 3px;
-  padding: 5px 15px;
+  padding: 5px 5px 5px 15px;
   line-height: 2;
   width: 95%;
   height: 42px;
-  display: block;
+  display: flex;
   margin: 15px auto;
   color: var(--link);
   background-color: var(--background-color-nav);
@@ -84,8 +84,8 @@ input.my-input:focus,
 }
 
 .my-custom-control
-  .custom-control-input:checked
-  ~ .custom-control-label::before {
+.custom-control-input:checked
+~ .custom-control-label::before {
   color: var(--link);
   border-color: var(--primary);
   background-color: var(--primary);
@@ -251,18 +251,21 @@ input.my-input:focus,
     border-color: #9bd1a8cb !important;
     background-color: #9bd1a8cb !important;
   }
+
   .table-info,
   .table-info > th,
   .table-info > td {
     border-color: #72aeb8 !important;
     background-color: #72aeb8 !important;
   }
+
   .table-warning,
   .table-warning > th,
   .table-warning > td {
     border-color: #ffeeba !important;
     background-color: #ffeeba !important;
   }
+
   .table-danger,
   .table-danger > th,
   .table-danger > td {
@@ -285,24 +288,29 @@ input.my-input:focus,
       box-shadow: unset !important;
     }
   }
+
   .b-form-datepicker .dropdown-menu {
     background-color: $dark;
 
     .text-dark {
       color: #a8afb8 !important;
     }
+
     .text-muted {
       color: #6c757d !important;
     }
+
     .bg-light {
       background-color: $dark !important;
     }
+
     .btn-outline-light:hover {
       color: #212529;
       background-color: #0000007d;
       border-color: #f8f9fa;
     }
   }
+
   .b-form-datepicker.focus {
     background-color: $dark;
     box-shadow: unset;
