@@ -325,7 +325,7 @@ export default {
 
   methods: {
     phoneFormat(value) {
-      console.log(value, 'value');
+      // console.log(value, 'value');
       return phonePrettier(value)
     },
     showByCollapse(item) {
