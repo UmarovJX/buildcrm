@@ -1312,7 +1312,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
   }
 
   td {
-    vertical-align: middle;
+    vertical-align: middle !important;
     padding: 20px 16px;
   }
 
