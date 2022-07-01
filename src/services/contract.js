@@ -20,11 +20,7 @@ class Contract extends Core {
         })
     }
 
-    downloadReContract(id) {
-        return this.get('contarcts/' + id + '/reissue/contract', {
-            responseType: 'blob'
-        })
-    }
+
 }
 
 class ContractV2 extends Core {
@@ -94,6 +90,12 @@ class ContractV2 extends Core {
 
     downloadContractTemplate() {
         return this.get('contracts/template', {
+            responseType: 'blob'
+        })
+    }
+
+    downloadReContract(id) {
+        return this.get('contracts/' + id + '/reissue/contract', {
             responseType: 'blob'
         })
     }
