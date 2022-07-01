@@ -68,7 +68,7 @@
                 >
                   <router-link
                       :to="{
-                        path:'/home',
+                        name:'edit-branch',
                         params: { id: data.item.id, historyForm:data.item, }
                       }"
                       :class="'dropdown-item dropdown-item--inside'"
