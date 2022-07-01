@@ -33,8 +33,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .title {
+  font-family: CraftworkSans, serif;
   font-size: 1.25rem;
+  font-weight: 900;
   line-height: 14px;
   color: var(--violet-600);
   display: block;
@@ -45,7 +48,7 @@ export default {
 .price {
   font-size: 1.5rem;
   line-height: 28px;
-  margin-bottom: 0.5rem;
+  //margin-bottom: 0.5rem;
   display: block;
   color: var(--gray-600);
 }
@@ -58,10 +61,10 @@ export default {
 
 .chart__list {
   display: block;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 
   & > span {
-    height: 28px;
+    height: 22px;
   }
 
   .progress {
@@ -72,7 +75,8 @@ export default {
   }
 
   ::v-deep .progress-bar {
-    background-color: var(--violet-600) !important;
+    border-radius: 1rem;
+    background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%) !important;
   }
 
   .percent__value {
@@ -92,6 +96,7 @@ export default {
     background-color: var(--gray-200);
   }
 }
+
 
 @media screen and (max-width: 1300px) {
   .title {

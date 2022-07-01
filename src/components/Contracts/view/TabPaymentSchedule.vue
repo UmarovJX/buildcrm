@@ -1109,7 +1109,7 @@ export default {
     margin-bottom: 2rem;
     background-color: var(--gray-50);
     border: 2px solid var(--gray-200);
-    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    padding: 1.5rem;
   }
 }
 
@@ -1126,6 +1126,14 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .title {
+      font-family: CraftworkSans, serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      line-height: 28px;
+      color: var(--gray-600);
+    }
 
     .total-payments {
       font-weight: 600;
@@ -1147,11 +1155,12 @@ export default {
 
       thead tr th {
         font-family: CraftworkSans, serif;
-        font-weight: 600;
+        font-weight: 900;
+        font-size: 12px;
         line-height: 14px;
         letter-spacing: 1px;
         color: var(--gray-400) !important;
-        padding: 1.25rem 1rem 1.25rem 0.75rem;
+        padding: 1.25rem 1rem 1.25rem 1rem;
       }
 
       td {
@@ -1253,7 +1262,10 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     font-size: 24px;
     line-height: 28px;
     margin-bottom: 1rem;
-    margin-left: 1.5rem;
+    font-family: CraftworkSans, serif;
+    font-weight: 900;
+    color: var(--gray-600);
+    //margin-left: 1.5rem;
   }
 
   &-status {
@@ -1295,6 +1307,11 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     letter-spacing: 1px;
     text-transform: uppercase;
     border-bottom: 2px solid var(--gray-200);
+    font-family: CraftworkSans, serif;
+    font-weight: 900;
+    font-size: 12px;
+    line-height: 14px;
+    color: var(--gray-400) !important;
 
     &:nth-child(3) {
       border-right: 2px solid var(--gray-200);
