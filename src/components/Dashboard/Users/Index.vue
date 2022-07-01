@@ -67,6 +67,13 @@
             {{ data.item.branch.name }}
           </template>
 
+          <template #cell(phone)="data">
+            <span class="phone-col">
+              {{ phoneFormat(data.item.phone) }}
+            </span>
+
+          </template>
+
           <template #cell(objects)="data">
 
             <span>
@@ -268,7 +275,7 @@ export default {
           key: "phone",
           label: "users.phone",
           sortable: true,
-          formatter: (phone) => phonePrettier(phone)
+          // formatter: (phone) => phonePrettier(phone)
         },
         {
           key: "role",
@@ -317,6 +324,10 @@ export default {
   },
 
   methods: {
+    phoneFormat(value) {
+      // console.log(value, 'value');
+      return phonePrettier(value)
+    },
     showByCollapse(item) {
       if (item.toggleCollapse) {
         return item.objects
@@ -481,6 +492,11 @@ export default {
 
 ::v-deep .row__body__bottom-border:not(:last-child) {
   border-bottom: 2px solid var(--gray-200) !important;
+}
+
+.phone-col {
+  display: flex;
+  width: max-content;
 }
 
 

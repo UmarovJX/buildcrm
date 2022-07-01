@@ -294,7 +294,7 @@
                     :name="`${ $t('number')} (${$t('main_number')})`"
                     v-slot="{errors}"
                 >
-                  <base-input :class="{'error' : errors[0]}" mask="+998 ## ### ## ##" type="tel"
+                  <base-input :class="{'error' : errors[0]}" mask="+### ## ### ## ##" type="tel"
                               class="client__details_info_card" :label="true"
                               :placeholder="`${ $t('number')} (${$t('main_number')})`"
                               v-model="newClient['phone']"/>
@@ -321,7 +321,7 @@
                 >
                   <base-input
                       :class="{'error' : errors[0]}"
-                      type="tel" mask="+998 ## ### ## ##"
+                      type="tel" mask="+### ## ### ## ##"
                       class="client__details_info_card" :label="true"
                       :placeholder="`${ $t('number')} (${$t('extra')})`"
                       v-model="newClient['other_phone']"
@@ -403,10 +403,9 @@
                   <!-- PRICE FROM   -->
                   <base-input
                       :label="true"
-                      :currency="`${$t('ye')}`"
+                      :disable="true"
                       :placeholder="$t('payments.contract')"
                       v-model="order.contract"
-                      :permission-change="true"
                       :top-placeholder="true"
                       class="price-from"
                   />
@@ -501,13 +500,13 @@
             </template>
           </base-button>
 
-          <base-button v-show="tabIndex === 0" @click="validateClientForm" type="submit" class="violet-gradient"
+          <base-button v-show="tabIndex === 0" @click="nextTab" class="violet-gradient"
                        :text="$t(`${tabBtnText}`)">
             <template #right-icon>
               <BaseArrowRightIcon fill="#fff"/>
             </template>
           </base-button>
-          <base-button v-show="tabIndex === 1" @click="validateContractForm" type="submit" :disabled="contractBtn"
+          <base-button v-show="tabIndex === 1" @click="validateContractForm" :disabled="contractBtn"
                        class="violet-gradient"
                        :text="$t(`${tabBtnText}`)">
           </base-button>
@@ -589,7 +588,6 @@ export default {
       ],
       timeoutId: null,
       contractBtn: true,
-      back: false,
     }
   },
 
@@ -612,7 +610,9 @@ export default {
     async validateClientForm() {
       const isValid = await this.$refs['client-form'].validate()
       if (isValid) {
-        this.confirmClient()
+        if (!this.client_id) {
+          this.confirmClient()
+        }
         this.tabIndex = 1
         this.tabBtnText = 're_contract'
         this.contractBtn = false
@@ -621,16 +621,23 @@ export default {
 
     async validateContractForm() {
       const isValid = await this.$refs['reContract-form'].validate()
-      if (!this.back && this.contract.agreement_number !== null && isValid) {
+      if (this.contract.agreement_number !== null && isValid) {
         this.confirmContract()
       }
-      this.back = false
     },
 
     backTab() {
       this.tabIndex = 0
       this.tabBtnText = 'next'
-      this.back = true
+    },
+
+    async nextTab() {
+      const isValid = await this.$refs['client-form'].validate()
+      if (isValid) {
+        this.tabIndex = 1
+        this.tabBtnText = 're_contract'
+        this.contractBtn = false
+      }
     },
 
     fetchClientSeries(value) {
@@ -656,8 +663,8 @@ export default {
               issued_by_whom: data.issued_by_whom,
               language: data.language,
               birth_day: data.birth_day,
-              phone: data.phone,
-              other_phone: data.other_phone,
+              phone: this.phone(data.phone),
+              other_phone: this.phone(data.other_phone),
               date_of_issue: data.date_of_issue,
               discount: {id: null},
             };
@@ -1001,12 +1008,17 @@ export default {
       })
     },
 
-    async tabActivated(newTabIndex) {
+    async tabActivated(newTabIndex, oldTabIndex) {
 
       if (newTabIndex === 1) {
-        await this.validateClientForm()
+        if (!this.client_id) {
+          await this.validateClientForm()
+        }
         this.tabIndex = 1
         this.tabBtnText = 're_contract'
+      } else if (oldTabIndex === 1 && newTabIndex === 0) {
+        this.tabIndex = 0
+        this.tabBtnText = 'next'
       } else {
         await this.validateContractForm()
       }
@@ -1406,7 +1418,7 @@ export default {
       line-height: 22px;
       color: var(--gray-600);
       margin: 0;
-      max-width: 150px;
+      max-width: 300px;
       overflow-x: hidden;
       text-overflow: ellipsis;
     }

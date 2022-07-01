@@ -688,7 +688,7 @@ export default {
       line-height: 22px;
       color: var(--gray-600);
       margin: 0;
-      max-width: 150px;
+      max-width: 300px;
       overflow-x: hidden;
       text-overflow: ellipsis;
     }

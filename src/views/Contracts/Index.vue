@@ -49,7 +49,7 @@
 
       <!--   Phone Number   -->
       <template #cell(phone)="data">
-        <span>{{ formattingPhone(data.item.client.phone) }}</span>
+        <span class="phone-col">{{ formattingPhone(data.item.client.phone) }}</span>
       </template>
 
       <!--   Date   -->
@@ -498,6 +498,11 @@ export default {
   .table.b-table[aria-busy=true] {
     opacity: 1 !important;
   }
+}
+
+.phone-col {
+  display: flex;
+  width: max-content;
 }
 
 .arrow__down-violet {

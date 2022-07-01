@@ -465,7 +465,7 @@ export default {
       if (hasApartments) {
         const value = filterQuery['number']
         const isQueryPrimitive = typeof value === 'number' || typeof value === 'string'
-        console.log(isQueryPrimitive, 'isQueryPrimitive');
+        // console.log(isQueryPrimitive, 'isQueryPrimitive');
 
         if (isQueryPrimitive) {
           this.defaultApartments = [value]

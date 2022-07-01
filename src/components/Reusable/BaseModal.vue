@@ -68,7 +68,7 @@ export default {
 
 ::v-deep .auto-height
   .modal-dialog
-    height: 100%
+    //height: 100%
     .modal-content
       width: 41rem !important
 

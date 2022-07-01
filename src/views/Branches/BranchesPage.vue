@@ -68,7 +68,7 @@
                 >
                   <router-link
                       :to="{
-                        path:'/home',
+                        name:'edit-branch',
                         params: { id: data.item.id, historyForm:data.item, }
                       }"
                       :class="'dropdown-item dropdown-item--inside'"
@@ -78,7 +78,7 @@
                   </router-link>
 
                   <router-link
-                      :to="{name:'object-deal-template',params:{id:data.item.id}}"
+                      :to="{name:'object-deal-template', params:{id:data.item.id}}"
                       :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}

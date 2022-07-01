@@ -526,8 +526,8 @@ input[type="number"]
 
 .header-navigation
   margin-right: 4.25rem
-  max-width: 640px
-
+  //max-width: 640px
+  max-width: 720px
 .main__content
   padding-left: 1rem
   padding-right: 1rem

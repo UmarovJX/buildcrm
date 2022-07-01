@@ -453,7 +453,7 @@ export default {
       ]
     },
     activeContent() {
-      return this.$t('objects.booking')
+      return this.$t('objects.contract')
     }
   },
 

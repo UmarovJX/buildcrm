@@ -705,6 +705,7 @@ export default {
         select_category: 'Выбрать категорию',
         sale: 'Продажа',
         booking: 'Бронирование',
+        contract: 'Оформить',
         make_it_main_contract: 'Сделать основным договором',
         unfinished_contract: 'Незавершенный контракт',
         view_apartments: 'квартиры',
