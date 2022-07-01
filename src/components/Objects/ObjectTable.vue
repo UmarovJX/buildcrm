@@ -496,6 +496,7 @@ export default {
       const {object} = this.$route.params
       await api.objectsV2.fetchObjectApartments(object, query)
           .then((response) => {
+            this.$emit('counter', response.data.counts)
             this.apartments = response.data.items
             this.pagination = response.data.pagination
             this.showByValue = response.data.pagination.perPage
@@ -657,12 +658,10 @@ export default {
     },
 
     async toggleApartmentToSale(item) {
-      console.log(item);
       const id = this.$route.params.object
       const apartmentUID = item.id
       await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
         const updatingIndex = this.apartments.findIndex((apartment) => apartment.id === response.data.id)
-        console.log(updatingIndex, 'updatingIndex');
         if (updatingIndex !== -1) {
           this.apartments.splice(updatingIndex, 1, response.data)
         }

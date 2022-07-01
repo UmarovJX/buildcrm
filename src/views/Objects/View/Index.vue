@@ -26,8 +26,7 @@
         @clear-status="clearStatus"
         @current-tab="changeTab"
     />
-
-    <div class="status-row">
+    <div class="status-row" v-if="currentTab !== 'ObjectPlan'">
       <b-form-checkbox-group
           id="checkbox-sort"
           class="status-sort"
@@ -41,7 +40,7 @@
             :class="status.class"
         >
           {{ status.label }}
-          <b-badge v-if="accessToFilter">
+          <b-badge>
             {{ statusCounter[`${status.value}`] }}
           </b-badge>
         </b-form-checkbox>
@@ -98,6 +97,7 @@
         :plan-load="planLoading"
         :is="currentTab"
         :apartments="apartments"
+        @counter="countGet"
         @show-express-sidebar="apartmentExpressReview"
         @show-plan-sidebar="planExpressReview"
     />
@@ -330,8 +330,6 @@ export default {
   mounted() {
     this.fetchFilterFields()
     this.getPriceList()
-
-
   },
   async created() {
     const historyTab = sessionStorageGetItem(
@@ -346,6 +344,13 @@ export default {
 
   },
   methods: {
+    countGet(value) {
+      if (!this.accessToFilter) {
+        this.statusCounter = value
+      } else {
+        this.getAllApartment()
+      }
+    },
     getAllApartment() {
       this.statusCounter = {
         unavailable: 0,
