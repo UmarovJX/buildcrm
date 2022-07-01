@@ -496,7 +496,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .sort-list {
   position: relative;
   display: flex;

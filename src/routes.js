@@ -35,10 +35,10 @@ import RolesStore from "./components/Dashboard/Roles/Store";
 
 import TypePlan from "./components/Dashboard/TypePlan/Index";
 import TypePlanList from "./components/Dashboard/TypePlan/List";
-import TypePlanEdit from "./components/Dashboard/TypePlan/Edit";
+import TypePlanEdit from "./components/Dashboard/TypePlan/Edit.vue";
 
 // import ApartmentView from "./components/Dashboard/Apartment/View";
-import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment";
+import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment.vue";
 import EditApartment from "./components/Dashboard/Apartment/EditApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
@@ -60,10 +60,15 @@ import ObjectsView from '@/views/Objects/View/Index'
 import Debtors from "@/views/Debtors/Index"
 // import ObjectTable from "@/components/Objects/ObjectTable";
 import Experiment from "@/views/Experiment";
-
 import ReContract from "@/views/ReContract/Index"
 
 const routes = [
+    {
+        path: '/experiment',
+        name: 'experiment',
+        component: () => import('@/views/experience')
+    },
+
     {
         /* HOME */
         path: "/home",
