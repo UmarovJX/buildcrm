@@ -743,9 +743,7 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.buttons.loading = true
-          const context = {
-            initial_payments: []
-          }
+          const context = {}
           context.discount_id = this.contract.discount.id
 
           if (this.edited.contract_number) {
@@ -755,6 +753,7 @@ export default {
           context.client_id = this.client?.id
           if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
             if (this.edited.monthly) {
+              context.monthly = []
               for (let monthly = 0; monthly < this.contract.monthly_payments.length; monthly++) {
                 let date = moment(this.contract.monthly_payments[monthly].month).format(
                     "YYYY-MM-DD"
@@ -767,6 +766,7 @@ export default {
           }
 
           if (this.contract.initial_payments.length > 1) {
+            context.initial_payments = []
             const p = 'initial_payments'
             for (let index = 0; index < this.contract.initial_payments.length; index++) {
               const {edited, amount, date} = this.contract[p][index]
@@ -777,12 +777,15 @@ export default {
               })
             }
           } else {
-            if (this.contract.prepay_edited) {
-              context.prepay_edited = 1
-              context.initial_payments[0]['edited'] = 1
-              context.initial_payments[0]['amount'] = this.contract.prepay_amount
-              context.initial_payments[0]['date'] = this.contract.first_payment_date
-            }
+            // if (this.contract.prepay_edited) {
+            context.initial_payments = []
+            context.prepay_edited = 1
+            context.initial_payments.push({
+              edited: 1,
+              amount: this.contract.prepay_amount,
+              date: this.contract.first_payment_date
+            })
+            // }
           }
 
           context.comment = this.contract.comment
@@ -791,9 +794,12 @@ export default {
           context.discount_amount = this.contract.discount_amount
 
           if (this.contract.discount?.id === 'other') {
+            context.apartments = []
             for (let index = 0; index < this.apartments.length; index++) {
-              context.apartments[index]['id'] = this.apartments[index].id
-              context.apartments[index]['price'] = this.apartments[index].price_calc
+              context.apartments.push({
+                id: this.apartments[index].id,
+                price: this.apartments[index].price_calc
+              })
             }
           }
 
