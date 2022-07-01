@@ -10,6 +10,7 @@
         :currency="currency"
         :minus="false"
         :value="null"
+        :disabled="disable"
         currency-symbol-position="suffix"
         separator="space"
         :placeholder="placeholder"
@@ -20,6 +21,7 @@
         v-else-if="!(mask)"
         v-model="searchInput"
         :type="type"
+        :disabled="disable"
         id="base-input"
         ref="base-input"
         :placeholder="placeholder"
@@ -30,13 +32,14 @@
         v-model="searchInput"
         :type="type"
         v-mask="mask"
+        :disabled="disable"
         id="base-input-mask"
         ref="base-input"
         :placeholder="placeholder"
         @input="triggerInputEvent"
     />
     <span
-        v-if="showClearIcon"
+        v-if="showClearIcon && !disable"
         class="clear__icon"
         @click="clearSearchInput"
     >
@@ -83,6 +86,10 @@ export default {
     mask: {
       type: String,
       default: ''
+    },
+    disable: {
+      type: Boolean,
+      default: () => false
     }
   },
   data() {

@@ -403,10 +403,9 @@
                   <!-- PRICE FROM   -->
                   <base-input
                       :label="true"
-                      :currency="`${$t('ye')}`"
+                      :disable="true"
                       :placeholder="$t('payments.contract')"
                       v-model="order.contract"
-                      :permission-change="true"
                       :top-placeholder="true"
                       class="price-from"
                   />
@@ -1419,7 +1418,7 @@ export default {
       line-height: 22px;
       color: var(--gray-600);
       margin: 0;
-      max-width: 150px;
+      max-width: 300px;
       overflow-x: hidden;
       text-overflow: ellipsis;
     }
