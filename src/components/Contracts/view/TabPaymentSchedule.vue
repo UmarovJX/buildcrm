@@ -1105,7 +1105,7 @@ export default {
     max-width: 32rem;
     flex-grow: 1;
     border-radius: 32px;
-    margin-top: 54px;
+    margin-top: 32px;
     margin-bottom: 2rem;
     background-color: var(--gray-50);
     border: 2px solid var(--gray-200);
@@ -1136,6 +1136,7 @@ export default {
     }
 
     .total-payments {
+      font-family: CraftworkSans, serif;
       font-weight: 600;
       font-size: 18px;
       color: var(--violet-500);
