@@ -77,7 +77,7 @@
         <tr v-else v-for="(initialPayment, index) in contract.initial_payments" :key="'initial' + index">
           <td>
             <span v-if="!initialPayment.edit">
-              {{ initialPayment.month | moment("DD.MM.YYYY") }}
+              {{ getInitialPaymentDate(initialPayment) }}
             </span>
 
             <div
@@ -284,13 +284,19 @@ export default {
     ]),
   },
 
-  watch:{
-    'contract.payment_date'(){
+  watch: {
+    'contract.payment_date'() {
       CreditMonths(this.apartments, this.contract)
     }
   },
 
   methods: {
+    getInitialPaymentDate(initialPayment) {
+      if (initialPayment.date) {
+        return moment(initialPayment.date).format('YYYY-MM-DD')
+      }
+      return moment(initialPayment.month).format('YYYY-MM-DD')
+    },
     changeMonth() {
       // this.monthly_price = this.getMonths();
       // this.contract.month = c;
@@ -341,25 +347,24 @@ export default {
           : new Date();
 
       if (this.contract.initial_payments.length === 0) {
-        let month = parseInt(this.month);
+        let month = parseInt(this.month)
         let amount = month === 0 ? getTotal(this.apartments, this.contract) : getPrepay(this.apartments, this.contract);
-
         this.contract.initial_payments.push({
-          amount: amount,
+          amount,
           edit: false,
           edited: false,
-          month: moment(today).format("YYYY-MM-DD"),
-        });
+          date: moment(today).format("YYYY-MM-DD")
+        })
+      } else {
+        const month = new Date(today.setMonth(today.getMonth() + 1))
+        this.contract.initial_payments.push({
+          amount: this.contract.initial_payments[0].amount,
+          edit: false,
+          edited: false,
+          date: moment(month).format("YYYY-MM-DD")
+        })
       }
-
-      this.contract.initial_payments.push({
-        amount: 0,
-        edit: false,
-        edited: false,
-        month: moment(today).format("YYYY-MM-DD"), //today,
-      });
-      // this.getPrepay();
-      this.initialCalc();
+      this.initialCalc()
     },
 
     deleteInitialPayment(index) {

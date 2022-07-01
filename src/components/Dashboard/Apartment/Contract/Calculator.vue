@@ -320,7 +320,7 @@ export default {
 
   methods: {
     setInitialValues() {
-      const hasLength = Object.keys(this.getCalcData).length
+      const hasLength = Object.keys(this.getCalcData).length > 0
       if (hasLength) {
         const {month, discount, discount_price} = this.getCalcData
         this.contract.discount = this.getDiscount(discount.id)
@@ -328,11 +328,19 @@ export default {
         this.contract.discount_square = discount_price
         this.contract.month = parseInt(month)
       } else {
-        this.contract.discount = this.getDiscount(this.paymentDetails.discount.id)
+        if (this.paymentDetails?.discount) {
+          this.contract.discount = this.getDiscount(this.paymentDetails.discount.id)
+        } else {
+          this.contract.discount = this.discounts[0]
+        }
       }
     },
     getDiscount(id) {
-      return this.discounts.find(({id: discountId}) => discountId === id)
+      if (id) {
+        return this.discounts.find(({id: discountId}) => discountId === id)
+      }
+
+      return this.discounts[0]
     },
     InitialCalc() {
       getTotalDiscount(this.apartments, this.contract)

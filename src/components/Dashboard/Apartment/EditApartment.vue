@@ -501,9 +501,16 @@ export default {
         this.discounts = res.data.apartments[0].discounts
         this.contract.payment_date = res.data.payment_date
         if (res.data.status === 'contract') {
+          const initialPayments = res.data.schedule.initial_payment.map((initialPayment) => {
+            if (!initialPayment.edit) {
+              initialPayment.edit = false
+            }
+
+            return initialPayment
+          })
           this.contract = {
             ...this.contract,
-            initial_payments: res.data.schedule.initial_payment,
+            initial_payments: initialPayments,
             credit_months: res.data.schedule.monthly,
             first_payment_date: res.data.first_payment_date,
             monthly_payments: res.data.schedule.monthly,
@@ -736,7 +743,9 @@ export default {
       }).then((result) => {
         if (result.value) {
           this.buttons.loading = true
-          const context = {}
+          const context = {
+            initial_payments: []
+          }
           context.discount_id = this.contract.discount.id
 
           if (this.edited.contract_number) {
@@ -744,7 +753,6 @@ export default {
           }
 
           context.client_id = this.client?.id
-
           if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
             if (this.edited.monthly) {
               for (let monthly = 0; monthly < this.contract.monthly_payments.length; monthly++) {
@@ -759,10 +767,14 @@ export default {
           }
 
           if (this.contract.initial_payments.length > 1) {
-            for (let initial_payment = 0; initial_payment < this.contract.initial_payments.length; initial_payment++) {
-              context.initial_payments[initial_payment]['edited'] = this.contract.initial_payments[initial_payment].edited ? 1 : 0
-              context.initial_payments[initial_payment]['amount'] = this.contract.initial_payments[initial_payment].amount
-              context.initial_payments[initial_payment]['date'] = this.contract.initial_payments[initial_payment].date
+            const p = 'initial_payments'
+            for (let index = 0; index < this.contract.initial_payments.length; index++) {
+              const {edited, amount, date} = this.contract[p][index]
+              context.initial_payments.push({
+                edited,
+                amount,
+                date
+              })
             }
           } else {
             if (this.contract.prepay_edited) {
@@ -794,7 +806,6 @@ export default {
           if (this.edited.contract_number && this.contract.number !== this.order.contract_number) {
             context.contract_number = this.contract.number
           }
-
           api.contractV2.contractOrderUpdate(this.order.id, context)
               .then((response) => {
                 this.toasted(response.data.message, "success");

@@ -189,7 +189,6 @@ export function getTotalDiscount(apartments, contract) {
 
 export function CreditMonths(apartments, contract) {
     let today = contract.payment_date ? new Date(contract.payment_date) : new Date();
-
     contract.credit_months = [];
 
     if (parseInt(contract.month) > 0) {

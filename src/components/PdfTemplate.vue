@@ -42,6 +42,7 @@
               <!--              <img v-if="apartment.plan"-->
               <!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
               <img :src="require('@/assets/img/object__img1.png')" alt="xonsaroy logo">
+              <!--              <img :src="apartment.plan.image[0]" alt="">-->
               <!--              <img :src="require('@/assets/img/plan.png')" alt="plan-image">-->
             </div>
           </div>
