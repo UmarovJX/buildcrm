@@ -49,7 +49,7 @@ import AddPayment from "@/components/Dashboard/Companies/Components/AddPayment";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 
 export default {
-  name: "AppPaymentCreation",
+  name: "CompanyDetails",
   components: {
     BaseBreadCrumb,
     PaymentBoxContent,

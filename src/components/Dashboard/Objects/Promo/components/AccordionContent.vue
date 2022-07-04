@@ -75,7 +75,7 @@ export default {
   emits: [
     'save-accordion-content',
     'warn-error-found',
-    'save-Inputs-variable',
+    'save-inputs-variable',
     'delete-input-variable'
   ],
   data() {
@@ -155,7 +155,7 @@ export default {
         blockId: this.block.id
       }
 
-      this.$emit('save-Inputs-variable', this.inputVariables)
+      this.$emit('save-inputs-variable', this.inputVariables)
     },
     setHistoryValues() {
       if (this.block.history) {
