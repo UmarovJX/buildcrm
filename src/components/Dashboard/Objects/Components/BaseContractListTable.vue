@@ -146,8 +146,12 @@ export default {
     return {
       sortBy: "main",
       sortDesc: true,
-      showLoading: false,
-      fields: [
+      showLoading: false
+    }
+  },
+  computed: {
+    fields() {
+      const list = [
         {
           key: "index",
           label: "#",
@@ -172,16 +176,14 @@ export default {
           key: "actions",
           label: '',
         }
-        /*
-            {
-              key: "category",
-              label: this.$t("category"),
-            }
-        */
       ]
-    }
-  },
-  computed: {
+
+      if (this.type === 'reissue') {
+        return list.filter(fl => fl.key !== 'type')
+      }
+
+      return list
+    },
     showUnselectWarning() {
       const count = this.contracts.filter(contract => contract.main)
       if (this.type === 'sale') {
