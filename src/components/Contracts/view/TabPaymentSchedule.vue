@@ -313,7 +313,8 @@
     <!--  PAYMENT SCHEDULE  -->
     <div class="payment__schedule">
       <div>
-        <h3 class="title">{{ $t('payment_schedule') }}</h3>
+        <h3 class="title">{{ $t('payment_schedule') }} ({{ order.payments.monthly_payments_count }}
+          {{ $t('month') }}.)</h3>
         <div class="addition__button"></div>
       </div>
       <!--   SCHEDULE TABLE   -->

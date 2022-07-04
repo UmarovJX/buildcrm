@@ -187,7 +187,7 @@ export default {
     color: var(--gray-400);
     margin: 2rem 0 1rem 0;
     width: 100%;
-    max-width: 40rem;
+    //max-width: 40rem;
   }
 
   &_info {
@@ -199,7 +199,7 @@ export default {
       display: flex;
       align-items: center;
       width: 100%;
-      max-width: 40rem;
+      //max-width: 40rem;
       height: 56px;
       border: 2px solid #E5E7EB;
       border-radius: 32px;
