@@ -916,5 +916,17 @@ export default {
 
     filter_names: {
         all: 'Все', booked: "Забронирован", sold: 'Оформлен', in_payment: 'На оплате', archive: 'Закрыт'
+    },
+
+    contract_compare: {
+        compare_title: 'Данные для сравнения',
+        course_usd: 'Курс доллара при продаже',
+        tariff: 'Тариф продажи',
+        first_price: 'Начальная общая цена',
+        full_price: 'Общая цена при продаже',
+        discount: 'Общая скидка',
+        first_price_m2: `Начальная цена за М<sup>2</sup>`,
+        last_price_m2: `Цена за М<sup>2</sup> при продаже`,
+        discount_m2: `Скидка за м<sup>2</sup>`,
     }
 }

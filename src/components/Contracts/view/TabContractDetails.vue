@@ -1,5 +1,94 @@
 <template>
   <div>
+
+    <div class="compare__details">
+      <h3 class="compare__details-title">{{ $t('contract_compare.compare_title') }}</h3>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label>{{ $t('contract_compare.course_usd') }}</label>
+              <b-form-input disabled :value="pricePrettier(compareDetails['currency'].usd)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label>{{ $t('contract_compare.tariff') }}</label>
+              <b-form-input disabled :value="prepayPrettier(compareDetails['discount'].prepay)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label>{{ $t('contract_compare.first_price') }}</label>
+              <b-form-input disabled :value="pricePrettier(compareDetails['prices'].sale)"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label>{{ $t('contract_compare.full_price') }}</label>
+              <b-form-input disabled :value="pricePrettier(compareDetails['prices'].sold)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label>{{ $t('contract_compare.discount') }}</label>
+              <b-form-input disabled :value="pricePrettier(compareDetails['prices'].discount_amount)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label v-html="$t('contract_compare.first_price_m2')"/>
+              <b-form-input disabled :value="pricePrettier(compareDetails['prices'].sale_m2)"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label v-html="$t('contract_compare.last_price_m2')"/>
+              <b-form-input disabled :value="pricePrettier(compareDetails['prices'].sold_m2)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="compare__details-item">
+            <div class="compare__details-item_card">
+              <label v-html="$t('contract_compare.discount_m2')"/>
+              <b-form-input disabled :value="pricePrettier(compareDetails['prices'].discount_m2)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
     <div class="client__details col-12 px-0">
       <b-form class="client__details_info">
         <div class="d-flex">
@@ -83,14 +172,30 @@ export default {
   data() {
     return {
       companyDetails: {},
-      otherDetails: {}
+      otherDetails: {},
+      compareDetails: {}
     }
   },
   created() {
     this.fetchContractDetails()
+    this.fetchCompareDetails()
   },
   methods: {
     datePrettier: (time) => formatDateWithDot(time),
+    fetchCompareDetails() {
+      this.startLoading()
+      const {id} = this.$route.params
+      api.contractV2.fetchCompareDetails(id)
+          .then(response => {
+            this.compareDetails = response.data[0]
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.finishLoading()
+          })
+    },
     fetchContractDetails() {
       this.startLoading()
       const {id} = this.$route.params
@@ -114,6 +219,9 @@ export default {
     },
     pricePrettier(price) {
       return formatToPrice(price) + ' ' + this.$t('ye')
+    },
+    prepayPrettier(value) {
+      return this.$t('apartments.first_payment') + ' ' + value + '%'
     },
     getStatus(status) {
       return this.$t(`contracts.status.${status}`)
@@ -156,6 +264,75 @@ export default {
   height: 80vh;
 }
 
+.compare__details {
+  display: flex;
+  flex-direction: column;
+  background: var(--gray-50);
+  border: 2px solid var(--gray-200);
+  border-radius: 2rem;
+  padding: 2rem;
+  margin-top: 2rem;
+
+  .row {
+    border-bottom: 2px solid var(--gray-200);
+    margin: 0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &-title {
+    font-family: CraftworkSans, serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    line-height: 28px;
+    color: var(--violet-600);
+    margin-bottom: 2rem;
+  }
+
+  .form-control:disabled {
+    background: #fff;
+  }
+
+  &-item {
+    &_card {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 56px;
+      background-color: var(--white);
+      border: 2px solid #E5E7EB;
+      border-radius: 32px;
+      padding: 0 16px;
+      position: relative;
+      margin: 20px 0 20px;
+
+      & label {
+        text-transform: uppercase;
+        margin: 0;
+        padding-right: 10px;
+        color: var(--gray-400);
+        white-space: nowrap;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+      }
+
+      input {
+        height: 100%;
+        width: 100%;
+        border: none;
+        text-align: right;
+        padding-right: 4px;
+        font-size: 1.0125rem;
+        color: var(--gray-600);
+      }
+
+    }
+  }
+
+}
+
 .client__details {
   display: flex;
   flex-direction: column;
@@ -166,7 +343,7 @@ export default {
     color: var(--gray-400);
     margin: 2rem 0 1rem 0;
     width: 100%;
-    max-width: 40rem;
+    //max-width: 40rem;
   }
 
   &_info {
@@ -178,7 +355,7 @@ export default {
       display: flex;
       align-items: center;
       width: 100%;
-      max-width: 40rem;
+      //max-width: 40rem;
       height: 56px;
       border: 2px solid #E5E7EB;
       border-radius: 32px;
@@ -229,6 +406,8 @@ export default {
         }
       }
     }
+
+
   }
 
   .form-control:disabled {

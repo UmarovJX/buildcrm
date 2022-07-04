@@ -56,6 +56,10 @@ class ContractV2 extends Core {
         return this.get('contracts/' + id + '/details')
     }
 
+    fetchCompareDetails(id) {
+        return this.get('contracts/' + id + '/price-details')
+    }
+
     getContractApartments(id) {
         return this.get('contracts/' + id + '/apartments')
     }
@@ -112,7 +116,7 @@ class ContractV2 extends Core {
         return this.put('contracts/' + id + '/reorder', body)
     }
 
-    getReissue(id){
+    getReissue(id) {
         return this.get('contracts/' + id + '/reissue')
     }
 

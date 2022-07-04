@@ -440,6 +440,7 @@ export default {
 }
 
 .download-button {
+  cursor: pointer;
   width: 100%;
 }
 

@@ -930,5 +930,17 @@ export default {
         sold: 'Sotilgan',
         in_payment: "To'lovda",
         archive: 'Arxiv'
+    },
+
+    contract_compare: {
+        compare_title: "Taqqoslash uchun ma'lumotlar",
+        course_usd: 'Dollar kursi sotilganda',
+        tariff: 'Sotish tarifi',
+        first_price: "Boshlang'ich umumiy narx",
+        full_price: 'Umumiy sotish narxi',
+        discount: 'Umumiy chegirma',
+        first_price_m2: `M<sup>2</sup> uchun boshlang'ich narx`,
+        last_price_m2: `Sotishdagi M<sup>2</sup> uchun narx`,
+        discount_m2: `m<sup>2</sup> uchun chegirma`,
     }
 }
