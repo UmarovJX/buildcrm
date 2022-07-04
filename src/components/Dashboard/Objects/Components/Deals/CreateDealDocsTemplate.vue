@@ -184,7 +184,7 @@ export default {
       return option
     },
     showPaymentType() {
-      const notShow = ['reserve']
+      const notShow = ['reserve','reissue']
       const index = notShow.findIndex(ctyType => ctyType === this.form.category)
       return index === -1
     }
