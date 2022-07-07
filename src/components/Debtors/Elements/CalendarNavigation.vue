@@ -120,6 +120,11 @@ export default {
   watch: {
     navigationDate(lastValue) {
       this.$emit('change-date', dateConvertor(lastValue))
+    },
+    '$route.query.starter_moment'(lastMoment, oldMoment) {
+      if (lastMoment !== oldMoment && lastMoment !== undefined) {
+        this.navigationDate = lastMoment
+      }
     }
   },
   methods: {
