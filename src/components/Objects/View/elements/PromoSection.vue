@@ -10,7 +10,7 @@
             </svg>
             <span class="ml-2 promo__section-title">{{ getName(item.name) }}</span>
           </span>
-        <span class="promo__section-subtitle">{{$t('to')}} {{ startDate(item.start_date) }}</span>
+        <span class="promo__section-subtitle">{{$t('to')}} {{ startDate(item.end_date) }}</span>
       </div>
       <span v-for="discount in item.discounts" :key="discount.promo_id" class="apartment__details-row">
             <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>
