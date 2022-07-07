@@ -996,13 +996,16 @@ export default {
         this.client_id = ''
         this.$router.push({name: 'contracts-view', params: {id: this.$route.params.id}})
       }).catch(error => {
-        if (error.response.data.message) {
+        if (error.response.status === 406) {
           this.$toasted.show(error.response.data.message, {
             type: 'error'
           })
           this.client_id = ''
           this.$router.push({name: 'contracts-view', params: {id: this.$route.params.id}})
         }
+        this.$toasted.show(error.response.data.message, {
+          type: 'error'
+        })
       }).finally(() => {
 
       })

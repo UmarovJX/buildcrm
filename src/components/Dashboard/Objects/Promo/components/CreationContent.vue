@@ -246,7 +246,7 @@ export default {
         text: '',
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: this.$t("yes"),
+        confirmButtonText: this.$t("sweetAlert.yes_close"),
         cancelButtonText: this.$t('no')
       }).then((result) => {
         if (result.value) {

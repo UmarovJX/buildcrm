@@ -1,6 +1,6 @@
 <template>
   <div
-      class="position-relative"
+      class="position-relative d-flex"
       style="min-height: 300px"
   >
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">

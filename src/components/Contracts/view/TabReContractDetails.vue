@@ -255,7 +255,7 @@ export default {
 
     fullName(value) {
       if (value && value.first_name && value.last_name && value.second_name)
-        return value.first_name.lotin + ' ' + value.last_name.lotin + ' ' + value.second_name.lotin
+        return value.last_name.lotin + ' ' + value.first_name.lotin + ' ' + value.second_name.lotin
       return ''
     },
 
