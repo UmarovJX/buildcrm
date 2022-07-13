@@ -63,6 +63,16 @@
 
 
               <b-button
+                  v-if="permission.objects.update && data.item.status"
+                  class="dropdown-item  dropdown-item--inside"
+                  @click="deactivatePromo(data.item)"
+              >
+                <i class="fas fa-times"></i>
+                {{ $t("deactivate") }}
+              </b-button>
+
+
+              <b-button
                   v-if="permission.objects.update"
                   @click="editPromoItem(data.item)"
                   class="dropdown-item dropdown-item--inside"
@@ -71,14 +81,6 @@
                 {{ $t("edit") }}
               </b-button>
 
-              <b-button
-                  v-if="permission.objects.update && data.item.status"
-                  class="dropdown-item  dropdown-item--inside"
-                  @click="deactivatePromo(data.item)"
-              >
-                <i class="fas fa-times"></i>
-                {{ $t("deactivate") }}
-              </b-button>
 
               <b-button
                   v-if="permission.objects.delete"
