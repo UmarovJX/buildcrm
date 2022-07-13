@@ -124,10 +124,10 @@
                 </div>
 
                 <hr/>
-              </div> <!-- Изменить дата договора END -->
+              </div>
+              <!-- Изменить дата договора END -->
 
-
-              <!--  client form -->
+              <!--  CLIENT FORM -->
               <div class="col-md-12">
                 <ClientInputConfirm
                     :client="client"
@@ -139,8 +139,8 @@
               <!-- apartments.agree.first_payment_date -->
               <div class="col-md-4">
                 <validation-provider
-                    :name="$t('apartments.agree.first_payment_date')"
-                    :rules="{required: false}"
+                    :name="`${ $t('apartments.agree.first_payment_date') }`"
+                    :rules="{ required: false }"
                     v-slot="validationContext"
                     class="mb-3"
                 >
@@ -478,12 +478,14 @@ export default {
   watch: {
     'order.payment_date'(lastValue) {
       this.contract.payment_date = lastValue
+    },
+    'order.first_payment_date'(paymentDate) {
+      this.contract.first_payment_date = paymentDate
     }
   },
 
   created() {
     // this.backToView();
-
     // this.expiry_at = this.$moment(this.getApartmentOrder.expiry_at)
     //     .utcOffset("+0500")
     //     .format("YYYY-MM-DD H:mm:ss");
