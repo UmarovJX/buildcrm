@@ -1,88 +1,76 @@
 <template>
-  <div>
-    <b-modal
-        id="modal-create"
-        ref="creation-modal"
-        size="lg"
-        :title="modalProperties.title"
-        hide-footer
-        @show="resetModal"
-    >
-      <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
-        <form ref="form" @submit.prevent="handleSubmit(submitForm)">
-          <ValidationProvider
-              :name="$t('companies.type')"
-              rules="required"
-              v-slot="{ errors }"
+  <b-modal
+      id="modal-create"
+      ref="creation-modal"
+      :title="modalProperties.title"
+      hide-footer
+      @show="resetModal"
+  >
+    <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
+      <form ref="form" @submit.prevent="handleSubmit(submitForm)">
+          <b-form-group
+              class="mb-3 select_input select_custom"
           >
-            <b-form-group
-                class="mb-2"
-                :label="$t('companies.type')"
-            >
-              <b-form-select
-                  class="mb-2"
-                  id="type"
-                  :label-for="$t('companies.type')"
-                  :name="$t('companies.type')"
-                  v-model="company.type_id"
-                  :options="typeOptions"
-              >
-                <template #first>
-                  <b-form-select-option
-                      :value="null"
-                      disabled
-                  >
-                    {{ $t("companies.type_enter") }}
-                  </b-form-select-option>
-                </template>
-              </b-form-select>
-            </b-form-group>
-            <span class="error__provider" v-if="errors[0]">
+            <base-select
+                id="type"
+                :label="true"
+                :label-for="$t('companies.type')"
+                :no-placeholder="true"
+                :placeholder="$t('companies.type')"
+                :name="$t('companies.type')"
+                @change="company.type_id = $event"
+                :options="typeOptions"
+            />
+          </b-form-group>
+
+        <ValidationProvider
+            v-for="{label,labelFor,bind,mask,rules, type, placeholder} in providerSchema"
+            :key="label + labelFor"
+            :name="label"
+            :rules="rules"
+            v-slot="{ errors }"
+        >
+          <b-form-group class="select_input">
+            <base-input :type="type" :id="labelFor" :label="true" :placeholder="placeholder"
+                        :mask="mask" v-model="company[bind]"/>
+          </b-form-group>
+          <span class="error__provider" v-if="errors[0]">
               {{ errors[0] }}
             </span>
-          </ValidationProvider>
+        </ValidationProvider>
 
-          <ValidationProvider
-              v-for="{label,labelFor,bind,mask,rules, type} in providerSchema"
-              :key="label + labelFor"
-              :name="label"
-              :rules="rules"
-              v-slot="{ errors }"
+        <div class="d-flex footer-btn justify-content-between pb-4">
+          <b-button variant="light" @click="resetModal">
+            {{ $t("cancel") }}
+          </b-button>
+
+          <b-button
+              type="submit"
+              class="ml-1 mr-0"
+              variant="success"
           >
-            <b-form-group class="mb-2" :label="label" :label-for="labelFor">
-              <b-form-input :type="type" :id="labelFor" v-mask="mask" v-model="company[bind]"/>
-            </b-form-group>
-            <span class="error__provider" v-if="errors[0]">
-              {{ errors[0] }}
-            </span>
-          </ValidationProvider>
-
-          <div class="d-flex justify-content-end pb-4">
-            <b-button variant="light" @click="resetModal">
-              {{ $t("cancel") }}
-            </b-button>
-
-            <b-button
-                type="submit"
-                class="ml-1 mr-0"
-                variant="success"
-            >
-              <i class="fas fa-save" v-if="!loading"></i>
-              <span class="save__button">{{ $t("save") }}</span>
-              <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-            </b-button>
-          </div>
-        </form>
-      </ValidationObserver>
-    </b-modal>
-  </div>
+            <span class="save__button">{{ $t("save") }}</span>
+            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+          </b-button>
+        </div>
+      </form>
+    </ValidationObserver>
+  </b-modal>
 </template>
 
 <script>
 import api from "@/services/api";
+import "vue2-datepicker/index.css";
+import BaseInput from "@/components/Reusable/BaseInput";
+import BaseSelect from "@/components/Reusable/BaseSelect";
 
 export default {
   name: 'CreationCompanyModal',
+  components: {
+    // BaseMultiselect,
+    BaseInput,
+    BaseSelect
+  },
   emits: ['updated-company', 'created-new-company'],
   props: {
     historyEditInfo: {
@@ -96,6 +84,7 @@ export default {
   },
   data() {
     return {
+      image: "@/assets/icons/icon-down.svg",
       maskText: '',
       loading: false,
       companyTypes: [],
@@ -114,29 +103,14 @@ export default {
         oked: null,
       },
       providerSchema: [
-        // {
-        //   mask: '',
-        //   type: 'text',
-        //   bind: 'type',
-        //   labelFor: 'type',
-        //   rules: 'required',
-        //   label: this.$t('companies.type_id')
-        // },
         {
           mask: '',
           type: 'text',
           bind: 'name',
           labelFor: 'name',
           rules: 'required|min:2',
-          label: this.$t('companies.name')
-        },
-        {
-          mask: '',
-          type: 'text',
-          bind: 'inn',
-          labelFor: 'inn',
-          rules: 'required|min:2',
-          label: this.$t('companies.inn')
+          label: this.$t('companies.name'),
+          placeholder: this.$t('companies.search'),
         },
         {
           mask: '',
@@ -144,7 +118,8 @@ export default {
           bind: 'first_name',
           labelFor: 'first_name',
           rules: 'required|min:2',
-          label: this.$t('companies.first_name')
+          label: this.$t('companies.first_name'),
+          placeholder: this.$t('companies.first_name'),
         },
         {
           mask: '',
@@ -152,7 +127,8 @@ export default {
           bind: 'last_name',
           labelFor: 'last_name',
           rules: 'required|min:2',
-          label: this.$t('companies.last_name')
+          label: this.$t('companies.last_name'),
+          placeholder: this.$t('companies.last_name'),
         },
         {
           mask: '',
@@ -160,7 +136,8 @@ export default {
           bind: 'second_name',
           labelFor: 'second_name',
           rules: 'required|min:2',
-          label: this.$t('companies.second_name')
+          label: this.$t('companies.second_phone'),
+          placeholder: this.$t('companies.second_name'),
         },
         {
           mask: '',
@@ -168,23 +145,8 @@ export default {
           bind: 'address',
           labelFor: 'address',
           rules: 'required|min:2',
-          label: this.$t('companies.address')
-        },
-        {
-          mask: '',
-          type: 'number',
-          bind: 'code',
-          labelFor: 'code',
-          rules: 'required|min:2',
-          label: this.$t('companies.code')
-        },
-        {
-          mask: '',
-          type: 'text',
-          bind: 'oked',
-          labelFor: 'oked',
-          rules: 'required|min:2',
-          label: this.$t('companies.oked')
+          label: this.$t('companies.address'),
+          placeholder: this.$t('companies.address'),
         },
         {
           mask: '############',
@@ -192,7 +154,8 @@ export default {
           bind: 'phone',
           labelFor: 'phone',
           rules: 'required|min:2',
-          label: this.$t('companies.phone')
+          label: this.$t('companies.fax_number'),
+          placeholder: this.$t('companies.fax_number'),
         },
         {
           mask: '############',
@@ -200,7 +163,35 @@ export default {
           bind: 'other_phone',
           labelFor: 'other_phone',
           rules: 'required|min:2',
-          label: this.$t('companies.other_phone')
+          label: this.$t('companies.other_phone'),
+          placeholder: this.$t('companies.other_phone'),
+        },
+        {
+          mask: '',
+          type: 'text',
+          bind: 'oked',
+          labelFor: 'oked',
+          rules: 'required|min:2',
+          label: this.$t('companies.oked'),
+          placeholder: this.$t('companies.oked'),
+        },
+        {
+          mask: '',
+          type: 'text',
+          bind: 'inn',
+          labelFor: 'inn',
+          rules: 'required|min:2',
+          label: this.$t('companies.inn'),
+          placeholder: this.$t('companies.inn'),
+        },
+        {
+          mask: '############',
+          type: 'text',
+          bind: 'code',
+          labelFor: 'code',
+          rules: 'required|min:2',
+          label: this.$t('companies.code'),
+          placeholder: this.$t('companies.code'),
         }
       ]
     }
@@ -235,6 +226,12 @@ export default {
   },
 
   methods: {
+    inputFilterObject(objects) {
+      this.company.type_id = objects.map(({value}) => value)
+    },
+    show() {
+      this.$refs['creation-modal'].show()
+    },
     fetchCompanyType() {
       api.companies.getCompanyType()
           .then(response => {
@@ -244,7 +241,6 @@ export default {
             this.toastedWithErrorCode(error)
           })
     },
-
     resetModal() {
       this.company = {
         type_id: null,
@@ -276,7 +272,6 @@ export default {
         companyData = {}
       })
       this.createPosition = false
-
       this.company = {
         ...this.company,
         ...companyData
@@ -284,7 +279,6 @@ export default {
     },
 
     submitForm() {
-      console.log(this.$refs['validation-observer'], 'submitForm');
       /*
 
           const {bank_name_ru, bank_name_uz} = this.company
@@ -356,5 +350,68 @@ export default {
 
 .save__button {
   color: white;
+}
+
+::v-deep #modal-create {
+  background: rgba(173, 177, 186, 0.32);
+  backdrop-filter: blur(2px);
+
+  .modal-dialog {
+    .modal-content {
+      border-radius: 50px;
+      padding: 20px;
+
+      header {
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+
+        h5 {
+          font-size: 36px;
+          color: #4B5563;
+        }
+
+        button {
+          background: #F3F4F6;
+          border-radius: 50%;
+          padding: 12px 18px;
+        }
+      }
+
+      .modal-body {
+        fieldset {
+          div {
+            border-radius: 50px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.select_input {
+  .base-input {
+    width: 100%;
+
+    ::v-deep .input-label span {
+      top: -5px !important;
+    }
+  }
+}
+
+.footer-btn {
+  .btn {
+    width: 50%;
+  }
+
+  .btn:nth-child(2) {
+    background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%) !important;
+  }
+}
+
+.select_custom {
+  ::v-deep span {
+    color: #9CA3AF;
+  }
 }
 </style>

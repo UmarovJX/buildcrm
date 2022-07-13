@@ -1,22 +1,33 @@
 <template>
   <div class="mt-2">
     <b-table
+        class="table__list"
+        @sort-changed="sortingChanged"
+        thead-tr-class="row__head__bottom-border"
+        tbody-tr-class="row__body__bottom-border"
         sticky-header
         borderless
         responsive
         :items="companies"
         :fields="fields"
+        @row-clicked="openDetails"
         show-empty
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="sortDesc"
+        :sort-by.sync="filter.sortBy"
+        :sort-desc.sync="filter.sortDesc"
         sort-icon-left
-        class="custom-table"
         :empty-text="$t('no_data')"
     >
+      <template class="header_label" #head(name)="data">
+        <span class="label">{{ data.label }}</span>
+      </template>
+
       <template #cell(name)="data">
         {{ getName(data.item.type) }} «{{ data.item.name }}»
       </template>
 
+      <template #cell(accounts_number)="data">
+        {{ data.item.payment_accounts_count }}
+      </template>
 
       <!--   ACTION   -->
       <template #cell(actions)="data">
@@ -24,105 +35,48 @@
           <div
               class="dropdown my-dropdown dropleft"
           >
-            <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
+            <BaseButton
+                class="bg-gradient-violet button rounded-circle]"
+                text=''
+                @click="editSelectedCompany(data.item)"
             >
-              <i class="far fa-ellipsis-h"></i>
-            </button>
-
-            <div class="dropdown-menu">
-              <b-button class="dropdown-item dropdown-item--inside"
-                        @click="openDetails(data.item)">
-
-                <i class="fas fa-info-circle"></i>
-                {{ $t("companies.more") }}
-              </b-button>
-
-              <b-button
-                  v-if="permission.roles.update"
-                  @click="editSelectedCompany(data.item)"
-                  class="dropdown-item dropdown-item--inside"
-              >
-                <i class="fas fa-edit"></i>
-                {{ $t("edit") }}
-              </b-button>
-
-              <b-button
-                  v-if="permission.users.delete"
-                  class="dropdown-item  dropdown-item--inside"
-                  @click="deleteCompany(data.item.id)"
-              >
-                <i class="fas fa-trash"></i>
-                {{ $t('delete') }}
-              </b-button>
-            </div>
+              <template #right-icon>
+                <BaseEditIcon fill="#7C3AED"/>
+              </template>
+            </BaseButton>
           </div>
         </div>
       </template>
-
-      <!--  ROW DETAILS    -->
-<!--      <template #row-details="data">-->
-<!--        <div class="payment__content">-->
-<!--          <PaymentBoxContent-->
-<!--              v-for="detail in data.item.details"-->
-<!--              :key="detail.created_at"-->
-<!--              :detail="detail"-->
-<!--              :company="data.item"-->
-<!--              @updated-company="updatedCompany"-->
-<!--          />-->
-<!--        </div>-->
-<!--      </template>-->
     </b-table>
   </div>
 </template>
 
 <script>
 import {mapGetters} from "vuex";
-// import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
+import BaseEditIcon from "@/components/icons/BaseEditIcon"
+import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: "CompaniesList",
-  // components: {
-  //   PaymentBoxContent
-  // },
+  components: {
+    BaseButton,
+    BaseEditIcon
+  },
   props: {
     companies: {
       type: Array,
       required: true
     }
   },
-  emits: ['edit-selected-company', 'delete-company'],
+  emits: ['edit-selected-company', 'delete-company', 'sort-companies'],
   data() {
     return {
-      sortBy: "id",
-      sortDesc: false,
+      filter: {
+        sortBy: "",
+        sortDesc: false,
+      },
       paymentCheckbox: true,
       primaryPaymentAccount: 0,
-      fields: [
-        {
-          key: "id",
-          label: "#",
-        },
-        {
-          key: "name",
-          label: this.$t("companies.name"),
-        },
-        {
-          key: "payment_accounts_count",
-          label: this.$t("companies.payment_account"),
-        },
-        {
-          key: "phone",
-          label: this.$t("companies.phone"),
-          formatter: (value) => "+" + value,
-        },
-        {
-          key: "actions",
-          label: "",
-        },
-      ],
       detailsField: [
         {
           key: "bank_name",
@@ -150,20 +104,67 @@ export default {
   computed: {
     ...mapGetters({
       permission: 'getPermission'
-    })
+    }),
+    fields(){
+      return [
+        {
+          key: "id",
+          label: this.$t("companies.number"),
+        },
+        {
+          key: "name",
+          label: this.$t("companies.name"),
+          sortable: true
+        },
+        {
+          key: "director",
+          label: this.$t("companies.director"),
+        },
+        {
+          key: "phone",
+          label: this.$t("companies.phone"),
+          formatter: (value) => "+" + value,
+        },
+        {
+          key: "accounts_number",
+          label: this.$t("companies.accounts_number"),
+        },
+        {
+          key: "actions",
+          label: this.$t("companies.actions"),
+        },
+      ]
+    }
   },
   methods: {
-    openDetails(data) {
-      this.$router.push({name: 'company-details', params: {companyId: data.id}})
+    sortingChanged(val) {
+      if(val.sortBy){
+        this.filter.sort_by = val.sortBy;
+        this.filter.order_by = val.sortDesc ? "desc" : "asc";
+        this.filter.page = 1;
+        this.currentPage = this.filter.page;
+        this.$router.push({
+          name: "companies",
+          query: this.filter,
+        });
+      }
+    },
+    openDetails({id}) {
+      this.$router.push({name: 'company-details', params: {companyId: id}})
+    },
+    editSelectedCompany(item) {
+      if (item) {
+        console.log("item", item)
+        this.$emit('edit-selected-company', item)
+      } else {
+        console.log("sorry")
+      }
     },
     getName(name) {
       if (localStorage.locale)
         return name[localStorage.locale]
       else
         return name['ru']
-    },
-    editSelectedCompany(item) {
-      this.$emit('edit-selected-company', item)
     },
     deleteCompany(id) {
       this.$emit('delete-company', id)
@@ -179,9 +180,99 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
+::v-deep .row__head__bottom-border {
+  border-bottom: 2px solid var(--gray-200) !important;
+}
+
+::v-deep .row__body__bottom-border:not(:last-child) {
+  border-bottom: 2px solid var(--gray-200) !important;
+}
+
+
+::v-deep .table__list {
+  min-height: 250px;
+  max-height: none;
+
+  table {
+    color: var(--gray-600);
+
+    thead tr th {
+      font-family: CraftworkSans, serif;
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 14px;
+      letter-spacing: 1px;
+      color: var(--gray-400) !important;
+      padding: 1.125rem 1rem;
+      vertical-align: middle;
+
+      //&.b-table-sort-icon-left {
+      //display: flex;
+      //align-items: center;
+      //}
+    }
+
+    td {
+      cursor: pointer;
+      vertical-align: middle;
+    }
+  }
+
+
+  .table.b-table[aria-busy=true] {
+    opacity: 1 !important;
+  }
+}
+
+
+::v-deep .table.b-table > thead > tr > [aria-sort="none"],
+::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
+  background-position: right calc(2rem / 2) center !important;
+  //background-position: right !important;
+  padding-right: 20px;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../../../assets/icons/icon-arrow-down.svg") !important;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=descending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../../../assets/icons/icon-arrow-up.svg") !important;
+}
+
 .payment__content {
-  //background-color: var(--primary);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 400px));
+}
+
+.label {
+  color: #7C3AED;
+  margin-right: 3px;
+  font-weight: 500;
+}
+
+.button {
+  height: auto;
+  width: auto;
+  padding: 10px;
+
+  ::v-deep span {
+    margin-left: 0 !important;
+  }
+}
+
+.edit {
+  padding: 10px 13px;
+  border: none;
+  border-radius: 50%;
+  background: #7C3AED;
 }
 </style>

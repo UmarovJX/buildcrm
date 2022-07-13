@@ -142,11 +142,11 @@ export default {
     },
     triggerNumberEvent($event) {
       this.debounceInput = $event
-      this.$emit('trigger-input', $event)
+      this.$emit('trigger-input', this.debounceInput)
     },
-    setTriggerValue(value) {
-      this.$refs['base-input'].setVModalValue(value)
-    },
+    // setTriggerValue(value) {
+    //   this.$refs['base-input'].setVModalValue(value)
+    // },
   },
 }
 </script>
@@ -156,7 +156,6 @@ export default {
 .input-label {
   font-family: CraftworkSans, serif;
   position: relative;
-  //margin-bottom: 2px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--gray-400);
@@ -170,8 +169,9 @@ export default {
     font-size: 8px;
     line-height: 10px;
     position: absolute;
-    top: 6px;
+    //top: 6px;
     left: 2px;
+    top: 0;
   }
 }
 

@@ -201,7 +201,6 @@
               <b-form-checkbox v-model="reason_type" v-for="option in types" :key="option.id" :value="option">
                 {{ checkLocales(option.name) }}
               </b-form-checkbox>
-
             </b-dropdown-text>
           </b-dropdown>
         </div>
@@ -561,7 +560,7 @@ export default {
   .dropdown-menu {
     border: 1px solid var(--gray-200);
     box-sizing: border-box;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
     border-radius: 24px;
     padding: .5rem;
 
@@ -719,7 +718,7 @@ export default {
   .dropdown-menu {
     border: 1px solid var(--gray-200);
     box-sizing: border-box;
-    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
     border-radius: 24px;
     padding: .5rem;
 

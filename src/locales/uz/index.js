@@ -481,6 +481,7 @@ export default {
         name: "Kompaniya",
         director: "Kompaniya direktori",
         type: "Kompaniya turi",
+        number: "Raqam",
         inn: "STIR",
         mfo: "MFO",
         phone: "Telefon raqami",
@@ -490,7 +491,8 @@ export default {
         first_name: "Direktorning ismi",
         last_name: "Direktorning familiyasi",
         second_name: "Direktorning sharifi",
-        type_enter: "Turini tanlang",
+        accounts_number: "Hisoblar soni",
+        type_enter: "Kompaniya turi",
         branch_enter: "Kompaniyani tanlang",
         address: 'Kompaniya manzili',
         code: "To'lovchining ro'yxatga olish kodi",
@@ -500,6 +502,14 @@ export default {
         bank_name_ru: 'Bank nomi (Рус.)',
         check_account: 'Hisob raqami',
         more: 'Kompaniya tafsilotlari',
+        actions: "Amallar",
+        add_company: "Kompaniya qo'shish",
+        add_title: "Sarlavha qo'shish",
+        search: "Kompaniya nomi",
+        active_payment: "Aktiv hisob",
+        delete_company: "Kompaniyani o'chirish",
+        fax_number: "Telefon raqam / faks",
+        counted_payment: "Hisoblar"
     },
 
     apartments: {
