@@ -350,9 +350,9 @@ export default {
         status: {
             waiting: "To'lovda",
             booked: 'Band qilingan',
-            sold: 'Sotilgan',
+            sold: "To'lovda",
             closed: 'Yopilgan',
-            contract: 'Shartnoma'
+            contract: 'Sotilgan'
         },
 
         view: {

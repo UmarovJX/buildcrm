@@ -326,7 +326,11 @@ export default {
         },
 
         status: {
-            waiting: 'На оплате', booked: 'Забронирован', sold: 'Оформлен', closed: 'Закрыт', contract: 'Договор'
+            waiting: 'На оплате',
+            booked: 'Забронирован',
+            sold: 'На оплате',
+            closed: 'Закрыт',
+            contract: 'Оформлен'
         },
 
         view: {
