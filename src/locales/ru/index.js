@@ -37,6 +37,7 @@ export default {
     number_agree: "Номер соглошения",
     create_date: 'Дата cоставления',
     recontract_details: 'Детали переоформлении',
+    contract_log: 'Журнал активности',
     recontract_download: 'Скачать переоформленный договор',
     re_contract: 'Переоформить',
     yes: "Есть",
