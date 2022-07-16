@@ -407,8 +407,8 @@
         v-if="
                   (getMe.role && getMe.role.id === 1) ||
                     (getPermission &&
-                      getPermission.contracts &&
-                      getPermission.contracts.friends)
+                      getPermission.checkout &&
+                      getPermission.checkout.mark_friends)
                 "
     >
       <div class="mb-3">

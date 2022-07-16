@@ -11,7 +11,7 @@
     </div>
 
     <!--  PAYMENTS HISTORY  -->
-    <div class="payments__history">
+    <div v-if="listPermission" class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
@@ -195,7 +195,7 @@
             <span class="actions">
               <!--     EDIT PAYMENT       -->
               <span
-                  v-if="userInteraction(item.type)"
+                  v-if="userInteractionEdit(item.type)"
                   @click="editPaymentTransaction(item)"
                   class="edit__icon icon"
               >
@@ -203,7 +203,7 @@
               </span>
               <!--      DELETE PAYMENT        -->
               <span
-                  v-if="userInteraction(item.type)"
+                  v-if="userInteractionDelete(item.type)"
                   class="delete__icon icon"
                   @click="warnBeforeDelete(item.id)"
               >
@@ -609,12 +609,15 @@ export default {
       permission: 'getPermission'
     }),
     paidPermission() {
-      return this.permission?.contracts?.paid
+      return this.permission?.contracts?.payments?.import
+    },
+    listPermission() {
+      return this.permission?.contracts?.payments?.list
     },
     paymentTypeOptionsPermission() {
       const listOption = []
 
-      if (this.permission?.debtors?.first_payment?.edit) {
+      if (this.permission?.contracts?.payments?.initial_type?.create) {
         listOption.push({
           value: 'initial_payment',
           text: this.$t('initial_payment')
@@ -622,7 +625,7 @@ export default {
       }
 
       const monthlyPaymentCounts = this.order?.payments?.monthly_payments_count
-      if (this.permission?.debtors?.monthly?.edit && monthlyPaymentCounts) {
+      if (this.permission?.contracts?.payments?.monthly_type?.create && monthlyPaymentCounts) {
         listOption.push({
           value: 'monthly',
           text: this.$t('monthly')
@@ -640,8 +643,9 @@ export default {
       return options
     },
     uploadFilePermission() {
-      const {debtors} = this.permission
-      return debtors?.first_payment?.edit || debtors?.monthly?.edit
+      const {contracts} = this.permission
+      return contracts?.payments?.create && (contracts?.payments?.initial_type?.create || contracts?.payments?.monthly_type?.create)
+      // return true
     },
     firstChart() {
       const {payments, currency} = this.order
@@ -803,11 +807,17 @@ export default {
     await this.fetchItems()
   },
   methods: {
-    userInteraction(type) {
+    userInteractionEdit(type) {
       if (type === 'initial_payment')
-        return this.permission.debtors.first_payment.edit
+        return this.permission?.contracts?.payments?.initial_type?.edit
       else if (type === 'monthly')
-        return this.permission.debtors.monthly.edit
+        return this.permission?.contracts?.payments?.monthly_type?.edit
+    },
+    userInteractionDelete(type) {
+      if (type === 'initial_payment')
+        return this.permission?.contracts?.payments?.initial_type?.delete
+      else if (type === 'monthly')
+        return this.permission?.contracts?.payments?.monthly_type?.delete
     },
     refreshDetails() {
       this.$emit('refresh-details')

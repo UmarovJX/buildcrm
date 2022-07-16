@@ -137,7 +137,7 @@ const routes = [
         path: "/objects/:id/promo",
         component: Promo,
         meta: {
-            requiresAuth: "objects",
+            requiresAuth: "promos",
         }
     },
 
@@ -379,21 +379,31 @@ const routes = [
         /* BRANCHES */
         name: 'branches',
         path: '/branches',
-        component: Branches
+        component: Branches,
+        meta: {
+            requiresAuth: "branches",
+        }
     },
 
     {
         /* CREATE BRANCH */
         name: 'create-branch',
         path: '/branches/create',
-        component: CreateBranchPage
+        component: CreateBranchPage,
+        meta: {
+            requiresAuth: "branches",
+        }
+
     },
 
     {
         /* EDIT BRANCH */
         name: 'edit-branch',
         path: '/branches/:id/update',
-        component: EditBranchContent
+        component: EditBranchContent,
+        meta: {
+            requiresAuth: "branches",
+        }
     },
 
     {
@@ -427,32 +437,33 @@ router.beforeEach((to, from, next) => {
         return next({name: 'login'})
 })
 
-// router.beforeEach((to, from, next) => {
-//   const login = localStorage.token;
+router.beforeEach((to, from, next) => {
+    const login = localStorage.getItem('auth__access__token')
 
-//   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     to.matched.some((record) => {
-//       if (!login) {
-//         next({
-//           name: "login",
-//         });
-//       }
-//       let permission = store.state.me;
-//       setTimeout(() => {
-//         permission = permission.permission[`${record.meta.requiresAuth}`].view;
-//         if (permission) {
-//           next();
-//         } else {
-//           next({
-//             name: "not_found",
-//           });
-//         }
-//       }, 500);
-//     });
-//   } else {
-//     next(); // make sure to always call next()!
-//   }
-// });
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        to.matched.some((record) => {
+            if (!login) {
+                next({
+                    name: "login",
+                });
+            }
+            // let allow = store.state.me.permission;
+            setTimeout(() => {
+                const permission = store.state.me.permission[`${record.meta.requiresAuth}`];
+
+                if (permission && permission.view) {
+                    next();
+                } else {
+                    next({
+                        name: "not_found",
+                    });
+                }
+            }, 500);
+        });
+    } else {
+        next(); // make sure to always call next()!
+    }
+});
 
 // Sentry.init({
 //   Vue,

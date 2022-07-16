@@ -33,14 +33,18 @@
           </ul>
         </div>
 
-        <router-link
-            :to="{name: 'roles-store'}"
-            v-if="getPermission.roles.create"
-            :class="'btn btn-primary mr-0 mt-md-0'"
+        <base-button
+            v-if="getPermission.roles && getPermission.roles.create"
+            design="violet-gradient"
+            @click="$router.push({name: 'roles-store'})"
+            :text="$t('add')"
+            class="ml-4"
         >
-          <i class="fal fa-plus mr-2"></i>
-          {{ $t("add") }}
-        </router-link>
+          <template #left-icon>
+            <i class="fal fa-plus mr-2"></i>
+          </template>
+        </base-button>
+
       </div>
 
       <div class="">
@@ -83,9 +87,9 @@
             <div class="float-right">
               <div
                   class="dropdown my-dropdown dropleft"
-                  v-if="
+                  v-if="getPermission.roles && (
                   (getPermission.roles.update && data.item.id != 1) ||
-                  (getPermission.roles.delete && data.item.id != 1)
+                  (getPermission.roles.delete && data.item.id != 1))
                 "
               >
                 <button
@@ -98,13 +102,11 @@
 
                 <div
                     class="dropdown-menu"
-                    v-if="
-                    getPermission.roles.update || getPermission.roles.delete
-                  "
+                    v-if="getPermission.roles && (getPermission.roles.update || getPermission.roles.delete)"
                 >
                   <router-link
                       :to="{name: 'roles-update', params: {id: data.item.id}}"
-                      v-if="getPermission.roles.update && data.item.id != 1"
+                      v-if="getPermission.roles && getPermission.roles.edit && data.item.id != 1"
                       :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="fas fa-pen"></i>
@@ -113,7 +115,7 @@
 
                   <a
                       class="dropdown-item dropdown-item--inside"
-                      v-if="getPermission.roles.delete && data.item.id != 1"
+                      v-if="getPermission.roles && getPermission.roles.delete && data.item.id != 1"
                       @click="Delete(data.item.id)"
                       href="#"
                   >
@@ -132,9 +134,13 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import api from "@/services/api";
+import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: 'Roles',
+  components: {
+    BaseButton
+  },
   data() {
     return {
       header: {

@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="compare__details">
+    <div v-if="uniformityPermission" class="compare__details">
       <h3 class="compare__details-title">{{ $t('contract_compare.compare_title') }}</h3>
 
       <div class="row">
@@ -159,6 +159,7 @@
 <script>
 import {formatDateWithDot, formatToPrice} from "@/util/reusable";
 import api from "@/services/api";
+import {mapGetters} from "vuex";
 
 export default {
   name: "TabClientDetails",
@@ -179,6 +180,14 @@ export default {
   created() {
     this.fetchContractDetails()
     this.fetchCompareDetails()
+  },
+  computed: {
+    ...mapGetters({
+      permission: 'getPermission',
+    }),
+    uniformityPermission() {
+      return this.permission && this.permission.contracts && this.permission.contracts.uniformity
+    },
   },
   methods: {
     datePrettier: (time) => formatDateWithDot(time),

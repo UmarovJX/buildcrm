@@ -17,12 +17,12 @@
           </span>
         </span>
       </div>
-      <div>
+      <div v-if="hasAction">
         <b-dropdown right>
           <template #button-content>
             {{ $t('contracts.view.actions') }}
           </template>
-          <b-dropdown-item href="#" @click="downloadContact">
+          <b-dropdown-item v-if="downloadPermission" href="#" @click="downloadContact">
             <span class="mr-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -33,7 +33,7 @@
             {{ $t('contracts.view.download_contract') }}
           </b-dropdown-item>
           <b-dropdown-item
-              v-if="order.status === 'sold' || order.status === 'contract'"
+              v-if="editPermission"
               :to="{name:'edit-apartment', params:{id:$route.params.id}}"
           >
             <span class="mr-2">
@@ -56,7 +56,7 @@
             {{ $t('contracts.view.cancel_contract') }}
           </b-dropdown-item>
           <b-dropdown-item
-              v-if="order && order.reissue.re_order"
+              v-if="reContractPermission"
               @click="openReContractModal"
           >
             <span class="mr-2">
@@ -282,8 +282,23 @@ export default {
     isStatusContract() {
       return this.order.status === 'contract'
     },
+    hasAction() {
+      return this.reContractPermission && this.editPermission && this.deletePermission && this.downloadPermission
+    },
+    reContractViewPermission(){
+      return (this.permission && this.permission.contracts && this.permission.contracts.reissue && this.permission.contracts.reissue.view)
+    },
+    reContractPermission() {
+      return (this.permission && this.permission.contracts && this.permission.contracts.reissue && this.permission.contracts.reissue.create) && this.order && this.order.reissue.re_order
+    },
+    editPermission() {
+      return (this.permission && this.permission.contracts && this.permission.contracts.edit) && (this.order.status === 'sold' || this.order.status === 'contract')
+    },
     deletePermission() {
-      return this.permission?.contracts?.cancelled && this.isStatusContract
+      return (this.permission && this.permission.contracts && this.permission.contracts.cancel) && this.isStatusContract
+    },
+    downloadPermission() {
+      return (this.permission && this.permission.contracts && this.permission.contracts.download)
     },
     filterTabList() {
       const list = [
@@ -308,7 +323,7 @@ export default {
       if (status === 'booked') {
         return list.slice(1).map((ls, index) => ({...ls, status: index}))
       }
-      if (reissue && !reissue.view) {
+      if (this.reContractViewPermission && reissue && !reissue.view) {
         return list.slice(0, -1).map((ls, index) => ({...ls, status: index}))
       }
       return list.map((ls, index) => ({...ls, status: index}))

@@ -21,6 +21,7 @@
       </ul>
     </div>
     <router-link
+        v-if="permission.branches && permission.branches.create"
         :to="{name: 'create-branch'}"
         :class="'btn btn-primary mr-0 mt-md-0'"
     >
@@ -31,7 +32,14 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
-  name: "BranchesBreadCrumbs"
+  name: "BranchesBreadCrumbs",
+  computed: {
+    ...mapGetters({
+      permission: 'getPermission'
+    })
+  },
 }
 </script>

@@ -98,7 +98,6 @@
             <div class="float-right">
               <div
                   class="dropdown my-dropdown dropleft"
-                  v-if="getPermission.type_plan.update"
               >
                 <button
                     type="button"
@@ -110,17 +109,20 @@
 
                 <div class="dropdown-menu">
                   <button
+                      v-if="getPermission.plans && getPermission.plans.edit"
                       class="dropdown-item dropdown-item--inside"
                       @click="edit(data.item.id)"
                   >
                     <i class="fas fa-pen"></i>
-                    {{ $t("edit") }}
+                    <span class="ml-3">
+                      {{ $t("edit") }}
+                    </span>
                   </button>
 
                   <button
+                      v-if="getPermission.plans && getPermission.plans.delete"
                       class="dropdown-item dropdown-item--inside"
                       @click="deleteTypePlan(data.item)"
-                      v-if="getPermission.type_plan.update"
                   >
                     <span>
                       <i class="far fa-trash"></i>

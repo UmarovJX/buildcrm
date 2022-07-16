@@ -35,7 +35,7 @@
                   class="col-12 mb-2"
                   v-if="
                   (getMe.role && getMe.role.id === 1) ||
-                    (getPermission.contracts && getPermission.contracts.date)
+                    (getPermission.checkout && getPermission.checkout.edit_date)
                 "
               >
                 <div class="row">
@@ -683,7 +683,7 @@ export default {
           // formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
           formData.append("client_id", this.client?.id);
 
-          if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
+          if (this.getMe.role.id === 1 || this.getPermission?.checkout?.monthly_payment) {
             if (this.edited.monthly) {
               for (let monthly = 0; monthly < this.contract.credit_months.length; monthly++) {
                 let date = moment(this.contract.credit_months[monthly].month).format(
