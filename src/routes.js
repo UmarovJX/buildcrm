@@ -464,11 +464,6 @@ router.beforeEach(async (to, from, next) => {
         return next({name: 'login'})
 })
 
-// router.beforeEach((to, from, next) => {
-//     const login = localStorage.getItem('auth__access__token')
-//
-//
-// });
 
 // Sentry.init({
 //   Vue,

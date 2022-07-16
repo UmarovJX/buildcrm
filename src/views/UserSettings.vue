@@ -6,23 +6,23 @@
     >
     </base-bread-crumb>
 
-<!--    <base-input-->
-<!--        v-model="search"-->
-<!--        :placeholder="$t('users.name')"-->
-<!--        type="date"-->
-<!--        :label="true"-->
-<!--        :error="false"-->
-<!--    />-->
-<!--    <base-select-->
-<!--        :options="array"-->
-<!--        placeholder="label"-->
-<!--        :label="true"-->
-<!--        :error="false"/>-->
+    <!--    <base-input-->
+    <!--        v-model="search"-->
+    <!--        :placeholder="$t('users.name')"-->
+    <!--        type="date"-->
+    <!--        :label="true"-->
+    <!--        :error="false"-->
+    <!--    />-->
+    <!--    <base-select-->
+    <!--        :options="array"-->
+    <!--        placeholder="label"-->
+    <!--        :label="true"-->
+    <!--        :error="false"/>-->
 
-<!--    <warning-success status="warning" ref="base-modal"/>-->
+    <!--    <warning-success status="warning" ref="base-modal"/>-->
 
 
-<!--    <b-btn @click="openModal">click</b-btn>-->
+    <!--    <b-btn @click="openModal">click</b-btn>-->
 
     <b-card no-body>
       <b-tabs
@@ -30,7 +30,7 @@
           pills card vertical
           active-tab-class="user__active__tab"
       >
-        <b-tab active>
+        <b-tab v-if="settingPermission" active>
           <template #title>
             <span class="d-flex align-items-center">
                 <base-user-account-icon :extra-class="activeTabIconColor(0)"/>
@@ -39,7 +39,7 @@
           </template>
           <tab-user-me/>
         </b-tab>
-        <b-tab>
+        <b-tab v-if="passwordPermission">
           <template #title>
             <span class="d-flex align-items-center">
                 <base-user-password-icon :extra-class="activeTabIconColor(1)"/>
@@ -87,11 +87,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      theme: 'getTheme'
+      theme: 'getTheme',
+      permission: 'getPermission'
     }),
     activeContent() {
       return this.$t('profile')
     },
+    settingPermission() {
+      return this.permission.general && this.permission.general.profile_settings
+    },
+    passwordPermission() {
+      return this.permission.general && this.permission.general.password_settings
+    }
   },
   methods: {
     openModal() {
