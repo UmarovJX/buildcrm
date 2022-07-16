@@ -40,7 +40,7 @@
         <div class="card-body">
           <b-tabs content-class="mt-3">
             <b-tab
-                v-for="({title,active,rows,id}) in permissionTabs"
+                v-for="({title,active,rows,id},pmIndex) in permissionTabs"
                 :key="id"
                 :title="$t(title)"
                 :active="active"
@@ -49,7 +49,7 @@
                 <tbody>
                 <tr
                     v-for="({
-                    label,width,parent,
+                    label,width,
                     refer,checkboxSwitch,
                     checkboxActive,checkboxSize,inputActive,
                     inputClass,inputPlaceholder,inputType},index) in rows"
@@ -60,10 +60,10 @@
                   </td>
                   <td v-if="checkboxActive">
                     <b-form-checkbox
-                        :checked="getCheckboxStatus(refer,parent)"
                         :switch="checkboxSwitch"
                         :size="checkboxSize"
-                        @input="setCheckboxReferenceValue(refer,parent,$event)"
+                        v-model="permissionTabs[pmIndex]['rows'][index].vBind"
+                        @input="activeAllTabPermission(refer,pmIndex,index,$event)"
                     ></b-form-checkbox>
                   </td>
                   <td v-if="inputActive">
@@ -146,6 +146,7 @@ export default {
       checkboxActive: true,
       checkboxSize: 'lg',
       checkboxSwitch: true,
+      vBind: false
     }
 
     const crudPermission = {
@@ -247,12 +248,13 @@ export default {
           id: uuid(),
           title: 'general',
           active: true,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
@@ -279,42 +281,42 @@ export default {
               ...row,
               label: 'roles_permission.general.exchange_rates',
               refer: 'currency',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'roles_permission.general.theme',
               refer: 'theme',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'roles_permission.general.language',
               refer: 'language',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'roles_permission.general.profile_settings',
               refer: 'settings',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'roles_permission.general.user_data',
               refer: 'profile_settings',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'roles_permission.general.user_password',
               refer: 'password_settings',
-              parent: form.general,
+              parent: 'general',
             },
           ],
         },
@@ -322,46 +324,47 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.objects',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.objects,
+              parent: 'objects',
             },
             {
               ...row,
               label: 'roles_permission.objects.watch_objects',
               refer: 'view',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'roles_permission.objects.create_object',
               refer: 'create',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'roles_permission.objects.edit_object',
               refer: 'edit',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'roles_permission.objects.delete_object',
               refer: 'delete',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'roles_permission.objects.download_logo',
               refer: 'upload_logo',
-              parent: form.objects,
+              parent: 'objects',
             },
           ],
         },
@@ -369,39 +372,40 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.promos',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
-              label: 'roles_permission.activate_all',
+              label: 'Active All',
               refer: 'all',
-              parent: form.promos,
+              parent: 'promos',
             },
             {
               ...row,
               label: 'roles_permission.promos.watch_promos_page',
               refer: 'view',
-              parent: form.promos,
+              parent: 'promos',
             },
 
             {
               ...row,
               label: 'roles_permission.promos.create_promo',
               refer: 'create',
-              parent: form.promos,
+              parent: 'promos',
             },
 
             {
               ...row,
               label: 'roles_permission.promos.edit_promo',
               refer: 'edit',
-              parent: form.promos,
+              parent: 'promos',
             },
 
             {
               ...row,
               label: 'roles_permission.promos.delete_promo',
               refer: 'delete',
-              parent: form.promos,
+              parent: 'promos',
             }
           ],
         },
@@ -409,25 +413,26 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.layouts',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.plans,
+              parent: 'plans',
             },
             {
               ...row,
               label: 'roles_permission.layouts.watch_layouts',
               refer: 'view',
-              parent: form.plans,
+              parent: 'plans',
             },
 
             {
               ...row,
               label: 'roles_permission.layouts.create_layouts',
               refer: 'create',
-              parent: form.plans,
+              parent: 'plans',
             },
 
             {
@@ -441,7 +446,7 @@ export default {
               ...row,
               label: 'roles_permission.layouts.delete_layouts',
               refer: 'delete',
-              parent: form.plans,
+              parent: 'plans',
             }
           ],
         },
@@ -449,67 +454,68 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.apartments',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.apartments,
+              parent: 'apartments',
             },
             {
               ...row,
               label: 'roles_permission.apartments.watch_apartments',
               refer: 'view',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'roles_permission.apartments.filter_apartments',
               refer: 'filter',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'roles_permission.apartments.edit_apartment',
               refer: 'edit',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'roles_permission.apartments.status_apartments',
               refer: 'is_sold',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'roles_permission.apartments.change_list_apartments',
-              refer: 'list',
-              parent: form.apartments.lists,
+              refer: 'lists.list',
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'roles_permission.apartments.list_apartments1',
-              refer: 'grid',
-              parent: form.apartments.lists,
+              refer: 'lists.grid',
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'roles_permission.apartments.list_apartments2',
-              refer: 'grid_sm',
-              parent: form.apartments.lists,
+              refer: 'lists.grid_sm',
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'roles_permission.apartments.using_layouts',
-              refer: 'plan',
-              parent: form.apartments.lists,
+              refer: 'lists.plan',
+              parent: 'apartments',
             },
           ],
         },
@@ -517,198 +523,207 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.execution',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.checkout,
+              parent: 'checkout',
             },
             {
               ...row,
               label: 'roles_permission.execution.book_apartment',
               refer: 'book',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'roles_permission.execution.decorate_apartment',
               refer: 'checkout',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'roles_permission.execution.tag_acquaintances',
               refer: 'mark_friends',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'roles_permission.execution.change_payment',
               refer: 'mark_price',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'roles_permission.execution.change_monthly_payment',
               refer: 'edit_date',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'roles_permission.execution.full_access',
               refer: 'monthly_payment',
-              parent: form.checkout,
+              parent: 'checkout',
             },
+
+            {
+              ...row,
+              label: 'full access',
+              refer: 'root',
+              parent: 'checkout',
+            }
           ],
         },
         {
           id: uuid(),
           title: 'roles_permission.titles.contracts',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.contracts,
+              parent: 'contracts',
             },
             {
               ...row,
               label: 'roles_permission.contracts.watch_deals',
               refer: 'view',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.filter_deals',
               refer: 'filter',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.watch_deal',
               refer: 'show',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.download_deal',
               refer: 'download',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.decline_deal',
               refer: 'cancel',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.client_type',
               refer: 'client_type',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.watch_branch_deals',
               refer: 'root_branch',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.import',
               refer: 'root',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.change_date_deal',
               refer: 'import',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.edit_monthly_payment',
               refer: 'list',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.edit_payment',
               refer: 'edit',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.delete_payment',
               refer: 'delete',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.add_payment',
-              refer: 'create',
-              parent: form.contracts.payments,
+              refer: 'payments.create',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.create_type_payment',
-              refer: 'create',
-              parent: form.contracts.payments.initial_type,
+              refer: 'payments.initial_type.create',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.edit_type_payment',
-              refer: 'edit',
-              parent: form.contracts.payments.initial_type,
+              refer: 'payments.initial_type.edit',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.delete_type_payment',
-              refer: 'delete',
-              parent: form.contracts.payments.initial_type,
+              refer: 'payments.initial_type.delete',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.create_monthly_payment',
-              refer: 'create',
-              parent: form.contracts.payments.monthly_type,
+              refer: 'payments.monthly_type.create',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.edit_monthly_type',
-              refer: 'edit',
-              parent: form.contracts.payments.monthly_type,
+              refer: 'payments.monthly_type.edit',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'roles_permission.contracts.delete_monthly_type',
-              refer: 'delete',
-              parent: form.contracts.payments.monthly_type,
+              refer: 'payments.monthly_type.delete',
+              parent: 'contracts',
             },
           ],
         },
@@ -716,39 +731,40 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.users',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.users,
+              parent: 'users',
             },
             {
               ...row,
               label: 'roles_permission.users.watch_users',
               refer: 'view',
-              parent: form.users,
+              parent: 'users',
             },
 
             {
               ...row,
               label: 'roles_permission.users.create_user',
               refer: 'create',
-              parent: form.users,
+              parent: 'users',
             },
 
             {
               ...row,
               label: 'roles_permission.users.edit_user',
               refer: 'edit',
-              parent: form.users,
+              parent: 'users',
             },
 
             {
               ...row,
               label: 'roles_permission.users.delete_user',
               refer: 'delete',
-              parent: form.users,
+              parent: 'users',
             }
           ],
         },
@@ -756,51 +772,60 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.roles',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.roles,
+              parent: 'roles',
             },
             {
               ...row,
               label: 'roles_permission.roles.watch_roles',
               refer: 'view',
-              parent: form.roles,
+              parent: 'roles',
             },
 
             {
               ...row,
               label: 'roles_permission.roles.add_roles',
               refer: 'create',
-              parent: form.roles,
+              parent: 'roles',
             },
 
             {
               ...row,
               label: 'roles_permission.roles.edit_roles',
               refer: 'edit',
-              parent: form.roles,
+              parent: 'roles',
             },
+
+            {
+              ...row,
+              label: 'право редактирования ролей',
+              refer: 'delete',
+              parent: 'roles',
+            }
           ],
         },
         {
           id: uuid(),
           title: 'roles_permission.titles.debtors',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.debtors,
+              parent: 'debtors',
             },
             {
               ...row,
               label: 'roles_permission.debtors.watch_debtors',
               refer: 'view',
-              parent: form.debtors,
+              parent: 'debtors',
             }
           ],
         },
@@ -808,39 +833,40 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.companies',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.apartments.status_apartments',
               refer: 'all',
-              parent: form.companies,
+              parent: 'companies',
             },
             {
               ...row,
               label: 'roles_permission.companies.watch_companies',
               refer: 'view',
-              parent: form.companies,
+              parent: 'companies',
             },
 
             {
               ...row,
               label: 'roles_permission.companies.watch_company',
               refer: 'create',
-              parent: form.companies,
+              parent: 'companies',
             },
 
             {
               ...row,
               label: 'roles_permission.companies.edit_companies',
               refer: 'edit',
-              parent: form.companies,
+              parent: 'companies',
             },
 
             {
               ...row,
               label: 'roles_permission.companies.delete_company',
               refer: 'delete',
-              parent: form.companies,
+              parent: 'companies',
             }
           ],
         },
@@ -848,39 +874,40 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.payment_account',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
             {
               ...row,
               label: 'roles_permission.payment_account.access_payments_list',
               refer: 'view',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
 
             {
               ...row,
               label: 'roles_permission.payment_account.add_payment',
               refer: 'create',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
 
             {
               ...row,
               label: 'roles_permission.payment_account.edit_payment',
               refer: 'edit',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
 
             {
               ...row,
               label: 'roles_permission.payment_account.delete_payment',
               refer: 'delete',
-              parent: form.payment_account,
+              parent: 'payment_account',
             }
           ],
         },
@@ -888,46 +915,47 @@ export default {
           id: uuid(),
           title: 'roles_permission.titles.branches',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'roles_permission.activate_all',
               refer: 'all',
-              parent: form.branches,
+              parent: 'branches',
             },
             {
               ...row,
               label: 'roles_permission.branches.watch_branches',
               refer: 'view',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'roles_permission.branches.edit_branch',
               refer: 'create',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'roles_permission.branches.delete_branch',
               refer: 'edit',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'roles_permission.branches.delete_branch',
               refer: 'delete',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'roles_permission.branches.watch_contract_template',
               refer: 'contract_templates',
-              parent: form.branches,
+              parent: 'branches',
             }
           ],
         },
@@ -948,23 +976,101 @@ export default {
     }
   },
   methods: {
-    getCheckboxStatus(refer, parent) {
-      console.log(parent[refer])
-      return parent[refer]
-    },
     initPermissions() {
-      this.form = {
-        ...this.form,
-        ...this.permissions
-      }
-      this.name = this.updatingName
+      this.$nextTick(() => {
+        this.form = {
+          ...this.form,
+          ...this.permissions
+        }
+        this.name = this.updatingName
+        this.permissionTabs = this.permissionTabs.map(pmTab => {
+          const rows = pmTab.rows.map(row => {
+            if (row.refer === 'ru' || row.refer === 'uz') {
+              return row
+            }
+            const pmTabParent = this[pmTab.parent][row.parent]
+            const hierarchyList = row.refer.split('.')
+            const [one, two, three, four, five] = hierarchyList
+
+            switch (hierarchyList.length) {
+              case 1 : {
+                row.vBind = pmTabParent[one] ?? false
+                break
+              }
+              case 2 : {
+                row.vBind = pmTabParent[one][two]
+                break
+              }
+              case 3 : {
+                row.vBind = pmTabParent[one][two][three]
+                break
+              }
+              case 4 : {
+                row.vBind = pmTabParent[one][two][three][four]
+                break
+              }
+              case 5 : {
+                row.vBind = pmTabParent[one][two][three][four][five]
+                break
+              }
+            }
+            return row
+          })
+          const isAllActive = rows.every(row => {
+            const overlookList = ['all', 'ru', 'uz']
+            if (overlookList.includes(row.refer)) {
+              return true
+            }
+            return row.vBind
+          })
+          if (isAllActive) {
+            const indexOfAllSwitch = rows.findIndex(row => row.refer === 'all')
+            if (indexOfAllSwitch !== -1) {
+              rows[indexOfAllSwitch].vBind = true
+            }
+          }
+          return {
+            ...pmTab,
+            rows
+          }
+        })
+      })
     },
-    setCheckboxReferenceValue(refer, parent, value) {
+    activeAllTabPermission(refer, pmIndex, index, value) {
+      // const allActivateSwitchIndex = this.permissionTabs[pmIndex]['rows'].findIndex(row => row.refer === 'all')
       if (refer === 'all') {
-        this.deepSet(parent, value)
-      } else {
-        parent[refer] = value
+        this.permissionTabs[pmIndex]['rows'] = this.permissionTabs[pmIndex]['rows'].map(row => {
+          return {
+            ...row,
+            vBind: value
+          }
+        })
       }
+      // else if (allActivateSwitchIndex !== -1) {
+      //   const isAllActive = this.permissionTabs[pmIndex]['rows'].every(row => {
+      //     if (row.refer === 'all') return true
+      //     return row.vBind
+      //   })
+      //   const isAllInactive = this.permissionTabs[pmIndex]['rows'].every(row => {
+      //     if (row.refer === 'all') return false
+      //     return !row.vBind
+      //   })
+      //   if (isAllActive) {
+      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = true
+      //   }
+      //
+      //   // console.log(isAllActive, isAllInactive)
+      //
+      //   if (isAllInactive) {
+      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = false
+      //   }
+      // }
+      // else if (allActivateSwitchIndex !== -1) {
+      //   const {vBind} = this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex]
+      //   if (!value && vBind) {
+      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = false
+      //   }
+      // }
     },
     deepSet(obj, valueToSet) {
       for (let [key, value] of Object.entries(obj)) {
@@ -972,11 +1078,46 @@ export default {
           this.deepSet(value, valueToSet)
         } else {
           obj[key] = valueToSet
-          console.log(obj)
         }
       }
     },
+    generateRole(){
+      this.permissionTabs.forEach(pmTab => {
+        pmTab.rows.filter((row => {
+          const overlookList = ['all', 'ru', 'uz']
+          return !overlookList.includes(row.refer)
+        })).forEach(row => {
+          const pmTabParent = this[pmTab.parent][row.parent]
+          const hierarchyList = row.refer.split('.')
+          const [one, two, three, four, five] = hierarchyList
+
+          switch (hierarchyList.length) {
+            case 1 : {
+              pmTabParent[one] = row.vBind
+              break
+            }
+            case 2 : {
+              pmTabParent[one][two] = row.vBind
+              break
+            }
+            case 3 : {
+              pmTabParent[one][two][three] = row.vBind
+              break
+            }
+            case 4 : {
+              pmTabParent[one][two][three][four] = row.vBind
+              break
+            }
+            case 5 : {
+              pmTabParent[one][two][three][four][five] = row.vBind
+              break
+            }
+          }
+        })
+      })
+    },
     createNewRole() {
+      this.generateRole()
       if (this.comeFrom === 'update') {
         this.$emit('submit', {
           name: this.name,
