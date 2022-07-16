@@ -53,7 +53,6 @@ export default {
         await this.$router.push("/")
       }
     }
-
     if (!localStorage.getItem("user-theme")) {
       this.setTheme("light-theme")
     }
