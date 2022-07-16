@@ -250,69 +250,69 @@ export default {
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.general,
             },
 
             {
               ...row,
-              label: 'roles.permissions.name_ru',
+              label: 'roles_permission.general.role_name_ru',
               refer: 'ru',
               parent: name,
               inputActive: true,
-              inputPlaceholder: 'roles.permissions.placeholder_ru',
+              inputPlaceholder: 'roles_permission.placeholder_ru',
               checkboxActive: false,
             },
 
             {
               ...row,
-              label: 'roles.permissions.name_uz',
+              label: 'roles_permission.general.role_name_uz',
               refer: 'uz',
               parent: name,
               inputActive: true,
-              inputPlaceholder: 'roles.permissions.placeholder_uz',
+              inputPlaceholder: 'roles_permission.placeholder_uz',
               checkboxActive: false,
             },
 
             {
               ...row,
-              label: 'курс валют',
+              label: 'roles_permission.general.exchange_rates',
               refer: 'currency',
               parent: form.general,
             },
 
             {
               ...row,
-              label: 'тема (темная, светлая)',
+              label: 'roles_permission.general.theme',
               refer: 'theme',
               parent: form.general,
             },
 
             {
               ...row,
-              label: 'язык (русский, узбекский)',
+              label: 'roles_permission.general.language',
               refer: 'language',
               parent: form.general,
             },
 
             {
               ...row,
-              label: 'настройки полфиля',
+              label: 'roles_permission.general.profile_settings',
               refer: 'settings',
               parent: form.general,
             },
 
             {
               ...row,
-              label: 'право изменть данные пользователя',
+              label: 'roles_permission.general.user_data',
               refer: 'profile_settings',
               parent: form.general,
             },
 
             {
               ...row,
-              label: 'право изменять пароль пользователя',
+              label: 'roles_permission.general.user_password',
               refer: 'password_settings',
               parent: form.general,
             },
@@ -320,46 +320,46 @@ export default {
         },
         {
           id: uuid(),
-          title: 'objects.title',
+          title: 'roles_permission.titles.objects',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.objects,
             },
             {
               ...row,
-              label: 'право на просмотр страницу объектов',
+              label: 'roles_permission.objects.watch_objects',
               refer: 'view',
               parent: form.objects,
             },
 
             {
               ...row,
-              label: 'право на создания объекта',
+              label: 'roles_permission.objects.create_object',
               refer: 'create',
               parent: form.objects,
             },
 
             {
               ...row,
-              label: 'право на редактирования объектов',
+              label: 'roles_permission.objects.edit_object',
               refer: 'edit',
               parent: form.objects,
             },
 
             {
               ...row,
-              label: 'право на удаление объекта',
+              label: 'roles_permission.objects.delete_object',
               refer: 'delete',
               parent: form.objects,
             },
 
             {
               ...row,
-              label: 'право загрузить логотип',
+              label: 'roles_permission.objects.download_logo',
               refer: 'upload_logo',
               parent: form.objects,
             },
@@ -367,39 +367,39 @@ export default {
         },
         {
           id: uuid(),
-          title: 'promos',
+          title: 'roles_permission.titles.promos',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.promos,
             },
             {
               ...row,
-              label: 'право на просмотр страницу акции',
+              label: 'roles_permission.promos.watch_promos_page',
               refer: 'view',
               parent: form.promos,
             },
 
             {
               ...row,
-              label: 'право на создания акции',
+              label: 'roles_permission.promos.create_promo',
               refer: 'create',
               parent: form.promos,
             },
 
             {
               ...row,
-              label: 'право на редактирования акции',
+              label: 'roles_permission.promos.edit_promo',
               refer: 'edit',
               parent: form.promos,
             },
 
             {
               ...row,
-              label: 'право на удаление акции',
+              label: 'roles_permission.promos.delete_promo',
               refer: 'delete',
               parent: form.promos,
             }
@@ -407,39 +407,39 @@ export default {
         },
         {
           id: uuid(),
-          title: 'plans',
+          title: 'roles_permission.titles.layouts',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.plans,
             },
             {
               ...row,
-              label: 'право на просмотр страницу планировки',
+              label: 'roles_permission.layouts.watch_layouts',
               refer: 'view',
               parent: form.plans,
             },
 
             {
               ...row,
-              label: 'право на создания планировки',
+              label: 'roles_permission.layouts.create_layouts',
               refer: 'create',
               parent: form.plans,
             },
 
             {
               ...row,
-              label: 'право на редактирования планировки',
+              label: 'roles_permission.layouts.edit_layouts',
               refer: 'edit',
               parent: form.plans,
             },
 
             {
               ...row,
-              label: 'право на удаление планировки',
+              label: 'roles_permission.layouts.delete_layouts',
               refer: 'delete',
               parent: form.plans,
             }
@@ -447,67 +447,67 @@ export default {
         },
         {
           id: uuid(),
-          title: '_apartments',
+          title: 'roles_permission.titles.apartments',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.apartments,
             },
             {
               ...row,
-              label: 'право просмотра списка квартир (страница одного объекта)',
+              label: 'roles_permission.apartments.watch_apartments',
               refer: 'view',
               parent: form.apartments,
             },
 
             {
               ...row,
-              label: 'право пользования фильтром на странице списка квартир',
+              label: 'roles_permission.apartments.filter_apartments',
               refer: 'filter',
               parent: form.apartments,
             },
 
             {
               ...row,
-              label: 'право редактировать квартиру (страница одного объекта)',
+              label: 'roles_permission.apartments.edit_apartment',
               refer: 'edit',
               parent: form.apartments,
             },
 
             {
               ...row,
-              label: 'право снять с продажи и вернуть в продажу квартиру (страница одного объекта)',
+              label: 'roles_permission.apartments.status_apartments',
               refer: 'is_sold',
               parent: form.apartments,
             },
 
             {
               ...row,
-              label: 'право пользования списком для изменения вида списка квартир',
+              label: 'roles_permission.apartments.change_list_apartments',
               refer: 'list',
               parent: form.apartments.lists,
             },
 
             {
               ...row,
-              label: 'право пользования шахматкой 1.0 для изменения вида списка квартир',
+              label: 'roles_permission.apartments.list_apartments1',
               refer: 'grid',
               parent: form.apartments.lists,
             },
 
             {
               ...row,
-              label: 'право пользования шахматкой 2.0 для изменения вида списка квартир',
+              label: 'roles_permission.apartments.list_apartments2',
               refer: 'grid_sm',
               parent: form.apartments.lists,
             },
 
             {
               ...row,
-              label: 'право пользования планировкой для изменения вида списка квартир',
+              label: 'roles_permission.apartments.using_layouts',
               refer: 'plan',
               parent: form.apartments.lists,
             },
@@ -515,205 +515,198 @@ export default {
         },
         {
           id: uuid(),
-          title: 'checkout',
+          title: 'roles_permission.titles.execution',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.checkout,
             },
             {
               ...row,
-              label: 'право забронировать квартиру (страница одного объекта)',
+              label: 'roles_permission.execution.book_apartment',
               refer: 'book',
               parent: form.checkout,
             },
 
             {
               ...row,
-              label: 'право оформления квартиры',
+              label: 'roles_permission.execution.decorate_apartment',
               refer: 'checkout',
               parent: form.checkout,
             },
 
             {
               ...row,
-              label: 'право отмечать знакомых',
+              label: 'roles_permission.execution.tag_acquaintances',
               refer: 'mark_friends',
               parent: form.checkout,
             },
 
             {
               ...row,
-              label: 'право оформить договор по другой цене',
+              label: 'roles_permission.execution.change_payment',
               refer: 'mark_price',
               parent: form.checkout,
             },
 
             {
               ...row,
-              label: 'право оформить договор по другой цене',
+              label: 'roles_permission.execution.change_monthly_payment',
               refer: 'edit_date',
               parent: form.checkout,
             },
 
             {
               ...row,
-              label: 'право оформить договор по другому ежемесячному платежу',
+              label: 'roles_permission.execution.full_access',
               refer: 'monthly_payment',
               parent: form.checkout,
             },
-
-            {
-              ...row,
-              label: 'full access',
-              refer: 'root',
-              parent: form.checkout,
-            }
           ],
         },
         {
           id: uuid(),
-          title: '_contracts',
+          title: 'roles_permission.titles.contracts',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.contracts,
             },
             {
               ...row,
-              label: 'право просмотра списка договоров',
+              label: 'roles_permission.contracts.watch_deals',
               refer: 'view',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право пользования фильтром списка договоров',
+              label: 'roles_permission.contracts.filter_deals',
               refer: 'filter',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право на просмотр одного договора',
+              label: 'roles_permission.contracts.watch_deal',
               refer: 'show',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право скачивания договоров',
+              label: 'roles_permission.contracts.download_deal',
               refer: 'download',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право отменить договоров',
+              label: 'roles_permission.contracts.decline_deal',
               refer: 'cancel',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право изменить тип клиента (вкладка \'Детали клиента\')',
+              label: 'roles_permission.contracts.client_type',
               refer: 'client_type',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право просмотра все договора филиала (менеджер филиала)',
+              label: 'roles_permission.contracts.watch_branch_deals',
               refer: 'root_branch',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право посмотреть все контракты',
+              label: 'roles_permission.contracts.import',
               refer: 'root',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право импортировать оплаты (страница одного договора)',
+              label: 'roles_permission.contracts.change_date_deal',
               refer: 'import',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право на просмотр список оплат (страница одного договора)',
+              label: 'roles_permission.contracts.edit_monthly_payment',
               refer: 'list',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право на редактирования оплаты (страница одного договора)',
+              label: 'roles_permission.contracts.edit_payment',
               refer: 'edit',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право на удаление оплаты (страница одного договора)',
+              label: 'roles_permission.contracts.delete_payment',
               refer: 'delete',
               parent: form.contracts,
             },
 
             {
               ...row,
-              label: 'право добавить оплату (страница одного договора)',
+              label: 'roles_permission.contracts.add_payment',
               refer: 'create',
               parent: form.contracts.payments,
             },
 
             {
               ...row,
-              label: 'право на создание первоначального типа оплаты',
+              label: 'roles_permission.contracts.create_type_payment',
               refer: 'create',
               parent: form.contracts.payments.initial_type,
             },
 
             {
               ...row,
-              label: 'право на редактирования первоначального типа оплаты',
+              label: 'roles_permission.contracts.edit_type_payment',
               refer: 'edit',
               parent: form.contracts.payments.initial_type,
             },
 
             {
               ...row,
-              label: 'право на удаления первоначального типа оплаты',
+              label: 'roles_permission.contracts.delete_type_payment',
               refer: 'delete',
               parent: form.contracts.payments.initial_type,
             },
 
             {
               ...row,
-              label: 'право на создание ежемесячного типа оплаты',
+              label: 'roles_permission.contracts.create_monthly_payment',
               refer: 'create',
               parent: form.contracts.payments.monthly_type,
             },
 
             {
               ...row,
-              label: 'право на редактирования ежемесячного типа оплаты',
+              label: 'roles_permission.contracts.edit_monthly_type',
               refer: 'edit',
               parent: form.contracts.payments.monthly_type,
             },
 
             {
               ...row,
-              label: 'право на удаления ежемесячного типа оплаты',
+              label: 'roles_permission.contracts.delete_monthly_type',
               refer: 'delete',
               parent: form.contracts.payments.monthly_type,
             },
@@ -721,39 +714,39 @@ export default {
         },
         {
           id: uuid(),
-          title: '_users',
+          title: 'roles_permission.titles.users',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.users,
             },
             {
               ...row,
-              label: 'право просмотра списка пользователей',
+              label: 'roles_permission.users.watch_users',
               refer: 'view',
               parent: form.users,
             },
 
             {
               ...row,
-              label: 'право на создания акции',
+              label: 'roles_permission.users.create_user',
               refer: 'create',
               parent: form.users,
             },
 
             {
               ...row,
-              label: 'право на редактирования акции',
+              label: 'roles_permission.users.edit_user',
               refer: 'edit',
               parent: form.users,
             },
 
             {
               ...row,
-              label: 'право на удаление акции',
+              label: 'roles_permission.users.delete_user',
               refer: 'delete',
               parent: form.users,
             }
@@ -761,58 +754,51 @@ export default {
         },
         {
           id: uuid(),
-          title: '_roles',
+          title: 'roles_permission.titles.roles',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.roles,
             },
             {
               ...row,
-              label: 'право просмотра списка ролей',
+              label: 'roles_permission.roles.watch_roles',
               refer: 'view',
               parent: form.roles,
             },
 
             {
               ...row,
-              label: 'право добавления ролей',
+              label: 'roles_permission.roles.add_roles',
               refer: 'create',
               parent: form.roles,
             },
 
             {
               ...row,
-              label: 'право редактирования ролей',
+              label: 'roles_permission.roles.edit_roles',
               refer: 'edit',
               parent: form.roles,
             },
-
-            {
-              ...row,
-              label: 'право редактирования ролей',
-              refer: 'delete',
-              parent: form.roles,
-            }
           ],
         },
         {
           id: uuid(),
-          title: '_debtors',
+          title: 'roles_permission.titles.debtors',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.debtors,
             },
             {
               ...row,
-              label: 'право просмотра списка должников',
+              label: 'roles_permission.debtors.watch_debtors',
               refer: 'view',
               parent: form.debtors,
             }
@@ -820,39 +806,39 @@ export default {
         },
         {
           id: uuid(),
-          title: '_companies',
+          title: 'roles_permission.titles.companies',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.apartments.status_apartments',
               refer: 'all',
               parent: form.companies,
             },
             {
               ...row,
-              label: 'право просмотра списка компаний',
+              label: 'roles_permission.companies.watch_companies',
               refer: 'view',
               parent: form.companies,
             },
 
             {
               ...row,
-              label: 'право просмотра одной компании',
+              label: 'roles_permission.companies.watch_company',
               refer: 'create',
               parent: form.companies,
             },
 
             {
               ...row,
-              label: 'право редактирования компании',
+              label: 'roles_permission.companies.edit_companies',
               refer: 'edit',
               parent: form.companies,
             },
 
             {
               ...row,
-              label: 'право удаления компанию',
+              label: 'roles_permission.companies.delete_company',
               refer: 'delete',
               parent: form.companies,
             }
@@ -860,39 +846,39 @@ export default {
         },
         {
           id: uuid(),
-          title: '_payment_account',
+          title: 'roles_permission.titles.payment_account',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.payment_account,
             },
             {
               ...row,
-              label: 'право просмотра списка рассчетных счетов',
+              label: 'roles_permission.payment_account.access_payments_list',
               refer: 'view',
               parent: form.payment_account,
             },
 
             {
               ...row,
-              label: 'право добавления рассчетнего счета',
+              label: 'roles_permission.payment_account.add_payment',
               refer: 'create',
               parent: form.payment_account,
             },
 
             {
               ...row,
-              label: 'право редактирования рассчетнего счета',
+              label: 'roles_permission.payment_account.edit_payment',
               refer: 'edit',
               parent: form.payment_account,
             },
 
             {
               ...row,
-              label: 'право редактирования рассчетнего счета',
+              label: 'roles_permission.payment_account.delete_payment',
               refer: 'delete',
               parent: form.payment_account,
             }
@@ -900,46 +886,46 @@ export default {
         },
         {
           id: uuid(),
-          title: '_branches',
+          title: 'roles_permission.titles.branches',
           active: false,
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: form.branches,
             },
             {
               ...row,
-              label: 'право просмотра списка филиалов',
+              label: 'roles_permission.branches.watch_branches',
               refer: 'view',
               parent: form.branches,
             },
 
             {
               ...row,
-              label: 'право добавления филиала',
+              label: 'roles_permission.branches.edit_branch',
               refer: 'create',
               parent: form.branches,
             },
 
             {
               ...row,
-              label: 'право редактирования филиала',
+              label: 'roles_permission.branches.delete_branch',
               refer: 'edit',
               parent: form.branches,
             },
 
             {
               ...row,
-              label: 'право удаления филиала',
+              label: 'roles_permission.branches.delete_branch',
               refer: 'delete',
               parent: form.branches,
             },
 
             {
               ...row,
-              label: 'право просмотра шаблона договора',
+              label: 'roles_permission.branches.watch_contract_template',
               refer: 'contract_templates',
               parent: form.branches,
             }
