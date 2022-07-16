@@ -104,7 +104,7 @@
                 >
                   <router-link
                       :to="{name: 'roles-update', params: {id: data.item.id}}"
-                      v-if="getPermission.roles.update && data.item.id != 1"
+                      v-if="getPermission.roles.update && data.item.id !== 1"
                       :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="fas fa-pen"></i>
