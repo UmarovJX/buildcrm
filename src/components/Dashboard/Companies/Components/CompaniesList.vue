@@ -34,7 +34,7 @@
 
             <div class="dropdown-menu">
               <b-button
-                  v-if="permission && permission.roles.show"
+                  v-if="permission && permission.companies.show"
                   class="dropdown-item dropdown-item--inside"
                   @click="openDetails(data.item)">
 
@@ -43,7 +43,7 @@
               </b-button>
 
               <b-button
-                  v-if="permission && permission.roles.edit"
+                  v-if="permission && permission.companies.edit"
                   @click="editSelectedCompany(data.item)"
                   class="dropdown-item dropdown-item--inside"
               >
@@ -52,7 +52,7 @@
               </b-button>
 
               <b-button
-                  v-if="permission && permission.roles.delete"
+                  v-if="permission && permission.companies.delete"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deleteCompany(data.item.id)"
               >

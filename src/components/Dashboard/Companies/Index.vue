@@ -3,7 +3,7 @@
     <base-bread-crumb :active-content="activeContent" :bread-crumbs="breadCrumbs">
       <template #extra-content>
         <button
-            v-if="permission && permission.roles.create"
+            v-if="permission && permission.companies.create"
             class="btn btn-primary mr-0 mt-md-0"
             @click="addNewCompany"
         >

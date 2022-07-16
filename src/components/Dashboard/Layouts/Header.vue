@@ -59,12 +59,12 @@
             mr-3
           "
         >
-          <div v-if="getMe.general && getMe.general.currency" class="currency d-flex align-items-center">
+          <div v-if="getPermission.general && getPermission.general.currency" class="currency d-flex align-items-center">
             <div class="currency__price">1 USD = {{ getCurrency.usd }} UZS</div>
           </div>
         </div>
 
-        <div v-if="getMe.general && getMe.general.theme" class="d-nones">
+        <div v-if="getPermission.general && getPermission.general.theme" class="d-nones">
           <theme-button :theme="theme"/>
         </div>
 
@@ -94,7 +94,7 @@
             </div>
           </button>
           <div class="dropdown-menu dropdown-menu__user">
-            <a v-if="getMe.general && getMe.general.language" class="dropdown-item" href="javascript:void(0)">
+            <a v-if="getPermission.general && getPermission.general.language" class="dropdown-item" href="javascript:void(0)">
               <label class="switch">
                 <input type="checkbox" @click="changeLocale" v-model="locale"/>
                 <div class="slider round">
@@ -104,7 +104,7 @@
               </label>
             </a>
             <router-link
-                v-if="getMe.general && getMe.general.settings"
+                v-if="getPermission.general && getPermission.general.settings"
                 :to="{name:'user-settings'}"
                 class="dropdown-item"
             >

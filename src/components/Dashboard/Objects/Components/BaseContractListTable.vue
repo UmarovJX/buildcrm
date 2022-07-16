@@ -70,6 +70,7 @@
       <template #cell(actions)="data">
         <div class="float-right">
           <div
+              v-if="(!data.item.main && primaryPermission) && downloadPermission && deletePermission"
               class="dropdown my-dropdown dropleft"
           >
             <button
@@ -162,7 +163,7 @@ export default {
     downloadPermission() {
       return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.download
     },
-    primaryPermission(){
+    primaryPermission() {
       return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.is_primary
     },
 

@@ -362,7 +362,7 @@ const routes = [
         path: "/companies",
         component: Companies,
         meta: {
-            requiresAuth: "companies",
+            // requiresAuth: "companies",
         }
     },
     {
@@ -371,7 +371,7 @@ const routes = [
         path: "/company/:companyId/details",
         component: CompanyDetails,
         meta: {
-            requiresAuth: "companies",
+            // requiresAuth: "companies",
         }
     },
 
