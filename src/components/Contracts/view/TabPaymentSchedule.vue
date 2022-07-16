@@ -11,7 +11,7 @@
     </div>
 
     <!--  PAYMENTS HISTORY  -->
-    <div v-if="listPermission" class="payments__history">
+    <div v-if="!listPermission" class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
@@ -35,7 +35,7 @@
             </template>
           </base-button>
           <base-button
-              v-if="uploadFilePermission"
+              v-if="!uploadFilePermission"
               @click="openPaymentAdditionModal"
               :text="$t('payments.payment_add')"
               design="add__button"
@@ -617,7 +617,7 @@ export default {
     paymentTypeOptionsPermission() {
       const listOption = []
 
-      if (this.permission?.contracts?.payments?.initial_type?.create) {
+      if (!this.permission?.contracts?.payments?.initial_type?.create) {
         listOption.push({
           value: 'initial_payment',
           text: this.$t('initial_payment')
@@ -1063,7 +1063,7 @@ export default {
           })
 
       const formMonthly = Object.assign({}, this.appendPayment)
-      formMonthly.type = 'monthly'
+      formMonthly.type = 'initial_monthly'
       formMonthly.amount = overbalance
       await api.contractV2.appendPayment(id, formMonthly)
           .then(() => {

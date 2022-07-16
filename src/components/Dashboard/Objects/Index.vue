@@ -14,7 +14,7 @@
                :key="index"
           >
             <div
-                v-if="getPermission.objects && (getPermission.objects.delete || getPermission.objects.update)"
+                v-if="getPermission.objects && (getPermission.objects.delete || getPermission.objects.edit)"
                 class="object__more-info">
               <div class="my-dropdown dropleft">
                 <button
@@ -28,7 +28,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <router-link
-                      v-if="getPermission.objects && getPermission.objects.update"
+                      v-if="getPermission.objects && getPermission.objects.edit"
                       :class="'dropdown-item'"
                       :to="{name: 'objectsEdit', params: {id: object.id}}"
                   >
