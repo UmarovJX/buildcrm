@@ -3,26 +3,29 @@ import api from "@/services/api";
 export default {
     actions: {
         async fetchCurrency(ctx, vm) {
-            try {
-                const {data} = await api.settingsV2.fetchCurrency()
+            if (this.$store.state.permission?.general?.currency) {
+                try {
+                    const {data} = await api.settingsV2.fetchCurrency()
 
-                ctx.commit('updateCurrency', data);
+                    ctx.commit('updateCurrency', data);
 
-            } catch (error) {
-                if (!error.response) {
-                    vm.toasted('Error: Network Error', 'error');
-                } else {
-                    if (error.response.status === 403) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 401) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 500) {
-                        vm.toasted(error.response.data.message, 'error');
+                } catch (error) {
+                    if (!error.response) {
+                        vm.toasted('Error: Network Error', 'error');
                     } else {
-                        vm.toasted(error.response.data.message, 'error');
+                        if (error.response.status === 403) {
+                            vm.toasted(error.response.data.message, 'error');
+                        } else if (error.response.status === 401) {
+                            vm.toasted(error.response.data.message, 'error');
+                        } else if (error.response.status === 500) {
+                            vm.toasted(error.response.data.message, 'error');
+                        } else {
+                            vm.toasted(error.response.data.message, 'error');
+                        }
                     }
                 }
             }
+
         }
     },
 

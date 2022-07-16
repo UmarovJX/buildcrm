@@ -267,7 +267,6 @@ export default {
       "nullMe",
       "fetchCurrency",
     ]),
-
     Logout() {
       localStorage.clear();
       this.nullableAuth();

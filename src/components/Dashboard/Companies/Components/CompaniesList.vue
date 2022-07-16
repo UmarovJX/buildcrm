@@ -22,6 +22,7 @@
       <template #cell(actions)="data">
         <div class="float-right">
           <div
+              v-if="viewPermission && deletePermission && editPermission"
               class="dropdown my-dropdown dropleft"
           >
             <button
@@ -34,7 +35,7 @@
 
             <div class="dropdown-menu">
               <b-button
-                  v-if="permission && permission.payment_accounts && permission.payment_accounts.view"
+                  v-if="viewPermission"
                   class="dropdown-item dropdown-item--inside"
                   @click="openDetails(data.item)">
 
@@ -43,7 +44,7 @@
               </b-button>
 
               <b-button
-                  v-if="permission && permission.companies.edit"
+                  v-if="editPermission"
                   @click="editSelectedCompany(data.item)"
                   class="dropdown-item dropdown-item--inside"
               >
@@ -52,7 +53,7 @@
               </b-button>
 
               <b-button
-                  v-if="permission && permission.companies.delete"
+                  v-if="deletePermission"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deleteCompany(data.item.id)"
               >
@@ -65,17 +66,17 @@
       </template>
 
       <!--  ROW DETAILS    -->
-<!--      <template #row-details="data">-->
-<!--        <div class="payment__content">-->
-<!--          <PaymentBoxContent-->
-<!--              v-for="detail in data.item.details"-->
-<!--              :key="detail.created_at"-->
-<!--              :detail="detail"-->
-<!--              :company="data.item"-->
-<!--              @updated-company="updatedCompany"-->
-<!--          />-->
-<!--        </div>-->
-<!--      </template>-->
+      <!--      <template #row-details="data">-->
+      <!--        <div class="payment__content">-->
+      <!--          <PaymentBoxContent-->
+      <!--              v-for="detail in data.item.details"-->
+      <!--              :key="detail.created_at"-->
+      <!--              :detail="detail"-->
+      <!--              :company="data.item"-->
+      <!--              @updated-company="updatedCompany"-->
+      <!--          />-->
+      <!--        </div>-->
+      <!--      </template>-->
     </b-table>
   </div>
 </template>
@@ -152,7 +153,16 @@ export default {
   computed: {
     ...mapGetters({
       permission: 'getPermission'
-    })
+    }),
+    viewPermission() {
+      return this.permission && this.permission.payment_account && this.permission.payment_account.view
+    },
+    editPermission() {
+      return this.permission && this.permission.companies.edit;
+    },
+    deletePermission() {
+      return this.permission && this.permission.companies.delete
+    }
   },
   methods: {
     openDetails(data) {
