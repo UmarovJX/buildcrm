@@ -5,10 +5,13 @@ import store from "./store";
 // import * as Sentry from "@sentry/vue";
 // import {Integrations} from "@sentry/tracing";
 
+import api from "@/services/api";
+
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
     return originalPush.call(this, location).catch((err) => err)
 }
+
 
 Vue.use(VueRouter)
 
@@ -424,47 +427,43 @@ const router = new VueRouter({
     },
 });
 
-router.beforeEach((to, from, next) => {
+let permission = store.state.permission
+
+router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')
     if (to.name === 'login') return next()
+
+    if (!permission || !Object.keys(permission)) {
+        await api.authV1.getMe()
+            .then((response) => {
+                permission = response.data.role.permissions
+            })
+            .catch((error) => {
+                return error
+            });
+    }
 
     if (login)
         if (to.path === '/')
             return next({name: 'home'})
-        else
-            if (to.matched.some((record) => record.meta.requiresAuth)) {
-                to.matched.some((record) => {
-                    if (!login) {
-                        next({
-                            name: "login",
-                        });
-                    }
-                    // let allow = store.state.me.permission;
-                    setTimeout(() => {
-                        const permission = store.state.me.permission[`${record.meta.requiresAuth}`];
-
-                        if (permission && permission.view) {
-                            next();
-                        } else {
-                            next({
-                                name: "not_found",
-                            });
-                        }
-                    }, 500);
-                });
-            } else {
-                next(); // make sure to always call next()!
-            }
-            // return next()
+        else if (to.matched.some((record) => record.meta.requiresAuth)) {
+            to.matched.some((record) => {
+                const perm = permission[`${record.meta.requiresAuth}`];
+                if (perm && perm.view) {
+                    next();
+                } else {
+                    next({
+                        name: "not_found",
+                    });
+                }
+            });
+        } else {
+            next(); // make sure to always call next()!
+        }
     else
         return next({name: 'login'})
 })
 
-// router.beforeEach((to, from, next) => {
-//     const login = localStorage.getItem('auth__access__token')
-//
-//
-// });
 
 // Sentry.init({
 //   Vue,

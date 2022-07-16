@@ -59,7 +59,8 @@
             mr-3
           "
         >
-          <div v-if="getPermission.general && getPermission.general.currency" class="currency d-flex align-items-center">
+          <div v-if="getPermission.general && getPermission.general.currency"
+               class="currency d-flex align-items-center">
             <div class="currency__price">1 USD = {{ getCurrency.usd }} UZS</div>
           </div>
         </div>
@@ -94,7 +95,8 @@
             </div>
           </button>
           <div class="dropdown-menu dropdown-menu__user">
-            <a v-if="getPermission.general && getPermission.general.language" class="dropdown-item" href="javascript:void(0)">
+            <a v-if="getPermission.general && getPermission.general.language" class="dropdown-item"
+               href="javascript:void(0)">
               <label class="switch">
                 <input type="checkbox" @click="changeLocale" v-model="locale"/>
                 <div class="slider round">
@@ -104,7 +106,7 @@
               </label>
             </a>
             <router-link
-                v-if="getPermission.general && getPermission.general.settings"
+                v-if="settingPermission"
                 :to="{name:'user-settings'}"
                 class="dropdown-item"
             >
@@ -257,6 +259,9 @@ export default {
       const currentRouteName = this.$route.name
       const result = notUsed.findIndex(name => name === currentRouteName)
       return result === -1;
+    },
+    settingPermission() {
+      return this.getPermission.general && this.getPermission.general.settings && (this.getPermission.general.profile_settings || this.getPermission.general.password_settings)
     }
   },
   methods: {
