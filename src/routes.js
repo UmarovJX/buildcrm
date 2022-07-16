@@ -332,7 +332,7 @@ const routes = [
         path: "/type/layouts",
         component: TypePlan,
         meta: {
-            requiresAuth: "type_plan",
+            requiresAuth: "plans",
         },
     },
 
@@ -342,7 +342,7 @@ const routes = [
         path: "/type/layouts/view/:id",
         component: TypePlanList,
         meta: {
-            requiresAuth: "type_plan",
+            requiresAuth: "plans",
         },
     },
 
@@ -352,7 +352,7 @@ const routes = [
         path: "/type/layouts/:object/edit/:id",
         component: TypePlanEdit,
         meta: {
-            requiresAuth: "type_plan",
+            requiresAuth: "plans",
         },
     },
 
