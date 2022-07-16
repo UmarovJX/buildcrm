@@ -59,12 +59,12 @@
             mr-3
           "
         >
-          <div class="currency d-flex align-items-center">
+          <div v-if="getPermission.general && getPermission.general.currency" class="currency d-flex align-items-center">
             <div class="currency__price">1 USD = {{ getCurrency.usd }} UZS</div>
           </div>
         </div>
 
-        <div class="d-nones">
+        <div v-if="getPermission.general && getPermission.general.theme" class="d-nones">
           <theme-button :theme="theme"/>
         </div>
 
@@ -94,7 +94,7 @@
             </div>
           </button>
           <div class="dropdown-menu dropdown-menu__user">
-            <a class="dropdown-item" href="javascript:void(0)">
+            <a v-if="getPermission.general && getPermission.general.language" class="dropdown-item" href="javascript:void(0)">
               <label class="switch">
                 <input type="checkbox" @click="changeLocale" v-model="locale"/>
                 <div class="slider round">
@@ -104,6 +104,7 @@
               </label>
             </a>
             <router-link
+                v-if="getPermission.general && getPermission.general.settings"
                 :to="{name:'user-settings'}"
                 class="dropdown-item"
             >
@@ -234,7 +235,7 @@ export default {
     this.locale = localStorage.locale !== "uz";
   },
   computed: {
-    ...mapGetters(["getAuth", "getMenus", "getMe", "getCurrency"]),
+    ...mapGetters(["getPermission", "getAuth", "getMenus", "getMe", "getCurrency"]),
     getNameSnippet() {
       if (this.getMe?.user) {
         const {firstName, lastName} = this.getMe.user
@@ -242,9 +243,9 @@ export default {
           return lastName[0] + firstName[0]
         }
       }
-
       return ''
     },
+
     getUserAvatarUrl() {
       if (this.getMe?.user?.avatar) {
         return this.getMe.user.avatar

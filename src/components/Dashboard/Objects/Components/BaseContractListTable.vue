@@ -70,6 +70,7 @@
       <template #cell(actions)="data">
         <div class="float-right">
           <div
+              v-if="(!data.item.main && primaryPermission) && downloadPermission && deletePermission"
               class="dropdown my-dropdown dropleft"
           >
             <button
@@ -86,7 +87,7 @@
               <a
                   href="#"
                   class="dropdown-item dropdown-item--inside"
-                  v-if="!data.item.main"
+                  v-if="!data.item.main && primaryPermission"
                   @click="makeItMain(data.item.id)"
               >
               <span>
@@ -98,6 +99,7 @@
               </a>
 
               <a
+                  v-if="downloadPermission"
                   class="dropdown-item dropdown-item--inside"
                   :href="downloadDocumentURl(data.item.path)"
               >
@@ -108,6 +110,7 @@
               </a>
 
               <a href="#"
+                 v-if="deletePermission"
                  class="dropdown-item dropdown-item--inside"
                  @click="deleteContract(data.item.id)"
               >
@@ -128,6 +131,7 @@
 
 <script>
 import api from "@/services/api";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ContractListTable",
@@ -150,6 +154,19 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      permission: 'getPermission'
+    }),
+    deletePermission() {
+      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.delete
+    },
+    downloadPermission() {
+      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.download
+    },
+    primaryPermission() {
+      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.is_primary
+    },
+
     fields() {
       const list = [
         {

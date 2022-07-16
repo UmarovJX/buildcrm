@@ -1,6 +1,6 @@
 <template>
   <div class="sort-list">
-    <div class="sort-top ">
+    <div v-if="getPermission.apartments && getPermission.apartments.filter" class="sort-top ">
 
       <!--   Номер квартиры   -->
       <div class="filter__inputs-input">
@@ -249,6 +249,8 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import {clearObjectProperties} from "@/util/reusable";
 import {sortInFirstRelationship} from "@/util/reusable";
 import {sessionStorageGetItem} from "@/util/storage";
+import {mapGetters} from "vuex";
+
 
 export default {
   name: "ObjectSort",
@@ -323,6 +325,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["getPermission"]),
     query() {
       return Object.assign({}, this.$route.query)
     }

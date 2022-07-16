@@ -93,6 +93,7 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
+                  v-if="getPermission.users && (getPermission.users.delete || getPermission.users.edit)"
                   class="dropdown my-dropdown dropleft"
               >
                 <!--user.role.id != 1 &&-->
@@ -105,9 +106,11 @@
                 </button>
 
                 <div
+
                     class="dropdown-menu"
                 >
                   <b-button
+                      v-if="getPermission.users && getPermission.users.edit"
                       @click="clickManager(data)"
                       class="dropdown-item dropdown-item--inside"
                       v-b-modal.modal-edit
@@ -117,6 +120,7 @@
                   </b-button>
 
                   <b-button
+                      v-if="getPermission.users && getPermission.users.delete"
                       class="dropdown-item dropdown-item--inside"
                       @click="Delete(data.item.uuid)"
                   >
@@ -134,7 +138,7 @@
           @CreateManager="CreateManager"
       ></create-modal>
       <edit-modal
-          v-if="manager_id && getPermission.users.update"
+          v-if="manager_id && getPermission.users.edit"
           :manager-id="manager_id"
           :edit-history-context="editHistoryContext"
           @EditManager="EditManager"

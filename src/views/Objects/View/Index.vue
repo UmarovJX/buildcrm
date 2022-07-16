@@ -22,11 +22,12 @@
     <object-sort
         :filter-fields="filterFields"
         :app-loading="finishLoading"
-        :tabs="componentTabs"
+        :tabs="checkedPermissionTab"
         @clear-status="clearStatus"
         @current-tab="changeTab"
     />
-    <div class="status-row" v-if="currentTab !== 'ObjectPlan'">
+    <div class="status-row"
+         v-if="(getPermission.apartments && getPermission.apartments.filter) && currentTab !== 'ObjectPlan'">
       <b-form-checkbox-group
           id="checkbox-sort"
           class="status-sort"
@@ -135,6 +136,7 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 import BaseCLose from "@/components/icons/BaseClose";
+import {mapGetters} from "vuex";
 
 export default {
   name: "Objects",
@@ -265,6 +267,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["getPermission"]),
     breadCrumbs() {
       return [
         {
@@ -272,6 +275,29 @@ export default {
           textContent: this.$t('contracts.title')
         },
       ]
+    },
+    checkedPermissionTab() {
+      let result = this.componentTabs
+      const permission = this.getPermission.apartments
+      console.log(permission, 'permission.lists');
+      if (permission && permission.lists) {
+        switch (permission.lists) {
+          case "list":
+            result = result.filter(item => item.view !== 'list')
+            break
+          case "grid":
+            result = result.filter(item => item.view !== 'architecture')
+            break
+          case "grid_sm":
+            result = result.filter(item => item.view !== 'chess')
+            break
+          case "plan":
+            result = result.filter(item => item.view !== 'plan')
+            break
+        }
+      }
+      return result
+
     },
     activeContent() {
       return this.$t('view')

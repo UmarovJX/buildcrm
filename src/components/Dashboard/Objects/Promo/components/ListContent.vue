@@ -53,7 +53,7 @@
             <div class="dropdown-menu" v-if="hasPermission">
 
               <b-button
-                  v-if="permission.objects.update && !data.item.status"
+                  v-if="(permission.promos && permission.promos.edit) && !data.item.status"
                   class="dropdown-item dropdown-item--inside"
                   @click="activatePromo(data.item)"
               >
@@ -63,7 +63,7 @@
 
 
               <b-button
-                  v-if="permission.objects.update && data.item.status"
+                  v-if="(permission.promos && permission.promos.edit) && data.item.status"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deactivatePromo(data.item)"
               >
@@ -73,7 +73,7 @@
 
 
               <b-button
-                  v-if="permission.objects.update"
+                  v-if="permission.promos && permission.promos.edit"
                   @click="editPromoItem(data.item)"
                   class="dropdown-item dropdown-item--inside"
               >
@@ -83,7 +83,7 @@
 
 
               <b-button
-                  v-if="permission.objects.delete"
+                  v-if="permission.promos && permission.promos.delete"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deletePromoItem(data.item)"
               >

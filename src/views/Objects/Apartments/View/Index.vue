@@ -279,10 +279,10 @@ export default {
 
       const {apartment, me, userPermission} = this
       const {order} = apartment
-      const {apartments} = userPermission
+      const {checkout} = userPermission
       const forSale = apartment['is_sold']
       const authorityUser = order?.user?.id === me?.user?.id
-      const rootContract = userPermission?.apartments?.root_contract
+      const rootContract = userPermission?.checkout?.root
       const isMainRole = me?.role?.id === 1
       const isStatusBooked = order.status === 'booked'
       const isStatusAvailable = order.status === 'available'
@@ -292,20 +292,20 @@ export default {
       const isStatusClosed = order.status === 'closed'
 
       const permissionCancelReserve = isStatusBooked && (authorityUser || rootContract || isMainRole)
-      const permissionReserve = forSale && isStatusAvailable && userPermission?.apartments?.reserve
+      const permissionReserve = forSale && isStatusAvailable && userPermission?.checkout?.book
 
       const permissionContract = () => {
-        const permissionOne = apartments.contract && authorityUser
+        const permissionOne = checkout?.checkout && authorityUser
         return (isStatusSold || isStatusContract || isStatusClosed) && (permissionOne || rootContract)
       }
 
       const permissionOrder = () => {
-        const permissionOne = isStatusAvailable && (authorityUser || apartments.contract || rootContract)
+        const permissionOne = isStatusAvailable && (authorityUser || checkout?.checkout || rootContract)
         return forSale && permissionOne
       }
       const permissionContinueOrder = () => {
-        const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || apartments.contract)
-        const permissionTwo = isStatusBooked && authorityUser && apartments.contract
+        const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || checkout?.checkout)
+        const permissionTwo = isStatusBooked && authorityUser && checkout?.checkout
         return permissionOne || permissionTwo
       }
 
@@ -528,6 +528,7 @@ input[type="number"]
   margin-right: 4.25rem
   //max-width: 640px
   max-width: 720px
+
 .main__content
   padding-left: 1rem
   padding-right: 1rem

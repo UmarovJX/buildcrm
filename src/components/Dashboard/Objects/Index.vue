@@ -7,14 +7,14 @@
       </base-bread-crumb>
 
       <div class="object-cards">
-        <template v-if="getPermission.objects.view"
+        <template v-if="getPermission.objects && getPermission.objects.view"
         >
           <div class="card"
                v-for="(object, index) in getObjects"
                :key="index"
           >
             <div
-                v-if="getPermission.objects.delete || (getPermission.objects && getPermission.objects.update)"
+                v-if="getPermission.objects && (getPermission.objects.delete || getPermission.objects.edit)"
                 class="object__more-info">
               <div class="my-dropdown dropleft">
                 <button
@@ -28,7 +28,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <router-link
-                      v-if="getPermission.objects && (getPermission.objects && getPermission.objects.update)"
+                      v-if="getPermission.objects && getPermission.objects.edit"
                       :class="'dropdown-item'"
                       :to="{name: 'objectsEdit', params: {id: object.id}}"
                   >
@@ -45,7 +45,7 @@
 
 
                   <router-link
-                      v-if="getPermission.objects.view"
+                      v-if="getPermission.promos && getPermission.promos.view"
                       :to="{name:'objects-promo',params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -56,8 +56,8 @@
                   </router-link>
 
                   <router-link
-                      v-if="getPermission.type_plan.view"
-                      :to="{name:'type-plan-view',params:{id:object.id}}"
+                      v-if="getPermission.plans && getPermission.plans.view"
+                      :to="{name:'type-plan-view', params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
                     <i class="fal fa-credit-card"></i>
@@ -68,7 +68,7 @@
 
                   <b-link
                       class="dropdown-item"
-                      v-if="(getPermission.objects && getPermission.objects.update)"
+                      v-if="getPermission.objects && getPermission.objects.upload_logo"
                       @click="object_id = object.id"
                       v-b-modal.modal-upload-logo
                   >
@@ -77,7 +77,7 @@
 
                   <a
                       class="dropdown-item"
-                      v-if="getPermission.objects.delete"
+                      v-if="getPermission.objects && getPermission.objects.delete"
                       @click="deleteObject(object.id)"
                       href="#"
                   >
@@ -88,6 +88,7 @@
             </div>
             <router-link
                 class="card-body"
+                :event="getPermission.apartments && getPermission.apartments.view ? 'click' : ''"
                 :to="{name: 'apartments', params: {object: object.id}}"
             >
               <div class="card-top">
@@ -117,6 +118,7 @@
             </router-link>
 
             <router-link class="card-img"
+                         :event="getPermission.apartments && getPermission.apartments.view ? 'click' : ''"
                          :to="{name: 'apartments', params: {object: object.id}}"
             >
               <img v-if="object.image" v-lazy="object.image" alt="">
@@ -124,7 +126,7 @@
             </router-link>
           </div>
         </template>
-        <div class="card" v-if="getPermission.objects.create">
+        <div class="card" v-if="getPermission.objects && getPermission.objects.create">
           <div class="card-body card-empty" @click="createBlock">
             <img :src="require('@/assets/icons/icon-plus.svg')" alt="">
             <p>{{ $t('object_create') }}</p>
@@ -143,7 +145,7 @@
 
       <!-- <filter-form v-if="getPermission.apartments.filter"></filter-form> -->
       <upload-logo
-          v-if="getPermission.objects && getPermission.objects.update"
+          v-if="getPermission.objects && getPermission.objects.upload_logo"
           :object-id="object_id"
           @UploadLogo="uploadLogo"
       />

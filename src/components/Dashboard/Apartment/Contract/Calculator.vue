@@ -12,6 +12,7 @@
       >
         <b-form-select
             id="discounts"
+            :disabled="!(getPermission.checkout && getPermission.checkout.monthly_payment)"
             v-model="contract.discount"
             @input="changeDiscount"
         >
@@ -29,7 +30,7 @@
           </b-form-select-option>
 
           <b-form-select-option
-              v-if="getMe.role.id === 1 || getPermission.contracts.other_price"
+              v-if="getMe.role.id === 1 || (getPermission.checkout && getPermission.checkout.mark_price)"
               :value="{
                 id: 'other',  type: 'percent', currency: null, amount: 0, prepay: 30}"
           >

@@ -45,11 +45,12 @@
             <label for="client_type">{{ $t('client_type') }}</label>
             <div class="selection__content">
               <select
-                  v-if="permission.contracts.friends"
+                  v-if="permissionClientType"
                   @change="changeClientType"
                   name="client_type"
                   id="client_type"
                   class="client__type"
+                  :disabled="!(permissionClientType)"
                   :value="client.friends"
               >
                 <option :value="false">{{ $t('unfamiliar') }}</option>
@@ -105,12 +106,16 @@ export default {
     }),
     haveClient() {
       return Object.keys(this.client).length
-    }
+    },
+    permissionClientType() {
+      return this.permission.contracts && this.permission.contracts.client_type
+    },
   },
   created() {
     this.getClientInformation()
   },
   methods: {
+
     datePrettier: (time) => formatDateWithDot(time),
     async getClientInformation() {
       this.startLoading()
@@ -262,7 +267,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-top: 1.6rem;
+  padding-top: 1rem;
 }
 
 //.selection__content .client__type {

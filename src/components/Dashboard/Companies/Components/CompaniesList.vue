@@ -33,15 +33,17 @@
             </button>
 
             <div class="dropdown-menu">
-              <b-button class="dropdown-item dropdown-item--inside"
-                        @click="openDetails(data.item)">
+              <b-button
+                  v-if="permission && permission.payment_accounts && permission.payment_accounts.view"
+                  class="dropdown-item dropdown-item--inside"
+                  @click="openDetails(data.item)">
 
                 <i class="fas fa-info-circle"></i>
                 {{ $t("companies.more") }}
               </b-button>
 
               <b-button
-                  v-if="permission.roles.update"
+                  v-if="permission && permission.companies.edit"
                   @click="editSelectedCompany(data.item)"
                   class="dropdown-item dropdown-item--inside"
               >
@@ -50,7 +52,7 @@
               </b-button>
 
               <b-button
-                  v-if="permission.users.delete"
+                  v-if="permission && permission.companies.delete"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deleteCompany(data.item.id)"
               >

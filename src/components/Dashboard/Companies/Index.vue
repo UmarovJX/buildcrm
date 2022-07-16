@@ -3,6 +3,7 @@
     <base-bread-crumb :active-content="activeContent" :bread-crumbs="breadCrumbs">
       <template #extra-content>
         <button
+            v-if="permission && permission.companies.create"
             class="btn btn-primary mr-0 mt-md-0"
             @click="addNewCompany"
         >
@@ -43,6 +44,7 @@ import api from "@/services/api";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import CreateUpdateModal from "./Components/CreateUpdateModal";
 import CompaniesList from "@/components/Dashboard/Companies/Components/CompaniesList";
+import {mapGetters} from "vuex";
 
 export default {
   name: 'Companies',
@@ -70,6 +72,12 @@ export default {
         }
       ]
     }
+  },
+
+  computed: {
+    ...mapGetters({
+      permission: 'getPermission'
+    })
   },
 
   async created() {
