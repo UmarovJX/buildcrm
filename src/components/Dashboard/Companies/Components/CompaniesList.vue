@@ -34,7 +34,7 @@
 
             <div class="dropdown-menu">
               <b-button
-                  v-if="permission && permission.companies.show"
+                  v-if="permission && permission.payment_accounts && permission.payment_accounts.view"
                   class="dropdown-item dropdown-item--inside"
                   @click="openDetails(data.item)">
 
