@@ -200,7 +200,8 @@ export default {
         root: false
       },
       contracts: {
-        ...crudPermission,
+        view: false,
+        create: false,
         filter: false,
         download: false,
         cancel: false,
@@ -217,7 +218,11 @@ export default {
           },
           import: false,
           list: false
-        }
+        },
+        reissue: {
+          view: true,
+          create: true
+        },
       },
       users: {
         ...crudPermission
@@ -233,7 +238,15 @@ export default {
       },
       branches: {
         ...crudPermission,
-        contract_templates: false
+        contract_templates: false,
+        templates: {
+          view: true,
+          create: true,
+          delete: true,
+          is_primary: true,
+          instruction: true,
+          download: true
+        },
       },
       debtors: {
         view: false
@@ -663,19 +676,19 @@ export default {
               parent: 'contracts',
             },
 
-            {
+            /*{
               ...row,
               label: 'право на редактирования оплаты (страница одного договора)',
               refer: 'edit',
               parent: 'contracts',
-            },
+            },*/
 
-            {
+            /*{
               ...row,
               label: 'право на удаление оплаты (страница одного договора)',
               refer: 'delete',
               parent: 'contracts',
-            },
+            },*/
 
             {
               ...row,
@@ -723,6 +736,41 @@ export default {
               ...row,
               label: 'право на удаления ежемесячного типа оплаты',
               refer: 'payments.monthly_type.delete',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'reissue view',
+              refer: 'reissue.view',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'reissue create',
+              refer: 'reissue.create',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'Равномерностью',
+              refer: 'uniformity',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'allow to comment in the contract page',
+              refer: 'comments',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'given permission to edit contract',
+              refer: 'edit',
               parent: 'contracts',
             },
           ],
@@ -951,10 +999,66 @@ export default {
               parent: 'branches',
             },
 
-            {
+            /*{
               ...row,
               label: 'право просмотра шаблона договора',
               refer: 'contract_templates',
+              parent: 'branches',
+            },*/
+
+            {
+              ...row,
+              label: 'given permission to view branches template',
+              refer: 'templates.view',
+              parent: 'branches',
+            },
+
+            {
+              ...row,
+              label: 'given permission to create branches template',
+              refer: 'templates.create',
+              parent: 'branches',
+            },
+
+            {
+              ...row,
+              label: 'given permission to delete branches template',
+              refer: 'templates.delete',
+              parent: 'branches',
+            },
+
+            {
+              ...row,
+              label: 'given permission to make the main branches contract template',
+              refer: 'templates.is_primary',
+              parent: 'branches',
+            },
+
+            {
+              ...row,
+              label: 'given permission to make the main branches contract template',
+              refer: 'templates.is_primary',
+              parent: 'branches',
+            },
+
+            {
+              ...row,
+              label: 'given permission to be able to view contract template instruction',
+              refer: 'templates.instruction',
+              parent: 'branches',
+            },
+
+            {
+              ...row,
+              label: 'given permission to be able to view contract template instruction',
+              refer: 'templates.instruction',
+              parent: 'branches',
+            },
+
+            {
+              ...row,
+              label: 'given permission to be able to download contract template',
+              refer: 'templates.download',
               parent: 'branches',
             }
           ],
@@ -1081,7 +1185,7 @@ export default {
         }
       }
     },
-    generateRole(){
+    generateRole() {
       this.permissionTabs.forEach(pmTab => {
         pmTab.rows.filter((row => {
           const overlookList = ['all', 'ru', 'uz']
