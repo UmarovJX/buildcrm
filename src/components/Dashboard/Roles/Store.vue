@@ -977,26 +977,63 @@ export default {
   },
   methods: {
     initPermissions() {
-      this.form = {
-        ...this.form,
-        ...this.permissions
-      }
-      this.name = this.updatingName
-      this.permissionTabs = this.permissionTabs.map(pmTab => {
-        pmTab.rows = pmTab.rows.map(row => {
-          const pmTabParent = this[pmTab.parent][row]
-          const hierarchyList = row.refer.split('.')
-          const [one,two,three,four,five] = hierarchyList
-          switch (hierarchyList.length){
-            case 1 : {
-              row.vBind = pmTabParent[row.parent][one]
+      this.$nextTick(() => {
+        this.form = {
+          ...this.form,
+          ...this.permissions
+        }
+        this.name = this.updatingName
+        this.permissionTabs = this.permissionTabs.map(pmTab => {
+          const rows = pmTab.rows.map(row => {
+            if (row.refer === 'ru' || row.refer === 'uz') {
+              return row
+            }
+            const pmTabParent = this[pmTab.parent][row.parent]
+            const hierarchyList = row.refer.split('.')
+            const [one, two, three, four, five] = hierarchyList
+
+            switch (hierarchyList.length) {
+              case 1 : {
+                row.vBind = pmTabParent[one] ?? false
+                break
+              }
+              case 2 : {
+                row.vBind = pmTabParent[one][two]
+                break
+              }
+              case 3 : {
+                row.vBind = pmTabParent[one][two][three]
+                break
+              }
+              case 4 : {
+                row.vBind = pmTabParent[one][two][three][four]
+                break
+              }
+              case 5 : {
+                row.vBind = pmTabParent[one][two][three][four][five]
+                break
+              }
+            }
+            return row
+          })
+          const isAllActive = rows.every(row => {
+            const overlookList = ['all', 'ru', 'uz']
+            if (overlookList.includes(row.refer)) {
+              return true
+            }
+            return row.vBind
+          })
+          if (isAllActive) {
+            const indexOfAllSwitch = rows.findIndex(row => row.refer === 'all')
+            if (indexOfAllSwitch !== -1) {
+              rows[indexOfAllSwitch].vBind = true
             }
           }
-          row.vBind = row.parent[row.refer]
-          console.log(row.parent[row.refer])
-          return row
+          return {
+            ...pmTab,
+            rows
+          }
         })
-        return pmTab
       })
     },
     activeAllTabPermission(refer, pmIndex, index, value) {
@@ -1044,7 +1081,43 @@ export default {
         }
       }
     },
+    generateRole(){
+      this.permissionTabs.forEach(pmTab => {
+        pmTab.rows.filter((row => {
+          const overlookList = ['all', 'ru', 'uz']
+          return !overlookList.includes(row.refer)
+        })).forEach(row => {
+          const pmTabParent = this[pmTab.parent][row.parent]
+          const hierarchyList = row.refer.split('.')
+          const [one, two, three, four, five] = hierarchyList
+
+          switch (hierarchyList.length) {
+            case 1 : {
+              pmTabParent[one] = row.vBind
+              break
+            }
+            case 2 : {
+              pmTabParent[one][two] = row.vBind
+              break
+            }
+            case 3 : {
+              pmTabParent[one][two][three] = row.vBind
+              break
+            }
+            case 4 : {
+              pmTabParent[one][two][three][four] = row.vBind
+              break
+            }
+            case 5 : {
+              pmTabParent[one][two][three][four][five] = row.vBind
+              break
+            }
+          }
+        })
+      })
+    },
     createNewRole() {
+      this.generateRole()
       if (this.comeFrom === 'update') {
         this.$emit('submit', {
           name: this.name,
