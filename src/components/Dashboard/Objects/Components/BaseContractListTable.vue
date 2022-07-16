@@ -70,7 +70,7 @@
       <template #cell(actions)="data">
         <div class="float-right">
           <div
-              v-if="(!data.item.main && primaryPermission) && downloadPermission && deletePermission"
+              v-if="primaryPermission && downloadPermission && deletePermission"
               class="dropdown my-dropdown dropleft"
           >
             <button

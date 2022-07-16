@@ -362,7 +362,7 @@ const routes = [
         path: "/companies",
         component: Companies,
         meta: {
-            // requiresAuth: "companies",
+            requiresAuth: "companies",
         }
     },
     {
@@ -371,7 +371,7 @@ const routes = [
         path: "/company/:companyId/details",
         component: CompanyDetails,
         meta: {
-            // requiresAuth: "companies",
+            requiresAuth: "companies",
         }
     },
 
@@ -425,45 +425,46 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const AUTH_TOKEN = localStorage.getItem('auth__access__token')
+    const login = localStorage.getItem('auth__access__token')
     if (to.name === 'login') return next()
 
-    if (AUTH_TOKEN)
+    if (login)
         if (to.path === '/')
             return next({name: 'home'})
         else
-            return next()
+            if (to.matched.some((record) => record.meta.requiresAuth)) {
+                to.matched.some((record) => {
+                    if (!login) {
+                        next({
+                            name: "login",
+                        });
+                    }
+                    // let allow = store.state.me.permission;
+                    setTimeout(() => {
+                        const permission = store.state.me.permission[`${record.meta.requiresAuth}`];
+
+                        if (permission && permission.view) {
+                            next();
+                        } else {
+                            next({
+                                name: "not_found",
+                            });
+                        }
+                    }, 500);
+                });
+            } else {
+                next(); // make sure to always call next()!
+            }
+            // return next()
     else
         return next({name: 'login'})
 })
 
-router.beforeEach((to, from, next) => {
-    const login = localStorage.getItem('auth__access__token')
-
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-        to.matched.some((record) => {
-            if (!login) {
-                next({
-                    name: "login",
-                });
-            }
-            // let allow = store.state.me.permission;
-            setTimeout(() => {
-                const permission = store.state.me.permission[`${record.meta.requiresAuth}`];
-
-                if (permission && permission.view) {
-                    next();
-                } else {
-                    next({
-                        name: "not_found",
-                    });
-                }
-            }, 500);
-        });
-    } else {
-        next(); // make sure to always call next()!
-    }
-});
+// router.beforeEach((to, from, next) => {
+//     const login = localStorage.getItem('auth__access__token')
+//
+//
+// });
 
 // Sentry.init({
 //   Vue,
