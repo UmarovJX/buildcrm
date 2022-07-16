@@ -40,7 +40,7 @@
         <div class="card-body">
           <b-tabs content-class="mt-3">
             <b-tab
-                v-for="({title,active,rows,id}) in permissionTabs"
+                v-for="({title,active,rows,id},pmIndex) in permissionTabs"
                 :key="id"
                 :title="$t(title)"
                 :active="active"
@@ -49,7 +49,7 @@
                 <tbody>
                 <tr
                     v-for="({
-                    label,width,parent,
+                    label,width,
                     refer,checkboxSwitch,
                     checkboxActive,checkboxSize,inputActive,
                     inputClass,inputPlaceholder,inputType},index) in rows"
@@ -60,10 +60,10 @@
                   </td>
                   <td v-if="checkboxActive">
                     <b-form-checkbox
-                        :checked="getCheckboxStatus(refer,parent)"
                         :switch="checkboxSwitch"
                         :size="checkboxSize"
-                        @input="setCheckboxReferenceValue(refer,parent,$event)"
+                        v-model="permissionTabs[pmIndex]['rows'][index].vBind"
+                        @input="activeAllTabPermission(refer,pmIndex,index,$event)"
                     ></b-form-checkbox>
                   </td>
                   <td v-if="inputActive">
@@ -146,6 +146,7 @@ export default {
       checkboxActive: true,
       checkboxSize: 'lg',
       checkboxSwitch: true,
+      vBind: false
     }
 
     const crudPermission = {
@@ -247,12 +248,13 @@ export default {
           id: uuid(),
           title: 'general',
           active: true,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
@@ -279,42 +281,42 @@ export default {
               ...row,
               label: 'курс валют',
               refer: 'currency',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'тема (темная, светлая)',
               refer: 'theme',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'язык (русский, узбекский)',
               refer: 'language',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'настройки полфиля',
               refer: 'settings',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'право изменть данные пользователя',
               refer: 'profile_settings',
-              parent: form.general,
+              parent: 'general',
             },
 
             {
               ...row,
               label: 'право изменять пароль пользователя',
               refer: 'password_settings',
-              parent: form.general,
+              parent: 'general',
             },
           ],
         },
@@ -322,46 +324,47 @@ export default {
           id: uuid(),
           title: 'objects.title',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.objects,
+              parent: 'objects',
             },
             {
               ...row,
               label: 'право на просмотр страницу объектов',
               refer: 'view',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'право на создания объекта',
               refer: 'create',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'право на редактирования объектов',
               refer: 'edit',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'право на удаление объекта',
               refer: 'delete',
-              parent: form.objects,
+              parent: 'objects',
             },
 
             {
               ...row,
               label: 'право загрузить логотип',
               refer: 'upload_logo',
-              parent: form.objects,
+              parent: 'objects',
             },
           ],
         },
@@ -369,39 +372,40 @@ export default {
           id: uuid(),
           title: 'promos',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.promos,
+              parent: 'promos',
             },
             {
               ...row,
               label: 'право на просмотр страницу акции',
               refer: 'view',
-              parent: form.promos,
+              parent: 'promos',
             },
 
             {
               ...row,
               label: 'право на создания акции',
               refer: 'create',
-              parent: form.promos,
+              parent: 'promos',
             },
 
             {
               ...row,
               label: 'право на редактирования акции',
               refer: 'edit',
-              parent: form.promos,
+              parent: 'promos',
             },
 
             {
               ...row,
               label: 'право на удаление акции',
               refer: 'delete',
-              parent: form.promos,
+              parent: 'promos',
             }
           ],
         },
@@ -409,39 +413,40 @@ export default {
           id: uuid(),
           title: 'plans',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.plans,
+              parent: 'plans',
             },
             {
               ...row,
               label: 'право на просмотр страницу планировки',
               refer: 'view',
-              parent: form.plans,
+              parent: 'plans',
             },
 
             {
               ...row,
               label: 'право на создания планировки',
               refer: 'create',
-              parent: form.plans,
+              parent: 'plans',
             },
 
             {
               ...row,
               label: 'право на редактирования планировки',
               refer: 'edit',
-              parent: form.plans,
+              parent: 'plans',
             },
 
             {
               ...row,
               label: 'право на удаление планировки',
               refer: 'delete',
-              parent: form.plans,
+              parent: 'plans',
             }
           ],
         },
@@ -449,67 +454,68 @@ export default {
           id: uuid(),
           title: '_apartments',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.apartments,
+              parent: 'apartments',
             },
             {
               ...row,
               label: 'право просмотра списка квартир (страница одного объекта)',
               refer: 'view',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'право пользования фильтром на странице списка квартир',
               refer: 'filter',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'право редактировать квартиру (страница одного объекта)',
               refer: 'edit',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'право снять с продажи и вернуть в продажу квартиру (страница одного объекта)',
               refer: 'is_sold',
-              parent: form.apartments,
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'право пользования списком для изменения вида списка квартир',
-              refer: 'list',
-              parent: form.apartments.lists,
+              refer: 'lists.list',
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'право пользования шахматкой 1.0 для изменения вида списка квартир',
-              refer: 'grid',
-              parent: form.apartments.lists,
+              refer: 'lists.grid',
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'право пользования шахматкой 2.0 для изменения вида списка квартир',
-              refer: 'grid_sm',
-              parent: form.apartments.lists,
+              refer: 'lists.grid_sm',
+              parent: 'apartments',
             },
 
             {
               ...row,
               label: 'право пользования планировкой для изменения вида списка квартир',
-              refer: 'plan',
-              parent: form.apartments.lists,
+              refer: 'lists.plan',
+              parent: 'apartments',
             },
           ],
         },
@@ -517,60 +523,61 @@ export default {
           id: uuid(),
           title: 'checkout',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.checkout,
+              parent: 'checkout',
             },
             {
               ...row,
               label: 'право забронировать квартиру (страница одного объекта)',
               refer: 'book',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'право оформления квартиры',
               refer: 'checkout',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'право отмечать знакомых',
               refer: 'mark_friends',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'право оформить договор по другой цене',
               refer: 'mark_price',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'право оформить договор по другой цене',
               refer: 'edit_date',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'право оформить договор по другому ежемесячному платежу',
               refer: 'monthly_payment',
-              parent: form.checkout,
+              parent: 'checkout',
             },
 
             {
               ...row,
               label: 'full access',
               refer: 'root',
-              parent: form.checkout,
+              parent: 'checkout',
             }
           ],
         },
@@ -578,144 +585,145 @@ export default {
           id: uuid(),
           title: '_contracts',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.contracts,
+              parent: 'contracts',
             },
             {
               ...row,
               label: 'право просмотра списка договоров',
               refer: 'view',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право пользования фильтром списка договоров',
               refer: 'filter',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на просмотр одного договора',
               refer: 'show',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право скачивания договоров',
               refer: 'download',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право отменить договоров',
               refer: 'cancel',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право изменить тип клиента (вкладка \'Детали клиента\')',
               refer: 'client_type',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право просмотра все договора филиала (менеджер филиала)',
               refer: 'root_branch',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право посмотреть все контракты',
               refer: 'root',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право импортировать оплаты (страница одного договора)',
               refer: 'import',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на просмотр список оплат (страница одного договора)',
               refer: 'list',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на редактирования оплаты (страница одного договора)',
               refer: 'edit',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на удаление оплаты (страница одного договора)',
               refer: 'delete',
-              parent: form.contracts,
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право добавить оплату (страница одного договора)',
-              refer: 'create',
-              parent: form.contracts.payments,
+              refer: 'payments.create',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на создание первоначального типа оплаты',
-              refer: 'create',
-              parent: form.contracts.payments.initial_type,
+              refer: 'payments.initial_type.create',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на редактирования первоначального типа оплаты',
-              refer: 'edit',
-              parent: form.contracts.payments.initial_type,
+              refer: 'payments.initial_type.edit',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на удаления первоначального типа оплаты',
-              refer: 'delete',
-              parent: form.contracts.payments.initial_type,
+              refer: 'payments.initial_type.delete',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на создание ежемесячного типа оплаты',
-              refer: 'create',
-              parent: form.contracts.payments.monthly_type,
+              refer: 'payments.monthly_type.create',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на редактирования ежемесячного типа оплаты',
-              refer: 'edit',
-              parent: form.contracts.payments.monthly_type,
+              refer: 'payments.monthly_type.edit',
+              parent: 'contracts',
             },
 
             {
               ...row,
               label: 'право на удаления ежемесячного типа оплаты',
-              refer: 'delete',
-              parent: form.contracts.payments.monthly_type,
+              refer: 'payments.monthly_type.delete',
+              parent: 'contracts',
             },
           ],
         },
@@ -723,39 +731,40 @@ export default {
           id: uuid(),
           title: '_users',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.users,
+              parent: 'users',
             },
             {
               ...row,
               label: 'право просмотра списка пользователей',
               refer: 'view',
-              parent: form.users,
+              parent: 'users',
             },
 
             {
               ...row,
               label: 'право на создания акции',
               refer: 'create',
-              parent: form.users,
+              parent: 'users',
             },
 
             {
               ...row,
               label: 'право на редактирования акции',
               refer: 'edit',
-              parent: form.users,
+              parent: 'users',
             },
 
             {
               ...row,
               label: 'право на удаление акции',
               refer: 'delete',
-              parent: form.users,
+              parent: 'users',
             }
           ],
         },
@@ -763,39 +772,40 @@ export default {
           id: uuid(),
           title: '_roles',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.roles,
+              parent: 'roles',
             },
             {
               ...row,
               label: 'право просмотра списка ролей',
               refer: 'view',
-              parent: form.roles,
+              parent: 'roles',
             },
 
             {
               ...row,
               label: 'право добавления ролей',
               refer: 'create',
-              parent: form.roles,
+              parent: 'roles',
             },
 
             {
               ...row,
               label: 'право редактирования ролей',
               refer: 'edit',
-              parent: form.roles,
+              parent: 'roles',
             },
 
             {
               ...row,
               label: 'право редактирования ролей',
               refer: 'delete',
-              parent: form.roles,
+              parent: 'roles',
             }
           ],
         },
@@ -803,18 +813,19 @@ export default {
           id: uuid(),
           title: '_debtors',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.debtors,
+              parent: 'debtors',
             },
             {
               ...row,
               label: 'право просмотра списка должников',
               refer: 'view',
-              parent: form.debtors,
+              parent: 'debtors',
             }
           ],
         },
@@ -822,39 +833,40 @@ export default {
           id: uuid(),
           title: '_companies',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.companies,
+              parent: 'companies',
             },
             {
               ...row,
               label: 'право просмотра списка компаний',
               refer: 'view',
-              parent: form.companies,
+              parent: 'companies',
             },
 
             {
               ...row,
               label: 'право просмотра одной компании',
               refer: 'create',
-              parent: form.companies,
+              parent: 'companies',
             },
 
             {
               ...row,
               label: 'право редактирования компании',
               refer: 'edit',
-              parent: form.companies,
+              parent: 'companies',
             },
 
             {
               ...row,
               label: 'право удаления компанию',
               refer: 'delete',
-              parent: form.companies,
+              parent: 'companies',
             }
           ],
         },
@@ -862,39 +874,40 @@ export default {
           id: uuid(),
           title: '_payment_account',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
             {
               ...row,
               label: 'право просмотра списка рассчетных счетов',
               refer: 'view',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
 
             {
               ...row,
               label: 'право добавления рассчетнего счета',
               refer: 'create',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
 
             {
               ...row,
               label: 'право редактирования рассчетнего счета',
               refer: 'edit',
-              parent: form.payment_account,
+              parent: 'payment_account',
             },
 
             {
               ...row,
               label: 'право редактирования рассчетнего счета',
               refer: 'delete',
-              parent: form.payment_account,
+              parent: 'payment_account',
             }
           ],
         },
@@ -902,46 +915,47 @@ export default {
           id: uuid(),
           title: '_branches',
           active: false,
+          parent: 'form',
           rows: [
             {
               ...row,
               label: 'Active All',
               refer: 'all',
-              parent: form.branches,
+              parent: 'branches',
             },
             {
               ...row,
               label: 'право просмотра списка филиалов',
               refer: 'view',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'право добавления филиала',
               refer: 'create',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'право редактирования филиала',
               refer: 'edit',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'право удаления филиала',
               refer: 'delete',
-              parent: form.branches,
+              parent: 'branches',
             },
 
             {
               ...row,
               label: 'право просмотра шаблона договора',
               refer: 'contract_templates',
-              parent: form.branches,
+              parent: 'branches',
             }
           ],
         },
@@ -962,23 +976,64 @@ export default {
     }
   },
   methods: {
-    getCheckboxStatus(refer, parent) {
-      console.log(parent[refer])
-      return parent[refer]
-    },
     initPermissions() {
       this.form = {
         ...this.form,
         ...this.permissions
       }
       this.name = this.updatingName
+      this.permissionTabs = this.permissionTabs.map(pmTab => {
+        pmTab.rows = pmTab.rows.map(row => {
+          const pmTabParent = this[pmTab.parent][row]
+          const hierarchyList = row.refer.split('.')
+          const [one,two,three,four,five] = hierarchyList
+          switch (hierarchyList.length){
+            case 1 : {
+              row.vBind = pmTabParent[row.parent][one]
+            }
+          }
+          row.vBind = row.parent[row.refer]
+          console.log(row.parent[row.refer])
+          return row
+        })
+        return pmTab
+      })
     },
-    setCheckboxReferenceValue(refer, parent, value) {
+    activeAllTabPermission(refer, pmIndex, index, value) {
+      // const allActivateSwitchIndex = this.permissionTabs[pmIndex]['rows'].findIndex(row => row.refer === 'all')
       if (refer === 'all') {
-        this.deepSet(parent, value)
-      } else {
-        parent[refer] = value
+        this.permissionTabs[pmIndex]['rows'] = this.permissionTabs[pmIndex]['rows'].map(row => {
+          return {
+            ...row,
+            vBind: value
+          }
+        })
       }
+      // else if (allActivateSwitchIndex !== -1) {
+      //   const isAllActive = this.permissionTabs[pmIndex]['rows'].every(row => {
+      //     if (row.refer === 'all') return true
+      //     return row.vBind
+      //   })
+      //   const isAllInactive = this.permissionTabs[pmIndex]['rows'].every(row => {
+      //     if (row.refer === 'all') return false
+      //     return !row.vBind
+      //   })
+      //   if (isAllActive) {
+      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = true
+      //   }
+      //
+      //   // console.log(isAllActive, isAllInactive)
+      //
+      //   if (isAllInactive) {
+      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = false
+      //   }
+      // }
+      // else if (allActivateSwitchIndex !== -1) {
+      //   const {vBind} = this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex]
+      //   if (!value && vBind) {
+      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = false
+      //   }
+      // }
     },
     deepSet(obj, valueToSet) {
       for (let [key, value] of Object.entries(obj)) {
@@ -986,7 +1041,6 @@ export default {
           this.deepSet(value, valueToSet)
         } else {
           obj[key] = valueToSet
-          console.log(obj)
         }
       }
     },
