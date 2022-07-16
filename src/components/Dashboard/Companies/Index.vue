@@ -1,16 +1,9 @@
 <template>
   <main>
-    <div class="search__content">
-      <!--  Search Content  -->
-      <base-search-input
-          class="base-search-input w-50 mr-2"
-          :placeholder="`${ $t('contract_number_or_full_name') }`"
-          @trigger-input="getInputValue"
-      />
-
+    <div class="d-flex justify-content-end">
       <BaseButton @click="showAddModal" :text="$t('companies.add_company')">
-        <template #right-icon>
-          <i class="fal fa-plus mr-2 color-gray-900"></i>
+        <template #left-icon>
+          <BasePlusIcon fill="#7C3AED"/>
         </template>
       </BaseButton>
     </div>
@@ -47,16 +40,16 @@
 import api from "@/services/api";
 import CreateUpdateModal from "./Components/CreateUpdateModal";
 import CompaniesList from "@/components/Dashboard/Companies/Components/CompaniesList";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import {isPrimitiveValue, sortObjectValues} from "@/util/reusable";
 import BaseButton from "@/components/Reusable/BaseButton";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
 
 export default {
   name: 'Companies',
   components: {
+    BasePlusIcon,
     CreateUpdateModal,
     CompaniesList,
-    BaseSearchInput,
     BaseButton,
   },
   mounted() {

@@ -1,7 +1,7 @@
 <template>
   <div class="mt-2">
     <b-table
-        class="table__list"
+        class="table__list font-inter"
         @sort-changed="sortingChanged"
         thead-tr-class="row__head__bottom-border"
         tbody-tr-class="row__body__bottom-border"
@@ -18,11 +18,15 @@
         :empty-text="$t('no_data')"
     >
       <template class="header_label" #head(name)="data">
-        <span class="label">{{ data.label }}</span>
+        <span class="label font-craftworksans">{{ data.label }}</span>
       </template>
 
       <template #cell(name)="data">
-        {{ getName(data.item.type) }} «{{ data.item.name }}»
+        {{ data.item.name }}
+      </template>
+
+      <template #cell(director)="data">
+        {{ getDirector(data.item.first_name, data.item.second_name) }}
       </template>
 
       <template #cell(accounts_number)="data">
@@ -134,7 +138,7 @@ export default {
           label: this.$t("companies.actions"),
         },
       ]
-    }
+    },
   },
   methods: {
     sortingChanged(val) {
@@ -149,6 +153,10 @@ export default {
         });
       }
     },
+    getDirector (firstName, secondName) {
+      console.log('data:', firstName)
+      return `${firstName} ${secondName}`
+    },
     openDetails({id}) {
       this.$router.push({name: 'company-details', params: {companyId: id}})
     },
@@ -159,12 +167,6 @@ export default {
       } else {
         console.log("sorry")
       }
-    },
-    getName(name) {
-      if (localStorage.locale)
-        return name[localStorage.locale]
-      else
-        return name['ru']
     },
     deleteCompany(id) {
       this.$emit('delete-company', id)
@@ -180,8 +182,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-
 ::v-deep .row__head__bottom-border {
   border-bottom: 2px solid var(--gray-200) !important;
 }

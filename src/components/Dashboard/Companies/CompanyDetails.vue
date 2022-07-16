@@ -13,7 +13,7 @@
     </div>
     <CompanyInformation :companyId="companyId"/>
     <hr/>
-    <div class="pt-4 d-flex flex-row flex-wrap justify-content-between align-items-center">
+    <div class="pt-4 d-flex flex-row flex-wrap justify-content-between align-items-center ">
       <h3 class="color-gray-700">{{ $t("companies.counted_payment") }}</h3>
       <BaseButton
           class="bg-gray-150 color-gray-800 button rounded-circle]"

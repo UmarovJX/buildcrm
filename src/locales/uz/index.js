@@ -833,6 +833,19 @@ export default {
         },
     },
 
+    building_layout: {
+        add_layout: "Xonadon rejasini qo’shish",
+        layout_name: "Xonadon rejasi nomi",
+        add_title: "Sarlavha qo'shish",
+        floors: "Qavat(lar)",
+        upload: {
+            add_image: "Rasm qo'shish",
+            add_video: "Video qo'shish",
+            add_file: "Fayl qo'shish",
+            add_audio: "Audio qo'shish",
+        }
+    },
+
     sweetAlert: {
         title: "Bu ishni amalga oshirishga aminmisiz?",
         text: "O'chirilsinmi?",
