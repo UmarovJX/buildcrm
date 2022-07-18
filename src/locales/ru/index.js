@@ -89,7 +89,12 @@ export default {
             delete_type_payment: 'Право на удаления первоначального типа оплаты',
             create_monthly_payment: 'Право на создание ежемесячного типа оплаты',
             edit_monthly_type: 'Право на редактирования ежемесячного типа оплаты',
-            delete_monthly_type: 'Право на удаления ежемесячного типа оплаты'
+            delete_monthly_type: 'Право на удаления ежемесячного типа оплаты',
+            reissue_view: 'Право на пересмотр реорганизации',
+            reissue_create: 'Qayta tashkillashtirish yaratish huquqi',
+            uniformity: 'Mutanosiblik',
+            comments: 'Izohlar',
+            edit: 'Tahrirlash',
         },
         users: {
             watch_users: 'Разрешить видеть пользователей',
@@ -122,7 +127,9 @@ export default {
             edit_branch: 'Право редактирования филиала',
             delete_branch: 'Право удаления филиала',
             add_branch: 'Право добавления филиала',
-            watch_contract_template: 'Право просмотра шаблона договора'
+            watch_contract_template: 'Право просмотра шаблона договора',
+            template_download: 'Право скачивание шаблона договора',
+            template_instruction: 'Право просмотра инструкци шаблона договора'
         },
     },
     xonsaroy: 'Хонсарой',

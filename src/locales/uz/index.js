@@ -89,7 +89,12 @@ export default {
             delete_type_payment: 'Dastlabki to\'lov turini o\'chirish huquqi',
             create_monthly_payment: 'Dastlabki to\'lov turini yaratish huquqi',
             edit_monthly_type: 'Oylik to\'lov turini tahrirlash huquqi',
-            delete_monthly_type: 'Oylik to\'lov turini o\'chirish huquqi'
+            delete_monthly_type: 'Oylik to\'lov turini o\'chirish huquqi',
+            reissue_view: 'Qayta tashkillashtirishni ko\'rish huquqi',
+            reissue_create: 'Qayta tashkillashtirish yaratish huquqi',
+            uniformity: 'Mutanosiblik',
+            comments: 'Izohlar',
+            edit: 'Tahrirlash',
 
         },
         users: {
@@ -123,7 +128,9 @@ export default {
             edit_branch: 'Filialni tahrirlash huquqi',
             delete_branch: 'Filialni o\'chirish huquqi',
             add_branch: 'Filial qo\'shish huquqi',
-            watch_contract_template: 'Shartnomani na\'muna shablonini ko\'rish huquqi'
+            watch_contract_template: 'Shartnomani na\'muna shablonini ko\'rish huquqi',
+            template_download: 'Shartnomani na\'muna shablonini yuklash huquqi',
+            template_instruction: 'Shartnomani na\'muna shablonini ko\'rsatmasini ko\'rish huquqi'
         },
     },
     user: {
