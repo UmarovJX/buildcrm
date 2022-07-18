@@ -21,7 +21,6 @@ export default {
             companies: 'Компании',
             payment_account: 'Счет',
             branches: 'Филиалы'
-
         },
         general: {
             role_name_ru: 'Название роли (RU)',
@@ -37,6 +36,7 @@ export default {
             watch_objects: 'Право на просмотр страницу объектов',
             create_object: 'Право на создания объекта',
             edit_object: 'Право на редактирования объектов',
+            show_object: 'Право на просмотр одного объекта',
             delete_object: 'Право на удаление объекта',
             download_logo: 'Право загрузить логотип'
         },
@@ -67,6 +67,7 @@ export default {
             decorate_apartment: 'Право оформления квартиры',
             tag_acquaintances: 'Право отмечать знакомых',
             change_payment: 'Право оформить договор по другой цене',
+            edit_date: 'Право оформить договор по другой дате',
             change_monthly_payment: 'Право оформить договор по другому ежемесячному платежу',
             full_access: 'Полный доступ'
         },
@@ -78,7 +79,8 @@ export default {
             decline_deal: 'Право отменить договоров',
             client_type: 'Право изменить тип клиента (вкладка \'Детали клиента\')',
             watch_branch_deals: 'Право просмотра все договора филиала (менеджер филиала)',
-            import: 'Право импортировать оплаты (страница одного договора)',
+            import: 'Право скачать оплаты',
+            list: 'Право просмотра оплаты',
             change_date_deal: 'Разрешить изменить дату договора',
             edit_monthly_payment: 'Разрешить редактировать ежемесячных платежей',
             edit_payment: 'Право на редактирования оплаты (страница одного договора)',
@@ -91,21 +93,22 @@ export default {
             edit_monthly_type: 'Право на редактирования ежемесячного типа оплаты',
             delete_monthly_type: 'Право на удаления ежемесячного типа оплаты',
             reissue_view: 'Право на пересмотр реорганизации',
-            reissue_create: 'Qayta tashkillashtirish yaratish huquqi',
-            uniformity: 'Mutanosiblik',
-            comments: 'Izohlar',
-            edit: 'Tahrirlash',
+            reissue_create: 'Право создания реорганизации',
+            uniformity: 'Право просмотра неравномерностей',
+            comments: 'Право писать коментарии в договоры',
+            edit: 'Право на редактирования договоров',
         },
         users: {
-            watch_users: 'Разрешить видеть пользователей',
-            create_user: 'Разрешить создать пользователей',
-            edit_user: 'Разрешить редактировать пользователей',
-            delete_user: 'Разрешить удалять пользователей'
+            watch_users: 'Право просмотра списка пользователей',
+            create_user: 'Право добавление пользователя',
+            edit_user: 'Право редактировать пользователя',
+            delete_user: 'Право удалять пользователя'
         },
         roles: {
             watch_roles: 'Право просмотра списка ролей',
             add_roles: 'Право добавления ролей',
-            edit_roles: 'Право редактирования ролей'
+            edit_roles: 'Право редактирования ролей',
+            delete_roles: 'Право удалении ролей'
         },
         debtors: {
             watch_debtors: 'Право просмотра списка должников',
@@ -113,6 +116,7 @@ export default {
         companies: {
             watch_companies: 'Право просмотра списка компаний',
             watch_company: 'Право просмотра одной компании',
+            create_company: 'Право добавления компании',
             edit_companies: 'Право редактирования компании',
             delete_company: 'Право удаления компанию'
         },
@@ -128,6 +132,9 @@ export default {
             delete_branch: 'Право удаления филиала',
             add_branch: 'Право добавления филиала',
             watch_contract_template: 'Право просмотра шаблона договора',
+            create_contract_template: 'Право создании шаблона договора',
+            delete_contract_template: 'Право удалении шаблона договора',
+            make_main_branch_template: 'Право создании шаблона договора основных филиалов',
             template_download: 'Право скачивание шаблона договора',
             template_instruction: 'Право просмотра инструкци шаблона договора'
         },
