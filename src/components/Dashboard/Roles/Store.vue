@@ -685,14 +685,14 @@ export default {
             },*/
             {
               ...row,
-              label: 'To\'lovlarni ko\'rish huquqi',
+              label: 'roles_permission.contracts.list',
               refer: 'payments.list',
               parent: 'contracts',
             },
 
             {
               ...row,
-              label: 'To\'lovlarni yuklab olish huquqi',
+              label: 'roles_permission.contracts.import',
               refer: 'payments.import',
               parent: 'contracts',
             },
