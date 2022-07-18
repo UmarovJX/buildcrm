@@ -7,14 +7,14 @@
       </base-bread-crumb>
 
       <div class="object-cards">
-        <template v-if="getPermission.objects.view"
+        <template v-if="getPermission.objects && getPermission.objects.view"
         >
           <div class="card"
                v-for="(object, index) in getObjects"
                :key="index"
           >
             <div
-                v-if="getPermission.objects.delete || (getPermission.objects && getPermission.objects.update)"
+                v-if="getPermission.objects.delete || (getPermission.objects && getPermission.objects.edit)"
                 class="object__more-info">
               <div class="my-dropdown dropleft">
                 <button
@@ -28,7 +28,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <router-link
-                      v-if="getPermission.objects && (getPermission.objects && getPermission.objects.update)"
+                      v-if="getPermission.objects && (getPermission.objects && getPermission.objects.edit)"
                       :class="'dropdown-item'"
                       :to="{name: 'objectsEdit', params: {id: object.id}}"
                   >
@@ -56,7 +56,7 @@
                   </router-link>
 
                   <router-link
-                      v-if="getPermission.type_plan.view"
+                      v-if="getPermission.type_plan && getPermission.type_plan.view"
                       :to="{name:'type-plan-view',params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
