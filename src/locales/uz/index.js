@@ -38,7 +38,7 @@ export default {
             create_object: 'Obyekt yaratish huquqi',
             edit_object: 'Obyektlarni tahrirlash huquqi',
             delete_object: 'Obyekt o\'chirish huquqi',
-            load_logo: 'Logotip yuklash huquqi'
+            download_logo: 'Logotip yuklash huquqi'
         },
         promos: {
             watch_promos_page: 'Chegirmalar sahifasini ko\'rish huquqi',
@@ -67,6 +67,7 @@ export default {
             decorate_apartment: 'Xonadonni ro\'xatdan o\'tkazish huquqi',
             tag_acquaintances: 'Do\'stlarni belgilash huquqi',
             change_payment: 'Boshqa narxda shartnoma tuzish huquqi',
+            edit_date: 'Xonadonni ro\'xatdan o\'tkazilish sanasini o\'zgartirish huquqi',
             change_monthly_payment: 'Boshqa oylik to\'lovda shartnoma tuzish huquqi',
             full_access: 'Barchasiga ruxsat berish'
         },
@@ -78,7 +79,8 @@ export default {
             decline_deal: 'Shartnomani bekor qilish huquqi',
             client_type: 'Mijoz turini o\'zgartirish huquqi (\'Mijoz haqida batafsil\' qismida)',
             watch_branch_deals: 'Filialning barcha shartnomalarini ko\'rish huquqi (filial ish yurituvchisi)',
-            import: 'To\'lovlarni import qilish huquqi (bitta shartnoma sahifasi)',
+            import: 'To\'lovlarni yuklab olish huquqi',
+            list: 'To\'lovlarni ko\'rish huquqi',
             change_date_deal: 'Shartnoma sanasini o\'zgartirishga ruxsat berish',
             edit_monthly_payment: 'Oylik toʻlovlarni tahrirlashga ruxsat berish',
             edit_payment: 'To\'lovni tahrirlash huquqi (bitta shartnoma sahifasi)',
@@ -92,9 +94,10 @@ export default {
             delete_monthly_type: 'Oylik to\'lov turini o\'chirish huquqi',
             reissue_view: 'Qayta tashkillashtirishni ko\'rish huquqi',
             reissue_create: 'Qayta tashkillashtirish yaratish huquqi',
-            uniformity: 'Mutanosiblik',
-            comments: 'Izohlar',
-            edit: 'Tahrirlash',
+            uniformity: 'Mutanosiblikni ko\'rish huquqi',
+            comments: 'Shartnomalarga izoh yozish huquqi',
+            edit: 'Shartnomalarni tahrirlash huquqi',
+
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
@@ -105,7 +108,8 @@ export default {
         roles: {
             watch_roles: 'Rollar ro\'xatini ko\'rish huquqi',
             add_roles: 'Rollar qo\'shish huquqi',
-            edit_roles: 'Rollarni tahrirlash huquqi'
+            edit_roles: 'Rollarni tahrirlash huquqi',
+            delete_roles: 'Rollarni o\'chirish huquqi'
         },
         debtors: {
             watch_debtors: 'Qarzdorlar ro\'yxatini ko\'rish huquqi',
@@ -113,6 +117,7 @@ export default {
         companies: {
             watch_companies: 'Kompaniyalar ro\'yxatini ko\'rish huquqi',
             watch_company: 'Bitta kompaniyani ko\'rish huquqi',
+            create_company: 'Kompaniya yaratish huquqi',
             edit_companies: 'Kompaniyani tahrirlash huquqi',
             delete_company: 'Kompaniyani o\'chirish huquqi'
         },
@@ -128,6 +133,9 @@ export default {
             delete_branch: 'Filialni o\'chirish huquqi',
             add_branch: 'Filial qo\'shish huquqi',
             watch_contract_template: 'Shartnomani na\'muna shablonini ko\'rish huquqi',
+            create_contract_template: 'Shartnomani na\'muna shablonini yaratish huquqi',
+            delete_contract_template: 'Shartnomani na\'muna shablonini o\'chirish huquqi',
+            make_main_branch_template: 'Asosiy filial shartnomani na\'munasini yaratish huquqi',
             template_download: 'Shartnomani na\'muna shablonini yuklash huquqi',
             template_instruction: 'Shartnomani na\'muna shablonini ko\'rsatmasini ko\'rish huquqi'
         },

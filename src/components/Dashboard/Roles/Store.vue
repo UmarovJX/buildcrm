@@ -316,14 +316,14 @@ export default {
 
             {
               ...row,
-              label: 'roles_permission.general.profile_settings',
+              label: 'roles_permission.general.user_data',
               refer: 'settings',
               parent: 'general',
             },
 
             {
               ...row,
-              label: 'roles_permission.general.user_data',
+              label: 'roles_permission.general.profile_settings',
               refer: 'profile_settings',
               parent: 'general',
             },
@@ -354,7 +354,12 @@ export default {
               refer: 'view',
               parent: 'objects',
             },
-
+            {
+              ...row,
+              label: 'roles_permission.objects.show_object',
+              refer: 'show',
+              parent: 'objects',
+            },
             {
               ...row,
               label: 'roles_permission.objects.create_object',
@@ -392,7 +397,7 @@ export default {
           rows: [
             {
               ...row,
-              label: 'Active All',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: 'promos',
             },
@@ -501,7 +506,7 @@ export default {
 
             {
               ...row,
-              label: 'roles_permission.apartments.status_apartments',
+              label: 'roles_permission.apartments.status_apartment',
               refer: 'is_sold',
               parent: 'apartments',
             },
@@ -577,21 +582,21 @@ export default {
 
             {
               ...row,
-              label: 'roles_permission.execution.change_monthly_payment',
+              label: 'roles_permission.execution.edit_date',
               refer: 'edit_date',
               parent: 'checkout',
             },
 
             {
               ...row,
-              label: 'roles_permission.execution.full_access',
+              label: 'roles_permission.execution.change_monthly_payment',
               refer: 'monthly_payment',
               parent: 'checkout',
             },
 
             {
               ...row,
-              label: 'full access',
+              label: 'roles_permission.execution.full_access',
               refer: 'root',
               parent: 'checkout',
             }
@@ -660,7 +665,7 @@ export default {
 
             {
               ...row,
-              label: 'roles_permission.contracts.import',
+              label: 'roles_permission.contracts.full_access',
               refer: 'root',
               parent: 'contracts',
             },
@@ -688,6 +693,20 @@ export default {
             {
               ...row,
               label: 'To\'lovlarni yuklab olish huquqi',
+              refer: 'payments.import',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'roles_permission.contracts.list',
+              refer: 'payments.list',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'roles_permission.contracts.import',
               refer: 'payments.import',
               parent: 'contracts',
             },
@@ -743,35 +762,35 @@ export default {
 
             {
               ...row,
-              label: 'reissue view',
+              label: 'roles_permission.contracts.reissue_view',
               refer: 'reissue.view',
               parent: 'contracts',
             },
 
             {
               ...row,
-              label: 'reissue create',
+              label: 'roles_permission.contracts.reissue_create',
               refer: 'reissue.create',
               parent: 'contracts',
             },
 
             {
               ...row,
-              label: 'Равномерностью',
+              label: 'roles_permission.contracts.uniformity',
               refer: 'uniformity',
               parent: 'contracts',
             },
 
             {
               ...row,
-              label: 'allow to comment in the contract page',
+              label: 'roles_permission.contracts.comments',
               refer: 'comments',
               parent: 'contracts',
             },
 
             {
               ...row,
-              label: 'given permission to edit contract',
+              label: 'roles_permission.contracts.edit',
               refer: 'edit',
               parent: 'contracts',
             },
@@ -853,7 +872,7 @@ export default {
 
             {
               ...row,
-              label: 'право редактирования ролей',
+              label: 'roles_permission.roles.delete_roles',
               refer: 'delete',
               parent: 'roles',
             }
@@ -887,20 +906,20 @@ export default {
           rows: [
             {
               ...row,
-              label: 'roles_permission.apartments.status_apartments',
+              label: 'roles_permission.companies.watch_companies',
               refer: 'all',
               parent: 'companies',
             },
             {
               ...row,
-              label: 'roles_permission.companies.watch_companies',
+              label: 'roles_permission.companies.watch_company',
               refer: 'view',
               parent: 'companies',
             },
 
             {
               ...row,
-              label: 'roles_permission.companies.watch_company',
+              label: 'roles_permission.companies.create_company',
               refer: 'create',
               parent: 'companies',
             },
@@ -982,14 +1001,14 @@ export default {
 
             {
               ...row,
-              label: 'roles_permission.branches.edit_branch',
+              label: 'roles_permission.branches.add_branch',
               refer: 'create',
               parent: 'branches',
             },
 
             {
               ...row,
-              label: 'roles_permission.branches.delete_branch',
+              label: 'roles_permission.branches.edit_branch',
               refer: 'edit',
               parent: 'branches',
             },
@@ -1010,56 +1029,42 @@ export default {
 
             {
               ...row,
-              label: 'given permission to view branches template',
+              label: 'roles_permission.branches.watch_contract_template',
               refer: 'templates.view',
               parent: 'branches',
             },
 
             {
               ...row,
-              label: 'given permission to create branches template',
+              label: 'roles_permission.branches.create_contract_template',
               refer: 'templates.create',
               parent: 'branches',
             },
 
             {
               ...row,
-              label: 'given permission to delete branches template',
+              label: 'roles_permission.branches.delete_contract_template',
               refer: 'templates.delete',
               parent: 'branches',
             },
 
             {
               ...row,
-              label: 'given permission to make the main branches contract template',
+              label: 'roles_permission.branches.make_main_branch_template',
               refer: 'templates.is_primary',
               parent: 'branches',
             },
 
             {
               ...row,
-              label: 'given permission to make the main branches contract template',
-              refer: 'templates.is_primary',
-              parent: 'branches',
-            },
-
-            {
-              ...row,
-              label: 'given permission to be able to view contract template instruction',
+              label: 'roles_permission.branches.template_instruction',
               refer: 'templates.instruction',
               parent: 'branches',
             },
 
             {
               ...row,
-              label: 'given permission to be able to view contract template instruction',
-              refer: 'templates.instruction',
-              parent: 'branches',
-            },
-
-            {
-              ...row,
-              label: 'given permission to be able to download contract template',
+              label: 'roles_permission.branches.template_download',
               refer: 'templates.download',
               parent: 'branches',
             }
