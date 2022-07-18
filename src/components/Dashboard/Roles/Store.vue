@@ -208,6 +208,9 @@ export default {
         client_type: false,
         root_branch: false,
         root: false,
+        uniformity: false,
+        comments: false,
+        edit: true,
         payments: {
           create: false,
           initial_type: {
@@ -238,7 +241,7 @@ export default {
       },
       branches: {
         ...crudPermission,
-        contract_templates: false,
+        // contract_templates: false,
         templates: {
           view: true,
           create: true,
@@ -452,7 +455,7 @@ export default {
               ...row,
               label: 'roles_permission.layouts.edit_layouts',
               refer: 'edit',
-              parent: form.plans,
+              parent: 'plans',
             },
 
             {
@@ -662,20 +665,6 @@ export default {
               parent: 'contracts',
             },
 
-            {
-              ...row,
-              label: 'roles_permission.contracts.change_date_deal',
-              refer: 'import',
-              parent: 'contracts',
-            },
-
-            {
-              ...row,
-              label: 'roles_permission.contracts.edit_monthly_payment',
-              refer: 'list',
-              parent: 'contracts',
-            },
-
             /*{
               ...row,
               label: 'roles_permission.contracts.edit_payment',
@@ -689,6 +678,19 @@ export default {
               refer: 'delete',
               parent: 'contracts',
             },*/
+            {
+              ...row,
+              label: 'To\'lovlarni ko\'rish huquqi',
+              refer: 'payments.list',
+              parent: 'contracts',
+            },
+
+            {
+              ...row,
+              label: 'To\'lovlarni yuklab olish huquqi',
+              refer: 'payments.import',
+              parent: 'contracts',
+            },
 
             {
               ...row,
@@ -1194,7 +1196,6 @@ export default {
           const pmTabParent = this[pmTab.parent][row.parent]
           const hierarchyList = row.refer.split('.')
           const [one, two, three, four, five] = hierarchyList
-
           switch (hierarchyList.length) {
             case 1 : {
               pmTabParent[one] = row.vBind

@@ -95,7 +95,6 @@ export default {
             uniformity: 'Mutanosiblik',
             comments: 'Izohlar',
             edit: 'Tahrirlash',
-
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
