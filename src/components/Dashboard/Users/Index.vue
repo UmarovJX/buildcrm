@@ -93,7 +93,7 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
-                  v-if="getPermission.users && (getPermission.users.delete || getPermission.users.edit)"
+                  v-if="getPermission.users || (getPermission.users.delete || getPermission.users.edit)"
                   class="dropdown my-dropdown dropleft"
               >
                 <!--user.role.id != 1 &&-->

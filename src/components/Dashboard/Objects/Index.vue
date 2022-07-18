@@ -14,7 +14,7 @@
                :key="index"
           >
             <div
-                v-if="getPermission.objects && (getPermission.objects.delete || getPermission.objects.edit)"
+                v-if="getPermission.objects || (getPermission.objects.delete || getPermission.objects.edit)"
                 class="object__more-info">
               <div class="my-dropdown dropleft">
                 <button

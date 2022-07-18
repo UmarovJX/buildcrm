@@ -279,25 +279,23 @@ export default {
     checkedPermissionTab() {
       let result = this.componentTabs
       const permission = this.getPermission.apartments
-      console.log(permission, 'permission.lists');
       if (permission && permission.lists) {
-        switch (permission.lists) {
-          case "list":
+        for (let [key, value] of Object.entries(permission.lists)) {
+          if (key === 'list' && !value) {
             result = result.filter(item => item.view !== 'list')
-            break
-          case "grid":
+          }
+          if (key === 'grid' && !value) {
             result = result.filter(item => item.view !== 'architecture')
-            break
-          case "grid_sm":
+          }
+          if (key === 'grid_sm' && !value) {
             result = result.filter(item => item.view !== 'chess')
-            break
-          case "plan":
+          }
+          if (key === 'plan' && !value) {
             result = result.filter(item => item.view !== 'plan')
-            break
+          }
         }
       }
       return result
-
     },
     activeContent() {
       return this.$t('view')
@@ -354,7 +352,9 @@ export default {
     }
   },
   mounted() {
-    this.fetchFilterFields()
+    if (this.getPermission?.apartments?.permission?.filter) {
+      this.fetchFilterFields()
+    }
     this.getPriceList()
   },
   async created() {
@@ -833,6 +833,7 @@ export default {
       }
     },
     async getObjectPlans() {
+      this.planLoading = true
       const id = this.$route.params.object
       await api.objectsV2.getObjectPlans(id)
           .then((response) => {
@@ -847,8 +848,11 @@ export default {
     apartmentExpressReview(item) {
       // const itemNotOpen = item.uuid !== this.expressView.item.uuid
       // if (itemNotOpen) {
-      this.expressView.item = item
-      this.expressView.toggle = true
+      console.log(item, 'item');
+      if (item) {
+        this.expressView.item = item
+        this.expressView.toggle = true
+      }
       // }
     },
     planExpressReview(item) {

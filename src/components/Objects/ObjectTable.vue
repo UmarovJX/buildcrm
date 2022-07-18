@@ -538,9 +538,9 @@ export default {
       //   name: "apartment-view",
       //   params: {object: this.$route.params.object, id: items[0].id},
       // });
-      // if (this.getPermission.apartments && this.getPermission.apartments.show) {
+      if (this.getPermission.apartments && this.getPermission.apartments.show) {
         this.$emit('show-express-sidebar', items[0])
-      // }
+      }
     },
 
     sortingChanged(val) {

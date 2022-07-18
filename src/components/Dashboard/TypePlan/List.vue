@@ -97,6 +97,7 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
+                  v-if="editPermission || deletePermission"
                   class="dropdown my-dropdown dropleft"
               >
                 <button
@@ -109,7 +110,7 @@
 
                 <div class="dropdown-menu">
                   <button
-                      v-if="getPermission.plans && getPermission.plans.edit"
+                      v-if="editPermission"
                       class="dropdown-item dropdown-item--inside"
                       @click="edit(data.item.id)"
                   >
@@ -120,7 +121,7 @@
                   </button>
 
                   <button
-                      v-if="getPermission.plans && getPermission.plans.delete"
+                      v-if="deletePermission"
                       class="dropdown-item dropdown-item--inside"
                       @click="deleteTypePlan(data.item)"
                   >
@@ -209,7 +210,15 @@ export default {
       }
     }
   },
-  computed: mapGetters(["getPlan", "getLoading", "getPermission"]),
+  computed: {
+    ...mapGetters(["getPlan", "getLoading", "getPermission"]),
+    editPermission() {
+      return this.getPermission.plans && this.getPermission.plans.edit
+    },
+    deletePermission() {
+      return this.getPermission.plans && this.getPermission.plans.delete
+    }
+  },
   mounted() {
     this.fetchPlans(this);
     Fancybox.bind("[data-fancybox]");

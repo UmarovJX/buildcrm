@@ -22,7 +22,7 @@
       <template #cell(actions)="data">
         <div class="float-right">
           <div
-              v-if="viewPermission && deletePermission && editPermission"
+              v-if="viewPermission || deletePermission || editPermission"
               class="dropdown my-dropdown dropleft"
           >
             <button
@@ -158,10 +158,10 @@ export default {
       return this.permission && this.permission.payment_account && this.permission.payment_account.view
     },
     editPermission() {
-      return this.permission && this.permission.companies.edit;
+      return this.permission && this.permission.companies && this.permission.companies.edit;
     },
     deletePermission() {
-      return this.permission && this.permission.companies.delete
+      return this.permission && this.permission.companies && this.permission.companies.delete
     }
   },
   methods: {
