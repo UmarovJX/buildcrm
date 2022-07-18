@@ -169,7 +169,6 @@ export default {
       },
       objects: {
         ...crudPermission,
-        show: false,
         upload_logo: false
       },
       promos: {

@@ -175,6 +175,7 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
+import ObjectsPermission from "@/permission/objects";
 
 export default {
   name: 'Objects',
@@ -211,10 +212,15 @@ export default {
   mounted() {
     this.fetchObjects(this);
     // console.log(this.getPermission);
+
+    // console.log('result', result)
   },
 
   computed: {
     ...mapGetters(["getObjects", "getPermission"]),
+    permissionView() {
+      return ObjectsPermission.getObjectViewPermission()
+    },
     activeContent() {
       return this.$t('objects.title')
     },

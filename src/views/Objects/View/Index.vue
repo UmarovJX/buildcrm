@@ -137,7 +137,6 @@ import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 import BaseCLose from "@/components/icons/BaseClose";
 import {mapGetters} from "vuex";
-
 export default {
   name: "Objects",
   components: {
