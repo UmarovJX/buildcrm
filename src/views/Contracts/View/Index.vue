@@ -283,7 +283,7 @@ export default {
       return this.order.status === 'contract'
     },
     hasAction() {
-      return this.reContractPermission && this.editPermission && this.deletePermission && this.downloadPermission
+      return this.reContractPermission || this.editPermission || this.deletePermission || this.downloadPermission
     },
     reContractViewPermission(){
       return (this.permission && this.permission.contracts && this.permission.contracts.reissue && this.permission.contracts.reissue.view)
