@@ -138,7 +138,7 @@ import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 import BaseCLose from "@/components/icons/BaseClose";
 import {mapGetters} from "vuex";
 import ApartmentsPermission from "@/permission/apartments";
-import ObjectsPermission from "@/permission/objects";
+// import ObjectsPermission from "@/permission/objects";
 
 export default {
   name: "Objects",

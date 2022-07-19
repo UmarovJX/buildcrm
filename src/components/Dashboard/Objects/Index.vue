@@ -178,6 +178,7 @@ import ObjectsPermission from "@/permission/objects";
 import ApartmentsPermission from "@/permission/apartments";
 import PromosPermission from "@/permission/promos";
 import PlansPermission from "@/permission/plans";
+
 export default {
   name: 'Objects',
   components: {
