@@ -3,7 +3,7 @@
     <base-bread-crumb :active-content="activeContent" :bread-crumbs="breadCrumbs">
       <template #extra-content>
         <button
-            v-if="permission && permission.payment_account && permission.payment_account.create"
+            v-if="createPayment"
             class="btn btn-primary mr-0 mt-md-0"
             @click="addPayment"
         >
@@ -49,6 +49,7 @@ import PaymentBoxContent from "@/components/Dashboard/Companies/Components/Payme
 import AddPayment from "@/components/Dashboard/Companies/Components/AddPayment";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import {mapGetters} from "vuex";
+import PaymentAccount from "@/permission/payment_account";
 
 export default {
   name: "CompanyDetails",
@@ -72,7 +73,8 @@ export default {
       ],
       loading: false,
       payments: [],
-      companyId: this.$route.params.companyId
+      companyId: this.$route.params.companyId,
+      createPayment: PaymentAccount.getPaymentAccountCreatePermission()
     }
   },
   async created() {

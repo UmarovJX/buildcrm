@@ -8,13 +8,13 @@ export default class PaymentAccount extends Permission {
     static getPaymentAccountPermission(property) {
         const splitProperty = property.split('.')
         const [one, two] = splitProperty
+        if (this.hasAdminRole()) return true
         if (splitProperty.length > 1) {
-            if (this.hasAdminRole()) return true
             return this.paymentAccount()[one][two] ?? false
         } else {
-            if (this.hasAdminRole()) return true
             return this.paymentAccount()[one] ?? false
         }
+
 
     }
 

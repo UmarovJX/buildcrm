@@ -1,6 +1,5 @@
 import Permission from "@/permission/index";
 
-export default class Plans extends Permission {
 export default class PlansPermission extends Permission {
     static plans() {
         return super.getUserPermission('plans')
