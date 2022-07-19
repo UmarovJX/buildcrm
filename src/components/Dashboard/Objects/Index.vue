@@ -55,7 +55,7 @@
                   </router-link>
 
                   <router-link
-                      v-if="getPermission.plans && getPermission.plans.view"
+                      v-if="plansViewPermission"
                       :to="{name:'type-plan-view', params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -174,8 +174,8 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
-import Promos from "@/permission/promos";
-
+import PromosPermission from "@/permission/promos";
+import PlansPermission from "@/permission/plans";
 export default {
   name: 'Objects',
   components: {
@@ -205,7 +205,8 @@ export default {
         area_to: null,
       },
       getLoading: false,
-      promosViewPermission: Promos.getPromosViewPermission()
+      promosViewPermission: PromosPermission.getPromosViewPermission(),
+      plansViewPermission: PlansPermission.getPlansViewPermission()
     }
   },
 

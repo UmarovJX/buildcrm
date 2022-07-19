@@ -42,7 +42,7 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb"
 import BaseLoadingContent from "@/components/BaseLoadingContent"
 import CreationContent from "@/components/Dashboard/Objects/Promo/components/CreationContent";
 import ListContent from "@/components/Dashboard/Objects/Promo/components/ListContent";
-import Promos from "@/permission/promos";
+import PromosPermission from "@/permission/promos";
 
 export default {
   name: "Promo",
@@ -57,7 +57,7 @@ export default {
       promos: [],
       loading: false,
       promoUsage: [],
-      createPromoPermission: Promos.getPromosCreatePermission(),
+      createPromoPermission: PromosPermission.getPromosCreatePermission(),
     }
   },
   computed: {

@@ -9,5 +9,4 @@ export default class ObjectsPermission extends Permission {
         if (this.hasAdminRole()) return true
         return this.objects().view ?? false
     }
-
 }

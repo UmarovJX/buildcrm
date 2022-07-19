@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <div
-        class="
+          class="
           d-flex
           justify-content-between
           align-items-center
@@ -10,7 +10,7 @@
         "
       >
         <div
-          class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
+            class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
         >
           <h1 class="title__big my-0">
             {{ $t("type_plan.title") }}
@@ -36,23 +36,23 @@
 
       <div class="">
         <b-table
-          sticky-header
-          borderless
-          responsive
-          :items="getObjects"
-          :fields="fields"
-          :busy="getLoading"
-          show-empty
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="sortDesc"
-          sort-icon-left
-          class="custom-table"
-          :empty-text="$t('no_data')"
+            sticky-header
+            borderless
+            responsive
+            :items="getObjects"
+            :fields="fields"
+            :busy="getLoading"
+            show-empty
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            sort-icon-left
+            class="custom-table"
+            :empty-text="$t('no_data')"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">{{
-              scope.emptyText
-            }}</span>
+                scope.emptyText
+              }}</span>
           </template>
 
           <template #table-busy>
@@ -70,17 +70,18 @@
             <div class="float-right">
               <div class="dropdown my-dropdown dropleft">
                 <button
-                  type="button"
-                  class="dropdown-toggle"
-                  data-toggle="dropdown"
+                    type="button"
+                    class="dropdown-toggle"
+                    data-toggle="dropdown"
                 >
                   <i class="far fa-ellipsis-h"></i>
                 </button>
 
                 <div class="dropdown-menu">
                   <b-button
-                    class="dropdown-item dropdown-item--inside"
-                    @click="PlanView(data.item.id)"
+                      v-if="planViewPermission"
+                      class="dropdown-item dropdown-item--inside"
+                      @click="planView(data.item.id)"
                   >
                     <i class="fas fa-eye"></i>
                     {{ $t("type_plan.plans") }}
@@ -110,11 +111,13 @@
 
 <script>
 import {mapGetters, mapActions} from "vuex";
+import PlansPermission from "@/permission/plans";
 
 export default {
-  name:"TypePlan",
+  name: "TypePlan",
   data() {
     return {
+      planViewPermission: PlansPermission.getPlansViewPermission(),
       manager: {},
       manager_id: null,
 
@@ -154,7 +157,7 @@ export default {
   methods: {
     ...mapActions(["fetchObjects"]),
 
-    PlanView(id) {
+    planView(id) {
       this.$router.push({name: "type-plan-view", params: {id: id}});
     },
   },
