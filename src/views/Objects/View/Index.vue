@@ -138,6 +138,7 @@ import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 import BaseCLose from "@/components/icons/BaseClose";
 import {mapGetters} from "vuex";
 import ApartmentsPermission from "@/permission/apartments";
+import ObjectsPermission from "@/permission/objects";
 
 export default {
   name: "Objects",
@@ -279,22 +280,17 @@ export default {
     },
     checkedPermissionTab() {
       let result = this.componentTabs
-      const permission = this.getPermission.apartments
-      if (permission && permission.lists) {
-        for (let [key, value] of Object.entries(permission.lists)) {
-          if (key === 'list' && !value) {
-            result = result.filter(item => item.view !== 'list')
-          }
-          if (key === 'grid' && !value) {
-            result = result.filter(item => item.view !== 'architecture')
-          }
-          if (key === 'grid_sm' && !value) {
-            result = result.filter(item => item.view !== 'chess')
-          }
-          if (key === 'plan' && !value) {
-            result = result.filter(item => item.view !== 'plan')
-          }
-        }
+      if (!ApartmentsPermission.getApartmentListPermission()) {
+        result = result.filter(item => item.view !== 'list')
+      }
+      if (!ApartmentsPermission.getApartmentGridPermission()) {
+        result = result.filter(item => item.view !== 'architecture')
+      }
+      if (!ApartmentsPermission.getApartmentChessPermission()) {
+        result = result.filter(item => item.view !== 'chess')
+      }
+      if (!ApartmentsPermission.getApartmentPlanPermission()) {
+        result = result.filter(item => item.view !== 'plan')
       }
       return result
     },
@@ -376,7 +372,7 @@ export default {
     }
   },
   mounted() {
-    if (this.getPermission?.apartments?.permission?.filter) {
+    if (ApartmentsPermission.getApartmentsPermission('filter')) {
       this.fetchFilterFields()
     }
     this.getPriceList()
@@ -385,10 +381,11 @@ export default {
     const historyTab = sessionStorageGetItem(
         'object_history_of_tab_' + this.$route.params.object
     )
-    if (historyTab) {
+    console.log(historyTab, 'historyTab');
+    if (historyTab && !this.checkedPermissionTab.filter(item => item.name === historyTab)) {
       this.currentTab = historyTab
     } else {
-      this.currentTab = this.checkedPermissionTab[0]
+      this.changeTab(this.checkedPermissionTab[0])
     }
     setTimeout(() => {
       this.getAllApartment()

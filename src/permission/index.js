@@ -15,6 +15,6 @@ export default class Permission {
     }
 
     static hasAdminRole() {
-        return this.user.role.id === 1
+        return this.user.role?.id === 1
     }
 }
