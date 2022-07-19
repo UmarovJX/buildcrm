@@ -7,14 +7,14 @@
       </base-bread-crumb>
 
       <div class="object-cards">
-        <template v-if="getPermission.objects && getPermission.objects.view"
+        <template v-if="viewPermission"
         >
           <div class="card"
                v-for="(object, index) in getObjects"
                :key="index"
           >
             <div
-                v-if="getPermission.objects || (getPermission.objects.delete || getPermission.objects.edit)"
+                v-if="editPermission || deletePermission"
                 class="object__more-info">
               <div class="my-dropdown dropleft">
                 <button
@@ -28,7 +28,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <router-link
-                      v-if="getPermission.objects && getPermission.objects.edit"
+                      v-if="editPermission"
                       :class="'dropdown-item'"
                       :to="{name: 'objectsEdit', params: {id: object.id}}"
                   >
@@ -45,7 +45,7 @@
 
 
                   <router-link
-                      v-if="getPermission.promos && getPermission.promos.view"
+                      v-if="promoViewPermission"
                       :to="{name:'objects-promo',params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -56,7 +56,7 @@
                   </router-link>
 
                   <router-link
-                      v-if="getPermission.plans && getPermission.plans.view"
+                      v-if="plansViewPermission"
                       :to="{name:'type-plan-view', params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -68,7 +68,7 @@
 
                   <b-link
                       class="dropdown-item"
-                      v-if="getPermission.objects && getPermission.objects.upload_logo"
+                      v-if="logoPermission"
                       @click="object_id = object.id"
                       v-b-modal.modal-upload-logo
                   >
@@ -77,7 +77,7 @@
 
                   <a
                       class="dropdown-item"
-                      v-if="getPermission.objects && getPermission.objects.delete"
+                      v-if="deletePermission"
                       @click="deleteObject(object.id)"
                       href="#"
                   >
@@ -86,6 +86,7 @@
                 </div>
               </div>
             </div>
+
             <router-link
                 class="card-body"
                 :event="getPermission.apartments && getPermission.apartments.view ? 'click' : ''"
@@ -126,7 +127,8 @@
             </router-link>
           </div>
         </template>
-        <div class="card" v-if="getPermission.objects && getPermission.objects.create">
+
+        <div class="card" v-if="createPermission">
           <div class="card-body card-empty" @click="createBlock">
             <img :src="require('@/assets/icons/icon-plus.svg')" alt="">
             <p>{{ $t('object_create') }}</p>
@@ -145,7 +147,7 @@
 
       <!-- <filter-form v-if="getPermission.apartments.filter"></filter-form> -->
       <upload-logo
-          v-if="getPermission.objects && getPermission.objects.upload_logo"
+          v-if="logoPermission"
           :object-id="object_id"
           @UploadLogo="uploadLogo"
       />
@@ -217,6 +219,27 @@ export default {
     ...mapGetters(["getObjects", "getPermission"]),
     activeContent() {
       return this.$t('objects.title')
+    },
+    createPermission() {
+      return this.getPermission.objects && this.getPermission.objects.create
+    },
+    plansViewPermission(){
+      return this.getPermission.plans && this.getPermission.plans.view
+    },
+    deletePermission() {
+      return this.getPermission.objects && this.getPermission.objects.delete
+    },
+    editPermission() {
+      return this.getPermission.objects && this.getPermission.objects.edit
+    },
+    viewPermission() {
+      return this.getPermission.objects && this.getPermission.objects.view
+    },
+    promoViewPermission() {
+      return this.getPermission.promos && this.getPermission.promos.view
+    },
+    logoPermission(){
+      return this.getPermission.objects && this.getPermission.objects.upload_logo
     },
     // permission(){
     //   const hasObjectPermission = this.getPermission.hasOwnProperty('objects')
