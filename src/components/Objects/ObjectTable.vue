@@ -171,7 +171,6 @@
 
                 <!--  Подробная информация  -->
                 <router-link
-                    v-if="getPermission.apartments && getPermission.apartments.show"
                     :to="{name: 'apartment-view',
                           params: {object: $route.params.object, id: data.item.id}}"
                     :class="'dropdown-item dropdown-item--inside'"
@@ -538,9 +537,7 @@ export default {
       //   name: "apartment-view",
       //   params: {object: this.$route.params.object, id: items[0].id},
       // });
-      if (this.getPermission.apartments && this.getPermission.apartments.show) {
-        this.$emit('show-express-sidebar', items[0])
-      }
+      this.$emit('show-express-sidebar', items[0])
     },
 
     sortingChanged(val) {
