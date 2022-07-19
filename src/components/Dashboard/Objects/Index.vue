@@ -44,7 +44,7 @@
 
 
                   <router-link
-                      v-if="promoViewPermission"
+                      v-if="promosViewPermission"
                       :to="{name:'objects-promo',params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -176,6 +176,7 @@ import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
 import ObjectsPermission from "@/permission/objects";
 import ApartmentsPermission from "@/permission/apartments";
+import Promos from "@/permission/promos";
 
 export default {
   name: 'Objects',
@@ -206,6 +207,8 @@ export default {
     viewPermission: ObjectsPermission.getObjectsPermission('view'),
     logoUploadPermission: ObjectsPermission.getObjectsPermission('upload_logo'),
     apartmentsViewPermission: ApartmentsPermission.getApartmentsPermission('view'),
+    promosViewPermission: Promos.getPromosViewPermission()
+
   }),
 
   mounted() {

@@ -2,10 +2,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "./store";
-// import * as Sentry from "@sentry/vue";
-// import {Integrations} from "@sentry/tracing";
-
-import api from "@/services/api";
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
@@ -15,53 +11,38 @@ VueRouter.prototype.push = function push(location) {
 
 Vue.use(VueRouter)
 
+import api from "@/services/api";
 import Auth from "./components/Auth/Login";
 import PageNotFound from "./components/PageNotFound";
 import Dashboard from "./components/Dashboard/Home";
 import Objects from "./components/Dashboard/Objects/Index";
 import ObjStore from "./components/Dashboard/Objects/Store";
-// import ObjFilter from './components/Dashboard/Objects/Filter';
-import ApartmentsList from "./components/Dashboard/Apartment/ApartmentsList";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
-// import Managers from './components/Dashboard/Managers/Index';
-// import Accountants from './components/Dashboard/Accountants/Index';
-// import Cashiers from './components/Dashboard/Cashiers/Index';
 import Clients from "./components/Dashboard/Clients/Index";
-// import Contracts from "./components/Dashboard/Contracts/Index";
-import ContractsView from "./components/Dashboard/Contracts/View";
-
 import Users from "./components/Dashboard/Users/Index";
-
 import Roles from "./components/Dashboard/Roles/Index";
 import RolesUpdate from "./components/Dashboard/Roles/Update";
 import RolesStore from "./components/Dashboard/Roles/Store";
-
 import TypePlan from "./components/Dashboard/TypePlan/Index";
 import TypePlanList from "./components/Dashboard/TypePlan/List";
 import TypePlanEdit from "./components/Dashboard/TypePlan/Edit.vue";
-
-// import ApartmentView from "./components/Dashboard/Apartment/View";
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment.vue";
 import EditApartment from "./components/Dashboard/Apartment/EditApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
-// import Debtors from "./components/Dashboard/Debtors/DebtorsList";
 import Settings from "./components/Dashboard/Settings/Index";
 import Promo from './components/Dashboard/Objects/Promo/Index'
-/* PAGES */
 import UserSettings from "./views/UserSettings"
 import Branches from "@/views/Branches/BranchesPage";
 import CreateBranchPage from "@/views/Branches/CreateBranchPage";
 import EditBranchContent from "@/views/Branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
-// import CloneView from "@/views/Contracts/View";
 import ImportPayments from "@/components/Contracts/view/ImportPayments";
 import Contracts from "@/views/Contracts/Index"
 import ContractView from "@/views/Contracts/View/Index"
 import ApartmentView from '@/views/Objects/Apartments/View/Index'
 import ObjectsView from '@/views/Objects/View/Index'
 import Debtors from "@/views/Debtors/Index"
-// import ObjectTable from "@/components/Objects/ObjectTable";
 import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 
@@ -219,16 +200,6 @@ const routes = [
             requiresAuth: "apartments",
         },
     },
-
-    // {
-    //     /* CLONE APARTMENT VIEW */
-    //     name: "apartment-view-clone",
-    //     path: "/objects/:object/apartment/:id/clone",
-    //     component: ApartmentCloneView,
-    //     meta: {
-    //         requiresAuth: "apartments",
-    //     },
-    // },
 
     {
         /* CONFIRM APARTMENT*/
@@ -425,7 +396,7 @@ const router = new VueRouter({
     scrollBehavior(to, from, savedPosition) {
         return {x: 0, y: 0};
     },
-});
+})
 
 let permission = store.state.permission
 import Permission from "@/permission";
@@ -448,9 +419,9 @@ router.beforeEach(async (to, from, next) => {
     if (login)
         if (to.path === '/')
             return next({name: 'home'})
-        else if (to.matched.some((record) => record.meta.requiresAuth)) {
+        else if (to.matched.some((record) => record.meta['requiresAuth'])) {
             to.matched.some((record) => {
-                const perm = permission[`${record.meta.requiresAuth}`];
+                const perm = permission[`${record.meta['requiresAuth']}`];
                 if (perm && perm.view) {
                     next();
                 } else {
@@ -460,23 +431,10 @@ router.beforeEach(async (to, from, next) => {
                 }
             });
         } else {
-            next(); // make sure to always call next()!
+            next();
         }
     else
         return next({name: 'login'})
 })
 
-
-// Sentry.init({
-//   Vue,
-//   dsn: "https://b3a6289d3b5846c4b42327c0e3f7ecdb@o1056926.ingest.sentry.io/6043378",
-//   integrations: [
-//     new Integrations.BrowserTracing({
-//       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-//       tracingOrigins: ["localhost", "http://crm.xonsaroy.uz/", /^\//],
-//     }),
-//   ],
-//   tracesSampleRate: 1.0,
-// });
-
-export default router;
+export default router
