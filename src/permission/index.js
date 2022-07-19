@@ -5,7 +5,7 @@ export default class Permission {
     static initializeUser(user = null) {
         if (this.user === null) {
             this.user = user
-            this.permission = user.role.permission
+            this.permission = user.role.permissions
         }
         return this.user
     }

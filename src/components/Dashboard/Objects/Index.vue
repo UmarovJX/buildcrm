@@ -5,7 +5,6 @@
           :active-content="activeContent"
       >
       </base-bread-crumb>
-
       <div class="object-cards">
         <template v-if="getPermission.objects && getPermission.objects.view"
         >
@@ -175,7 +174,6 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
-import ObjectsPermission from "@/permission/objects";
 
 export default {
   name: 'Objects',
@@ -218,9 +216,6 @@ export default {
 
   computed: {
     ...mapGetters(["getObjects", "getPermission"]),
-    permissionView() {
-      return ObjectsPermission.getObjectViewPermission()
-    },
     activeContent() {
       return this.$t('objects.title')
     },

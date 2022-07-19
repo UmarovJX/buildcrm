@@ -1,5 +1,4 @@
 import api from "@/services/api";
-import Permission from "@/permission";
 
 export default {
     actions: {
@@ -34,7 +33,6 @@ export default {
 
         updatePermissions(state, me) {
             state.permission = me.role.permissions;
-            Permission.initializeUser(me)
         },
 
         nullPermissions(state) {

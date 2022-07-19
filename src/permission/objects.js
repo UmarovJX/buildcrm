@@ -7,7 +7,7 @@ export default class ObjectsPermission extends Permission {
 
     static getObjectViewPermission() {
         if (this.hasAdminRole()) return true
-        return this.objects().view
+        return this.objects().view ?? false
     }
 
 }
