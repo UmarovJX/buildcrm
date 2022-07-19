@@ -156,6 +156,7 @@ import "@fancyapps/ui/dist/fancybox.css";
 import {mapGetters, mapActions} from "vuex";
 import api from "@/services/api";
 import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
+import PlansPermission from "@/permission/plans";
 
 export default {
   name: 'TypePlanList',
@@ -164,6 +165,8 @@ export default {
   },
   data() {
     return {
+      editPermission: PlansPermission.getPlansEditPermission(),
+      deletePermission: PlansPermission.getPlansDeletePermission(),
       showLoading: false,
       manager: {},
       manager_id: null,
@@ -212,12 +215,6 @@ export default {
   },
   computed: {
     ...mapGetters(["getPlan", "getLoading", "getPermission"]),
-    editPermission() {
-      return this.getPermission.plans && this.getPermission.plans.edit
-    },
-    deletePermission() {
-      return this.getPermission.plans && this.getPermission.plans.delete
-    }
   },
   mounted() {
     this.fetchPlans(this);

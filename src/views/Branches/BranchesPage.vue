@@ -67,7 +67,7 @@
                     class="dropdown-menu"
                 >
                   <router-link
-                      v-if="permission.branches && permission.branches.edit"
+                      v-if="deletePermission"
                       :to="{
                         name:'edit-branch',
                         params: { id: data.item.id, historyForm:data.item, }
@@ -79,7 +79,7 @@
                   </router-link>
 
                   <router-link
-                      v-if="permission.branches && permission.branches.templates && permission.branches.templates.view"
+                      v-if="viewTemplatesPermission"
                       :to="{name:'object-deal-template', params:{id:data.item.id}}"
                       :class="'dropdown-item dropdown-item--inside'"
                   >
@@ -87,7 +87,7 @@
                   </router-link>
 
                   <button
-                      v-if="permission.branches && permission.branches.delete"
+                      v-if="deletePermission"
                       class="dropdown-item dropdown-item--inside"
                       @click="deleteBranch(data.item.id)"
                   >
@@ -124,15 +124,20 @@
 <script>
 import api from "@/services/api";
 import BranchesBreadCrumbs from "@/components/Branches/BranchesBreadCrumbs";
+import BranchesPermission from "@/permission/branches";
 import {mapGetters} from "vuex";
+import TemplatesPermission from "@/permission/templates";
 
 export default {
-  name: 'Branches',
+  name: 'BranchesPage',
   components: {
     BranchesBreadCrumbs
   },
   data() {
     return {
+      editPermission: BranchesPermission.getBranchesEditPermission(),
+      deletePermission: BranchesPermission.getBranchesDeletePermission(),
+      viewTemplatesPermission: TemplatesPermission.getTemplatesViewPermission(),
       loading: false,
       sortBy: "id",
       sortDesc: false,

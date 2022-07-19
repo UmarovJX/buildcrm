@@ -95,7 +95,7 @@
 <script>
 import {mapGetters} from "vuex";
 import api from '@/services/api'
-import Promos from "@/permission/promos";
+import PromosPermission from "@/permission/promos";
 
 export default {
   name: 'ListContent',
@@ -111,8 +111,8 @@ export default {
       sortBy: "index",
       sortDesc: false,
       loading: false,
-      editPromoPermission: Promos.getPromosEditPermission(),
-      deletePromoPermission: Promos.getPromosDeletePermission(),
+      editPromoPermission: PromosPermission.getPromosEditPermission(),
+      deletePromoPermission: PromosPermission.getPromosDeletePermission(),
     }
   },
   computed: {

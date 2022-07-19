@@ -84,6 +84,7 @@
 <script>
 import {mapGetters} from "vuex";
 import PaymentAccount from "@/permission/payment_account";
+import CompaniesPermission from "@/permission/companies";
 // import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
 
 export default {
@@ -100,6 +101,9 @@ export default {
   emits: ['edit-selected-company', 'delete-company'],
   data() {
     return {
+      viewPermission: CompaniesPermission.getCompaniesViewPermission(),
+      editPermission: CompaniesPermission.getCompaniesEditPermission(),
+      deletePermission: CompaniesPermission.getCompaniesDeletePermission(),
       sortBy: "id",
       sortDesc: false,
       paymentCheckbox: true,
@@ -158,12 +162,6 @@ export default {
     viewPermission() {
       return PaymentAccount.getPaymentAccountViewPermission()
     },
-    editPermission() {
-      return this.permission && this.permission.companies && this.permission.companies.edit;
-    },
-    deletePermission() {
-      return this.permission && this.permission.companies && this.permission.companies.delete
-    }
   },
   methods: {
     openDetails(data) {

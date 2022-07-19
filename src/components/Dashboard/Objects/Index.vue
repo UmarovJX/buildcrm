@@ -176,8 +176,8 @@ import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
 import ObjectsPermission from "@/permission/objects";
 import ApartmentsPermission from "@/permission/apartments";
-import Promos from "@/permission/promos";
-
+import PromosPermission from "@/permission/promos";
+import PlansPermission from "@/permission/plans";
 export default {
   name: 'Objects',
   components: {
@@ -207,7 +207,8 @@ export default {
     viewPermission: ObjectsPermission.getObjectsPermission('view'),
     logoUploadPermission: ObjectsPermission.getObjectsPermission('upload_logo'),
     apartmentsViewPermission: ApartmentsPermission.getApartmentsPermission('view'),
-    promosViewPermission: Promos.getPromosViewPermission()
+    promosViewPermission: PromosPermission.getPromosViewPermission(),
+      plansViewPermission: PlansPermission.getPlansViewPermission()
 
   }),
 
@@ -219,13 +220,7 @@ export default {
     ...mapGetters(["getObjects", "getPermission"]),
     activeContent() {
       return this.$t('objects.title')
-    },
-    plansViewPermission() {
-      return this.getPermission.plans && this.getPermission.plans.view
-    },
-    promoViewPermission() {
-      return this.getPermission.promos && this.getPermission.promos.view
-    },
+    }
   },
 
   methods: {

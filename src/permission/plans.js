@@ -1,36 +1,35 @@
 import Permission from "@/permission/index";
 
 export default class Plans extends Permission {
+export default class PlansPermission extends Permission {
     static plans() {
         return super.getUserPermission('plans')
     }
 
-    static getPromosPermission(property) {
+    static getPlansPermission(property) {
         const splitProperty = property.split('.')
         const [one, two] = splitProperty
+        if (this.hasAdminRole()) return true
         if (splitProperty.length > 1) {
-            if (this.hasAdminRole()) return true
             return this.plans()[one][two] ?? false
         } else {
-            if (this.hasAdminRole()) return true
             return this.plans()[one] ?? false
         }
-
     }
 
-    static getPlansCreatePermission(){
-        return this.getPromosPermission('create')
+    static getPlansCreatePermission() {
+        return this.getPlansPermission('create')
     }
 
     static getPlansViewPermission() {
-        return this.getPromosPermission('view')
+        return this.getPlansPermission('view')
     }
 
-    static getPlansEditPermission(){
-        return this.getPromosPermission('edit')
+    static getPlansEditPermission() {
+        return this.getPlansPermission('edit')
     }
 
-    static getPlansDeletePermission(){
-        return this.getPromosPermission('delete')
+    static getPlansDeletePermission() {
+        return this.getPlansPermission('delete')
     }
 }

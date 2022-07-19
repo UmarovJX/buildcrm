@@ -90,6 +90,7 @@ import InstructionsModal from "@/components/Dashboard/Objects/Components/DealDoc
 import BaseContractListTable from "@/components/Dashboard/Objects/Components/BaseContractListTable";
 import CreateDealDocsTemplate from "@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate";
 import {mapGetters} from "vuex";
+import TemplatesPermission from "@/permission/templates";
 
 export default {
   name: 'DealDocsTemplate',
@@ -101,6 +102,8 @@ export default {
   },
   data() {
     return {
+      instructionPermission: TemplatesPermission.getInstructionViewPermission(),
+      createPermission: TemplatesPermission.getTemplatesCreatePermission(),
       loading: false,
       contracts: [],
       contractTabs: 0,
@@ -117,12 +120,6 @@ export default {
     ...mapGetters({
       permission: 'getPermission'
     }),
-    instructionPermission() {
-      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.instruction
-    },
-    createPermission() {
-      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.create
-    },
     activeContent() {
       return this.$t('objects.deal_template.title')
     },
