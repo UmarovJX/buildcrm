@@ -44,7 +44,7 @@
 
 
                   <router-link
-                      v-if="getPermission.promos && getPermission.promos.view"
+                      v-if="promosViewPermission"
                       :to="{name:'objects-promo',params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -174,6 +174,7 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
+import Promos from "@/permission/promos";
 
 export default {
   name: 'Objects',
@@ -184,52 +185,39 @@ export default {
     BaseBreadCrumb,
   },
 
-  data: () => ({
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
+  data() {
+    return {
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
+        },
       },
-    },
 
-    object_id: 0,
-    filter: {
-      rooms: [],
-      floors: [],
-      price_from: null,
-      price_to: null,
-      status: 0,
-      objects: [],
-
-      area_from: null,
-      area_to: null,
-    },
-
-    getLoading: false,
-  }),
+      object_id: 0,
+      filter: {
+        rooms: [],
+        floors: [],
+        price_from: null,
+        price_to: null,
+        status: 0,
+        objects: [],
+        area_from: null,
+        area_to: null,
+      },
+      getLoading: false,
+      promosViewPermission: Promos.getPromosViewPermission()
+    }
+  },
 
   mounted() {
-    this.fetchObjects(this);
-    // console.log(this.getPermission);
-
-    // console.log('result', result)
+    this.fetchObjects(this)
   },
 
   computed: {
     ...mapGetters(["getObjects", "getPermission"]),
     activeContent() {
       return this.$t('objects.title')
-    },
-    // permission(){
-    //   const hasObjectPermission = this.getPermission.hasOwnProperty('objects')
-    //   if(hasObjectPermission){
-    //     return this.getPermission.objects
-    //   }
-    //
-    //   return {
-    //     update:false,
-    //
-    //   }
-    // }
+    }
   },
 
   methods: {

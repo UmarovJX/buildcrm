@@ -353,12 +353,12 @@ export default {
               refer: 'view',
               parent: 'objects',
             },
-            {
+            /*{
               ...row,
               label: 'roles_permission.objects.show_object',
               refer: 'show',
               parent: 'objects',
-            },
+            },*/
             {
               ...row,
               label: 'roles_permission.objects.create_object',
