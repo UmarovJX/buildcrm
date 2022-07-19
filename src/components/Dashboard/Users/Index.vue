@@ -21,9 +21,9 @@
         <b-table
             thead-tr-class="row__head__bottom-border"
             tbody-tr-class="row__body__bottom-border"
+            class="table__list"
             ref="contracts-table"
             id="users-table"
-            class="table__list"
             borderless
             responsive
             show-empty
@@ -494,6 +494,17 @@ export default {
   margin-top: 0;
 }
 
+.base-search-input {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.phone-col {
+  display: flex;
+  width: max-content;
+}
+
+
 ::v-deep .row__head__bottom-border {
   border-bottom: 2px solid var(--gray-200) !important;
 }
@@ -502,10 +513,6 @@ export default {
   border-bottom: 2px solid var(--gray-200) !important;
 }
 
-.phone-col {
-  display: flex;
-  width: max-content;
-}
 
 
 ::v-deep .table__list {
@@ -564,8 +571,5 @@ export default {
   background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
 }
 
-.base-search-input {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
+
 </style>

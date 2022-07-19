@@ -18,4 +18,3 @@ export default class Permission {
         return this.user.role.id === 1
     }
 }
-

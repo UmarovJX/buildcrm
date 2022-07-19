@@ -8,7 +8,7 @@
 
     <!--  Search Content  -->
     <search-bar-content
-        v-if="permission.contracts && permission.contracts.filter"
+        v-if="filterPermission"
         @trigger-input="setSearchValue"
         @search-by-filter="searchQueryFilter"
         @replace-router="searchQueryFilter"
@@ -78,7 +78,7 @@
 
       <!--  Actions    -->
       <template #cell(actions)="data">
-          <span v-if="permission.contract && permission.contract.download" class="arrow__down-violet">
+          <span v-if="downloadPermission" class="arrow__down-violet">
             <base-arrow-down-icon class="download__icon" :width="20" :height="20" fill="#fff"/>
           </span>
       </template>
@@ -138,6 +138,7 @@
         </span>
       </div>
     </div>
+
   </main>
 </template>
 
@@ -158,6 +159,7 @@ import {
   sortObjectValues
 } from "@/util/reusable";
 import {mapGetters} from "vuex";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "Contracts",
@@ -225,7 +227,9 @@ export default {
       showLoading: false,
       selectMode: 'single',
       selectable: true,
-      counts: {}
+      counts: {},
+      filterPermission: ContractsPermission.getContractsFilterPermission(),
+      downloadPermission: ContractsPermission.getContractsDownloadPermission(),
     }
   },
   computed: {
@@ -329,7 +333,7 @@ export default {
     contractView({id}, index, event) {
       const clickedDownloadBtn = event.target.classList.contains('download__icon')
       if (clickedDownloadBtn) {
-        if (this.permission.contract && this.permission.contract.download) {
+        if (this.downloadPermission) {
           this.downloadContractLink(id)
         }
       } else {
@@ -537,6 +541,7 @@ export default {
 
 .friends__mark {
   background-color: var(--violet-100);
+  min-width: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
@@ -551,7 +556,7 @@ export default {
   justify-content: center;
   //justify-content: flex-start;
   align-items: center;
-  min-width: 9rem;
+  min-width: 9.4rem;
   border-radius: 2rem;
   padding: 0.5rem 2rem;
 

@@ -33,10 +33,7 @@
               <!-- Изменить дата договора -->
               <div
                   class="col-12 mb-2"
-                  v-if="
-                  (getMe.role && getMe.role.id === 1) ||
-                    (getPermission.checkout && getPermission.checkout.edit_date)
-                "
+                  v-if="editDatePermission"
               >
                 <div class="row">
                   <div class="col-md-4">
@@ -316,6 +313,8 @@ import moment from "moment";
 import api from "@/services/api";
 // import moment from "moment";
 
+import CheckoutPermission from "@/permission/checkout";
+
 export default {
   name: "ConfirmApartment",
 
@@ -416,6 +415,8 @@ export default {
       error: false,
       errors: {},
       getErrors: [],
+      editDatePermission: CheckoutPermission.getCheckoutPermission('edit_date'),
+      monthlyPermission: CheckoutPermission.getCheckoutPermission('monthly_payment'),
     }
   },
 
@@ -454,7 +455,7 @@ export default {
     },
     activeContent() {
       return this.$t('objects.contract')
-    }
+    },
   },
 
   created() {
@@ -683,7 +684,7 @@ export default {
           // formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
           formData.append("client_id", this.client?.id);
 
-          if (this.getMe.role.id === 1 || this.getPermission?.checkout?.monthly_payment) {
+          if (this.monthlyPermission) {
             if (this.edited.monthly) {
               for (let monthly = 0; monthly < this.contract.credit_months.length; monthly++) {
                 let date = moment(this.contract.credit_months[monthly].month).format(
