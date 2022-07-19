@@ -29,13 +29,6 @@
         </span>
       </template>
 
-      <!-- FLOORS COLUMN -->
-      <!--      <template #cell(floors)="data">-->
-      <!--        <span v-if="data.item.blocks.length">-->
-      <!--          {{ sumFloorsCount(data.item.blocks) }}-->
-      <!--        </span>-->
-      <!--      </template>-->
-
       <!--   ACTION   -->
       <template #cell(actions)="data">
         <div class="float-right">
@@ -53,7 +46,7 @@
             <div class="dropdown-menu" v-if="hasPermission">
 
               <b-button
-                  v-if="(permission.promos && permission.promos.edit) && !data.item.status"
+                  v-if="!data.item.status && editPromoPermission"
                   class="dropdown-item dropdown-item--inside"
                   @click="activatePromo(data.item)"
               >
@@ -63,7 +56,7 @@
 
 
               <b-button
-                  v-if="(permission.promos && permission.promos.edit) && data.item.status"
+                  v-if="data.item.status && editPromoPermission"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deactivatePromo(data.item)"
               >
@@ -73,7 +66,7 @@
 
 
               <b-button
-                  v-if="permission.promos && permission.promos.edit"
+                  v-if="editPromoPermission"
                   @click="editPromoItem(data.item)"
                   class="dropdown-item dropdown-item--inside"
               >
@@ -83,7 +76,7 @@
 
 
               <b-button
-                  v-if="permission.promos && permission.promos.delete"
+                  v-if="deletePromoPermission"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deletePromoItem(data.item)"
               >
@@ -102,6 +95,7 @@
 <script>
 import {mapGetters} from "vuex";
 import api from '@/services/api'
+import Promos from "@/permission/promos";
 
 export default {
   name: 'ListContent',
@@ -116,7 +110,9 @@ export default {
     return {
       sortBy: "index",
       sortDesc: false,
-      loading: false
+      loading: false,
+      editPromoPermission: Promos.getPromosEditPermission(),
+      deletePromoPermission: Promos.getPromosDeletePermission(),
     }
   },
   computed: {
