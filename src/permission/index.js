@@ -4,19 +4,18 @@ export default class Permission {
 
     static initializeUser(user = null) {
         if (this.user === null) {
-            this.userId = user.role.id
+            this.user = user
             this.permission = user.role.permissions
         }
         return this.user
     }
 
     static getUserPermission() {
-        console.log(this.permission, 'this.permisson');
         return this.permission
     }
 
     static hasAdminRole() {
-        return this.userId === 1
+        return this.user.role.id === 1
     }
 }
 

@@ -428,6 +428,7 @@ const router = new VueRouter({
 });
 
 let permission = store.state.permission
+import Permission from "@/permission";
 
 router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')
@@ -437,6 +438,7 @@ router.beforeEach(async (to, from, next) => {
         await api.authV1.getMe()
             .then((response) => {
                 permission = response.data.role.permissions
+                Permission.initializeUser(response.data)
             })
             .catch((error) => {
                 return error
