@@ -1,4 +1,3 @@
-
 import Permission from "@/permission/index";
 
 export default class GeneralPermission extends Permission {
@@ -18,5 +17,10 @@ export default class GeneralPermission extends Permission {
         }
 
     }
+
+    static getCurrencyPermission() {
+        return this.getGeneralPermission('currency')
+    }
+
 
 }
