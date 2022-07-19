@@ -101,7 +101,7 @@ export default {
   emits: ['edit-selected-company', 'delete-company'],
   data() {
     return {
-      viewPermission: CompaniesPermission.getCompaniesViewPermission(),
+      viewPermission: PaymentAccount.getPaymentAccountViewPermission(),
       editPermission: CompaniesPermission.getCompaniesEditPermission(),
       deletePermission: CompaniesPermission.getCompaniesDeletePermission(),
       sortBy: "id",
@@ -159,9 +159,6 @@ export default {
     ...mapGetters({
       permission: 'getPermission'
     }),
-    viewPermission() {
-      return PaymentAccount.getPaymentAccountViewPermission()
-    },
   },
   methods: {
     openDetails(data) {
