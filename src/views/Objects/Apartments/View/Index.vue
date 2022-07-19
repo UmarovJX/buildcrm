@@ -281,10 +281,10 @@ export default {
 
       if (!this.hasApartment) return context
 
-      const {sidebarApartment, me} = this
-      const {order} = sidebarApartment
+      const {apartment, me} = this
+      const {order} = apartment
       // const {checkout} = userPermission
-      const forSale = sidebarApartment['is_sold']
+      const forSale = apartment['is_sold']
       const authorityUser = order?.user?.id === me?.user?.id
       // const rootContract = userPermission?.checkout?.root
       // const isMainRole = me?.role?.id === 1
