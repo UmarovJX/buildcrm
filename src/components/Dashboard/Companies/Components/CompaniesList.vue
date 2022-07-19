@@ -83,6 +83,7 @@
 
 <script>
 import {mapGetters} from "vuex";
+import PaymentAccount from "@/permission/payment_account";
 // import PaymentBoxContent from "@/components/Dashboard/Companies/Components/PaymentBoxContent";
 
 export default {
@@ -155,7 +156,7 @@ export default {
       permission: 'getPermission'
     }),
     viewPermission() {
-      return this.permission && this.permission.payment_account && this.permission.payment_account.view
+      return PaymentAccount.getPaymentAccountViewPermission()
     },
     editPermission() {
       return this.permission && this.permission.companies && this.permission.companies.edit;
