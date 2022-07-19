@@ -5,7 +5,7 @@
           :active-content="activeContent"
       >
       </base-bread-crumb>
-
+      {{ viewPermission }}
       <div class="object-cards">
         <template v-if="viewPermission"
         >
@@ -229,7 +229,7 @@ export default {
     createPermission() {
       return this.getPermission.objects && this.getPermission.objects.create
     },
-    plansViewPermission(){
+    plansViewPermission() {
       return this.getPermission.plans && this.getPermission.plans.view
     },
     deletePermission() {
@@ -239,12 +239,14 @@ export default {
       return this.getPermission.objects && this.getPermission.objects.edit
     },
     viewPermission() {
-      return this.getPermission.objects && this.getPermission.objects.view
+      console.log(ObjectsPermission, 'ObjectsPermission');
+      console.log(ObjectsPermission.getObjectViewPermission(), 'ObjectsPermission.getObjectViewPermission()');
+      return ObjectsPermission.getObjectViewPermission()
     },
     promoViewPermission() {
       return this.getPermission.promos && this.getPermission.promos.view
     },
-    logoPermission(){
+    logoPermission() {
       return this.getPermission.objects && this.getPermission.objects.upload_logo
     },
     // permission(){
