@@ -1,17 +1,21 @@
-class Permission {
-    constructor(permission) {
-        this.permission = permission
+export default class Permission {
+    static permission = null
+    static user = null
+
+    static initializeUser(user = null) {
+        if (this.user === null) {
+            this.user = user
+            this.permission = user.role.permission
+        }
+        return this.user
+    }
+
+    static getUserPermission() {
+        return this.permission
+    }
+
+    static hasAdminRole() {
+        return this.user.role.id === 1
     }
 }
-
-export class ApartmentPm extends Permission {
-    constructor(permission) {
-        super(permission)
-    }
-
-    editPermission(){
-        return this.permission.apartments.edit
-    }
-}
-
 
