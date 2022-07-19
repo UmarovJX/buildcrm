@@ -239,6 +239,7 @@ import {mapGetters} from "vuex";
 import BaseCLose from "@/components/icons/BaseClose";
 import BaseWarningIcon from "@/components/icons/BaseWarningIcon";
 import BaseSelect from "@/components/Reusable/BaseSelect";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "ContractView",
@@ -268,7 +269,9 @@ export default {
       deleteComment: null,
       errors: [],
       types: [],
-      reason_type: ''
+      reason_type: '',
+      reContractViewPermission: ContractsPermission.getContractsReissueViewPermission(),
+      downloadPermission: ContractsPermission.getContractsDownloadPermission()
     }
   },
   computed: {
@@ -285,20 +288,17 @@ export default {
     hasAction() {
       return this.reContractPermission || this.editPermission || this.deletePermission || this.downloadPermission
     },
-    reContractViewPermission(){
-      return (this.permission && this.permission.contracts && this.permission.contracts.reissue && this.permission.contracts.reissue.view)
-    },
+    // reContractViewPermission(){
+    //   return ContractsPermission.getContractsReissueViewPermission()
+    // },
     reContractPermission() {
-      return (this.permission && this.permission.contracts && this.permission.contracts.reissue && this.permission.contracts.reissue.create) && this.order && this.order.reissue.re_order
+      return ContractsPermission.getContractsReissueCreatePermission() && this.order.reissue && this.order.reissue.re_order
     },
     editPermission() {
-      return (this.permission && this.permission.contracts && this.permission.contracts.edit) && (this.order.status === 'sold' || this.order.status === 'contract')
+      return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
     },
     deletePermission() {
-      return (this.permission && this.permission.contracts && this.permission.contracts.cancel) && this.isStatusContract
-    },
-    downloadPermission() {
-      return (this.permission && this.permission.contracts && this.permission.contracts.download)
+      return ContractsPermission.getContractsCancelPermission() && this.isStatusContract
     },
     filterTabList() {
       const list = [

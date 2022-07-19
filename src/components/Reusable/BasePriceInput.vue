@@ -244,6 +244,7 @@ export default {
 
 .price-input {
   border: none;
+  max-width: 100%;
   background-color: transparent;
 
   &::placeholder {

@@ -10,12 +10,11 @@ export default class Permission {
         return this.user
     }
 
-    static getUserPermission() {
-        return this.permission
+    static getUserPermission(property) {
+        return this.permission[property]
     }
 
     static hasAdminRole() {
         return this.user.role.id === 1
     }
 }
-

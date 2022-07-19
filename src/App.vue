@@ -36,7 +36,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getMe"])
+    ...mapGetters(["getMe"]),
+
   },
   async created() {
     if (!localStorage.locale) {

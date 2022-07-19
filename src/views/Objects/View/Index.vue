@@ -27,7 +27,7 @@
         @current-tab="changeTab"
     />
     <div class="status-row"
-         v-if="(getPermission.apartments && getPermission.apartments.filter) && currentTab !== 'ObjectPlan'">
+         v-if="(apartmentsFilterPermission) && currentTab !== 'ObjectPlan'">
       <b-form-checkbox-group
           id="checkbox-sort"
           class="status-sort"
@@ -137,6 +137,8 @@ import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 import BaseCLose from "@/components/icons/BaseClose";
 import {mapGetters} from "vuex";
+import ApartmentsPermission from "@/permission/apartments";
+
 export default {
   name: "Objects",
   components: {
@@ -308,7 +310,30 @@ export default {
     accessToFilter() {
       const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
       return tabsActiveToFilter.includes(this.currentTab)
-    }
+    },
+    apartmentsFilterPermission() {
+      return ApartmentsPermission.getApartmentsPermission('filter')
+    },
+
+    // apartmentsViewPermission() {
+    //   return ApartmentsPermission.getApartViewPermission()
+    // },
+    // apartmentsEditPermission() {
+    //   return ApartmentsPermission.getApartEditPermission()
+    // },
+    // apartmentsListPermission() {
+    //   return ApartmentsPermission.getApartListPermission()
+    // },
+    // apartmentsGridPermission() {
+    //   return ApartmentsPermission.getApartGridPermission()
+    // },
+    // apartmentsChessPermission() {
+    //   return ApartmentsPermission.getApartChessPermission()
+    // },
+    // apartmentsPlanPermission() {
+    //   return ApartmentsPermission.getApartPlanPermission()
+    // }
+
   },
 
   watch: {
@@ -362,6 +387,8 @@ export default {
     )
     if (historyTab) {
       this.currentTab = historyTab
+    } else {
+      this.currentTab = this.checkedPermissionTab[0]
     }
     setTimeout(() => {
       this.getAllApartment()

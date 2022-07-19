@@ -2,7 +2,7 @@
   <main>
     <div class="app-content">
       <div
-        class="
+          class="
           d-flex
           justify-content-between
           align-items-center
@@ -11,7 +11,7 @@
         "
       >
         <div
-          class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
+            class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
         >
           <h1 class="title__big my-0">
             {{ $t("home.title") }}
@@ -24,15 +24,15 @@
           <div class="col-md-12">
             <div class="row">
               <div
-                class="col-lg-3 col-md-6 mb-md-0 mb-3"
-                v-if="getPermission.objects && getPermission.objects.view"
+                  class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                  v-if="getPermission.objects && getPermission.objects.view"
               >
                 <router-link :to="{name: 'objects'}">
                   <div class="card-counter primary">
                     <i class="far fa-building"></i>
                     <span class="count-numbers" v-if="getHomeCounts.counts && getHomeCounts">{{
-                      getHomeCounts.counts.objects
-                    }}</span>
+                        getHomeCounts.counts.objects
+                      }}</span>
                     <span class="count-name">{{ $t("objects.title") }}</span>
                   </div>
                 </router-link>
@@ -51,15 +51,15 @@
         </div> -->
 
               <div
-                class="col-lg-3 col-md-6 mb-md-0 mb-3"
-                v-if="getPermission.users && getPermission.users.view"
+                  class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                  v-if="getPermission.users && getPermission.users.view"
               >
                 <router-link :to="{name: 'users'}">
                   <div class="card-counter success">
                     <i class="far fa-users"></i>
                     <span class="count-numbers" v-if="getHomeCounts.counts">{{
-                      getHomeCounts.counts.users
-                    }}</span>
+                        getHomeCounts.counts.users
+                      }}</span>
                     <span class="count-name">{{ $t("users.title") }}</span>
                   </div>
                 </router-link>
@@ -74,18 +74,18 @@
               <!--                </div>-->
 
               <div
-                class="col-lg-3 col-md-6 mb-md-0 mb-3"
-                v-if="getPermission.apartments && getPermission.apartments.view"
+                  class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                  v-if="apartmentsViewPermission"
               >
                 <router-link :to="{name: 'objects-filter'}">
                   <div class="card-counter apartments">
                     <i class="far fa-home"></i>
                     <span class="count-numbers" v-if="getHomeCounts.counts">{{
-                      getHomeCounts.counts.apartments
-                    }}</span>
+                        getHomeCounts.counts.apartments
+                      }}</span>
                     <span class="count-name">{{
-                      $t("objects.apartments")
-                    }}</span>
+                        $t("objects.apartments")
+                      }}</span>
                   </div>
                 </router-link>
               </div>
@@ -99,6 +99,7 @@
 
 <script>
 import {mapActions, mapGetters} from "vuex";
+import ApartmentsPermission from "@/permission/apartments";
 // import home from '../../services/home'
 export default {
   data: () => ({}),
@@ -113,7 +114,14 @@ export default {
     this.fetchCounts(this);
   },
 
-  computed: mapGetters(["getHomeCounts", "getPermission"]),
+  computed: {
+    ...mapGetters(["getHomeCounts", "getPermission"]),
+
+    apartmentsViewPermission() {
+      return ApartmentsPermission.getApartmentsPermission('view')
+    },
+  },
+
 
   methods: {
     ...mapActions(["fetchCounts"]),
