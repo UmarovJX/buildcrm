@@ -893,6 +893,7 @@ export default {
                 balcony: "Balkoni bormi?",
                 balcony_area: "Balkon maydoni",
                 balcony_paid: "Balkon pullimi?",
+                add: 'Xonadon rejasini qo\'shish'
             },
 
             apartments: "Xonadonlar",
