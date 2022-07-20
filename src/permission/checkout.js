@@ -1,53 +1,3 @@
-// import Permission from "@/permission/index";
-//
-// export default class CheckoutPermission extends Permission {
-//     static checkout() {
-//         return super.getUserPermission().checkout
-//     }
-//
-//     static getBookPermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().book ?? false
-//     }
-//
-//     static getCheckoutPermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().checkout ?? false
-//     }
-//
-//     static getMarkFriendPermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().mark_friends ?? false
-//     }
-//
-//     static getMarkPricePermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().mark_price ?? false
-//     }
-//
-//     static getEditDatePermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().edit_date ?? false
-//     }
-//
-//     static getMonthlyPaymentPermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().monthly_payment ?? false
-//     }
-//
-//     static getRootPermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().root ?? false
-//     }
-//
-//     static getApartPlanPermission() {
-//         if (this.hasAdminRole()) return true
-//         return this.checkout().lists?.plan ?? false
-//     }
-//
-// }
-
-
 import Permission from "@/permission/index";
 
 export default class CheckoutPermission extends Permission {
@@ -64,7 +14,35 @@ export default class CheckoutPermission extends Permission {
         } else {
             return this.checkout()[one] ?? false
         }
-
     }
+
+    static getBookPermission() {
+        return this.getCheckoutPermission('book')
+    }
+
+    static getCheckoutCheckPermission() {
+        return this.getCheckoutPermission('checkout')
+    }
+
+    static getMarkFriendPermission() {
+        return this.getCheckoutPermission('mark_friends')
+    }
+
+    static getMarkPricePermission() {
+        return this.getCheckoutPermission('mark_price')
+    }
+
+    static getEditDatePermission() {
+        return this.getCheckoutPermission('edit_date')
+    }
+
+    static getMonthlyPaymentPermission() {
+        return this.getCheckoutPermission('monthly_payment')
+    }
+
+    static getRootPermission() {
+        return this.getCheckoutPermission('root')
+    }
+
 
 }
