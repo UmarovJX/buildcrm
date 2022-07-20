@@ -58,11 +58,10 @@ export default class CheckoutPermission extends Permission {
     static getCheckoutPermission(property) {
         const splitProperty = property.split('.')
         const [one, two] = splitProperty
+        if (this.hasAdminRole()) return true
         if (splitProperty.length > 1) {
-            if (this.hasAdminRole()) return true
             return this.checkout()[one][two] ?? false
         } else {
-            if (this.hasAdminRole()) return true
             return this.checkout()[one] ?? false
         }
 

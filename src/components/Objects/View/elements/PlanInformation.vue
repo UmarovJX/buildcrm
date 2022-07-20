@@ -140,9 +140,9 @@ export default {
 
   methods: {
     openModal(item) {
-      if (this.getPermission.apartments && this.getPermission.apartments.show) {
-        this.$emit('open-express', item)
-      }
+      // if (this.getPermission.apartments && this.getPermission.apartments.show) {
+      this.$emit('open-express', item)
+      // }
     },
     price(value) {
       return formatToPrice(value)

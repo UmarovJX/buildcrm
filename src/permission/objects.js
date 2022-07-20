@@ -8,11 +8,10 @@ export default class ObjectsPermission extends Permission {
     static getObjectsPermission(property) {
         const splitProperty = property.split('.')
         const [one, two] = splitProperty
+        if (this.hasAdminRole()) return true
         if (splitProperty.length > 1) {
-            if (this.hasAdminRole()) return true
             return this.objects()[one][two] ?? false
         } else {
-            if (this.hasAdminRole()) return true
             return this.objects()[one] ?? false
         }
 

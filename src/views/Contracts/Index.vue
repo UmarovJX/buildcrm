@@ -284,7 +284,9 @@ export default {
       return Object.assign({}, this.$route.query)
     },
     countOfItems() {
-      return this.tableItems.length
+      if (this.tableItems)
+        return this.tableItems.length
+      return 0
     }
   },
   watch: {
@@ -337,14 +339,12 @@ export default {
           this.downloadContractLink(id)
         }
       } else {
-        // if (this.permission.contract && this.permission.contract.show) {
         this.$router.push({
           name: 'contracts-view',
           params: {
             id
           }
         })
-        // }
       }
     },
     clientName(multiName, language) {
@@ -420,7 +420,7 @@ export default {
           })
     },
     initCounts() {
-      this.filterTabList = this.filterTabList.map(filterTab => {
+      this.filterTabList = this.filterTabList?.map(filterTab => {
         const findIndex = this.counts.hasOwnProperty(filterTab.status)
         if (findIndex) {
           return {

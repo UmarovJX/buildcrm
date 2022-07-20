@@ -8,7 +8,7 @@ export default class ContractsPermission extends Permission {
     static getContractsPermission(property) {
         const splitProperty = property.split('.')
         const [one, two, three] = splitProperty
-        if (this.hasAdminRole() || this.getContractsRootPermission()) return true
+        if (this.hasAdminRole()) return true
         else {
             if (splitProperty.length === 3) {
                 return this.contracts()[one][two][three] ?? false

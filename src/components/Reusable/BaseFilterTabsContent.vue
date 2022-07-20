@@ -60,8 +60,11 @@ export default {
       const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
       if (hasQueryAndStatus) {
         this.currentStatus = query.status
-      } else {
+      } else if (this.filterTabList && this.filterTabList[0]) {
         this.currentStatus = this.filterTabList[0].status
+      } else {
+        this.currentStatus = ''
+
       }
     }
   }
