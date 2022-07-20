@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="main__content">
     <div class="app-content">
       <div
           class="
