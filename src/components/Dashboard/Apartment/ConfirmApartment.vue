@@ -415,8 +415,8 @@ export default {
       error: false,
       errors: {},
       getErrors: [],
-      editDatePermission: CheckoutPermission.getCheckoutPermission('edit_date'),
-      monthlyPermission: CheckoutPermission.getCheckoutPermission('monthly_payment'),
+      editDatePermission: CheckoutPermission.getEditDatePermission(),
+      monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission(),
     }
   },
 

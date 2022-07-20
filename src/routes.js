@@ -405,7 +405,7 @@ router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')
     if (to.name === 'login') return next()
 
-    if (!Permission.user) {
+    if (!Permission.user || !store.state.permission) {
         await api.authV1.getMe()
             .then((response) => {
                 permission = response.data.role.permissions

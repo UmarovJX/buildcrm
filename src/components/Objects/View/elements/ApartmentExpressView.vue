@@ -241,10 +241,10 @@ export default {
       visibleModal: true,
       showReservationModal: false,
       printCalc: {},
-      editDatePermission: CheckoutPermission.getCheckoutPermission('edit_date'),
-      bookPermission: CheckoutPermission.getCheckoutPermission('book'),
-      checkoutPermission: CheckoutPermission.getCheckoutPermission('checkout'),
-      checkoutRootPermission: CheckoutPermission.getCheckoutPermission('root'),
+      editDatePermission: CheckoutPermission.getEditDatePermission(),
+      bookPermission: CheckoutPermission.getBookPermission(),
+      checkoutPermission: CheckoutPermission.getCheckoutCheckPermission(),
+      checkoutRootPermission: CheckoutPermission.getRootPermission(),
     }
   },
 
