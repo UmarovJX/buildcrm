@@ -11,7 +11,7 @@
     </div>
 
     <!--  PAYMENTS HISTORY  -->
-    <div v-if="!listPermission" class="payments__history">
+    <div v-if="listPermission" class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
@@ -35,7 +35,7 @@
             </template>
           </base-button>
           <base-button
-              v-if="!uploadFilePermission"
+              v-if="uploadFilePermission"
               @click="openPaymentAdditionModal"
               :text="$t('payments.payment_add')"
               design="add__button"
@@ -618,7 +618,7 @@ export default {
     paymentTypeOptionsPermission() {
       const listOption = []
 
-      if (!ContractsPermission.getContractsInitialCreatePermission()) {
+      if (ContractsPermission.getContractsInitialCreatePermission()) {
         listOption.push({
           value: 'initial_payment',
           text: this.$t('initial_payment')
