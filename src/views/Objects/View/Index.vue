@@ -381,7 +381,6 @@ export default {
     const historyTab = sessionStorageGetItem(
         'object_history_of_tab_' + this.$route.params.object
     )
-    console.log(historyTab, 'historyTab');
     if (historyTab && !this.checkedPermissionTab.filter(item => item.name === historyTab)) {
       this.currentTab = historyTab
     } else {
@@ -871,7 +870,6 @@ export default {
     apartmentExpressReview(item) {
       // const itemNotOpen = item.uuid !== this.expressView.item.uuid
       // if (itemNotOpen) {
-      console.log(item, 'item');
       if (item) {
         this.expressView.item = item
         this.expressView.toggle = true

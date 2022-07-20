@@ -267,16 +267,16 @@ export default {
       return result === -1;
     },
     currencyPermission() {
-      return GeneralPermission.getGeneralPermission('currency')
+      return GeneralPermission.getCurrencyPermission()
     },
     themePermission() {
-      return GeneralPermission.getGeneralPermission('theme')
+      return GeneralPermission.getThemePermission()
     },
     languagePermission() {
-      return GeneralPermission.getGeneralPermission('language')
+      return GeneralPermission.getLanguagePermission()
     },
     settingsPermission() {
-      return GeneralPermission.getGeneralPermission('settings') && (GeneralPermission.getGeneralPermission('password_settings') || GeneralPermission.getGeneralPermission('profile_settings'))
+      return GeneralPermission.getSettingsPermission() && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
     },
   },
   methods: {

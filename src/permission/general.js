@@ -8,11 +8,10 @@ export default class GeneralPermission extends Permission {
     static getGeneralPermission(property) {
         const splitProperty = property.split('.')
         const [one, two] = splitProperty
+        if (this.hasAdminRole()) return true
         if (splitProperty.length > 1) {
-            if (this.hasAdminRole()) return true
             return this.general()[one][two] ?? false
         } else {
-            if (this.hasAdminRole()) return true
             return this.general()[one] ?? false
         }
 
@@ -22,5 +21,23 @@ export default class GeneralPermission extends Permission {
         return this.getGeneralPermission('currency')
     }
 
+    static getThemePermission() {
+        return this.getGeneralPermission('theme')
+    }
 
+    static getLanguagePermission() {
+        return this.getGeneralPermission('language')
+    }
+
+    static getSettingsPermission() {
+        return this.getGeneralPermission('settings')
+    }
+
+    static getPasswordSettingsPermission() {
+        return this.getGeneralPermission('password_settings')
+    }
+
+    static getProfileSettingsPermission() {
+        return this.getGeneralPermission('profile_settings')
+    }
 }

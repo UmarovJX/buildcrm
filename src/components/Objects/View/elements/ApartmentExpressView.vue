@@ -528,6 +528,7 @@ export default {
         font-family: Inter, sans-serif
         background-color: var(--gray-100)
         border-radius: 2rem
+        min-width: max-content
         padding: 0.5rem 2rem
 
 
