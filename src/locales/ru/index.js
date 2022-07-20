@@ -775,7 +775,10 @@ export default {
     },
 
     type_plan: {
+        floor: 'Этаж',
+        rooming: 'Комнатность',
         title: "Планировки",
+        actions: 'Действия',
         name: "Название",
         area: "Площадь",
         balcony: "Балкон",
@@ -887,6 +890,8 @@ export default {
                 balcony: "Имеется балкон?",
                 balcony_area: "Площадь балкона",
                 balcony_paid: "Платный балкон?",
+                add: 'Добавить планировку',
+                search: 'Название планировки'
             },
 
             apartments: "Квартиры",

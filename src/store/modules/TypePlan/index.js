@@ -8,7 +8,6 @@ export default {
             try {
                 const response = await api.objects.getObjectPlans(vm.$route.params.id)
                 const plans = response.data;
-
                 ctx.commit("updatePlan", plans);
                 ctx.commit("updateLoading", false, {root: true});
             } catch (error) {
