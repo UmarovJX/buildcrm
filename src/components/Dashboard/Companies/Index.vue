@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="d-flex justify-content-end">
-      <BaseButton @click="showAddModal" :text="$t('companies.add_company')">
+      <BaseButton @click="showAddModal" :text="`${ $t('companies.add_company') }`">
         <template #left-icon>
           <BasePlusIcon fill="#7C3AED"/>
         </template>
@@ -53,7 +53,6 @@ export default {
     BaseButton,
   },
   mounted() {
-    this.fetchCompaniesList();
     if (this.searchInput?.length) {
       this.toggleClearIcon()
     }
@@ -71,7 +70,7 @@ export default {
         position: 'create',
         title: this.$t('companies.add_title'),
       },
-      newCompany:{
+      newCompany: {
         type: null,
         name: null,
         director_name: null,
@@ -112,18 +111,6 @@ export default {
     },
   },
   methods: {
-    // async sortingCompanies(filter) {
-    //   const query = sortObjectValues(filter)
-    //   await api.companies.getCompaniesList(query)
-    //       .then((response) => {
-    //         this.tableItems = response.data.items.map(item => ({...item, toggleCollapse: false}))
-    //         this.pagination = response.data.pagination
-    //         this.showByValue = response.data.pagination.perPage
-    //         this.loading = true
-    //       }).finally(() => {
-    //         this.loading = false
-    //       })
-    // },
     getInputValue(value) {
       this.searchInput = value
     },
@@ -134,8 +121,6 @@ export default {
           .then((response) => {
             this.companies = response.data
             this.tableItems = response.data.map(item => ({...item, toggleCollapse: false}))
-            // this.pagination = response.data.pagination
-            // this.showByValue = response.data.pagination.perPage
             this.loading = true
           })
           .catch((error) => {
