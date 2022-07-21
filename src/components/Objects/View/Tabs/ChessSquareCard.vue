@@ -1,6 +1,6 @@
 <template>
   <div
-      class="position-relative"
+      class="position-relative d-flex"
       style="min-height: 300px"
   >
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
@@ -186,7 +186,9 @@ export default {
     showExpressSidebar(item) {
       // const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
       // if (isActive) {
-      this.$emit('show-express-sidebar', item)
+      // if (this.getPermission.apartments && this.getPermission.apartments.show) {
+        this.$emit('show-express-sidebar', item)
+      // }
       // }
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {

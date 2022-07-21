@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="main__content">
     <div class="app-content">
       <div
           class="
@@ -33,14 +33,18 @@
           </ul>
         </div>
 
-        <router-link
-            :to="{name: 'roles-store'}"
-            v-if="getPermission.roles.create"
-            :class="'btn btn-primary mr-0 mt-md-0'"
+        <base-button
+            v-if="createPermission"
+            design="violet-gradient"
+            @click="$router.push({name: 'roles-store'})"
+            :text="$t('add')"
+            class="ml-4"
         >
-          <i class="fal fa-plus mr-2"></i>
-          {{ $t("add") }}
-        </router-link>
+          <template #left-icon>
+            <i class="fal fa-plus mr-2"></i>
+          </template>
+        </base-button>
+
       </div>
 
       <div class="">
@@ -59,9 +63,8 @@
             :empty-text="$t('no_data')"
         >
           <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">{{
-                scope.emptyText
-              }}</span>
+            <span class="d-flex justify-content-center align-items-center">
+              {{ scope.emptyText }}</span>
           </template>
 
           <template #table-busy>
@@ -83,10 +86,7 @@
             <div class="float-right">
               <div
                   class="dropdown my-dropdown dropleft"
-                  v-if="
-                  (getPermission.roles.update && data.item.id != 1) ||
-                  (getPermission.roles.delete && data.item.id != 1)
-                "
+                  v-if="data.item.id !== 1 && (editPermission || deletePermission)"
               >
                 <button
                     type="button"
@@ -98,13 +98,11 @@
 
                 <div
                     class="dropdown-menu"
-                    v-if="
-                    getPermission.roles.update || getPermission.roles.delete
-                  "
+                    v-if="editPermission || deletePermission"
                 >
                   <router-link
                       :to="{name: 'roles-update', params: {id: data.item.id}}"
-                      v-if="getPermission.roles.update && data.item.id != 1"
+                      v-if="data.item.id !== 1 && editPermission"
                       :class="'dropdown-item dropdown-item--inside'"
                   >
                     <i class="fas fa-pen"></i>
@@ -113,8 +111,8 @@
 
                   <a
                       class="dropdown-item dropdown-item--inside"
-                      v-if="getPermission.roles.delete && data.item.id != 1"
-                      @click="Delete(data.item.id)"
+                      v-if="data.item.id !== 1 &&  deletePermission"
+                      @click="deleteRole(data.item.id)"
                       href="#"
                   >
                     <i class="far fa-trash"></i> {{ $t("delete") }}
@@ -132,11 +130,19 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
 import api from "@/services/api";
+import BaseButton from "@/components/Reusable/BaseButton";
+import RolesPermission from "@/permission/roles";
 
 export default {
   name: 'Roles',
+  components: {
+    BaseButton
+  },
   data() {
     return {
+      editPermission: RolesPermission.getRolesEditPermission(),
+      deletePermission: RolesPermission.getRolesDeletePermission(),
+      createPermission: RolesPermission.getRolesCreatePermission(),
       header: {
         headers: {
           Authorization: "Bearer " + localStorage.token,
@@ -194,7 +200,7 @@ export default {
       return value;
     },
 
-    Delete(id) {
+    deleteRole(id) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.are_you_sure_delete_role"),

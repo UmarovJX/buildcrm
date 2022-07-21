@@ -11,7 +11,7 @@
     </div>
 
     <!--  PAYMENTS HISTORY  -->
-    <div class="payments__history">
+    <div v-if="listPermission" class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
@@ -195,7 +195,7 @@
             <span class="actions">
               <!--     EDIT PAYMENT       -->
               <span
-                  v-if="userInteraction(item.type)"
+                  v-if="userInteractionEdit(item.type)"
                   @click="editPaymentTransaction(item)"
                   class="edit__icon icon"
               >
@@ -203,7 +203,7 @@
               </span>
               <!--      DELETE PAYMENT        -->
               <span
-                  v-if="userInteraction(item.type)"
+                  v-if="userInteractionDelete(item.type)"
                   class="delete__icon icon"
                   @click="warnBeforeDelete(item.id)"
               >
@@ -487,6 +487,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "TabPaymentSchedule",
@@ -609,12 +610,15 @@ export default {
       permission: 'getPermission'
     }),
     paidPermission() {
-      return this.permission?.contracts?.paid
+      return ContractsPermission.getContractsPaymentsImportPermission()
+    },
+    listPermission() {
+      return ContractsPermission.getContractsPaymentsListPermission()
     },
     paymentTypeOptionsPermission() {
       const listOption = []
 
-      if (this.permission?.debtors?.first_payment?.edit) {
+      if (ContractsPermission.getContractsInitialCreatePermission()) {
         listOption.push({
           value: 'initial_payment',
           text: this.$t('initial_payment')
@@ -622,7 +626,7 @@ export default {
       }
 
       const monthlyPaymentCounts = this.order?.payments?.monthly_payments_count
-      if (this.permission?.debtors?.monthly?.edit && monthlyPaymentCounts) {
+      if (ContractsPermission.getContractsMonthlyCreatePermission() && monthlyPaymentCounts) {
         listOption.push({
           value: 'monthly',
           text: this.$t('monthly')
@@ -640,8 +644,7 @@ export default {
       return options
     },
     uploadFilePermission() {
-      const {debtors} = this.permission
-      return debtors?.first_payment?.edit || debtors?.monthly?.edit
+      return ContractsPermission.getContractsPaymentsCreatePermission() && (ContractsPermission.getContractsInitialCreatePermission() || ContractsPermission.getContractsMonthlyCreatePermission())
     },
     firstChart() {
       const {payments, currency} = this.order
@@ -803,15 +806,21 @@ export default {
     await this.fetchItems()
   },
   methods: {
-    userInteraction(type) {
+    userInteractionEdit(type) {
       if (type === 'initial_payment')
-        return this.permission.debtors.first_payment.edit
+        return ContractsPermission.getContractsInitialEditPermission()
       else if (type === 'monthly')
-        return this.permission.debtors.monthly.edit
+        return ContractsPermission.getContractsMonthlyEditPermission()
+    },
+    userInteractionDelete(type) {
+      if (type === 'initial_payment')
+        return ContractsPermission.getContractsInitialDeletePermission()
+      else if (type === 'monthly')
+        return ContractsPermission.getContractsMonthlyDeletePermission()
     },
     refreshDetails() {
-      this.$emit('refresh-details')
       this.fetchItems()
+      this.$emit('refresh-details')
     },
     async fetchItems() {
       this.startLoading()
@@ -968,13 +977,14 @@ export default {
       this.$refs['warning-before-delete'].closeModal()
       await api.contractV2.removePaymentTransaction(contractId, transactionId)
           .then(() => {
-            this.fetchItems()
             this.$swal({
               title: this.$t('deleted'),
               text: this.$t('contracts.deleted_payment_successfully'),
               icon: "success"
             })
             this.deletionPaymentId = null
+            this.refreshDetails()
+
           })
           .catch((error) => {
             const {data} = error.response
@@ -1053,7 +1063,7 @@ export default {
           })
 
       const formMonthly = Object.assign({}, this.appendPayment)
-      formMonthly.type = 'monthly'
+      formMonthly.type = 'initial_monthly'
       formMonthly.amount = overbalance
       await api.contractV2.appendPayment(id, formMonthly)
           .then(() => {

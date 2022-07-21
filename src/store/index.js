@@ -74,4 +74,4 @@ export default new Vuex.Store({
     Settings,
     Promo
   },
-});
+})

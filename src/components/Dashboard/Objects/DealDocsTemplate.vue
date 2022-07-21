@@ -8,6 +8,7 @@
         <template #extra-content>
           <div class="d-flex justify-content-end">
             <b-button
+                v-if="instructionPermission"
                 v-b-modal.instructions-content
                 class="button__new__contract"
                 variant="info"
@@ -16,6 +17,7 @@
               <span>{{ $t('instruction') }}</span>
             </b-button>
             <b-button
+                v-if="createPermission"
                 v-b-modal.creation-content
                 class="button__new__contract"
                 variant="primary"
@@ -87,6 +89,8 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import InstructionsModal from "@/components/Dashboard/Objects/Components/DealDocsTemplate/InstructionsModal";
 import BaseContractListTable from "@/components/Dashboard/Objects/Components/BaseContractListTable";
 import CreateDealDocsTemplate from "@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate";
+import {mapGetters} from "vuex";
+import TemplatesPermission from "@/permission/templates";
 
 export default {
   name: 'DealDocsTemplate',
@@ -98,6 +102,8 @@ export default {
   },
   data() {
     return {
+      instructionPermission: TemplatesPermission.getInstructionViewPermission(),
+      createPermission: TemplatesPermission.getTemplatesCreatePermission(),
       loading: false,
       contracts: [],
       contractTabs: 0,
@@ -111,6 +117,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      permission: 'getPermission'
+    }),
     activeContent() {
       return this.$t('objects.deal_template.title')
     },

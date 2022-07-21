@@ -50,9 +50,9 @@
 
       <!-- PAGINATION   -->
       <base-pagination
-          :default-count-view="tablePagination.limit"
-          :pagination-count="tablePagination.total"
-          :pagination-current="tablePagination.current"
+          :default-count-view="parseInt(tablePagination.limit)"
+          :pagination-count="parseInt(tablePagination.total)"
+          :pagination-current="parseInt(tablePagination.current)"
           @change-page="changeCurrentPage"
           @change-view="changeCountOfView"
       />
@@ -284,6 +284,7 @@ export default {
         client: {}
       },
       typeOfView,
+      lastParams: null,
       appLoading: false
     }
   },
@@ -363,62 +364,6 @@ export default {
       }
     }
   },
-  watch: {
-    'month.starter'(lastMoment, oldMoment) {
-      if (lastMoment !== oldMoment) {
-        this.setStarterMoment(lastMoment)
-        this.initDebtorUi()
-      }
-    },
-    'week.starter'(lastMoment, oldMoment) {
-      if (lastMoment !== oldMoment) {
-        this.setStarterMoment(lastMoment)
-        this.initDebtorUi()
-      }
-    },
-    'day.starter'(lastMoment, oldMoment) {
-      if (lastMoment !== oldMoment) {
-        this.setStarterMoment(lastMoment)
-        this.initDebtorUi()
-      }
-    },
-    '$route.query.price_from'() {
-      this.initDebtorUi()
-    },
-    '$route.query.price_to'() {
-      this.initDebtorUi()
-    },
-    '$route.query.date'() {
-      this.initDebtorUi()
-    },
-    '$route.query.object_id'() {
-      this.initDebtorUi()
-    },
-    '$route.query.limit'(lastValue, oldValue) {
-      const absoluteValue = parseInt(lastValue)
-      if (this.typeOfView === 'list') {
-        this.list.pagination.limit = absoluteValue
-      } else if (this.typeOfView === 'day') {
-        this.day.pagination.limit = absoluteValue
-      }
-
-      if (lastValue !== oldValue) {
-        this.initDebtorUi()
-      }
-    },
-    '$route.query.page'(pageValue) {
-      const absoluteValue = parseInt(pageValue)
-      if (this.typeOfView === 'list') {
-        this.list.pagination.current = absoluteValue
-      } else if (this.typeOfView === 'day') {
-        this.day.pagination.current = absoluteValue
-      }
-      this.initDebtorUi()
-    },
-    '$route.query.search'() {
-      this.initDebtorUi()
-    }
-  },
   created() {
     this.initStarterMoment()
     this.initDebtorUi()
@@ -472,6 +417,7 @@ export default {
       this.changeRouterQuery({
         search
       })
+      this.initDebtorUi()
     },
     changeSortSituation({sortBy, sortDesc}) {
       this.changeRouterQuery({
@@ -558,8 +504,8 @@ export default {
 
       /* CLEAR ITEMS ARRAY BEFORE UPDATE */
       this[this.typeOfView].items = []
-
       const items = await this.fetchItems(params)
+      this.lastParams = params
       switch (this.typeOfView) {
         case 'list': {
           await this.initListItems(items)
@@ -689,27 +635,30 @@ export default {
       this.changeRouterQuery({
         page
       })
+      this.initDebtorUi()
     },
     changeCountOfView(limit) {
       this.changeRouterQuery({
         limit,
         page: 1
       })
+      this.initDebtorUi()
     },
     changeViewType(type) {
       if (type !== this.typeOfView) {
         this.typeOfView = type
-        const starter = this.query.starter_moment
+        const starter = this.query.starter_moment ?? formatDateToYMD(new Date())
         const {year, month, dayOfMonth} = dateProperties(dateConvertor(starter))
         if (type === 'day') {
           this.day.starter = starter
-          this.changeRouterQuery({
+          this.refreshRouteQuery({
             date: [starter, starter],
-            type_of_view: 'day'
+            type_of_view: 'day',
+            starter_moment: starter
           })
         } else {
           const starter = formatDateToYMD(new Date(year, month, 1))
-          this.changeRouterQuery({
+          this.refreshRouteQuery({
             date: undefined,
             starter_moment: starter,
             type_of_view: type
@@ -719,8 +668,8 @@ export default {
           } else if (type === 'week') {
             this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
           }
-          this.initDebtorUi()
         }
+        this.initDebtorUi()
       }
     },
     showDebtorViewModal(debt) {
@@ -756,6 +705,7 @@ export default {
           }
         }
       }
+      this.initDebtorUi()
     },
     filterDebts({date, price_from, price_to, client_type, object_id}) {
       const type = this.typeOfView
@@ -781,6 +731,8 @@ export default {
           this.changeRouterQuery(query)
         }
       }
+
+      this.initDebtorUi()
     },
     showCurrentDay() {
       const {month, year, dayOfMonth} = dateProperties(new Date())
@@ -804,6 +756,7 @@ export default {
       }
 
       this.changeRouterQuery(resetQuery)
+      this.initDebtorUi()
     },
     setStarterByTypeOfView(moment) {
       switch (this.typeOfView) {
@@ -819,6 +772,13 @@ export default {
           this.day.starter = moment
         }
       }
+      this.setStarterMoment(moment)
+    },
+    refreshRouteQuery(query) {
+      this.$router.push({
+        query
+      })
+      this.setLimitAndPage()
     },
     changeRouterQuery(query) {
       this.$router.push({
@@ -827,6 +787,20 @@ export default {
           ...query
         }
       })
+      this.setLimitAndPage()
+    },
+    setLimitAndPage() {
+      if (this.typeOfView === 'list') {
+        this.list.pagination.current = this.query.page ?? 1
+      } else if (this.typeOfView === 'day') {
+        this.day.pagination.current = this.query.page ?? 1
+      }
+
+      if (this.typeOfView === 'list') {
+        this.list.pagination.limit = this.query.limit ?? 10
+      } else if (this.typeOfView === 'day') {
+        this.day.pagination.limit = this.query.limit ?? 10
+      }
     }
   }
 }

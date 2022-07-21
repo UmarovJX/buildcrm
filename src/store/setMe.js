@@ -1,5 +1,4 @@
 import api from "@/services/api";
-
 export default {
     state: {
         me: {},

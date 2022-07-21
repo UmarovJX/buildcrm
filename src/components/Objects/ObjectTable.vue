@@ -104,6 +104,7 @@
                 <template v-if="hasPermission">
                   <!-- Редактировать -->
                   <b-link
+                      v-if="editPermission"
                       class="dropdown-item dropdown-item--inside"
                       @click="[(edit = true), (apartment_id = data.item.id)]"
                       v-b-modal.modal-edit
@@ -114,7 +115,7 @@
 
                   <!--        Вернуть к продаже          -->
                   <b-link
-                      v-if="data.item.is_sold && data.item.order.status === 'available'"
+                      v-if="(isSoldPermission) && data.item.is_sold && data.item.order.status === 'available'"
                       @click="toggleApartmentToSale(data.item)"
                       class="dropdown-item dropdown-item--inside"
                   >
@@ -122,7 +123,7 @@
                   </b-link>
 
                   <b-link
-                      v-if="!data.item.is_sold && data.item.order.status === 'available'"
+                      v-if="(isSoldPermission) && !data.item.is_sold && data.item.order.status === 'available'"
                       @click="toggleApartmentToSale(data.item)"
                       class="dropdown-item dropdown-item--inside"
                   >
@@ -130,43 +131,43 @@
                   </b-link>
                 </template>
 
-                <!--  Забронировать -->
-                <b-link
-                    v-if="
-                                    data.item.is_sold &&
-                                    getPermission.apartments &&
-                                      getPermission.apartments.reserve &&
-                                      data.item.order.status === 'available'
-                                  "
-                    @click="[(reserve = true), (apartment_id = data.item.id)]"
-                    v-b-modal.modal-reserve-create
-                    class="dropdown-item dropdown-item--inside"
-                >
-                  <i class="far fa-calendar-check"></i>
-                  {{ $t("apartments.list.book") }}
-                </b-link>
+                <!--                &lt;!&ndash;  Забронировать &ndash;&gt;-->
+                <!--                <b-link-->
+                <!--                    v-if="-->
+                <!--                                    data.item.is_sold &&-->
+                <!--                                    getPermission.apartments &&-->
+                <!--                                      getPermission.apartments.reserve &&-->
+                <!--                                      data.item.order.status === 'available'-->
+                <!--                                  "-->
+                <!--                    @click="[(reserve = true), (apartment_id = data.item.id)]"-->
+                <!--                    v-b-modal.modal-reserve-create-->
+                <!--                    class="dropdown-item dropdown-item&#45;&#45;inside"-->
+                <!--                >-->
+                <!--                  <i class="far fa-calendar-check"></i>-->
+                <!--                  {{ $t("apartments.list.book") }}-->
+                <!--                </b-link>-->
 
-                <!-- Посмотреть клиент  -->
-                <b-link
-                    v-if="clientsView(data)"
-                    @click="ReserveInfo(data.item)"
-                    class="dropdown-item dropdown-item--inside"
-                >
-                  <i class="far fa-eye"></i>
-                  {{ $t("apartments.list.view_client") }}
-                </b-link>
+                <!--                &lt;!&ndash; Посмотреть клиент  &ndash;&gt;-->
+                <!--                <b-link-->
+                <!--                    v-if="clientsView(data)"-->
+                <!--                    @click="ReserveInfo(data.item)"-->
+                <!--                    class="dropdown-item dropdown-item&#45;&#45;inside"-->
+                <!--                >-->
+                <!--                  <i class="far fa-eye"></i>-->
+                <!--                  {{ $t("apartments.list.view_client") }}-->
+                <!--                </b-link>-->
 
-                <!--  Информация о менеджера  -->
-                <b-link
-                    v-if="data.item.order.status === 'booked' && data.item.order.user.id !== getMe.user.id
-                                  "
-                    @click="getInfoReserve(data.item)"
-                    v-b-modal.modal-view-info-manager
-                    class="dropdown-item dropdown-item--inside"
-                >
-                  <i class="far fa-info-circle"></i>
-                  {{ $t("apartments.list.view_manager") }}
-                </b-link>
+                <!--                &lt;!&ndash;  Информация о менеджера  &ndash;&gt;-->
+                <!--                <b-link-->
+                <!--                    v-if="data.item.order.status === 'booked' && data.item.order.user.id !== getMe.user.id-->
+                <!--                                  "-->
+                <!--                    @click="getInfoReserve(data.item)"-->
+                <!--                    v-b-modal.modal-view-info-manager-->
+                <!--                    class="dropdown-item dropdown-item&#45;&#45;inside"-->
+                <!--                >-->
+                <!--                  <i class="far fa-info-circle"></i>-->
+                <!--                  {{ $t("apartments.list.view_manager") }}-->
+                <!--                </b-link>-->
 
                 <!--  Подробная информация  -->
                 <router-link
@@ -180,25 +181,27 @@
 
                 <!-- Подробная информация  -->
 
-                <!--  Оформить -->
-                <b-link
-                    @click="orderHold([data.item.id])"
-                    :class="'dropdown-item dropdown-item--inside'"
-                    v-if="allowViewWhenProcessing(data) && !statusHold(data)"
-                >
-                  <i class="far fa-ballot-check"></i>
-                  {{ $t("apartments.list.confirm") }}
-                </b-link>
+                <!--                &lt;!&ndash;  Оформить &ndash;&gt;-->
+                <!--                <b-link-->
+                <!--                    @click="orderHold([data.item.id])"-->
+                <!--                    :class="'dropdown-item dropdown-item&#45;&#45;inside'"-->
+                <!--                    v-if="allowViewWhenProcessing(data) && !statusHold(data)"-->
+                <!--                >-->
+                <!--                  <i class="far fa-ballot-check"></i>-->
+                <!--                  {{ $t("apartments.list.confirm") }}-->
+                <!--                </b-link>-->
 
-                <!--  Оформить when processing  -->
-                <b-link
-                    @click="goOrderHold([data.item.order.id])"
-                    :class="'dropdown-item dropdown-item--inside'"
-                    v-if="allowViewWhenProcessing(data) && statusHold(data)"
-                >
-                  <i class="far fa-ballot-check"></i>
-                  Продолжить оформление
-                </b-link>
+                <!--                &lt;!&ndash;  Оформить when processing  &ndash;&gt;-->
+                <!--                <b-link-->
+                <!--                    @click="goOrderHold([data.item.order.id])"-->
+                <!--                    :class="'dropdown-item dropdown-item&#45;&#45;inside'"-->
+                <!--                    v-if="allowViewWhenProcessing(data) && statusHold(data)"-->
+                <!--                >-->
+                <!--                  <i class="far fa-ballot-check"></i>-->
+                <!--                  Продолжить оформление-->
+                <!--                </b-link>-->
+
+
               </div>
             </div>
           </div>
@@ -273,7 +276,7 @@
       <!--        ></view-client>-->
 
       <edit-modal
-          v-if="(hasPermission) || edit"
+          v-if="editPermission"
           :apartment="apartment_id"
           @EditApartment="EditApartment"
       ></edit-modal>
@@ -312,6 +315,7 @@ import {mapActions, mapGetters} from "vuex";
 import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
 // import ViewClient from "@/components/Dashboard/Apartment/ViewClient";
 import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
+import ApartmentsPermission from "@/permission/apartments";
 // import InfoManager from "@/components/Dashboard/Apartment/InfoManager";
 // import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
 // import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
@@ -443,6 +447,9 @@ export default {
         confirm: false,
         values: [],
       },
+      editPermission: ApartmentsPermission.getApartmentEditPermission(),
+      isSoldPermission: ApartmentsPermission.getApartmentIsSoldPermission(),
+      viewPermission: ApartmentsPermission.getApartmentViewPermission()
     }
   },
 
@@ -455,7 +462,7 @@ export default {
     ...mapGetters(["getPermission", "getMe"]),
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
     hasPermission() {
-      return this.getPermission.apartments && this.getPermission.apartments.edit
+      return this.editPermission || this.isSoldPermission || this.viewPermission
     },
 
     query() {

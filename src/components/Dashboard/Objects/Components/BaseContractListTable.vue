@@ -70,6 +70,7 @@
       <template #cell(actions)="data">
         <div class="float-right">
           <div
+              v-if="primaryPermission || downloadPermission || deletePermission"
               class="dropdown my-dropdown dropleft"
           >
             <button
@@ -86,7 +87,7 @@
               <a
                   href="#"
                   class="dropdown-item dropdown-item--inside"
-                  v-if="!data.item.main"
+                  v-if="!data.item.main && primaryPermission"
                   @click="makeItMain(data.item.id)"
               >
               <span>
@@ -98,6 +99,7 @@
               </a>
 
               <a
+                  v-if="downloadPermission"
                   class="dropdown-item dropdown-item--inside"
                   :href="downloadDocumentURl(data.item.path)"
               >
@@ -108,6 +110,7 @@
               </a>
 
               <a href="#"
+                 v-if="deletePermission"
                  class="dropdown-item dropdown-item--inside"
                  @click="deleteContract(data.item.id)"
               >
@@ -128,6 +131,8 @@
 
 <script>
 import api from "@/services/api";
+import {mapGetters} from "vuex";
+import TemplatesPermission from "@/permission/templates";
 
 export default {
   name: "ContractListTable",
@@ -144,12 +149,18 @@ export default {
   emits: ['update-content', 'update-loading'],
   data() {
     return {
+      deletePermission: TemplatesPermission.getTemplatesDeletePermission(),
+      downloadPermission: TemplatesPermission.getTemplatesDownloadPermission(),
+      primaryPermission: TemplatesPermission.getTemplatesPrimaryPermission(),
       sortBy: "main",
       sortDesc: true,
       showLoading: false
     }
   },
   computed: {
+    ...mapGetters({
+      permission: 'getPermission'
+    }),
     fields() {
       const list = [
         {

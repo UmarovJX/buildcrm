@@ -573,6 +573,7 @@ export default {
   outline: none;
   background-color: transparent;
   height: 100%;
+  max-width: 156px;
   padding-left: 1rem;
 }
 

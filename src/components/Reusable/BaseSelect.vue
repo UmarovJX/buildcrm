@@ -11,6 +11,7 @@
     <!--    <span v-if="value && label" class="input-label">{{ placeholder }}</span>-->
     <select
         :name="name"
+        :disabled="disabled"
         v-model="inlineValue"
         :class="{'base-select-initial':!value, 'not-label':!label}"
         class="base-select"
@@ -73,6 +74,10 @@ export default {
     value: {
       type: [String, Object, Array, Number],
       default: () => null
+    },
+    disabled:{
+      type: Boolean,
+      default: () => false
     }
   },
   emits: ['change'],

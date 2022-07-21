@@ -1,12 +1,15 @@
 import api from "@/services/api";
+// import GeneralPermission from "@/permission/general";
 
 export default {
     actions: {
         async fetchCurrency(ctx, vm) {
             try {
-                const {data} = await api.settingsV2.fetchCurrency()
-
-                ctx.commit('updateCurrency', data);
+                const response = await api.authV1.getMe()
+                if (response.data.role && response.data.role.permissions && response.data.role.permissions.general && response.data.role.permissions.general.currency) {
+                    const {data} = await api.settingsV2.fetchCurrency()
+                    ctx.commit('updateCurrency', data);
+                }
 
             } catch (error) {
                 if (!error.response) {
@@ -22,7 +25,9 @@ export default {
                         vm.toasted(error.response.data.message, 'error');
                     }
                 }
+                // }
             }
+
         }
     },
 

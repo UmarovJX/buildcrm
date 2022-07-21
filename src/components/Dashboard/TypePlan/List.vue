@@ -97,8 +97,8 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
+                  v-if="editPermission || deletePermission"
                   class="dropdown my-dropdown dropleft"
-                  v-if="getPermission.type_plan.update"
               >
                 <button
                     type="button"
@@ -110,17 +110,20 @@
 
                 <div class="dropdown-menu">
                   <button
+                      v-if="editPermission"
                       class="dropdown-item dropdown-item--inside"
                       @click="edit(data.item.id)"
                   >
                     <i class="fas fa-pen"></i>
-                    {{ $t("edit") }}
+                    <span class="ml-3">
+                      {{ $t("edit") }}
+                    </span>
                   </button>
 
                   <button
+                      v-if="deletePermission"
                       class="dropdown-item dropdown-item--inside"
                       @click="deleteTypePlan(data.item)"
-                      v-if="getPermission.type_plan.update"
                   >
                     <span>
                       <i class="far fa-trash"></i>
@@ -153,6 +156,7 @@ import "@fancyapps/ui/dist/fancybox.css";
 import {mapGetters, mapActions} from "vuex";
 import api from "@/services/api";
 import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
+import PlansPermission from "@/permission/plans";
 
 export default {
   name: 'TypePlanList',
@@ -161,6 +165,8 @@ export default {
   },
   data() {
     return {
+      editPermission: PlansPermission.getPlansEditPermission(),
+      deletePermission: PlansPermission.getPlansDeletePermission(),
       showLoading: false,
       manager: {},
       manager_id: null,
@@ -207,7 +213,9 @@ export default {
       }
     }
   },
-  computed: mapGetters(["getPlan", "getLoading", "getPermission"]),
+  computed: {
+    ...mapGetters(["getPlan", "getLoading", "getPermission"]),
+  },
   mounted() {
     this.fetchPlans(this);
     Fancybox.bind("[data-fancybox]");

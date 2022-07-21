@@ -6,6 +6,7 @@
     >
       <template #extra-content>
         <button
+            v-if="createPromoPermission"
             class="btn btn-primary mr-0 mt-md-0"
             @click="addNewPromo"
         >
@@ -36,11 +37,12 @@
 
 <script>
 import api from '@/services/api'
-import {mapMutations} from "vuex"
+import {mapGetters, mapMutations} from "vuex"
 import BaseBreadCrumb from "@/components/BaseBreadCrumb"
 import BaseLoadingContent from "@/components/BaseLoadingContent"
 import CreationContent from "@/components/Dashboard/Objects/Promo/components/CreationContent";
 import ListContent from "@/components/Dashboard/Objects/Promo/components/ListContent";
+import PromosPermission from "@/permission/promos";
 
 export default {
   name: "Promo",
@@ -54,10 +56,12 @@ export default {
     return {
       promos: [],
       loading: false,
-      promoUsage: []
+      promoUsage: [],
+      createPromoPermission: PromosPermission.getPromosCreatePermission(),
     }
   },
   computed: {
+    ...mapGetters(["getPermission"]),
     activeContent() {
       return this.$t('list')
     },

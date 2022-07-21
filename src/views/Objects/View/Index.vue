@@ -22,11 +22,12 @@
     <object-sort
         :filter-fields="filterFields"
         :app-loading="finishLoading"
-        :tabs="componentTabs"
+        :tabs="checkedPermissionTab"
         @clear-status="clearStatus"
         @current-tab="changeTab"
     />
-    <div class="status-row" v-if="currentTab !== 'ObjectPlan'">
+    <div class="status-row"
+         v-if="(apartmentsFilterPermission) && currentTab !== 'ObjectPlan'">
       <b-form-checkbox-group
           id="checkbox-sort"
           class="status-sort"
@@ -135,6 +136,9 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
 import BaseCLose from "@/components/icons/BaseClose";
+import {mapGetters} from "vuex";
+import ApartmentsPermission from "@/permission/apartments";
+// import ObjectsPermission from "@/permission/objects";
 
 export default {
   name: "Objects",
@@ -265,6 +269,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["getPermission"]),
     breadCrumbs() {
       return [
         {
@@ -272,6 +277,22 @@ export default {
           textContent: this.$t('contracts.title')
         },
       ]
+    },
+    checkedPermissionTab() {
+      let result = this.componentTabs
+      if (!ApartmentsPermission.getApartmentListPermission()) {
+        result = result.filter(item => item.view !== 'list')
+      }
+      if (!ApartmentsPermission.getApartmentGridPermission()) {
+        result = result.filter(item => item.view !== 'architecture')
+      }
+      if (!ApartmentsPermission.getApartmentChessPermission()) {
+        result = result.filter(item => item.view !== 'chess')
+      }
+      if (!ApartmentsPermission.getApartmentPlanPermission()) {
+        result = result.filter(item => item.view !== 'plan')
+      }
+      return result
     },
     activeContent() {
       return this.$t('view')
@@ -285,7 +306,30 @@ export default {
     accessToFilter() {
       const tabsActiveToFilter = ['ObjectBlock', 'ChessSquareCard']
       return tabsActiveToFilter.includes(this.currentTab)
-    }
+    },
+    apartmentsFilterPermission() {
+      return ApartmentsPermission.getApartmentsPermission('filter')
+    },
+
+    // apartmentsViewPermission() {
+    //   return ApartmentsPermission.getApartViewPermission()
+    // },
+    // apartmentsEditPermission() {
+    //   return ApartmentsPermission.getApartEditPermission()
+    // },
+    // apartmentsListPermission() {
+    //   return ApartmentsPermission.getApartListPermission()
+    // },
+    // apartmentsGridPermission() {
+    //   return ApartmentsPermission.getApartGridPermission()
+    // },
+    // apartmentsChessPermission() {
+    //   return ApartmentsPermission.getApartChessPermission()
+    // },
+    // apartmentsPlanPermission() {
+    //   return ApartmentsPermission.getApartPlanPermission()
+    // }
+
   },
 
   watch: {
@@ -328,15 +372,19 @@ export default {
     }
   },
   mounted() {
-    this.fetchFilterFields()
+    if (ApartmentsPermission.getApartmentsPermission('filter')) {
+      this.fetchFilterFields()
+    }
     this.getPriceList()
   },
   async created() {
     const historyTab = sessionStorageGetItem(
         'object_history_of_tab_' + this.$route.params.object
     )
-    if (historyTab) {
+    if (historyTab && !this.checkedPermissionTab.filter(item => item.name === historyTab)) {
       this.currentTab = historyTab
+    } else {
+      this.changeTab(this.checkedPermissionTab[0])
     }
     setTimeout(() => {
       this.getAllApartment()
@@ -807,6 +855,7 @@ export default {
       }
     },
     async getObjectPlans() {
+      this.planLoading = true
       const id = this.$route.params.object
       await api.objectsV2.getObjectPlans(id)
           .then((response) => {
@@ -821,8 +870,10 @@ export default {
     apartmentExpressReview(item) {
       // const itemNotOpen = item.uuid !== this.expressView.item.uuid
       // if (itemNotOpen) {
-      this.expressView.item = item
-      this.expressView.toggle = true
+      if (item) {
+        this.expressView.item = item
+        this.expressView.toggle = true
+      }
       // }
     },
     planExpressReview(item) {

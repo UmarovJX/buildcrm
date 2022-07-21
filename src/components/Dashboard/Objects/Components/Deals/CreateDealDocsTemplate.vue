@@ -84,6 +84,7 @@
 
         <!-- MAKE IT THE MAIN CONTRACT  -->
         <b-form-checkbox
+            v-if="primaryPermission"
             class="d-flex justify-content-end"
             name="checkbox-for-contract"
             v-model="form.main"
@@ -142,6 +143,7 @@
 
 <script>
 import api from "@/services/api";
+import TemplatesPermission from "@/permission/templates";
 
 export default {
   name: "CreateDealDocsTemplate",
@@ -166,7 +168,8 @@ export default {
       options: [
         {text: 'uz', value: 'uz'},
         {text: 'ru', value: 'ru'}
-      ]
+      ],
+      primaryPermission: TemplatesPermission.getTemplatesPrimaryPermission(),
     }
   },
   computed: {

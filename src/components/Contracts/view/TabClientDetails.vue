@@ -45,11 +45,12 @@
             <label for="client_type">{{ $t('client_type') }}</label>
             <div class="selection__content">
               <select
-                  v-if="permission.contracts.friends"
+                  v-if="permissionClientType"
                   @change="changeClientType"
                   name="client_type"
                   id="client_type"
                   class="client__type"
+                  :disabled="!(permissionClientType)"
                   :value="client.friends"
               >
                 <option :value="false">{{ $t('unfamiliar') }}</option>
@@ -78,6 +79,7 @@
 import {formatDateWithDot, phonePrettier} from "@/util/reusable";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "TabClientDetails",
@@ -105,12 +107,16 @@ export default {
     }),
     haveClient() {
       return Object.keys(this.client).length
-    }
+    },
+    permissionClientType() {
+      return ContractsPermission.getContractsClientTypePermission()
+    },
   },
   created() {
     this.getClientInformation()
   },
   methods: {
+
     datePrettier: (time) => formatDateWithDot(time),
     async getClientInformation() {
       this.startLoading()
@@ -262,7 +268,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-top: 1.6rem;
+  padding-top: 1rem;
 }
 
 //.selection__content .client__type {

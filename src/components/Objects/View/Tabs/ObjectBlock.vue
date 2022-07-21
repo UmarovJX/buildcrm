@@ -1,5 +1,5 @@
 <template>
-  <div class="position-relative" style="min-height: 300px">
+  <div class="position-relative d-flex" style="min-height: 300px">
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
         <h5>
@@ -108,7 +108,7 @@
 </template>
 
 <script>
-
+import {mapGetters} from "vuex";
 import {formatToPrice} from "@/util/reusable";
 
 export default {
@@ -125,6 +125,7 @@ export default {
   },
   emits: ['show-express-sidebar'],
   computed: {
+    ...mapGetters(["getPermission"]),
     query() {
       return this.$route.query
     },
@@ -168,7 +169,7 @@ export default {
     },
     showExpressSidebar(item, floorActive, blockActive) {
       const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
-      if (isActive) {
+      if ((this.getPermission.apartments && this.getPermission.apartments.show) && isActive) {
         this.$emit('show-express-sidebar', item)
       }
     },

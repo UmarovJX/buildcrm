@@ -17,12 +17,12 @@
           </span>
         </span>
       </div>
-      <div>
+      <div v-if="hasAction">
         <b-dropdown right>
           <template #button-content>
             {{ $t('contracts.view.actions') }}
           </template>
-          <b-dropdown-item href="#" @click="downloadContact">
+          <b-dropdown-item v-if="downloadPermission" href="#" @click="downloadContact">
             <span class="mr-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -33,7 +33,7 @@
             {{ $t('contracts.view.download_contract') }}
           </b-dropdown-item>
           <b-dropdown-item
-              v-if="order.status === 'sold' || order.status === 'contract'"
+              v-if="editPermission"
               :to="{name:'edit-apartment', params:{id:$route.params.id}}"
           >
             <span class="mr-2">
@@ -56,7 +56,7 @@
             {{ $t('contracts.view.cancel_contract') }}
           </b-dropdown-item>
           <b-dropdown-item
-              v-if="order && order.reissue.re_order"
+              v-if="reContractPermission"
               @click="openReContractModal"
           >
             <span class="mr-2">
@@ -238,6 +238,7 @@ import {mapGetters} from "vuex";
 import BaseCLose from "@/components/icons/BaseClose";
 import BaseWarningIcon from "@/components/icons/BaseWarningIcon";
 import BaseSelect from "@/components/Reusable/BaseSelect";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "ContractView",
@@ -267,7 +268,9 @@ export default {
       deleteComment: null,
       errors: [],
       types: [],
-      reason_type: ''
+      reason_type: '',
+      reContractViewPermission: ContractsPermission.getContractsReissueViewPermission(),
+      downloadPermission: ContractsPermission.getContractsDownloadPermission()
     }
   },
   computed: {
@@ -281,8 +284,20 @@ export default {
     isStatusContract() {
       return this.order.status === 'contract'
     },
+    hasAction() {
+      return this.reContractPermission || this.editPermission || this.deletePermission || this.downloadPermission
+    },
+    // reContractViewPermission(){
+    //   return ContractsPermission.getContractsReissueViewPermission()
+    // },
+    reContractPermission() {
+      return ContractsPermission.getContractsReissueCreatePermission() && this.order.reissue && this.order.reissue.re_order
+    },
+    editPermission() {
+      return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
+    },
     deletePermission() {
-      return this.permission?.contracts?.cancelled && this.isStatusContract
+      return ContractsPermission.getContractsCancelPermission() && this.isStatusContract
     },
     filterTabList() {
       const list = [
@@ -307,7 +322,7 @@ export default {
       if (status === 'booked') {
         return list.slice(1).map((ls, index) => ({...ls, status: index}))
       }
-      if (reissue && !reissue.view) {
+      if (this.reContractViewPermission && reissue && !reissue.view) {
         return list.slice(0, -1).map((ls, index) => ({...ls, status: index}))
       }
       return list.map((ls, index) => ({...ls, status: index}))
@@ -318,6 +333,7 @@ export default {
   },
   async created() {
     await this.fetchContractData()
+    console.log(this.getPermission, 'permission');
   },
   methods: {
     checkLocales(name) {

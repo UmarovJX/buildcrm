@@ -29,7 +29,7 @@
           </b-form-select-option>
 
           <b-form-select-option
-              v-if="getMe.role.id === 1 || getPermission.contracts.other_price"
+              v-if="markPricePermission"
               :value="{
                 id: 'other',  type: 'percent', currency: null, amount: 0, prepay: 30}"
           >
@@ -239,6 +239,7 @@ const {
 } = require("../../../../util/calculator");
 import {mapGetters} from "vuex";
 import Vue from 'vue';
+import CheckoutPermission from "@/permission/checkout";
 
 export default {
   name: "Calculator",
@@ -260,7 +261,7 @@ export default {
     paymentDetails: {
       type: Object,
       required: true
-    }
+    },
   },
 
   watch: {
@@ -301,7 +302,9 @@ export default {
 
       edited: {
         prepay: false
-      }
+      },
+      markPricePermission: CheckoutPermission.getMarkPricePermission()
+
     }
   },
 

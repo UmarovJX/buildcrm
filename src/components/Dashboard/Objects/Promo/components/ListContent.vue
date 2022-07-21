@@ -29,13 +29,6 @@
         </span>
       </template>
 
-      <!-- FLOORS COLUMN -->
-      <!--      <template #cell(floors)="data">-->
-      <!--        <span v-if="data.item.blocks.length">-->
-      <!--          {{ sumFloorsCount(data.item.blocks) }}-->
-      <!--        </span>-->
-      <!--      </template>-->
-
       <!--   ACTION   -->
       <template #cell(actions)="data">
         <div class="float-right">
@@ -53,7 +46,7 @@
             <div class="dropdown-menu" v-if="hasPermission">
 
               <b-button
-                  v-if="permission.objects.update && !data.item.status"
+                  v-if="!data.item.status && editPromoPermission"
                   class="dropdown-item dropdown-item--inside"
                   @click="activatePromo(data.item)"
               >
@@ -63,16 +56,7 @@
 
 
               <b-button
-                  v-if="permission.objects.update"
-                  @click="editPromoItem(data.item)"
-                  class="dropdown-item dropdown-item--inside"
-              >
-                <i class="fas fa-edit"></i>
-                {{ $t("edit") }}
-              </b-button>
-
-              <b-button
-                  v-if="permission.objects.update && data.item.status"
+                  v-if="data.item.status && editPromoPermission"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deactivatePromo(data.item)"
               >
@@ -80,8 +64,19 @@
                 {{ $t("deactivate") }}
               </b-button>
 
+
               <b-button
-                  v-if="permission.objects.delete"
+                  v-if="editPromoPermission"
+                  @click="editPromoItem(data.item)"
+                  class="dropdown-item dropdown-item--inside"
+              >
+                <i class="fas fa-edit"></i>
+                {{ $t("edit") }}
+              </b-button>
+
+
+              <b-button
+                  v-if="deletePromoPermission"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deletePromoItem(data.item)"
               >
@@ -100,6 +95,7 @@
 <script>
 import {mapGetters} from "vuex";
 import api from '@/services/api'
+import PromosPermission from "@/permission/promos";
 
 export default {
   name: 'ListContent',
@@ -114,7 +110,9 @@ export default {
     return {
       sortBy: "index",
       sortDesc: false,
-      loading: false
+      loading: false,
+      editPromoPermission: PromosPermission.getPromosEditPermission(),
+      deletePromoPermission: PromosPermission.getPromosDeletePermission(),
     }
   },
   computed: {

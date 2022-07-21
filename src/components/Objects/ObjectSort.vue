@@ -1,6 +1,6 @@
 <template>
   <div class="sort-list">
-    <div class="sort-top ">
+    <div v-if="apartmentsFilterPermission" class="sort-top ">
 
       <!--   Номер квартиры   -->
       <div class="filter__inputs-input">
@@ -249,6 +249,9 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import {clearObjectProperties} from "@/util/reusable";
 import {sortInFirstRelationship} from "@/util/reusable";
 import {sessionStorageGetItem} from "@/util/storage";
+import {mapGetters} from "vuex";
+import ApartmentsPermission from "@/permission/apartments";
+
 
 export default {
   name: "ObjectSort",
@@ -323,9 +326,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["getPermission"]),
     query() {
       return Object.assign({}, this.$route.query)
-    }
+    },
+    apartmentsFilterPermission() {
+      return ApartmentsPermission.getApartmentsPermission('filter')
+    },
   },
   watch: {
     appLoading(finishLoading) {
@@ -814,8 +821,19 @@ export default {
   }
 
   .custom-control-label {
-    padding-left: .5rem;
+    //padding-left: .5rem;
+    //width: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
     width: 100%;
+    height: 100%;
+
+    &:before, &:after {
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+    }
 
   }
 
@@ -833,12 +851,18 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
-    padding: .15rem .15rem .15rem 2.5rem;
+    //padding: .15rem .15rem .15rem 2.5rem;
     height: 50px;
     font-weight: 600;
     border-radius: 1rem;
     color: var(--gray-600);
     font-size: 1rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    padding: 0.15rem 0.15rem 0.15rem 1rem;
 
     &:hover {
       background-color: var(--gray-200);

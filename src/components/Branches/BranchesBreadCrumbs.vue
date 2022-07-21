@@ -21,6 +21,7 @@
       </ul>
     </div>
     <router-link
+        v-if="createPermission"
         :to="{name: 'create-branch'}"
         :class="'btn btn-primary mr-0 mt-md-0'"
     >
@@ -31,7 +32,14 @@
 </template>
 
 <script>
+import BranchesPermission from "@/permission/branches";
+
 export default {
-  name: "BranchesBreadCrumbs"
+  name: "BranchesBreadCrumbs",
+  data() {
+    return {
+      createPermission: BranchesPermission.getBranchesCreatePermission()
+    }
+  }
 }
 </script>

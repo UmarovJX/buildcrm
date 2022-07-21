@@ -36,7 +36,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getMe"])
+    ...mapGetters(["getMe"]),
+
   },
   async created() {
     if (!localStorage.locale) {
@@ -53,7 +54,6 @@ export default {
         await this.$router.push("/")
       }
     }
-
     if (!localStorage.getItem("user-theme")) {
       this.setTheme("light-theme")
     }

@@ -6,23 +6,23 @@
     >
     </base-bread-crumb>
 
-<!--    <base-input-->
-<!--        v-model="search"-->
-<!--        :placeholder="$t('users.name')"-->
-<!--        type="date"-->
-<!--        :label="true"-->
-<!--        :error="false"-->
-<!--    />-->
-<!--    <base-select-->
-<!--        :options="array"-->
-<!--        placeholder="label"-->
-<!--        :label="true"-->
-<!--        :error="false"/>-->
+    <!--    <base-input-->
+    <!--        v-model="search"-->
+    <!--        :placeholder="$t('users.name')"-->
+    <!--        type="date"-->
+    <!--        :label="true"-->
+    <!--        :error="false"-->
+    <!--    />-->
+    <!--    <base-select-->
+    <!--        :options="array"-->
+    <!--        placeholder="label"-->
+    <!--        :label="true"-->
+    <!--        :error="false"/>-->
 
-<!--    <warning-success status="warning" ref="base-modal"/>-->
+    <!--    <warning-success status="warning" ref="base-modal"/>-->
 
 
-<!--    <b-btn @click="openModal">click</b-btn>-->
+    <!--    <b-btn @click="openModal">click</b-btn>-->
 
     <b-card no-body>
       <b-tabs
@@ -30,7 +30,7 @@
           pills card vertical
           active-tab-class="user__active__tab"
       >
-        <b-tab active>
+        <b-tab v-if="profileSettingsPermission" active>
           <template #title>
             <span class="d-flex align-items-center">
                 <base-user-account-icon :extra-class="activeTabIconColor(0)"/>
@@ -39,7 +39,7 @@
           </template>
           <tab-user-me/>
         </b-tab>
-        <b-tab>
+        <b-tab v-if="passwordPermission">
           <template #title>
             <span class="d-flex align-items-center">
                 <base-user-password-icon :extra-class="activeTabIconColor(1)"/>
@@ -60,9 +60,11 @@ import TabChangePassword from "@/components/UserSettings/TabChangePassword";
 import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import GeneralPermission from "@/permission/general";
 // import BaseSelect from "@/components/Reusable/BaseSelect";
 // import BaseInput from "@/components/Reusable/BaseInput";
 // import WarningSuccess from "@/components/Reusable/WarningSuccess";
+
 
 export default {
   name: 'UserSettings',
@@ -82,16 +84,25 @@ export default {
       search: '',
       array: [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-      ]
+      ],
+      passwordPermission: GeneralPermission.getGeneralPermission('password_settings'),
+      profileSettingsPermission: GeneralPermission.getGeneralPermission('profile_settings')
     }
   },
   computed: {
     ...mapGetters({
-      theme: 'getTheme'
+      theme: 'getTheme',
+      permission: 'getPermission'
     }),
     activeContent() {
       return this.$t('profile')
     },
+    // passwordPermission() {
+    //   return GeneralPermission.getPasswordSettingsPermission()
+    // },
+    // profileSettingsPermission() {
+    //   return GeneralPermission.getProfileSettingsPermission()
+    // },
   },
   methods: {
     openModal() {

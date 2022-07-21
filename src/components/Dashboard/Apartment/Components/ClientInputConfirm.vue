@@ -404,12 +404,7 @@
     <!-- apartments.agree.type_client -->
     <div
         class="col-md-4"
-        v-if="
-                  (getMe.role && getMe.role.id === 1) ||
-                    (getPermission &&
-                      getPermission.contracts &&
-                      getPermission.contracts.friends)
-                "
+        v-if="markFriendPermission"
     >
       <div class="mb-3">
         <label class="d-block" for="type_client">{{
@@ -436,6 +431,7 @@
 <script>
 import {mapGetters} from "vuex";
 import api from "@/services/api";
+import CheckoutPermission from "@/permission/checkout";
 
 export default {
   name: "ClientInputConfirm",
@@ -452,6 +448,7 @@ export default {
         },
       },
       maskForPhoneNumber: `+### ## ### ## ##`,
+      markFriendPermission: CheckoutPermission.getMarkFriendPermission()
     }
   },
 

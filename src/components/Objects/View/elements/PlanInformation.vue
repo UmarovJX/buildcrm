@@ -72,6 +72,7 @@ import {formatToPrice} from "@/util/reusable";
 import {directive} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 import {Fancybox} from "@fancyapps/ui";
+import {mapGetters} from "vuex";
 
 export default {
   name: "PrimaryInformation",
@@ -127,6 +128,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(["getPermission"]),
     // price() {
     //   return formatToPrice(this.plan.price) + ' ' + this.$t('ye')
     // },
@@ -138,7 +140,9 @@ export default {
 
   methods: {
     openModal(item) {
+      // if (this.getPermission.apartments && this.getPermission.apartments.show) {
       this.$emit('open-express', item)
+      // }
     },
     price(value) {
       return formatToPrice(value)

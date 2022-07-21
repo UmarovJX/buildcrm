@@ -970,8 +970,19 @@ export default {
   }
 
   .custom-control-label {
-    padding-left: .5rem;
+    //padding-left: .5rem;
+    //width: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
     width: 100%;
+    height: 100%;
+
+    &:before, &:after {
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0;
+    }
 
   }
 
@@ -989,12 +1000,12 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
-    padding: .15rem .15rem .15rem 2.5rem;
     height: 50px;
     font-weight: 600;
     border-radius: 1rem;
     color: var(--gray-600);
     font-size: 1rem;
+    padding: 0.15rem 0.15rem 0.15rem 1rem;
 
     &:hover {
       background-color: var(--gray-200);

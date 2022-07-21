@@ -6,6 +6,7 @@
       <!--    PAYMENT OPTIONS       -->
       <div>
         <base-select
+            :disabled="monthlyPermission"
             :label="true"
             :options="paymentOption"
             :no-placeholder="true"
@@ -149,6 +150,7 @@
 import {formatToPrice} from "@/util/reusable";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import {mapGetters} from "vuex";
 
 export default {
   name: "Calculator",
@@ -206,6 +208,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      permission: "getPermission",
+    }),
+    monthlyPermission() {
+      return this.permission.checkout && this.permission.checkout.monthly_payment
+    },
     paymentOption() {
       const discounts = [...this.apartment.discounts]
       if (!this.hasApartment) return
