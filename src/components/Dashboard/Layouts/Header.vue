@@ -59,13 +59,13 @@
             mr-3
           "
         >
-          <div v-if="getPermission.general && getPermission.general.currency"
+          <div v-if="currencyPermission"
                class="currency d-flex align-items-center">
             <div class="currency__price">1 USD = {{ getCurrency.usd }} UZS</div>
           </div>
         </div>
 
-        <div v-if="getPermission.general && getPermission.general.theme" class="d-nones">
+        <div v-if="themePermission" class="d-nones">
           <theme-button :theme="theme"/>
         </div>
 
@@ -95,7 +95,7 @@
             </div>
           </button>
           <div class="dropdown-menu dropdown-menu__user">
-            <a v-if="getPermission.general && getPermission.general.language" class="dropdown-item"
+            <a v-if="languagePermission" class="dropdown-item"
                href="javascript:void(0)">
               <label class="switch">
                 <input type="checkbox" @click="changeLocale" v-model="locale"/>
@@ -106,7 +106,7 @@
               </label>
             </a>
             <router-link
-                v-if="settingPermission"
+                v-if="settingsPermission"
                 :to="{name:'user-settings'}"
                 class="dropdown-item"
             >
@@ -214,8 +214,17 @@
 import {localeChanged} from 'vee-validate'
 import {mapActions, mapGetters} from "vuex";
 import ThemeButton from "@/components/ThemeButton.vue";
+import GeneralPermission from "@/permission/general";
 
 export default {
+  name: 'Header',
+  components: {ThemeButton},
+  props: {
+    theme: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
       locale: null,
@@ -223,14 +232,11 @@ export default {
       isActive: true,
       menuExpanded: false,
       userTheme: "light-theme",
-    };
-  },
-  components: {ThemeButton},
-  props: {
-    theme: {
-      type: String,
-      default: "",
-    },
+      // currencyPermission: GeneralPermission.getGeneralPermission('currency'),
+      // themePermission: GeneralPermission.getGeneralPermission('theme'),
+      // languagePermission: GeneralPermission.getGeneralPermission('language'),
+      // settingsPermission: GeneralPermission.getGeneralPermission('settings') && (GeneralPermission.getGeneralPermission('password_settings') || GeneralPermission.getGeneralPermission('profile_settings')),
+    }
   },
   async created() {
     await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this), this.fetchCurrency(this)])
@@ -260,9 +266,18 @@ export default {
       const result = notUsed.findIndex(name => name === currentRouteName)
       return result === -1;
     },
-    settingPermission() {
-      return this.getPermission.general && this.getPermission.general.settings && (this.getPermission.general.profile_settings || this.getPermission.general.password_settings)
-    }
+    currencyPermission() {
+      return GeneralPermission.getCurrencyPermission()
+    },
+    themePermission() {
+      return GeneralPermission.getThemePermission()
+    },
+    languagePermission() {
+      return GeneralPermission.getLanguagePermission()
+    },
+    settingsPermission() {
+      return GeneralPermission.getSettingsPermission() && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
+    },
   },
   methods: {
     ...mapActions([

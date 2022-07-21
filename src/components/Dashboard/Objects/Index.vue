@@ -5,16 +5,15 @@
           :active-content="activeContent"
       >
       </base-bread-crumb>
-
       <div class="object-cards">
-        <template v-if="getPermission.objects && getPermission.objects.view"
+        <template v-if="viewPermission"
         >
           <div class="card"
                v-for="(object, index) in getObjects"
                :key="index"
           >
             <div
-                v-if="getPermission.objects || (getPermission.objects.delete || getPermission.objects.edit)"
+                v-if="deletePermission || editPermission || logoUploadPermission || promoViewPermission || plansViewPermission"
                 class="object__more-info">
               <div class="my-dropdown dropleft">
                 <button
@@ -28,7 +27,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <router-link
-                      v-if="getPermission.objects && getPermission.objects.edit"
+                      v-if="editPermission"
                       :class="'dropdown-item'"
                       :to="{name: 'objectsEdit', params: {id: object.id}}"
                   >
@@ -45,7 +44,7 @@
 
 
                   <router-link
-                      v-if="getPermission.promos && getPermission.promos.view"
+                      v-if="promosViewPermission"
                       :to="{name:'objects-promo',params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -56,7 +55,7 @@
                   </router-link>
 
                   <router-link
-                      v-if="getPermission.plans && getPermission.plans.view"
+                      v-if="plansViewPermission"
                       :to="{name:'type-plan-view', params:{id:object.id}}"
                       :class="'dropdown-item'"
                   >
@@ -68,7 +67,7 @@
 
                   <b-link
                       class="dropdown-item"
-                      v-if="getPermission.objects && getPermission.objects.upload_logo"
+                      v-if="logoUploadPermission"
                       @click="object_id = object.id"
                       v-b-modal.modal-upload-logo
                   >
@@ -77,7 +76,7 @@
 
                   <a
                       class="dropdown-item"
-                      v-if="getPermission.objects && getPermission.objects.delete"
+                      v-if="deletePermission"
                       @click="deleteObject(object.id)"
                       href="#"
                   >
@@ -88,7 +87,7 @@
             </div>
             <router-link
                 class="card-body"
-                :event="getPermission.apartments && getPermission.apartments.view ? 'click' : ''"
+                :event="apartmentsViewPermission ? 'click' : ''"
                 :to="{name: 'apartments', params: {object: object.id}}"
             >
               <div class="card-top">
@@ -118,7 +117,7 @@
             </router-link>
 
             <router-link class="card-img"
-                         :event="getPermission.apartments && getPermission.apartments.view ? 'click' : ''"
+                         :event="apartmentsViewPermission ? 'click' : ''"
                          :to="{name: 'apartments', params: {object: object.id}}"
             >
               <img v-if="object.image" v-lazy="object.image" alt="">
@@ -126,7 +125,7 @@
             </router-link>
           </div>
         </template>
-        <div class="card" v-if="getPermission.objects && getPermission.objects.create">
+        <div class="card" v-if="createPermission">
           <div class="card-body card-empty" @click="createBlock">
             <img :src="require('@/assets/icons/icon-plus.svg')" alt="">
             <p>{{ $t('object_create') }}</p>
@@ -145,7 +144,7 @@
 
       <!-- <filter-form v-if="getPermission.apartments.filter"></filter-form> -->
       <upload-logo
-          v-if="getPermission.objects && getPermission.objects.upload_logo"
+          v-if="logoUploadPermission"
           :object-id="object_id"
           @UploadLogo="uploadLogo"
       />
@@ -175,6 +174,10 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import api from "@/services/api";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import {formatToPrice} from "@/util/reusable";
+import ObjectsPermission from "@/permission/objects";
+import ApartmentsPermission from "@/permission/apartments";
+import PromosPermission from "@/permission/promos";
+import PlansPermission from "@/permission/plans";
 
 export default {
   name: 'Objects',
@@ -186,12 +189,6 @@ export default {
   },
 
   data: () => ({
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
-      },
-    },
-
     object_id: 0,
     filter: {
       rooms: [],
@@ -204,31 +201,27 @@ export default {
       area_from: null,
       area_to: null,
     },
-
     getLoading: false,
+    createPermission: ObjectsPermission.getObjectsPermission('create'),
+    deletePermission: ObjectsPermission.getObjectsPermission('delete'),
+    editPermission: ObjectsPermission.getObjectsPermission('edit'),
+    viewPermission: ObjectsPermission.getObjectsPermission('view'),
+    logoUploadPermission: ObjectsPermission.getObjectsPermission('upload_logo'),
+    apartmentsViewPermission: ApartmentsPermission.getApartmentsPermission('view'),
+    promosViewPermission: PromosPermission.getPromosViewPermission(),
+      plansViewPermission: PlansPermission.getPlansViewPermission()
+
   }),
 
   mounted() {
     this.fetchObjects(this);
-    // console.log(this.getPermission);
   },
 
   computed: {
     ...mapGetters(["getObjects", "getPermission"]),
     activeContent() {
       return this.$t('objects.title')
-    },
-    // permission(){
-    //   const hasObjectPermission = this.getPermission.hasOwnProperty('objects')
-    //   if(hasObjectPermission){
-    //     return this.getPermission.objects
-    //   }
-    //
-    //   return {
-    //     update:false,
-    //
-    //   }
-    // }
+    }
   },
 
   methods: {

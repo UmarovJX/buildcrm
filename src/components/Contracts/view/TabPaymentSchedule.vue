@@ -11,7 +11,7 @@
     </div>
 
     <!--  PAYMENTS HISTORY  -->
-    <div v-if="!listPermission" class="payments__history">
+    <div v-if="listPermission" class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
@@ -35,7 +35,7 @@
             </template>
           </base-button>
           <base-button
-              v-if="!uploadFilePermission"
+              v-if="uploadFilePermission"
               @click="openPaymentAdditionModal"
               :text="$t('payments.payment_add')"
               design="add__button"
@@ -487,6 +487,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "TabPaymentSchedule",
@@ -609,15 +610,15 @@ export default {
       permission: 'getPermission'
     }),
     paidPermission() {
-      return this.permission?.contracts?.payments?.import
+      return ContractsPermission.getContractsPaymentsImportPermission()
     },
     listPermission() {
-      return this.permission?.contracts?.payments?.list
+      return ContractsPermission.getContractsPaymentsListPermission()
     },
     paymentTypeOptionsPermission() {
       const listOption = []
 
-      if (!this.permission?.contracts?.payments?.initial_type?.create) {
+      if (ContractsPermission.getContractsInitialCreatePermission()) {
         listOption.push({
           value: 'initial_payment',
           text: this.$t('initial_payment')
@@ -625,7 +626,7 @@ export default {
       }
 
       const monthlyPaymentCounts = this.order?.payments?.monthly_payments_count
-      if (this.permission?.contracts?.payments?.monthly_type?.create && monthlyPaymentCounts) {
+      if (ContractsPermission.getContractsMonthlyCreatePermission() && monthlyPaymentCounts) {
         listOption.push({
           value: 'monthly',
           text: this.$t('monthly')
@@ -643,9 +644,7 @@ export default {
       return options
     },
     uploadFilePermission() {
-      const {contracts} = this.permission
-      return contracts?.payments?.create && (contracts?.payments?.initial_type?.create || contracts?.payments?.monthly_type?.create)
-      // return true
+      return ContractsPermission.getContractsPaymentsCreatePermission() && (ContractsPermission.getContractsInitialCreatePermission() || ContractsPermission.getContractsMonthlyCreatePermission())
     },
     firstChart() {
       const {payments, currency} = this.order
@@ -809,15 +808,15 @@ export default {
   methods: {
     userInteractionEdit(type) {
       if (type === 'initial_payment')
-        return this.permission?.contracts?.payments?.initial_type?.edit
+        return ContractsPermission.getContractsInitialEditPermission()
       else if (type === 'monthly')
-        return this.permission?.contracts?.payments?.monthly_type?.edit
+        return ContractsPermission.getContractsMonthlyEditPermission()
     },
     userInteractionDelete(type) {
       if (type === 'initial_payment')
-        return this.permission?.contracts?.payments?.initial_type?.delete
+        return ContractsPermission.getContractsInitialDeletePermission()
       else if (type === 'monthly')
-        return this.permission?.contracts?.payments?.monthly_type?.delete
+        return ContractsPermission.getContractsMonthlyDeletePermission()
     },
     refreshDetails() {
       this.$emit('refresh-details')

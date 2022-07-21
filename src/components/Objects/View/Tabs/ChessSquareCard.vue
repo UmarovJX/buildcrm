@@ -186,9 +186,9 @@ export default {
     showExpressSidebar(item) {
       // const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
       // if (isActive) {
-      if (this.getPermission.apartments && this.getPermission.apartments.show) {
+      // if (this.getPermission.apartments && this.getPermission.apartments.show) {
         this.$emit('show-express-sidebar', item)
-      }
+      // }
       // }
     },
     inactiveApartment(apartmentActive, floorActive, blockActive) {

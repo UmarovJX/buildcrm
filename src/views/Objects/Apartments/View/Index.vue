@@ -200,6 +200,7 @@ import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import PdfTemplate from "@/components/PdfTemplate";
 import {formatToPrice} from "@/util/reusable";
+import CheckoutPermission from "@/permission/checkout";
 
 export default {
   name: "ApartmentView",
@@ -247,7 +248,10 @@ export default {
       appLoading: false,
       showReservationModal: false,
       printCalc: {},
-      pdfVisible: false
+      pdfVisible: false,
+      bookPermission: CheckoutPermission.getCheckoutPermission('book'),
+      checkoutPermission: CheckoutPermission.getCheckoutPermission('checkout'),
+      checkoutRootPermission: CheckoutPermission.getCheckoutPermission('root'),
     }
   },
 
@@ -277,35 +281,34 @@ export default {
 
       if (!this.hasApartment) return context
 
-      const {apartment, me, userPermission} = this
+      const {apartment, me} = this
       const {order} = apartment
-      const {checkout} = userPermission
+      // const {checkout} = userPermission
       const forSale = apartment['is_sold']
       const authorityUser = order?.user?.id === me?.user?.id
-      const rootContract = userPermission?.checkout?.root
-      const isMainRole = me?.role?.id === 1
+      // const rootContract = userPermission?.checkout?.root
+      // const isMainRole = me?.role?.id === 1
       const isStatusBooked = order.status === 'booked'
       const isStatusAvailable = order.status === 'available'
       const isStatusHold = order.status === 'hold'
       const isStatusSold = order.status === 'sold'
       const isStatusContract = order.status === 'contract'
-      const isStatusClosed = order.status === 'closed'
 
-      const permissionCancelReserve = isStatusBooked && (authorityUser || rootContract || isMainRole)
-      const permissionReserve = forSale && isStatusAvailable && userPermission?.checkout?.book
+      const permissionCancelReserve = isStatusBooked && (authorityUser || this.checkoutRootPermission)
+      const permissionReserve = forSale && isStatusAvailable && this.bookPermission
 
       const permissionContract = () => {
-        const permissionOne = checkout?.checkout && authorityUser
-        return (isStatusSold || isStatusContract || isStatusClosed) && (permissionOne || rootContract)
+        const permissionOne = this.checkoutPermission && authorityUser
+        return (isStatusSold || isStatusContract) && (permissionOne || this.checkoutRootPermission)
       }
 
       const permissionOrder = () => {
-        const permissionOne = isStatusAvailable && (authorityUser || checkout?.checkout || rootContract)
+        const permissionOne = isStatusAvailable && (authorityUser || this.checkoutPermission || this.checkoutRootPermission)
         return forSale && permissionOne
       }
       const permissionContinueOrder = () => {
-        const permissionOne = isStatusHold && (authorityUser || rootContract || isMainRole || checkout?.checkout)
-        const permissionTwo = isStatusBooked && authorityUser && checkout?.checkout
+        const permissionOne = isStatusHold && (authorityUser || this.checkoutRootPermission || this.checkoutPermission)
+        const permissionTwo = isStatusBooked && authorityUser && this.checkoutPermission
         return permissionOne || permissionTwo
       }
 
@@ -663,6 +666,7 @@ input[type="number"]
   font-family: Inter, sans-serif
   background-color: var(--gray-100)
   border-radius: 2rem
+  min-width: max-content
   padding: 0.5rem 2rem
 
 .status

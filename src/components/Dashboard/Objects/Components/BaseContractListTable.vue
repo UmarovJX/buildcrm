@@ -132,6 +132,7 @@
 <script>
 import api from "@/services/api";
 import {mapGetters} from "vuex";
+import TemplatesPermission from "@/permission/templates";
 
 export default {
   name: "ContractListTable",
@@ -148,6 +149,9 @@ export default {
   emits: ['update-content', 'update-loading'],
   data() {
     return {
+      deletePermission: TemplatesPermission.getTemplatesDeletePermission(),
+      downloadPermission: TemplatesPermission.getTemplatesDownloadPermission(),
+      primaryPermission: TemplatesPermission.getTemplatesPrimaryPermission(),
       sortBy: "main",
       sortDesc: true,
       showLoading: false
@@ -157,16 +161,6 @@ export default {
     ...mapGetters({
       permission: 'getPermission'
     }),
-    deletePermission() {
-      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.delete
-    },
-    downloadPermission() {
-      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.download
-    },
-    primaryPermission() {
-      return this.permission.branches && this.permission.branches.templates && this.permission.branches.templates.is_primary
-    },
-
     fields() {
       const list = [
         {

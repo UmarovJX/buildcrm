@@ -160,6 +160,7 @@
 import {formatDateWithDot, formatToPrice} from "@/util/reusable";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "TabClientDetails",
@@ -186,7 +187,7 @@ export default {
       permission: 'getPermission',
     }),
     uniformityPermission() {
-      return this.permission && this.permission.contracts && this.permission.contracts.uniformity
+      return ContractsPermission.getContractsUniformityPermission()
     },
   },
   methods: {

@@ -37,7 +37,7 @@
           :name="`${$t('promo.promo_rate')}`"
           rules="required|max_value:100|min_value:0"
           v-slot="{ errors }"
-          class="mt-4 w-100"
+          class="mt-4 mr-2 w-100"
           tag="div"
       >
         <label for="prepay-input">
@@ -49,6 +49,34 @@
               type="number"
               id="prepay-input-percent"
               :placeholder="$t('promo.promo_rate')"
+              :max="100"
+              :min="0"
+              class="prepay__input__percent mb-2"
+          >
+          </b-form-input>
+          <span class="error__provider" v-if="errors[0]">
+            {{ errors[0] }}
+          </span>
+        </div>
+      </ValidationProvider>
+
+      <ValidationProvider
+          :name="`${$t('promo.promo_rate')}`"
+          rules="required|min_value:0"
+          type="number"
+          v-slot="{ errors }"
+          class="mt-4 w-100"
+          tag="div"
+      >
+        <label for="prepay-input">
+          {{ $t('objects.credit_month') }}
+        </label>
+        <div class="pl-0">
+          <b-form-input
+              v-model="form.discount.month"
+              type="number"
+              id="objects.credit_month"
+              :placeholder="$t('objects.credit_month')"
               :max="100"
               :min="0"
               class="prepay__input__percent mb-2"
@@ -124,7 +152,8 @@ export default {
         blocks: [],
         discount: {
           id: null,
-          prepay: null
+          prepay: null,
+          month: null,
         }
       }
     }

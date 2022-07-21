@@ -79,6 +79,7 @@
 import {formatDateWithDot, phonePrettier} from "@/util/reusable";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "TabClientDetails",
@@ -108,7 +109,7 @@ export default {
       return Object.keys(this.client).length
     },
     permissionClientType() {
-      return this.permission.contracts && this.permission.contracts.client_type
+      return ContractsPermission.getContractsClientTypePermission()
     },
   },
   created() {

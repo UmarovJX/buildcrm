@@ -6,7 +6,7 @@
     >
       <template #extra-content>
         <button
-            v-if="getPermission.promos && getPermission.promos.create"
+            v-if="createPromoPermission"
             class="btn btn-primary mr-0 mt-md-0"
             @click="addNewPromo"
         >
@@ -42,6 +42,7 @@ import BaseBreadCrumb from "@/components/BaseBreadCrumb"
 import BaseLoadingContent from "@/components/BaseLoadingContent"
 import CreationContent from "@/components/Dashboard/Objects/Promo/components/CreationContent";
 import ListContent from "@/components/Dashboard/Objects/Promo/components/ListContent";
+import PromosPermission from "@/permission/promos";
 
 export default {
   name: "Promo",
@@ -55,7 +56,8 @@ export default {
     return {
       promos: [],
       loading: false,
-      promoUsage: []
+      promoUsage: [],
+      createPromoPermission: PromosPermission.getPromosCreatePermission(),
     }
   },
   computed: {

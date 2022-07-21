@@ -5,7 +5,7 @@
       <div class="d-flex align-items-center">
         <base-search-input class="w-100" :placeholder="$t('users.placeholder')" @trigger-input="setSearchValue"/>
         <base-button
-            v-if="getPermission.users && getPermission.users.create"
+            v-if="createPermission"
             design="violet-gradient"
             :text="$t('add')"
             v-b-modal.modal-create
@@ -21,9 +21,9 @@
         <b-table
             thead-tr-class="row__head__bottom-border"
             tbody-tr-class="row__body__bottom-border"
+            class="table__list"
             ref="contracts-table"
             id="users-table"
-            class="table__list"
             borderless
             responsive
             show-empty
@@ -93,7 +93,7 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
-                  v-if="getPermission.users || (getPermission.users.delete || getPermission.users.edit)"
+                  v-if="deletePermission || editPermission"
                   class="dropdown my-dropdown dropleft"
               >
                 <!--user.role.id != 1 &&-->
@@ -110,7 +110,7 @@
                     class="dropdown-menu"
                 >
                   <b-button
-                      v-if="getPermission.users && getPermission.users.edit"
+                      v-if="editPermission"
                       @click="clickManager(data)"
                       class="dropdown-item dropdown-item--inside"
                       v-b-modal.modal-edit
@@ -120,9 +120,9 @@
                   </b-button>
 
                   <b-button
-                      v-if="getPermission.users && getPermission.users.delete"
+                      v-if="deletePermission"
                       class="dropdown-item dropdown-item--inside"
-                      @click="Delete(data.item.uuid)"
+                      @click="deleteUser(data.item.uuid)"
                   >
                     <i class="far fa-trash"></i> {{ $t("delete") }}
                   </b-button>
@@ -134,11 +134,11 @@
       </div>
 
       <create-modal
-          v-if="getPermission.users && getPermission.users.create"
+          v-if="createPermission"
           @CreateManager="CreateManager"
       ></create-modal>
       <edit-modal
-          v-if="manager_id && getPermission.users.edit"
+          v-if="manager_id && editPermission"
           :manager-id="manager_id"
           :edit-history-context="editHistoryContext"
           @EditManager="EditManager"
@@ -203,9 +203,10 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseArrowDownIcon";
 import {mapGetters} from "vuex";
+import UsersPermission from "@/permission/users"
 
 export default {
-  name: 'Users',
+  name: 'UsersPage',
   components: {
     BaseSearchInput,
     BaseLoading,
@@ -240,6 +241,9 @@ export default {
       showByValue = 20
     }
     return {
+      createPermission: UsersPermission.getUsersCreatePermission(),
+      editPermission: UsersPermission.getUsersEditPermission(),
+      deletePermission: UsersPermission.getUsersDeletePermission(),
       searchValue,
       showByOptions,
       filter: {},
@@ -435,7 +439,7 @@ export default {
       return value;
     },
 
-    Delete(user) {
+    deleteUser(user) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text"),
@@ -490,6 +494,17 @@ export default {
   margin-top: 0;
 }
 
+.base-search-input {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.phone-col {
+  display: flex;
+  width: max-content;
+}
+
+
 ::v-deep .row__head__bottom-border {
   border-bottom: 2px solid var(--gray-200) !important;
 }
@@ -498,10 +513,6 @@ export default {
   border-bottom: 2px solid var(--gray-200) !important;
 }
 
-.phone-col {
-  display: flex;
-  width: max-content;
-}
 
 
 ::v-deep .table__list {
@@ -560,8 +571,5 @@ export default {
   background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
 }
 
-.base-search-input {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
+
 </style>

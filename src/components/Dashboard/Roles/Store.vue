@@ -169,7 +169,6 @@ export default {
       },
       objects: {
         ...crudPermission,
-        show: false,
         upload_logo: false
       },
       promos: {
@@ -354,12 +353,12 @@ export default {
               refer: 'view',
               parent: 'objects',
             },
-            {
+            /*{
               ...row,
               label: 'roles_permission.objects.show_object',
               refer: 'show',
               parent: 'objects',
-            },
+            },*/
             {
               ...row,
               label: 'roles_permission.objects.create_object',

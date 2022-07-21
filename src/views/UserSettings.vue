@@ -30,7 +30,7 @@
           pills card vertical
           active-tab-class="user__active__tab"
       >
-        <b-tab v-if="settingPermission" active>
+        <b-tab v-if="profileSettingsPermission" active>
           <template #title>
             <span class="d-flex align-items-center">
                 <base-user-account-icon :extra-class="activeTabIconColor(0)"/>
@@ -60,9 +60,11 @@ import TabChangePassword from "@/components/UserSettings/TabChangePassword";
 import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import GeneralPermission from "@/permission/general";
 // import BaseSelect from "@/components/Reusable/BaseSelect";
 // import BaseInput from "@/components/Reusable/BaseInput";
 // import WarningSuccess from "@/components/Reusable/WarningSuccess";
+
 
 export default {
   name: 'UserSettings',
@@ -82,7 +84,9 @@ export default {
       search: '',
       array: [
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-      ]
+      ],
+      passwordPermission: GeneralPermission.getGeneralPermission('password_settings'),
+      profileSettingsPermission: GeneralPermission.getGeneralPermission('profile_settings')
     }
   },
   computed: {
@@ -93,12 +97,12 @@ export default {
     activeContent() {
       return this.$t('profile')
     },
-    settingPermission() {
-      return this.permission.general && this.permission.general.profile_settings
-    },
-    passwordPermission() {
-      return this.permission.general && this.permission.general.password_settings
-    }
+    // passwordPermission() {
+    //   return GeneralPermission.getPasswordSettingsPermission()
+    // },
+    // profileSettingsPermission() {
+    //   return GeneralPermission.getProfileSettingsPermission()
+    // },
   },
   methods: {
     openModal() {

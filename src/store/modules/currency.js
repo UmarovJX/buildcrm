@@ -1,14 +1,12 @@
 import api from "@/services/api";
+// import GeneralPermission from "@/permission/general";
 
 export default {
     actions: {
         async fetchCurrency(ctx, vm) {
-            // const permission = store.state.me
-            // console.log(permission.permission.general.currency, 'store.state.permission');
-            // console.log(permission?.general?.currency, 'permission && permission.general && permission.general.currency');
             try {
                 const response = await api.authV1.getMe()
-                if (response.data.role?.permissions?.general?.currency) {
+                if (response.data.role && response.data.role.permissions && response.data.role.permissions.general && response.data.role.permissions.general.currency) {
                     const {data} = await api.settingsV2.fetchCurrency()
                     ctx.commit('updateCurrency', data);
                 }

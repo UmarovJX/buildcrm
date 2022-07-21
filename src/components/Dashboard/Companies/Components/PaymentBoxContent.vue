@@ -19,7 +19,7 @@
       <span>{{ $t("companies.mfo") }} : </span>
       <span>{{ detail.mfo }}</span>
     </p>
-    <div class="make__primary">
+    <div v-if="primaryPayment" class="make__primary">
       <span>
         <b-form-checkbox
             @click="makePrimaryPayment"
@@ -36,6 +36,7 @@
 
 <script>
 import api from "@/services/api";
+import PaymentAccount from "@/permission/payment_account";
 
 export default {
   name: "PaymentBoxContent",
@@ -51,7 +52,8 @@ export default {
   },
   data() {
     return {
-      isPrimary: this.checker(this.detail.is_primary)
+      isPrimary: this.checker(this.detail.is_primary),
+      primaryPayment: PaymentAccount.getPaymentAccountEditPermission()
     }
   },
   watch: {
