@@ -16,6 +16,7 @@
         :modal-properties="modalProperties"
     />
     <companies-list
+        @sort-companies="pushRouter"
         :companies="companies"
         @delete-company="deleteCompany"
         @edit-selected-company="openEditingModal"
@@ -40,7 +41,7 @@
 import api from "@/services/api";
 import CreateUpdateModal from "./Components/CreateUpdateModal";
 import CompaniesList from "@/components/Dashboard/Companies/Components/CompaniesList";
-import {isPrimitiveValue, sortObjectValues} from "@/util/reusable";
+import {isPrimitiveValue} from "@/util/reusable";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 
@@ -111,13 +112,16 @@ export default {
     },
   },
   methods: {
+    pushRouter(sortQuery) {
+      this.$router.push({query: sortQuery})
+    },
     getInputValue(value) {
       this.searchInput = value
     },
     async fetchCompaniesList() {
-      const query = sortObjectValues(this.query)
+      // const query = sortObjectValues(this.query)
       this.loading = true
-      await api.companies.getCompaniesList(query)
+      await api.companies.getCompaniesList()
           .then((response) => {
             this.companies = response.data
             this.tableItems = response.data.map(item => ({...item, toggleCollapse: false}))

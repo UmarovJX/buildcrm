@@ -59,6 +59,7 @@
 import {mapGetters} from "vuex";
 import BaseEditIcon from "@/components/icons/BaseEditIcon"
 import BaseButton from "@/components/Reusable/BaseButton";
+import {sortObjectValues} from "@/util/reusable";
 
 export default {
   name: "CompaniesList",
@@ -141,17 +142,9 @@ export default {
     },
   },
   methods: {
-    sortingChanged(val) {
-      if(val.sortBy){
-        this.filter.sort_by = val.sortBy;
-        this.filter.order_by = val.sortDesc ? "desc" : "asc";
-        this.filter.page = 1;
-        this.currentPage = this.filter.page;
-        this.$router.push({
-          name: "companies",
-          query: this.filter,
-        });
-      }
+    sortingChanged(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$emit('sort-companies', sortQuery)
     },
     getDirector (firstName, secondName) {
       console.log('data:', firstName)
