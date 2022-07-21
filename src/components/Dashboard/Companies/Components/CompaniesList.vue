@@ -110,7 +110,7 @@ export default {
     ...mapGetters({
       permission: 'getPermission'
     }),
-    fields(){
+    fields() {
       return [
         {
           key: "id",
@@ -146,7 +146,7 @@ export default {
       const sortQuery = sortObjectValues(query)
       this.$emit('sort-companies', sortQuery)
     },
-    getDirector (firstName, secondName) {
+    getDirector(firstName, secondName) {
       console.log('data:', firstName)
       return `${firstName} ${secondName}`
     },
