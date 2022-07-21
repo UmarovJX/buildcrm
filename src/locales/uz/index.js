@@ -37,6 +37,7 @@ export default {
             watch_objects: 'Obyektlar sahifasini ko\'rish huquqi',
             create_object: 'Obyekt yaratish huquqi',
             edit_object: 'Obyektlarni tahrirlash huquqi',
+            show_object: 'Bitta obyektni ko\'rish huquqi',
             delete_object: 'Obyekt o\'chirish huquqi',
             download_logo: 'Logotip yuklash huquqi'
         },
