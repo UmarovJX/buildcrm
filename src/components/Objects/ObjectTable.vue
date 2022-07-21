@@ -457,7 +457,6 @@ export default {
     this.filter = this.query
     this.currentPage = Number(this.filter.page);
     await this.fetchContractList()
-    console.log(this.getPermission, 'permission');
   },
   computed: {
     ...mapGetters(["getPermission", "getMe"]),
