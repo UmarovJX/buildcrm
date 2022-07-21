@@ -819,8 +819,8 @@ export default {
         return ContractsPermission.getContractsMonthlyDeletePermission()
     },
     refreshDetails() {
-      this.$emit('refresh-details')
       this.fetchItems()
+      this.$emit('refresh-details')
     },
     async fetchItems() {
       this.startLoading()
@@ -977,13 +977,14 @@ export default {
       this.$refs['warning-before-delete'].closeModal()
       await api.contractV2.removePaymentTransaction(contractId, transactionId)
           .then(() => {
-            this.fetchItems()
             this.$swal({
               title: this.$t('deleted'),
               text: this.$t('contracts.deleted_payment_successfully'),
               icon: "success"
             })
             this.deletionPaymentId = null
+            this.refreshDetails()
+
           })
           .catch((error) => {
             const {data} = error.response
