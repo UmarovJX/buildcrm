@@ -106,6 +106,7 @@
                       <multiselect
                           v-model="price.floors"
                           :multiple="true"
+                          :placeholder="$t('objects.create.count_floors')"
                           :options="settings.available_floors"
                           @select="selectFloor(price, index)"
                           @remove="removeFloor(price, index)"
