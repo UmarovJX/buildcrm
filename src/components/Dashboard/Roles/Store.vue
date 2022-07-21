@@ -905,14 +905,20 @@ export default {
           rows: [
             {
               ...row,
-              label: 'roles_permission.companies.watch_companies',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: 'companies',
             },
             {
               ...row,
-              label: 'roles_permission.companies.watch_company',
+              label: 'roles_permission.companies.watch_companies',
               refer: 'view',
+              parent: 'companies',
+            },
+            {
+              ...row,
+              label: 'roles_permission.companies.watch_company',
+              refer: 'show',
               parent: 'companies',
             },
 

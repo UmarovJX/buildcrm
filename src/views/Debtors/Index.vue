@@ -647,7 +647,7 @@ export default {
     changeViewType(type) {
       if (type !== this.typeOfView) {
         this.typeOfView = type
-        const starter = this.query.starter_moment
+        const starter = this.query.starter_moment ?? formatDateToYMD(new Date())
         const {year, month, dayOfMonth} = dateProperties(dateConvertor(starter))
         if (type === 'day') {
           this.day.starter = starter
