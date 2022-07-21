@@ -334,6 +334,7 @@ export default {
   },
   async created() {
     await this.fetchContractData()
+    console.log(this.getPermission, 'permission');
   },
   methods: {
     checkLocales(name) {

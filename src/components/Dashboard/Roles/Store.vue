@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <div class="app-content">
       <div
           class="
@@ -91,6 +91,7 @@
           </button>
         </div>
       </div>
+
     </div>
 
     <b-overlay :show="getLoading" no-wrap opacity="0.5">
@@ -105,7 +106,8 @@
         </div>
       </template>
     </b-overlay>
-  </main>
+  </div>
+
 </template>
 
 <script>
