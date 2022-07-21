@@ -2,15 +2,21 @@
   <!--   PROMO SECTION -->
   <div v-if="promo.length" class="promos">
     <div v-for="item in promo" :key="item.id" class="promo__section">
-      <div class="d-flex justify-content-between mb-3">
+      <div class="d-flex justify-content-between mb-3" id="promo-sale">
              <span class="d-block">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"
                     stroke-width="0.815217"/>
             </svg>
             <span class="ml-2 promo__section-title">{{ getName(item.name) }}</span>
-          </span>
-        <span class="promo__section-subtitle">{{$t('to')}} {{ startDate(item.end_date) }}</span>
+            <b-tooltip
+                target="promo-sale"
+                triggers="hover"
+            >
+              {{ $t('more_info') }}
+            </b-tooltip>
+       </span>
+        <span class="promo__section-subtitle">{{ $t('to') }} {{ startDate(item.end_date) }}</span>
       </div>
       <span v-for="discount in item.discounts" :key="discount.promo_id" class="apartment__details-row">
             <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>
@@ -62,6 +68,15 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+::v-deep .tooltip-inner
+  color: #4B5563 !important
+  margin-bottom: 0
+  padding: 12px
+  background: #E5E7EB
+  border-radius: 16px
+
+::v-deep .arrow::before
+  border-top-color: #E5E7EB !important
 
 .promos
   margin-top: .5rem
