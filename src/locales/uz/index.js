@@ -37,6 +37,7 @@ export default {
             watch_objects: 'Obyektlar sahifasini ko\'rish huquqi',
             create_object: 'Obyekt yaratish huquqi',
             edit_object: 'Obyektlarni tahrirlash huquqi',
+            show_object: 'Bitta obyektni ko\'rish huquqi',
             delete_object: 'Obyekt o\'chirish huquqi',
             download_logo: 'Logotip yuklash huquqi'
         },
@@ -97,7 +98,7 @@ export default {
             uniformity: 'Mutanosiblikni ko\'rish huquqi',
             comments: 'Shartnomalarga izoh yozish huquqi',
             edit: 'Shartnomalarni tahrirlash huquqi',
-
+            full_access: 'Barchasiga ruxsat berish'
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
@@ -893,6 +894,7 @@ export default {
                 balcony: "Balkoni bormi?",
                 balcony_area: "Balkon maydoni",
                 balcony_paid: "Balkon pullimi?",
+                add: 'Xonadon rejasini qo\'shish'
             },
 
             apartments: "Xonadonlar",

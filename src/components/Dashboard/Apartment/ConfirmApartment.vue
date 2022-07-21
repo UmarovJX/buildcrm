@@ -33,7 +33,6 @@
               <!-- Изменить дата договора -->
               <div
                   class="col-12 mb-2"
-                  v-if="editDatePermission"
               >
                 <div class="row">
                   <div class="col-md-4">
@@ -101,7 +100,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-4">
+                  <div v-if="editDatePermission" class="col-md-4">
                     <validation-provider
                         :name="`'${$t('apartments.agree.date_contract')}'`"
                         :rules="{required: true}"

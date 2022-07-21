@@ -11,7 +11,7 @@
     </div>
 
     <!--  PAYMENTS HISTORY  -->
-    <div v-if="!listPermission" class="payments__history">
+    <div v-if="listPermission" class="payments__history">
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
@@ -35,7 +35,7 @@
             </template>
           </base-button>
           <base-button
-              v-if="!uploadFilePermission"
+              v-if="uploadFilePermission"
               @click="openPaymentAdditionModal"
               :text="$t('payments.payment_add')"
               design="add__button"
@@ -618,7 +618,7 @@ export default {
     paymentTypeOptionsPermission() {
       const listOption = []
 
-      if (!ContractsPermission.getContractsInitialCreatePermission()) {
+      if (ContractsPermission.getContractsInitialCreatePermission()) {
         listOption.push({
           value: 'initial_payment',
           text: this.$t('initial_payment')
@@ -819,8 +819,8 @@ export default {
         return ContractsPermission.getContractsMonthlyDeletePermission()
     },
     refreshDetails() {
-      this.$emit('refresh-details')
       this.fetchItems()
+      this.$emit('refresh-details')
     },
     async fetchItems() {
       this.startLoading()
@@ -977,13 +977,14 @@ export default {
       this.$refs['warning-before-delete'].closeModal()
       await api.contractV2.removePaymentTransaction(contractId, transactionId)
           .then(() => {
-            this.fetchItems()
             this.$swal({
               title: this.$t('deleted'),
               text: this.$t('contracts.deleted_payment_successfully'),
               icon: "success"
             })
             this.deletionPaymentId = null
+            this.refreshDetails()
+
           })
           .catch((error) => {
             const {data} = error.response
