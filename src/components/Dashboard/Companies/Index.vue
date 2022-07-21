@@ -1,13 +1,13 @@
 <template>
   <main>
-      <div class="search__content">
-        <base-search-input
+    <div class="search__content">
+      <base-search-input
           class="base-search-input w-50 mr-2"
           :placeholder="`${ $t('contract_number_or_full_name') }`"
           @trigger-input="getInputValue"
-          />
+      />
 
-        <BaseButton @click="showAddModal" :text="`${ $t('companies.add_company') }`">
+      <BaseButton v-if="createPermission" @click="showAddModal" :text="`${ $t('companies.add_company') }`">
         <template #left-icon>
           <BasePlusIcon fill="#7C3AED"/>
         </template>
@@ -51,6 +51,7 @@ import {isPrimitiveValue} from "@/util/reusable";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import CompaniesPermission from "@/permission/companies";
 
 export default {
   name: 'Companies',
@@ -63,6 +64,7 @@ export default {
   },
   data() {
     return {
+      createPermission: CompaniesPermission.getCompaniesCreatePermission(),
       loading: false,
       companies: [],
       editedItem: {},

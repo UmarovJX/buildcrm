@@ -42,8 +42,9 @@
               class="dropdown my-dropdown dropleft"
           >
             <BaseButton
-                class="bg-gradient-violet button rounded-circle]"
+                v-if="editPermission"
                 text=''
+                class="bg-gradient-violet button rounded-circle]"
                 @click="editSelectedCompany(data.item)"
             >
               <template #right-icon>
@@ -62,6 +63,7 @@ import {mapGetters} from "vuex";
 import BaseEditIcon from "@/components/icons/BaseEditIcon"
 import BaseButton from "@/components/Reusable/BaseButton";
 import {sortObjectValues} from "@/util/reusable";
+import CompaniesPermission from "@/permission/companies";
 
 export default {
   name: "CompaniesList",
@@ -78,6 +80,7 @@ export default {
   emits: ['edit-selected-company', 'delete-company', 'sort-companies'],
   data() {
     return {
+      editPermission: CompaniesPermission.getCompaniesEditPermission(),
       filter: {
         sortBy: "",
         sortDesc: false,
@@ -112,7 +115,7 @@ export default {
     ...mapGetters({
       permission: 'getPermission'
     }),
-    fields(){
+    fields() {
       return [
         {
           key: "id",
@@ -148,7 +151,7 @@ export default {
       const sortQuery = sortObjectValues(query)
       this.$emit('sort-companies', sortQuery)
     },
-    getDirector (firstName, secondName) {
+    getDirector(firstName, secondName) {
       return `${firstName} ${secondName}`
     },
     openDetails({id}) {
@@ -235,6 +238,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 400px));
 }
+
 .button {
   height: auto;
   width: auto;
@@ -251,6 +255,7 @@ export default {
   border-radius: 50%;
   background: #7C3AED;
 }
+
 .active_header_purple {
   color: #7C3AED;
   margin-right: 3px;

@@ -1,12 +1,12 @@
 <template>
   <main>
-    <div class="ml-5">
+    <div class="ml-5" v-if="deletePermission">
       <b-dropdown right>
         <template #button-content>
           {{ $t('companies.actions') }}
         </template>
-        <b-dropdown-item href="#" @click="deleteCompany">
-            <BaseDeleteIcon  fill="#7C3AED"/>
+        <b-dropdown-item v-if="deletePermission" href="#" @click="deleteCompany">
+          <BaseDeleteIcon fill="#7C3AED"/>
           {{ $t('companies.delete_company') }}
         </b-dropdown-item>
       </b-dropdown>
@@ -16,6 +16,7 @@
     <div class="pt-4 d-flex flex-row flex-wrap justify-content-between align-items-center ">
       <h3 class="color-gray-700">{{ $t("companies.counted_payment") }}</h3>
       <BaseButton
+          v-if="createPermission"
           class="bg-gray-150 color-gray-800 button rounded-circle]"
           :text='$t("companies.addPayment")'
           @click="addPayment"
@@ -66,6 +67,7 @@ import CompanyInformation from "@/components/Company/CompanyInformation";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
+import PaymentAccount from "@/permission/payment_account";
 
 export default {
   name: "CompanyDetails",
@@ -97,6 +99,8 @@ export default {
       loading: false,
       payments: [],
       companyId: this.$route.params.companyId,
+      createPermission: PaymentAccount.getPaymentAccountCreatePermission(),
+      deletePermission: PaymentAccount.getPaymentAccountDeletePermission(),
     }
   },
   async created() {
@@ -191,22 +195,27 @@ hr {
   background: #F3F4F6;
   border: 2px solid #F3F4F6;
 }
+
 ::v-deep .ml-5 {
   display: flex;
   justify-content: flex-end;
-    button {
-      border: none!important;
-      background: #7C3AED!important;
-    }
+
+  button {
+    border: none !important;
+    background: #7C3AED !important;
+  }
 }
+
 ::v-deep .ml-5:hover {
   display: flex;
   justify-content: flex-end;
+
   button {
-    border: none!important;
-    background: #7C3AED!important;
+    border: none !important;
+    background: #7C3AED !important;
   }
 }
+
 .payment__content {
   display: flex;
   flex-wrap: wrap;
