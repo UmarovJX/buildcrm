@@ -1,7 +1,13 @@
 <template>
   <main>
-    <div class="d-flex justify-content-end">
-      <BaseButton @click="showAddModal" :text="`${ $t('companies.add_company') }`">
+      <div class="search__content">
+        <base-search-input
+          class="base-search-input w-50 mr-2"
+          :placeholder="`${ $t('contract_number_or_full_name') }`"
+          @trigger-input="getInputValue"
+          />
+
+        <BaseButton @click="showAddModal" :text="`${ $t('companies.add_company') }`">
         <template #left-icon>
           <BasePlusIcon fill="#7C3AED"/>
         </template>
@@ -44,12 +50,14 @@ import CompaniesList from "@/components/Dashboard/Companies/Components/Companies
 import {isPrimitiveValue} from "@/util/reusable";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 
 export default {
   name: 'Companies',
   components: {
     BasePlusIcon,
     CreateUpdateModal,
+    BaseSearchInput,
     CompaniesList,
     BaseButton,
   },
