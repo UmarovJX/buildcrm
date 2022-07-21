@@ -32,4 +32,22 @@ export default class ApartmentsPermission extends Permission {
     static getApartmentPlanPermission() {
         return this.getApartmentsPermission('lists.plan')
     }
+
+
+    static getApartmentViewPermission() {
+        return this.getApartmentsPermission('view')
+    }
+
+    static getApartmentEditPermission() {
+        return this.getApartmentsPermission('edit')
+    }
+
+    static getApartmentIsSoldPermission() {
+        return this.getApartmentsPermission('is_sold')
+    }
+
+
+    static getApartmentFilterPermission() {
+        return this.getApartmentsPermission('filter')
+    }
 }

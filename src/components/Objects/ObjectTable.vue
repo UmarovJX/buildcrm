@@ -104,7 +104,7 @@
                 <template v-if="hasPermission">
                   <!-- Редактировать -->
                   <b-link
-                      v-if="getPermission.apartments && getPermission.apartments.edit"
+                      v-if="editPermission"
                       class="dropdown-item dropdown-item--inside"
                       @click="[(edit = true), (apartment_id = data.item.id)]"
                       v-b-modal.modal-edit
@@ -115,7 +115,7 @@
 
                   <!--        Вернуть к продаже          -->
                   <b-link
-                      v-if="(getPermission.apartments && getPermission.apartments.is_sold) && data.item.is_sold && data.item.order.status === 'available'"
+                      v-if="(isSoldPermission) && data.item.is_sold && data.item.order.status === 'available'"
                       @click="toggleApartmentToSale(data.item)"
                       class="dropdown-item dropdown-item--inside"
                   >
@@ -123,7 +123,7 @@
                   </b-link>
 
                   <b-link
-                      v-if="(getPermission.apartments && getPermission.apartments.is_sold) && !data.item.is_sold && data.item.order.status === 'available'"
+                      v-if="(isSoldPermission) && !data.item.is_sold && data.item.order.status === 'available'"
                       @click="toggleApartmentToSale(data.item)"
                       class="dropdown-item dropdown-item--inside"
                   >
@@ -276,7 +276,7 @@
       <!--        ></view-client>-->
 
       <edit-modal
-          v-if="(hasPermission) || edit"
+          v-if="editPermission"
           :apartment="apartment_id"
           @EditApartment="EditApartment"
       ></edit-modal>
@@ -315,6 +315,7 @@ import {mapActions, mapGetters} from "vuex";
 import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
 // import ViewClient from "@/components/Dashboard/Apartment/ViewClient";
 import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
+import ApartmentsPermission from "@/permission/apartments";
 // import InfoManager from "@/components/Dashboard/Apartment/InfoManager";
 // import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
 // import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
@@ -446,6 +447,9 @@ export default {
         confirm: false,
         values: [],
       },
+      editPermission: ApartmentsPermission.getApartmentEditPermission(),
+      isSoldPermission: ApartmentsPermission.getApartmentIsSoldPermission(),
+      viewPermission: ApartmentsPermission.getApartmentViewPermission()
     }
   },
 
@@ -453,12 +457,13 @@ export default {
     this.filter = this.query
     this.currentPage = Number(this.filter.page);
     await this.fetchContractList()
+    console.log(this.getPermission, 'permission');
   },
   computed: {
     ...mapGetters(["getPermission", "getMe"]),
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
     hasPermission() {
-      return this.getPermission.apartments && this.getPermission.apartments.edit
+      return this.editPermission || this.isSoldPermission || this.viewPermission
     },
 
     query() {
