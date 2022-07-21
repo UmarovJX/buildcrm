@@ -915,12 +915,12 @@ export default {
               refer: 'view',
               parent: 'companies',
             },
-            {
-              ...row,
-              label: 'roles_permission.companies.watch_company',
-              refer: 'show',
-              parent: 'companies',
-            },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.companies.watch_company',
+            //   refer: 'show',
+            //   parent: 'companies',
+            // },
 
             {
               ...row,
