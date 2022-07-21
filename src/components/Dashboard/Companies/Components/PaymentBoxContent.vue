@@ -189,7 +189,7 @@ hr{
 
   span:nth-child(1) {
     span {
-      margin-bottom: 8px;
+      margin: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
