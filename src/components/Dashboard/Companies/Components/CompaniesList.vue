@@ -18,7 +18,9 @@
         :empty-text="$t('no_data')"
     >
       <template class="header_label" #head(name)="data">
-        <span class="label font-craftworksans">{{ data.label }}</span>
+        <span :class="{'active_header_purple':filter.sortBy === data.column}" class="label font-craftworksans">
+          {{ data.label }}
+        </span>
       </template>
 
       <template #cell(name)="data">
@@ -110,7 +112,7 @@ export default {
     ...mapGetters({
       permission: 'getPermission'
     }),
-    fields() {
+    fields(){
       return [
         {
           key: "id",
@@ -146,8 +148,7 @@ export default {
       const sortQuery = sortObjectValues(query)
       this.$emit('sort-companies', sortQuery)
     },
-    getDirector(firstName, secondName) {
-      console.log('data:', firstName)
+    getDirector (firstName, secondName) {
       return `${firstName} ${secondName}`
     },
     openDetails({id}) {
@@ -155,17 +156,11 @@ export default {
     },
     editSelectedCompany(item) {
       if (item) {
-        console.log("item", item)
         this.$emit('edit-selected-company', item)
-      } else {
-        console.log("sorry")
       }
     },
     deleteCompany(id) {
       this.$emit('delete-company', id)
-    },
-    makePrimaryPayment(detail) {
-      console.log(detail.is_primary)
     },
     updatedCompany({message}) {
       this.$emit("updated-company", {message})
@@ -200,11 +195,6 @@ export default {
       color: var(--gray-400) !important;
       padding: 1.125rem 1rem;
       vertical-align: middle;
-
-      //&.b-table-sort-icon-left {
-      //display: flex;
-      //align-items: center;
-      //}
     }
 
     td {
@@ -245,13 +235,6 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 400px));
 }
-
-.label {
-  color: #7C3AED;
-  margin-right: 3px;
-  font-weight: 500;
-}
-
 .button {
   height: auto;
   width: auto;
@@ -267,5 +250,10 @@ export default {
   border: none;
   border-radius: 50%;
   background: #7C3AED;
+}
+.active_header_purple {
+  color: #7C3AED;
+  margin-right: 3px;
+  font-weight: 500;
 }
 </style>

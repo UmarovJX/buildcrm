@@ -61,11 +61,6 @@ export default {
     CompaniesList,
     BaseButton,
   },
-  mounted() {
-    if (this.searchInput?.length) {
-      this.toggleClearIcon()
-    }
-  },
   data() {
     return {
       loading: false,
