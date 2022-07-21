@@ -61,7 +61,6 @@ import Debtors from "@/views/Debtors/Index"
 // import ObjectTable from "@/components/Objects/ObjectTable";
 import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
-import BuildingLayouts from "@/components/Dashboard/Objects/BuildingLayouts/Index"
 
 const routes = [
     {
@@ -107,15 +106,6 @@ const routes = [
         name: "objects",
         path: "/objects",
         component: Objects,
-        meta: {
-            requiresAuth: "objects",
-        },
-    },
-    {
-        /* Building Layouts */
-        name: "objects",
-        path: "/building-layouts",
-        component: BuildingLayouts,
         meta: {
             requiresAuth: "objects",
         },
