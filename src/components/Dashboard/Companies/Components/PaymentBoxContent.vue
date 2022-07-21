@@ -54,7 +54,6 @@
     <p>
       <span>{{ $t("companies.payment_account") }}:</span>
       <span>{{ detail.payment_account }}</span>
-      <span>{{ detail.payment_account }}</span>
     </p>
     <p>
       <span>{{ $t("companies.mfo") }}:</span>
@@ -65,6 +64,7 @@
 
 <script>
 import api from "@/services/api";
+
 import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
 
 export default {
@@ -158,10 +158,11 @@ hr{
   border-radius: 30px;
   padding: 1.5rem;
   font-size: 14px;
-  width: 100%;
+  width: auto;
+  margin-bottom: 4em;
   background: #F3F4F6;
   color: #9CA3AF;
-  max-width: 28rem;
+  min-width: 28rem;
 
   .dropdown-menu {
     border: none;

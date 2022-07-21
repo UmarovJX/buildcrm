@@ -5,15 +5,15 @@
 
         <span class="item" v-if="labels[key]">
               <span class="title">
-                {{ labels[key] }}
+                {{ $t(labels[key]) }}
               </span>
               <span class="title-val">
-                <p v-if="typeof value === 'object'">
+                <span v-if="typeof value === 'object'">
                   {{ checkLocales(value.name) }}
-                </p>
-                <p v-else>
+                </span>
+                <span v-else>
                   {{ value }}
-                </p>
+                </span>
               </span>
         </span>
 
@@ -24,14 +24,14 @@
 
 <script>
 import api from "@/services/api";
+import {phonePrettier} from "@/util/reusable";
 
 export default {
   name: "CompanyInformation",
-  components: {},
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   props: {
     companyId: {
-      type: Number,
+      type: [Number, String],
       required: true
     }
   },
@@ -39,23 +39,23 @@ export default {
     return {
       company: {},
       labels: {
-        type: this.$t("companies.type") + ":",
-        inn: this.$t("companies.inn") + ":",
-        director: this.$t("companies.director") + ":",
-        address: this.$t("companies.address") + ":",
-        phone: this.$t("companies.phone") + ":",
-        oked: this.$t("companies.oked") + ":",
-        code: this.$t("companies.code") + ":",
-        extra_phone: this.$t("companies.other_phone") + ":",
-        name: this.$t("companies.name") + ":",
+        type: "companies.type",
+        inn: "companies.inn",
+        director: "companies.director",
+        address: "companies.address",
+        phone: "companies.phone",
+        oked: "companies.oked",
+        code: "companies.code",
+        extra_phone: "companies.other_phone",
+        name: "companies.name",
       },
     }
   },
   created() {
     api.companies.getCompany(this.companyId)
         .then((response) => {
-          console.log("res", response.data)
           this.company = response.data
+          this.company.phone = phonePrettier(this.company.phone)
         })
         .catch((error) => {
           this.toastedWithErrorCode(error)
@@ -81,6 +81,7 @@ export default {
   flex-direction: column;
   flex-wrap: wrap;
   height: 150px;
+  margin-bottom: 1em;
 }
 
 .item-block {
@@ -95,13 +96,15 @@ export default {
   width: 100%;
   gap: 10px;
   color: #4B5563;
+
   .title {
     display: flex;
     min-width: max-content;
     color: #9CA3AF;
   }
-  .title-val{
-    p{
+
+  .title-val {
+    p {
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
