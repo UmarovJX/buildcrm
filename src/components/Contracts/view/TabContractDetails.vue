@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div v-if="uniformityPermission" class="compare__details">
+    <div v-if="uniformityPermission && compareDetails" class="compare__details">
       <h3 class="compare__details-title">{{ $t('contract_compare.compare_title') }}</h3>
 
       <div class="row">
@@ -180,7 +180,9 @@ export default {
   },
   created() {
     this.fetchContractDetails()
-    this.fetchCompareDetails()
+    if (this.uniformityPermission) {
+      this.fetchCompareDetails()
+    }
   },
   computed: {
     ...mapGetters({
