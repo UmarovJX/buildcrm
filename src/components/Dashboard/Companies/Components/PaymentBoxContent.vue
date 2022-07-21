@@ -26,9 +26,9 @@
                   name="check-button"
                   switch
                   class="dropdown-item dropdown-item--inside">
-                {{ $t("activate") }}
+                <span v-if="!detail.is_primary">{{ $t("activate") }}</span>
+                <span v-else>{{ $t("deactivate") }}</span>
               </b-button>
-
               <b-button
                   class="dropdown-item dropdown-item--inside"
                   @click="editSelectedPayment()"
@@ -64,7 +64,6 @@
 
 <script>
 import api from "@/services/api";
-
 import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
 
 export default {

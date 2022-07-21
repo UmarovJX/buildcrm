@@ -88,7 +88,7 @@ export default {
     without_initial: "Boshlang'ich to'lovsiz",
     go_back: 'Ortga',
     activate: 'Faollashtirish',
-    deactivate: "disable",
+    deactivate: "Faolsizlashtirish",
     monthly_payment: "Oylik to'lov",
     sum_text: "So'm",
     usd_text: 'Usd',
