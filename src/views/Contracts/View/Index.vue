@@ -446,7 +446,7 @@ export default {
         this.activeTab = 'TabObjectDetails'
         this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
       }
-      if (!(reissue.view && this.reContractViewPermission)) {
+      if (!(reissue?.view && this.reContractViewPermission)) {
         console.log(this.tabs, 'this.tabs old ');
         this.tabs = this.tabs.filter(tab => tab !== 'TabReContractDetails')
         console.log(this.tabs, 'this.tabs last ');
