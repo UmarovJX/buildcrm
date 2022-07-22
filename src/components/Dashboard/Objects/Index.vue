@@ -13,7 +13,7 @@
                :key="index"
           >
             <div
-                v-if="deletePermission || editPermission || logoUploadPermission || promoViewPermission || plansViewPermission"
+                v-if="deletePermission || editPermission || logoUploadPermission || promosViewPermission || plansViewPermission"
                 class="object__more-info">
               <div class="my-dropdown dropleft">
                 <button
@@ -209,7 +209,7 @@ export default {
     logoUploadPermission: ObjectsPermission.getObjectsPermission('upload_logo'),
     apartmentsViewPermission: ApartmentsPermission.getApartmentsPermission('view'),
     promosViewPermission: PromosPermission.getPromosViewPermission(),
-      plansViewPermission: PlansPermission.getPlansViewPermission()
+    plansViewPermission: PlansPermission.getPlansViewPermission()
 
   }),
 
