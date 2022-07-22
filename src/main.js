@@ -14,6 +14,7 @@ import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
 import VueYandexMetrika from 'vue-yandex-metrika'
 import "sweetalert2/dist/sweetalert2.min.css";
+import "./assets/scss/components/_calendar.scss";
 
 import "./components";
 import {BootstrapVue, IconsPlugin} from "bootstrap-vue";

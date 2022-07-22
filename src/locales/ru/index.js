@@ -610,27 +610,37 @@ export default {
     companies: {
         title: "Компании",
         name: "Компания",
-        director: "Директор компании",
+        director: "Директор",
         type: "Тип компании",
+        number: "Номер",
         inn: "ИНН",
         mfo: "МФО",
         phone: "Номер телефона",
-        other_phone: "Дополнительный номер телефона",
+        other_phone: "Дополнительный номер телефона /факс",
         payment_account: "Расчетный счет",
         bank_name: "Названия банка",
         first_name: "Имя директора",
         last_name: "Фамилия директора",
         second_name: "Отчество директора",
-        type_enter: "Выберите тип",
+        accounts_number: "Количество счетов",
+        type_enter: "Тип компании",
         branch_enter: "Выберите компанию",
         address: 'Адрес компании',
         code: 'Регистрационный код плательщика',
-        oked: 'Окед',
+        oked: 'ОКЭД',
         addPayment: 'Добавить счет',
         bank_name_uz: 'Название банка (Узб.)',
         bank_name_ru: 'Название банка (Рус.)',
         check_account: 'Расчетный счет',
         more: 'Реквизиты компании',
+        actions: 'Действия',
+        add_company: 'Добавить компанию',
+        add_title: 'Добавить заглавие',
+        search: 'Название компании',
+        active_payment: "Активный счет",
+        delete_company: "Удалить компанию",
+        fax_number: "Номер телефона / факс",
+        counted_payment: "Расчетные счета"
     },
 
     apartments: {
@@ -960,6 +970,19 @@ export default {
             building_name: "Названия корпуса",
             credit_month: "Месяц на рассрочку",
         },
+    },
+
+    building_layout: {
+        add_layout: "Добавить планировку",
+        layout_name: "Название планировки",
+        add_title: 'Добавить заглавие',
+        floors: "Этаж(и)",
+        upload: {
+            add_image: "Добавить рисунок",
+            add_video: "Добавить видео",
+            add_file: "Добавить файл",
+            add_audio: "Добавить аудио",
+        }
     },
 
     sweetAlert: {
