@@ -53,6 +53,7 @@
           <template #cell(actions)="data">
             <div class="float-right">
               <div
+                  v-if="deletePermission || viewTemplatesPermission || editPermission"
                   class="dropdown my-dropdown dropleft"
               >
                 <button
@@ -67,7 +68,7 @@
                     class="dropdown-menu"
                 >
                   <router-link
-                      v-if="deletePermission"
+                      v-if="editPermission"
                       :to="{
                         name:'edit-branch',
                         params: { id: data.item.id, historyForm:data.item, }

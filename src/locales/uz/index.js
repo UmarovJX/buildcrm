@@ -58,7 +58,7 @@ export default {
             filter_apartments: 'Sahifadagi xonadonlar ro\'yxatini filtrlash huquqi',
             edit_apartment: 'Xonadonni tahrirlash huquqi (bitta obyekt sahifasi)',
             status_apartment: 'Xonadonni sotuvdan olish va qo\'yish huquqi (bitta obyekt sahifasi)',
-            change_list_apartments: 'Xonadonlar ro\'yxatini ko\'rinishini o\'zgartirish uchun xonadonlar ro\'yxatini ko\'rish huquqi',
+            change_list_apartments: 'Xonadonlar jadvalini ko\'rish huquqi',
             list_apartments1: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 1.0 dan foydalanish huquqi',
             list_apartments2: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 2.0 dan foydalanish huquqi',
             using_layouts: 'Xonadonlar ro\'yxatini o\'zgartirish uchun xonadon rejasidan foydalanish huquqi'
@@ -619,6 +619,7 @@ export default {
         name: "Kompaniya",
         director: "Kompaniya direktori",
         type: "Kompaniya turi",
+        number: "Raqam",
         inn: "STIR",
         mfo: "MFO",
         phone: "Telefon raqami",
@@ -628,7 +629,8 @@ export default {
         first_name: "Direktorning ismi",
         last_name: "Direktorning familiyasi",
         second_name: "Direktorning sharifi",
-        type_enter: "Turini tanlang",
+        accounts_number: "Hisoblar soni",
+        type_enter: "Kompaniya turi",
         branch_enter: "Kompaniyani tanlang",
         address: 'Kompaniya manzili',
         code: "To'lovchining ro'yxatga olish kodi",
@@ -638,6 +640,14 @@ export default {
         bank_name_ru: 'Bank nomi (Рус.)',
         check_account: 'Hisob raqami',
         more: 'Kompaniya tafsilotlari',
+        actions: "Amallar",
+        add_company: "Kompaniya qo'shish",
+        add_title: "Sarlavha qo'shish",
+        search: "Kompaniya nomi",
+        active_payment: "Aktiv hisob",
+        delete_company: "Kompaniyani o'chirish",
+        fax_number: "Telefon raqam / faks",
+        counted_payment: "Hisoblar"
     },
 
     apartments: {
@@ -960,6 +970,19 @@ export default {
             build_date: "20.12.2020",
             building_name: "Korpus nomi", credit_month: "Oylik to'lov uchun oylar soni",
         },
+    },
+
+    building_layout: {
+        add_layout: "Xonadon rejasini qo’shish",
+        layout_name: "Xonadon rejasi nomi",
+        add_title: "Sarlavha qo'shish",
+        floors: "Qavat(lar)",
+        upload: {
+            add_image: "Rasm qo'shish",
+            add_video: "Video qo'shish",
+            add_file: "Fayl qo'shish",
+            add_audio: "Audio qo'shish",
+        }
     },
 
     sweetAlert: {

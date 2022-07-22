@@ -58,7 +58,6 @@
                 label="text"
                 @input="inputFilterObject"
             />
-
             <!--    Filter Apartment Number      -->
             <div class="filter__inputs-input">
               <base-form-tag-input
@@ -415,7 +414,6 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
-    height: 100vh;
     overflow-y: hidden;
     margin: 0;
     border-radius: 3.5rem 0 0 3.5rem;

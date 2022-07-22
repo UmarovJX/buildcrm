@@ -308,6 +308,8 @@ export default {
   },
   mounted() {
     this.fetchContracts(this);
+
+
   },
 
   methods: {

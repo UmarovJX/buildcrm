@@ -9,7 +9,7 @@
     <span v-if="hasLeftSlot" class="left__icon">
       <slot name="left-icon"/>
     </span>
-    <span class="text">{{ text }}</span>
+    <span v-if="text" class="text">{{ text }}</span>
     <span v-if="hasRightSlot" class="right__icon">
       <slot name="right-icon"/>
     </span>

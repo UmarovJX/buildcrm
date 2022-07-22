@@ -1,25 +1,27 @@
 <template>
-  <div>
-    <edit-role
-        come-from="update"
-        :updating-name="name"
-        :permissions="permissions"
-        :app-loading="appLoading"
-        @submit="editRole"
-    />
-    <b-overlay :show="getLoading" no-wrap opacity="0.5">
-      <template #overlay>
-        <div class="d-flex justify-content-center w-100">
-          <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+  <main class="main__content">
+    <div>
+      <edit-role
+          come-from="update"
+          :updating-name="name"
+          :permissions="permissions"
+          :app-loading="appLoading"
+          @submit="editRole"
+      />
+      <b-overlay :show="getLoading" no-wrap opacity="0.5">
+        <template #overlay>
+          <div class="d-flex justify-content-center w-100">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
           </div>
-        </div>
-      </template>
-    </b-overlay>
-  </div>
+        </template>
+      </b-overlay>
+    </div>
+  </main>
 </template>
 
 <script>

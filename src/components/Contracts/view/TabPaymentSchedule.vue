@@ -488,6 +488,7 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
+// import list from "@/components/Dashboard/TypePlan/List";
 
 export default {
   name: "TabPaymentSchedule",
@@ -819,15 +820,22 @@ export default {
         return ContractsPermission.getContractsMonthlyDeletePermission()
     },
     refreshDetails() {
-      this.$emit('refresh-details')
       this.fetchItems()
+      this.$emit('refresh-details')
     },
     async fetchItems() {
-      this.startLoading()
-      await Promise.any([this.getPaymentSchedule(), this.getPaymentHistory(),])
-          .finally(() => {
-            this.finishLoading()
-          })
+      if (this.listPermission) {
+        this.startLoading()
+        await Promise.any([this.getPaymentSchedule(), this.getPaymentHistory(),])
+            .finally(() => {
+              this.finishLoading()
+            })
+      } else {
+        // await Promise.any([this.getPaymentSchedule()])
+        //     .finally(() => {
+        //       this.finishLoading()
+        //     })
+      }
     },
     async getPaymentSchedule() {
       this.paymentSchedule.appLoading = true
@@ -977,13 +985,14 @@ export default {
       this.$refs['warning-before-delete'].closeModal()
       await api.contractV2.removePaymentTransaction(contractId, transactionId)
           .then(() => {
-            this.fetchItems()
             this.$swal({
               title: this.$t('deleted'),
               text: this.$t('contracts.deleted_payment_successfully'),
               icon: "success"
             })
             this.deletionPaymentId = null
+            this.refreshDetails()
+
           })
           .catch((error) => {
             const {data} = error.response

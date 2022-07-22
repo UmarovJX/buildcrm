@@ -91,6 +91,7 @@
           </button>
         </div>
       </div>
+
     </div>
 
     <b-overlay :show="getLoading" no-wrap opacity="0.5">
@@ -697,19 +698,19 @@ export default {
               parent: 'contracts',
             },
 
-            {
-              ...row,
-              label: 'roles_permission.contracts.list',
-              refer: 'payments.list',
-              parent: 'contracts',
-            },
-
-            {
-              ...row,
-              label: 'roles_permission.contracts.import',
-              refer: 'payments.import',
-              parent: 'contracts',
-            },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.list',
+            //   refer: 'payments.list',
+            //   parent: 'contracts',
+            // },
+            //
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.import',
+            //   refer: 'payments.import',
+            //   parent: 'contracts',
+            // },
 
             {
               ...row,
@@ -906,16 +907,22 @@ export default {
           rows: [
             {
               ...row,
-              label: 'roles_permission.companies.watch_companies',
+              label: 'roles_permission.activate_all',
               refer: 'all',
               parent: 'companies',
             },
             {
               ...row,
-              label: 'roles_permission.companies.watch_company',
+              label: 'roles_permission.companies.watch_companies',
               refer: 'view',
               parent: 'companies',
             },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.companies.watch_company',
+            //   refer: 'show',
+            //   parent: 'companies',
+            // },
 
             {
               ...row,
