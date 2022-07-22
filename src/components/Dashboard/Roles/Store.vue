@@ -631,13 +631,6 @@ export default {
 
             {
               ...row,
-              label: 'roles_permission.contracts.watch_deal',
-              refer: 'show',
-              parent: 'contracts',
-            },
-
-            {
-              ...row,
               label: 'roles_permission.contracts.download_deal',
               refer: 'download',
               parent: 'contracts',
@@ -698,19 +691,19 @@ export default {
               parent: 'contracts',
             },
 
-            {
-              ...row,
-              label: 'roles_permission.contracts.list',
-              refer: 'payments.list',
-              parent: 'contracts',
-            },
-
-            {
-              ...row,
-              label: 'roles_permission.contracts.import',
-              refer: 'payments.import',
-              parent: 'contracts',
-            },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.list',
+            //   refer: 'payments.list',
+            //   parent: 'contracts',
+            // },
+            //
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.import',
+            //   refer: 'payments.import',
+            //   parent: 'contracts',
+            // },
 
             {
               ...row,

@@ -488,6 +488,7 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
+// import list from "@/components/Dashboard/TypePlan/List";
 
 export default {
   name: "TabPaymentSchedule",
@@ -823,11 +824,18 @@ export default {
       this.$emit('refresh-details')
     },
     async fetchItems() {
-      this.startLoading()
-      await Promise.any([this.getPaymentSchedule(), this.getPaymentHistory(),])
-          .finally(() => {
-            this.finishLoading()
-          })
+      if (this.listPermission) {
+        this.startLoading()
+        await Promise.any([this.getPaymentSchedule(), this.getPaymentHistory(),])
+            .finally(() => {
+              this.finishLoading()
+            })
+      } else {
+        await Promise.any([this.getPaymentSchedule()])
+            .finally(() => {
+              this.finishLoading()
+            })
+      }
     },
     async getPaymentSchedule() {
       this.paymentSchedule.appLoading = true
