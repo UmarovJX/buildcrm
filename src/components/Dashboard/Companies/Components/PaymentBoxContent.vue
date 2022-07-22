@@ -148,6 +148,7 @@ hr{
   background: #fff;
   width: max-content;
   padding: 5px 12px;
+  margin-top: 12px!important;
   color: #9CA3AF;
   border: none;
   border-radius: 32px;
