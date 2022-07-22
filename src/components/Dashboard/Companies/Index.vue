@@ -144,7 +144,6 @@ export default {
         title: this.$t('companies.add_company'),
         position: 'create'
       }
-      // this.$bvModal.show('modal-create')
       this.$refs['create-modal'].show()
     },
     fetchContentByStatus(status) {
