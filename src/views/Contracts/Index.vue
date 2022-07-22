@@ -302,7 +302,6 @@ export default {
   },
   async created() {
     await this.fetchContractList()
-    console.log(this.getPermission, 'permission');
   },
   methods: {
     formattingPhone: (phone) => phonePrettier(phone),
