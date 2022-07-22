@@ -141,7 +141,7 @@ export default {
     },
     showAddModal() {
       this.modalProperties = {
-        title: this.$t('companies.addPayment'),
+        title: this.$t('companies.add_company'),
         position: 'create'
       }
       // this.$bvModal.show('modal-create')
