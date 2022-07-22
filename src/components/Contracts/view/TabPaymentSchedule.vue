@@ -831,10 +831,10 @@ export default {
               this.finishLoading()
             })
       } else {
-        await Promise.any([this.getPaymentSchedule()])
-            .finally(() => {
-              this.finishLoading()
-            })
+        // await Promise.any([this.getPaymentSchedule()])
+        //     .finally(() => {
+        //       this.finishLoading()
+        //     })
       }
     },
     async getPaymentSchedule() {
