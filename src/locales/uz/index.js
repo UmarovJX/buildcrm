@@ -58,7 +58,7 @@ export default {
             filter_apartments: 'Sahifadagi xonadonlar ro\'yxatini filtrlash huquqi',
             edit_apartment: 'Xonadonni tahrirlash huquqi (bitta obyekt sahifasi)',
             status_apartment: 'Xonadonni sotuvdan olish va qo\'yish huquqi (bitta obyekt sahifasi)',
-            change_list_apartments: 'Xonadonlar ro\'yxatini ko\'rinishini o\'zgartirish uchun xonadonlar ro\'yxatini ko\'rish huquqi',
+            change_list_apartments: 'Xonadonlar jadvalini ko\'rish huquqi',
             list_apartments1: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 1.0 dan foydalanish huquqi',
             list_apartments2: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 2.0 dan foydalanish huquqi',
             using_layouts: 'Xonadonlar ro\'yxatini o\'zgartirish uchun xonadon rejasidan foydalanish huquqi'
