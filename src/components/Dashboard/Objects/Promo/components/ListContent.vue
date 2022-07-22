@@ -34,6 +34,7 @@
         <div class="float-right">
           <div
               class="dropdown my-dropdown dropleft"
+              v-if="hasPermission"
           >
             <button
                 type="button"
@@ -43,7 +44,7 @@
               <i class="far fa-ellipsis-h"></i>
             </button>
 
-            <div class="dropdown-menu" v-if="hasPermission">
+            <div class="dropdown-menu" >
 
               <b-button
                   v-if="!data.item.status && editPromoPermission"
@@ -120,7 +121,7 @@ export default {
       permission: 'getPermission'
     }),
     hasPermission() {
-      return Object.keys(this.permission).length > 0
+      return this.editPromoPermission || this.deletePromoPermission
     },
     fields() {
       return [
