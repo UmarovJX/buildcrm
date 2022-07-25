@@ -1,6 +1,6 @@
 <template>
   <main class="main__content">
-    <div>
+    <div class="app-content">
       <edit-role
           come-from="update"
           :updating-name="name"

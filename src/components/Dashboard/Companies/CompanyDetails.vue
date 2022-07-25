@@ -16,7 +16,7 @@
     <div class="pt-4 d-flex flex-row flex-wrap justify-content-between align-items-center ">
       <h3 class="color-gray-700">{{ $t("companies.counted_payment") }}</h3>
       <BaseButton
-          v-if="createPermission"
+          v-if="createPaymentPermission"
           class="bg-gray-150 color-gray-800 button rounded-circle]"
           :text='$t("companies.addPayment")'
           @click="addPayment"
@@ -26,7 +26,7 @@
         </template>
       </BaseButton>
     </div>
-    <div class="payment__content">
+    <div v-if="viewPaymentPermission" class="payment__content">
       <PaymentBoxContent
           v-for="detail in payments"
           :key="detail.created_at"
@@ -38,6 +38,7 @@
       />
     </div>
     <AddPayment
+        v-if="createPaymentPermission"
         @created-payment="createdPayment"
         @edit-selected-payment="updatedPayments"
         :payment-data="editedItem"
@@ -67,7 +68,7 @@ import CompanyInformation from "@/components/Company/CompanyInformation";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import CompaniesPermission from "@/permission/companies";
+import PaymentAccount from "@/permission/payment_account";
 
 export default {
   name: "CompanyDetails",
@@ -98,8 +99,8 @@ export default {
       loading: false,
       payments: [],
       companyId: this.$route.params.companyId,
-      createPermission: CompaniesPermission.getCompaniesCreatePermission(),
-      deletePermission: CompaniesPermission.getCompaniesDeletePermission(),
+      viewPaymentPermission: PaymentAccount.getPaymentAccountViewPermission(),
+      createPaymentPermission: PaymentAccount.getPaymentAccountCreatePermission(),
     }
   },
   async created() {
