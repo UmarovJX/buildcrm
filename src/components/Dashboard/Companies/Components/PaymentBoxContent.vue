@@ -152,6 +152,7 @@ hr {
   background: #E5E7EB;
 }
 
+
 .stamp {
   background: #fff;
   width: max-content;
@@ -192,7 +193,7 @@ hr {
     display: flex;
     gap: 5px;
     color: #9CA3AF;
-    font-family: 'Inter';
+    font-family: Inter,serif;
     font-style: normal;
     font-weight: 600;
     font-size: 15px;
@@ -207,7 +208,7 @@ hr {
       gap: 10px;
 
       p {
-        font-family: 'Craftwork Sans';
+        font-family: CraftworkSans, serif;
         font-style: normal;
         font-weight: 900;
         font-size: 16px;

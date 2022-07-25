@@ -1,11 +1,11 @@
 <template>
   <main>
-    <div class="ml-5" v-if="deletePermission">
+    <div class="ml-5" v-if="deleteCompanyPermission">
       <b-dropdown right>
         <template #button-content>
           {{ $t('companies.actions') }}
         </template>
-        <b-dropdown-item v-if="deletePermission" href="#" @click="deleteCompany">
+        <b-dropdown-item v-if="deleteCompanyPermission" href="#" @click="deleteCompany">
           <BaseDeleteIcon fill="#7C3AED"/>
           {{ $t('companies.delete_company') }}
         </b-dropdown-item>
@@ -69,6 +69,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import PaymentAccount from "@/permission/payment_account";
+import CompaniesPermission from "@/permission/companies";
 
 export default {
   name: "CompanyDetails",
@@ -101,6 +102,7 @@ export default {
       companyId: this.$route.params.companyId,
       viewPaymentPermission: PaymentAccount.getPaymentAccountViewPermission(),
       createPaymentPermission: PaymentAccount.getPaymentAccountCreatePermission(),
+      deleteCompanyPermission: CompaniesPermission.getCompaniesDeletePermission()
     }
   },
   async created() {
