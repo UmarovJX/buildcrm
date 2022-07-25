@@ -169,7 +169,7 @@ export default {
     },
     showExpressSidebar(item, floorActive, blockActive) {
       const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
-      if ((this.getPermission.apartments && this.getPermission.apartments.show) && isActive) {
+      if (isActive) {
         this.$emit('show-express-sidebar', item)
       }
     },
