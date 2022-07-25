@@ -67,7 +67,7 @@ import CompanyInformation from "@/components/Company/CompanyInformation";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import PaymentAccount from "@/permission/payment_account";
+import CompaniesPermission from "@/permission/companies";
 
 export default {
   name: "CompanyDetails",
@@ -76,7 +76,6 @@ export default {
     BasePlusIcon,
     BaseButton,
     CompanyInformation,
-    // BaseBreadCrumb,
     PaymentBoxContent,
     AddPayment
   },
@@ -99,8 +98,8 @@ export default {
       loading: false,
       payments: [],
       companyId: this.$route.params.companyId,
-      createPermission: PaymentAccount.getPaymentAccountCreatePermission(),
-      deletePermission: PaymentAccount.getPaymentAccountDeletePermission(),
+      createPermission: CompaniesPermission.getCompaniesCreatePermission(),
+      deletePermission: CompaniesPermission.getCompaniesDeletePermission(),
     }
   },
   async created() {
