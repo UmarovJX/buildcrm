@@ -885,6 +885,7 @@ export default {
 
             new: "Создать новый объект",
             type_plan: "Типы планировок",
+            enter_press: "Нажмите Enter чтобы выбрать",
             no_type_plan: "нет планировки",
             new_type_plan: "Создать планировку",
             entrance: "Подъезд",

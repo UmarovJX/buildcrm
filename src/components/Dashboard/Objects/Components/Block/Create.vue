@@ -107,6 +107,7 @@
                           v-model="price.floors"
                           :multiple="true"
                           :placeholder="$t()"
+                          :selectLabel="$t('objects.create.enter_press')"
                           :options="settings.available_floors"
                           @select="selectFloor(price, index)"
                           @remove="removeFloor(price, index)"
