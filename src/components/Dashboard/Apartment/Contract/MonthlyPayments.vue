@@ -10,6 +10,7 @@
               id="month"
               class="my-form__input w-100"
               type="number"
+              :disabled="monthlyPermission"
               min="0"
               required
               v-model="contract.month"
@@ -246,6 +247,7 @@
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import moment from "moment";
 import {mapGetters} from "vuex";
+import CheckoutPermission from "@/permission/checkout";
 
 // import * as Calc from "../../../../util/calculator";
 const {getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal} = require("../../../../util/calculator");
@@ -267,8 +269,10 @@ export default {
   data() {
     return {
       edit: {
-        initial_edited: false
-      }
+        initial_edited: false,
+      },
+      monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission()
+
     }
   },
 

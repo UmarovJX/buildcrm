@@ -605,6 +605,7 @@ export default {
     .title {
       font-size: 2.25rem;
       line-height: 42px;
+      margin-left: 1rem;
     }
   }
 

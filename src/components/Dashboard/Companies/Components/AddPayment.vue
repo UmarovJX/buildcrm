@@ -310,7 +310,7 @@ export default {
     border: none !important;
 
     h5 {
-      font-family: 'Craftwork Sans';
+      font-family: CraftworkSans, serif;
       font-weight: 900;
       font-size: 36px;
       color: #4B5563;

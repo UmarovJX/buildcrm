@@ -151,6 +151,7 @@ import {formatToPrice} from "@/util/reusable";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import {mapGetters} from "vuex";
+import CheckoutPermission from "@/permission/checkout";
 
 export default {
   name: "Calculator",
@@ -195,7 +196,8 @@ export default {
         value: null,
         permissionChange: false,
       },
-      monthlyPaymentDuration: 0
+      monthlyPaymentDuration: 0,
+      monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission()
     }
   },
   mounted() {
@@ -211,9 +213,9 @@ export default {
     ...mapGetters({
       permission: "getPermission",
     }),
-    monthlyPermission() {
-      return this.permission.checkout && this.permission.checkout.monthly_payment
-    },
+    // monthlyPermission() {
+    //   return this.permission.checkout && this.permission.checkout.monthly_payment
+    // },
     paymentOption() {
       const discounts = [...this.apartment.discounts]
       if (!this.hasApartment) return

@@ -16,7 +16,8 @@
         </div>
       </div>
     </div>
-    <header-block v-if="showHeaderContent" :theme="theme"></header-block>
+    <header-block v-if="showHeaderContent && getMe.role && getMe.role.permissions && getMe.role.permissions.general"
+                  :theme="theme"></header-block>
 
     <router-view></router-view>
   </div>
@@ -32,7 +33,7 @@ export default {
       onLine: navigator.onLine,
       theme: "",
       connecting: null,
-      showHeaderContent: false
+      showHeaderContent: false,
     }
   },
   computed: {
@@ -82,6 +83,7 @@ export default {
       document.documentElement.className = theme;
     },
   },
+
   watch: {
     '$route.name': {
       handler: function (name) {
