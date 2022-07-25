@@ -5,7 +5,6 @@
       <base-search-input
           class="base-search-input w-50 mr-2"
           :placeholder="`${ $t('objects.create.plan.search') }`"
-          @trigger-input="getInputValue"
       />
 
       <BaseButton @click="showAddModal" class="text" :text="$t('objects.create.plan.add')">
@@ -63,32 +62,29 @@
           </template>
 
           <template #cell(actions)="data">
-            <div class="float-right">
-              <div
-                  v-if="editPermission || deletePermission"
-                  class="dropdown my-dropdown dropleft"
-              >
+            <div v-if="editPermission || deletePermission"
+                 class="actions">
                 <BaseButton
+                    v-if="editPermission"
                     class="button rounded-circle"
                     text=''
-                    @click="edit(data.item)"
+                    @click="edit(data.item.id)"
                 >
                   <template #right-icon>
                     <BaseEditIcon fill="#ffff"/>
                   </template>
                 </BaseButton>
                 <BaseButton
-                    v-if="editPermission"
+                    v-if="deletePermission"
                     class="bg-danger button rounded-circle"
                     text=''
-                    @click="edit(data.item)"
+                    @click="deleteTypePlan(data.item)"
                 >
                   <template #right-icon>
                     <BaseDeleteIcon fill="#ffff"/>
                   </template>
                 </BaseButton>
               </div>
-            </div>
           </template>
         </b-table>
       </div>
@@ -100,6 +96,9 @@
           @successfully-updated="successfullyDeletePlan"
           @close-delete-modal="closeDeletePlanModal"
       />
+      <create-modal
+
+      />
     </div>
   </main>
 </template>
@@ -109,6 +108,7 @@ import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import {mapGetters, mapActions} from "vuex";
 import api from "@/services/api";
+import CreateModal from "@/components/Dashboard/TypePlan/Components/CreateModal";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseEditIcon from "@/components/icons/BaseEditIcon"
 import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
@@ -120,6 +120,7 @@ export default {
   name: 'TypePlanList',
   components: {
     BaseDeleteIcon,
+    CreateModal,
     BaseSearchInput,
     BaseButton,
     BaseEditIcon,
@@ -135,6 +136,10 @@ export default {
       header: {
         headers: {
           Authorization: "Bearer " + localStorage.token,
+        },
+        modalProperties: {
+          position: 'create',
+          title: this.$t('add')
         },
       },
       fields: [
@@ -218,6 +223,9 @@ export default {
             })
       }
     },
+    showAddModal() {
+      this.$bvModal.show('modal-create')
+    },
     successfullyDeletePlan() {
       this.closeDeletePlanModal()
       const message = `${this.$t("sweetAlert.deleted")}`
@@ -250,10 +258,6 @@ export default {
 .text {
   font-weight: 600;
 }
-.dropdown {
-  display: flex;
-  gap: 16px;
-}
 .button {
   height: auto;
   background-color: #7C3AED;
@@ -264,7 +268,10 @@ export default {
     margin-left: 0 !important;
   }
 }
-
+.actions {
+    display: flex;
+    gap: 16px;
+}
 .search__content {
   display: flex;
   flex-wrap: wrap;
