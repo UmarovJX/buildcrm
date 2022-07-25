@@ -14,8 +14,6 @@ export default class PaymentAccount extends Permission {
         } else {
             return this.paymentAccount()[one] ?? false
         }
-
-
     }
 
     static getPaymentAccountCreatePermission() {

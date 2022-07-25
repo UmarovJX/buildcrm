@@ -322,7 +322,7 @@ export default {
       if (status === 'booked') {
         return list.slice(1).map((ls, index) => ({...ls, status: index}))
       }
-      if (this.reContractViewPermission && reissue && !reissue.view) {
+      if (!(this.reContractViewPermission && reissue?.view)) {
         return list.slice(0, -1).map((ls, index) => ({...ls, status: index}))
       }
       return list.map((ls, index) => ({...ls, status: index}))
@@ -333,7 +333,6 @@ export default {
   },
   async created() {
     await this.fetchContractData()
-    console.log(this.getPermission, 'permission');
   },
   methods: {
     checkLocales(name) {
@@ -446,8 +445,10 @@ export default {
         this.activeTab = 'TabObjectDetails'
         this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
       }
-      if (!reissue.view) {
+      if (!(reissue?.view && this.reContractViewPermission)) {
+        console.log(this.tabs, 'this.tabs old ');
         this.tabs = this.tabs.filter(tab => tab !== 'TabReContractDetails')
+        console.log(this.tabs, 'this.tabs last ');
 
       }
     },

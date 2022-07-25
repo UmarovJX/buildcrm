@@ -326,7 +326,7 @@ export default {
 
 .promo__info__button {
   background: transparent;
-  border-radius: 50% !important;
+  //border-radius: 50% !important;
   margin: 0 0 0.5rem 0 !important;
   padding: 0;
   outline: none;
@@ -343,9 +343,10 @@ export default {
     margin-right: 1rem;
   }
 
-  .form__timepicker {
+  ::v-deep .form__timepicker {
     max-width: 150px;
     height: 100%;
+
   }
 }
 

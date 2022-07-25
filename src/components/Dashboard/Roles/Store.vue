@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     <div class="app-content">
       <div
           class="
@@ -106,8 +106,7 @@
         </div>
       </template>
     </b-overlay>
-  </div>
-
+  </main>
 </template>
 
 <script>
@@ -484,33 +483,6 @@ export default {
               refer: 'all',
               parent: 'apartments',
             },
-            {
-              ...row,
-              label: 'roles_permission.apartments.watch_apartments',
-              refer: 'view',
-              parent: 'apartments',
-            },
-
-            {
-              ...row,
-              label: 'roles_permission.apartments.filter_apartments',
-              refer: 'filter',
-              parent: 'apartments',
-            },
-
-            {
-              ...row,
-              label: 'roles_permission.apartments.edit_apartment',
-              refer: 'edit',
-              parent: 'apartments',
-            },
-
-            {
-              ...row,
-              label: 'roles_permission.apartments.status_apartment',
-              refer: 'is_sold',
-              parent: 'apartments',
-            },
 
             {
               ...row,
@@ -537,6 +509,34 @@ export default {
               ...row,
               label: 'roles_permission.apartments.using_layouts',
               refer: 'lists.plan',
+              parent: 'apartments',
+            },
+
+            {
+              ...row,
+              label: 'roles_permission.apartments.watch_apartments',
+              refer: 'view',
+              parent: 'apartments',
+            },
+
+            {
+              ...row,
+              label: 'roles_permission.apartments.filter_apartments',
+              refer: 'filter',
+              parent: 'apartments',
+            },
+
+            {
+              ...row,
+              label: 'roles_permission.apartments.edit_apartment',
+              refer: 'edit',
+              parent: 'apartments',
+            },
+
+            {
+              ...row,
+              label: 'roles_permission.apartments.status_apartment',
+              refer: 'is_sold',
               parent: 'apartments',
             },
           ],
@@ -629,12 +629,12 @@ export default {
               parent: 'contracts',
             },
 
-            {
+            /*{
               ...row,
               label: 'roles_permission.contracts.watch_deal',
               refer: 'show',
               parent: 'contracts',
-            },
+            },*/
 
             {
               ...row,
@@ -698,19 +698,19 @@ export default {
               parent: 'contracts',
             },
 
-            {
-              ...row,
-              label: 'roles_permission.contracts.list',
-              refer: 'payments.list',
-              parent: 'contracts',
-            },
-
-            {
-              ...row,
-              label: 'roles_permission.contracts.import',
-              refer: 'payments.import',
-              parent: 'contracts',
-            },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.list',
+            //   refer: 'payments.list',
+            //   parent: 'contracts',
+            // },
+            //
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.import',
+            //   refer: 'payments.import',
+            //   parent: 'contracts',
+            // },
 
             {
               ...row,
