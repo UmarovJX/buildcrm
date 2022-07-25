@@ -342,6 +342,7 @@ export default {
             this.$router.push({
               query: {
                 ...this.query,
+                page: 1,
                 status: status
               }
             })

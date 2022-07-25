@@ -475,6 +475,7 @@ export default {
         text: this.$t("sweetAlert.text_copy_block"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes_clone"),
       }).then((result) => {
         if (result.value) {

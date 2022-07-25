@@ -934,6 +934,7 @@ export default {
         // title: this.$t('sweetAlert.debtors.payment_delete'),
         icon: "question",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value || result.value == "") {

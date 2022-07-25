@@ -1,6 +1,6 @@
 <template>
-  <main>
-    <div class="app-content">
+  <div>
+    <div>
       <div
           class="
           d-flex
@@ -106,7 +106,8 @@
         </div>
       </template>
     </b-overlay>
-  </main>
+  </div>
+
 </template>
 
 <script>

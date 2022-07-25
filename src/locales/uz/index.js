@@ -890,6 +890,7 @@ export default {
             type_plan: "Xonadon rejalari turlari",
             no_type_plan: "xonadon rejalari mavjud emas",
             new_type_plan: "Xonadon rejasini yaratish",
+            enter_press: "Tanlash uchun Enter ni bosing",
             entrance: "Kirish joyi",
             other_price: "m2 uchun boshqa narx",
             price_m2: "m2 uchun narx",
