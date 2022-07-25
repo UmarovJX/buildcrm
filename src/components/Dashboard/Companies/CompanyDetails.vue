@@ -13,11 +13,11 @@
     </div>
     <CompanyInformation :companyId="companyId"/>
     <hr/>
-    <div class="pt-4 d-flex flex-row flex-wrap justify-content-between align-items-center ">
+    <div class="pt-4 d-flex flex-row flex-wrap justify-content-between align-items-center">
       <h3 class="color-gray-700">{{ $t("companies.counted_payment") }}</h3>
       <BaseButton
           v-if="createPaymentPermission"
-          class="bg-gray-150 color-gray-800 button rounded-circle]"
+          class="bg-gray-150 color-gray-800 button rounded-circle"
           :text='$t("companies.addPayment")'
           @click="addPayment"
       >
@@ -227,6 +227,6 @@ h3 {
   font-family: 'Craftwork Sans';
   font-style: normal;
   font-weight: 900;
-  font-size: 28px;
+  font-size: 24px;
 }
 </style>
