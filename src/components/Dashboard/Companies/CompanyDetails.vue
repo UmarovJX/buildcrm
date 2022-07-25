@@ -17,7 +17,7 @@
       <h3 class="color-gray-700">{{ $t("companies.counted_payment") }}</h3>
       <BaseButton
           v-if="createPaymentPermission"
-          class="bg-gray-150 color-gray-800 button rounded-circle"
+          class="bg-gray-150 color-gray-800 button"
           :text='$t("companies.addPayment")'
           @click="addPayment"
       >
