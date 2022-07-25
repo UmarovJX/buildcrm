@@ -61,7 +61,7 @@
                     <button
                         type="button"
                         @click="createFloor"
-                        :disabled="!block.floor ? true : false"
+                        :disabled="!block.floor ?? false"
                         class="btn btn-primary"
                     >
                       {{ $t("create") }}
@@ -266,7 +266,7 @@
                                   v-for="(
                                   floor, index_clone
                                 ) in settings.apartments"
-                                  :disabled="index_clone === index ? true : false"
+                                  :disabled="index_clone === index ?? false"
                                   :value="index_clone"
                                   :key="index_clone"
                               >
@@ -473,6 +473,7 @@ export default {
         text: this.$t("sweetAlert.text"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes"),
       }).then((result) => {
         if (result.value) {
@@ -503,6 +504,7 @@ export default {
         text: this.$t("sweetAlert.text_copy_block"),
         icon: "warning",
         showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
         confirmButtonText: this.$t("sweetAlert.yes_clone"),
       }).then((result) => {
         if (result.value) {
