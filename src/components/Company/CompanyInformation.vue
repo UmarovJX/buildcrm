@@ -56,7 +56,6 @@ export default {
         .then((response) => {
           this.company = response.data
           this.company.phone = phonePrettier(this.company.phone)
-          console.log(this.company);
           this.company.director = this.getDirector(this.company.first_name, this.company.second_name)
         })
         .catch((error) => {
