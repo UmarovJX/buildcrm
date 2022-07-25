@@ -9,6 +9,7 @@
           <p>{{ getName(detail.bank_name) }}</p>
         </span>
         <div
+            v-if="editPermission||deletePermission"
             class="float-right dropdown my-dropdown dropleft"
         >
             <button
@@ -21,6 +22,7 @@
 
             <div class="dropdown-menu">
               <b-button
+                  v-if="editPermission"
                   @click="makePrimaryPayment"
                   v-model="isPrimary"
                   name="check-button"
@@ -30,6 +32,7 @@
                 <span v-else>{{ $t("deactivate") }}</span>
               </b-button>
               <b-button
+                  v-if="editPermission"
                   class="dropdown-item dropdown-item--inside"
                   @click="editSelectedPayment()"
               >
@@ -37,6 +40,7 @@
               </b-button>
 
               <b-button
+                  v-if="deletePermission"
                   class="dropdown-item  dropdown-item--inside"
                   @click="deleteCompany()"
               >
@@ -65,6 +69,7 @@
 <script>
 import api from "@/services/api";
 import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
+import PaymentAccount from "@/permission/payment_account";
 
 export default {
   name: "PaymentBoxContent",
@@ -78,13 +83,15 @@ export default {
       required: true
     }
   },
-  emits: ['edit-selected-payment', 'delete-payment','update-company'],
+  emits: ['edit-selected-payment', 'delete-payment', 'update-company'],
   components: {
     BaseContractsIcon
   },
   data() {
     return {
-      isPrimary: this.checker(this.detail.is_primary)
+      isPrimary: this.checker(this.detail.is_primary),
+      editPermission: PaymentAccount.getPaymentAccountEditPermission(),
+      deletePermission: PaymentAccount.getPaymentAccountDeletePermission()
     }
   },
   watch: {
@@ -100,7 +107,7 @@ export default {
     editSelectedPayment() {
       if (this.$props.detail) {
         this.$emit('edit-selected-payment', this.$props.detail)
-      }else {
+      } else {
         console.log("sorry")
       }
     },
@@ -116,17 +123,17 @@ export default {
         is_primary: this.isPrimary
       }
       api.companies.changeStatusCompany(this.company, this.detail.id, data)
-        .then((response) => {
-          const {message} = response.data
-          this.$emit("update-company", {message})
-        })
-        .catch((error) => {
-          this.toastedWithErrorCode(error)
-          console.log("hello error", this.company, this.detail.id, data);
-        })
-        .finally(() => {
-          this.loading = false
-        })
+          .then((response) => {
+            const {message} = response.data
+            this.$emit("update-company", {message})
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+            console.log("hello error", this.company, this.detail.id, data);
+          })
+          .finally(() => {
+            this.loading = false
+          })
     },
     getName(name) {
       if (localStorage.locale)
@@ -139,21 +146,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-hr{
+hr {
   margin: 26px 0;
   border: 0.8px solid #E5E7EB;
   background: #E5E7EB;
 }
+
 .stamp {
   background: #fff;
   width: max-content;
   padding: 5px 12px;
+  margin-top: 12px!important;
   color: #9CA3AF;
   border: none;
   border-radius: 32px;
 }
+
 .payment__content-detail {
-  border: none!important;
+  border: none !important;
   border-radius: 30px;
   padding: 1.5rem;
   font-size: 14px;
@@ -172,6 +182,7 @@ hr{
     button {
       margin-bottom: 30px;
     }
+
     button:nth-child(3) {
       margin-bottom: 0;
     }
@@ -203,11 +214,13 @@ hr{
         margin-bottom: 0;
         color: #7C3AED;
       }
+
       .float-right {
         .dropdown {
           button {
             background: transparent;
             box-shadow: none;
+
             i {
               color: #4B5563;
             }
