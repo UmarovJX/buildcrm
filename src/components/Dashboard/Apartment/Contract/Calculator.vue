@@ -157,6 +157,7 @@
             id="credit_month"
             min="0"
             type="number"
+            :disabled="monthlyPermission"
             v-model="contract.month"
             @change="changeDiscountMonth"
         >
@@ -303,8 +304,8 @@ export default {
       edited: {
         prepay: false
       },
-      markPricePermission: CheckoutPermission.getMarkPricePermission()
-
+      markPricePermission: CheckoutPermission.getMarkPricePermission(),
+      monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission()
     }
   },
 

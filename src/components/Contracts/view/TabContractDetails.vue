@@ -153,6 +153,10 @@
       </b-form>
     </div>
 
+
+    <ContractComments/>
+
+
   </div>
 </template>
 
@@ -162,8 +166,13 @@ import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 
+import ContractComments from "@/components/Contracts/view/ContractComments";
+
 export default {
   name: "TabClientDetails",
+  components: {
+    ContractComments
+  },
   props: {
     order: {
       type: Object,
