@@ -43,6 +43,7 @@
         @edit-selected-payment="updatedPayments"
         :payment-data="editedItem"
         :modal-properties="modalProperties"
+        @update-company="getPaymentList"
     />
 
     <b-overlay :show="loading" no-wrap opacity="0.5" class="loading__overlay">
