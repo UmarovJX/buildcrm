@@ -1,10 +1,10 @@
 <template>
   <div class="comments">
     <div class="comments-header">
-      <h4>Примечания</h4>
+      <h4 class="comments-header__title">Примечания</h4>
       <base-button text="Добавить примечание">
         <template #left-icon>
-          <BasePlusIcon/>
+          <BasePlusIcon fill="var(--violet-600)"/>
         </template>
       </base-button>
     </div>
@@ -74,23 +74,46 @@ export default {
 
 .comments {
   margin-top: 2rem;
+  border-top: 6px solid var(--gray-100);
+  padding-top: 2rem;
+
+  p {
+    margin-bottom: 0;
+  }
 
   &-header {
-
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+
+    &__title {
+      font-family: CraftworkSans, serif;
+      font-weight: 900;
+      font-size: 24px;
+      line-height: 28px;
+      color: var(--gray-600);
+      margin-bottom: 0;
+    }
   }
 
   &-body {
-
+    display: flex;
+    flex-direction: column;
+    column-gap: 1rem;
   }
 }
 
 .comment {
-  &-content {
+  border: 2px solid var(--gray-200);
+  border-radius: 2rem;
+  padding: 1.5rem;
 
+  &-content {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 1rem;
+    margin-bottom: 1rem;
   }
 
   &-footer {
@@ -98,16 +121,30 @@ export default {
   }
 
   &-text {
-
+    p {
+      font-family: Inter, sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 24px;
+      color: var(--gray-600);
+    }
   }
 
   &-action {
-
+    display: flex;
+    height: 100%;
   }
 
   &-info {
-    .avatar {
+    display: flex;
+    align-items: center;
 
+    .avatar {
+      width: 24px;
+      height: 24px;
+      img{
+        width: 100%;
+      }
     }
 
     .name {

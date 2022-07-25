@@ -216,6 +216,7 @@ import {mapActions, mapGetters} from "vuex";
 import ThemeButton from "@/components/ThemeButton.vue";
 import GeneralPermission from "@/permission/general";
 
+
 export default {
   name: 'Header',
   components: {ThemeButton},
@@ -238,8 +239,12 @@ export default {
       // settingsPermission: GeneralPermission.getGeneralPermission('settings') && (GeneralPermission.getGeneralPermission('password_settings') || GeneralPermission.getGeneralPermission('profile_settings')),
     }
   },
-  async created() {
-    await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this), this.fetchCurrency(this)])
+  async mounted() {
+    if (this.getPermission && this.getPermission.general && this.getPermission.general.currency) {
+      await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this), this.fetchCurrency(this)])
+    } else {
+      await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this)])
+    }
     this.locale = localStorage.locale !== "uz";
   },
   computed: {

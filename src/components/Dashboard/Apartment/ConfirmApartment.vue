@@ -764,7 +764,9 @@ export default {
 
 
           // formData.append("date_change", 1);
-          formData.append("contract_date", this.contract.date);
+          if (this.contract.date) {
+            formData.append("contract_date", this.contract.date);
+          }
 
           if (this.contract.payment_date) {
             formData.append(

@@ -1,20 +1,20 @@
 import api from "@/services/api";
-import GeneralPermission from "@/permission/general";
+// import GeneralPermission from "@/permission/general";
 
 export default {
     actions: {
         async fetchCurrency(ctx) {
-            if (GeneralPermission.getCurrencyPermission()) {
-                try {
-                    // const response = await api.authV1.getMe()
-                    if (GeneralPermission.getCurrencyPermission()) {
-                        const {data} = await api.settingsV2.fetchCurrency()
-                        ctx.commit('updateCurrency', data);
-                    }
-                } catch (error) {
-                    this.toastedWithErrorCode(error)
-                }
+            // if (GeneralPermission.getCurrencyPermission()) {
+            try {
+                // const response = await api.authV1.getMe()
+                // if (GeneralPermission.getCurrencyPermission()) {
+                const {data} = await api.settingsV2.fetchCurrency()
+                ctx.commit('updateCurrency', data);
+                // }
+            } catch (error) {
+                this.toastedWithErrorCode(error)
             }
+            // }
         }
     },
 
