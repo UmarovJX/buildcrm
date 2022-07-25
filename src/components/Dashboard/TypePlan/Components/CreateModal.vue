@@ -8,7 +8,7 @@
         hide-footer
         @show="resetModal"
     >
-      <form ref="form" @submit.prevent="handleSubmit">
+      <form ref="form" class="create-layout" @submit.prevent="handleSubmit">
         <BaseInput/>
         <BaseButton @click="handleSubmit"/>
       </form>
@@ -68,5 +68,23 @@ export default {
 
 .save__button {
   color: white;
+}
+::v-deep .modal-content {
+  border-radius: 56px;
+  border: none;
+  padding: 55px 50px;
+  header {
+    padding: 0;
+    border: none;
+    h5 {
+      font-size: 36px;
+      line-height: 42px;
+      font-weight: 900;
+      color: #4B5563;
+    }
+  }
+  .modal-body {
+    padding: 0;
+  }
 }
 </style>
