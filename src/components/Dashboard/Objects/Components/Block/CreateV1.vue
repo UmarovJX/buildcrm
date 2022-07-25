@@ -61,7 +61,7 @@
                     <button
                         type="button"
                         @click="createApartments"
-                        :disabled="!block.floor ?? false"
+                        :disabled="!block.floor ? true : false"
                         class="btn btn-primary"
                     >
                       {{ $t("create") }}
@@ -264,7 +264,7 @@
                                   v-for="(
                                   floor, index_clone
                                 ) in settings.apartments"
-                                  :disabled="index_clone === index ?? false"
+                                  :disabled="index_clone === index ? true : false"
                                   :value="index_clone"
                                   :key="index_clone"
                               >

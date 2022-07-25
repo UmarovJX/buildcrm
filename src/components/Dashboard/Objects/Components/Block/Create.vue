@@ -61,7 +61,7 @@
                     <button
                         type="button"
                         @click="createFloor"
-                        :disabled="!block.floor ?? false"
+                        :disabled="!block.floor ? true : false"
                         class="btn btn-primary"
                     >
                       {{ $t("create") }}
@@ -107,7 +107,6 @@
                           v-model="price.floors"
                           :multiple="true"
                           :placeholder="$t()"
-                          :selectLabel="$t('objects.create.enter_press')"
                           :options="settings.available_floors"
                           @select="selectFloor(price, index)"
                           @remove="removeFloor(price, index)"
@@ -267,7 +266,7 @@
                                   v-for="(
                                   floor, index_clone
                                 ) in settings.apartments"
-                                  :disabled="index_clone === index ?? false"
+                                  :disabled="index_clone === index ? true : false"
                                   :value="index_clone"
                                   :key="index_clone"
                               >

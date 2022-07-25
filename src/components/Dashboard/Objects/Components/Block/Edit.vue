@@ -59,7 +59,7 @@
                     <button
                         type="button"
                         @click="createFloor"
-                        :disabled="!block.floor ?? false"
+                        :disabled="!block.floor ? true : false"
                         class="btn btn-primary"
                     >
                       {{ $t("create") }}
@@ -250,7 +250,7 @@
                       <div class="card">
                         <div class="card-body">
                           <div class="form-group">
-                            <label :for="`clone ${index}`">
+                            <label :for="'clone' + index">
                               {{ $t("objects.create.choose_clone") }}
                             </label>
                             <select
@@ -262,7 +262,7 @@
                                   v-for="(
                                   floor, index_clone
                                 ) in settings.apartments"
-                                  :disabled="index_clone === index ?? false"
+                                  :disabled="index_clone === index ? true : false"
                                   :value="index_clone"
                                   :key="index_clone"
                               >
