@@ -56,6 +56,8 @@ export default {
         .then((response) => {
           this.company = response.data
           this.company.phone = phonePrettier(this.company.phone)
+          console.log(this.company);
+          this.company.director = this.getDirector(this.company.first_name, this.company.second_name)
         })
         .catch((error) => {
           this.toastedWithErrorCode(error)
@@ -70,6 +72,9 @@ export default {
         return name[localStorage.locale]
       else
         return name['ru']
+    },
+    getDirector(firstName, secondName) {
+      return `${firstName} ${secondName}`
     },
   }
 }
@@ -87,7 +92,8 @@ export default {
 .item-block {
   display: flex;
   align-items: center;
-  max-width: 300px;
+  width: 40%;
+  max-width: 100%;
 }
 
 .item {
