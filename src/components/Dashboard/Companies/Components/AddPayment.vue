@@ -83,7 +83,7 @@
                 variant="success"
             >
               <i class="fas fa-save" v-if="!loading"></i>
-              <span class="save__button"  @click="submitForm">{{ $t("save") }}</span>
+              <span class="save__button" @click="submitForm">{{ $t("save") }}</span>
               <i v-if="loading" class="fas fa-spinner fa-spin"></i>
             </b-button>
           </div>
@@ -231,7 +231,14 @@ export default {
           .then((response) => {
             const {message} = response.data
             this.$bvModal.hide("modal-create")
-            this.$emit("updated-company", {message})
+            this.$swal({
+              title: this.$t("sweetAlert.success_create_payment"),
+              text: message,
+              icon: "success",
+              showCancelButton: false,
+              confirmButtonText: this.$t("next"),
+            })
+            this.$emit("update-company", {message})
             this.resetModal()
           })
           .catch((error) => {
