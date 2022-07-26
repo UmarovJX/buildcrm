@@ -52,6 +52,11 @@ const routes = [
         name: 'experiment',
         component: () => import('@/views/experience')
     },
+    {
+        path: '/icons',
+        name: 'icons',
+        component: () => import('@/views/icons')
+    },
 
     {
         /* HOME */
