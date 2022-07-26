@@ -895,7 +895,8 @@ export default {
                 balcony_area: "Balkon maydoni",
                 balcony_paid: "Balkon pullimi?",
                 add: 'Xonadon rejasini qo\'shish',
-                search: 'Xonadon rejasi nomi'
+                search: 'Xonadon rejasi nomi',
+                add_image: 'Rasm qo\'shish',
             },
 
             apartments: "Xonadonlar",

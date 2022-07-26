@@ -887,6 +887,7 @@ export default {
             plan: {
                 name: "Планировка",
                 area: "Площадь",
+                add_image: 'Добавить рисунок',
                 balcony: "Имеется балкон?",
                 balcony_area: "Площадь балкона",
                 balcony_paid: "Платный балкон?",
