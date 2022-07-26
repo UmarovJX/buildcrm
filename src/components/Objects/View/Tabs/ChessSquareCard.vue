@@ -1,7 +1,7 @@
 <template>
   <div
       class="position-relative d-flex"
-      style="min-height: 300px"
+      style="min-height: 300px; overflow-x: auto"
   >
     <div v-for="(apartment,index) in apartments" :key="apartment.id" class="d-flex" style="margin-bottom: 50px">
       <div class="vertical">
@@ -21,7 +21,7 @@
           <div v-if="showBlock(value.blockActive)" :key="value.id" class="d-flex flex-column position-relative">
             <div class="header">
                <span>
-                {{ value.name }}
+                {{apartment.name}} / {{ value.name }}
               </span>
             </div>
 
@@ -540,9 +540,9 @@ export default {
 .block {
   display: flex;
   height: 100%;
-  width: 100vw;
-  max-width: 100vw;
-  overflow-x: auto;
+  //width: 100vw;
+  //max-width: 100vw;
+  //overflow-x: auto;
   overflow-y: visible;
 
   &-content {
@@ -573,6 +573,8 @@ export default {
   text-transform: capitalize;
   width: 100%;
   min-height: 20px;
+  z-index: 3;
+  background-color: #fff;
 
   span {
     display: block;
@@ -595,6 +597,8 @@ export default {
   max-height: 100vh;
   padding-left: 18px;
   padding-right: 10px;
+  background-color: #fff;
+
 
   h5 {
     font-weight: 600;

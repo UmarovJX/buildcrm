@@ -16,8 +16,9 @@
         </div>
       </div>
     </div>
-    <header-block v-if="showHeaderContent"
-                  :theme="theme"></header-block>
+    <header-block
+        v-if="showHeaderContent"
+        :theme="theme"/>
 
     <router-view></router-view>
   </div>
