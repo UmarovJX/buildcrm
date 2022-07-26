@@ -103,6 +103,17 @@ export default {
     handleSubmit() {
       console.log("post to the backend")
       this.resetModal()
+    },
+    add() {
+      this.$bvModal.hide("modal-create")
+      this.$swal({
+        title: this.$t('successfully'),
+        text: this.$t('sweetAlert.payment_list_add'),
+        icon: "success"
+      })
+    },
+    cancel() {
+      this.$bvModal.hide("modal-create")
     }
   }
 }
