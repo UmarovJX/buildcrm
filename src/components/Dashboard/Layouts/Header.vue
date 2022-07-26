@@ -240,11 +240,11 @@ export default {
     }
   },
   async created() {
-    if (this.getPermission && this.getPermission.general && this.getPermission.general.currency) {
+    // if (this.getPermission && this.getPermission.general && this.getPermission.general.currency) {
       await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this), this.fetchCurrency(this)])
-    } else {
-      await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this)])
-    }
+    // } else {
+    //   await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this)])
+    // }
     this.locale = localStorage.locale !== "uz";
   },
   computed: {

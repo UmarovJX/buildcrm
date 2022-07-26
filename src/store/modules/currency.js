@@ -6,11 +6,11 @@ export default {
         async fetchCurrency(ctx) {
             // if (GeneralPermission.getCurrencyPermission()) {
             try {
-                // const response = await api.authV1.getMe()
-                // if (GeneralPermission.getCurrencyPermission()) {
-                const {data} = await api.settingsV2.fetchCurrency()
-                ctx.commit('updateCurrency', data);
-                // }
+                const response = await api.authV1.getMe()
+                if (response.data.role && response.data.role.permissions && response.data.role.permissions.general && response.data.role.permissions.general.currency) {
+                    const {data} = await api.settingsV2.fetchCurrency()
+                    ctx.commit('updateCurrency', data);
+                }
             } catch (error) {
                 this.toastedWithErrorCode(error)
             }
