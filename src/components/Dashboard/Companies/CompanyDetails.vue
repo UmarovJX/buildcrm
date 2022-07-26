@@ -227,7 +227,7 @@ hr {
 }
 
 h3 {
-  font-family: CraftworkSans, serif;
+  font-family: Craftwork Sans, serif;
   font-style: normal;
   font-weight: 900;
   font-size: 24px;
