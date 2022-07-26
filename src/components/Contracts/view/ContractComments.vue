@@ -117,7 +117,13 @@ export default {
   }
 
   &-footer {
-
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
   }
 
   &-text {
@@ -138,29 +144,36 @@ export default {
   &-info {
     display: flex;
     align-items: center;
+    column-gap: .5rem;
+
 
     .avatar {
       width: 24px;
       height: 24px;
-      img{
+
+      img {
         width: 100%;
       }
     }
 
     .name {
-      &-dot {
 
+      margin-bottom: 0;
+      color: var(--violet-600);
+
+      &-dot {
+        color: var(--gray-400);
       }
 
       &-rank {
-
+        color: var(--gray-600)
       }
     }
   }
 
   &-date {
     .date {
-
+      color: var(--gray-400);
     }
   }
 }

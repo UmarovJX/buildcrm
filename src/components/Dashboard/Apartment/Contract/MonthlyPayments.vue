@@ -10,7 +10,7 @@
               id="month"
               class="my-form__input w-100"
               type="number"
-              :disabled="monthlyPermission"
+              :disabled="!monthlyPermission"
               min="0"
               required
               v-model="contract.month"
@@ -138,7 +138,7 @@
                 </button>
 
                 <button
-                    v-if="(getMe.role.id === 1 && !initialPayment.edit) || (getPermission.contracts.monthly && !initialPayment.edit)"
+                    v-if="(monthlyPermission && !initialPayment.edit)"
                     type="button"
                     @click="editInitialPayment(index)"
                     class="btn btn-sm btn-primary mt-0 mr-1"

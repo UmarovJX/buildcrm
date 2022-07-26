@@ -157,7 +157,7 @@
             id="credit_month"
             min="0"
             type="number"
-            :disabled="monthlyPermission"
+            :disabled="!monthlyPermission"
             v-model="contract.month"
             @change="changeDiscountMonth"
         >
