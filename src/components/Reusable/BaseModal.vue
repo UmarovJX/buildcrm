@@ -79,6 +79,9 @@ export default {
   font-family: CraftworkSans, serif
   height: 100%
 
+  .modal-body
+    width: 100%
+
   .modal-dialog
     display: flex
     align-items: center

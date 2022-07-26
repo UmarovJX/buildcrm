@@ -123,6 +123,24 @@ class ContractV2 extends Core {
     contractOrderUpdate(contractId, body) {
         return this.put(`contracts/${contractId}`, body)
     }
+
+
+    getCommentList(contractId, params) {
+        return this.get('contracts/' + contractId + '/comments', {params})
+    }
+
+    addComment(contractId, body) {
+        return this.post('contracts/' + contractId + '/comments', body)
+    }
+
+    editComment(contractId, commentId, body) {
+        return this.put('contracts/' + contractId + '/comments/' + commentId, body)
+    }
+
+    deleteComment(contractId, commentId) {
+        return this.delete('contracts/' + contractId + '/comments/' + commentId)
+    }
+
 }
 
 export default {

@@ -239,7 +239,7 @@ export default {
       // settingsPermission: GeneralPermission.getGeneralPermission('settings') && (GeneralPermission.getGeneralPermission('password_settings') || GeneralPermission.getGeneralPermission('profile_settings')),
     }
   },
-  async mounted() {
+  async created() {
     if (this.getPermission && this.getPermission.general && this.getPermission.general.currency) {
       await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this), this.fetchCurrency(this)])
     } else {
