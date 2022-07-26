@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <header-block v-if="showHeaderContent && getMe.role && getMe.role.permissions && getMe.role.permissions.general"
+    <header-block v-if="showHeaderContent"
                   :theme="theme"></header-block>
 
     <router-view></router-view>
@@ -37,7 +37,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getMe"]),
+    ...mapGetters(["getPermission"]),
 
   },
   async created() {
