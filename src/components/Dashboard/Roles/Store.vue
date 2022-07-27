@@ -48,13 +48,11 @@
               >
                 <table class="table">
                   <tbody>
-                  <tr
-                      v-for="({
+                  <tr v-for="({
                     label,width,
                     refer,checkboxSwitch,
                     checkboxActive,checkboxSize,inputActive,
-                    inputClass,inputPlaceholder,inputType},index) in rows"
-                      :key="index+label+id"
+                    inputClass,inputPlaceholder,inputType},index) in rows" :key="index+label+id"
                   >
                     <td :width="width">
                       {{ $t(label) }}
@@ -229,11 +227,12 @@ export default {
           create: true
         },
         comments: {
-          ...crudPermission,
+          view: false,
+          create: false,
+          delete: false,
           update: false
         }
       },
-      // src/components/reusable/icons/homeIcon.vue
       users: {
         ...crudPermission
       },
@@ -248,7 +247,6 @@ export default {
       },
       branches: {
         ...crudPermission,
-        // contract_templates: false,
         templates: {
           view: true,
           create: true,
@@ -630,27 +628,27 @@ export default {
             },
             {
               ...row,
+              label: 'roles_permission.contracts.create_comments',
+              refer: 'comments.create',
+              parent: 'contracts',
+            },
+            {
+              ...row,
               label: 'roles_permission.contracts.read_comments',
-              refer: 'view',
-              parent: 'contracts.comments',
+              refer: 'comments.view',
+              parent: 'contracts',
             },
             {
               ...row,
               label: 'roles_permission.contracts.update_comments',
-              refer: 'edit',
-              parent: 'contracts.comments',
+              refer: 'comments.edit',
+              parent: 'contracts',
             },
             {
               ...row,
               label: 'roles_permission.contracts.delete_comments',
-              refer: 'delete',
-              parent: 'contracts.comments',
-            },
-            {
-              ...row,
-              label: 'roles_permission.contracts.create_comments',
-              refer: 'create',
-              parent: 'contracts.comments',
+              refer: 'comments.delete',
+              parent: 'contracts',
             },
 
             {
@@ -1184,7 +1182,6 @@ export default {
       })
     },
     activeAllTabPermission(refer, pmIndex, index, value) {
-      // const allActivateSwitchIndex = this.permissionTabs[pmIndex]['rows'].findIndex(row => row.refer === 'all')
       if (refer === 'all') {
         this.permissionTabs[pmIndex]['rows'] = this.permissionTabs[pmIndex]['rows'].map(row => {
           return {
@@ -1192,40 +1189,6 @@ export default {
             vBind: value
           }
         })
-      }
-      // else if (allActivateSwitchIndex !== -1) {
-      //   const isAllActive = this.permissionTabs[pmIndex]['rows'].every(row => {
-      //     if (row.refer === 'all') return true
-      //     return row.vBind
-      //   })
-      //   const isAllInactive = this.permissionTabs[pmIndex]['rows'].every(row => {
-      //     if (row.refer === 'all') return false
-      //     return !row.vBind
-      //   })
-      //   if (isAllActive) {
-      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = true
-      //   }
-      //
-      //   // console.log(isAllActive, isAllInactive)
-      //
-      //   if (isAllInactive) {
-      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = false
-      //   }
-      // }
-      // else if (allActivateSwitchIndex !== -1) {
-      //   const {vBind} = this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex]
-      //   if (!value && vBind) {
-      //     this.permissionTabs[pmIndex]['rows'][allActivateSwitchIndex].vBind = false
-      //   }
-      // }
-    },
-    deepSet(obj, valueToSet) {
-      for (let [key, value] of Object.entries(obj)) {
-        if (typeof value === 'object') {
-          this.deepSet(value, valueToSet)
-        } else {
-          obj[key] = valueToSet
-        }
       }
     },
     generateRole() {
