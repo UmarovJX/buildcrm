@@ -20,7 +20,7 @@ export default {
   props: {
     extraClass: {
       type: String,
-      required: true
+      required: false
     },
     fill: {
       type: String,
