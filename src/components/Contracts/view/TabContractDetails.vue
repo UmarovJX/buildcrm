@@ -154,7 +154,8 @@
     </div>
 
 
-<!--    <ContractComments/>-->
+
+    <ContractComments/>
 
 
   </div>
@@ -166,12 +167,12 @@ import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 
-// import ContractComments from "@/components/Contracts/view/ContractComments";
+import ContractComments from "@/components/Contracts/view/ContractComments";
 
 export default {
   name: "TabClientDetails",
   components: {
-    // ContractComments
+    ContractComments
   },
   props: {
     order: {
