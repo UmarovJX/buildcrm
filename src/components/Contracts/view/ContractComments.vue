@@ -31,7 +31,7 @@
                   Редактировать
                   <!--                  {{ $t('contracts.view.cancel_contract') }}-->
                 </b-dropdown-item>
-                <b-dropdown-item href="#" @click="deleteComment(comment.id)">
+                <b-dropdown-item href="#" @click="warnBeforeDelete(comment.id)">
                   <span class="d-flex mr-2">
                     <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
                   </span>
@@ -110,6 +110,7 @@
 
     </div>
 
+    <!--    CREATE COMMENT MODAL-->
     <base-modal ref="create" id="create-comment" design="auto-height">
       <template #header>
 
@@ -159,11 +160,58 @@
       </template>
     </base-modal>
 
+    <!--  WARNING BEFORE DELETE COMMENT  -->
+    <base-modal ref="warning-before-delete">
+      <template #header>
+          <span class="warning__before__delete-head">
+            <span>
+              <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path opacity="0.4"
+                      d="M51.3346 27.9996C51.3346 40.8889 40.8883 51.3329 28.0013 51.3329C15.1143 51.3329 4.66797 40.8889 4.66797 27.9996C4.66797 15.1149 15.1143 4.66626 28.0013 4.66626C40.8883 4.66626 51.3346 15.1149 51.3346 27.9996"
+                      fill="#EF4444"/>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M30.3081 29.5574C30.3081 30.7612 29.2661 31.7427 27.988 31.7427C26.71 31.7427 25.668 30.7612 25.668 29.5574V18.5185C25.668 17.3148 26.71 16.3333 27.988 16.3333C29.2661 16.3333 30.3081 17.3148 30.3081 18.5185V29.5574ZM25.6811 37.4814C25.6811 36.2776 26.7178 35.2961 27.9879 35.2961C29.2951 35.2961 30.3345 36.2776 30.3345 37.4814C30.3345 38.6852 29.2951 39.6667 28.0144 39.6667C26.7284 39.6667 25.6811 38.6852 25.6811 37.4814Z"
+                      fill="#EF4444"/>
+              </svg>
+            </span>
+            <span class="title">
+              Удалить примечание?
+              <!--              {{ $t('remove_payment') }}-->
+            </span>
+          </span>
+      </template>
+
+      <template #main>
+          <span class="warning__before__delete-main">
+            Вы уверены, что хотите удалить примечание?
+Данное действие нельзя отменить.
+            <!--            {{ $t('contracts.warn_before_delete_payment') }}-->
+          </span>
+      </template>
+
+      <template #footer>
+        <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
+          <base-button
+              @click="cancelDelete"
+              :text="`${ $t('no_cancel') }`"
+          >
+          </base-button>
+          <base-button
+              @click="deleteComment"
+              :text="`${ $t('yes_delete') }`"
+              class="violet-gradient"
+          >
+          </base-button>
+        </div>
+      </template>
+    </base-modal>
+
   </div>
 
 </template>
 
 <script>
+
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
@@ -209,7 +257,7 @@ export default {
         page: 1
       },
       comment: '',
-      commentId: '',
+      commentId: null,
       comments: [],
       modalProperties: {
         type: '',
@@ -298,8 +346,16 @@ export default {
       this.commentId = item.id
       this.$refs["create"].openModal()
     },
-    deleteComment(id) {
-      api.contractV2.deleteComment(this.contractId, id)
+    warnBeforeDelete(id) {
+      this.commentId = id
+      this.$refs['warning-before-delete'].openModal()
+    },
+    cancelDelete() {
+      this.commentId = null
+      this.$refs['warning-before-delete'].closeModal()
+    },
+    deleteComment() {
+      api.contractV2.deleteComment(this.contractId, this.commentId)
           .then(() => {
             this.toasted('deleted', "success");
           })
@@ -307,6 +363,7 @@ export default {
             this.toasted(err.message, "error");
           })
           .finally(() => {
+            this.$refs['warning-before-delete'].closeModal()
             this.getComments()
           })
     },
@@ -510,6 +567,35 @@ export default {
       font-size: 14px;
       line-height: 20px;
       color: var(--gray-400);
+    }
+  }
+}
+
+.warning__before__delete {
+  &-head {
+    display: flex;
+    align-items: center;
+
+    .title {
+      font-size: 2.25rem;
+      line-height: 42px;
+      margin-left: 1rem;
+    }
+  }
+
+  &-main {
+    display: block;
+    max-width: 60%;
+    font-family: Inter, sans-serif;
+    color: var(--gray-600);
+    margin-left: 0.5rem;
+  }
+
+  &-footer {
+    gap: 2rem;
+
+    button {
+      flex-grow: 1;
     }
   }
 }
