@@ -1,10 +1,8 @@
 <template>
-
   <div>
-
     <div class="comments">
       <div class="comments-header">
-        <h4 class="comments-header__title">{{this.$t('contracts.note')}}</h4>
+        <h4 class="comments-header__title">{{ this.$t('contracts.note') }}</h4>
         <base-button v-if="createCommentPermission" @click="openCreateModal" :text="`${ $t('contracts.add_note') }`">
           <template #left-icon>
             <BasePlusIcon fill="var(--violet-600)"/>
@@ -142,7 +140,11 @@
               class="w-100"
               tag="div"
           >
-            <b-form-textarea v-model="comment" class="comment-textarea" placeholder="Текст"></b-form-textarea>
+            <b-form-textarea
+                v-model="comment"
+                class="comment-textarea"
+                :placeholder="`${ $t('contracts.comment') }`"
+            />
             <span class="error__provider" v-if="errors[0]">
               {{ errors[0] }}
             </span>

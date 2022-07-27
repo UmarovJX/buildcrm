@@ -217,6 +217,7 @@ export default {
     monthly_pay: 'Ежемесячный',
     sum_text: 'В суммах',
     usd_text: 'В долларах',
+    text:'Текст',
     apartments_count: "Количество квартир",
     contract_file_not_found: 'Файл контракта не найден',
     instruction: "Инструкция",
