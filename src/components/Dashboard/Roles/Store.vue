@@ -628,6 +628,30 @@ export default {
               refer: 'view',
               parent: 'contracts',
             },
+            {
+              ...row,
+              label: 'roles_permission.contracts.read_comments',
+              refer: 'view',
+              parent: 'contracts.comments',
+            },
+            {
+              ...row,
+              label: 'roles_permission.contracts.update_comments',
+              refer: 'edit',
+              parent: 'contracts.comments',
+            },
+            {
+              ...row,
+              label: 'roles_permission.contracts.delete_comments',
+              refer: 'delete',
+              parent: 'contracts.comments',
+            },
+            {
+              ...row,
+              label: 'roles_permission.contracts.create_comments',
+              refer: 'create',
+              parent: 'contracts.comments',
+            },
 
             {
               ...row,

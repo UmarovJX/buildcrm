@@ -98,7 +98,11 @@ export default {
             uniformity: 'Mutanosiblikni ko\'rish huquqi',
             comments: 'Shartnomalarga izoh yozish huquqi',
             edit: 'Shartnomalarni tahrirlash huquqi',
-            full_access: 'Barchasiga ruxsat berish'
+            full_access: 'Barchasiga ruxsat berish',
+            update_comments: 'Izohlarni tahrirlash huquqi',
+            delete_comments: 'Izohlarni o\'chirish huquqi',
+            create_comments: 'Izohlarni yaratish huquqi',
+            read_comments: 'Izohlarni ko\'rish huquqi'
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
