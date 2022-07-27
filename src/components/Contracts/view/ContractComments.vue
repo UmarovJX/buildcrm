@@ -5,7 +5,7 @@
     <div class="comments">
       <div class="comments-header">
         <h4 class="comments-header__title">Примечания</h4>
-        <base-button @click="openCreateModal" text="Добавить примечание">
+        <base-button v-if="createCommentPermission" @click="openCreateModal" text="Добавить примечание">
           <template #left-icon>
             <BasePlusIcon fill="var(--violet-600)"/>
           </template>
@@ -20,18 +20,18 @@
             </div>
             <div class="comment-action">
 
-              <b-dropdown right>
+              <b-dropdown v-if="deleteCommentPermission || editCommentPermission" right>
                 <template #button-content>
                   <BaseDotsIcon/>
                 </template>
-                <b-dropdown-item href="#" @click="openEditModal(comment)">
+                <b-dropdown-item v-if="editCommentPermission" href="#" @click="openEditModal(comment)">
                   <span class="d-flex mr-2">
                    <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
                   </span>
                   Редактировать
                   <!--                  {{ $t('contracts.view.cancel_contract') }}-->
                 </b-dropdown-item>
-                <b-dropdown-item href="#" @click="warnBeforeDelete(comment.id)">
+                <b-dropdown-item v-if="deleteCommentPermission" href="#" @click="warnBeforeDelete(comment.id)">
                   <span class="d-flex mr-2">
                     <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
                   </span>
@@ -223,6 +223,7 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "ContractComments",
@@ -263,7 +264,10 @@ export default {
         type: '',
         title: '',
       },
-      contractId: this.$route.params.id
+      contractId: this.$route.params.id,
+      createCommentPermission: ContractsPermission.getContractsCreateCommentPermission(),
+      editCommentPermission: ContractsPermission.getContractsEditCommentPermission(),
+      deleteCommentPermission: ContractsPermission.getContractsInitialDeletePermission(),
     }
   },
   computed: {
@@ -536,8 +540,12 @@ export default {
     .avatar {
       width: 24px;
       height: 24px;
+      border-radius: 50%;
 
       img {
+        border-radius: 50%;
+        height: 100%;
+        object-fit: contain;
         width: 100%;
       }
     }

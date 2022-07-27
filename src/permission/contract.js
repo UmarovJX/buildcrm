@@ -99,5 +99,21 @@ export default class ContractsPermission extends Permission {
         return this.getContractsPermission('payments.monthly_type.delete')
     }
 
+    static getContractsViewCommentPermission() {
+        return this.getContractsPermission('comments.view')
+    }
+
+    static getContractsCreateCommentPermission() {
+        return this.getContractsPermission('comments.create')
+    }
+
+    static getContractsEditCommentPermission() {
+        return this.getContractsPermission('comments.update')
+    }
+
+    static getContractsDeleteCommentPermission() {
+        return this.getContractsPermission('comments.delete')
+    }
+
 
 }

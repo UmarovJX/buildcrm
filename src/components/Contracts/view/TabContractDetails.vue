@@ -155,7 +155,7 @@
 
 
 
-    <ContractComments/>
+    <ContractComments v-if="viewCommentPermission" />
 
 
   </div>
@@ -185,7 +185,8 @@ export default {
     return {
       companyDetails: {},
       otherDetails: {},
-      compareDetails: {}
+      compareDetails: {},
+      viewCommentPermission: ContractsPermission.getContractsViewCommentPermission(),
     }
   },
   created() {
