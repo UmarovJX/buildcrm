@@ -9,15 +9,15 @@ export default {
   props: {
     fill: {
       type: String,
-      default: "#A78BFA"
+      default: "#9CA3AF"
     },
     width: {
       type: Number,
-      default: 30
+      default: 20
     },
     height: {
       type: Number,
-      default: 27
+      default: 20
     }
   }
 }
