@@ -104,12 +104,6 @@ import ApartmentsPermission from "@/permission/apartments";
 export default {
   data: () => ({}),
 
-  // async created() {
-  //   await home.getHomeInfo().then(response => {
-  //     console.log(response)
-  //   })
-  // },
-
   mounted() {
     this.fetchCounts(this);
   },
@@ -119,7 +113,7 @@ export default {
 
     apartmentsViewPermission() {
       return ApartmentsPermission.getApartmentsPermission('view')
-    },
+    }
   },
 
 

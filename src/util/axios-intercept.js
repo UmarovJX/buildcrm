@@ -50,9 +50,6 @@ async function waitApiCall(config) {
 async function refreshToken() {
     const refreshToken = getLocalVar('auth__refresh__token')
     if (refreshToken) {
-        // const expiredIn = parseFloat(getLocalVar('expired_in'))
-        // const current = (new Date()).getTime()
-        // if (!expiredIn || expiredIn < current) {
         sessionStorage.setItem('pending', '1')
         return await api.auth.refreshToken(refreshToken)
             .then(async (response) => {
@@ -72,9 +69,6 @@ async function refreshToken() {
                 sessionStorage.setItem('pending', '0')
                 return 1
             })
-        // } else {
-        //     return 1
-        // }
     } else {
         navigateToLoginPage()
         return 0

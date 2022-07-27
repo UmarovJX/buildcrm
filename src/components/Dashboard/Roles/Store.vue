@@ -230,6 +230,7 @@ export default {
           create: true
         },
       },
+      // src/components/reusable/icons/homeIcon.vue
       users: {
         ...crudPermission
       },
@@ -1098,63 +1099,61 @@ export default {
   },
   methods: {
     initPermissions() {
-      this.$nextTick(() => {
-        this.form = {
-          ...this.form,
-          ...this.permissions
-        }
-        this.name = this.updatingName
-        this.permissionTabs = this.permissionTabs.map(pmTab => {
-          const rows = pmTab.rows.map(row => {
-            if (row.refer === 'ru' || row.refer === 'uz') {
-              return row
-            }
-            const pmTabParent = this[pmTab.parent][row.parent]
-            const hierarchyList = row.refer.split('.')
-            const [one, two, three, four, five] = hierarchyList
-
-            switch (hierarchyList.length) {
-              case 1 : {
-                row.vBind = pmTabParent[one] ?? false
-                break
-              }
-              case 2 : {
-                row.vBind = pmTabParent[one][two]
-                break
-              }
-              case 3 : {
-                row.vBind = pmTabParent[one][two][three]
-                break
-              }
-              case 4 : {
-                row.vBind = pmTabParent[one][two][three][four]
-                break
-              }
-              case 5 : {
-                row.vBind = pmTabParent[one][two][three][four][five]
-                break
-              }
-            }
+      this.form = {
+        ...this.form,
+        ...this.permissions
+      }
+      this.name = this.updatingName
+      this.permissionTabs = this.permissionTabs.map(pmTab => {
+        const rows = pmTab.rows.map(row => {
+          if (row.refer === 'ru' || row.refer === 'uz') {
             return row
-          })
-          const isAllActive = rows.every(row => {
-            const overlookList = ['all', 'ru', 'uz']
-            if (overlookList.includes(row.refer)) {
-              return true
+          }
+          const pmTabParent = this[pmTab.parent][row.parent]
+          const hierarchyList = row.refer.split('.')
+          const [one, two, three, four, five] = hierarchyList
+
+          switch (hierarchyList.length) {
+            case 1 : {
+              row.vBind = pmTabParent[one] ?? false
+              break
             }
-            return row.vBind
-          })
-          if (isAllActive) {
-            const indexOfAllSwitch = rows.findIndex(row => row.refer === 'all')
-            if (indexOfAllSwitch !== -1) {
-              rows[indexOfAllSwitch].vBind = true
+            case 2 : {
+              row.vBind = pmTabParent[one][two]
+              break
+            }
+            case 3 : {
+              row.vBind = pmTabParent[one][two][three]
+              break
+            }
+            case 4 : {
+              row.vBind = pmTabParent[one][two][three][four]
+              break
+            }
+            case 5 : {
+              row.vBind = pmTabParent[one][two][three][four][five]
+              break
             }
           }
-          return {
-            ...pmTab,
-            rows
-          }
+          return row
         })
+        const isAllActive = rows.every(row => {
+          const overlookList = ['all', 'ru', 'uz']
+          if (overlookList.includes(row.refer)) {
+            return true
+          }
+          return row.vBind
+        })
+        if (isAllActive) {
+          const indexOfAllSwitch = rows.findIndex(row => row.refer === 'all')
+          if (indexOfAllSwitch !== -1) {
+            rows[indexOfAllSwitch].vBind = true
+          }
+        }
+        return {
+          ...pmTab,
+          rows
+        }
       })
     },
     activeAllTabPermission(refer, pmIndex, index, value) {
