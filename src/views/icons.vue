@@ -45,6 +45,7 @@ import BaseRightIcon from "@/components/icons/BaseRightIcon";
 import BaseArrowUpIcon from "@/components/icons/BaseArrowUpIcon";
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
+import BaseTimesIcon from "@/components/icons/BaseTimesIcon";
 import BaseLinkIcon from "@/components/icons/BaseLinkIcon";
 import BaseCameraIcon from "@/components/icons/BaseCameraIcon";
 import BaseCheckIcon from "@/components/icons/BaseCheckIcon";
@@ -62,9 +63,22 @@ import BasePriceIcon from "@/components/icons/BasePriceIcon";
 import BaseRoomIcon from "@/components/icons/BaseRoomIcon";
 import BaseCompactGridIcon from "@/components/icons/BaseCompactGridIcon";
 import BasePaperFailIcon from "@/components/icons/BasePaperFailIcon";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseChessList from "@/components/icons/BaseChessList";
+import BaseChessOne from "@/components/icons/BaseChessOne";
+import BaseChessPlan from "@/components/icons/BaseChessPlan";
+import BaseChessTwo from "@/components/icons/BaseChessTwo";
+import BaseDetailsIcon from "@/components/icons/BaseDetailsIcon";
+import BaseExitIcon from "@/components/icons/BaseExitIcon";
+import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
+import BaseMinusCircleIcon from "@/components/icons/BaseMinusCircleIcon";
+import BasePrintIcon from "@/components/icons/BasePrintIcon";
+import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
+import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 export default {
   name: "icons",
-  components: { BasePaperFailIcon, BaseCompactGridIcon, BaseRoomIcon, BasePriceIcon, BaseDragIcon, BasePublishIcon, BaseCalendarIcon, BaseLeftIcon, BaseCollapseRightIcon, BaseSearchIcon, BaseUsersIcon, BasePaperIcon, BaseFacadeIcon, BaseFlatIcon, BaseCheckIcon, BaseCameraIcon, BaseLinkIcon, BaseDeleteIcon, BaseTimesCircleIcon, BaseArrowUpIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseQuestionsIcon, BaseContractsIcon, BaseDocumentIcon, BaseConstructionIcon, BaseFloorIcon, BaseLeftDoubleIcon, BaseFilterAltIcon, BaseClose, BaseEditIcon, BaseArrowDownIcon, BaseUpIcon, BaseDotsIcon, BaseNotificationsIcon, BaseObjectsIcon, BaseLocationIcon, BaseDoorIcon, BaseAreaIcon, BaseButton, BaseRightDoubleIcon, BaseListIcon, BasePlusIcon, BaseStarIcon, BaseDownIcon, BaseFilterIcon, BaseHomeIcon, BaseSettingsIcon},
+  components: { BaseUserPasswordIcon, BaseUserAccountIcon, BasePrintIcon, BaseTimesIcon, BaseMinusCircleIcon, BaseEyeIcon, BaseExitIcon, BaseDetailsIcon, BaseChessTwo, BaseChessPlan, BaseChessOne, BaseChessList, BaseArrowRightIcon, BaseArrowLeftIcon, BasePaperFailIcon, BaseCompactGridIcon, BaseRoomIcon, BasePriceIcon, BaseDragIcon, BasePublishIcon, BaseCalendarIcon, BaseLeftIcon, BaseCollapseRightIcon, BaseSearchIcon, BaseUsersIcon, BasePaperIcon, BaseFacadeIcon, BaseFlatIcon, BaseCheckIcon, BaseCameraIcon, BaseLinkIcon, BaseDeleteIcon, BaseTimesCircleIcon, BaseArrowUpIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseQuestionsIcon, BaseContractsIcon, BaseDocumentIcon, BaseConstructionIcon, BaseFloorIcon, BaseLeftDoubleIcon, BaseFilterAltIcon, BaseClose, BaseEditIcon, BaseArrowDownIcon, BaseUpIcon, BaseDotsIcon, BaseNotificationsIcon, BaseObjectsIcon, BaseLocationIcon, BaseDoorIcon, BaseAreaIcon, BaseButton, BaseRightDoubleIcon, BaseListIcon, BasePlusIcon, BaseStarIcon, BaseDownIcon, BaseFilterIcon, BaseHomeIcon, BaseSettingsIcon},
   data() {
     return {
       data: [
@@ -308,6 +322,76 @@ export default {
           text: 'paper fail',
           path: 'src/components/icons/BasePaperFailIcon.vue'
         },
+        {
+          icon: BaseArrowLeftIcon,
+          text: 'arrow left',
+          path: 'src/components/icons/BaseArrowLeftIcon.vue'
+        },
+        {
+          icon: BaseArrowRightIcon,
+          text: 'arrow right',
+          path: 'src/components/icons/BaseArrowRightIcon.vue'
+        },
+        {
+          icon: BaseChessList,
+          text: 'chess list',
+          path: 'src/components/icons/BaseChessList.vue'
+        },
+        {
+          icon: BaseChessOne,
+          text: 'chess one',
+          path: 'src/components/icons/BaseChessOne.vue'
+        },
+        {
+          icon: BaseChessPlan,
+          text: 'chess plan',
+          path: 'src/components/icons/BaseChessPlan.vue'
+        },
+        {
+          icon: BaseChessTwo,
+          text: 'chess two',
+          path: 'src/components/icons/BaseChessTwo.vue'
+        },
+        {
+          icon: BaseDetailsIcon,
+          text: 'details',
+          path: 'src/components/icons/BaseDetailsIcon.vue'
+        },
+        {
+          icon: BaseExitIcon,
+          text: 'exit',
+          path: 'src/components/icons/BaseExitIcon.vue'
+        },
+        {
+          icon: BaseEyeIcon,
+          text: 'eye',
+          path: 'src/components/icons/BaseEyeIcon.vue'
+        },
+        {
+          icon: BaseMinusCircleIcon,
+          text: 'minus circle',
+          path: 'src/components/icons/BaseMinusCircleIcon.vue'
+        },
+        {
+          icon: BasePrintIcon,
+          text: 'print',
+          path: 'src/components/icons/BasePrintIcon.vue'
+        },
+        {
+          icon: BaseTimesIcon,
+          text: 'times',
+          path: 'src/components/icons/BaseTimesIcon.vue'
+        },
+        {
+          icon: BaseUserAccountIcon,
+          text: 'user account',
+          path: 'src/components/icons/BaseUserAccountIcon.vue'
+        },
+        {
+          icon: BaseUserPasswordIcon,
+          text: 'user password',
+          path: 'src/components/icons/BaseUserPasswordIcon.vue'
+        },
       ]
     }
   }
@@ -328,14 +412,14 @@ main {
 }
 ::v-deep .tooltip-inner {
   max-width: max-content;
-  background: #F3F4F6;
+  background: #E5E7EB;
   color: black;
   padding: 10px 15px;
   border-radius: 10px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
 }
 ::v-deep .arrow::before {
-  border-top-color: #F3F4F6!important;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-top-color: #E5E7EB!important;
+  box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
 }
 </style>
