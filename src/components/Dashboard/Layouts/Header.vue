@@ -1,6 +1,5 @@
 <template>
   <div
-      v-if="getAuth"
       :class="{'menu-collapsed': isActive, 'menu-expanded': menuExpanded}"
   >
     <nav
@@ -212,9 +211,10 @@
 
 <script>
 import {localeChanged} from 'vee-validate'
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import ThemeButton from "@/components/ThemeButton.vue";
 import GeneralPermission from "@/permission/general";
+import api from "@/services/api";
 
 
 export default {
@@ -227,25 +227,23 @@ export default {
     },
   },
   data() {
+    const settingsPermission = GeneralPermission.getSettingsPermission()
+        && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
     return {
+      settingsPermission,
+      currencyPermission: GeneralPermission.getCurrencyPermission,
+      themePermission: GeneralPermission.getThemePermission,
+      languagePermission: GeneralPermission.getLanguagePermission(),
       locale: null,
       app_name: process.env.VUE_APP_NAME,
       isActive: true,
       menuExpanded: false,
-      userTheme: "light-theme",
-      // currencyPermission: GeneralPermission.getGeneralPermission('currency'),
-      // themePermission: GeneralPermission.getGeneralPermission('theme'),
-      // languagePermission: GeneralPermission.getGeneralPermission('language'),
-      // settingsPermission: GeneralPermission.getGeneralPermission('settings') && (GeneralPermission.getGeneralPermission('password_settings') || GeneralPermission.getGeneralPermission('profile_settings')),
+      userTheme: "light-theme"
     }
   },
   async created() {
-    // if (this.getPermission && this.getPermission.general && this.getPermission.general.currency) {
-      await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this), this.fetchCurrency(this)])
-    // } else {
-    //   await Promise.allSettled([this.fetchAuth(this), this.fetchMenu(this)])
-    // }
-    this.locale = localStorage.locale !== "uz";
+    await Promise.allSettled([this.fetchMenus(), this.fetchCurrency()])
+    this.locale = localStorage.locale !== "uz"
   },
   computed: {
     ...mapGetters(["getPermission", "getAuth", "getMenus", "getMe", "getCurrency"]),
@@ -258,7 +256,6 @@ export default {
       }
       return ''
     },
-
     getUserAvatarUrl() {
       if (this.getMe?.user?.avatar) {
         return this.getMe.user.avatar
@@ -270,39 +267,43 @@ export default {
       const currentRouteName = this.$route.name
       const result = notUsed.findIndex(name => name === currentRouteName)
       return result === -1;
-    },
-    currencyPermission() {
-      return GeneralPermission.getCurrencyPermission()
-    },
-    themePermission() {
-      return GeneralPermission.getThemePermission()
-    },
-    languagePermission() {
-      return GeneralPermission.getLanguagePermission()
-    },
-    settingsPermission() {
-      return GeneralPermission.getSettingsPermission() && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
-    },
+    }
   },
   methods: {
     ...mapActions([
       "fetchAuth",
-      "fetchMenu",
       "nullableAuth",
       "nullMe",
-      "fetchCurrency",
     ]),
+    ...mapMutations([
+      'updateMenus',
+      'updateCurrency',
+    ]),
+    async fetchMenus() {
+      await api.home.fetchMenu()
+          .then((response) => {
+            this.updateMenus(response.data)
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
+    async fetchCurrency() {
+      try {
+        if (this.currencyPermission) {
+          const {data} = await api.settingsV2.fetchCurrency()
+          this.updateCurrency(data)
+        }
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      }
+    },
     Logout() {
       localStorage.clear();
       this.nullableAuth();
       this.nullMe();
       this.$router.push({name: "login"});
     },
-
-    // isActived() {
-    //   this.isActive = localStorage.isActive;
-    // },
-
     getName(name) {
       let locale = localStorage.locale;
       let value = "";
@@ -336,9 +337,8 @@ export default {
     },
 
     toggleCollapse() {
-      // localStorage.isActive = this.isActive == false ? true : false;
-      this.isActive = !this.isActive;
-    },
+      this.isActive = !this.isActive
+    }
   }
 };
 </script>

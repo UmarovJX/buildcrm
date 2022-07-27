@@ -46,7 +46,6 @@ export default class ApartmentsPermission extends Permission {
         return this.getApartmentsPermission('is_sold')
     }
 
-
     static getApartmentFilterPermission() {
         return this.getApartmentsPermission('filter')
     }

@@ -16,11 +16,8 @@
         </div>
       </div>
     </div>
-    <header-block
-        v-if="showHeaderContent"
-        :theme="theme"/>
 
-    <router-view></router-view>
+    <router-view :theme="theme"></router-view>
   </div>
 </template>
 
@@ -86,15 +83,6 @@ export default {
   },
 
   watch: {
-    '$route.name': {
-      handler: function (name) {
-        const unnecessaryRoute = ['login', 'home-2']
-        const indexOfRoute = unnecessaryRoute.findIndex(routeName => routeName === name)
-        this.showHeaderContent = indexOfRoute === -1;
-      },
-      deep: true,
-      immediate: true
-    },
     onLine(v) {
       if (v) {
         this.$toasted.clear();
@@ -121,7 +109,6 @@ export default {
     },
   },
   mounted() {
-    // const initUserTheme = this.getMediaPreference();
     const activeTheme = localStorage.getItem("user-theme");
     this.theme = activeTheme;
     if (activeTheme === "light-theme") {
@@ -129,8 +116,6 @@ export default {
     } else if (activeTheme === "dark-theme") {
       this.setTheme("dark-theme");
     } else {
-      // this.setTheme(initUserTheme);
-      // this.theme = initUserTheme;
       this.setTheme("light-theme");
     }
     window.addEventListener("online", this.updateOnlineStatus);

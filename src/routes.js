@@ -8,7 +8,6 @@ VueRouter.prototype.push = function push(location) {
     return originalPush.call(this, location).catch((err) => err)
 }
 
-
 Vue.use(VueRouter)
 
 import api from "@/services/api";
@@ -45,346 +44,353 @@ import ObjectsView from '@/views/Objects/View/Index'
 import Debtors from "@/views/Debtors/Index"
 import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
+import AppLayout from "@/views/AppLayout";
 
 const routes = [
     {
-        path: '/experiment',
-        name: 'experiment',
-        component: () => import('@/views/experience')
-    },
+        path: '',
+        component: AppLayout,
+        children: [
+            {
+                path: '/experiment',
+                name: 'experiment',
+                component: () => import('@/views/experience')
+            },
 
-    {
-        /* HOME */
-        path: "/home",
-        name: "home",
-        component: Dashboard,
-    },
+            {
+                /* HOME */
+                path: "/home",
+                name: "home",
+                component: Dashboard,
+            },
 
-    {
-        path: '/experiment',
-        name: 'experiment',
-        component: Experiment
-    },
+            {
+                path: '/experiment',
+                name: 'experiment',
+                component: Experiment
+            },
 
-    {
-        /* LOGIN */
-        path: "/login",
-        name: "login",
-        component: Auth,
-    },
+            {
+                /* LOGIN */
+                path: "/login",
+                name: "login",
+                component: Auth,
+            },
 
-    /*
-    {
-        /!* OBJECTS *!/
-        path: "/chess/:objectId",
-        name: "chess",
-        component: ChessObjects,
-        meta: {
-            requiresAuth: "objects"
-        }
-    },
-    */
+            /*
+            {
+                /!* OBJECTS *!/
+                path: "/chess/:objectId",
+                name: "chess",
+                component: ChessObjects,
+                meta: {
+                    requiresAuth: "objects"
+                }
+            },
+            */
 
-    {
-        /* OBJECTS */
-        name: "objects",
-        path: "/objects",
-        component: Objects,
-        meta: {
-            requiresAuth: "objects",
-        },
-    },
+            {
+                /* OBJECTS */
+                name: "objects",
+                path: "/objects",
+                component: Objects,
+                meta: {
+                    requiresAuth: "objects",
+                },
+            },
 
-    {
-        /* OBJECTS STORE */
-        name: "objectsStore",
-        path: "/objects/add",
-        component: ObjStore,
-        meta: {
-            requiresAuth: "objects",
-        },
-    },
+            {
+                /* OBJECTS STORE */
+                name: "objectsStore",
+                path: "/objects/add",
+                component: ObjStore,
+                meta: {
+                    requiresAuth: "objects",
+                },
+            },
 
-    {
-        /* OBJECTS EDIT */
-        name: "objectsEdit",
-        path: "/objects/:id/update",
-        component: ObjStore,
-        meta: {
-            requiresAuth: "objects",
-        },
-    },
+            {
+                /* OBJECTS EDIT */
+                name: "objectsEdit",
+                path: "/objects/:id/update",
+                component: ObjStore,
+                meta: {
+                    requiresAuth: "objects",
+                },
+            },
 
-    {
-        /* OBJECTS PROMO */
-        name: "objects-promo",
-        path: "/objects/:id/promo",
-        component: Promo,
-        meta: {
-            requiresAuth: "promos",
-        }
-    },
-
-
-    {
-        /* OBJECT DEAL TEMPLATE */
-        name: "object-deal-template",
-        path: "/branches/:id/contracts",
-        component: DealDocsTemplate,
-        meta: {
-            requiresAuth: "objects",
-        },
-    },
+            {
+                /* OBJECTS PROMO */
+                name: "objects-promo",
+                path: "/objects/:id/promo",
+                component: Promo,
+                meta: {
+                    requiresAuth: "promos",
+                }
+            },
 
 
-    {
-        /* SETTINGS */
-        name: "settings",
-        path: "/settings",
-        component: Settings,
-    },
-
-    {
-        /* PROFILE */
-        path: '/profile',
-        name: 'user-settings',
-        component: UserSettings
-    },
-
-    {
-        /* DEBTORS */
-        name: "debtors",
-        path: "/debtors",
-        component: Debtors,
-        meta: {
-            requiresAuth: "debtors",
-        },
-    },
-
-    {
-        /* APARTMENTS */
-        name: "apartments",
-        path: "/objects/:object/apartments",
-        component: ObjectsView,
-        meta: {
-            requiresAuth: "apartments",
-        },
-    },
-
-    {
-        /* UNFINISHED CONTRACTS */
-        name: "unfinished-contracts",
-        path: "/objects/unfinished-contracts",
-        component: UnfinishedContracts,
-        meta: {
-            requiresAuth: "apartments",
-        },
-    },
-
-    {
-        /* UNFINISHED CONTRACTS */
-        name: "re-contract",
-        path: "/re-contract/:id",
-        component: ReContract,
-        meta: {
-            requiresAuth: "contracts",
-        },
-    },
-
-    {
-        /* APARTMENT VIEW */
-        name: "apartment-view",
-        path: "/objects/:object/apartment/:id",
-        component: ApartmentView,
-        meta: {
-            requiresAuth: "apartments",
-        },
-    },
-
-    {
-        /* CONFIRM APARTMENT*/
-        name: "confirm-apartment",
-        path: "/objects/:object/apartment/:id/order",
-        component: ConfirmApartment,
-        meta: {
-            requiresAuth: "apartments",
-        },
-    },
-    {
-        /* CONFIRM APARTMENT*/
-        name: "edit-apartment",
-        path: "/objects/apartment/:id/update",
-        component: EditApartment,
-        meta: {
-            requiresAuth: "apartments",
-        },
-    },
-    {
-        /* USERS */
-        name: "users",
-        path: "/users",
-        component: Users,
-        meta: {
-            requiresAuth: "users",
-        },
-    },
-
-    {
-        /* ROLES */
-        name: "roles",
-        path: "/roles",
-        component: Roles,
-        meta: {
-            requiresAuth: "roles",
-        },
-    },
-
-    {
-        /* ROLES UPDATE */
-        name: "roles-update",
-        path: "/roles/update/:id",
-        component: RolesUpdate,
-        meta: {
-            requiresAuth: "roles",
-        },
-    },
-
-    {
-        /* ROLES STORE */
-        name: "roles-store",
-        path: "/roles/store",
-        component: RolesStore,
-        meta: {
-            requiresAuth: "roles",
-        },
-    },
-
-    {
-        /* CLIENTS */
-        name: "clients",
-        path: "/clients",
-        component: Clients,
-        meta: {
-            requiresAuth: "clients",
-        },
-    },
-
-    {
-        /* CONTRACTS */
-        name: "contracts",
-        path: "/contracts",
-        component: Contracts,
-        meta: {
-            requiresAuth: "contracts",
-        },
-    },
-
-    {
-        /* CONTRACTS VIEW */
-        name: "contracts-view",
-        path: "/contracts/:id",
-        component: ContractView,
-        meta: {
-            requiresAuth: "contracts"
-        }
-    },
-
-    {
-        /* CONTRACT IMPORT PAYMENTS */
-        name: "contract-import-payments",
-        path: "/contracts/:id/clone/import-payments",
-        component: ImportPayments,
-        meta: {
-            requiresAuth: "contracts",
-        }
-    },
+            {
+                /* OBJECT DEAL TEMPLATE */
+                name: "object-deal-template",
+                path: "/branches/:id/contracts",
+                component: DealDocsTemplate,
+                meta: {
+                    requiresAuth: "objects",
+                },
+            },
 
 
-    {
-        /* TYPE PLAN */
-        name: "type_plan",
-        path: "/type/layouts",
-        component: TypePlan,
-        meta: {
-            requiresAuth: "plans",
-        },
-    },
+            {
+                /* SETTINGS */
+                name: "settings",
+                path: "/settings",
+                component: Settings,
+            },
 
-    {
-        /* TYPE PLAN VIEW */
-        name: "type-plan-view",
-        path: "/type/layouts/view/:id",
-        component: TypePlanList,
-        meta: {
-            requiresAuth: "plans",
-        },
-    },
+            {
+                /* PROFILE */
+                path: '/profile',
+                name: 'user-settings',
+                component: UserSettings
+            },
 
-    {
-        /* TYPE PLAN EDIT*/
-        name: "type-plan-edit",
-        path: "/type/layouts/:object/edit/:id",
-        component: TypePlanEdit,
-        meta: {
-            requiresAuth: "plans",
-        },
-    },
+            {
+                /* DEBTORS */
+                name: "debtors",
+                path: "/debtors",
+                component: Debtors,
+                meta: {
+                    requiresAuth: "debtors",
+                },
+            },
 
-    {
-        /* COMPANIES */
-        name: "companies",
-        path: "/companies",
-        component: Companies,
-        meta: {
-            requiresAuth: "companies",
-        }
-    },
-    {
-        /* COMPANIES */
-        name: "company-details",
-        path: "/company/:companyId/details",
-        component: CompanyDetails,
-        meta: {
-            requiresAuth: "companies",
-        }
-    },
+            {
+                /* APARTMENTS */
+                name: "apartments",
+                path: "/objects/:object/apartments",
+                component: ObjectsView,
+                meta: {
+                    requiresAuth: "apartments",
+                },
+            },
 
-    {
-        /* BRANCHES */
-        name: 'branches',
-        path: '/branches',
-        component: Branches,
-        meta: {
-            requiresAuth: "branches",
-        }
-    },
+            {
+                /* UNFINISHED CONTRACTS */
+                name: "unfinished-contracts",
+                path: "/objects/unfinished-contracts",
+                component: UnfinishedContracts,
+                meta: {
+                    requiresAuth: "apartments",
+                },
+            },
 
-    {
-        /* CREATE BRANCH */
-        name: 'create-branch',
-        path: '/branches/create',
-        component: CreateBranchPage,
-        meta: {
-            requiresAuth: "branches",
-        }
+            {
+                /* UNFINISHED CONTRACTS */
+                name: "re-contract",
+                path: "/re-contract/:id",
+                component: ReContract,
+                meta: {
+                    requiresAuth: "contracts",
+                },
+            },
 
-    },
+            {
+                /* APARTMENT VIEW */
+                name: "apartment-view",
+                path: "/objects/:object/apartment/:id",
+                component: ApartmentView,
+                meta: {
+                    requiresAuth: "apartments",
+                },
+            },
 
-    {
-        /* EDIT BRANCH */
-        name: 'edit-branch',
-        path: '/branches/:id/update',
-        component: EditBranchContent,
-        meta: {
-            requiresAuth: "branches",
-        }
-    },
+            {
+                /* CONFIRM APARTMENT*/
+                name: "confirm-apartment",
+                path: "/objects/:object/apartment/:id/order",
+                component: ConfirmApartment,
+                meta: {
+                    requiresAuth: "apartments",
+                },
+            },
+            {
+                /* CONFIRM APARTMENT*/
+                name: "edit-apartment",
+                path: "/objects/apartment/:id/update",
+                component: EditApartment,
+                meta: {
+                    requiresAuth: "apartments",
+                },
+            },
+            {
+                /* USERS */
+                name: "users",
+                path: "/users",
+                component: Users,
+                meta: {
+                    requiresAuth: "users",
+                },
+            },
 
-    {
-        /* 404 PAGE */
-        path: "*",
-        name: "not_found",
-        component: PageNotFound,
+            {
+                /* ROLES */
+                name: "roles",
+                path: "/roles",
+                component: Roles,
+                meta: {
+                    requiresAuth: "roles",
+                },
+            },
+
+            {
+                /* ROLES UPDATE */
+                name: "roles-update",
+                path: "/roles/update/:id",
+                component: RolesUpdate,
+                meta: {
+                    requiresAuth: "roles",
+                },
+            },
+
+            {
+                /* ROLES STORE */
+                name: "roles-store",
+                path: "/roles/store",
+                component: RolesStore,
+                meta: {
+                    requiresAuth: "roles",
+                },
+            },
+
+            {
+                /* CLIENTS */
+                name: "clients",
+                path: "/clients",
+                component: Clients,
+                meta: {
+                    requiresAuth: "clients",
+                },
+            },
+
+            {
+                /* CONTRACTS */
+                name: "contracts",
+                path: "/contracts",
+                component: Contracts,
+                meta: {
+                    requiresAuth: "contracts",
+                },
+            },
+
+            {
+                /* CONTRACTS VIEW */
+                name: "contracts-view",
+                path: "/contracts/:id",
+                component: ContractView,
+                meta: {
+                    requiresAuth: "contracts"
+                }
+            },
+
+            {
+                /* CONTRACT IMPORT PAYMENTS */
+                name: "contract-import-payments",
+                path: "/contracts/:id/clone/import-payments",
+                component: ImportPayments,
+                meta: {
+                    requiresAuth: "contracts",
+                }
+            },
+
+
+            {
+                /* TYPE PLAN */
+                name: "type_plan",
+                path: "/type/layouts",
+                component: TypePlan,
+                meta: {
+                    requiresAuth: "plans",
+                },
+            },
+
+            {
+                /* TYPE PLAN VIEW */
+                name: "type-plan-view",
+                path: "/type/layouts/view/:id",
+                component: TypePlanList,
+                meta: {
+                    requiresAuth: "plans",
+                },
+            },
+
+            {
+                /* TYPE PLAN EDIT*/
+                name: "type-plan-edit",
+                path: "/type/layouts/:object/edit/:id",
+                component: TypePlanEdit,
+                meta: {
+                    requiresAuth: "plans",
+                },
+            },
+
+            {
+                /* COMPANIES */
+                name: "companies",
+                path: "/companies",
+                component: Companies,
+                meta: {
+                    requiresAuth: "companies",
+                }
+            },
+            {
+                /* COMPANIES */
+                name: "company-details",
+                path: "/company/:companyId/details",
+                component: CompanyDetails,
+                meta: {
+                    requiresAuth: "companies",
+                }
+            },
+
+            {
+                /* BRANCHES */
+                name: 'branches',
+                path: '/branches',
+                component: Branches,
+                meta: {
+                    requiresAuth: "branches",
+                }
+            },
+
+            {
+                /* CREATE BRANCH */
+                name: 'create-branch',
+                path: '/branches/create',
+                component: CreateBranchPage,
+                meta: {
+                    requiresAuth: "branches",
+                }
+
+            },
+
+            {
+                /* EDIT BRANCH */
+                name: 'edit-branch',
+                path: '/branches/:id/update',
+                component: EditBranchContent,
+                meta: {
+                    requiresAuth: "branches",
+                }
+            },
+
+            {
+                /* 404 PAGE */
+                path: "*",
+                name: "not_found",
+                component: PageNotFound,
+            }
+        ]
     }
 ]
 
@@ -398,42 +404,40 @@ const router = new VueRouter({
     },
 })
 
-let permission = store.state.permission
+let user = null
 import Permission from "@/permission";
 
 router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')
     if (to.name === 'login') return next()
 
-    if (!Permission.user || !store.state.permission) {
-        await api.authV1.getMe()
-            .then((response) => {
-                permission = response.data.role.permissions
-                Permission.initializeUser(response.data)
-            })
-            .catch((error) => {
-                return error
-            });
-    }
-
-    if (login)
-        if (to.path === '/')
-            return next({name: 'home'})
-        else if (to.matched.some((record) => record.meta['requiresAuth'])) {
-            to.matched.some((record) => {
-                const perm = permission[`${record.meta['requiresAuth']}`];
-                if (perm && perm.view) {
-                    next();
-                } else {
-                    next({
-                        name: "not_found",
-                    });
-                }
-            });
-        } else {
-            next();
+    if (login) {
+        if (!Permission.user) {
+            return await api.authV1.getMe()
+                .then((response) => {
+                    user = response.data.user
+                    Permission.initializeUser(response.data)
+                })
+                .finally(() => {
+                    if (to.path === '/')
+                        return next({name: 'home'})
+                    else if (to.matched.some((record) => record.meta['requiresAuth'])) {
+                        to.matched.some((record) => {
+                            const perm = Permission[`${record.meta['requiresAuth']}`]
+                            if (user.role === 1 || perm && perm.view) {
+                                return next()
+                            } else {
+                                return next({
+                                    name: "not_found",
+                                })
+                            }
+                        })
+                    } else {
+                        return next()
+                    }
+                })
         }
-    else
+    } else
         return next({name: 'login'})
 })
 

@@ -4,6 +4,7 @@ import api from "@/services/api";
 export default {
     actions: {
         async fetchCurrency(ctx) {
+            console.log('currency')
             // if (GeneralPermission.getCurrencyPermission()) {
             try {
                 const response = await api.authV1.getMe()
