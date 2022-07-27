@@ -479,6 +479,11 @@ export default {
         filter: 'Qidiruv filtrlari',
         add_note: 'Eslatma qo\'shish',
         note: 'Eslatma',
+        delete_note: 'Eslatmani o\'chirish',
+        note_delete_confirmation: 'Eslatmani o\'chirishga qaroringiz qattiymi?\n'+
+            'Quydagi buyruqni bekor qilishni ilojisi yo\'q.',
+        edit_note: 'Eslatmani tahrirlash',
+        note_text: 'Eslatma matni',
 
         table: {
             contract: 'Shartnoma',

@@ -118,7 +118,7 @@
 
           <!--    TITLE      -->
           <span class="title">
-            {{ modalProperties.title }}
+            {{ $t(modalProperties.title) }}
           </span>
 
 
@@ -132,7 +132,7 @@
       <template #main>
         <div class="create">
           <h5 class="comment-create__title">
-            Текст примечание
+            {{ $t('contracts.note_text') }}
           </h5>
           <ValidationProvider
               :name="$t('objects.create.tariff.type_name')"
@@ -175,7 +175,7 @@
               </svg>
             </span>
             <span class="title">
-              Удалить примечание?
+              {{ $t('contracts.delete_note') }}
               <!--              {{ $t('remove_payment') }}-->
             </span>
           </span>
@@ -183,8 +183,7 @@
 
       <template #main>
           <span class="warning__before__delete-main">
-            Вы уверены, что хотите удалить примечание?
-Данное действие нельзя отменить.
+            {{ $t('contracts.note_delete_confirmation') }}
             <!--            {{ $t('contracts.warn_before_delete_payment') }}-->
           </span>
       </template>
@@ -331,7 +330,7 @@ export default {
     openCreateModal() {
       this.modalProperties = {
         type: 'create',
-        title: 'Добавить примечание',
+        title: 'contracts.add_note',
         btnText: 'add',
       }
       this.$refs["create"].openModal()
@@ -339,7 +338,7 @@ export default {
     openEditModal(item) {
       this.modalProperties = {
         type: 'edit',
-        title: 'Редактировать примечание',
+        title: 'contracts.edit_note',
         btnText: 'edit',
       }
       this.comment = item.comment
