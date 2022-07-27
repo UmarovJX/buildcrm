@@ -44,11 +44,11 @@
             <BaseButton
                 v-if="editPermission"
                 text=''
-                class="bg-gradient-violet button rounded-circle]"
+                class="violet button rounded-circle]"
                 @click="editSelectedCompany(data.item)"
             >
               <template #right-icon>
-                <BaseEditIcon fill="#7C3AED"/>
+                <BaseEditIcon fill="var(--white)"/>
               </template>
             </BaseButton>
           </div>
