@@ -52,16 +52,16 @@ const routes = [
         component: AppLayout,
         children: [
             {
-                path: '/experiment',
-                name: 'experiment',
-                component: () => import('@/views/experience')
-            },
-
-            {
                 /* HOME */
                 path: "/home",
                 name: "home",
                 component: Dashboard,
+            },
+
+            {
+                path: '/experiment',
+                name: 'experiment',
+                component: () => import('@/views/experience')
             },
 
             {
@@ -411,6 +411,9 @@ router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')
     if (to.name === 'login') return next()
 
+    if (to.path === '/')
+        return next({name: 'home'})
+
     if (login) {
         if (!Permission.user) {
             return await api.authV1.getMe()
@@ -419,9 +422,7 @@ router.beforeEach(async (to, from, next) => {
                     Permission.initializeUser(response.data)
                 })
                 .finally(() => {
-                    if (to.path === '/')
-                        return next({name: 'home'})
-                    else if (to.matched.some((record) => record.meta['requiresAuth'])) {
+                    if (to.matched.some((record) => record.meta['requiresAuth'])) {
                         to.matched.some((record) => {
                             const perm = Permission[`${record.meta['requiresAuth']}`]
                             if (user.role === 1 || perm && perm.view) {
@@ -436,6 +437,8 @@ router.beforeEach(async (to, from, next) => {
                         return next()
                     }
                 })
+        } else {
+            next()
         }
     } else
         return next({name: 'login'})
