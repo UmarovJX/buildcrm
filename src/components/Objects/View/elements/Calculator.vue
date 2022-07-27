@@ -6,7 +6,7 @@
       <!--    PAYMENT OPTIONS       -->
       <div>
         <base-select
-            :disabled="monthlyPermission"
+            :disabled="!monthlyPermission"
             :label="true"
             :options="paymentOption"
             :no-placeholder="true"
