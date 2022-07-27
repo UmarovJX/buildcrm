@@ -33,7 +33,7 @@
         <b-tab v-if="profileSettingsPermission" active>
           <template #title>
             <span class="d-flex align-items-center">
-                <base-user-account-icon width="16" height="16" fill="black" :extra-class="activeTabIconColor(0)"/>
+                <base-user-account-icon width="16" height="16" :fill="activeTabIconColor(0)"/>
                 <span class="ml-2">{{ $t('profile') }}</span>
             </span>
           </template>
@@ -42,7 +42,7 @@
         <b-tab v-if="passwordPermission">
           <template #title>
             <span class="d-flex align-items-center">
-                <base-user-password-icon width="16" height="16" fill="black" :extra-class="activeTabIconColor(1)"/>
+                <base-user-password-icon width="16" height="16" :fill="activeTabIconColor(1)" />
                 <span class="ml-2">{{ $t('edit_password') }}</span>
             </span>
           </template>
@@ -110,9 +110,9 @@ export default {
     },
     activeTabIconColor(index) {
       if (this.theme === 'light-theme' && this.tabIndex === index) {
-        return 'user__account__icons-active'
+        return '#fff'
       }
-      return ''
+      return '#000'
     }
   }
 }
@@ -126,6 +126,6 @@ export default {
 }
 
 .user__account__icons-active {
-  fill: white;
+  fill: white !important;
 }
 </style>
