@@ -212,7 +212,6 @@ export default {
         root_branch: false,
         root: false,
         uniformity: false,
-        comments: false,
         edit: true,
         payments: {
           create: false,
@@ -229,6 +228,10 @@ export default {
           view: true,
           create: true
         },
+        comments: {
+          ...crudPermission,
+          update: false
+        }
       },
       // src/components/reusable/icons/homeIcon.vue
       users: {
@@ -786,12 +789,12 @@ export default {
               parent: 'contracts',
             },
 
-            {
-              ...row,
-              label: 'roles_permission.contracts.comments',
-              refer: 'comments',
-              parent: 'contracts',
-            },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.comments',
+            //   refer: 'comments',
+            //   parent: 'contracts',
+            // },
 
             {
               ...row,
