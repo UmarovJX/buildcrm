@@ -477,7 +477,8 @@ export default {
         show_by: "Ko'rsatish",
         search: 'Ism, telefon raqami, shartnoma raqami',
         filter: 'Qidiruv filtrlari',
-
+        add_note: 'Eslatma qo\'shish',
+        note: 'Eslatma',
 
         table: {
             contract: 'Shartnoma',

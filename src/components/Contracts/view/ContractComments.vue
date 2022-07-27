@@ -4,8 +4,8 @@
 
     <div class="comments">
       <div class="comments-header">
-        <h4 class="comments-header__title">Примечания</h4>
-        <base-button v-if="createCommentPermission" @click="openCreateModal" text="Добавить примечание">
+        <h4 class="comments-header__title">{{this.$t('contracts.note')}}</h4>
+        <base-button v-if="createCommentPermission" @click="openCreateModal" :text="`${ $t('contracts.add_note') }`">
           <template #left-icon>
             <BasePlusIcon fill="var(--violet-600)"/>
           </template>
@@ -28,14 +28,14 @@
                   <span class="d-flex mr-2">
                    <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
                   </span>
-                  Редактировать
+                  {{ $t('edit') }}
                   <!--                  {{ $t('contracts.view.cancel_contract') }}-->
                 </b-dropdown-item>
                 <b-dropdown-item v-if="deleteCommentPermission" href="#" @click="warnBeforeDelete(comment.id)">
                   <span class="d-flex mr-2">
                     <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
                   </span>
-                  Удалить
+                  {{ $t('delete') }}
                   <!--                  {{ $t('contracts.view.cancel_contract')   }}-->
                 </b-dropdown-item>
               </b-dropdown>
