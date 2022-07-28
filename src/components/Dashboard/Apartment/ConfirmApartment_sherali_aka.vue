@@ -2358,7 +2358,7 @@ export default {
       }
 
       this.initialCalc();
-      console.log(this.allApartments);
+      // console.log(this.allApartments);
     },
     changeDiscountPriceForM2(event) {
       this.calc.discount_price = parseFloat(event.target.value);

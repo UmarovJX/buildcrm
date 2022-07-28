@@ -24,7 +24,6 @@ export default {
   },
   computed: {
     firstChartLineClass() {
-      console.log(this.context)
       return {
         'first__chart': this.context.index === 0
       }

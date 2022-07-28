@@ -446,9 +446,9 @@ export default {
         this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
       }
       if (!(reissue?.view && this.reContractViewPermission)) {
-        console.log(this.tabs, 'this.tabs old ');
+        // console.log(this.tabs, 'this.tabs old ');
         this.tabs = this.tabs.filter(tab => tab !== 'TabReContractDetails')
-        console.log(this.tabs, 'this.tabs last ');
+        // console.log(this.tabs, 'this.tabs last ');
 
       }
     },

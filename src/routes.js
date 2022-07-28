@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "./store";
+// import store from "./store";
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
@@ -45,6 +45,7 @@ import Debtors from "@/views/Debtors/Index"
 import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
+import Documentation from "@/views/documentation";
 
 const routes = [
     {
@@ -57,11 +58,11 @@ const routes = [
                 name: "home",
                 component: Dashboard,
             },
-
             {
-                path: '/experiment',
-                name: 'experiment',
-                component: () => import('@/views/experience')
+                /* Documentation */
+                path: "/documentation",
+                name: "documentation",
+                component: Documentation,
             },
 
             {

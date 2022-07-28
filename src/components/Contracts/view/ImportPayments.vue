@@ -335,7 +335,6 @@ export default {
   },
   methods: {
     setupOptions() {
-      console.log(this.excelSheets, 'this.excelSheets');
       const {rows} = this.excelSheets
       this.options = rows[0].map((item) => {
         return {value: item}

@@ -129,7 +129,6 @@ export default {
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
-            console.log("hello error", this.company, this.detail.id, data);
           })
           .finally(() => {
             this.loading = false
