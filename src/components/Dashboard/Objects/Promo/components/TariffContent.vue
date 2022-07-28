@@ -73,7 +73,7 @@
         </label>
         <div class="pl-0">
           <b-form-input
-              v-model="form.discount.month"
+              v-model="form.discount.installment_month"
               type="number"
               id="objects.credit_month"
               :placeholder="$t('objects.credit_month')"
