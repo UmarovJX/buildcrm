@@ -48,21 +48,22 @@ import AppLayout from "@/views/AppLayout";
 
 const routes = [
     {
-        path: '',
+        path: '/',
+        name: 'app-layout',
         component: AppLayout,
         children: [
             {
                 /* HOME */
-                path: "/home",
+                path: "",
                 name: "home",
                 component: Dashboard,
             },
 
-            {
+            /*{
                 path: '/experiment',
                 name: 'experiment',
                 component: () => import('@/views/experience')
-            },
+            },*/
 
             {
                 path: '/experiment',
@@ -400,7 +401,7 @@ const router = new VueRouter({
     mode: "history",
     linkActiveClass: "active",
     scrollBehavior(to, from, savedPosition) {
-        return {x: 0, y: 0};
+        return {x: 0, y: 0}
     },
 })
 
@@ -411,9 +412,6 @@ router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')
     if (to.name === 'login') return next()
 
-    if (to.path === '/')
-        return next({name: 'home'})
-
     if (login) {
         if (!Permission.user) {
             return await api.authV1.getMe()
@@ -422,17 +420,17 @@ router.beforeEach(async (to, from, next) => {
                     Permission.initializeUser(response.data)
                 })
                 .finally(() => {
-                    if (to.matched.some((record) => record.meta['requiresAuth'])) {
-                        to.matched.some((record) => {
-                            const perm = Permission[`${record.meta['requiresAuth']}`]
-                            if (user.role === 1 || perm && perm.view) {
-                                return next()
-                            } else {
-                                return next({
-                                    name: "not_found",
-                                })
-                            }
-                        })
+                    const {requiresAuth} = to.meta
+                    if (requiresAuth) {
+                        const perm = Permission.getUserPermission(requiresAuth)
+                        console.log(perm)
+                        if (user.role === 1 || (perm && perm.view)) {
+                            return next()
+                        } else {
+                            return next({
+                                name: "not_found",
+                            })
+                        }
                     } else {
                         return next()
                     }

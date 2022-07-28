@@ -671,6 +671,9 @@ export default {
       this.changeRouterQuery({
         page
       })
+
+      if(this.typeOfView)
+
       this.initDebtorUi()
     },
     changeCountOfView(limit) {

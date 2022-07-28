@@ -184,7 +184,10 @@
       <!-- <div class="shadow-bottom"></div> -->
       <ul class="menu">
         <li v-for="(item, index) in getMenus" :key="index" class="menu__item">
-          <router-link :to="{name: item.action}">
+          <router-link
+              :to="{name: item.action}"
+              :class="$route.name === item.action ? 'active-link' : 'inactive-link'"
+          >
             <!--                    <div class="menu__img"></div>-->
             <i :class="item.icon"></i>
 

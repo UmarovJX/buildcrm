@@ -23,6 +23,7 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   box-shadow: 0 0 15px 0 var(--white);
+
   .menu {
     overflow-y: auto;
   }
@@ -32,10 +33,12 @@
   position: relative;
   height: calc(100% - 4.45rem);
   padding: 0 0 0.75rem 0;
+
   .menu__item {
     &:first-of-type {
       margin-top: 0.75rem;
     }
+
     margin-top: 0.5rem;
   }
 
@@ -46,9 +49,20 @@
     margin-right: 1.1rem;
     flex-shrink: 0;
   }
-  .menu__item a * {
-    transition: transform 0.25s ease, -webkit-transform 0.25s ease;
+
+  .menu__item a.active-link i {
+    color: var(--white);
   }
+
+  .menu__item a.inactive-link.active {
+    transition: transform 0.15s ease, -webkit-transform 0.15s ease;
+    color: var(--dark) !important;
+  }
+
+  .menu__item a.active-link.active {
+    color: var(--white) !important;
+  }
+
   li a {
     margin: 0 15px;
     padding: 10px 15px;
@@ -65,19 +79,19 @@
   li a:hover * {
     transform: translateX(5px);
   }
-  li a.router-link-exact-active,
-  li a.active {
+
+  li.menu__item a.active-link.router-link-exact-active,
+  li.menu__item a.active-link.active {
     background: linear-gradient(118deg, $primary, #8e89f5);
     border-radius: 4px;
-    color: #fff;
+    color: #fff !important;
     box-shadow: 0 0 10px 1px rgba(115, 103, 240, 0.7);
-    border-radius: 4px;
   }
 
-  li a.router-link-exact-active *,
-  li a.active * {
-    color: #fff;
-  }
+  //li a.router-link-exact-active *,
+  //li a.active * {
+  //  color: #fff;
+  //}
 
   .menu__img {
     width: 40px;
@@ -105,10 +119,13 @@
   }
 
   .menu__name {
-    color: var(--primary);
     font-size: 13px;
     font-weight: 500;
     color: var(--dark);
+  }
+
+  .active-link .menu__name {
+    color: var(--white);
   }
 
   .menu__count {
@@ -158,10 +175,12 @@
     padding: 0;
     margin: 0;
     list-style-type: none;
+
     li {
       list-style-type: none;
     }
   }
+
   img {
     max-width: 100px;
   }
@@ -241,6 +260,7 @@
   .nav-toggle svg {
     stroke: var(--primary);
   }
+
   .nav-toggle:hover svg {
     stroke: var(--primary);
   }
@@ -248,18 +268,18 @@
 
 .header-navbar-shadow {
   background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(44%, hsla(0, 0%, 97.3%, 0.95)),
-    color-stop(73%, hsla(0, 0%, 97.3%, 0.46)),
-    to(hsla(0, 0%, 100%, 0))
+                  linear,
+                  left top,
+                  left bottom,
+                  color-stop(44%, hsla(0, 0%, 97.3%, 0.95)),
+                  color-stop(73%, hsla(0, 0%, 97.3%, 0.46)),
+                  to(hsla(0, 0%, 100%, 0))
   );
   background: linear-gradient(
-    180deg,
-    hsla(0, 0%, 97.3%, 0.95) 44%,
-    hsla(0, 0%, 97.3%, 0.46) 73%,
-    hsla(0, 0%, 100%, 0)
+                  180deg,
+                  hsla(0, 0%, 97.3%, 0.95) 44%,
+                  hsla(0, 0%, 97.3%, 0.46) 73%,
+                  hsla(0, 0%, 100%, 0)
   );
   left: 0;
   padding-top: 2.2rem;
@@ -275,17 +295,17 @@
 .shadow-bottom {
   margin-top: -0.7rem;
   background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(41%, #fff),
-    color-stop(95%, hsla(0, 0%, 100%, 0.11)),
-    to(hsla(0, 0%, 100%, 0))
+                  linear,
+                  left top,
+                  left bottom,
+                  color-stop(41%, #fff),
+                  color-stop(95%, hsla(0, 0%, 100%, 0.11)),
+                  to(hsla(0, 0%, 100%, 0))
   );
   background: linear-gradient(
-    #fff 41%,
-    hsla(0, 0%, 100%, 0.11) 95%,
-    hsla(0, 0%, 100%, 0)
+                  #fff 41%,
+                  hsla(0, 0%, 100%, 0.11) 95%,
+                  hsla(0, 0%, 100%, 0)
   );
   position: absolute;
   z-index: 2;
@@ -325,6 +345,7 @@
     .fixed-menu {
       width: 80px;
     }
+
     & + main {
       width: calc(100% - 80px);
       margin-left: 80px;
@@ -336,12 +357,15 @@
       &-header {
         padding: 7px;
         justify-content: center;
+
         .brand-text {
           display: none;
         }
+
         .nav-toggle {
           display: none;
         }
+
         img {
           max-width: 55px;
         }
@@ -367,12 +391,15 @@
       &-header {
         padding: 0.35rem 1rem 0.3rem 1rem;
         justify-content: space-between;
+
         .brand-text {
           display: block;
         }
+
         .nav-toggle {
           display: block;
         }
+
         img {
           max-width: 100px;
         }
@@ -390,6 +417,7 @@
     }
   }
 }
+
 @include mq("desktop", max) {
   .navbar {
     width: 100%;
