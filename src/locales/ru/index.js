@@ -217,6 +217,7 @@ export default {
     monthly_pay: 'Ежемесячный',
     sum_text: 'В суммах',
     usd_text: 'В долларах',
+    text:'Текст',
     apartments_count: "Количество квартир",
     contract_file_not_found: 'Файл контракта не найден',
     instruction: "Инструкция",
@@ -457,7 +458,11 @@ export default {
         filter: 'Фильтры поиска',
         add_note: 'Добавить примечание',
         note: 'Примечание',
-
+        delete_note: 'Удалить примечание?',
+        note_delete_confirmation: 'Вы уверены, что хотите удалить примечание?\n' +
+            'Данное действие нельзя отменить.',
+        edit_note: 'Редактировать примечание',
+        note_text: 'Текст примечание',
         table: {
             contract: 'Договор',
             client: 'Клиент',

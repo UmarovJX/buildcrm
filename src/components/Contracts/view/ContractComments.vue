@@ -1,10 +1,8 @@
 <template>
-
   <div>
-
     <div class="comments">
       <div class="comments-header">
-        <h4 class="comments-header__title">{{this.$t('contracts.note')}}</h4>
+        <h4 class="comments-header__title">{{ this.$t('contracts.note') }}</h4>
         <base-button v-if="createCommentPermission" @click="openCreateModal" :text="`${ $t('contracts.add_note') }`">
           <template #left-icon>
             <BasePlusIcon fill="var(--violet-600)"/>
@@ -118,7 +116,7 @@
 
           <!--    TITLE      -->
           <span class="title">
-            {{ modalProperties.title }}
+            {{ $t(modalProperties.title) }}
           </span>
 
 
@@ -132,7 +130,7 @@
       <template #main>
         <div class="create">
           <h5 class="comment-create__title">
-            Текст примечание
+            {{ $t('contracts.note_text') }}
           </h5>
           <ValidationProvider
               :name="$t('objects.create.tariff.type_name')"
@@ -142,7 +140,11 @@
               class="w-100"
               tag="div"
           >
-            <b-form-textarea v-model="comment" class="comment-textarea" placeholder="Текст"></b-form-textarea>
+            <b-form-textarea
+                v-model="comment"
+                class="comment-textarea"
+                :placeholder="`${ $t('contracts.comment') }`"
+            />
             <span class="error__provider" v-if="errors[0]">
               {{ errors[0] }}
             </span>
@@ -175,7 +177,7 @@
               </svg>
             </span>
             <span class="title">
-              Удалить примечание?
+              {{ $t('contracts.delete_note') }}
               <!--              {{ $t('remove_payment') }}-->
             </span>
           </span>
@@ -183,8 +185,7 @@
 
       <template #main>
           <span class="warning__before__delete-main">
-            Вы уверены, что хотите удалить примечание?
-Данное действие нельзя отменить.
+            {{ $t('contracts.note_delete_confirmation') }}
             <!--            {{ $t('contracts.warn_before_delete_payment') }}-->
           </span>
       </template>
@@ -335,7 +336,7 @@ export default {
     openCreateModal() {
       this.modalProperties = {
         type: 'create',
-        title: 'Добавить примечание',
+        title: 'contracts.add_note',
         btnText: 'add',
       }
       this.$refs["create"].openModal()
@@ -343,7 +344,7 @@ export default {
     openEditModal(item) {
       this.modalProperties = {
         type: 'edit',
-        title: 'Редактировать примечание',
+        title: 'contracts.edit_note',
         btnText: 'edit',
       }
       this.comment = item.comment
