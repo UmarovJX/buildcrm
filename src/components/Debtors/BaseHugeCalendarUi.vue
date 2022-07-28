@@ -62,8 +62,16 @@
             :class="{ 'd-none' : item.show }"
         >
           <span class="overflow-hidden">
-            <span class="d-flex overflow-hidden">
-              {{ item.debts[0].order.contract }} · {{ getFullName(item.debts[0].client) }}
+            <span v-if="item.debts[0].order.friends" class="debtor">
+              <span class="d-flex overflow-hidden friend">
+                {{ item.debts[0].order.contract }} · {{ getFullName(item.debts[0].client) }}
+              </span>
+              <BaseStarIcon fill="#ffff"/>
+            </span>
+            <span v-else class="debtor">
+              <span class="d-flex overflow-hidden">
+                {{ item.debts[0].order.contract }} · {{ getFullName(item.debts[0].client) }}
+              </span>
             </span>
             <span class="overflow-hidden">{{ debtAmount(item.debts[0]) }}</span>
           </span>
@@ -84,10 +92,12 @@ import {dateConvertor, formatDateToYMD} from "@/util/calendar";
 import {formatToPrice} from "@/util/reusable";
 import BaseTimesIcon from "@/components/icons/BaseTimesIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseStarIcon from "@/components/icons/BaseStarIcon";
 
 export default {
   name: "BaseHugeCalendarUI",
   components: {
+    BaseStarIcon,
     BaseTimesIcon,
     BaseArrowRightIcon
   },
@@ -232,5 +242,21 @@ export default {
 
 .overflow-visible {
   overflow: visible !important;
+}
+.debtor {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  .friend {
+    width: 85%;
+  }
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translate(-100%, -50%);
+    height: 15px;
+    width: 15px;
+  }
 }
 </style>

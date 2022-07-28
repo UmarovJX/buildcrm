@@ -33,10 +33,25 @@
           thead-tr-class="row__head__bottom-border"
           tbody-tr-class="row__body__bottom-border cursor-pointer"
       >
-
         <!--  LOADING ANIMATION    -->
         <template #table-busy>
           <base-loading/>
+        </template>
+
+        <template #cell(client)="tableItems">
+          <span v-if="tableItems.item.order.friends">
+            <span class="friend">
+              <BaseStarIcon fill="#7C3AED"/>
+            </span>
+            <span class="full-name">
+              {{ getClientName(tableItems.item.client) }}
+            </span>
+          </span>
+          <span v-else>
+            <span class="full-name">
+              {{ getClientName(tableItems.item.client) }}
+            </span>
+          </span>
         </template>
 
         <!--  SHOW EMPTY MESSAGE WHEN CONTENT NOT FOUND   -->
@@ -191,10 +206,12 @@ import BaseHugeCalendarUi from "@/components/Debtors/BaseHugeCalendarUi";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
 import OutputInformation from "@/components/Elements/outputs/OutputInformation";
 import WeeklyDebtsUi from "@/components/Debtors/WeeklyDebtsUi";
+import BaseStarIcon from "@/components/icons/BaseStarIcon";
 
 export default {
   name: "Debtors",
   components: {
+    BaseStarIcon,
     // BaseCalendarNavigation,
     BaseLoading,
     BasePagination,
@@ -369,6 +386,25 @@ export default {
     this.initDebtorUi()
   },
   methods: {
+    getClientName(client) {
+      let language = 'kirill'
+      if (this.$i18n.locale === 'uz') {
+        language = 'lotin'
+      }
+      const {first_name, second_name} = client
+      return this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
+    },
+    clientName(multiName, language) {
+      const lastNameByLang = multiName[language]
+      if (lastNameByLang) {
+        return lastNameByLang
+      } else {
+        const lastNameOtherLang = language === 'kirill' ? multiName['lotin'] : multiName['kirill']
+        if (lastNameOtherLang) return lastNameOtherLang
+      }
+
+      return ''
+    },
     phonePrettier: (phone) => formatToPrice(phone),
     pricePrettier: (price) => formatToPrice(price),
     formatDateWithDot,
@@ -857,5 +893,14 @@ export default {
   background-position: right calc(2rem / 2) center !important;
   background-size: 20px;
   background-image: url("../../assets/icons/icon-arrow-up.svg") !important;
+}
+.friend {
+  padding: 0.5px 4px 3px 4px;
+  border-radius: 50%;
+  background: #EDE9FE;
+  svg {
+    height: 13px;
+    width: 13px;
+  }
 }
 </style>
