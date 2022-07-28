@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     inputMultiSelect(option) {
-      console.log(this.showByOptions)
+      // console.log(this.showByOptions)
       if(option){
         this.showByValue = {
           value: option.value,
