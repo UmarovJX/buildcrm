@@ -272,7 +272,8 @@ export default {
       types: [],
       reason_type: '',
       reContractViewPermission: ContractsPermission.getContractsReissueViewPermission(),
-      downloadPermission: ContractsPermission.getContractsDownloadPermission()
+      downloadPermission: ContractsPermission.getContractsDownloadPermission(),
+      deletePermission: ContractsPermission.getContractsCancelPermission(),
     }
   },
   computed: {
@@ -297,9 +298,6 @@ export default {
     },
     editPermission() {
       return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
-    },
-    deletePermission() {
-      return ContractsPermission.getContractsCancelPermission() && this.isStatusContract
     },
     filterTabList() {
       const list = [

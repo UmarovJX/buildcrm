@@ -153,7 +153,7 @@ export default {
         discount: {
           id: null,
           prepay: null,
-          month: null,
+          installment_month: null,
         }
       }
     }
