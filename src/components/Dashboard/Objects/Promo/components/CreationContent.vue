@@ -362,4 +362,5 @@ export default {
     margin: 1.75rem auto;
   }
 }
+
 </style>

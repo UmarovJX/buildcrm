@@ -197,6 +197,7 @@ export default {
     create_date: 'Tuzilgan sana',
     re_contract: 'Qayta rasmiylashtirish',
     recontract_details: 'Qayta rasmiylashtirish tafsilotlari',
+    contract_log: 'Faoliyat jurnali',
     recontract_download: 'Qayta rasmiylashtirilgan shartnomani yuklash',
     yes: "Ha",
     no: "Yo'q",

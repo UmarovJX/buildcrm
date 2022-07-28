@@ -125,6 +125,12 @@ export default {
       border-top-left-radius: 100px;
       color: var(--violet-600);
 
+      .filter__content-item-inline {
+        span {
+          color: var(--violet-600);
+        }
+      }
+
       &:after {
         content: '';
         position: absolute;
