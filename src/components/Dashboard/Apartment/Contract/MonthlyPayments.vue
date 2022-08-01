@@ -351,7 +351,7 @@ export default {
           : new Date();
 
       if (this.contract.initial_payments.length === 0) {
-        let month = parseInt(this.month)
+        let month = parseInt(this.month ? this.month : 0)
         let amount = month === 0 ? getTotal(this.apartments, this.contract) : getPrepay(this.apartments, this.contract);
         this.contract.initial_payments.push({
           amount,

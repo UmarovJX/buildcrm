@@ -1,9 +1,8 @@
 <template>
-  <main class="main__content">
-    <div class="app-content">
-      <div>
-        <div
-            class="
+  <div>
+    <div>
+      <div
+          class="
           d-flex
           justify-content-between
           align-items-center
@@ -13,100 +12,99 @@
           px-0
           py-lg-3
         "
+      >
+        <div
+            class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
         >
-          <div
-              class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
-          >
-            <h1 class="title__big my-0">{{ $t("roles.title") }}</h1>
-            <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
-              <li class="breadcrumb-item">
-                <router-link :to="{name: 'home'}">
-                  <i class="far fa-home"></i>
-                </router-link>
-              </li>
+          <h1 class="title__big my-0">{{ $t("roles.title") }}</h1>
+          <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
+            <li class="breadcrumb-item">
+              <router-link :to="{name: 'home'}">
+                <i class="far fa-home"></i>
+              </router-link>
+            </li>
 
-              <li class="breadcrumb-item">
-                <router-link :to="{name: 'roles'}">
-                  {{ $t("roles.title") }}
-                </router-link>
-              </li>
-              <li class="breadcrumb-item active">
-                {{ $t("edit") }}
-              </li>
-            </ul>
-          </div>
+            <li class="breadcrumb-item">
+              <router-link :to="{name: 'roles'}">
+                {{ $t("roles.title") }}
+              </router-link>
+            </li>
+            <li class="breadcrumb-item active">
+              {{ $t("edit") }}
+            </li>
+          </ul>
         </div>
+      </div>
 
-        <div class="card">
-          <div class="card-body">
-            <b-tabs content-class="mt-3">
-              <b-tab
-                  v-for="({title,active,rows,id},pmIndex) in permissionTabs"
-                  :key="id"
-                  :title="$t(title)"
-                  :active="active"
-              >
-                <table class="table">
-                  <tbody>
-                  <tr v-for="({
+      <div class="card">
+        <div class="card-body">
+          <b-tabs content-class="mt-3">
+            <b-tab
+                v-for="({title,active,rows,id},pmIndex) in permissionTabs"
+                :key="id"
+                :title="$t(title)"
+                :active="active"
+            >
+              <table class="table">
+                <tbody>
+                <tr v-for="({
                     label,width,
                     refer,checkboxSwitch,
                     checkboxActive,checkboxSize,inputActive,
                     inputClass,inputPlaceholder,inputType},index) in rows" :key="index+label+id"
-                  >
-                    <td :width="width">
-                      {{ $t(label) }}
-                    </td>
-                    <td v-if="checkboxActive">
-                      <b-form-checkbox
-                          :switch="checkboxSwitch"
-                          :size="checkboxSize"
-                          v-model="permissionTabs[pmIndex]['rows'][index].vBind"
-                          @input="activeAllTabPermission(refer,pmIndex,index,$event)"
-                      ></b-form-checkbox>
-                    </td>
-                    <td v-if="inputActive">
-                      <input
-                          :type="inputType"
-                          :class="inputClass"
-                          :placeholder="$t(inputPlaceholder)"
-                          v-model="name[refer]"
-                      >
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </b-tab>
-            </b-tabs>
-          </div>
-
-          <div class="card-footer d-flex">
-            <button class="btn btn-primary" @click="createNewRole">
-              <i class="fas fa-save"></i> {{ $t("save") }}
-            </button>
-
-            <button class="btn btn-default" @click="$router.go(-1)">
-              {{ $t("cancel") }}
-            </button>
-          </div>
+                >
+                  <td :width="width">
+                    {{ $t(label) }}
+                  </td>
+                  <td v-if="checkboxActive">
+                    <b-form-checkbox
+                        :switch="checkboxSwitch"
+                        :size="checkboxSize"
+                        v-model="permissionTabs[pmIndex]['rows'][index].vBind"
+                        @input="activeAllTabPermission(refer,pmIndex,index,$event)"
+                    ></b-form-checkbox>
+                  </td>
+                  <td v-if="inputActive">
+                    <input
+                        :type="inputType"
+                        :class="inputClass"
+                        :placeholder="$t(inputPlaceholder)"
+                        v-model="name[refer]"
+                    >
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </b-tab>
+          </b-tabs>
         </div>
 
+        <div class="card-footer d-flex">
+          <button class="btn btn-primary" @click="createNewRole">
+            <i class="fas fa-save"></i> {{ $t("save") }}
+          </button>
+
+          <button class="btn btn-default" @click="$router.go(-1)">
+            {{ $t("cancel") }}
+          </button>
+        </div>
       </div>
 
-      <b-overlay :show="getLoading" no-wrap opacity="0.5">
-        <template #overlay>
-          <div class="d-flex justify-content-center w-100">
-            <div class="lds-ellipsis">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        </template>
-      </b-overlay>
     </div>
-  </main>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+  </div>
 
 </template>
 

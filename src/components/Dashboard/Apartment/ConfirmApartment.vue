@@ -717,7 +717,7 @@ export default {
               );
               formData.append(
                   "initial_payments[" + initial_payment + "][date]",
-                  this.contract.initial_payments[initial_payment].month
+                  this.contract.initial_payments[initial_payment].date
               );
             }
           } else {
