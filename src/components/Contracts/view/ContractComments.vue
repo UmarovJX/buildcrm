@@ -318,7 +318,7 @@ export default {
       const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase()
 
       if (value.edited)
-        return 'изменено ' + hours + ':' + minutes + ', ' + day + ' ' + month
+        return this.$t('edited') + ' ' + hours + ':' + minutes + ', ' + day + ' ' + month
       return hours + ':' + minutes + ', ' + day + ' ' + month
 
     },
@@ -362,7 +362,7 @@ export default {
     deleteComment() {
       api.contractV2.deleteComment(this.contractId, this.commentId)
           .then(() => {
-            this.toasted('deleted', "success");
+            this.toasted(`${this.$t('sweetAlert.deleted')}`, "success");
           })
           .catch((err) => {
             this.toasted(err.message, "error");
@@ -382,7 +382,7 @@ export default {
           if (this.modalProperties.type === 'create') {
             await api.contractV2.addComment(this.contractId, data)
                 .then(() => {
-                  this.toasted('created', "success");
+                  this.toasted(`${this.$t('sweetAlert.success_create_comment')}`, "success");
                 })
                 .catch((err) => {
                   this.toasted(err.message, "error");
@@ -390,7 +390,7 @@ export default {
           } else {
             await api.contractV2.editComment(this.contractId, this.commentId, data)
                 .then(() => {
-                  this.toasted('edited', "success");
+                  this.toasted(`${this.$t('sweetAlert.successfully_edited')}`, "success");
                 })
                 .catch((err) => {
                   this.toasted(err.message, "error");

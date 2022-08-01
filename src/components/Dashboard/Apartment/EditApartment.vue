@@ -524,7 +524,21 @@ export default {
           this.schedule = res.data.schedule
         }
         this.apartments = this.order.apartments
-        this.client = {...this.client, ...res.data.client}
+
+        if (res.data.client.friends) {
+          this.client = {
+            ...this.client,
+            ...res.data.client,
+            type_client: 'friends'
+          }
+        } else {
+          this.client = {
+            ...this.client,
+            ...res.data.client,
+            type_client: 'unknown'
+          }
+        }
+
       })
     },
     ...mapActions(["fetchApartmentOrder"]),
@@ -588,7 +602,6 @@ export default {
             if (response) {
               this.client = {
                 ...response.data,
-                type_client: 'unknown'
               }
               if (this.order.status === 'sold') {
                 api.contractV2.orderUpdate(this.order.id,
