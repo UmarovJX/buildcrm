@@ -46,6 +46,9 @@ import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 
+
+import Documentation from "@/views/documentation";
+
 const routes = [
     {
         path: '/',
@@ -69,6 +72,12 @@ const routes = [
                 path: '/experiment',
                 name: 'experiment',
                 component: Experiment
+            },
+
+            {
+                path: '/documentation',
+                name: 'documentation',
+                component: Documentation
             },
 
             {

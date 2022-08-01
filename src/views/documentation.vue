@@ -1,4 +1,6 @@
 <template>
+
+  <!--  BASE ACTION LIST-->
   <BaseActionList :position-right="true">
     <template #header>
       {{ $t('contracts.view.actions') }}
@@ -14,6 +16,12 @@
       </b-dropdown-item>
     </template>
   </BaseActionList>
+
+
+
+
+
+
 </template>
 
 <script>
