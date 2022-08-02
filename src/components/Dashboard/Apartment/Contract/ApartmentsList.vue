@@ -2,7 +2,7 @@
   <!-- Apartments -->
   <div className="new-object p-0">
     <div v-b-toggle.collapse-apartments block className="d-flex p-3">
-      <span>Список квартир:</span>
+      <span>{{ $t('apartment_list') }}:</span>
       <strong
           v-if="isVisibleApartments"
           aria-hidden="true"

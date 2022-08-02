@@ -44,7 +44,7 @@
           class="mb-1"
           label-cols="12"
           content-cols="12"
-          label="Цена продажы за м2:"
+          :label="`${$t('apartments.view.price_for_m2')}`"
           label-for="price"
       >
         <base-numeric-input
@@ -65,7 +65,7 @@
           class="mb-1"
           label-cols="12"
           content-cols="12"
-          label="Скидка от общей суммы:"
+          :label="`${$t('apartments.view.discount_price')}:`"
           label-for="total-discound-price"
       >
         <base-numeric-input
@@ -84,7 +84,7 @@
       <!-- Скидка от общей суммы | Скидка за м2 -->
       <b-tabs pills v-else class="mb-1 mt-2">
         <!-- Скидка от общей суммы -->
-        <b-tab title="Скидка от общей суммы:" active>
+        <b-tab :title="`${$t('apartments.view.discount_price')}:`" active>
           <b-card-text>
             <base-numeric-input
                 v-model="contract.discount_amount"
@@ -100,7 +100,7 @@
           </b-card-text>
         </b-tab>
         <!-- Скидка за м2 -->
-        <b-tab title="Скидка за м2:">
+        <b-tab :title="$t('apartments.view.discount_per_m2')">
           <b-card-text>
             <base-numeric-input
                 v-model="contract.discount_square"
@@ -119,7 +119,7 @@
 
       <!-- Предоплата -->
       <div>
-        Предоплата: <span> {{ calc.prepay_percente }}%</span>
+        {{ $t('apartments.view.prepayment') }}: <span> {{ calc.prepay_percente }}%</span>
       </div>
 
       <!-- Первый взнос -->
@@ -128,7 +128,7 @@
           v-if="contract.discount && contract.discount.amount > 0  || contract.discount.id === 'other'"
           label-cols="12"
           content-cols="12"
-          label="Первый взнос: "
+          :label="`${$t('apartments.first_payment')}:`"
           label-for="prepay_to"
       >
         <base-numeric-input
@@ -150,7 +150,7 @@
           v-if="contract.discount && contract.discount.amount > 0 || contract.discount.id === 'other'"
           label-cols="12"
           content-cols="12"
-          label="Ежемесячный:"
+          :label="`${$t('monthly_pay')}:`"
           label-for="credit_month"
       >
         <b-form-input
@@ -186,7 +186,7 @@
           class="mb-1"
           label-cols="12"
           content-cols="12"
-          label="Остаток: "
+          :label="`${$t('payments.balance')}:`"
           label-for="debt"
       >
         <base-numeric-input
@@ -206,7 +206,7 @@
           class="mb-1"
           label-cols="12"
           content-cols="12"
-          label="Итого: "
+          :label="`${$t('apartments.view.total')}:`"
           label-for="total"
       >
         <base-numeric-input

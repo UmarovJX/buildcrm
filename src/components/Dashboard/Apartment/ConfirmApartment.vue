@@ -205,7 +205,7 @@
                 {{ $t("cancel") }}
               </button>
               <button v-if="!buttons.loading" type="submit" class="btn btn-success">
-                Продолжить
+                {{ $t('next') }}
                 <i class="fa fa-file-contract"></i>
               </button>
               <button
@@ -213,7 +213,7 @@
                   type="button"
                   class="btn btn-success"
               >
-                Продолжить
+                {{ $t('next') }}
                 <i class="fas fa-spinner fa-spin"></i>
               </button>
             </div>

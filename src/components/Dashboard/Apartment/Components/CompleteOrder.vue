@@ -86,7 +86,7 @@
                   }}
                 </td>
 
-                <td>Первоначальный взнос</td>
+                <td>{{ $t('contracts.view.initial_fee') }}</td>
 
                 <td>
                   <div
@@ -144,7 +144,7 @@
                   </div>
                 </td>
 
-                <td>Первоначальный взнос</td>
+                <td>{{ $t('contracts.view.initial_fee') }}</td>
 
                 <td>
                   <div
@@ -250,7 +250,7 @@
                   {{ month.month | moment("DD.MM.YYYY") }}
                 </td>
 
-                <td>Ежемесячно</td>
+                <td>{{ $t('monthly') }}</td>
 
                 <td>
                   <div

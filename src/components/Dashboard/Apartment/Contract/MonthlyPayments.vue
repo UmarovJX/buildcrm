@@ -3,7 +3,7 @@
     <div
         class="d-flex justify-content-between align-items-center sticky-top bg-custom-white px-3 py-2 rounded shadow-sm "
         v-if="(contract.discount && contract.discount.prepay !== 100) || contract.discount.prepay < 100 ">
-      <h6 class="mb-0">Таблица ежемесячных платежей:</h6>
+      <h6 class="mb-0">{{ $t('table_months_payment') }}:</h6>
       <div class="d-flex justify-content-end align-items-center">
         <div class="mr-2 w-25">
           <input
@@ -20,7 +20,7 @@
         </div>
         <span
             v-if="contract.month > 0 && contract.discount && (contract.discount.prepay !== 100 || contract.discount.prepay < 100)">
-            {{ contract.month }} месяцев по <br/>
+            {{ contract.month }} {{ $t('months_to') }} <br/>
             {{ getCalMonth() | number("0,0.00", {thousandsSeparator: " ", decimalSeparator: ",",}) }}
             {{ $t("ye") }}
         </span>
@@ -32,15 +32,15 @@
         <thead>
         <tr>
           <th>
-            Месяцы
+            {{ $t('months') }}
           </th>
 
           <th>
-            Тип
+            {{ $t('contracts.view.type') }}
           </th>
 
           <th>
-            Сумма
+            {{ $t('contracts.view.sum') }}
           </th>
         </tr>
         </thead>
@@ -54,7 +54,7 @@
           </td>
 
           <td>
-            Первоначальный взнос
+            {{ $t('contracts.view.initial_fee') }}
           </td>
 
           <td>
@@ -78,7 +78,7 @@
         <tr v-else v-for="(initialPayment, index) in contract.initial_payments" :key="'initial' + index">
           <td>
             <span v-if="!initialPayment.edit">
-              {{ getInitialPaymentDate(initialPayment) }}
+              {{ initialPayment.date }}
             </span>
 
             <div
@@ -86,18 +86,15 @@
                 v-if="initialPayment.edit && index !== 0"
             >
               <div class="row">
-                <input
-                    type="date"
-                    class="form-control"
-                    v-model="initialPayment.month"
-                />
+
+                <date-picker v-model="initialPayment.date" value-type="DD.MM.YYYY" format="DD.MM.YYYY"/>
 
               </div>
             </div>
           </td>
 
           <td>
-            Первоначальный взнос
+            {{ $t('contracts.view.initial_fee') }}
           </td>
 
           <td>
@@ -148,7 +145,7 @@
 
                 <div v-if="initialPayment.edit">
                   <button
-                      v-if="getMe.role.id === 1 || getPermission.contracts.monthly"
+                      v-if="monthlyPermission"
                       type="button"
                       @click="editInitialPayment(index)"
                       class="btn btn-sm btn-success mt-0 mr-1">
@@ -157,7 +154,7 @@
                 </div>
 
                 <button
-                    v-if="(index !== 0 && getMe.role.id === 1) || (index !== 0 && getPermission.contracts.monthly)"
+                    v-if="(index !== 0 && monthlyPermission)"
                     type="button"
                     @click="deleteInitialPayment(index)"
                     class="btn btn-sm btn-danger mt-0 mr-0">
@@ -177,7 +174,7 @@
           </td>
 
           <td>
-            Ежемесячно
+            {{ $t('monthly') }}
           </td>
 
           <td>
@@ -216,7 +213,7 @@
               </div>
 
               <button
-                  v-if="(getMe.role.id === 1 && !month.edit) || (getPermission.contracts.monthly && !month.edit)"
+                  v-if="(monthlyPermission&& !month.edit)"
                   type="button"
                   @click="editMonthlyPayment(index)"
                   class="btn btn-sm btn-primary mr-0 mt-0"
@@ -226,7 +223,7 @@
 
               <div v-if="month.edit">
                 <button
-                    v-if="getMe.role.id === 1 || getPermission.contracts.monthly"
+                    v-if="monthlyPermission"
                     type="button"
                     @click="editMonthlyPayment(index)"
                     class="btn btn-sm btn-success mr-0 mt-0"
@@ -246,8 +243,10 @@
 <script>
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import moment from "moment";
-import {mapGetters} from "vuex";
 import CheckoutPermission from "@/permission/checkout";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+
 
 // import * as Calc from "../../../../util/calculator";
 const {getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal} = require("../../../../util/calculator");
@@ -255,6 +254,7 @@ const {getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal} = requir
 export default {
   name: "MonthlyPayments",
   components: {
+    DatePicker,
     BaseNumericInput
   },
 
@@ -272,20 +272,11 @@ export default {
         initial_edited: false,
       },
       monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission()
-
     }
   },
 
   mounted() {
     CreditMonths(this.apartments, this.contract)
-  },
-
-  computed: {
-    ...mapGetters([
-      "getReserveClient",
-      "getPermission",
-      "getMe",
-    ]),
   },
 
   watch: {
@@ -297,9 +288,9 @@ export default {
   methods: {
     getInitialPaymentDate(initialPayment) {
       if (initialPayment.date) {
-        return moment(initialPayment.date).format('YYYY-MM-DD')
+        return moment(initialPayment.date)
       }
-      return moment(initialPayment.month).format('YYYY-MM-DD')
+      return moment(initialPayment.month)
     },
     changeMonth() {
       // this.monthly_price = this.getMonths();
@@ -351,23 +342,30 @@ export default {
           : new Date();
 
       if (this.contract.initial_payments.length === 0) {
-        let month = parseInt(this.month ? this.month : 0)
-        let amount = month === 0 ? getTotal(this.apartments, this.contract) : getPrepay(this.apartments, this.contract);
-        this.contract.initial_payments.push({
-          amount,
-          edit: false,
-          edited: false,
-          date: moment(today).format("YYYY-MM-DD")
-        })
+        // let month = parseInt(this.month ? this.month : 0)
+        // const amount = month === 0 ? getTotal(this.apartments, this.contract) : getPrepay(this.apartments, this.contract);
+        this.contract.initial_payments = [
+          ...this.contract.initial_payments,
+          {
+            amount: this.contract.prepay_amount,
+            edit: false,
+            edited: false,
+            date: moment(today).format("DD.MM.YYYY")
+          }
+        ]
       } else {
         const month = new Date(today.setMonth(today.getMonth() + 1))
-        this.contract.initial_payments.push({
-          amount: this.contract.initial_payments[0].amount,
-          edit: false,
-          edited: false,
-          date: moment(month).format("YYYY-MM-DD")
-        })
+        this.contract.initial_payments = [
+          ...this.contract.initial_payments,
+          {
+            amount: 0,
+            edit: false,
+            edited: false,
+            date: moment(month).format("DD.MM.YYYY")
+          }
+        ]
       }
+
       this.initialCalc()
     },
 

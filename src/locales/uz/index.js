@@ -223,6 +223,9 @@ export default {
     full: "To'liqligicha",
     monthly: "Oylik",
     month: 'Oy',
+    months: 'Oylar',
+    months_to: 'oygacha',
+    table_months_payment: "Oylik to'lovlar jadvali",
     duration: 'Davomiyligi',
     more_info: "Batafsil ma'lumot",
     payment_type: "To'lov sharti",
@@ -238,6 +241,7 @@ export default {
     usd_text: 'Usd',
     text: 'Matn',
     apartments_count: "Xonadonlar soni",
+    apartment_list: "Xonadonlar ro'yxati",
     contract_file_not_found: 'Kontrakt fayl topilmadi',
     instruction: "Ko'rsatma",
     validation_warning_to_bottom: "Maydonlardan biri noto'g'ri to'ldirilgan, barcha maydonlarni yana tekshiring!",
@@ -247,7 +251,9 @@ export default {
     payment_schedule: "To'lov jadvali",
     object_details: 'Obyekt tafsilotlari',
     client_details: 'Foydalanuvchi malumotlari',
+    client_info: "Mijoz haqida ma'lumot",
     contract_details: 'Shartnoma tafsilotlari',
+    comment: 'Izoh',
     initial_payment: "Boshlang'ich to'lov",
     monthly_pay: "Oylik to'lov",
     floor: 'qavat',
@@ -750,6 +756,7 @@ export default {
             price_for_m2: "1м2 narxi:", // asd
             discount_per_m2: 'm2 uchun chegirma:', // asd
             discount_all: 'Umumiy chegirma',
+            discount_price: 'Umumiy summadan chegirma',
             prepayment: "Oldindan to'lov", // asd
             total: "Jami", // asd
             print: "Chop etish",// asd
@@ -758,6 +765,7 @@ export default {
         agree: {
             number: "Shartnoma raqami",
             date_contract: "Shartnoma sanasi", // (месяц/число/год)
+            fio: "FISH",
             first_name: "Ismi",
             last_name: "Familiyasi",
             second_name: "Sharifi",

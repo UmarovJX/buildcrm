@@ -2,7 +2,7 @@
   <div class="new-object p-3">
     <!-- Комментария -->
     <div class="">
-      <label>Комментария</label>
+      <label>{{ $t('comment') }}</label>
       <textarea
           rows="3"
           cols="3"

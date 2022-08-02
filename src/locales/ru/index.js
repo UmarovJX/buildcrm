@@ -206,6 +206,9 @@ export default {
     full: 'Полный',
     monthly: 'Ежемесячно',
     month: 'месяцев',
+    months: 'Месяцы',
+    months_to: 'месяцев по',
+    table_months_payment: 'Таблица ежемесячных платежей',
     duration: 'Продолжителность',
     without_initial: 'Без первоначального платежа',
     payment_type: 'Способ оплаты',
@@ -221,6 +224,7 @@ export default {
     usd_text: 'В долларах',
     text: 'Текст',
     apartments_count: "Количество квартир",
+    apartment_list: 'Список квартир',
     contract_file_not_found: 'Файл контракта не найден',
     instruction: "Инструкция",
     validation_warning_to_bottom: 'Одно из полей заполнено неправильно, пожалуйста проверьте все поля еще раз!',
@@ -230,7 +234,9 @@ export default {
     payment_schedule: 'График оплаты',
     object_details: 'Детали объекта',
     client_details: 'Детали клиента',
+    client_info: 'Информация клиента',
     contract_details: 'Детали договора',
+    comment: 'Комментария',
     floor: 'этаж',
     paid: 'Оплачено',
     waiting_to_payment: 'На оплате',
@@ -742,6 +748,7 @@ export default {
             price_for_m2: "Цена продажы за м2", // asd
             discount_per_m2: "Скидка за м2:", // asd
             discount_all: 'Общая скидка',
+            discount_price: 'Скидка от общей суммы',
             prepayment: "Предоплата", // asd
             total: "Итого", // asd
             print: "Печатать", // asd
@@ -750,6 +757,7 @@ export default {
         agree: {
             number: "Номер договора",
             date_contract: "Дата договора", // (месяц/число/год)
+            fio: "ФИО",
             first_name: "Имя",
             last_name: "Фамилия",
             second_name: "Отчество",
