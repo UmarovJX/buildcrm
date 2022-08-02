@@ -28,7 +28,7 @@ import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
 // import DataPicker from
 
 export default {
-  name: "BaseSearchInput",
+  name: "BaseSearchCalendar",
   components: {
     BaseCalendarIcon,
     // BaseSearchIcon,

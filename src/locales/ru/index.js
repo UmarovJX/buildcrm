@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
+    component: 'компонент',
     roles_permission: {
         activate_all: 'Активировать все',
         placeholder_uz: "На Узбекском",

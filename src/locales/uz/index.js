@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+    component: 'komponent',
     roles_permission: {
         activate_all: 'Hammasini faollashtirish',
         placeholder_uz: "O'zbek tilida",
