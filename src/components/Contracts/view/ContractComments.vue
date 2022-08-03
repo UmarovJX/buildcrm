@@ -2,7 +2,12 @@
   <div>
     <div class="comments">
       <div class="comments-header">
-        <h4 class="comments-header__title">{{ this.$t('contracts.note') }}</h4>
+        <h4 v-if="hasComment" class="comments-header__title">
+          {{ this.$t('contracts.note') }} ({{ pagination.totalItems }} {{ $t('contracts.notes') }})
+        </h4>
+        <h4 v-else class="comments-header__title">
+          {{ this.$t('contracts.note') }} ({{ $t('contracts.no_notes') }})
+        </h4>
         <base-button v-if="createCommentPermission" @click="openCreateModal" :text="`${ $t('contracts.add_note') }`">
           <template #left-icon>
             <BasePlusIcon fill="var(--violet-600)"/>
@@ -10,7 +15,7 @@
         </base-button>
       </div>
 
-      <div class="comments-body">
+      <div v-if="hasComment" class="comments-body">
         <div v-for="comment in comments" class="comment" :key="comment.id">
           <div class="comment-content">
             <div class="comment-text">
@@ -104,6 +109,12 @@
           </div>
         </div>
 
+      </div>
+
+      <div v-else class="comments-body">
+        <p class="comment-empty">
+          {{ $t('contracts.no_note') }}.
+        </p>
       </div>
 
     </div>
@@ -276,6 +287,9 @@ export default {
       const {pagination, comments} = this
       return comments.length && pagination['totalItems'] > 9
     },
+    hasComment() {
+      return this.comments && this.comments.length > 0
+    }
   },
   async created() {
     await this.getComments()
@@ -448,6 +462,17 @@ export default {
   border-radius: 2rem;
   padding: 1.5rem;
 
+  &-empty {
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    color: var(--gray-400);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   &-content {
     display: flex;

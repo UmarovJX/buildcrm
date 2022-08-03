@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div>
+  <main class="main__content">
+    <div class="app-content">
       <div
           class="
           d-flex
@@ -90,21 +90,21 @@
         </div>
       </div>
 
-    </div>
 
-    <b-overlay :show="getLoading" no-wrap opacity="0.5">
-      <template #overlay>
-        <div class="d-flex justify-content-center w-100">
-          <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+      <b-overlay :show="getLoading" no-wrap opacity="0.5">
+        <template #overlay>
+          <div class="d-flex justify-content-center w-100">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
           </div>
-        </div>
-      </template>
-    </b-overlay>
-  </div>
+        </template>
+      </b-overlay>
+    </div>
+  </main>
 
 </template>
 

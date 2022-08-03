@@ -86,9 +86,7 @@
                 v-if="initialPayment.edit && index !== 0"
             >
               <div class="row">
-
                 <date-picker v-model="initialPayment.date" value-type="DD.MM.YYYY" format="DD.MM.YYYY"/>
-
               </div>
             </div>
           </td>
@@ -170,7 +168,18 @@
         <tbody v-if="contract.discount && (contract.discount.prepay !== 100 || contract.discount.prepay < 100)">
         <tr v-for="(month, index) in contract.credit_months" :key="index">
           <td>
-            {{ month.month | moment("DD.MM.YYYY") }}
+            <span v-if="!month.edit">
+              {{ month.month | moment("DD.MM.YYYY") }}
+            </span>
+            <div
+                class="col-md-12 float-left"
+                v-else
+            >
+              <div class="row">
+                <date-picker @input="month.month = $event" :value="datePrettier(month.month)" value-type="DD.MM.YYYY"
+                             format="DD.MM.YYYY"/>
+              </div>
+            </div>
           </td>
 
           <td>
@@ -246,6 +255,7 @@ import moment from "moment";
 import CheckoutPermission from "@/permission/checkout";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+import {formatDateWithDot} from "@/util/reusable";
 
 
 // import * as Calc from "../../../../util/calculator";
@@ -286,6 +296,12 @@ export default {
   },
 
   methods: {
+    datePrettier(value) {
+      if (typeof value === 'string')
+        return value
+      return formatDateWithDot(value)
+      // return moment(value, "DD.MM.YYYY")
+    },
     getInitialPaymentDate(initialPayment) {
       if (initialPayment.date) {
         return moment(initialPayment.date)

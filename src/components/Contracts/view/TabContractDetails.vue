@@ -244,7 +244,9 @@ export default {
       return formatToPrice(price) + ' ' + this.$t('ye')
     },
     prepayPrettier(value) {
-      return this.$t('apartments.first_payment') + ' ' + value + '%'
+      if (value !== 'other')
+        return this.$t('apartments.first_payment') + ' ' + value + '%'
+      return this.$t('apartments.first_payment') + ' ' + this.$t('apartments.individual') + '%'
     },
     getStatus(status) {
       return this.$t(`contracts.status.${status}`)
