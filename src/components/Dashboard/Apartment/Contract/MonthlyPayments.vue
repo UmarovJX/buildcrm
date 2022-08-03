@@ -300,7 +300,6 @@ export default {
       if (typeof value === 'string')
         return value
       return formatDateWithDot(value)
-      // return moment(value, "DD.MM.YYYY")
     },
     getInitialPaymentDate(initialPayment) {
       if (initialPayment.date) {

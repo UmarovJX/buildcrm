@@ -284,7 +284,6 @@
 </template>
 
 <script>
-// import moment from "moment";
 import {mapActions, mapGetters} from "vuex";
 // import VueNumeric from "vue-numeric";
 import FlipCountdown from "vue2-flip-countdown";
@@ -308,11 +307,10 @@ import {
   getPricePerM2,
   getTotal
 } from "@/util/calculator";
-import moment from "moment";
 import api from "@/services/api";
-// import moment from "moment";
 
 import CheckoutPermission from "@/permission/checkout";
+import {formatDateWithDot} from "@/util/reusable";
 
 export default {
   name: "ConfirmApartment",
@@ -661,6 +659,12 @@ export default {
       this.edited.monthly = true
     },
 
+    datePrettier(value) {
+      if (typeof value === 'string')
+        return value
+      return formatDateWithDot(value)
+    },
+
     async sendForm() {
       if (this.contract.discount && this.contract.discount.id === null) return;
 
@@ -686,9 +690,15 @@ export default {
           if (this.monthlyPermission) {
             if (this.edited.monthly) {
               for (let monthly = 0; monthly < this.contract.credit_months.length; monthly++) {
-                let date = moment(this.contract.credit_months[monthly].month).format(
-                    "YYYY-MM-DD"
-                );
+                let date = ''
+                if (typeof this.contract.credit_months[monthly].month === 'string'){
+                  date = this.contract.credit_months[monthly].month
+                }else{
+                  date = this.datePrettier(this.contract.credit_months[monthly].month)
+                }
+                  // let date = moment(this.contract.credit_months[monthly].month).format(
+                  //     "YYYY-MM-DD"
+                  // );
 
                 formData.append(
                     "monthly[" + monthly + "][edited]",
