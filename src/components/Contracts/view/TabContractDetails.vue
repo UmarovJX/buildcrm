@@ -20,7 +20,7 @@
           <div class="compare__details-item">
             <div class="compare__details-item_card">
               <label>{{ $t('contract_compare.tariff') }}</label>
-              <b-form-input disabled :value="prepayPrettier(compareDetails['discount'].prepay)"/>
+              <b-form-input disabled :value="prepayPrettier(compareDetails['discount'])"/>
             </div>
           </div>
         </div>
@@ -154,8 +154,7 @@
     </div>
 
 
-
-    <ContractComments v-if="viewCommentPermission" />
+    <ContractComments v-if="viewCommentPermission"/>
 
 
   </div>
@@ -244,9 +243,9 @@ export default {
       return formatToPrice(price) + ' ' + this.$t('ye')
     },
     prepayPrettier(value) {
-      if (value !== 'other')
-        return this.$t('apartments.first_payment') + ' ' + value + '%'
-      return this.$t('apartments.first_payment') + ' ' + this.$t('apartments.individual') + '%'
+      if (value && value.prepay)
+        return this.$t('apartments.first_payment') + ' ' + value.prepay + '%'
+      return this.$t('contracts.individual')
     },
     getStatus(status) {
       return this.$t(`contracts.status.${status}`)

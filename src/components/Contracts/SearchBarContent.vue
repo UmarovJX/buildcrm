@@ -414,6 +414,7 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
+    bottom: 0;
     overflow-y: hidden;
     margin: 0;
     border-radius: 3.5rem 0 0 3.5rem;

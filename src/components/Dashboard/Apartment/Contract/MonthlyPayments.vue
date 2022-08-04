@@ -169,7 +169,7 @@
         <tr v-for="(month, index) in contract.credit_months" :key="index">
           <td>
             <span v-if="!month.edit">
-              {{ month.month | moment("DD.MM.YYYY") }}
+              {{ datePrettier(month.month) }}
             </span>
             <div
                 class="col-md-12 float-left"
@@ -222,7 +222,7 @@
               </div>
 
               <button
-                  v-if="(monthlyPermission&& !month.edit)"
+                  v-if="(monthlyPermission && !month.edit)"
                   type="button"
                   @click="editMonthlyPayment(index)"
                   class="btn btn-sm btn-primary mr-0 mt-0"
@@ -286,16 +286,21 @@ export default {
   },
 
   mounted() {
-    CreditMonths(this.apartments, this.contract)
+    this.checkHasMonthly()
   },
 
   watch: {
     'contract.payment_date'() {
-      CreditMonths(this.apartments, this.contract)
-    }
+      this.checkHasMonthly()
+    },
   },
 
   methods: {
+    checkHasMonthly() {
+      if (!this.contract.credit_months?.length) {
+        CreditMonths(this.apartments, this.contract)
+      }
+    },
     datePrettier(value) {
       if (typeof value === 'string')
         return value
@@ -405,12 +410,15 @@ export default {
           // this.setNewPriceMonthly();
           editedCreditMonths(this.apartments, this.contract)
 
-          this.$emit('MonthlyEdit', {})
+          this.$emit('monthly-edit', {})
+        } else {
+          this.contract.credit_months[index].edited = true;
+          editedCreditMonths(this.apartments, this.contract)
+          this.$emit('monthly-edit', {})
         }
 
         return;
       }
-
       this.contract.credit_months[index].edit = true;
       this.contract.credit_months[index].edited = true;
       this.initialCalc();

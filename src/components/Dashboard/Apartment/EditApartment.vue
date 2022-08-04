@@ -227,7 +227,7 @@
                   :client="client"
                   :contract="contract"
                   :apartments="apartments"
-                  @MonthlyEdit="MonthlyEdit"
+                  @monthly-edit="MonthlyEdit"
               ></MonthlyPayments>
             </div>
 
@@ -317,8 +317,10 @@ import {
   getTotal
 } from "@/util/calculator";
 
-import moment from "moment";
+// import moment from "moment";
 import api from "@/services/api";
+import CheckoutPermission from "@/permission/checkout";
+import {formatDateWithDot, getDateProperty} from "@/util/reusable";
 
 export default {
   name: "EditApartment",
@@ -423,7 +425,8 @@ export default {
       getErrors: [],
       paymentDetails: {},
       schedule: {},
-      contract_number: ''
+      contract_number: '',
+      monthlyPermission: CheckoutPermission.getMonthlyPaymentPermission()
     }
   },
 
@@ -513,7 +516,14 @@ export default {
           this.contract = {
             ...this.contract,
             initial_payments: initialPayments,
-            credit_months: res.data.schedule.monthly,
+            credit_months: res.data.schedule.monthly.map((item) => {
+              return {
+                amount: item.amount,
+                edit: false,
+                edited: item.edited,
+                month: `${getDateProperty(item.date).day + '.' + getDateProperty(item.date).month + '.' + getDateProperty(item.date).year}`
+              }
+            }),
             first_payment_date: res.data.first_payment_date,
             monthly_payments: res.data.schedule.monthly,
             discount: res.data['payments_details']?.discount ?? this.discounts[0],
@@ -746,6 +756,12 @@ export default {
       this.edited.monthly = true
     },
 
+    datePrettier(value) {
+      if (typeof value === 'string')
+        return value
+      return formatDateWithDot(value)
+    },
+
     async sendForm() {
       if (this.contract.discount && this.contract.discount.id === null) return;
       this.$swal({
@@ -766,16 +782,25 @@ export default {
           }
 
           context.client_id = this.client?.id
-          if (this.getMe.role.id === 1 || this.getPermission.contracts.monthly) {
+          if (this.monthlyPermission) {
             if (this.edited.monthly) {
               context.monthly = []
               for (let monthly = 0; monthly < this.contract.monthly_payments.length; monthly++) {
-                let date = moment(this.contract.monthly_payments[monthly].month).format(
-                    "YYYY-MM-DD"
-                )
-                context.monthly[monthly]['edited'] = this.contract.monthly_payments[monthly].edited ? 1 : 0
-                context.monthly[monthly]['amount'] = this.contract.monthly_payments[monthly].amount
-                context.monthly[monthly]['date'] = date
+                // let date = moment(this.contract.monthly_payments[monthly].month).format(
+                //     "YYYY-MM-DD"
+                // )
+                let date = ''
+                if (typeof this.contract.credit_months[monthly].month === 'string') {
+                  date = this.contract.credit_months[monthly].month
+                } else {
+                  date = this.datePrettier(this.contract.credit_months[monthly].month)
+                }
+                const payload = {
+                  edited: !!this.contract.monthly_payments[monthly].edited,
+                  amount: this.contract.monthly_payments[monthly].amount,
+                  date: date
+                }
+                context.monthly.push(payload)
               }
             }
           }
