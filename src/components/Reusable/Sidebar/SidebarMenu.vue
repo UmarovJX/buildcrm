@@ -11,7 +11,6 @@
         {{ routeName }}
       </span>
       <span class="right-icon-wrapper">
-
       </span>
     </div>
   </div>

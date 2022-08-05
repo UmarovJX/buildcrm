@@ -19,17 +19,103 @@
         </template>
       </BaseActionList>
     </div>
-    <div class="item" v-for="{name, component, path, options, placeholder, status} in data" :key="name">
-      <p>{{ name }} {{$t('component')}}</p>
-      <component class="component" :status="status" :is="component" :options="options" :placeholder="placeholder" v-b-tooltip.hover :title="path"/>
+    <div class="item">
+      <p>BaseButton {{$t('component')}}</p>
+      <BaseButton class="component" v-b-tooltip title="src/components/Reusable/BaseButton.vue">
+        <template #left-icon>
+          <BaseStarIcon/>
+        </template>
+      </BaseButton>
+    </div>
+    <div class="item">
+      <p>BaseButton {{$t('component')}}</p>
+      <BaseButton class="component" v-b-tooltip title="src/components/Reusable/BaseButton.vue">
+        <template #right-icon>
+          <BaseStarIcon/>
+        </template>
+      </BaseButton>
+    </div>
+    <div class="item">
+      <p>BaseCalendar {{$t('component')}}</p>
+      <BaseCalendar class="component" v-b-tooltip title="src/components/Reusable/BaseCalendar.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseDatePicker {{$t('component')}}</p>
+      <BaseDatePicker class="component" v-b-tooltip title="src/components/Reusable/BaseDatePicker.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseFormTagInput {{$t('component')}}</p>
+      <BaseFormTagInput class="component" v-b-tooltip title="src/components/Reusable/BaseFormTagInput.vue">
+        <template #delete-content>
+          deleting
+        </template>
+      </BaseFormTagInput>
+    </div>
+    <div class="item">
+      <p>BaseInput {{$t('component')}}</p>
+      <BaseInput placeholder="base input" value="value" :label="true" :error="true" currency="uz" class="component" v-b-tooltip title="src/components/Reusable/BaseInput.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseInput Disabled {{$t('component')}}</p>
+      <BaseInput placeholder="base input" :disable="true" value="value" :label="true" :error="true" currency="uz" class="component" v-b-tooltip title="src/components/Reusable/BaseInput.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseLoading {{$t('component')}}</p>
+      <BaseLoading class="component" v-b-tooltip title="src/components/Reusable/BaseLoading.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseMultiselect {{$t('component')}}</p>
+      <BaseMultiselect class="component" label="multiselect label" v-b-tooltip :options="options" title="src/components/Reusable/BaseLoading.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseNumericInput {{$t('component')}}</p>
+      <BaseNumericInput class="component" placeholder="numberic input" v-b-tooltip title="src/components/Reusable/BaseNumericInput.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseNumericInput Disabled {{$t('component')}}</p>
+      <BaseNumericInput class="component" disabled="true" placeholder="numberic input" v-b-tooltip title="src/components/Reusable/BaseNumericInput.vue"/>
+    </div>
+    <div class="item">
+      <p>BasePriceInput {{$t('component')}}</p>
+      <BasePriceInput class="component" :topPlaceholder="true" value="value" :precision="54" outputType="nuuumber" placeholder="price input" v-b-tooltip title="src/components/Reusable/BasePriceInput.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseSearchInput {{$t('component')}}</p>
+      <BaseSearchInput class="component" placeholder="search input" v-b-tooltip title="src/components/Reusable/BaseSearchInput.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseSelect {{$t('component')}}</p>
+      <BaseSelect name="selector" :noPlaceholder="false" :disabled="false" :label="true" :error="false" :options="options" class="component" placeholder="select" v-b-tooltip title="src/components/Reusable/BaseSelect.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseSelect Disabled {{$t('component')}}</p>
+      <BaseSelect name="selector" :noPlaceholder="false" :disabled="true" :label="true" :error="false" :options="options" class="component" placeholder="select" v-b-tooltip title="src/components/Reusable/BaseSelect.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseValidationBottomWarning {{$t('component')}}</p>
+      <BaseValidationBottomWarning v-b-tooltip title="src/components/Reusable/BaseValidationBottomWarning.vue"/>
+    </div>
+    <div class="item">
+      <p>BarsLoading {{$t('component')}}</p>
+      <BarsLoading v-b-tooltip title="src/components/Reusable/BarsLoading.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseCalendarNavigation {{$t('component')}}</p>
+      <BaseCalendarNavigation status="successful" v-b-tooltip title="src/components/Reusable/Calendar/BaseCalendarNavigation.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseSearchCalendar {{$t('component')}}</p>
+      <BaseSearchCalendar v-b-tooltip title="src/components/Reusable/Sidebar/BaseSearchCalendar.vue"/>
+    </div>
+    <div class="item">
+      <p>BaseFilterTabsContent {{$t('component')}}</p>
+      <BaseFilterTabsContent :filter-tab-list="options" v-b-tooltip title="src/components/Reusable/Sidebar/BaseFilterTabsContent.vue"/>
     </div>
   </main>
 </template>
-
 <script>
 import BaseActionList from "@/components/Reusable/BaseActionList";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseSearchCalendar from "@/components/Reusable/BaseCalendar";
@@ -45,19 +131,17 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
-import WarningSuccess from "@/components/Reusable/WarningSuccess";
 import BarsLoading from "@/components/Reusable/Animation/BarsLoading";
 import BaseCalendarNavigation from "@/components/Reusable/Calendar/BaseCalendarNavigation";
-import SidebarMenu from "@/components/Reusable/Sidebar/SidebarMenu";
+import BaseStarIcon from "@/components/icons/BaseStarIcon";
 
 export default {
   name: "documentation",
   components: {
+    BaseStarIcon,
     BaseButton,
-    SidebarMenu,
     BaseCalendarNavigation,
     BarsLoading,
-    WarningSuccess,
     BaseValidationBottomWarning,
     BaseSelect,
     BaseSearchInput,
@@ -73,103 +157,11 @@ export default {
     BaseActionList,
     BasePlusIcon,
     BaseDeleteIcon,
-    BaseContractsIcon,
     BaseCalendar
   },
   data(){
     return {
-      data: [
-        {
-          name: 'BaseButton',
-          component: BaseButton,
-          path: 'src/components/Reusable/BaseButton.vue'
-        },
-        {
-          name: 'BaseCalendar',
-          component: BaseCalendar,
-          path: 'src/components/Reusable/BaseCalendar.vue'
-        },
-        {
-          name: 'BaseDatePicker',
-          component: BaseDatePicker,
-          path: 'src/components/Reusable/BaseDatePicker.vue'
-        },
-        {
-          name: 'BaseFormTagInput',
-          component: BaseFormTagInput,
-          path: 'src/components/Reusable/BaseFormTagInput.vue'
-        },
-        {
-          name: 'BaseInput',
-          component: BaseInput,
-          path: 'src/components/Reusable/BaseInput.vue'
-        },
-        {
-          name: 'BaseDatePicker',
-          component: BaseLoading,
-          path: 'src/components/Reusable/BaseLoading.vue'
-        },
-        {
-          name: 'BaseMultiselect',
-          component: BaseMultiselect,
-          path: 'src/components/Reusable/BaseMultiselect.vue',
-          options: ["item1", "item2", "item3", "etc."],
-          placeholder: "multiselect"
-        },
-        {
-          name: 'BaseNumericInput',
-          component: BaseNumericInput,
-          path: 'src/components/Reusable/BaseNumericInput.vue',
-          placeholder: "numeric input"
-        },
-        {
-          name: 'BasePriceInput',
-          component: BasePriceInput,
-          path: 'src/components/Reusable/BasePriceInput.vue',
-          placeholder: "price input"
-        },
-        {
-          name: 'BaseSearchInput',
-          component: BaseSearchInput,
-          path: 'src/components/Reusable/BaseSearchInput.vue',
-          placeholder: "search input"
-        },
-        {
-          name: 'BaseSelect',
-          component: BaseSelect,
-          path: 'src/components/Reusable/BaseSelect.vue',
-          placeholder: "select",
-          options: ["item", "item"]
-        },
-        {
-          name: 'BaseValidationBottomWarning',
-          component: BaseValidationBottomWarning,
-          path: 'src/components/Reusable/BaseValidationBottomWarning.vue',
-          placeholder: "select",
-          options: ["item", "item"]
-        },
-        {
-          name: 'BarsLoading',
-          component: BarsLoading,
-          path: 'src/components/Reusable/Animation/BarsLoading.vue',
-        },
-        // {
-        //   name: 'WarningSuccess',
-        //   component: WarningSuccess,
-        //   path: 'src/components/Reusable/WarningSuccess.vue',
-        //   status: "successful"
-        // },
-        // {
-        //   name: 'BaseCalendarNavigation',
-        //   component: BaseCalendarNavigation,
-        //   path: 'src/components/Reusable/Calendar/BaseCalendarNavigation.vue',
-        // },
-        // {
-        //   name: 'SidebarMenu',
-        //   component: SidebarMenu,
-        //   path: 'src/components/Reusable/Sidebar/SidebarMenu.vue',
-        // },
-      ]
+      options: ["item1", "item2", "item3", "item4", "item5", "etc."],
     }
   },
   methods: {
@@ -211,6 +203,11 @@ main {
   width: 250px;
   height: 100px;
   justify-content: flex-start;
+}
+.item:last-child {
+  width: auto;
+  margin-top: 100px!important;
+  max-width: max-content;
 }
 .search__content {
   margin-top: 0!important;
