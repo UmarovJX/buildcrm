@@ -73,7 +73,7 @@
     </div>
     <div class="item">
       <p>BaseNumericInput Disabled {{$t('component')}}</p>
-      <BaseNumericInput class="component" disabled="true" placeholder="numberic input" v-b-tooltip title="src/components/Reusable/BaseNumericInput.vue"/>
+      <BaseNumericInput class="component" disabled="true" placeholder="numeric input" v-b-tooltip title="src/components/Reusable/BaseNumericInput.vue"/>
     </div>
     <div class="item">
       <p>BasePriceInput {{$t('component')}}</p>
@@ -111,6 +111,10 @@
       <p>BaseFilterTabsContent {{$t('component')}}</p>
       <BaseFilterTabsContent :filter-tab-list="options" v-b-tooltip title="src/components/Reusable/Sidebar/BaseFilterTabsContent.vue"/>
     </div>
+    <div class="item">
+      <p>BasePagination {{$t('component')}}</p>
+      <BasePagination v-b-tooltip title="src/components/Reusable/Navigation/BasePagination.vue"/>
+    </div>
   </main>
 </template>
 <script>
@@ -134,11 +138,13 @@ import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBot
 import BarsLoading from "@/components/Reusable/Animation/BarsLoading";
 import BaseCalendarNavigation from "@/components/Reusable/Calendar/BaseCalendarNavigation";
 import BaseStarIcon from "@/components/icons/BaseStarIcon";
+import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 
 export default {
   name: "documentation",
   components: {
     BaseStarIcon,
+    BasePagination,
     BaseButton,
     BaseCalendarNavigation,
     BarsLoading,
@@ -204,9 +210,13 @@ main {
   height: 100px;
   justify-content: flex-start;
 }
-.item:last-child {
+.item:nth-last-child(2) {
   width: auto;
   margin-top: 100px!important;
+  max-width: max-content;
+}
+.item:last-child {
+  width: auto;
   max-width: max-content;
 }
 .search__content {
