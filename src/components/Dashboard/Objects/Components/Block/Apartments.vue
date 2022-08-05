@@ -155,6 +155,28 @@
           </div>
 
           <div class="apartment__info">
+            {{ $t("objects.credit_month") }}:
+            <input
+                type="checkbox"
+                @change="ApartmentUpdate(apartment, 'check_installment_month')"
+                v-model="apartment.check_installment_month"
+            />
+          </div>
+
+          <div class="apartment__info" v-if="apartment.check_installment_month">
+            {{ $t("objects.credit_month") }}:
+            <date-picker
+                v-model="apartment.installment_month"
+                value-type="YYYY-MM-DD"
+                format="DD.MM.YYYY"
+                class="form-inline"
+                id="installment_month"
+                required
+                @input="ApartmentUpdate(apartment, 'installment_month')"
+            />
+          </div>
+
+          <div class="apartment__info">
             {{ $t("objects.create.price") }}:
             <span
             >{{
@@ -188,6 +210,8 @@
 <script>
 import {mapGetters} from "vuex";
 import api from "@/services/api";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 
 export default {
   props: {
@@ -195,6 +219,10 @@ export default {
     apartments: {},
     typePlans: {},
     block: {},
+  },
+
+  components: {
+    "date-picker": DatePicker
   },
 
   data: () => ({
@@ -292,9 +320,21 @@ export default {
           price: apartment.other_price,
           price_id: null,
         };
+      } else if (type === "installment_month") {
+        data = {
+          type: type,
+          installment_month: apartment.installment_month,
+        };
+      } else if (type === "check_installment_month" || apartment.check_installment_month) {
+        apartment.installment_month = null
+        data = {
+          type: 'installment_month',
+          installment_month: null,
+        };
       }
 
       try {
+        console.log(data, 'body data');
         await api.objects.updateApartment(apartment.id, data)
       } catch (error) {
         this.toastedWithErrorCode(error);
@@ -384,4 +424,5 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

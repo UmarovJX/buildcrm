@@ -657,7 +657,18 @@ export default {
               apartment = apartments
                   .map(function (apartment) {
                     if (apartment.floor === floor) {
-                      return apartment;
+                      if ((!apartment.installment_month) || apartment.installment_month === null) {
+                        return {
+                          ...apartment,
+                          check_installment_month: false
+                        }
+                      } else {
+                        return {
+                          ...apartment,
+                          check_installment_month: true
+                        }
+                      }
+
                     }
                     return null;
                   })
@@ -673,7 +684,7 @@ export default {
             return group;
           })
           .flat();
-
+      console.log(floors, 'floors');
       this.settings.apartments = floors;
     },
 

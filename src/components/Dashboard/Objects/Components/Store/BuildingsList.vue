@@ -44,6 +44,36 @@
           />
         </div>
 
+        <div class="mb-3">
+          <label for="completion_date" class="form-label">
+            {{ $t("objects.build_date") }}
+          </label>
+          <date-picker
+              v-model="building.completion_date"
+              value-type="YYYY-MM-DD"
+              format="DD.MM.YYYY"
+              class="form-inline"
+              id="completion_date"
+              required
+              :placeholder="$t('objects.build_date')"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="installment_month" class="form-label">
+            {{ $t("objects.credit_month") }}
+          </label>
+          <date-picker
+              v-model="building.installment_month"
+              value-type="YYYY-MM-DD"
+              format="DD.MM.YYYY"
+              class="form-inline"
+              id="installment_month"
+              required
+              :placeholder="$t('objects.placeholder.credit_month')"
+          />
+        </div>
+
         <button
             class="btn btn-success"
             @click="UpdateBuild(building)"
@@ -188,6 +218,8 @@
 import CreateBlock from "../Block/Create";
 import EditBlock from "../Block/Edit";
 import api from "@/services/api";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 
 export default {
   props: {
@@ -199,6 +231,7 @@ export default {
   components: {
     "create-block": CreateBlock,
     "edit-block": EditBlock,
+    "date-picker": DatePicker
   },
 
   data: () => ({
@@ -208,6 +241,8 @@ export default {
       edit: false,
       name: null,
       blocks: [],
+      installment_month: '',
+      completion_date: '',
     },
 
     block_data: {

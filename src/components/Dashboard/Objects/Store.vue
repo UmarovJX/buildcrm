@@ -84,20 +84,20 @@
                 />
               </div>
 
-              <div class="mb-3">
-                <label for="date_build" class="form-label">
-                  {{ $t("objects.credit_month") }}
-                </label>
-                <input
-                    type="number"
-                    min="0"
-                    class="form-control"
-                    id="credit_month"
-                    v-model="object.credit_month"
-                    required
-                    :placeholder="$t('objects.placeholder.credit_month')"
-                />
-              </div>
+              <!--              <div class="mb-3">-->
+              <!--                <label for="date_build" class="form-label">-->
+              <!--                  {{ $t("objects.credit_month") }}-->
+              <!--                </label>-->
+              <!--                <input-->
+              <!--                    type="number"-->
+              <!--                    min="0"-->
+              <!--                    class="form-control"-->
+              <!--                    id="credit_month"-->
+              <!--                    v-model="object.credit_month"-->
+              <!--                    required-->
+              <!--                    :placeholder="$t('objects.placeholder.credit_month')"-->
+              <!--                />-->
+              <!--              </div>-->
 
               <div class="mb-3">
                 <label class="form-label" for="companies">
@@ -563,6 +563,8 @@ export default {
       building: {
         name: null,
         balcony_price: null,
+        completion_date: '',
+        installment_month: '',
       },
     },
 
@@ -804,7 +806,13 @@ export default {
 
         if (status === 200) {
           this.buildings = [];
-          this.buildings = data;
+          console.log(data, 'dataa');
+          this.buildings = data.map(item => {
+            return {
+              ...item,
+              edit: false
+            }
+          });
         }
 
         this.getLoading = false
