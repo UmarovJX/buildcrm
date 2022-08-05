@@ -572,9 +572,11 @@ export default {
         }
 
         case 'waiting':
-        case 'sold':
-        case 'closed': {
+        case 'sold': {
           return {statusText: this.$t('object.status.sold'), class: 'gray'}
+        }
+        case 'closed': {
+          return {statusText: this.$t('object.status.closed'), class: 'gray'}
         }
         case 'booked': {
           return {statusText: this.$t('object.status.booked'), class: 'yellow'}
