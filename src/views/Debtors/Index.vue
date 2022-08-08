@@ -203,6 +203,7 @@ import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 import FilterContent from "@/components/Debtors/FilterContent";
 import BaseHugeCalendarUi from "@/components/Debtors/BaseHugeCalendarUi";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
+import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
 import WeeklyDebtsUi from "@/components/Debtors/WeeklyDebtsUi";
 import BaseStarIcon from "@/components/icons/BaseStarIcon";
 
@@ -210,12 +211,12 @@ export default {
   name: "Debtors",
   components: {
     BaseStarIcon,
-    // BaseCalendarNavigation,
     BaseLoading,
     BasePagination,
     FilterContent,
     BaseHugeCalendarUi,
     BaseRightModal,
+    OutputInformation,
     WeeklyDebtsUi
   },
   data() {
@@ -671,7 +672,7 @@ export default {
 
       if(this.typeOfView)
 
-      this.initDebtorUi()
+        this.initDebtorUi()
     },
     changeCountOfView(limit) {
       this.changeRouterQuery({
