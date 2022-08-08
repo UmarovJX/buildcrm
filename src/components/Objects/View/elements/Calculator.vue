@@ -213,9 +213,6 @@ export default {
     ...mapGetters({
       permission: "getPermission",
     }),
-    // monthlyPermission() {
-    //   return this.permission.checkout && this.permission.checkout.monthly_payment
-    // },
     paymentOption() {
       const discounts = [...this.apartment.discounts]
       if (!this.hasApartment) return
@@ -275,7 +272,7 @@ export default {
       this.calc.debt = this.getDebt()
       this.calc.total = this.getTotal()
       this.calc.base_price = this.getBasePrice()
-      this.calc.month = this.discount.installment_month > 0 ? this.discount.installment_month : 20
+      this.calc.month = this.discount.installment_month
       this.calc.total_discount = this.totalDiscount
       this.calc.less_price = this.lessPrice
       this.upHillForPrint()
