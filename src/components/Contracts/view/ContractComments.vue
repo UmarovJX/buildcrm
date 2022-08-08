@@ -130,7 +130,6 @@
             {{ $t(modalProperties.title) }}
           </span>
 
-
           <!--   CLOSE    -->
           <span class="go__back" @click="closeCreateModal">
             <BaseClose :width="56" :height="56"/>
