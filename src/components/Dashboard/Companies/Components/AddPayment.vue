@@ -126,7 +126,11 @@ export default {
         payment_account: null,
         mfo: null,
       },
-      providerSchema: [
+    }
+  },
+  computed: {
+    providerSchema() {
+      return [
         {
           mask: '',
           type: 'text',
