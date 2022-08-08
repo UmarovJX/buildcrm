@@ -589,7 +589,7 @@ export default {
     ...mapActions(["fetchCurrency", "fetchCompanies"]),
 
     async requestObject() {
-      this.loading = true;
+      this.loading = true
       this.getLoading = true
       try {
 
