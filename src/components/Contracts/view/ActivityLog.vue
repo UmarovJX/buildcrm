@@ -386,10 +386,6 @@ export default {
       background-color: transparent;
       margin: 0 !important;
     }
-
-    &-body {
-      border-top: 2px solid var(--gray-200);
-    }
   }
 
   &-item {
