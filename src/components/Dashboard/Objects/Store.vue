@@ -538,10 +538,9 @@ export default {
       },
     },
 
-    step: 3,
+    step: 1,
     loading: false,
     getLoading: false,
-
     error: false,
     errors: [],
 
@@ -687,10 +686,7 @@ export default {
 
     DiscountCreate() {
       this.discount_data = {}
-      // this.createNew = true
-      this.disabled.discount.create = true;
-      // this.$refs['create-modal'].openModal()
-      // this.$bvModal.show("modal-create-discount");
+      this.disabled.discount.create = true
     },
 
     saveBuilding(event) {
@@ -704,14 +700,22 @@ export default {
 
     getData() {
       if (this.object.id) {
-        if (this.step === 1) {
-          this.getObject();
-        } else if (this.step === 2) {
-          this.getPlans();
-        } else if (this.step === 3) {
-          this.getBuildings();
-        } else if (this.step === 4) {
-          this.getDiscounts();
+        switch (this.step) {
+          case 1: {
+            this.getObject()
+            break
+          }
+          case 2 : {
+            this.getPlans()
+            break
+          }
+          case 3: {
+            this.getBuildings()
+            break
+          }
+          case 4: {
+            this.getDiscounts()
+          }
         }
       }
     },
