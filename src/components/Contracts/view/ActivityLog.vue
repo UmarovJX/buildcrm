@@ -114,12 +114,12 @@
             <div class="body-content">
               <base-button text="oldcontract.pdf">
                 <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
+                  <base-document-icon fill="var(--violet-600)"/>
                 </template>
               </base-button>
               <base-button text="newcontract.pdf">
                 <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
+                  <base-document-icon fill="var(--violet-600)"/>
                 </template>
               </base-button>
             </div>
@@ -171,12 +171,12 @@
             <div class="body-content">
               <base-button text="oldcontract.pdf">
                 <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
+                  <base-document-icon fill="var(--violet-600)"/>
                 </template>
               </base-button>
               <base-button text="newcontract.pdf">
                 <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
+                  <base-document-icon fill="var(--violet-600)"/>
                 </template>
               </base-button>
             </div>
