@@ -10,7 +10,7 @@
         hide-header-close
         no-close-on-backdrop
     >
-      <form class="my-form" @submit.prevent="saveBlock">
+      <form class="my-form">
         <div class="container px-0 mx-0">
           <div class="row">
             <div class="col-12">
@@ -262,7 +262,7 @@
                                   v-for="(
                                   floor, index_clone
                                 ) in settings.apartments"
-                                  :disabled="index_clone === index ? true : false"
+                                  :disabled="index_clone === index"
                                   :value="index_clone"
                                   :key="index_clone"
                               >
@@ -323,6 +323,7 @@
               type="submit"
               v-if="settings.btn_save"
               class="btn btn-success"
+              @click="saveBlock"
           >
             <i class="fa fa-save"></i> {{ $t("save") }}
           </button>
@@ -338,22 +339,22 @@ import Apartments from "./Apartments";
 import api from "@/services/api";
 
 export default {
+  name: "EditBlock",
+  components: {
+    apartments: Apartments,
+  },
   props: {
     typePlans: {},
     building: {},
     block: {},
   },
-
   data: () => ({
     settings: {
       available_floors: [],
       disabled_floors: [],
-
       apartments: [],
-
       clone_floor: null,
       clone_floor_select: null,
-
       btn_save: true,
     },
 
@@ -372,11 +373,7 @@ export default {
       },
     },
   }),
-
-  components: {
-    apartments: Apartments,
-  },
-
+  computed: mapGetters(["getCurrency"]),
   watch: {
     "block.name": function () {
       if (this.block.id !== null) {
@@ -394,10 +391,6 @@ export default {
         this.setGroupApartments();
       }
     },
-
-    // "block.floors": function () {
-    //   //this.setFloors();
-    // },
 
     "block.floor": function (newVal, oldVal) {
       let old = parseInt(oldVal);
@@ -418,26 +411,18 @@ export default {
       }
     },
   },
-
-  computed: mapGetters(["getCurrency"]),
-
   methods: {
     saveBlock() {
-      this.$emit("save-edit-block", this.block);
-      this.clearPreviewBlock();
+      this.$emit("save-edit-block", this.block)
+      this.clearPreviewBlock()
     },
 
     async updatePrice(price) {
       try {
         await api.objects.updateBlockPrice(this.block.id, price.id, price)
-
         this.setFloors();
-        // if (status === 202) {
-        //     this.block = data;
-        // }
       } catch (error) {
         this.toastedWithErrorCode(error);
-
         if (error.response.status === 422) {
           this.error = true;
           this.errors = error.response.data;
@@ -649,7 +634,7 @@ export default {
         this.block.floors = [];
       }
 
-      let floors = this.block.floors
+      this.settings.apartments = this.block.floors
           .map(function (floor) {
             let group = [];
             let apartment;
@@ -657,7 +642,7 @@ export default {
               apartment = apartments
                   .map(function (apartment) {
                     if (apartment.floor === floor) {
-                      if ((!apartment.installment_month) || apartment.installment_month === null) {
+                      if ((!apartment.installment_month)) {
                         return {
                           ...apartment,
                           check_installment_month: false
@@ -683,9 +668,7 @@ export default {
 
             return group;
           })
-          .flat();
-      console.log(floors, 'floors');
-      this.settings.apartments = floors;
+          .flat()
     },
 
     rr_diff(a1, a2) {

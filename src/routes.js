@@ -430,7 +430,6 @@ router.beforeEach(async (to, from, next) => {
                     const {requiresAuth} = to.meta
                     if (requiresAuth) {
                         const perm = Permission.getUserPermission(requiresAuth)
-                        console.log(perm)
                         if (user.role === 1 || (perm && perm.view)) {
                             return next()
                         } else {

@@ -197,7 +197,6 @@
         <!-- Parking lot -->
       </div>
     </div>
-
     <create-block
         :type-plans="plans"
         @CreateBlockClose="CreateBlockClose"
@@ -222,6 +221,7 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 
 export default {
+  name: "BuildingList",
   props: {
     plans: {},
     buildings: {},

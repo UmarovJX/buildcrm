@@ -171,7 +171,6 @@
                 format="DD.MM.YYYY"
                 class="form-inline"
                 id="installment_month"
-                required
                 @input="ApartmentUpdate(apartment, 'installment_month')"
             />
           </div>
@@ -334,7 +333,6 @@ export default {
       }
 
       try {
-        console.log(data, 'body data');
         await api.objects.updateApartment(apartment.id, data)
       } catch (error) {
         this.toastedWithErrorCode(error);
@@ -390,7 +388,6 @@ export default {
 
       if (area.area === 0 || area.area === null) return 0;
 
-      // if ()
       if (apartment.check_other_price) {
         price = apartment.other_price ? apartment.other_price : 0;
       } else {

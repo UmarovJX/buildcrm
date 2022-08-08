@@ -187,7 +187,7 @@
             <button
                 type="button"
                 @click="nextStep(3)"
-                :disabled="plans.length > 0 ? false : true"
+                :disabled="plans.length<=0"
                 v-if="!loading"
                 class="btn btn-primary"
             >
@@ -260,7 +260,7 @@
             <button
                 type="button"
                 @click="step = 4"
-                :disabled="buildings.length > 0 ? false : true"
+                :disabled="buildings.length<=0"
                 v-if="!loading"
                 class="btn btn-primary"
             >
@@ -344,7 +344,7 @@
                           <div>
                             <button
                                 type="button"
-                                @click="DiscountEdit(discount)"
+                                @click="editDiscount(discount)"
                                 class="btn btn-primary ml-4 mt-0"
                             >
                               <i class="far fa-pen"></i>
@@ -406,7 +406,7 @@
             <button
                 type="button"
                 @click="SaveObject"
-                :disabled="discounts.length > 0 ? false : true"
+                :disabled="discounts.length<=0"
                 v-if="!loading"
                 class="btn btn-success"
             >
@@ -424,12 +424,6 @@
           </div>
         </div>
       </div>
-
-      <!--        <create-block v-if="disabled.block.create" :data-object="object" :balcony="building_balcony_price" :currency="getCurrency" @InsertBlock="InsertBlock" @RemoveBlock="disabledBlock"></create-block>-->
-
-      <!--        <edit-block v-if="disabled.block.edit" :data-object="object" :balcony="building_balcony_price" :currency="getCurrency" :block_preview="edit.block" @CancelEditBlock="CancelEditBlock" @SaveEditBlock="saveEditBlock"></edit-block>-->
-
-      <!--      v-if="step === 4"-->
       <create-discount
           v-if="(step === 4 && disabled.discount.create)"
           ref="create-modal"
@@ -439,14 +433,6 @@
           @RemoveDiscount="disabled.discount.create = false"
           @SaveDiscount="SaveDiscount"
       ></create-discount>
-      <!--      <edit-discount-->
-      <!--          v-if="step === 4"-->
-      <!--          :discount="discount_data"-->
-      <!--          :object="object"-->
-      <!--          @CancelDiscount="CancelDiscount"-->
-      <!--      ></edit-discount>-->
-      <!--        <edit-discount v-if="disabled.discount.edit" @cancelDiscount="disabled.discount.edit = false" @SaveDiscount="disabled.discount.edit = false" :data-discount="edit.discount"></edit-discount>-->
-
       <type-plan-create
           v-if="step === 2 && disabled.plan.create"
           :object="this.object"
@@ -473,27 +459,23 @@
 <script>
 // import CreateBlock from './Components/Block/Create';
 // import EditBlock from './Components/Block/Edit';
+// import EditDiscount from "./Components/Discount/Edit";
 import TypePlanCreateModal from "./Components/Store/TypePlanCreateModal";
 import TypePlanList from "./Components/Store/TypePlanList";
 import BuildingStore from "./Components/Store/BuildingStore";
 import BuildingList from "./Components/Store/BuildingsList";
-
 import CreateDiscount from "./Components/Discount/Create";
-// import EditDiscount from "./Components/Discount/Edit";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import {mapGetters, mapActions} from "vuex";
 import api from "@/services/api";
 
 export default {
   components: {
-    // 'create-blockk': CreateBlock,
-    // 'edit-block': EditBlock,
     "type-plan-create": TypePlanCreateModal,
     "building-store": BuildingStore,
     "buildings-list": BuildingList,
     "plans-table": TypePlanList,
     "create-discount": CreateDiscount,
-    // "edit-discount": EditDiscount,
     BaseBreadCrumb
   },
 
@@ -504,12 +486,9 @@ export default {
   },
 
   watch: {
-    "object.type_plan": function () {
-    },
-
-    step: function () {
-      this.getData();
-    },
+    step() {
+      this.getData()
+    }
   },
 
   data: () => ({
@@ -529,7 +508,6 @@ export default {
     buildings: [],
 
     discounts: [],
-    // createNew: false,
     discount_data: {
       id: null,
       prepay_from: 0,
@@ -538,14 +516,6 @@ export default {
     },
 
     disabled: {
-      // block: {
-      //     create: false,
-      //     edit: false
-      // },
-      // discount: {
-      //     create: false,
-      //     edit: false
-      // },
       discount: {
         create: false,
       },
@@ -568,7 +538,7 @@ export default {
       },
     },
 
-    step: 1,
+    step: 3,
     loading: false,
     getLoading: false,
 
@@ -611,18 +581,9 @@ export default {
   },
 
   mounted() {
-    this.getData();
-    // this.buildings.push({
-    //     name: 'Корпус A',
-    //     balcony_price: null,
-    //     edit: false,
-    //     blocks: []
-    // });
-
-    // this.$bvModal.show("modal-create-discount");
-
-    this.fetchCurrency(this);
-    this.fetchCompanies(this);
+    this.getData()
+    this.fetchCurrency()
+    this.fetchCompanies(this)
   },
 
   methods: {
@@ -671,7 +632,7 @@ export default {
       this.discounts.push(event);
     },
 
-    DiscountEdit(discount) {
+    editDiscount(discount) {
       this.discount_data = discount;
       this.disabled.discount.create = true;
       // this.$bvModal.show("modal-edit-discount");
@@ -806,13 +767,12 @@ export default {
 
         if (status === 200) {
           this.buildings = [];
-          console.log(data, 'dataa');
           this.buildings = data.map(item => {
             return {
               ...item,
               edit: false
             }
-          });
+          })
         }
 
         this.getLoading = false
