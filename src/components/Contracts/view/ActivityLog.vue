@@ -431,8 +431,7 @@ export default {
 
 
     &__header {
-      padding: 1.5rem;
-
+      padding: 0 1.5rem 1.5rem;
 
       .collapse-button {
         transition: all linear .3s;
