@@ -19,6 +19,11 @@
             <img :src="require('@/assets/icons/icon-paper-fail.svg')" alt="">
           </div>
           <p class="date date-time">10:53</p>
+          <div class="header-text">
+            <p>
+              Внес(ла) изменения в договор
+            </p>
+          </div>
           <div class="header-nav">
             <div class="header-nav__item">
               <div class="avatar">
@@ -39,11 +44,6 @@
                 <img :src="require('@/assets/icons/icon-down.svg')" alt="">
               </div>
             </div>
-          </div>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
           </div>
           <div class="header-comment">
             <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
@@ -73,6 +73,11 @@
       <b-card no-body class="accordion-item">
         <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-2 role="tab">
           <p class="date date-time">10:53</p>
+          <div class="header-text">
+            <p>
+              Внес(ла) изменения в договор
+            </p>
+          </div>
           <div class="header-status edit">
             <img :src="require('@/assets/icons/icon-edit.svg')" alt="">
           </div>
@@ -96,11 +101,6 @@
                 <img :src="require('@/assets/icons/icon-down.svg')" alt="">
               </div>
             </div>
-          </div>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
           </div>
           <div class="header-comment">
             <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
@@ -130,6 +130,11 @@
       <b-card no-body class="accordion-item">
         <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-3 role="tab">
           <p class="date date-time">10:53</p>
+          <div class="header-text">
+            <p>
+              Внес(ла) изменения в договор
+            </p>
+          </div>
           <div class="header-status edit">
             <img :src="require('@/assets/icons/icon-edit.svg')" alt="">
           </div>
@@ -153,11 +158,6 @@
                 <img :src="require('@/assets/icons/icon-down.svg')" alt="">
               </div>
             </div>
-          </div>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
           </div>
           <div class="header-comment">
             <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
@@ -456,14 +456,16 @@ export default {
 
       .header-text {
         display: flex;
-        padding-top: 12px;
+        margin-top: 2px;
+        margin-bottom: 10px;
 
         p {
           font-family: Inter, sans-serif;
+          font-style: normal;
           font-weight: 600;
-          font-size: 14px;
-          line-height: 20px;
-          color: var(--gray-600);
+          font-size: 18px;
+          line-height: 24px;
+          color: #4B5563;
         }
       }
 
