@@ -57,12 +57,12 @@
             <div class="body-content">
               <base-button text="oldcontract.pdf">
                 <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
+                  <base-document-icon/>
                 </template>
               </base-button>
               <base-button text="newcontract.pdf">
                 <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
+                  <base-document-icon/>
                 </template>
               </base-button>
             </div>
@@ -191,13 +191,12 @@
 <script>
 
 import BaseButton from "@/components/Reusable/BaseButton";
-import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
 import FilterContent from "@/components/Debtors/FilterContent";
 import {dateConvertor, dateProperties, formatDateToYMD} from "@/util/calendar";
-
+import BaseDocumentIcon from "@/components/icons/BaseDocumentIcon";
 export default {
   name: "ActivityLog",
-  components: {BaseContractsIcon, FilterContent, BaseButton},
+  components: {BaseDocumentIcon, FilterContent, BaseButton},
   methods: {
     sortBySearchField(searchingValue) {
       let search = searchingValue
