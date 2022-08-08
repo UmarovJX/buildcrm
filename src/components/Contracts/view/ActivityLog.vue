@@ -444,11 +444,13 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-
         &__item {
           display: flex;
           align-items: center;
           column-gap: 1rem;
+          h5 {
+            margin-bottom: 0;
+          }
         }
       }
 
@@ -501,7 +503,6 @@ export default {
         font-family: CraftworkSans, serif;
         font-weight: 900;
         font-size: 14px;
-        line-height: 16px;
         color: var(--violet-600);
         margin-bottom: 4px;
 
