@@ -45,8 +45,6 @@ import Debtors from "@/views/Debtors/Index"
 import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
-
-
 import Documentation from "@/views/documentation";
 
 const routes = [

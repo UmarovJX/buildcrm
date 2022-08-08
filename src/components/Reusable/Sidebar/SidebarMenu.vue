@@ -11,7 +11,6 @@
         {{ routeName }}
       </span>
       <span class="right-icon-wrapper">
-
       </span>
     </div>
   </div>
@@ -45,7 +44,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

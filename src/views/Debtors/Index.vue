@@ -195,7 +195,6 @@
 </template>
 
 <script>
-// import BaseCalendarNavigation from "@/components/Reusable/Calendar/BaseCalendarNavigation";
 import {formatDateWithDot, formatToPrice, phonePrettier, sortInFirstRelationship} from "@/util/reusable";
 import {dateConvertor, dateProperties, formatDateToYMD} from "@/util/calendar";
 import {debtorsV2} from "@/services/api";
@@ -204,7 +203,6 @@ import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 import FilterContent from "@/components/Debtors/FilterContent";
 import BaseHugeCalendarUi from "@/components/Debtors/BaseHugeCalendarUi";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
-import OutputInformation from "@/components/Elements/outputs/OutputInformation";
 import WeeklyDebtsUi from "@/components/Debtors/WeeklyDebtsUi";
 import BaseStarIcon from "@/components/icons/BaseStarIcon";
 
@@ -218,7 +216,6 @@ export default {
     FilterContent,
     BaseHugeCalendarUi,
     BaseRightModal,
-    OutputInformation,
     WeeklyDebtsUi
   },
   data() {

@@ -7,7 +7,6 @@
       </div>
       <span></span>
     </template>
-
     <template #main>
       <div class="wcModal-main" v-if="status === 'success'">
         <h5>Сделано!</h5>
@@ -40,7 +39,6 @@
         </b-row>
       </div>
     </template>
-
   </base-modal>
 </template>
 
