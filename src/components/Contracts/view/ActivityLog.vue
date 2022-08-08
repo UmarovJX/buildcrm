@@ -357,6 +357,7 @@ export default {
     color: #9CA3AF;
     &-day {
       line-height: 22px;
+      margin: 20px 0 40px;
       font-size: 18px;
       align-self: center;
     }
