@@ -661,6 +661,7 @@ export default {
         add_title: 'Добавить заглавие',
         search: 'Название компании',
         active_payment: "Активный счет",
+        inactive_payment: "Неактивный счет",
         delete_company: "Удалить компанию",
         fax_number: "Номер телефона / факс",
         counted_payment: "Расчетные счета"

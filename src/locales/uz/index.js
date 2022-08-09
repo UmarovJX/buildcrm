@@ -669,6 +669,7 @@ export default {
         add_title: "Sarlavha qo'shish",
         search: "Kompaniya nomi",
         active_payment: "Aktiv hisob",
+        inactive_payment: "Aktiv bo'lmagan hisob",
         delete_company: "Kompaniyani o'chirish",
         fax_number: "Telefon raqam / faks",
         counted_payment: "Hisoblar"

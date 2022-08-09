@@ -49,9 +49,12 @@
             </div>
         </div>
       </span>
-      <span :class="[detail.is_primary ? 'stamp active__payment__content' : 'stamp']"
+      <span v-if="detail.is_primary" class="stamp active__payment__content"
       >
         {{ $t("companies.active_payment") }}
+      </span>
+      <span v-else class="stamp">
+        {{ $t("companies.inactive_payment") }}
       </span>
     </span>
     <hr/>
