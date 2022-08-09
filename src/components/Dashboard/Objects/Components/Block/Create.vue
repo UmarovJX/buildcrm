@@ -106,7 +106,7 @@
                       <multiselect
                           v-model="price.floors"
                           :multiple="true"
-                          :placeholder="$t()"
+                          :placeholder="$t('objects.create.count_floors')"
                           :options="settings.available_floors"
                           @select="selectFloor(price, index)"
                           @remove="removeFloor(price, index)"
@@ -117,7 +117,7 @@
                       <button
                           type="button"
                           class="btn btn-danger ml-2 mt-0"
-                          v-if="block.prices.length != 1"
+                          v-if="block.prices.length !== 1"
                           @click="removePrice(price, index)"
                       >
                         <i class="far fa-trash"></i>
