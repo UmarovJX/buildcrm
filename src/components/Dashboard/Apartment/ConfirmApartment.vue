@@ -252,7 +252,8 @@
                     :apartments="apartments"
                     :contract="contract"
                     :discounts="discounts"
-                    :buttons="buttons">
+                    :buttons="buttons"
+                    @redirect-to-contract="redirectToTheMainPage">
                 </Confirm>
               </div>
             </div>
@@ -493,6 +494,10 @@ export default {
       this.hasValidationError = !validate
     },
 
+    redirectToTheMainPage() {
+      this.expiredConfirm()
+    },
+
     userFocused() {
       this.hasValidationError = false
     },
@@ -691,14 +696,14 @@ export default {
             if (this.edited.monthly) {
               for (let monthly = 0; monthly < this.contract.credit_months.length; monthly++) {
                 let date = ''
-                if (typeof this.contract.credit_months[monthly].month === 'string'){
+                if (typeof this.contract.credit_months[monthly].month === 'string') {
                   date = this.contract.credit_months[monthly].month
-                }else{
+                } else {
                   date = this.datePrettier(this.contract.credit_months[monthly].month)
                 }
-                  // let date = moment(this.contract.credit_months[monthly].month).format(
-                  //     "YYYY-MM-DD"
-                  // );
+                // let date = moment(this.contract.credit_months[monthly].month).format(
+                //     "YYYY-MM-DD"
+                // );
 
                 formData.append(
                     "monthly[" + monthly + "][edited]",
