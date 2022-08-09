@@ -72,7 +72,7 @@ export default {
     defaultValue: {
       immediate: true,
       handler() {
-        if (this.defaultValue && this.defaultValue.length) {
+        if (this.defaultValue) {
           this.dateValue = this.defaultValue
         }
       }

@@ -9,10 +9,7 @@
     <!--  Search Content  -->
     <search-bar-content
         v-if="filterPermission"
-        @trigger-input="setSearchValue"
-        @search-by-filter="searchQueryFilter"
-        @replace-router="searchQueryFilter"
-    />
+      />
 
     <!--  Table List -->
     <b-table
@@ -377,28 +374,28 @@ export default {
       const limit = this.showByValue
       this.replaceRouter({...query, limit})
     },
-    setSearchValue(search) {
-      const hasSearchQuery = this.query.hasOwnProperty('search')
-      if (search?.length < 3 && hasSearchQuery) {
-        this.replaceRouter({})
-      }
-
-      if (this.searchValue === search || search.length < 3) return
-      this.searchValue = search
-    },
-    getContractListBySearch() {
-      const {query, searchValue} = this
-      const hasSearchQuery = query.hasOwnProperty('search')
-      if (!hasSearchQuery) {
-        this.pushRouter({
-          search: searchValue
-        })
-        return
-      }
-
-      query.search = searchValue
-      this.pushRouter(query)
-    },
+    // setSearchValue(search) {
+    //   const hasSearchQuery = this.query.hasOwnProperty('search')
+    //   if (search?.length < 3 && hasSearchQuery) {
+    //     this.replaceRouter({})
+    //   }
+    //
+    //   if (this.searchValue === search || search.length < 3) return
+    //   this.searchValue = search
+    // },
+    // getContractListBySearch() {
+    //   const {query, searchValue} = this
+    //   const hasSearchQuery = query.hasOwnProperty('search')
+    //   if (!hasSearchQuery) {
+    //     this.pushRouter({
+    //       search: searchValue
+    //     })
+    //     return
+    //   }
+    //
+    //   query.search = searchValue
+    //   this.pushRouter(query)
+    // },
     async fetchContractList() {
       const query = sortObjectValues(this.query)
 
@@ -445,28 +442,28 @@ export default {
         }
       })
     },
-    searchQueryFilter(searchQuery) {
-      const hasQueryStatus = this.query.hasOwnProperty('status')
-      if (hasQueryStatus) {
-        const {status} = this.query
-        this.pushRouter({
-          ...searchQuery,
-          status
-        })
-        return
-      }
-
-      this.pushRouter(searchQuery)
-    },
+    // searchQueryFilter(searchQuery) {
+    //   const hasQueryStatus = this.query.hasOwnProperty('status')
+    //   if (hasQueryStatus) {
+    //     const {status} = this.query
+    //     this.pushRouter({
+    //       ...searchQuery,
+    //       status
+    //     })
+    //     return
+    //   }
+    //
+    //   this.pushRouter(searchQuery)
+    // },
     replaceRouter(query) {
       const sortQuery = sortObjectValues(query)
       this.$router.replace({query: sortQuery})
     },
-    pushRouter(query) {
-      const sortQuery = sortObjectValues(query)
-      this.$router.push({query: {}})
-      this.$router.push({query: sortQuery})
-    }
+    // pushRouter(query) {
+    //   const sortQuery = sortObjectValues(query)
+    //   this.$router.push({query: {}})
+    //   this.$router.push({query: sortQuery})
+    // }
   }
 }
 </script>
