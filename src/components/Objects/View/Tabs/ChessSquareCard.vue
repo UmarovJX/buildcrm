@@ -21,7 +21,7 @@
           <div v-if="showBlock(value.blockActive)" :key="value.id" class="d-flex flex-column position-relative">
             <div class="header">
                <span>
-                {{apartment.name}} / {{ value.name }}
+                {{ apartment.name }} / {{ value.name }}
               </span>
             </div>
 
@@ -40,7 +40,7 @@
                     ]"
                   >
                     <div
-                        :id="'tolltip'+elem.number"
+                        :id="elem.is_sold ? 'tolltip'+elem.number  : 'disable'"
                         class="box"
                         @click="showExpressSidebar(elem)"
                     >
@@ -53,6 +53,7 @@
                       <b-tooltip
                           class="custom-tooltip"
                           :target="'tolltip' + elem.number"
+                          variant="light"
                           triggers="hover"
                       >
 <!--                        placement="bottomright"-->
@@ -187,7 +188,7 @@ export default {
       // const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
       // if (isActive) {
       // if (this.getPermission.apartments && this.getPermission.apartments.show) {
-        this.$emit('show-express-sidebar', item)
+      this.$emit('show-express-sidebar', item)
       // }
       // }
     },
@@ -207,87 +208,105 @@ export default {
 
 <style lang="scss" scoped>
 
+
 .block-content {
   .yellow {
     h5 {
-      color: var(--yellow-600);
+      color: var(--white);
+    }
+
+    .box {
+      background-color: var(--yellow-600);
     }
 
     &:hover {
-      h5 {
-        color: var(--white);
+      .box {
+        background-color: var(--gray-50);
       }
 
-      .box {
-        background-color: var(--yellow-600);
+      h5 {
+        color: var(--yellow-600);
       }
     }
   }
 
   .teal {
     h5 {
-      color: var(--teal-600);
+      color: var(--white);
+    }
+
+    .box {
+      background-color: var(--teal-600);
     }
 
     &:hover {
-      h5 {
-        color: var(--white);
+      .box {
+        background-color: var(--gray-50);
       }
 
-      .box {
-        background-color: var(--teal-600);
-
+      h5 {
+        color: var(--teal-600);
       }
     }
+
   }
 
   .blue {
     h5 {
-      color: var(--light-blue-600);
+      color: var(--white);
+    }
+
+    .box {
+      background-color: var(--light-blue-600);
     }
 
     &:hover {
-      h5 {
-        color: var(--white);
+      .box {
+        background-color: var(--gray-50);
       }
 
-      .box {
-        background-color: var(--light-blue-600);
-
+      h5 {
+        color: var(--light-blue-600);
       }
     }
   }
 
   .gray {
     h5 {
-      color: var(--red-600);
+      color: var(--white);
+    }
+
+    .box {
+      background-color: var(--red-600);
     }
 
     &:hover {
-      h5 {
-        color: var(--white);
+      .box {
+        background-color: var(--gray-50);
       }
 
-      .box {
-        background-color: var(--red-600);
-
+      h5 {
+        color: var(--red-600);
       }
     }
   }
 
   .disable {
     h5 {
-      color: var(--gray-500) !important;
+      color: var(--gray-400);
+    }
+
+    .box {
+      background-color: var(--gray-50);
     }
 
     &:hover {
       h5 {
-        color: var(--white) !important;
+        color: var(--gray-400);
       }
 
       .box {
-        background-color: var(--gray-500) !important;
-
+        background-color: var(--gray-50);
       }
     }
   }
@@ -302,6 +321,13 @@ export default {
   //  top: .5rem !important;
   //  margin: 0.5rem;
   //  transform: rotate(-90deg);
+  //}
+
+  //.arrow::before {
+  //  border-left-color: red;
+  //  border-right-color: red;
+  //  border-top-color: red;
+  //  border-bottom-color: red;
   //}
 
   .bs-tooltip-bottom {
@@ -377,118 +403,174 @@ export default {
     }
 
 
-    &.yellow {
-      color: var(--white) !important;
-      background-color: var(--yellow-600) !important;
+    //&.yellow {
+    //  color: var(--white) !important;
+    //  background-color: var(--yellow-600) !important;
+    //
+    //
+    //  h5 {
+    //    color: var(--yellow-600);
+    //  }
+    //}
+    //
+    //&.teal {
+    //  h5 {
+    //    color: var(--teal-600);
+    //  }
+    //}
+    //
+    //&.blue {
+    //  .square-footer {
+    //    p {
+    //      color: var(--gray-400);
+    //    }
+    //  }
+    //
+    //  h5 {
+    //    color: var(--light-blue-600);
+    //  }
+    //
+    //
+    //}
+    //
+    //&.gray {
+    //  h5 {
+    //    color: var(--gray-600);
+    //  }
+    //
+    //  .square-footer {
+    //    p {
+    //      color: var(--gray-400);
+    //    }
+    //  }
+    //}
+    //
+    //&.disable {
+    //  color: var(--white) !important;
+    //  background-color: var(--gray-500) !important;
+    //
+    //
+    //  h5 {
+    //    color: var(--gray-500);
+    //  }
+    //}
+
+  }
 
 
-      h5 {
-        color: var(--yellow-600);
-      }
+  .yellow-tool {
+    //background-color: var(--yellow-600);
+
+    //p, h5 {
+    //  color: var(--white) !important;
+    //}
+
+    //&::before {
+    //  border-left-color: var(--yellow-600);
+    //}
+
+    //&:hover {
+    background-color: var(--gray-50);
+
+    h5 {
+      color: var(--yellow-600);
     }
 
-    &.teal {
-      h5 {
-        color: var(--teal-600);
-      }
-    }
-
-    &.blue {
-      .square-footer {
-        p {
-          color: var(--gray-400);
-        }
-      }
-
-      h5 {
-        color: var(--light-blue-600);
-      }
-
-
-    }
-
-    &.gray {
-      h5 {
+    .square-footer {
+      p {
         color: var(--gray-600);
       }
+    }
 
-      .square-footer {
-        p {
-          color: var(--gray-400);
-        }
+    .square-header {
+      p {
+        color: var(--gray-500);
       }
     }
 
-    &.disable {
-      color: var(--white) !important;
-      background-color: var(--gray-500) !important;
+    //}
+    //&::before {
+    //  border-bottom-color: var(--gray-50) !important;
+    //}
+  }
 
+  .teal-tool {
+    background-color: var(--gray-50);
 
-      h5 {
+    h5 {
+      color: var(--teal-600);
+    }
+
+    .square-footer {
+      p {
+        color: var(--gray-600);
+      }
+    }
+
+    .square-header {
+      p {
         color: var(--gray-500);
       }
     }
   }
 
-
-  .yellow-tool {
-    background-color: var(--yellow-600);
-
-    p, h5 {
-      color: var(--white) !important;
-    }
-
-    &::before {
-      border-left-color: var(--yellow-600);
-    }
-
-  }
-
-  .teal-tool {
-    background-color: var(--teal-600);
-
-    p, h5 {
-      color: var(--white) !important;
-    }
-
-    &::before {
-      border-left-color: var(--teal-600);
-    }
-  }
-
   .blue-tool {
-    background-color: var(--light-blue-600);
+    background-color: var(--gray-50);
 
-    p, h5 {
-      color: var(--white) !important;
+    h5 {
+      color: var(--light-blue-600);
     }
 
-    &::before {
-      border-left-color: var(--light-blue-600);
+    .square-footer {
+      p {
+        color: var(--gray-600);
+      }
+    }
+
+    .square-header {
+      p {
+        color: var(--gray-500);
+      }
     }
   }
 
   .gray-tool {
-    background-color: var(--red-600);
+    background-color: var(--gray-50);
 
-    p, h5 {
-      color: var(--white) !important;
+    h5 {
+      color: var(--red-600);
     }
 
-    &::before {
-      border-left-color: var(--red-600);
+    .square-footer {
+      p {
+        color: var(--gray-600);
+      }
+    }
+
+    .square-header {
+      p {
+        color: var(--gray-500);
+      }
     }
   }
 
   .disable-tool {
-    background-color: var(--gray-500) !important;
+    background-color: var(--gray-50) !important;
 
-    p, h5 {
-      color: var(--white) !important;
+    h5 {
+      color: var(--red-400);
     }
 
-    &::before {
-      border-left-color: var(--gray-500) !important;
+    .square-footer {
+      p {
+        color: var(--gray-600);
+      }
+    }
+
+    .square-header {
+      p {
+        color: var(--gray-500);
+      }
     }
   }
 }
@@ -554,12 +636,13 @@ export default {
   &-item {
     color: var(--teal-500);
     //width: 100%;
-    min-width: 4rem;
-    width: 4rem;
-    height: 56px;
+    min-width: calc(4rem + 2px);
+    width: calc(4rem + 2px);
+    height: calc(56px + 2px);
     background-color: var(--gray-50);
-    border: 1px solid var(--gray-100);
+    border: 2px solid var(--gray-100);
     cursor: pointer;
+    box-sizing: border-box;
   }
 }
 
@@ -593,7 +676,7 @@ export default {
   align-items: center;
   position: sticky;
   top: 0;
-  left: 0;
+  left: -1px;
   max-height: 100vh;
   padding-left: 18px;
   padding-right: 10px;

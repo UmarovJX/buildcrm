@@ -1,4 +1,9 @@
-<svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0.461157 8L8 0.461157L15.5388 8L8 15.5388L0.461157 8Z" fill="#7C3AED" stroke="white" stroke-width="0.652174"/>
-<path d="M8.46116 8L16 0.461157L23.5388 8L16 15.5388L8.46116 8Z" fill="#7C3AED" stroke="white" stroke-width="0.652174"/>
+<!--<svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+<!--<path d="M0.461157 8L8 0.461157L15.5388 8L8 15.5388L0.461157 8Z" fill="#7C3AED" stroke="white" stroke-width="0.652174"/>-->
+<!--<path d="M8.46116 8L16 0.461157L23.5388 8L16 15.5388L8.46116 8Z" fill="#7C3AED" stroke="white" stroke-width="0.652174"/>-->
+<!--</svg>-->
+<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.4142 2C10.6332 1.21895 9.36684 1.21895 8.58579 2L2 8.58579C1.21895 9.36683 1.21895 10.6332 2 11.4142L8.58579 18C9.36683 18.781 10.6332 18.781 11.4142 18L18 11.4142C18.781 10.6332 18.781 9.36684 18 8.58579L11.4142 2Z" fill="#7C3AED" stroke="white" stroke-width="2"/>
+<path d="M19.4142 2C18.6332 1.21895 17.3668 1.21895 16.5858 2L10 8.58579C9.21895 9.36683 9.21895 10.6332 10 11.4142L16.5858 18C17.3668 18.781 18.6332 18.781 19.4142 18L26 11.4142C26.781 10.6332 26.781 9.36684 26 8.58579L19.4142 2Z" fill="#7C3AED" stroke="white" stroke-width="2"/>
 </svg>
+

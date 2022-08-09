@@ -24,7 +24,7 @@
 
             <div class="header">
               <span>
-                {{apartment.name}} / {{ value.name }}
+                {{ apartment.name }} / {{ value.name }}
               </span>
             </div>
 
@@ -201,6 +201,7 @@ export default {
   background-color: var(--gray-50);
   font-family: Inter, sans-serif;
   border: 1px solid var(--gray-100);
+  cursor: pointer;
 
   p {
     font-weight: 600;
@@ -243,87 +244,145 @@ export default {
       color: var(--yellow-600);
     }
 
-    &:hover {
-      background-color: var(--yellow-600);
+    background-color: var(--yellow-600);
 
-      p, h5 {
-        color: var(--white);
+    p, h5 {
+      color: var(--white);
+    }
+
+    &:hover {
+      background-color: var(--gray-50);
+
+      h5 {
+        color: var(--yellow-600);
+      }
+
+      .square-footer {
+        p {
+          color: var(--gray-600);
+        }
+      }
+
+      .square-header {
+        p {
+          color: var(--gray-500);
+        }
       }
     }
   }
 
   &.teal {
-    h5 {
-      color: var(--teal-600);
+
+    background-color: var(--teal-600);
+
+    p, h5 {
+      color: var(--white);
     }
 
     &:hover {
-      background-color: var(--teal-600);
+      background-color: var(--gray-50);
 
-      p, h5 {
-        color: var(--white);
+      h5 {
+        color: var(--teal-600);
+      }
+
+      .square-footer {
+        p {
+          color: var(--gray-600);
+        }
+      }
+
+      .square-header {
+        p {
+          color: var(--gray-500);
+        }
       }
     }
   }
 
   &.blue {
-    .square-footer {
-      p {
-        color: var(--gray-600);
-      }
-    }
+    background-color: var(--light-blue-600);
 
-    h5 {
-      color: var(--light-blue-600);
+    p, h5 {
+      color: var(--white);
     }
 
     &:hover {
-      background-color: var(--light-blue-600);
+      background-color: var(--gray-50);
 
-      p, h5 {
-        color: var(--white);
+      h5 {
+        color: var(--light-blue-600);
+      }
+
+      .square-footer {
+        p {
+          color: var(--gray-600);
+        }
+      }
+
+      .square-header {
+        p {
+          color: var(--gray-500);
+        }
       }
     }
-
-
   }
 
   &.gray {
-    h5 {
-      color: var(--red-600);
-    }
-
-    .square-footer {
-      p {
-        color: var(--gray-500);
-      }
-    }
 
     &:hover {
-      background-color: var(--red-600);
+      background-color: var(--gray-50);
 
-      p, h5 {
-        color: var(--white);
+      h5 {
+        color: var(--red-600);
       }
+
+      .square-footer {
+        p {
+          color: var(--gray-400);
+        }
+      }
+
+      .square-header {
+        p {
+          color: var(--gray-500);
+        }
+      }
+
     }
+
+    background-color: var(--red-600);
+
+    p, h5 {
+      color: var(--white);
+    }
+
   }
 
   &.disable {
-    h5 {
-      color: var(--gray-500);
+    background-color: var(--gray-50);
+
+    p, h5 {
+      color: var(--gray-400);
     }
 
     .square-footer {
       p {
-        color: var(--gray-500);
+        color: var(--gray-400);
       }
     }
 
     &:hover {
-      background-color: var(--gray-500);
+      background-color: var(--gray-50);
 
       p, h5 {
-        color: var(--white);
+        color: var(--gray-400);
+      }
+
+      .square-footer {
+        p {
+          color: var(--gray-400);
+        }
       }
     }
   }
