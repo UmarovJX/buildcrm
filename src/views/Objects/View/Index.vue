@@ -264,6 +264,7 @@ export default {
         booked: 0,
         hold: 0,
         none: 0,
+        closed: 0
       },
       filtered: false
     }

@@ -268,7 +268,7 @@ export default {
       this.calc.prepay_percente = this.discount.prepay
       this.calc.prepay = this.getPrepay()
       this.calc.monthly_price = this.getMonth()
-      this.monthly_price = this.calc.monthly_price
+      this.monthly_price = isNaN(this.calc.monthly_price) ? 0 : this.calc.monthly_price
       this.calc.debt = this.getDebt()
       this.calc.total = this.getTotal()
       this.calc.base_price = this.getBasePrice()
