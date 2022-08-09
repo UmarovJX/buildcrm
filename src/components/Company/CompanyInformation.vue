@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="company && Object.keys(company)" class="info-container">
-      <span v-for="([key,value], index) in Object.entries(company)" class="item-block" :key="index">
+      <span v-for="([key,value], index) in Object.entries(company)" :class="labels[key] ? 'item-block' : 'item-block display-none'" :key="index">
 
         <span class="item" v-if="labels[key]">
               <span class="title">
@@ -16,7 +16,7 @@
                 </span>
               </span>
         </span>
-
+        <span v-else class="display-none"></span>
       </span>
     </div>
   </div>
@@ -81,6 +81,7 @@ export default {
 <style lang="scss" scoped>
 .info-container {
   margin-top: 30px;
+  gap: 24px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -91,7 +92,7 @@ export default {
 .item-block {
   display: flex;
   align-items: center;
-  width: 40%;
+  flex-wrap: wrap;
   max-width: 100%;
 }
 
@@ -99,8 +100,13 @@ export default {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  flex-wrap: wrap;
   gap: 10px;
   color: #4B5563;
+  font-family: 'Inter', serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
 
   .title {
     display: flex;
@@ -117,5 +123,8 @@ export default {
     }
 
   }
+}
+.display-none {
+  display: none;
 }
 </style>
