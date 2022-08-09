@@ -83,7 +83,7 @@
                   class="w-100"
                   :default-value="filter.date"
                   :placeholder="`${$t('contracts.agreement_date')}`"
-                  @input=" filter.date = $event "
+                  @input="filter.date = $event"
               />
             </div>
 
@@ -157,7 +157,7 @@ import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import "vue2-datepicker/index.css";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import {debounce, isPrimitiveValue, sortInFirstRelationship} from "@/util/reusable";
+import {debounce, isPrimitiveValue, sortInFirstRelationship, sortObjectValues} from "@/util/reusable";
 import api from "@/services/api";
 
 export default {
@@ -178,7 +178,7 @@ export default {
       filter: {
         object_id: null,
         contract_number: null,
-        date: null,
+        date: [],
         client_type: null,
         contract_price: null,
         price_to: null,
@@ -252,7 +252,7 @@ export default {
       this.filter.object_id = objects.map(({value}) => value)
     },
     searchByFilterField() {
-      const sortingQuery = Object.assign({}, this.filter)
+      const sortingQuery = Object.assign({}, this.filter, this.query)
       this.$emit('search-by-filter', sortInFirstRelationship(sortingQuery))
       this.$refs['filter-modal'].hide()
     },
@@ -264,7 +264,7 @@ export default {
       this.filter = {
         object_id: null,
         contract_number: null,
-        date: null,
+        date: [],
         client_type: null,
         contract_price: null,
         price_to: null,
@@ -285,7 +285,20 @@ export default {
       this.showClearIcon = !!this.searchInput.length
     },
     triggerInputEvent() {
-      this.$emit('trigger-input', this.debounceInput)
+      const query = Object.assign({}, this.query)
+      const searchValue = this.debounceInput
+      if (searchValue?.length > 3) {
+        query.search = searchValue
+        this.pushRouter(query)
+      } else {
+        query.search = null
+        this.pushRouter(query)
+      }
+    },
+    pushRouter(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({query: {}})
+      this.$router.push({query: sortQuery})
     },
     setApartments(apartments) {
       this.filter.apartment_number = apartments
