@@ -228,7 +228,7 @@
             <!-- Таблица ежемесячных платежей -->
             <div class="col-xl-8">
               <MonthlyPayments :client="client" :contract="contract" :apartments="apartments"
-                               @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
+                               @monthly-edit="MonthlyEdit"></MonthlyPayments>
             </div>
 
             <div class="col-xl-4 h-auto">
