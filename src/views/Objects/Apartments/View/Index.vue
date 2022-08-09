@@ -71,31 +71,39 @@
                 <base-arrow-right-icon/>
               </div>
             </div>
-
           </div>
 
-          <div class="primary__information">
-            <!--   PRICE CONTENT     -->
-            <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
-               <span class="price__section-square-amount">
-                {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
-                </span>
-              <span class="price__section-amount">{{ price }}</span>
-            </div>
-          </div>
-
-
+<!--          <div class="primary__information">-->
+<!--            &lt;!&ndash;   PRICE CONTENT     &ndash;&gt;-->
+<!--            <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">-->
+<!--               <span class="price__section-square-amount">-->
+<!--                {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>-->
+<!--                </span>-->
+<!--              <span class="price__section-amount">{{ price }}</span>-->
+<!--            </div>-->
+<!--          </div>-->
           <!--        <div class="col-12 col-lg-5">-->
           <PrimaryTabItem class="primary__information" :apartment="apartment"/>
-          <PromoSection :promo="apartment.promo"/>
+          <div class="peculiarities">
+            <h1 class="mb-4">{{ $t("peculiarities") }}</h1>
+            <div class="d-flex flex-wrap list-boxes">
+              <PeculiarityBox name="Большой балкон"/>
+              <PeculiarityBox name="Шикарный вид"/>
+              <PeculiarityBox name="Эко-парковка"/>
+              <PeculiarityBox name="Секретный шкаф"/>
+              <PeculiarityBox name="Красный ковер"/>
+            </div>
+          </div>
         </div>
         <!--        <primary-information class="primary__information" :apartment="apartment"/>-->
         <!--        </div>-->
         <!--        <div class="col-12 col-lg-7">-->
-        <div class="calculator w-100 d-flex flex-column justify-content-between">
+        <div class="calculator w-100 d-flex flex-column">
+          <h2>Акции</h2>
+          <PromoSection :promo="apartment.promo"/>
           <div>
             <h4 class="calculator-title color-gray-600 font-craftworksans">
-              {{ $t("apartments.agree.placeholder.enter_discount") }}
+              {{ $t("type_payment") }}
             </h4>
             <calculator @for-print="getCalc" :apartment="apartment" :has-apartment="hasApartment"/>
           </div>
@@ -104,24 +112,24 @@
             <!--   ACTIONS     -->
             <div class="action-block">
               <!--      CHECKOUT        -->
+<!--              v-if="permission.order"-->
               <base-button
-                  v-if="permission.order"
                   @click="orderApartment"
                   :text="`${ $t('apartments.list.confirm') }`"
                   class="checkout__button violet-gradient"
               />
 
               <!--      CONTINUE CHECKOUT        -->
-              <base-button
-                  v-if="permission.continueOrder"
-                  @click="continueApartmentOrder"
-                  :text="`${ $t('continue_registration') }`"
-                  class="checkout__button violet-gradient"
-              />
+<!--              <base-button-->
+<!--                  v-if="permission.continueOrder"-->
+<!--                  @click="continueApartmentOrder"-->
+<!--                  :text="`${ $t('continue_registration') }`"-->
+<!--                  class="checkout__button violet-gradient"-->
+<!--              />-->
 
               <!--       MAKE A RESERVATION       -->
+<!--              v-if="permission.reserve"-->
               <base-button
-                  v-if="permission.reserve"
                   @click="showReservationModal = true"
                   :text="`${ $t('apartments.list.book') }`"
                   class="checkout__button gray-button"
@@ -129,12 +137,13 @@
               />
 
               <!-- CANCEL RESERVE -->
-              <base-button
-                  v-if="permission.cancelReserve"
-                  :text="`${ $t('apartments.list.cancel_reserve') }`"
-                  class="reserve__button"
+<!--              v-if="permission.cancelReserve"-->
+              <button
+                  class="reserve__button bg-gray-100 print__button d-flex justify-content-center align-items-center"
                   @click="cancelReservation"
-              />
+              >
+                <base-print-icon :square="20" fill="#4B5563"/>
+              </button>
 
               <!--     CONTRACT VIEW         -->
               <router-link
@@ -151,7 +160,7 @@
                   @click="printPdf"
                   class="print__button bg-gray-100 d-flex justify-content-center align-items-center "
               >
-                <base-print-icon :square="20" fill="#4B5563"/>
+                <BaseCancelIcon/>
               </button>
             </div>
           </div>
@@ -161,6 +170,7 @@
     </div>
 
     <!--  MAKE A RESERVATION MODAL    -->
+
     <reserve
         v-if="showReservationModal"
         :apartment="apartment.id"
@@ -169,7 +179,6 @@
 
     <!--  LOADING    -->
     <base-loading v-if="appLoading"/>
-
     <PdfTemplate
         ref="html2Pdf"
         v-if="pdfVisible"
@@ -201,10 +210,14 @@ import "@fancyapps/ui/dist/fancybox.css";
 import PdfTemplate from "@/components/PdfTemplate";
 import {formatToPrice} from "@/util/reusable";
 import CheckoutPermission from "@/permission/checkout";
+import PeculiarityBox from "@/components/Objects/View/elements/PeculiarityBox";
+import BaseCancelIcon from "@/components/icons/BaseCancelIcon";
 
 export default {
   name: "ApartmentView",
   components: {
+    BaseCancelIcon,
+    PeculiarityBox,
     PromoSection,
     BaseLoading,
     BaseArrowLeft,
@@ -365,6 +378,7 @@ export default {
       const {object, id} = this.$route.params
       await api.apartmentsV2.getApartmentView(object, id)
           .then(response => {
+            console.log("data:", response.data);
             this.apartment = response.data
           }).catch((error) => {
             this.toastedWithErrorCode(error)
@@ -471,6 +485,12 @@ export default {
   //margin-left: 1rem
   //margin-right: 1rem
   //margin-bottom: 1rem
+  .swiper-pagination-bullets
+    bottom: 0!important
+
+  .swiper-pagination-bullet
+    width: 9px
+    height: 10px
 
   .swiper-container
     display: flex
@@ -578,8 +598,19 @@ input[type="number"]
   margin-right: 1.5rem
   max-width: 500px
 
+  h2
+    font-family: 'CraftworkSans', serif
+    font-weight: 900
+    font-size: 24px
+    line-height: 28px
+    color: #9CA3AF
+
   &-title
-    font-size: 1.5rem
+    font-family: 'CraftworkSans', serif
+    font-weight: 900
+    font-size: 24px
+    line-height: 28px
+    color: #9CA3AF!important
     margin-bottom: 1.5rem
 
   .inputs
@@ -597,10 +628,11 @@ input[type="number"]
       .total-price
         font-size: 24px
 
-.monthly
+::v-deep .monthly
   background-color: var(--gray-100)
-  border-radius: 1rem
+  border-radius: 2rem
   margin-top: 1.5rem
+  display: none
 
   .placeholder
     letter-spacing: 1px
@@ -637,7 +669,7 @@ input[type="number"]
   width: 100%
 
 .checkout__button
-  padding: 1rem 3rem
+  padding: 17px 32.75px
 
 .action-block
   display: flex
@@ -645,6 +677,8 @@ input[type="number"]
   margin-top: 1rem
   margin-bottom: .5rem
   gap: .5rem
+  .gray-button
+    padding: 12.75px
 
 
 .print__button,
@@ -661,6 +695,15 @@ input[type="number"]
   border-radius: 2rem
   padding: 1rem 2rem
   background-color: var(--blue-600)
+
+::v-deep .apartment__details
+  &-title
+    display: none
+
+  &-row
+    .property
+      text-transform: none
+
 
 .apartment__status
   font-family: Inter, sans-serif
@@ -698,12 +741,33 @@ input[type="number"]
     background-color: var(--gray-500) !important
     color: var(--white) !important
 
+.peculiarities
+  margin-top: 48px
+  h1
+    font-family: 'CraftworkSans', serif
+    font-weight: 900
+    font-size: 18px
+    line-height: 22px
+    color: #9CA3AF
+
+::v-deep .promo__section
+  border: none
+  border-bottom: 3px solid var(--gray-100)
+
+::v-deep .promo__section:last-child
+  border: none!important
+
+.list-boxes
+  gap: 16px
 
 .price__section
   font-family: CraftworkSans, serif
   font-size: 1.5rem
   font-weight: 900
   margin: 1.5rem 0
+
+.promo__section-subtitle
+  text-transform: capitalize
 
   &-amount
     color: var(--gray-600) !important

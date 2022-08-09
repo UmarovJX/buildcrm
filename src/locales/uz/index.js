@@ -165,6 +165,7 @@ export default {
     motto: 'Orzular sari ishonchli qadam!',
     quarter: 'chorak',
     of_the_year: 'yil',
+    peculiarities: "O'ziga xos xususiyatlar",
     thank_you: 'Rahmat',
     no_cancel: "Yo'q, bekor qiling",
     yes_delete: "Ha, o'chirilsin",
