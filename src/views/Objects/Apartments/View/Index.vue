@@ -100,7 +100,12 @@
         <!--        <div class="col-12 col-lg-7">-->
         <div class="calculator w-100 d-flex flex-column">
           <h2>Акции</h2>
-          <PromoSection :promo="apartment.promo"/>
+          <span v-if="apartment.is_promo">
+            <PromoSection :promo="apartment.promo"/>
+          </span>
+          <span v-else class="no_promos">
+            На данный момент нет акции.
+          </span>
           <div>
             <h4 class="calculator-title color-gray-600 font-craftworksans">
               {{ $t("type_payment") }}
@@ -378,7 +383,6 @@ export default {
       const {object, id} = this.$route.params
       await api.apartmentsV2.getApartmentView(object, id)
           .then(response => {
-            console.log("data:", response.data);
             this.apartment = response.data
           }).catch((error) => {
             this.toastedWithErrorCode(error)
@@ -556,7 +560,6 @@ input[type="number"]
   padding-left: 1rem
   padding-right: 1rem
   min-width: 42rem
-//width: 100%
 
 
 .main__class
@@ -778,6 +781,14 @@ input[type="number"]
     font-size: 18px
     line-height: 22px
 
+.no_promos
+  font-family: 'Inter', serif
+  font-weight: 600
+  font-size: 18px
+  line-height: 24px
+  color: #9CA3AF
+  margin-top: 24px
+  margin-bottom: 48px
 
 //@media only screen and (max-width: 1200px)
 //  .content-view
