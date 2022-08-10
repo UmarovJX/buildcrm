@@ -58,7 +58,7 @@
                                 v-model="contract.number"
                                 :state="getValidationState(validationContext)"
                                 aria-describedby="number-feedback"
-                                :disabled="!edited.toggle ? true : false"
+                                :disabled="!edited.toggle"
                                 @focus="userFocused"
                             ></b-form-input>
 
@@ -133,7 +133,8 @@
                 </div>
 
                 <hr/>
-              </div> <!-- Изменить дата договора END -->
+              </div>
+              <!-- Изменить дата договора END -->
 
 
               <!--  client form -->
@@ -148,7 +149,7 @@
               <!-- apartments.agree.first_payment_date -->
               <div class="col-md-4">
                 <validation-provider
-                    :name="$t('apartments.agree.first_payment_date')"
+                    :name="`${ $t('apartments.agree.first_payment_date') }`"
                     :rules="{required: true}"
                     v-slot="validationContext"
                     class="mb-3"
@@ -222,13 +223,17 @@
       </div>
 
       <!-- Step 2 -->
-      <div class="container-fluid px-0 mx-0" v-if="contract.step === 2">
+      <div class="container-fluid px-0 mx-0" v-show="contract.step === 2">
         <form ref="form" @submit.stop.prevent="sendForm">
           <div class="row">
             <!-- Таблица ежемесячных платежей -->
             <div class="col-xl-8">
-              <MonthlyPayments :client="client" :contract="contract" :apartments="apartments"
-                               @MonthlyEdit="MonthlyEdit"></MonthlyPayments>
+              <MonthlyPayments
+                  :client="client"
+                  :contract="contract"
+                  :apartments="apartments"
+                  @monthly-edit="editMonthly"
+              />
             </div>
 
             <div class="col-xl-4 h-auto">
@@ -285,11 +290,11 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
 // import VueNumeric from "vue-numeric";
+// import QuickViewApartments from "./Components/QuickViewApartments";
+import {mapActions, mapGetters} from "vuex";
 import FlipCountdown from "vue2-flip-countdown";
 import SuccessAgree from "./Components/SuccessAgree";
-// import QuickViewApartments from "./Components/QuickViewApartments";
 import ClientInputConfirm from "./Components/ClientInputConfirm";
 import MonthlyPayments from "./Contract/MonthlyPayments";
 import ClientInformation from "./Contract/ClientInformation";
@@ -315,9 +320,7 @@ import {formatDateWithDot} from "@/util/reusable";
 
 export default {
   name: "ConfirmApartment",
-
   components: {
-    // VueNumeric,
     BaseValidationBottomWarning,
     FlipCountdown,
     ClientInputConfirm,
@@ -488,7 +491,6 @@ export default {
 
   methods: {
     ...mapActions(["fetchApartmentOrder"]),
-
     async showValidationMessage() {
       const validate = await this.$refs.observer.validate()
       this.hasValidationError = !validate
@@ -660,7 +662,7 @@ export default {
       // this.contract.prepay_amount = getPrepay(this.apartments, this.contract)
     },
 
-    MonthlyEdit() {
+    editMonthly() {
       this.edited.monthly = true
     },
 

@@ -269,12 +269,21 @@ export default {
   },
 
   props: {
-    apartments: {},
-    client: {},
-    contract: {},
-    // prepay: {},
-    // totalOther: {}
+    apartments: {
+      type: Array,
+      required: true
+    },
+    client: {
+      type: Object,
+      required: true
+    },
+    contract: {
+      type: Object,
+      required: true
+    }
   },
+
+  emits: ['monthly-edit'],
 
   data() {
     return {
@@ -292,7 +301,7 @@ export default {
   watch: {
     'contract.payment_date'() {
       this.checkHasMonthly()
-    },
+    }
   },
 
   methods: {
@@ -336,6 +345,7 @@ export default {
       getTotal(this.apartments, this.contract)
       getPrepay(this.apartments, this.contract)
       editedCreditMonths(this.apartments, this.contract)
+      console.log('lll')
     },
 
     editInitialPayment(index) {
@@ -410,18 +420,16 @@ export default {
           // this.setNewPriceMonthly();
           editedCreditMonths(this.apartments, this.contract)
 
-          this.$emit('monthly-edit', {})
         } else {
           this.contract.credit_months[index].edited = true;
           editedCreditMonths(this.apartments, this.contract)
-          this.$emit('monthly-edit', {})
         }
-
-        return;
+        this.$emit('monthly-edit')
+        return
       }
       this.contract.credit_months[index].edit = true;
       this.contract.credit_months[index].edited = true;
-      this.initialCalc();
+      this.initialCalc()
     },
 
   }
