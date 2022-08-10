@@ -260,7 +260,6 @@ import {formatDateWithDot} from "@/util/reusable";
 
 // import * as Calc from "../../../../util/calculator";
 const {getMonth, getPrepay, CreditMonths, editedCreditMonths, getTotal} = require("../../../../util/calculator");
-
 export default {
   name: "MonthlyPayments",
   components: {
