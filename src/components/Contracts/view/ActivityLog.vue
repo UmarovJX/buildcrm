@@ -191,7 +191,7 @@
 <script>
 
 import BaseButton from "@/components/Reusable/BaseButton";
-import FilterContent from "@/components/Debtors/FilterContent";
+import FilterContent from "@/components/Contracts/FilterContent";
 import {dateConvertor, dateProperties, formatDateToYMD} from "@/util/calendar";
 import BaseDocumentIcon from "@/components/icons/BaseDocumentIcon";
 export default {

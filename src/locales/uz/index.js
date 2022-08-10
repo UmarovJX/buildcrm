@@ -81,6 +81,7 @@ export default {
             client_type: 'Mijoz turini o\'zgartirish huquqi (\'Mijoz haqida batafsil\' qismida)',
             watch_branch_deals: 'Filialning barcha shartnomalarini ko\'rish huquqi (filial ish yurituvchisi)',
             import: 'To\'lovlarni yuklab olish huquqi',
+            executor: "Ijro etuvchi",
             list: 'To\'lovlarni ko\'rish huquqi',
             change_date_deal: 'Shartnoma sanasini o\'zgartirishga ruxsat berish',
             edit_monthly_payment: 'Oylik toʻlovlarni tahrirlashga ruxsat berish',
@@ -635,6 +636,8 @@ export default {
         },
 
         admin: "Administrator", manager: "Menedjer", accountant: "Xisobchi",
+        executor: "Ijro etuvchi",
+        sales_department: "Savdo rahbariyati", security_manager: "Xavfsizlik boshlig'i"
     },
 
     companies: {

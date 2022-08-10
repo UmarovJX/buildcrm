@@ -257,11 +257,12 @@ export default {
     phone: "Номер телефона",
     other_phone: "Дополнительный номер телефона",
     extra: "дополнительный",
-    client_type: "тип клиента",
+    client_type: "Тип клиента",
     birth_day: "Дата рождения",
     series: 'СЕРИЯ',
     given: 'ВЫДАН',
     given_date: 'ДАТА ВЫДАЧИ',
+    executor: "Исполнитель",
     company: 'КОМПАНИЯ',
     agent: 'ПРЕДСТАВИТЕЛЬ',
     pc: "Р/С",
@@ -613,6 +614,8 @@ export default {
         },
 
         admin: "Администратор", manager: "Менеджер", accountant: "Бухгалтер",
+        executor: "Исполнитель",
+        sales_department: "Отдел продаж", security_manager: "Менеджер по безопасности"
     },
 
     clients: {

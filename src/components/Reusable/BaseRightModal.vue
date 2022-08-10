@@ -29,10 +29,10 @@
 
           <!--  Modal Footer    -->
           <slot name="modal-footer"/>
-          <div v-if="!hasFooterModal" class="modal__footer">
-            <button @click="clearFilter" class="clear__button">{{ $t('contracts.reset_filter') }}</button>
-            <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
-          </div>
+            <div v-if="!hasFooterModal" class="modal__footer">
+              <button @click="clearFilter" class="clear__button">{{ $t('apartments.list.reset') }}</button>
+              <button @click="searchByFilterField" class="search__button">{{ $t('contracts.apply_filter') }}</button>
+            </div>
         </div>
       </div>
     </b-modal>
