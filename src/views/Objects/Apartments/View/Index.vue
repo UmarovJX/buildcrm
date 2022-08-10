@@ -292,6 +292,7 @@ export default {
       const isStatusAvailable = order.status === 'available'
       const isStatusHold = order.status === 'hold'
       const isStatusSold = order.status === 'sold'
+      const isStatusClosed = order.status === 'closed'
       const isStatusContract = order.status === 'contract'
 
       const permissionCancelReserve = isStatusBooked && (authorityUser || this.checkoutRootPermission)
@@ -299,7 +300,7 @@ export default {
 
       const permissionContract = () => {
         const permissionOne = this.checkoutPermission && authorityUser
-        return (isStatusSold || isStatusContract) && (permissionOne || this.checkoutRootPermission)
+        return (isStatusSold || isStatusContract || isStatusClosed) && (permissionOne || this.checkoutRootPermission)
       }
 
       const permissionOrder = () => {

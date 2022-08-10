@@ -482,31 +482,16 @@
                       v-if="
                       (getPermission.apartments &&
                         getPermission.apartments.contract &&
-                        ((apartment.order &&
-                          apartment.order.status === 'sold') ||
-                          (apartment.order &&
-                            apartment.order.status === 'contract') ||
-                            (apartment.order &&
-                          apartment.order.status === 'closed')) &&
+                        checkStatus &&
                         getMe.user.id === apartment.order &&
                         apartment.order.user &&
                         apartment.order.user.id) ||
                         (getPermission.apartments &&
                           getPermission.apartments.root_contract &&
-                          ((apartment.order &&
-                            apartment.order.status === 'sold') ||
-                            (apartment.order &&
-                              apartment.order.status === 'contract') ||
-                            (apartment.order &&
-                          apartment.order.status === 'closed'))) ||
+                          checkStatus) ||
                         (getMe.role &&
                           getMe.role.id === 1 &&
-                          ((apartment.order &&
-                            apartment.order.status === 'sold') ||
-                            (apartment.order &&
-                              apartment.order.status === 'contract') ||
-                            (apartment.order &&
-                          apartment.order.status === 'closed')))
+                          checkStatus)
                     "
                   >
                     <i class="far fa-file-signature"></i>
@@ -669,6 +654,11 @@ export default {
           }
         }
       ]
+    },
+    checkStatus() {
+      const {apartment} = this
+      return apartment.order &&
+          (apartment.order.status === 'sold' || apartment.order.status === 'contract' || apartment.order.status === 'closed')
     },
     activeContent() {
       return this.$t('objects.create.apartment')
