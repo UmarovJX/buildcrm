@@ -496,13 +496,17 @@
                           ((apartment.order &&
                             apartment.order.status === 'sold') ||
                             (apartment.order &&
-                              apartment.order.status === 'contract'))) ||
+                              apartment.order.status === 'contract') ||
+                            (apartment.order &&
+                          apartment.order.status === 'closed'))) ||
                         (getMe.role &&
                           getMe.role.id === 1 &&
                           ((apartment.order &&
                             apartment.order.status === 'sold') ||
                             (apartment.order &&
-                              apartment.order.status === 'contract')))
+                              apartment.order.status === 'contract') ||
+                            (apartment.order &&
+                          apartment.order.status === 'closed')))
                     "
                   >
                     <i class="far fa-file-signature"></i>
