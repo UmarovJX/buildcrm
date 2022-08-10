@@ -1,5 +1,21 @@
 <template>
   <main>
+<!--    <div class="d-flex align-items-center">-->
+<!--        <span class="go__back" @click="backNavigation">-->
+<!--          <base-arrow-left :width="32" :height="32"></base-arrow-left>-->
+<!--        </span>-->
+<!--      <span class="breadcrumb__content">-->
+<!--          <span>-->
+<!--            {{ $t('payments.payment_list') }}-->
+<!--            <base-arrow-right :width="18" :height="18"/>-->
+<!--            <span>{{ order.contract }}</span>-->
+<!--          </span>-->
+<!--          <span class="head">-->
+<!--            {{ $t('payments.contract') }} <span class="contract__number">{{ order.contract }}</span>-->
+<!--          </span>-->
+<!--        </span>-->
+<!--    </div>-->
+
     <div class="ml-5" v-if="deleteCompanyPermission">
       <b-dropdown right>
         <template #button-content>
@@ -209,6 +225,15 @@ hr {
   }
 }
 
+::v-deep .my-dropdown .dropdown-toggle {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background-color: transparent;
+  i {
+    color: #4B5563;
+  }
+}
+
 ::v-deep .ml-5:hover {
   display: flex;
   justify-content: flex-end;
@@ -223,6 +248,7 @@ hr {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
+  margin-bottom: 6rem;
   margin-top: 50px;
 }
 
