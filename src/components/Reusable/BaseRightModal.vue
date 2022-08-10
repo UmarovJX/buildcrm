@@ -188,10 +188,21 @@ export default {
 .modal__footer {
   position: absolute;
   bottom: 0;
+  margin-bottom: 30px;
   display: flex;
   width: 100%;
+  gap: 16px;
   justify-content: space-between;
-
+  button {
+    width: 100%;
+  }
+  .search__button {
+    background: #F3F4F6!important;
+    color: #9CA3AF!important;
+  }
+  .clear__button {
+    background-color: transparent!important;
+  }
   .clear__button {
     border: none;
     outline: none;

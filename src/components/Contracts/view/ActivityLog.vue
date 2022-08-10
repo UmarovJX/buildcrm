@@ -333,9 +333,6 @@ export default {
 <style lang="scss" scoped>
 ::v-deep.custom-filter {
   margin-top: 32px;
-  .search__content {
-    width: 80%;
-  }
   .d-flex {
     .d-flex {
       .custom-select {
