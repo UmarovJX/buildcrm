@@ -187,33 +187,35 @@ export function getTotalDiscount(apartments, contract) {
 }
 
 
+import {dateProperties} from "@/util/calendar";
+
 export function CreditMonths(apartments, contract) {
-    let today = contract.payment_date ? new Date(contract.payment_date) : new Date();
-    contract.credit_months = [];
+    let today = contract.payment_date ? new Date(contract.payment_date) : new Date()
+    const {year: todayYear, month: todayMonth, dayOfMonth: todayDate} = dateProperties(today)
+    const lastDateOfCurrentMonth = (new Date(todayYear, todayMonth + 1, 0)).getDate()
+    let calculateByLastDay = todayDate === lastDateOfCurrentMonth
+    contract.credit_months = []
 
     if (parseInt(contract.month) > 0) {
-        let month_amount = getMonth(apartments, contract);
-
+        let month_amount = getMonth(apartments, contract)
         for (let i = 0; i < parseInt(contract.month); i++) {
-            if (i === 0) {
-                contract.credit_months.push({
-                    month: today.setMonth(today.getMonth()),
-                    amount: month_amount,
-                    edit: false,
-                    edited: false,
-                });
-            } else {
-                contract.credit_months.push({
-                    month: today.setMonth(today.getMonth() + 1),
-                    amount: month_amount,
-                    edit: false,
-                    edited: false,
-                });
+            const creditMonth = {
+                amount: month_amount,
+                edit: false,
+                edited: false,
+                month: today
             }
+            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + i + 1, 0)
+            if (i === 0) {
+                creditMonth.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth())
+            } else {
+                creditMonth.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth() + 1)
+            }
+            contract.credit_months.push(creditMonth)
         }
     }
 
-    return contract;
+    return contract
 }
 
 export function editedCreditMonths(apartments, contract) {
