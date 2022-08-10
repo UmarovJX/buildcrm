@@ -55,6 +55,9 @@
               <span class="error__provider" v-if="errors[0]">{{ $t('user.validation_password') }}</span>
               <span class="error__provider" v-if="validationError.show">{{ validationError.message }}</span>
             </ValidationProvider>
+<!--            <span @click="regeneratePassword">-->
+<!--             <img src="@/assets/icons/no-preview-aye.svg" alt="no-preview-aye.svg">-->
+<!--            </span>-->
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
                 {{ $t('refresh_password') }}
@@ -75,6 +78,9 @@
 
 <script>
 import api from "@/services/api";
+// import DummyPassword from '@/util/password-generate';
+// import scorePassword from "@/util/score-password";
+// const dummy = new DummyPassword();
 
 export default {
   name: "TabChangePassword",
@@ -86,6 +92,13 @@ export default {
         dismissSecs: 10,
         dismissCountDown: 0,
         message: 'Ваш пароль был обновлен'
+      },
+      options: {
+        length: 16,
+        lower: true,
+        upper: true,
+        digits: true,
+        symbols: true,
       },
       form: {
         oldPassword: '',
@@ -154,13 +167,24 @@ export default {
       else
         this.toggleConfirmationError({show: false, id: 'repeatedPassword'})
     },
+
   },
   computed: {
     hiddenArea() {
       return this.loading ? 'true' : null
-    }
+    },
+    // score() {
+    //   return scorePassword(this.form.newPassword)
+    // }
   },
   methods: {
+    // regeneratePassword() {
+    //   const characters = [];
+    //   for (let option in this.options) {
+    //     if (this.options[option] === true) characters.push(dummy[option.toUpperCase()]);
+    //   }
+    //   this.form.newPassword = dummy.create(this.options.length, characters.join(''));
+    // },
     submitNewPassword() {
       const {newPassword, repeatedPassword} = this.form
       if (newPassword === repeatedPassword)
