@@ -243,9 +243,8 @@ export default {
           delete loopQuery[key]
         }
       }
-
       this.$emit('replace-router', loopQuery)
-      this.resetFilter()
+      this.hideFilterModal()
       this.$refs['base-form-tag-input'].clear()
     },
     inputFilterObject(objects) {
