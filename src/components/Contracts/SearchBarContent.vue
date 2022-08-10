@@ -439,16 +439,25 @@ export default {
     }
   }
 
+  .modal-body {
+    height: 100%;
+    overflow-x: auto;
+  }
+
   .modal__content {
     margin: 3rem;
     font-family: CraftworkSans, serif;
     font-weight: 900;
-    height: 80%;
+    height: 92%;
     position: relative;
 
     &-main {
       position: relative;
       height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      row-gap: 100px;
     }
 
     .title {
@@ -462,6 +471,7 @@ export default {
 
     .filter__inputs {
       margin-top: 2rem;
+      margin-bottom: 3rem;
 
       .input__date.mx-datepicker.mx-datepicker-range {
         width: 60% !important;
@@ -525,10 +535,11 @@ export default {
 }
 
 .modal__footer {
-  position: absolute;
-  bottom: 0;
+  //position: absolute;
+  //bottom: 0;
   display: flex;
   width: 100%;
+  padding-bottom: 3rem;
   justify-content: space-between;
 
   .clear__button {
