@@ -2,21 +2,16 @@
   <div>
     <b-dropdown :right="positionRight">
       <template #button-content>
-        <slot name="header">
-
-        </slot>
+        <slot name="header"/>
       </template>
-
-      <slot name="list">
-      </slot>
+      <slot/>
     </b-dropdown>
   </div>
 </template>
 
 <script>
 export default {
-  name: "BaseActionList",
-  components: {},
+  name: "AppDropdown",
   props: {
     positionRight: {
       type: Boolean,
@@ -58,7 +53,7 @@ export default {
     height: 24px;
     display: flex;
     margin-left: 1rem;
-    background: url("../../assets/icons/icon-down.svg");
+    background: url("../../../assets/icons/icon-down.svg");
     transition: all .2s ease-in-out;
   }
 
@@ -90,6 +85,4 @@ export default {
     }
   }
 }
-
-
 </style>
