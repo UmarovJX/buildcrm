@@ -434,7 +434,7 @@ export default {
           })
     },
     getClientType(order) {
-      if (order.client_type) {
+      if (order.friends) {
         return this.$t('familiar')
       } else {
         return this.$t('unfamiliar')
@@ -670,7 +670,7 @@ export default {
         page
       })
 
-      if(this.typeOfView)
+      if (this.typeOfView)
 
         this.initDebtorUi()
     },
@@ -895,10 +895,12 @@ export default {
   background-size: 20px;
   background-image: url("../../assets/icons/icon-arrow-up.svg") !important;
 }
+
 .friend {
   padding: 0.5px 4px 3px 4px;
   border-radius: 50%;
   background: #EDE9FE;
+
   svg {
     height: 13px;
     width: 13px;
