@@ -106,7 +106,7 @@ export default {
 
     .modal-content {
       height: 100%;
-      overflow-y: hidden;
+      overflow-y: auto;
     }
   }
 
@@ -115,7 +115,7 @@ export default {
     font-family: CraftworkSans, serif;
     font-weight: 900;
     height: 100%;
-    overflow-y: auto;
+    //overflow-y: auto;
     position: relative;
 
     &-main {
