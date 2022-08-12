@@ -120,7 +120,10 @@ export default {
 
     &-main {
       position: relative;
-      height: 100%;
+      height: 96%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .title {
@@ -186,8 +189,8 @@ export default {
 }
 
 .modal__footer {
-  position: absolute;
-  bottom: 0;
+  //position: absolute;
+  //bottom: 0;
   display: flex;
   width: 100%;
   justify-content: space-between;

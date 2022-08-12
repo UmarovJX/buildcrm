@@ -52,7 +52,7 @@ export default {
   border: none;
   border-radius: 2rem;
   color: var(--gray-600);
-  height: 100%;
+  height: 56px;
   padding: 1rem 2.75rem 1rem 1.25rem;
   background: var(--gray-100) url('../../../assets/icons/icon-down.svg') right 1rem center/24px 24px no-repeat;
 
