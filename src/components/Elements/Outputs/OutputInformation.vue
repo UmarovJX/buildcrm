@@ -10,16 +10,19 @@
     </span>
     <!--  END OF PROPERTY CONTENT  -->
 
-    <!--  VALUE CONTENT  -->
-    <slot name="value"/>
-    <span
-        v-if="!hasValueSlot"
-        class="d-block value"
-    >
-      <span>{{ value }}</span>
-      <span v-if="price"> {{ $t('ye') }}</span>
-    </span>
-    <!--  END OF VALUE CONTENT  -->
+    <div class="d-flex align-items-center">
+      <!--  VALUE CONTENT  -->
+      <slot name="value"/>
+      <span
+          v-if="!hasValueSlot"
+          class="d-block value"
+      >
+        <span>{{ value }}</span>
+        <span v-if="price"> {{ $t('ye') }}</span>
+      </span>
+      <!--  END OF VALUE CONTENT  -->
+      <slot name="actions"/>
+    </div>
   </div>
 </template>
 

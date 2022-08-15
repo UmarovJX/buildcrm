@@ -10,7 +10,11 @@
         class="date-picker"
         :range="range"
     >
-      <template v-slot:icon-calendar @click="togglePicker" class="calendar-icon">
+      <template
+          @click="togglePicker"
+          class="calendar-icon"
+          #icon-calendar
+      >
         <base-calendar-icon
             :fill="iconFill"
             :width="iconSquareSize"

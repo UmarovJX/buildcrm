@@ -1,6 +1,6 @@
 <template>
   <div class="app-header">
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between align-items-center">
       <div class="d-flex">
         <div @click="$router.go(-1)" class="app-header-back-button d-flex justify-content-center align-items-center">
           <base-left-icon :width="32" :height="32"/>
@@ -11,11 +11,12 @@
             {{ pageInfo.title }}
             <span class="app-header-page-title-active">
              {{ pageInfo.titleHighlight }}
-          </span>
+            </span>
           </div>
         </div>
       </div>
-      <div>
+      <div class="d-flex align-items-center">
+        <!--   Slot For Addition Actions     -->
         <slot name="header-right"></slot>
         <app-dropdown :position-right="true">
           <template #header>
@@ -28,6 +29,8 @@
             </b-dropdown-item>
           </template>
         </app-dropdown>
+        <app-notification-icon class="ml-1"/>
+        <app-question-icon class="ml-1"/>
       </div>
     </div>
   </div>
@@ -37,13 +40,17 @@
 import AppBreadcrumb from "@/components/AppBreadcrumb";
 import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
+import AppNotificationIcon from "@/components/Reusable/Notification/AppNotificationIcon";
+import AppQuestionIcon from "@/components/Reusable/Question/AppQuestionIcon";
 
 export default {
   name: "AppHeader",
   components: {
-    AppBreadcrumb,
     AppDropdown,
-    BaseLeftIcon
+    BaseLeftIcon,
+    AppBreadcrumb,
+    AppQuestionIcon,
+    AppNotificationIcon
   },
   data() {
     return {
@@ -94,7 +101,8 @@ export default {
 
 <style lang="scss" scoped>
 .app-header {
-  margin: 1rem;
+  margin: 3rem;
+  font-family: Inter, sans-serif;
 
   &-back-button {
     padding: 12px;

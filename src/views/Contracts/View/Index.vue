@@ -808,7 +808,6 @@ export default {
       background-color: var(--gray-200);
     }
   }
-
 }
 
 </style>

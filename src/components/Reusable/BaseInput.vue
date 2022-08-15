@@ -58,7 +58,7 @@ export default {
     BaseTimesCircleIcon,
     BaseNumericInput: () => import('@/components/Reusable/BaseNumericInput')
   },
-  emits: ['trigger-input', 'search-by-filter', 'replace-router'],
+  emits: ['input', 'trigger-input', 'search-by-filter', 'replace-router'],
   props: {
     placeholder: {
       type: String,

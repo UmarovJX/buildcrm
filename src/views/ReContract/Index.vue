@@ -1,7 +1,13 @@
 <template>
   <main class="main__content">
-    <b-tabs v-model="tabIndex" v-on:activate-tab="tabActivated" pills nav-class="reContract-header"
-            content-class="reContract" id="reContract">
+    <b-tabs
+        pills
+        v-model="tabIndex"
+        v-on:activate-tab="tabActivated"
+        nav-class="reContract-header"
+        content-class="reContract"
+        id="reContract"
+    >
       <b-tab active>
         <template #title>
           <div class="tab-title">
@@ -10,7 +16,6 @@
             <div class="next-icon">
               <img :src="require('@/assets/icons/icon-right.svg')" alt="">
             </div>
-
           </div>
         </template>
 
@@ -481,8 +486,6 @@
           </div>
 
         </ValidationObserver>
-
-
       </b-tab>
 
       <template #tabs-end>
@@ -513,7 +516,6 @@
 
         </b-nav-item>
       </template>
-
     </b-tabs>
   </main>
 </template>

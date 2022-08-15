@@ -118,7 +118,7 @@
   </main>
 </template>
 <script>
-import BaseActionList from "@/components/Reusable/BaseActionList";
+import BaseActionList from "@/components/Reusable/Dropdown/AppDropdown";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import BaseButton from "@/components/Reusable/BaseButton";

@@ -1,46 +1,15 @@
 <template>
   <main>
-    <div class="input-number-content">
-      <base-price-input
-          class="input-component"
-          placeholder="input price"
-          value="100,2121.2121"
-          :precision="2"
-      />
-      <div class="base-calendar">
-        <date-picker
-            type="date"
-            value-type="format"
-            :format="format"
-            :placeholder="placeholder"
-            v-model="dateValue"
-            class="date-picker"
-            :range="range"
-        ></date-picker>
-        <span class="calendar-icon">
-      <base-calendar-icon
-          :fill="iconFill"
-          :width="iconSquareSize"
-          :height="iconSquareSize"
-      />
-    </span>
-      </div>
+    <div>
+
     </div>
   </main>
 </template>
-
 <script>
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import "vue2-datepicker/index.css";
-import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
-import DatePicker from "vue2-datepicker";
 
 export default {
   name: "Experiment",
   components: {
-    BasePriceInput,
-    DatePicker,
-    BaseCalendarIcon
   },
   emits: ['input'],
   props: {
