@@ -171,7 +171,6 @@ hr {
   padding: 1.5rem;
   font-size: 14px;
   width: auto;
-  margin-bottom: 4em;
   background: #F3F4F6;
   color: #9CA3AF;
   min-width: 28rem;
