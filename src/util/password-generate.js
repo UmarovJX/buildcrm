@@ -9,10 +9,23 @@ export default class DummyPassword {
     }
 
     create(length, characters) {
+        let countLowercase = 0
         let _length = this.adjustLengthWithinLimits(length);
         let _characters = this.secureCharacterCombination(characters);
 
-        return this.shufflePassword(this.assemblePassword(_characters, _length));
+        let generatedPassword = this.shufflePassword(this.assemblePassword(_characters, _length))
+
+        generatedPassword.split('').map((item) => {
+            if (item === item.toLowerCase() && !(item.toLowerCase() === item.toUpperCase())) {
+                countLowercase++
+            }
+        })
+
+        if (countLowercase > 0) {
+            return generatedPassword
+        } else {
+            return this.shufflePassword(this.assemblePassword(_characters, _length));
+        }
     }
 
     adjustLengthWithinLimits(length) {

@@ -127,6 +127,7 @@
               v-slot="{ errors }"
               :name="`${ $t('user.password') }`"
               tag="div"
+              class="password-group"
           >
             <b-form-group
                 label-cols="4"
@@ -135,12 +136,25 @@
                 label-for="password"
             >
               <b-form-input
-                  type="password"
-                  min="5"
+                  :type="typeForPassword"
+                  min="8"
                   v-model="manager.password"
                   id="password"
                   autocomplete="off"
-              ></b-form-input>
+              />
+              <b-input-group-text @click="regeneratePassword">
+                <img style="width: 20px; height: 20px" src="@/assets/icons/refresh.svg"
+                     alt="no-preview-aye.svg">
+              </b-input-group-text>
+              <b-input-group-text @click="toggleInputType()">
+                <img v-if="typeForPassword === 'password'" src="@/assets/icons/no-preview-aye.svg"
+                     style="width: 20px; height: 20px"
+                     alt="no-preview-aye.svg">
+                <img v-else src="@/assets/icons/preview-aye.svg" style="width: 20px; height: 20px"
+                     alt="preview-aye.svg">
+              </b-input-group-text>
+              <div v-if="manager.password" class="po-password-strength-bar"
+                   :class="score"></div>
             </b-form-group>
 
 
@@ -205,6 +219,10 @@
 <script>
 import {mapActions, mapGetters, mapMutations} from "vuex";
 import api from "@/services/api";
+import DummyPassword from '@/util/password-generate';
+import scorePassword from "@/util/score-password";
+
+const dummy = new DummyPassword();
 
 export default {
   props: {
@@ -237,10 +255,18 @@ export default {
       password: '',
       objects: []
     },
+    typeForPassword: 'password',
     header: {
       headers: {
         Authorization: "Bearer " + localStorage.token,
       },
+    },
+    options: {
+      length: 16,
+      lower: true,
+      upper: true,
+      digits: true,
+      symbols: true,
     },
 
     getLoading: false
@@ -262,11 +288,43 @@ export default {
     }
   },
 
-  computed: mapGetters(["getObjects", "getUser", "getRoles"]),
+  computed: {
+    ...mapGetters(["getObjects", "getUser", "getRoles"]),
+    score() {
+      switch (scorePassword(this.manager.password)) {
+        case 0:
+          return 'risky'
+        case 1:
+          return 'guessable'
+        case 2:
+          return 'weak'
+        case 3:
+          return 'safe'
+        case 4:
+          return 'secure'
+        default:
+          return ''
+      }
+    }
+  },
 
   methods: {
     ...mapMutations(['updateUser']),
     ...mapActions(["nullManager"]),
+    regeneratePassword() {
+      const characters = [];
+      for (let option in this.options) {
+        if (this.options[option] === true) characters.push(dummy[option.toUpperCase()]);
+      }
+      this.manager.password = dummy.create(this.options.length, characters.join(''));
+    },
+    toggleInputType() {
+      if (this.typeForPassword === 'password') {
+        this.typeForPassword = 'text'
+      } else {
+        this.typeForPassword = 'password'
+      }
+    },
     setHistoryContext() {
       const length = Object.keys(this.editHistoryContext).length > 1
       if (length) {
@@ -386,4 +444,45 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+::v-deep .password-group .form-row > .col {
+  display: flex;
+}
+
+.po-password-strength-bar {
+  display: flex;
+  position: absolute;
+  top: 100%;
+  flex-basis: 100%;
+  width: 97%;
+  border-radius: 2px;
+  transition: all 0.2s linear;
+  height: 6px;
+  margin-top: 5px;
+}
+
+.po-password-strength-bar.risky {
+  background-color: #f95e68;
+  width: 10%;
+}
+
+.po-password-strength-bar.guessable {
+  background-color: #fb964d;
+  width: 32.5%;
+}
+
+.po-password-strength-bar.weak {
+  background-color: #fdd244;
+  width: 55%;
+}
+
+.po-password-strength-bar.safe {
+  background-color: #b0dc53;
+  width: 77.5%;
+}
+
+.po-password-strength-bar.secure {
+  background-color: #35cc62;
+  width: 97%;
+}
+</style>

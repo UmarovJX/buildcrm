@@ -35,6 +35,22 @@
               <label :for="id">{{ label }}</label>
               <b-input-group>
                 <template #append>
+                  <b-input-group-text v-if="bind === 'newPassword'" @click="copyToClipboard"
+                                      class="toggle__password__view">
+                    <span>
+                      <img style="width: 24px; height: 24px" src="@/assets/icons/clipboard.svg"
+                           alt="no-preview-aye.svg">
+                    </span>
+                  </b-input-group-text>
+
+                  <b-input-group-text v-if="bind === 'newPassword'" @click="regeneratePassword"
+                                      class="toggle__password__view">
+                    <span>
+                      <img style="width: 24px; height: 24px" src="@/assets/icons/refresh.svg"
+                           alt="no-preview-aye.svg">
+                    </span>
+                  </b-input-group-text>
+
                   <b-input-group-text @click="toggleInputType(index)" class="toggle__password__view">
                     <span v-if="type === 'password'">
                       <img src="@/assets/icons/no-preview-aye.svg" alt="no-preview-aye.svg">
@@ -54,10 +70,9 @@
               </b-input-group>
               <span class="error__provider" v-if="errors[0]">{{ $t('user.validation_password') }}</span>
               <span class="error__provider" v-if="validationError.show">{{ validationError.message }}</span>
+              <div v-if="form['newPassword'] && bind === 'newPassword'" class="po-password-strength-bar"
+                   :class="score"></div>
             </ValidationProvider>
-<!--            <span @click="regeneratePassword">-->
-<!--             <img src="@/assets/icons/no-preview-aye.svg" alt="no-preview-aye.svg">-->
-<!--            </span>-->
             <div class="buttons">
               <b-button :disabled="loading" type="submit" variant="btn-primary" class="submit__button">
                 {{ $t('refresh_password') }}
@@ -78,9 +93,9 @@
 
 <script>
 import api from "@/services/api";
-// import DummyPassword from '@/util/password-generate';
-// import scorePassword from "@/util/score-password";
-// const dummy = new DummyPassword();
+import DummyPassword from '@/util/password-generate';
+import scorePassword from "@/util/score-password";
+const dummy = new DummyPassword();
 
 export default {
   name: "TabChangePassword",
@@ -148,7 +163,7 @@ export default {
             message: this.$t('user.validation_confirm_password')
           }
         }
-      ]
+      ],
     }
   },
   watch: {
@@ -173,18 +188,34 @@ export default {
     hiddenArea() {
       return this.loading ? 'true' : null
     },
-    // score() {
-    //   return scorePassword(this.form.newPassword)
-    // }
+    score() {
+      switch (scorePassword(this.form.newPassword)) {
+        case 0:
+          return 'risky'
+        case 1:
+          return 'guessable'
+        case 2:
+          return 'weak'
+        case 3:
+          return 'safe'
+        case 4:
+          return 'secure'
+        default:
+          return ''
+      }
+    }
   },
   methods: {
-    // regeneratePassword() {
-    //   const characters = [];
-    //   for (let option in this.options) {
-    //     if (this.options[option] === true) characters.push(dummy[option.toUpperCase()]);
-    //   }
-    //   this.form.newPassword = dummy.create(this.options.length, characters.join(''));
-    // },
+    regeneratePassword() {
+      const characters = [];
+      for (let option in this.options) {
+        if (this.options[option] === true) characters.push(dummy[option.toUpperCase()]);
+      }
+      this.form.newPassword = dummy.create(this.options.length, characters.join(''));
+    },
+    copyToClipboard() {
+      clientInformation.clipboard.writeText(this.form.newPassword)
+    },
     submitNewPassword() {
       const {newPassword, repeatedPassword} = this.form
       if (newPassword === repeatedPassword)
@@ -300,4 +331,38 @@ export default {
   cursor: pointer;
   height: 38px;
 }
+
+.po-password-strength-bar {
+  border-radius: 2px;
+  transition: all 0.2s linear;
+  height: 5px;
+  margin-top: 8px;
+}
+
+.po-password-strength-bar.risky {
+  background-color: #f95e68;
+  width: 10%;
+}
+
+.po-password-strength-bar.guessable {
+  background-color: #fb964d;
+  width: 32.5%;
+}
+
+.po-password-strength-bar.weak {
+  background-color: #fdd244;
+  width: 55%;
+}
+
+.po-password-strength-bar.safe {
+  background-color: #b0dc53;
+  width: 77.5%;
+}
+
+.po-password-strength-bar.secure {
+  background-color: #35cc62;
+  width: 100%;
+}
+
+
 </style>

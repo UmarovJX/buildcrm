@@ -16,6 +16,16 @@
             {{ $t('payments.contract') }} <span class="contract__number">{{ order.contract }}</span>
           </span>
         </span>
+
+
+        <span
+            class="apartment__status d-flex justify-content-center align-items-center"
+            :class="`status-${order.status}`"
+        >
+              {{ $t(`apartments.status.${order.status}`) }}
+            </span>
+
+
       </div>
       <div v-if="hasAction">
         <b-dropdown right>
@@ -809,5 +819,54 @@ export default {
     }
   }
 }
+
+
+.apartment__status {
+  font-family: Inter, sans-serif;
+  background-color: var(--gray-100);
+  border-radius: 2rem;
+  font-size: 16px;
+  min-width: max-content;
+  padding: 1rem 3rem;
+  margin: 0 2rem;
+}
+
+.status {
+  &-waiting {
+    background-color: var(--yellow-100) !important;
+    color: var(--yellow-600) !important;
+  }
+
+  &-contract {
+    background-color: var(--blue-100) !important;
+    color: var(--blue-600) !important;
+  }
+
+  &-booked {
+    background-color: var(--yellow-100) !important;
+    color: var(--yellow-600) !important;
+  }
+
+  &-cancelled {
+    background-color: var(--pink-100) !important;
+    color: var(--pink-600) !important;
+  }
+
+  &-available {
+    background-color: var(--teal-100) !important;
+    color: var(--teal-600) !important;
+  }
+
+  &-sold {
+    background-color: var(--gray-100) !important;
+    color: var(--gray-600) !important;
+  }
+
+  &-unavailable {
+    background-color: var(--gray-500) !important;
+    color: var(--white) !important;
+  }
+}
+
 
 </style>

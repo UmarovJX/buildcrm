@@ -9,6 +9,8 @@
     <!--  Search Content  -->
     <search-bar-content
         v-if="filterPermission"
+        @replace-router="searchQueryFilter"
+        @search-by-filter="searchQueryFilter"
       />
 
     <!--  Table List -->
@@ -442,28 +444,28 @@ export default {
         }
       })
     },
-    // searchQueryFilter(searchQuery) {
-    //   const hasQueryStatus = this.query.hasOwnProperty('status')
-    //   if (hasQueryStatus) {
-    //     const {status} = this.query
-    //     this.pushRouter({
-    //       ...searchQuery,
-    //       status
-    //     })
-    //     return
-    //   }
-    //
-    //   this.pushRouter(searchQuery)
-    // },
+    searchQueryFilter(searchQuery) {
+      const hasQueryStatus = this.query.hasOwnProperty('status')
+      if (hasQueryStatus) {
+        const {status} = this.query
+        this.pushRouter({
+          ...searchQuery,
+          status
+        })
+        return
+      }
+
+      this.pushRouter(searchQuery)
+    },
     replaceRouter(query) {
       const sortQuery = sortObjectValues(query)
       this.$router.replace({query: sortQuery})
     },
-    // pushRouter(query) {
-    //   const sortQuery = sortObjectValues(query)
-    //   this.$router.push({query: {}})
-    //   this.$router.push({query: sortQuery})
-    // }
+    pushRouter(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$router.push({query: {}})
+      this.$router.push({query: sortQuery})
+    }
   }
 }
 </script>

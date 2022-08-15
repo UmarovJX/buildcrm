@@ -106,7 +106,7 @@ export default {
 
     .modal-content {
       height: 100%;
-      overflow-y: hidden;
+      overflow-y: auto;
     }
   }
 
@@ -115,12 +115,15 @@ export default {
     font-family: CraftworkSans, serif;
     font-weight: 900;
     height: 100%;
-    overflow-y: auto;
+    //overflow-y: auto;
     position: relative;
 
     &-main {
       position: relative;
-      height: 100%;
+      height: 96%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .title {
@@ -186,8 +189,8 @@ export default {
 }
 
 .modal__footer {
-  position: absolute;
-  bottom: 0;
+  //position: absolute;
+  //bottom: 0;
   display: flex;
   width: 100%;
   justify-content: space-between;

@@ -120,7 +120,7 @@ export default {
     goApartment() {
 
       this.$bvModal.hide("modal-success-agree");
-      if (this.$route.name === "confirm-apartment") {
+      if (this.$route.name === "confirm-apartment" || this.$route.name === "edit-apartment") {
         // if (this.apartments === 1) {
         //   this.$router.push({
         //     name: "apartment-view",
@@ -137,7 +137,7 @@ export default {
       } else {
         this.$router.push({
           name: "apartment-view",
-          params: {id: this.$route.params.id},
+          params: {object: this.apartments[0].object.id, id: this.$route.params.id},
         });
       }
     },
