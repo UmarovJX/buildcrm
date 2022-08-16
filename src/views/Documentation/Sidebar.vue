@@ -29,7 +29,7 @@
                 <BaseUpIcon/>
               </div>
             </div>
-            <p v-if="collapse===false">
+            <p class="sub-items" v-if="collapse===false">
             <span v-for="({icon, name, route}, index) in items" v-bind:key="index">
               <router-link :to="{name: route}">
                 <BaseButton :text="`${ $t(name) }`">
@@ -42,7 +42,7 @@
             </p>
           </template>
           <template v-else>
-            <router-link :to="{name: route}">
+            <router-link :to="{name: route}" class="item-row">
               <div class="item-row-left" @click="collapseItems(index)">
                 <div class="icon">
                   <component :is="icon"/>
@@ -184,7 +184,9 @@ export default {
       this.menu_collapse = !this.menu_collapse
     },
     collapseItems(index) {
-      this.items[index].collapse = !this.items[index].collapse
+      if (!this.menu_collapse) {
+        this.items[index].collapse = !this.items[index].collapse
+      }
     }
   },
 }
@@ -193,6 +195,8 @@ export default {
 <style lang="scss" scoped>
 .sm {
   width: 104px;
+  padding: 48px 20px;
+
   img {
     width: 56px;
     height: 30px;
@@ -200,6 +204,7 @@ export default {
 }
 .lg {
   width: 304px;
+  padding: 48px 24px;
 }
 .sidebar-container {
   min-height: 92vh;
@@ -210,21 +215,35 @@ export default {
   justify-content: space-between;
   background-color: #F3F4F6;
   border-radius: 56px;
-  padding: 48px 24px;
+  .item {
+    .sub-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      .base__button {
+        background: #E5E7EB;
+        width: 100%;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 22px;
+        color: #4B5563;
+        padding: 13px 24px;
+        border-radius: 16px;
+        justify-content: flex-start;
+        &:hover {
+          color: #7C3AED!important;
+        }
+      }
+    }
+  }
   &-top {
     width: 100%;
     .items {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      .item {
-        padding: 19px 20px;
-        &:hover {
-          background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
-          border-radius: 16px;
-          color: white!important;
-        }
-      }
     }
     a {
       display: flex;
@@ -239,8 +258,14 @@ export default {
     .item-row {
       display: flex;
       cursor: pointer;
+      padding: 19px 20px;
       justify-content: space-between;
       align-items: center;
+      &:hover {
+        background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
+        border-radius: 16px;
+        color: white!important;
+      }
       &-left {
         display: flex;
         gap: 20px;
@@ -252,6 +277,7 @@ export default {
     display: flex;
     gap: 20px;
     color: #9CA3AF;
+    cursor: pointer;
     align-items: center;
     padding: 19px 30px;
   }
