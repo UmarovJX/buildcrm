@@ -1,9 +1,8 @@
 <template>
-  <div class="sidebar-container">
+  <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
     <div class="sidebar-container-top">
       <router-link
           :to="{name:'home'}"
-          class="brand-logo"
       >
         <img src="@/assets/img/object__img1.png" alt="Xonsaroy"/>
       </router-link>
@@ -57,7 +56,10 @@
         </div>
       </div>
     </div>
-    <div class="hide" @click="collapseMenu">
+    <div class="hide" @click="collapseMenu" v-if="menu_collapse">
+      <BaseCollapseRightIcon/>
+    </div>
+    <div class="hide" @click="collapseMenu" v-else>
       <BaseCollapseLeftIcon/>
       {{ $t('hide_menu') }}
     </div>
@@ -76,10 +78,11 @@ import BaseCollapseLeftIcon from "@/components/icons/BaseCollapseLeftIcon";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import BaseUpIcon from "@/components/icons/BaseUpIcon";
+import BaseCollapseRightIcon from "@/components/icons/BaseCollapseRightIcon";
 
 export default {
   name: 'Header',
-  components: {BaseUpIcon, BaseDownIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseButton},
+  components: {BaseCollapseRightIcon, BaseUpIcon, BaseDownIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseButton},
   props: {
     theme: {
       type: String,
@@ -179,7 +182,6 @@ export default {
   methods: {
     collapseMenu(){
       this.menu_collapse = !this.menu_collapse
-      console.log(this.menu_collapse)
     },
     collapseItems(index) {
       this.items[index].collapse = !this.items[index].collapse
@@ -189,9 +191,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.sm {
+  width: 104px;
+  img {
+    width: 56px;
+    height: 30px;
+  }
+}
+.lg {
+  width: 304px;
+}
 .sidebar-container {
   min-height: 92vh;
-  width: 304px;
   display: flex;
   flex-direction: column;
   gap: 46px;
