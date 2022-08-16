@@ -242,12 +242,13 @@ export default {
 .app-checkout {
   .checkout-timer {
     font-weight: 600;
-    font-size: 1.5em;
+    font-size: 1.5rem;
+    line-height: 30px;
     color: var(--white);
     border-radius: 28px;
 
     &-inner {
-      padding: 10px 16px;
+      padding: 13px 16px;
     }
   }
 }

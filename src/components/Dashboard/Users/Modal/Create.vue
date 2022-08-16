@@ -158,10 +158,19 @@
 
             <span
                 v-if="errors[0]"
-                class="error__provider d-flex justify-content-end mb-3"
+                class="error__provider d-flex justify-content-end mb-1"
             >
               {{ errors[0] }}
             </span>
+            <div
+                v-if="manager.password && validationError.show"
+                class="mb-3"
+            >
+              <span class="w-100 error__provider d-flex justify-content-end mb-1 text-right"
+                    v-for="(message,index) in validationError.message" :key="index">
+                 {{ message }} <br/>
+              </span>
+            </div>
           </ValidationProvider>
 
           <b-form-group
@@ -243,6 +252,14 @@ export default {
       digits: true,
       symbols: true,
     },
+    errorNumber: 'Пароль должен содержать хотя бы одну цифру',
+    errorUppercase: 'Пароль должен содержать заглавных буквы',
+    errorLowercase: 'Пароль должен содержать маленькие буквы',
+    validationError: {
+      show: false,
+      message: []
+    },
+    validationPassword: true,
     header: {
       headers: {
         Authorization: "Bearer " + localStorage.token,
@@ -269,6 +286,12 @@ export default {
     }
   },
 
+  watch: {
+    'manager.password'(value) {
+      this.checkPassword(value)
+    },
+  },
+
   async created() {
     await this.getBranchesList()
   },
@@ -282,6 +305,25 @@ export default {
 
   methods: {
     ...mapActions(["fetchObjects", "fetchRoles"]),
+    checkPassword(password) {
+      const lowercaseRegex = /(.*[a-z].*)/g
+      const uppercaseRegex = /(.*[A-Z].*)/g
+      const numberRegex = /(.*[0-9].*)/g
+
+      const hasLowerCase = lowercaseRegex.test(password)
+      const hasUpperCase = uppercaseRegex.test(password)
+      const hasNumber = numberRegex.test(password)
+      this.validationError.message = []
+      if (!hasLowerCase)
+        this.validationError.message.push(this.errorLowercase)
+      if (!hasUpperCase)
+        this.validationError.message.push(this.errorUppercase)
+      if (!hasNumber)
+        this.validationError.message.push(this.errorNumber)
+      this.validationError.message.length ? this.validationError.show = true : this.validationError.show = false
+
+      this.validationPassword = hasLowerCase && hasUpperCase && hasNumber
+    },
     initManagerRole() {
       this.manager.role_id = this.getRoles[0].id
     },
@@ -332,36 +374,38 @@ export default {
     },
 
     async submitForm() {
-      this.getLoading = true;
-      try {
-        const form = Object.assign({}, this.manager)
-        form.phone = form.phone.replace(/\s/g, '')
-        form.objects = form.objects.filter(object => object !== null)
-        const response = await api.userV2.addNewUserToDB(form)
-        this.toasted(response.data.message, "success");
-        this.$nextTick(() => {
-          this.getLoading = false;
-          this.$bvModal.hide("modal-create");
-        });
+      if (this.validationPassword) {
+        this.getLoading = true;
+        try {
+          const form = Object.assign({}, this.manager)
+          form.phone = form.phone.replace(/\s/g, '')
+          form.objects = form.objects.filter(object => object !== null)
+          const response = await api.userV2.addNewUserToDB(form)
+          this.toasted(response.data.message, "success");
+          this.$nextTick(() => {
+            this.getLoading = false;
+            this.$bvModal.hide("modal-create");
+          });
 
-        this.$emit("CreateManager", this.manager);
-        this.resetFormProperties()
-      } catch (error) {
-        this.getLoading = false;
-        if (!error.response) {
-          this.toasted("Error: Network Error", "error");
-        } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 422) {
-            this.error = true;
-            this.errors = error.response.data;
+          this.$emit("CreateManager", this.manager);
+          this.resetFormProperties()
+        } catch (error) {
+          this.getLoading = false;
+          if (!error.response) {
+            this.toasted("Error: Network Error", "error");
           } else {
-            this.toasted(error.response.data.message, "error");
+            if (error.response.status === 403) {
+              this.toasted(error.response.data.message, "error");
+            } else if (error.response.status === 401) {
+              this.toasted(error.response.data, "error");
+            } else if (error.response.status === 500) {
+              this.toasted(error.response.data.message, "error");
+            } else if (error.response.status === 422) {
+              this.error = true;
+              this.errors = error.response.data;
+            } else {
+              this.toasted(error.response.data.message, "error");
+            }
           }
         }
       }
