@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+    hide_menu: "Menuni yashirish",
     component: 'komponent',
     roles_permission: {
         activate_all: 'Hammasini faollashtirish',
@@ -74,6 +75,7 @@ export default {
             full_access: 'Barchasiga ruxsat berish'
         },
         contracts: {
+            list_contract: "Shartnomalar ro'yxati",
             watch_deals: 'Shartnomalar ro\'yxatini ko\'rish huquqi',
             filter_deals: 'Shartnomalar ro\'yxatini filtrlash huquqi',
             watch_deal: 'Bitta shartnomani ko\'rish huquqi',
@@ -833,6 +835,7 @@ export default {
     },
 
     debtors: {
+        new_title: "Qarzdorlar",
         title: "Qarzdorlar", overdue: "Muddati o'tgan", // asd
         familiars: "Tanishlar", // asd
         contract_number: "№ shartnoma", // asd

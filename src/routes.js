@@ -44,7 +44,7 @@ import Debtors from "@/views/Debtors/Index"
 import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
-import Documentation from "@/views/documentation";
+import Documentation from "@/views/Documentation/documentation";
 
 const routes = [
     {
@@ -76,7 +76,6 @@ const routes = [
                 name: 'documentation',
                 component: Documentation
             },
-
             {
                 /* LOGIN */
                 path: "/login",
@@ -392,9 +391,19 @@ const routes = [
             },
 
             {
-                path: '/icons',
+                path: '/documentation/icons',
                 name: 'icons',
-                component: () => import('@/views/icons')
+                component: () => import('@/views/Documentation/icons')
+            },
+            {
+                path: '/documentation/sidebar',
+                name: 'sidebar',
+                component: () => import('@/views/Documentation/Sidebar')
+            },
+            {
+                path: '/documentation/actions',
+                name: 'actions',
+                component: () => import('@/views/Documentation/Actions')
             },
 
             {

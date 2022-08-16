@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
+    hide_menu: "Скрыть меню",
     component: 'компонент',
     roles_permission: {
         activate_all: 'Активировать все',
@@ -437,6 +438,7 @@ export default {
 
     contracts: {
         name: 'Договоры',
+        list_contracts: "Список договоров",
         object_name: 'Название объекта',
         apply_filter: 'Применить',
         client_type: 'Тип клиента',
@@ -528,7 +530,6 @@ export default {
             initial_payment: 'Первоначальный взнос', // asd
             actions: 'Действия'
         },
-
     },
 
     roles: {
@@ -831,6 +832,7 @@ export default {
     debtors: {
         title: "Должники", overdue: "Просроченные", // asd
         familiars: "Знакомые", // asd
+        new_title: "Задолжники",
         contract_number: "№ договора", // asd
         client_name: "имя клиента", // asd
         client_number: "номер телефона", // asd
