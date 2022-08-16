@@ -13,7 +13,7 @@
             v-bind:key="index"
         >
           <template v-if="items">
-            <div class="item-row" @click="collapseItems(index)">
+            <div :class="!collapse ? 'item-row purple-bg' : 'item-row'" @click="collapseItems(index)">
               <div class="item-row-left">
                 <div class="icon">
                   <component :is="icon"/>
@@ -42,7 +42,7 @@
             </p>
           </template>
           <template v-else>
-            <router-link :to="{name: route}" class="item-row">
+            <router-link :to="{name: route}" :class="!collapse ? 'item-row purple-bg' : 'item-row'">
               <div class="item-row-left" @click="collapseItems(index)">
                 <div class="icon">
                   <component :is="icon"/>
@@ -254,6 +254,11 @@ export default {
     }
     p {
       margin-bottom: 0;
+    }
+    .purple-bg {
+      background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
+      border-radius: 16px;
+      color: white!important;
     }
     .item-row {
       display: flex;
