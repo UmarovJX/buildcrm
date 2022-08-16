@@ -1,35 +1,40 @@
 <template>
-  <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
-    <div class="sidebar-container-top">
-      <router-link
-          :to="{name:'home'}"
-      >
-        <img src="@/assets/img/object__img1.png" alt="Xonsaroy"/>
-      </router-link>
-      <div class="items">
-        <div
-            class="item"
-            v-for="({icon, name, route, items, collapse},index) in items"
-            v-bind:key="index"
+  <div class="sidebar">
+    <header>
+      <p>Xon Saroy Design System • Component</p>
+      <h1>sidebar</h1>
+    </header>
+    <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
+      <div class="sidebar-container-top">
+        <router-link
+            :to="{name:'home'}"
         >
-          <template v-if="items">
-            <div :class="!collapse ? 'item-row purple-bg' : 'item-row'" @click="collapseItems(index)">
-              <div class="item-row-left">
-                <div class="icon">
-                  <component :is="icon"/>
+          <img src="@/assets/img/object__img1.png" alt="Xonsaroy"/>
+        </router-link>
+        <div class="items">
+          <div
+              class="item"
+              v-for="({icon, name, route, items, collapse},index) in items"
+              v-bind:key="index"
+          >
+            <template v-if="items">
+              <div :class="!collapse ? 'item-row purple-bg' : 'item-row'" @click="collapseItems(index)">
+                <div class="item-row-left">
+                  <div class="icon">
+                    <component :is="icon"/>
+                  </div>
+                  <div class="text" v-if="!menu_collapse">
+                    <p>{{ $t(name) }}</p>
+                  </div>
                 </div>
-                <div class="text" v-if="!menu_collapse">
-                  <p>{{ $t(name) }}</p>
+                <div class="icon down-icon" v-if="!menu_collapse && collapse">
+                  <BaseDownIcon/>
+                </div>
+                <div class="icon down-icon" v-if="!collapse && !menu_collapse">
+                  <BaseUpIcon/>
                 </div>
               </div>
-              <div class="icon down-icon" v-if="!menu_collapse && collapse">
-                <BaseDownIcon/>
-              </div>
-              <div class="icon down-icon" v-if="!collapse && !menu_collapse">
-                <BaseUpIcon/>
-              </div>
-            </div>
-            <p class="sub-items" v-if="collapse===false">
+              <p class="sub-items" v-if="collapse===false">
             <span v-for="({icon, name, route, collapsed_view}, index) in items" v-bind:key="index">
               <router-link :to="{name: route}">
                 <template v-if="!menu_collapse">
@@ -51,31 +56,33 @@
                 </template>
               </router-link>
             </span>
-            </p>
-          </template>
-          <template v-else>
-            <router-link :to="{name: route}" :class="!collapse ? 'item-row purple-bg' : 'item-row'">
-              <div class="item-row-left" @click="collapseItems(index)">
-                <div class="icon">
-                  <component :is="icon"/>
+              </p>
+            </template>
+            <template v-else>
+              <router-link :to="{name: route}" :class="!collapse ? 'item-row purple-bg' : 'item-row'">
+                <div class="item-row-left" @click="collapseItems(index)">
+                  <div class="icon">
+                    <component :is="icon"/>
+                  </div>
+                  <div class="text" v-if="!menu_collapse">
+                    <p>{{ $t(name) }}</p>
+                  </div>
                 </div>
-                <div class="text" v-if="!menu_collapse">
-                  <p>{{ $t(name) }}</p>
-                </div>
-              </div>
-            </router-link>
-          </template>
+              </router-link>
+            </template>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="hide" @click="collapseMenu" v-if="menu_collapse">
-      <BaseCollapseRightIcon/>
-    </div>
-    <div class="hide" @click="collapseMenu" v-else>
-      <BaseCollapseLeftIcon/>
-      {{ $t('hide_menu') }}
+      <div class="hide" @click="collapseMenu" v-if="menu_collapse">
+        <BaseCollapseRightIcon/>
+      </div>
+      <div class="hide" @click="collapseMenu" v-else>
+        <BaseCollapseLeftIcon/>
+        {{ $t('hide_menu') }}
+      </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -93,7 +100,7 @@ import BaseUpIcon from "@/components/icons/BaseUpIcon";
 import BaseCollapseRightIcon from "@/components/icons/BaseCollapseRightIcon";
 
 export default {
-  name: 'Header',
+  name: 'Sidebar',
   components: {BaseCollapseRightIcon, BaseUpIcon, BaseDownIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseButton},
   props: {
     theme: {
@@ -209,110 +216,139 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sm {
-  width: 104px;
-  padding: 48px 20px;
+.sidebar {
+  padding: 30px;
+  .sm {
+    width: 104px;
+    padding: 48px 20px;
 
-  img {
-    width: 56px;
-    height: 30px;
+    img {
+      width: 56px;
+      height: 30px;
+    }
   }
-}
-.lg {
-  width: 304px;
-  padding: 48px 24px;
-}
-.collapsed-text {
-  padding: 13px 15.5px;
-  border-radius: 16px;
-  width: 100%;
-  display: flex;
-  background: #E5E7EB;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    color: #7C3AED;
+  .lg {
+    width: 304px;
+    padding: 48px 24px;
   }
-}
-.sidebar-container {
-  min-height: 92vh;
-  display: flex;
-  flex-direction: column;
-  gap: 46px;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  background-color: #F3F4F6;
-  border-radius: 56px;
-  .item {
-    .sub-items {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
-      .base__button {
-        background: #E5E7EB;
-        width: 100%;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 22px;
-        color: #4B5563;
-        padding: 13px 24px;
-        border-radius: 16px;
-        justify-content: flex-start;
-        &:hover {
-          color: #7C3AED!important;
+  .collapsed-text {
+    padding: 13px 15.5px;
+    border-radius: 16px;
+    width: 100%;
+    display: flex;
+    background: #E5E7EB;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+      color: #7C3AED;
+    }
+  }
+  .sidebar-container {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    gap: 46px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #F3F4F6;
+    border-radius: 56px;
+    .item {
+      .sub-items {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+        .base__button {
+          background: #E5E7EB;
+          width: 100%;
+          font-style: normal;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 22px;
+          color: #4B5563;
+          padding: 13px 24px;
+          border-radius: 16px;
+          justify-content: flex-start;
+          &:hover {
+            color: #7C3AED!important;
+          }
         }
       }
     }
-  }
-  &-top {
-    width: 100%;
-    .items {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    a {
-      display: flex;
-    }
-    img {
-      max-width: 135px;
-      margin: 0 auto 24px;
-    }
-    p {
-      margin-bottom: 0;
-    }
-    .purple-bg {
-      background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
-      border-radius: 16px;
-      color: white!important;
-    }
-    .item-row {
-      display: flex;
-      cursor: pointer;
-      padding: 19px 20px;
-      justify-content: space-between;
-      align-items: center;
-      &:hover {
+    &-top {
+      width: 100%;
+      .items {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      a {
+        display: flex;
+      }
+      img {
+        max-width: 135px;
+        margin: 0 auto 24px;
+      }
+      p {
+        margin-bottom: 0;
+      }
+      .purple-bg {
         background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
         border-radius: 16px;
         color: white!important;
       }
-      &-left {
+      .item-row {
         display: flex;
-        gap: 20px;
-        align-content: center;
+        cursor: pointer;
+        padding: 19px 20px;
+        justify-content: space-between;
+        align-items: center;
+        &:hover {
+          background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
+          border-radius: 16px;
+          color: white!important;
+        }
+        &-left {
+          display: flex;
+          gap: 20px;
+          align-content: center;
+        }
       }
     }
+    .hide {
+      display: flex;
+      gap: 20px;
+      color: #9CA3AF;
+      cursor: pointer;
+      align-items: center;
+      padding: 19px 30px;
+    }
   }
-  .hide {
+  header {
     display: flex;
-    gap: 20px;
-    color: #9CA3AF;
-    cursor: pointer;
-    align-items: center;
-    padding: 19px 30px;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 60px;
+    p {
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'CraftworkSans', serif;
+      font-weight: 900;
+      color: #9CA3AF;
+      font-size: 16px;
+      line-height: 19px;
+      margin: 0;
+    }
+    h1 {
+      text-transform: uppercase;
+      font-family: 'CraftworkSans', serif;
+      margin: 0;
+      font-weight: 900;
+      font-size: 64px;
+      line-height: 77px;
+      color: #4B5563;
+    }
   }
 }
+
 </style>

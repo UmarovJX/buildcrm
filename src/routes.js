@@ -401,6 +401,11 @@ const routes = [
                 component: () => import('@/views/Documentation/Sidebar')
             },
             {
+                path: '/documentation/topbar',
+                name: 'topbar',
+                component: () => import('@/views/Documentation/Topbar')
+            },
+            {
                 path: '/documentation/actions',
                 name: 'actions',
                 component: () => import('@/views/Documentation/Actions')
