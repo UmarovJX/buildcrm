@@ -425,6 +425,7 @@ export default {
         course_name: 'сум',
         contract: 'Договор',
         payment_list: 'Список оплат',
+        collapsed_payment_list: "СО",
         payment_download: 'Импорт оплат',
         payment_add: 'Добавить оплату',
         import: 'Загрузите файл в формате .xls или .csv для импорта оплат',
@@ -439,6 +440,7 @@ export default {
     contracts: {
         name: 'Договоры',
         list_contracts: "Список договоров",
+        collapsed_contracts_list: "СД",
         object_name: 'Название объекта',
         apply_filter: 'Применить',
         client_type: 'Тип клиента',
@@ -833,6 +835,7 @@ export default {
         title: "Должники", overdue: "Просроченные", // asd
         familiars: "Знакомые", // asd
         new_title: "Задолжники",
+        collapsed_new_title: "З",
         contract_number: "№ договора", // asd
         client_name: "имя клиента", // asd
         client_number: "номер телефона", // asd

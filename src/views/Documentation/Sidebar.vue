@@ -25,18 +25,30 @@
               <div class="icon down-icon" v-if="!menu_collapse && collapse">
                 <BaseDownIcon/>
               </div>
-              <div class="icon down-icon" v-if="!collapse">
+              <div class="icon down-icon" v-if="!collapse && !menu_collapse">
                 <BaseUpIcon/>
               </div>
             </div>
             <p class="sub-items" v-if="collapse===false">
-            <span v-for="({icon, name, route}, index) in items" v-bind:key="index">
+            <span v-for="({icon, name, route, collapsed_view}, index) in items" v-bind:key="index">
               <router-link :to="{name: route}">
-                <BaseButton :text="`${ $t(name) }`">
+                <template v-if="!menu_collapse">
+                  <BaseButton :text="`${ $t(name) }`">
                   <template #left-icon>
                     <component :is="icon"/>
                   </template>
                 </BaseButton>
+                </template>
+                <template v-if="menu_collapse && icon">
+                  <span class="icon">
+                    <component :is="icon"/>
+                  </span>
+                </template>
+                <template v-if="menu_collapse && !icon">
+                  <span class="collapsed-text">
+                    {{ $t(collapsed_view) }}
+                  </span>
+                </template>
               </router-link>
             </span>
             </p>
@@ -109,16 +121,19 @@ export default {
               icon: null,
               name: 'contracts.list_contracts',
               route: 'contracts-list',
+              collapsed_view: "contracts.collapsed_contracts_list"
             },
             {
               icon: null,
               name: 'debtors.new_title',
               route: 'debtors',
+              collapsed_view: "debtors.collapsed_new_title"
             },
             {
               icon: null,
               name: 'payments.payment_list',
               route: 'payments',
+              collapsed_view: "payments.collapsed_payment_list"
             },
           ]
         },
@@ -131,19 +146,19 @@ export default {
               icon: null,
               name: 'contracts.list_contracts',
               route: 'contracts-list',
-              items: null,
+              collapsed_view: "contracts.collapsed_contracts_list"
             },
             {
               icon: null,
               name: 'debtors.new_title',
               route: 'debtors',
-              items: null,
+              collapsed_view: "debtors.collapsed_new_title"
             },
             {
               icon: null,
               name: 'payments.payment_list',
               route: 'payments',
-              items: null,
+              collapsed_view: "payments.collapsed_payment_list"
             },
           ]
         },
@@ -156,16 +171,19 @@ export default {
               icon: null,
               name: 'contracts.list_contracts',
               route: 'contracts-list',
+              collapsed_view: "contracts.collapsed_contracts_list"
             },
             {
               icon: null,
               name: 'debtors.new_title',
               route: 'debtors',
+              collapsed_view: "debtors.collapsed_new_title"
             },
             {
               icon: null,
               name: 'payments.payment_list',
               route: 'payments',
+              collapsed_view: "payments.collapsed_payment_list"
             },
           ]
         },
@@ -184,9 +202,7 @@ export default {
       this.menu_collapse = !this.menu_collapse
     },
     collapseItems(index) {
-      if (!this.menu_collapse) {
-        this.items[index].collapse = !this.items[index].collapse
-      }
+      this.items[index].collapse = !this.items[index].collapse
     }
   },
 }
@@ -205,6 +221,18 @@ export default {
 .lg {
   width: 304px;
   padding: 48px 24px;
+}
+.collapsed-text {
+  padding: 13px 15.5px;
+  border-radius: 16px;
+  width: 100%;
+  display: flex;
+  background: #E5E7EB;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    color: #7C3AED;
+  }
 }
 .sidebar-container {
   min-height: 92vh;
