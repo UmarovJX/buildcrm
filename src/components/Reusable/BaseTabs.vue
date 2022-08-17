@@ -1,7 +1,7 @@
 <template>
   <div class="base-tabs">
     <div class="tab" v-for="({tab, number, is_active}, index) in tabs" :key="index">
-      <span :class="is_active ? 'tab-active' : 'tab-inactive'">
+      <span @click="activeTab(index)" :class="is_active ? 'tab-active' : 'tab-inactive'">
         <p class="tab-text">{{$t(tab)}}</p>
         <span class="tab-number">{{number}}</span>
       </span>
@@ -17,6 +17,13 @@ export default {
     tabs: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    activeTab(index) {
+      let i = this.tabs.findIndex(item => item.is_active)
+      this.tabs[i].is_active = false
+      this.tabs[index].is_active = true
     }
   }
 }
