@@ -5,6 +5,7 @@
     <router-link :to="{name: 'actions'}">Actions</router-link>
     <router-link :to="{name: 'topbar'}">Topbar</router-link>
     <router-link :to="{name: 'tabs'}">Tabs</router-link>
+    <router-link :to="{name: 'search'}">Search</router-link>
   </div>
 </template>
 <script>
