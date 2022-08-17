@@ -826,6 +826,7 @@ export default {
         no_img: "(xonadon rejasi mavjud emas)",
         yes_img: "(xonadon rejasi mavjud)",
         plan: "Xonadon rejasi",
+        floor: 'Qavat',
         plans: "Barcha xonadon rejalari",
         list: "Xonadon rejalari ro'yxati",
         plan_required: "Xonadon loyihasini tanlashingiz shart",
@@ -932,7 +933,9 @@ export default {
                 balcony: "Balkoni bormi?",
                 balcony_area: "Balkon maydoni",
                 balcony_paid: "Balkon pullimi?",
-                add: 'Xonadon rejasini qo\'shish'
+                add: 'Xonadon rejasini qo\'shish',
+                search: 'Xonadon rejasi nomi',
+                add_image: 'Rasm qo\'shish',
             },
 
             apartments: "Xonadonlar",
