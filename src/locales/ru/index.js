@@ -154,6 +154,7 @@ export default {
     yes_delete: "Да, удалить",
     remove_payment: "Удалить оплату ?",
     deleted: "Удалено",
+    peculiarities: "Особенности",
     successfully: 'Успешно!',
     payment_change: "Платеж изменен",
     other: 'Другие',
@@ -943,7 +944,7 @@ export default {
             count_floors: "Количество этажей",
             count_apartments: "Количество квартир",
 
-            price_area: "Цена за м2",
+            price_area: "Цена за М2",
             new_price: "Новая цена",
             create_price: "Создать цену",
             alert_price: "Чтобы продолжить добавления, пожалуйста добавьте цены этажей",

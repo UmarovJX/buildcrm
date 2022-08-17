@@ -3,7 +3,7 @@
   <div v-if="promo.length" class="promos">
     <div v-for="item in promo" :key="item.id" class="promo__section">
       <div class="d-flex justify-content-between mb-3" id="promo-sale">
-             <span class="d-block">
+       <span class="d-block">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0.576446 10L10 0.576446L19.4236 10L10 19.4236L0.576446 10Z" fill="#7C3AED" stroke="white"
                     stroke-width="0.815217"/>
@@ -16,7 +16,7 @@
               {{ $t('more_info') }}
             </b-tooltip>
        </span>
-        <span class="promo__section-subtitle">{{ $t('to') }} {{ startDate(item.end_date) }}</span>
+       <span class="promo__section-subtitle">{{ $t('to') }} {{ startDate(item.end_date) }}</span>
       </div>
       <span v-for="discount in item.discounts" :key="discount.promo_id" class="apartment__details-row">
             <span class="property">{{ $t('apartments.first_payment') }} {{ discount.discount }}%</span>
