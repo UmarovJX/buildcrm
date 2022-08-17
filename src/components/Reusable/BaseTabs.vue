@@ -47,6 +47,7 @@ export default {
         font-weight: 600;
         font-size: 16px;
         line-height: 22px;
+        color: #9CA3AF;
         background: #EDE9FE;
         border-radius: 32px;
         padding: 4px 8px;
@@ -71,6 +72,9 @@ export default {
         cursor: pointer;
         &::after {
           background: #E5E7EB;
+        }
+        .tab-number {
+          color: #7C3AED;
         }
       }
     }
