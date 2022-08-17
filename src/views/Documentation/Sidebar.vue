@@ -4,37 +4,38 @@
       <p>Xon Saroy Design System • Component</p>
       <h1>sidebar</h1>
     </header>
-    <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
-      <div class="sidebar-container-top">
-        <router-link
-            :to="{name:'home'}"
-        >
-          <img src="@/assets/img/object__img1.png" alt="Xonsaroy"/>
-        </router-link>
-        <div class="items">
-          <div
-              class="item"
-              v-for="({icon, name, route, items, collapse},index) in items"
-              v-bind:key="index"
+    <div class="sidebar-content">
+      <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
+        <div class="sidebar-container-top">
+          <router-link
+              :to="{name:'home'}"
           >
-            <template v-if="items">
-              <div :class="!collapse ? 'item-row purple-bg' : 'item-row'" @click="collapseItems(index)">
-                <div class="item-row-left">
-                  <div class="icon">
-                    <component :is="icon"/>
+            <img src="@/assets/img/object__img1.png" alt="Xonsaroy"/>
+          </router-link>
+          <div class="items">
+            <div
+                class="item"
+                v-for="({icon, name, route, items, collapse},index) in items"
+                v-bind:key="index"
+            >
+              <template v-if="items">
+                <div :class="!collapse ? 'item-row purple-bg' : 'item-row'" @click="collapseItems(index)">
+                  <div class="item-row-left">
+                    <div class="icon">
+                      <component :is="icon"/>
+                    </div>
+                    <div class="text" v-if="!menu_collapse">
+                      <p>{{ $t(name) }}</p>
+                    </div>
                   </div>
-                  <div class="text" v-if="!menu_collapse">
-                    <p>{{ $t(name) }}</p>
+                  <div class="icon down-icon" v-if="!menu_collapse && collapse">
+                    <BaseDownIcon/>
+                  </div>
+                  <div class="icon down-icon" v-if="!collapse && !menu_collapse">
+                    <BaseUpIcon/>
                   </div>
                 </div>
-                <div class="icon down-icon" v-if="!menu_collapse && collapse">
-                  <BaseDownIcon/>
-                </div>
-                <div class="icon down-icon" v-if="!collapse && !menu_collapse">
-                  <BaseUpIcon/>
-                </div>
-              </div>
-              <p class="sub-items" v-if="collapse===false">
+                <p class="sub-items" v-if="collapse===false">
             <span v-for="({icon, name, route, collapsed_view}, index) in items" v-bind:key="index">
               <router-link :to="{name: route}">
                 <template v-if="!menu_collapse">
@@ -56,29 +57,30 @@
                 </template>
               </router-link>
             </span>
-              </p>
-            </template>
-            <template v-else>
-              <router-link :to="{name: route}" :class="!collapse ? 'item-row purple-bg' : 'item-row'">
-                <div class="item-row-left" @click="collapseItems(index)">
-                  <div class="icon">
-                    <component :is="icon"/>
+                </p>
+              </template>
+              <template v-else>
+                <router-link :to="{name: route}" :class="!collapse ? 'item-row purple-bg' : 'item-row'">
+                  <div class="item-row-left" @click="collapseItems(index)">
+                    <div class="icon">
+                      <component :is="icon"/>
+                    </div>
+                    <div class="text" v-if="!menu_collapse">
+                      <p>{{ $t(name) }}</p>
+                    </div>
                   </div>
-                  <div class="text" v-if="!menu_collapse">
-                    <p>{{ $t(name) }}</p>
-                  </div>
-                </div>
-              </router-link>
-            </template>
+                </router-link>
+              </template>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="hide" @click="collapseMenu" v-if="menu_collapse">
-        <BaseCollapseRightIcon/>
-      </div>
-      <div class="hide" @click="collapseMenu" v-else>
-        <BaseCollapseLeftIcon/>
-        {{ $t('hide_menu') }}
+        <div class="hide" @click="collapseMenu" v-if="menu_collapse">
+          <BaseCollapseRightIcon/>
+        </div>
+        <div class="hide" @click="collapseMenu" v-else>
+          <BaseCollapseLeftIcon/>
+          {{ $t('hide_menu') }}
+        </div>
       </div>
     </div>
   </div>
@@ -217,7 +219,9 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar {
-  padding: 30px;
+  &-content {
+    padding: 0 64px 64px;
+  }
   .sm {
     width: 104px;
     padding: 48px 20px;
@@ -325,6 +329,8 @@ export default {
     }
   }
   header {
+    background: #F3F4F6;
+    padding: 64px;
     display: flex;
     flex-direction: column;
     gap: 12px;

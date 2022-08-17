@@ -405,6 +405,12 @@ const routes = [
                 name: 'topbar',
                 component: () => import('@/views/Documentation/Topbar')
             },
+
+            {
+                path: '/documentation/tabs',
+                name: 'tabs',
+                component: () => import('@/views/Documentation/Tabs')
+            },
             {
                 path: '/documentation/actions',
                 name: 'actions',

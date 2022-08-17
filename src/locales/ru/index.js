@@ -2,6 +2,9 @@ export default {
     home: {
         title: "Главная",
     },
+    selected: "Выбранный",
+    pointed: "Наведенный",
+    not_selected: "Не выбранный",
     hide_menu: "Скрыть меню",
     component: 'компонент',
     roles_permission: {
