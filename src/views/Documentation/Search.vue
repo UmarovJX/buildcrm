@@ -24,7 +24,7 @@
 
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 export default {
-  name: "documentation",
+  name: "search",
   components: {BaseSearchInput},
 }
 </script>

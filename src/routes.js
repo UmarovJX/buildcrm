@@ -406,6 +406,11 @@ const routes = [
                 component: () => import('@/views/Documentation/Topbar')
             },
             {
+                path: '/documentation/buttons',
+                name: 'buttons',
+                component: () => import('@/views/Documentation/Buttons')
+            },
+            {
                 path: '/documentation/search',
                 name: 'search',
                 component: () => import('@/views/Documentation/Search')

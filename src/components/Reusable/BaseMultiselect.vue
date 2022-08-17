@@ -25,7 +25,7 @@ export default {
   props: {
     options: {
       type: Array,
-      required: true
+      required: true,
     },
     trackBy: {
       type: String,
@@ -107,6 +107,9 @@ export default {
 }
 
 ::v-deep {
+  .multiselect {
+    width: 186px;
+  }
   .multiselect__select {
     top: 20%;
     right: 18px;
