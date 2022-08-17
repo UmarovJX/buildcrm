@@ -76,8 +76,22 @@ export default {
   font-size: 14px;
   font-weight: 600;
   font-family: Inter, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: .25rem;
 
   &-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: .25rem;
+
+    span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
     &:hover {
       color: var(--violet-600);
@@ -90,8 +104,8 @@ export default {
   }
 
   &-page {
-    padding-left: 10px;
-    padding-right: 10px;
+    //padding-left: 10px;
+    //padding-right: 10px;
   }
 }
 </style>

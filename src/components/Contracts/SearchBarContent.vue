@@ -286,7 +286,7 @@ export default {
     triggerInputEvent() {
       const query = Object.assign({}, this.query)
       const searchValue = this.debounceInput
-      if (searchValue?.length > 3) {
+      if (searchValue?.length) {
         query.search = searchValue
         this.pushRouter(query)
       } else {
