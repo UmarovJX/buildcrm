@@ -160,7 +160,28 @@
           </template>
 
           <div class="app-tab-content">
-
+            <div>
+              <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
+                <h3 class="section-title">Информация клиента</h3>
+                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+              </div>
+              <b-collapse id="accordion-1">
+                <ClientInformation :client="client"/>
+              </b-collapse>
+              <div class="app-tab__header-collapse" v-b-toggle.accordion-2>
+                <h3 class="section-title">Список квартир</h3>
+                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+              </div>
+              <b-collapse id="accordion-2">
+                <ApartmentItem :apartments="apartments"/>
+              </b-collapse>
+              <div class="app-tab__header">
+                <h3 class="section-title">Детали платежа</h3>
+              </div>
+              <div class="app-checkout__calculator">
+                <Calculator/>
+              </div>
+            </div>
           </div>
         </b-tab>
         <!--   END OF SECOND TAB   -->
@@ -178,10 +199,17 @@ import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseSelect from "@/components/Reusable/BaseSelect";
+import ClientInformation from "@/views/Checkout/ClientInformation";
+import ApartmentItem from "@/views/Checkout/ApartmentItem";
+import Calculator from "@/components/Dashboard/Apartment/Contract/Calculator";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "Checkout",
   components: {
+    Calculator,
+    ApartmentItem,
+    ClientInformation,
     AppHeader,
     BaseInput,
     BaseSelect,
@@ -193,7 +221,7 @@ export default {
   },
   data() {
     return {
-      datePickerIconFill: '#7C3AED',
+      datePickerIconFill: 'var(--violet-600)',
       tabIndex: 0,
       form: {
         contract_date: '',
@@ -227,18 +255,104 @@ export default {
           text: 'RU',
           value: '2'
         }
-      ]
+      ],
+      client: {
+        first_name: {
+          lotin: "",
+          kirill: "",
+        },
+        last_name: {
+          lotin: "",
+          kirill: "",
+        },
+        second_name: {
+          lotin: "",
+          kirill: "",
+        },
+        passport_series: null,
+        issued_by_whom: null,
+        date_of_issue: null,
+        language: "uz",
+        type_client: "unknown",
+        birth_day: null,
+        phone: null,
+        other_phone: null,
+        first_payment_date: null,
+        payment_date: null,
+      },
+      apartments: [
+        {
+          discount_id: "other",
+          entrance: 2,
+          floor: 3,
+          block: {
+            address: null,
+            build_date: null,
+            credit_month: null,
+            id: 1,
+            location: null,
+            name: "Блок K",
+          },
+          building: {
+            address: null,
+            build_date: null,
+            credit_month: null,
+            id: 1,
+            location: null,
+            name: "87605",
+          },
+          plan: {
+            area: 94.1,
+            balcony: false,
+            balcony_area: 0,
+            id: 6,
+          },
+          object: {
+            address: "71351 Von Hill Suite 928\nLake Napoleon, AK 91071-9471",
+            build_date: "2022-11-03",
+            credit_month: 32,
+            id: 1,
+          },
+          id: "dab7329e-e6a8-42cc-a934-666c786747ff",
+          number: "N-45",
+          price: 617510924,
+          price_calc: 617510924.4,
+          price_edited: true,
+          price_m2: 6562284,
+          price_sold: 617510924,
+          rooms: 3,
+        }
+      ],
+      order: {},
     }
   },
+  watch: {
+    tabIndex(value) {
+      if (value) {
+        console.log(value, 'value');
+      }
+    },
+  },
   computed: {
+    ...mapGetters([
+      "getApartmentOrder",
+    ]),
     flexCenter() {
       return 'd-flex justify-content-center align-items-center'
     }
+  },
+  created() {
+    this.fetchApartmentOrder()
+    this.order = this.getApartmentOrder()
+  },
+  methods: {
+    ...mapActions(["fetchApartmentOrder"]),
   }
 }
 </script>
 
 <style lang="scss" scoped>
+
 .app-checkout {
   .checkout-timer {
     font-weight: 600;
@@ -250,6 +364,10 @@ export default {
     &-inner {
       padding: 13px 16px;
     }
+  }
+
+  &__calculator {
+
   }
 }
 
@@ -316,6 +434,7 @@ export default {
       color: var(--gray-400);
     }
 
+
     &-right-icon {
       display: flex;
       align-items: center;
@@ -326,6 +445,28 @@ export default {
   &-content {
     margin-left: 3rem;
     margin-right: 3rem;
+  }
+
+  &__header-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    .section-title {
+      margin-bottom: 0;
+    }
+
+    .collapse-icon {
+      transition: all .3s linear;
+    }
+
+    &.not-collapsed {
+
+      .collapse-icon {
+        transform: rotate(-180deg);
+      }
+    }
   }
 }
 
@@ -363,4 +504,5 @@ export default {
 .row-gap-1 {
   row-gap: 1rem;
 }
+
 </style>

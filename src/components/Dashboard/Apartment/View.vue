@@ -87,8 +87,8 @@
                         </p>
 
                         <div class="ml-3">
-                          {{ momentQuarter(apartment.object.build_date) }} -
-                          четверть
+                          {{ momentQuarter(apartment.object.build_date) }}
+                          {{ $t('quarter') }},
                           {{ apartment.object.build_date | moment("YYYY") }}
                           года
                         </div>
@@ -658,7 +658,7 @@ export default {
     checkStatus() {
       const {apartment} = this
       return apartment.order &&
-          (apartment.order.status === 'sold' || apartment.order.status === 'contract' || apartment.order.status === 'closed' )
+          (apartment.order.status === 'sold' || apartment.order.status === 'contract' || apartment.order.status === 'closed')
     },
     activeContent() {
       return this.$t('objects.create.apartment')
