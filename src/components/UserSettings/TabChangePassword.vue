@@ -69,7 +69,14 @@
                 </b-form-input>
               </b-input-group>
               <span class="error__provider" v-if="errors[0]">{{ $t('user.validation_password') }}</span>
-              <span class="error__provider" v-if="validationError.show">{{ validationError.message }}</span>
+              <span class="error__provider" v-if="validationError.show">
+                <template v-if="checkedPasswordError && !(typeof validationError.message === 'string')">
+                  <span v-for="(message,index) in validationError.message" :key="index">{{ message }}<br/></span>
+                </template>
+                <template v-else>
+                  {{ validationError.message }}
+                </template>
+                </span>
               <div v-if="form['newPassword'] && bind === 'newPassword'" class="po-password-strength-bar"
                    :class="score"></div>
             </ValidationProvider>
@@ -95,6 +102,7 @@
 import api from "@/services/api";
 import DummyPassword from '@/util/password-generate';
 import scorePassword from "@/util/score-password";
+
 const dummy = new DummyPassword();
 
 export default {
@@ -115,6 +123,10 @@ export default {
         digits: true,
         symbols: true,
       },
+      errorNumber: 'Пароль должен содержать хотя бы одну цифру',
+      errorUppercase: 'Пароль должен содержать заглавных буквы',
+      errorLowercase: 'Пароль должен содержать маленькие буквы',
+      checkedPasswordError: [],
       form: {
         oldPassword: '',
         newPassword: '',
@@ -152,7 +164,7 @@ export default {
         {
           type: 'password',
           name: 'Повторите новый пароль',
-          rules: 'required|min:4',
+          rules: 'required|min:8',
           extraClass: 'validation__provider',
           label: 'Повторите новый пароль',
           bind: 'repeatedPassword',
@@ -173,6 +185,11 @@ export default {
     'form.newPassword'(newPassword) {
       if (newPassword === this.form.repeatedPassword)
         this.toggleConfirmationError({show: false, id: 'repeatedPassword'})
+      if (this.checkPassword(newPassword)) {
+        this.toggleConfirmationError({show: true, id: 'newPassword'})
+      } else {
+        this.toggleConfirmationError({show: false, id: 'newPassword'})
+      }
     },
     'form.repeatedPassword'(confirmPassword) {
       if (confirmPassword === this.form.newPassword)
@@ -206,6 +223,30 @@ export default {
     }
   },
   methods: {
+    checkArray(value) {
+      console.log(value.isArray, 'value.isArray');
+      return value.isArray
+    },
+    checkPassword(password) {
+      const lowercaseRegex = /(.*[a-z].*)/g
+      const uppercaseRegex = /(.*[A-Z].*)/g
+      const numberRegex = /(.*[0-9].*)/g
+
+      const hasLowerCase = lowercaseRegex.test(password)
+      const hasUpperCase = uppercaseRegex.test(password)
+      const hasNumber = numberRegex.test(password)
+      this.checkedPasswordError = []
+      if (!hasLowerCase)
+        this.checkedPasswordError.push(this.errorLowercase)
+      if (!hasUpperCase)
+        this.checkedPasswordError.push(this.errorUppercase)
+      if (!hasNumber)
+        this.checkedPasswordError.push(this.errorNumber)
+      if (this.checkedPasswordError.length) {
+        this.providerSchema[1].validationError.message = this.checkedPasswordError
+      }
+      return hasLowerCase && hasUpperCase && hasNumber
+    },
     regeneratePassword() {
       const characters = [];
       for (let option in this.options) {
@@ -219,7 +260,10 @@ export default {
     submitNewPassword() {
       const {newPassword, repeatedPassword} = this.form
       if (newPassword === repeatedPassword)
-        this.updateUserPassword()
+        if (this.checkPassword(newPassword))
+          this.updateUserPassword()
+        else
+          this.toggleConfirmationError({show: true, id: 'newPassword'})
       else
         this.toggleConfirmationError({show: true, id: 'repeatedPassword'})
     },
@@ -265,6 +309,7 @@ export default {
       const findIndex = this.providerSchema.findIndex(provider => provider.id === id)
       const validationError = this.providerSchema[findIndex].validationError
       validationError.show = show
+
     },
     toggleInputType(index) {
       const currentType = this.providerSchema[index].type

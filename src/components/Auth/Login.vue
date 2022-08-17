@@ -46,6 +46,7 @@
                     <div class="form-group">
                       <label>{{ label }}</label>
                       <input
+                          :id="id"
                           :type="type"
                           v-model="user[bind]"
                           class="form-control bg-transparent"
@@ -61,6 +62,7 @@
                   </ValidationProvider>
                   <div class="d-flex justify-content-center align-items-center">
                     <button
+                        id="submitButton"
                         type="submit"
                         class="btn btn-primary mr-0 w-100"
                         :class="{'button-disabled':loading}"
