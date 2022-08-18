@@ -1,13 +1,19 @@
 <template>
   <div class="base-calendar">
+    <div v-if="hasLabel" class="input-label">
+      <span>
+        {{ placeholder }}
+      </span>
+    </div>
     <date-picker
         ref="data-picker"
         type="date"
-        :value-type="format"
+        :value-type="valueType"
         :format="format"
         :placeholder="placeholder"
         v-model="dateValue"
         class="date-picker"
+        :class="{'error':error, 'label':hasLabel}"
         :range="range"
     >
       <template
@@ -39,7 +45,7 @@ export default {
   },
   emits: ['input'],
   props: {
-    defaultValue: {
+    value: {
       type: [Array, String],
       default: () => []
     },
@@ -48,6 +54,10 @@ export default {
       default: () => true
     },
     format: {
+      type: String,
+      default: 'YYYY-MM-DD'
+    },
+    valueType: {
       type: String,
       default: 'YYYY-MM-DD'
     },
@@ -62,6 +72,14 @@ export default {
     iconFill: {
       type: String,
       default: '#9CA3AF'
+    },
+    error: {
+      type: Boolean,
+      default: () => false
+    },
+    label: {
+      type: Boolean,
+      default: () => true
     }
   },
   data() {
@@ -73,13 +91,18 @@ export default {
     dateValue(lastValue) {
       this.$emit('input', lastValue)
     },
-    defaultValue: {
+    value: {
       immediate: true,
-      handler() {
-        if (this.defaultValue) {
-          this.dateValue = this.defaultValue
+      handler(value) {
+        if (value && value.length) {
+          this.dateValue = value
         }
       }
+    }
+  },
+  computed: {
+    hasLabel() {
+      return this.value && this.value.length && this.label
     }
   },
   // mounted() {
@@ -111,19 +134,66 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.input-label {
+  font-family: CraftworkSans, serif;
+  position: absolute;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  width: 100%;
+  display: flex;
+  padding-left: 1rem;
+  margin-bottom: 10px;
+  z-index: 3;
+
+  span {
+    font-weight: 900;
+    font-size: 8px;
+    line-height: 10px;
+    position: absolute;
+    top: 12px;
+    left: 24px;
+  }
+}
+
+
 .base-calendar {
   position: relative;
 
   .date-picker {
     width: 100%;
 
+    &.error {
+      ::v-deep .mx-input-wrapper .mx-input {
+        border: .25rem solid var(--red-500) !important;
+      }
+    }
+
+    &.label {
+      ::v-deep .mx-input-wrapper .mx-input {
+        padding-top: 23px !important;
+      }
+    }
+
     ::v-deep .mx-input-wrapper {
       .mx-input {
         box-shadow: none;
-        border: none;
+        border: .25rem solid transparent;
+        font-size: 1rem;
+        font-weight: 700;
         border-radius: 2rem;
-        padding: 2rem 1.25rem;
+        padding: 17px 20px;
+        height: 56px;
         background-color: var(--gray-100);
+
+        &:hover {
+          background-color: var(--gray-200);
+        }
+
+        &:focus-within {
+          border: 0.25rem solid var(--gray-200);
+          background-color: var(--gray-100);
+        }
 
         &::placeholder {
           background-color: transparent;

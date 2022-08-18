@@ -1,6 +1,6 @@
 <template>
-  <div class="base-input" :class="error ? 'error' : ''">
-    <div v-if="debounceInput && label" class="input-label">
+  <div class="base-input" :class="{'error':error,'label':value && label}">
+    <div v-if="value && label" class="input-label">
       <span>
         {{ placeholder }}
       </span>
@@ -169,8 +169,7 @@ export default {
     font-size: 8px;
     line-height: 10px;
     position: absolute;
-    //top: 6px;
-    left: 2px;
+    left: 0;
     top: 0;
   }
 }
@@ -178,7 +177,7 @@ export default {
 .base-input {
   width: 75%;
   height: 3.5rem;
-  padding: 10px 20px 10px 1.25rem;
+  padding: 13px 20px 13px 1.25rem;
   border: 0.25rem solid transparent;
   border-radius: 2rem;
   background-color: var(--gray-100);
@@ -187,6 +186,10 @@ export default {
   align-items: flex-start;
   justify-content: center;
   position: relative;
+
+  &.label {
+    padding: 8px 20px 8px 1.25rem;
+  }
 
   &:focus-within {
     border: 0.25rem solid var(--gray-200);
@@ -202,6 +205,7 @@ export default {
     border: none;
     font-weight: 700;
     color: var(--gray-600);
+    padding: 0 !important;
 
     &::placeholder {
       font-weight: 600;
