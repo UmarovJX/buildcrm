@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <main class="sidebar">
     <DocHeader title="sidebar"/>
     <div class="sidebar-content">
       <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
 </template>
 

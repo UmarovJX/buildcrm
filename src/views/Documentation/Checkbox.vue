@@ -1,5 +1,5 @@
 <template>
-<div class="checkbox">
+<main class="checkbox">
   <DocHeader title="checkbox"/>
   <div class="checkbox-content">
     <div class="checkbox-content-box">
@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-</div>
+</main>
 </template>
 
 <script>

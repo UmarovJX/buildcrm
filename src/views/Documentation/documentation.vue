@@ -1,5 +1,5 @@
 <template>
-  <div class="doc-container">
+  <main class="doc-container">
     <router-link :to="{name: 'icons'}">Icons</router-link>
     <router-link :to="{name: 'sidebar'}">Sidebar</router-link>
     <router-link :to="{name: 'actions'}">Actions</router-link>
@@ -8,8 +8,9 @@
     <router-link :to="{name: 'search'}">Search</router-link>
     <router-link :to="{name: 'buttons'}">Buttons</router-link>
     <router-link :to="{name: 'checkbox'}">Checkbox</router-link>
+    <router-link :to="{name: 'loader'}">Loader</router-link>
     <router-link :to="{name: 'text-fields'}">Text Fields</router-link>
-  </div>
+  </main>
 </template>
 <script>
 

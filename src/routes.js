@@ -421,6 +421,11 @@ const routes = [
                 component: () => import('@/views/Documentation/Checkbox')
             },
             {
+                path: '/documentation/loader',
+                name: 'loader',
+                component: () => import('@/views/Documentation/Loader')
+            },
+            {
                 path: '/documentation/search',
                 name: 'search',
                 component: () => import('@/views/Documentation/Search')
