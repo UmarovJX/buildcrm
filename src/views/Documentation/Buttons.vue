@@ -1,9 +1,6 @@
 <template>
   <div class="button">
-    <header>
-      <p>Xon Saroy Design System • Component</p>
-      <h1>button</h1>
-    </header>
+    <DocHeader title="button"/>
     <div class="button-content">
       <div class="button-content-part1">
         <div class="button-content-part1-row">
@@ -121,9 +118,10 @@ import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
+import DocHeader from "@/views/Documentation/DocHeader";
 export default {
   name: "Buttons",
-  components: {BaseLeftIcon, BaseMultiselect, BaseLoading, BaseFilterIcon, BaseButton},
+  components: {DocHeader, BaseLeftIcon, BaseMultiselect, BaseLoading, BaseFilterIcon, BaseButton},
   data() {
     return {
       options: [
@@ -150,33 +148,6 @@ export default {
     font-size: 16px;
     line-height: 22px;
     color: #4B5563;
-  }
-  header {
-    display: flex;
-    background: #F3F4F6;
-    padding: 64px;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 60px;
-    p {
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-family: 'CraftworkSans', serif;
-      font-weight: 900;
-      color: #9CA3AF;
-      font-size: 16px;
-      line-height: 19px;
-      margin: 0;
-    }
-    h1 {
-      text-transform: uppercase;
-      font-family: 'CraftworkSans', serif;
-      margin: 0;
-      font-weight: 900;
-      font-size: 64px;
-      line-height: 77px;
-      color: #4B5563;
-    }
   }
   &-content {
     display: flex;

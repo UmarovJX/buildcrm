@@ -411,6 +411,16 @@ const routes = [
                 component: () => import('@/views/Documentation/Buttons')
             },
             {
+                path: '/documentation/text-fields',
+                name: 'text-fields',
+                component: () => import('@/views/Documentation/TextFields')
+            },
+            {
+                path: '/documentation/checkbox',
+                name: 'checkbox',
+                component: () => import('@/views/Documentation/Checkbox')
+            },
+            {
                 path: '/documentation/search',
                 name: 'search',
                 component: () => import('@/views/Documentation/Search')

@@ -1,9 +1,6 @@
 <template>
   <div class="sidebar">
-    <header>
-      <p>Xon Saroy Design System • Component</p>
-      <h1>sidebar</h1>
-    </header>
+    <DocHeader title="sidebar"/>
     <div class="sidebar-content">
       <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
         <div class="sidebar-container-top">
@@ -100,10 +97,13 @@ import BaseRightIcon from "@/components/icons/BaseRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import BaseUpIcon from "@/components/icons/BaseUpIcon";
 import BaseCollapseRightIcon from "@/components/icons/BaseCollapseRightIcon";
+import DocHeader from "@/views/Documentation/DocHeader";
 
 export default {
   name: 'Sidebar',
-  components: {BaseCollapseRightIcon, BaseUpIcon, BaseDownIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseButton},
+  components: {
+    DocHeader,
+    BaseCollapseRightIcon, BaseUpIcon, BaseDownIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseButton},
   props: {
     theme: {
       type: String,
@@ -326,33 +326,6 @@ export default {
       cursor: pointer;
       align-items: center;
       padding: 19px 30px;
-    }
-  }
-  header {
-    background: #F3F4F6;
-    padding: 64px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 60px;
-    p {
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-family: 'CraftworkSans', serif;
-      font-weight: 900;
-      color: #9CA3AF;
-      font-size: 16px;
-      line-height: 19px;
-      margin: 0;
-    }
-    h1 {
-      text-transform: uppercase;
-      font-family: 'CraftworkSans', serif;
-      margin: 0;
-      font-weight: 900;
-      font-size: 64px;
-      line-height: 77px;
-      color: #4B5563;
     }
   }
 }

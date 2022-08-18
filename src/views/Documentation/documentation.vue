@@ -7,6 +7,8 @@
     <router-link :to="{name: 'tabs'}">Tabs</router-link>
     <router-link :to="{name: 'search'}">Search</router-link>
     <router-link :to="{name: 'buttons'}">Buttons</router-link>
+    <router-link :to="{name: 'checkbox'}">Checkbox</router-link>
+    <router-link :to="{name: 'text-fields'}">Text Fields</router-link>
   </div>
 </template>
 <script>
