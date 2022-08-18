@@ -42,9 +42,9 @@ export default {
   color: white;
   background: #22C55E;
   border-radius: 0 0 32px 32px;
-  animation: mymove 1s;
+  animation: notif 1s;
 }
-@keyframes mymove {
+@keyframes notif {
   from   {margin-right: 100%}
   to  {margin-right: 0}
 }
