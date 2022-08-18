@@ -75,7 +75,7 @@ export default {
       type: [String, Object, Array, Number],
       default: () => null
     },
-    disabled:{
+    disabled: {
       type: Boolean,
       default: () => false
     }
@@ -199,6 +199,12 @@ export default {
     padding-left: 1.5rem
     padding-right: 1.5rem
 
+    &:hover
+      background-color: var(--gray-200)
+
+    &:focus-within
+      border: 0.25rem solid var(--gray-200)
+      background-color: var(--gray-100)
 
     ::placeholder
       color: var(--gray-600)

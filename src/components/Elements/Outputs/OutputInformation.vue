@@ -80,7 +80,7 @@ export default {
   border: 2px solid var(--gray-200);
   border-radius: 2rem;
   background-color: white;
-  padding: 1rem 1.75rem;
+  padding: 1rem 1rem 1rem 20px;
   font-family: CraftworkSans, serif;
 
   .property {
