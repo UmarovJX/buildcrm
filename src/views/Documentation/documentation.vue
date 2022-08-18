@@ -9,6 +9,7 @@
     <router-link :to="{name: 'buttons'}">Buttons</router-link>
     <router-link :to="{name: 'checkbox'}">Checkbox</router-link>
     <router-link :to="{name: 'loader'}">Loader</router-link>
+    <router-link :to="{name: 'notification'}">Notification</router-link>
     <router-link :to="{name: 'text-fields'}">Text Fields</router-link>
   </main>
 </template>

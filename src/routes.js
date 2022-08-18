@@ -426,6 +426,11 @@ const routes = [
                 component: () => import('@/views/Documentation/Loader')
             },
             {
+                path: '/documentation/notification',
+                name: 'notification',
+                component: () => import('@/views/Documentation/Notification')
+            },
+            {
                 path: '/documentation/search',
                 name: 'search',
                 component: () => import('@/views/Documentation/Search')
