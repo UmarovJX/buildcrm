@@ -441,6 +441,11 @@ const routes = [
                 component: () => import('@/views/Documentation/Search')
             },
             {
+                path: '/documentation/tooltip',
+                name: 'tooltip',
+                component: () => import('@/views/Documentation/Tooltip')
+            },
+            {
                 path: '/documentation/tabs',
                 name: 'tabs',
                 component: () => import('@/views/Documentation/Tabs')
