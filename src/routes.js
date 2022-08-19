@@ -431,6 +431,11 @@ const routes = [
                 component: () => import('@/views/Documentation/Notification')
             },
             {
+                path: '/documentation/calendar',
+                name: 'calendar',
+                component: () => import('@/views/Documentation/Calendar')
+            },
+            {
                 path: '/documentation/search',
                 name: 'search',
                 component: () => import('@/views/Documentation/Search')

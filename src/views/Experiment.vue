@@ -17,7 +17,7 @@
             class="date-picker"
             :range="range"
         ></date-picker>
-        <span class="calendar-icon">
+      <span class="calendar-icon">
       <base-calendar-icon
           :fill="iconFill"
           :width="iconSquareSize"
