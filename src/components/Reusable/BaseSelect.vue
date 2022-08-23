@@ -72,7 +72,7 @@ export default {
       default: 'text'
     },
     value: {
-      type: [String, Object, Array, Number],
+      type: [String, Object, Array, Number, Boolean],
       default: () => null
     },
     disabled: {

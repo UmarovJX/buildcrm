@@ -18,88 +18,94 @@
 
 <script>
 export default {
-  name: "BaseButton",
-  props: {
-    text: {
-      type: String,
-      default: () => ('Button')
+    name: "BaseButton",
+    props: {
+        text: {
+            type: String,
+            default: () => ('Button')
+        },
+        design: {
+            type: String,
+            default: () => ('')
+        },
+        size: {
+            type: String,
+            default: () => 'lg'
+        },
+        type: {
+            type: String,
+            default: () => 'button'
+        },
+        disabled: {
+            type: Boolean,
+            default: () => false
+        },
     },
-    design: {
-      type: String,
-      default: () => ('')
+    emits: ['click'],
+    computed: {
+        hasLeftSlot() {
+            return this.$slots['left-icon']
+        },
+        hasRightSlot() {
+            return this.$slots['right-icon']
+        }
     },
-    size: {
-      type: String,
-      default: () => 'lg'
-    },
-    type: {
-      type: String,
-      default: () => 'button'
-    },
-    disabled: {
-      type: Boolean,
-      default: () => false
-    },
-  },
-  emits: ['click'],
-  computed: {
-    hasLeftSlot() {
-      return this.$slots['left-icon']
-    },
-    hasRightSlot() {
-      return this.$slots['right-icon']
+    methods: {
+        triggerEvent() {
+            this.$emit('click')
+        }
     }
-  },
-  methods: {
-    triggerEvent() {
-      this.$emit('click')
-    }
-  }
 }
 </script>
 
 <style lang="sass" scoped>
 .base__button
-  font-family: Inter, serif
-  padding: 1rem 1.25rem
-  max-height: 56px
-  border-radius: 2rem
-  color: var(--gray-600)
-  font-size: 1rem
-  border: none
-  outline: none
-  display: flex
-  justify-content: center
-  align-items: center
-  cursor: pointer
-  background-color: var(--gray-100)
-
-  .text
-    color: inherit
     font-family: Inter, serif
-
-  .left__icon
+    padding: 1rem 1.25rem
+    max-height: 56px
+    border-radius: 2rem
+    color: var(--gray-600)
+    font-size: 1rem
+    border: none
+    outline: none
     display: flex
-    //margin-right: .5rem
-    margin-right: 1rem
+    justify-content: center
+    align-items: center
+    cursor: pointer
+    background-color: var(--gray-100)
 
-  .right__icon
-    display: flex
-    margin-left: 1rem
+    .text
+        color: inherit
+        font-family: Inter, serif
+
+    .left__icon
+        display: flex
+        //margin-right: .5rem
+        margin-right: 1rem
+
+    .right__icon
+        display: flex
+        margin-left: 1rem
 //margin-left: .5rem
 
+.disabled
+    background: var(--gray-500)
+    color: var(--white) !important
+
 .gray-button
-  background-color: var(--gray-200)
+    background-color: var(--gray-200)
 
 .violet
-  background-color: var(--violet-700)
-  color: var(--white) !important
+    background-color: var(--violet-700)
+    color: var(--white) !important
 
 .violet-gradient
-  background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
-  color: var(--white) !important
+    background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
+    color: var(--white) !important
 
-.disabled
-  background: var(--gray-500)
-  color: var(--white) !important
+    &.disabled
+        background: var(--gray-100)
+        color: var(--gray-400) !important
+
+
 </style>

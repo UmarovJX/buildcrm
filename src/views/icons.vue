@@ -32,7 +32,7 @@ import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import BaseUpIcon from "@/components/icons/BaseUpIcon";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BaseClose from "@/components/icons/BaseClose";
+import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseFilterAltIcon from "@/components/icons/BaseFilterAltIcon";
 import BaseLeftDoubleIcon from "@/components/icons/BaseLeftDoubleIcon";
 import BaseFloorIcon from "@/components/icons/BaseFloorIcon";
@@ -78,7 +78,7 @@ import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 export default {
   name: "icons",
-  components: { BaseUserPasswordIcon, BaseUserAccountIcon, BasePrintIcon, BaseTimesIcon, BaseMinusCircleIcon, BaseEyeIcon, BaseExitIcon, BaseDetailsIcon, BaseChessTwo, BaseChessPlan, BaseChessOne, BaseChessList, BaseArrowRightIcon, BaseArrowLeftIcon, BasePaperFailIcon, BaseCompactGridIcon, BaseRoomIcon, BasePriceIcon, BaseDragIcon, BasePublishIcon, BaseCalendarIcon, BaseLeftIcon, BaseCollapseRightIcon, BaseSearchIcon, BaseUsersIcon, BasePaperIcon, BaseFacadeIcon, BaseFlatIcon, BaseCheckIcon, BaseCameraIcon, BaseLinkIcon, BaseDeleteIcon, BaseTimesCircleIcon, BaseArrowUpIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseQuestionsIcon, BaseContractsIcon, BaseDocumentIcon, BaseConstructionIcon, BaseFloorIcon, BaseLeftDoubleIcon, BaseFilterAltIcon, BaseClose, BaseEditIcon, BaseArrowDownIcon, BaseUpIcon, BaseDotsIcon, BaseNotificationsIcon, BaseObjectsIcon, BaseLocationIcon, BaseDoorIcon, BaseAreaIcon, BaseButton, BaseRightDoubleIcon, BaseListIcon, BasePlusIcon, BaseStarIcon, BaseDownIcon, BaseFilterIcon, BaseHomeIcon, BaseSettingsIcon},
+  components: { BaseUserPasswordIcon, BaseUserAccountIcon, BasePrintIcon, BaseTimesIcon, BaseMinusCircleIcon, BaseEyeIcon, BaseExitIcon, BaseDetailsIcon, BaseChessTwo, BaseChessPlan, BaseChessOne, BaseChessList, BaseArrowRightIcon, BaseArrowLeftIcon, BasePaperFailIcon, BaseCompactGridIcon, BaseRoomIcon, BasePriceIcon, BaseDragIcon, BasePublishIcon, BaseCalendarIcon, BaseLeftIcon, BaseCollapseRightIcon, BaseSearchIcon, BaseUsersIcon, BasePaperIcon, BaseFacadeIcon, BaseFlatIcon, BaseCheckIcon, BaseCameraIcon, BaseLinkIcon, BaseDeleteIcon, BaseTimesCircleIcon, BaseArrowUpIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseQuestionsIcon, BaseContractsIcon, BaseDocumentIcon, BaseConstructionIcon, BaseFloorIcon, BaseLeftDoubleIcon, BaseFilterAltIcon, BaseCloseIcon, BaseEditIcon, BaseArrowDownIcon, BaseUpIcon, BaseDotsIcon, BaseNotificationsIcon, BaseObjectsIcon, BaseLocationIcon, BaseDoorIcon, BaseAreaIcon, BaseButton, BaseRightDoubleIcon, BaseListIcon, BasePlusIcon, BaseStarIcon, BaseDownIcon, BaseFilterIcon, BaseHomeIcon, BaseSettingsIcon},
   data() {
     return {
       data: [
@@ -173,9 +173,9 @@ export default {
           path: 'src/components/icons/BaseEditIcon.vue'
         },
         {
-          icon: BaseClose,
+          icon: BaseCloseIcon,
           text: 'close',
-          path: 'src/components/icons/BaseClose.vue'
+          path: 'src/components/icons/BaseCloseIcon.vue'
         },
         {
           icon: BaseFilterAltIcon,

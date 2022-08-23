@@ -57,7 +57,7 @@
             <span class="title">{{ $t('objects.create.prices') }}</span>
           <!--          CLOSE-->
           <span class="go__back" @click="closeMapModal">
-              <BaseCLose :width="40" :height="40"/>
+              <BaseCloseIcon :width="40" :height="40"/>
             </span>
         </span>
       </template>
@@ -135,7 +135,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseModal from "@/components/Reusable/BaseModal";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
-import BaseCLose from "@/components/icons/BaseClose";
+import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import {mapGetters} from "vuex";
 import ApartmentsPermission from "@/permission/apartments";
 // import ObjectsPermission from "@/permission/objects";
@@ -143,7 +143,7 @@ import ApartmentsPermission from "@/permission/apartments";
 export default {
   name: "Objects",
   components: {
-    BaseCLose,
+      BaseCloseIcon,
     BaseArrowRight,
     BaseArrowLeft,
     ChessSquareCard,
