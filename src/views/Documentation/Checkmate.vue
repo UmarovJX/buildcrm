@@ -2,30 +2,78 @@
 <main class="checkmate">
   <DocHeader title="checkmate"/>
   <div class="checkmate-content">
-    <ChessSquareCard :apartments="apartments"/>
+    <div v-for="(apartment, index) in apartments" :key="index">
+      <ApartmentBox :apartment="apartment"/>
+    </div>
   </div>
 </main>
 </template>
 
 <script>
-import DocHeader from "@/views/Documentation/DocHeader";
-import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
+import  DocHeader from "@/views/Documentation/DocHeader";
+import ApartmentBox from "@/components/Objects/View/Tabs/ApartmentBox";
+
 export default {
   name: "Checkmate",
-  components: {ChessSquareCard, DocHeader},
+  components: {
+    ApartmentBox,
+    DocHeader},
   data(){
     return {
       apartments: [{
-        name: "test1",
+        number: 200,
+        is_promo: true,
+        surface: 166,
+        cost: 3000000000,
+        cost_m2: 1300000,
+        status: 'available'
       },
         {
-          name: "test2"
-        }]
+          number: 200,
+          is_promo: false,
+          surface: 166,
+          cost: 3000000000,
+          cost_m2: 1300000,
+          status: 'sold'
+        },
+        {
+          number: 200,
+          is_promo: true,
+          surface: 166,
+          cost: 3000000000,
+          cost_m2: 1300000,
+          status: 'decorated'
+        },
+        {
+          number: 200,
+          is_promo: true,
+          surface: 166,
+          cost: 3000000000,
+          cost_m2: 1300000,
+          status: 'not_available'
+        },
+        {
+          number: 200,
+          is_promo: true,
+          surface: 166,
+          cost: 3000000000,
+          cost_m2: 1300000,
+          status: 'booked'
+        },
+      ]
     }
+  },
+  methods: {
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.checkmate {
+  &-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
 </style>

@@ -100,7 +100,7 @@ export default {
     align-items: center;
     .my-dropdown .dropdown-toggle {
       box-shadow: none;
-      background: white;
+      background: transparent;
     }
     .dropdown-menu {
       cursor: pointer;
