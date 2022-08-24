@@ -1,5 +1,5 @@
 <template>
-  <div class="search__content">
+  <main class="search__content">
     <div class="search__content-input">
       <div @click="focusOnSearchInput" class="search__content-input-icon">
         <base-search-icon/>
@@ -144,7 +144,7 @@
         </div>
       </div>
     </b-modal>
-  </div>
+  </main>
 </template>
 
 <script>

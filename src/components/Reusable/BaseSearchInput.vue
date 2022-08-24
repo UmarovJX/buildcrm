@@ -39,12 +39,16 @@ export default {
     placeholder: {
       type: String,
       default: 'ФИО, телефон, номер договора',
+    },
+    value: {
+      type: String,
+      required: false,
     }
   },
   emits: ['trigger-input', 'search-by-filter', 'replace-router'],
   data() {
     return {
-      searchInput: this.$route.query.search,
+      searchInput: this.value ?? this.$route.query.search,
       debounceInput: this.$route.query.search,
       showClearIcon: false,
     }

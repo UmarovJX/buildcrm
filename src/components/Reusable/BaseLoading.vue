@@ -1,7 +1,7 @@
 <template>
   <div class="loading__content">
     <span class="loading__content-main">
-      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg :width="width" :height="height" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
             d="M64 32C64 49.6731 49.6731 64 32 64C14.3269 64 0 49.6731 0 32C0 14.3269 14.3269 0 32 0C49.6731 0 64 14.3269 64 32ZM8.96 32C8.96 44.7246 19.2754 55.04 32 55.04C44.7246 55.04 55.04 44.7246 55.04 32C55.04 19.2754 44.7246 8.96 32 8.96C19.2754 8.96 8.96 19.2754 8.96 32Z"
             fill="#E5E7EB"/>
@@ -15,7 +15,17 @@
 
 <script>
 export default {
-  name: "BaseLoading"
+  name: "BaseLoading",
+  props: {
+    width: {
+      type: Number,
+      default: () => 64
+    },
+    height: {
+      type: Number,
+      default: () => 64
+    }
+  }
 }
 </script>
 
