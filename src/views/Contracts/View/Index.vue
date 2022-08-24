@@ -171,7 +171,7 @@
               <span class="title">{{ $t('re_contract') }}</span>
 
             <span class="go__back" @click="closeReContractModal">
-              <BaseCLose/>
+              <BaseCloseIcon/>
             </span>
         </span>
       </template>
@@ -246,7 +246,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
 import {mapGetters} from "vuex";
-import BaseCLose from "@/components/icons/BaseClose";
+import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseWarningIcon from "@/components/icons/BaseWarningIcon";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import ContractsPermission from "@/permission/contract";
@@ -255,7 +255,7 @@ export default {
   name: "ContractView",
   components: {
     BaseWarningIcon,
-    BaseCLose,
+      BaseCloseIcon,
     BaseFilterTabsContent,
     BaseDeleteIcon,
     BaseArrowRight,

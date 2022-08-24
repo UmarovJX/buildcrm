@@ -7,7 +7,7 @@
 </template>
 <script>
 export default {
-  name: "BaseCLose",
+  name: "BaseCloseIcon",
   props: {
     fill: {
       type: String,
