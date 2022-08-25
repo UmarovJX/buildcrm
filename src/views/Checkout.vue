@@ -1,37 +1,37 @@
 <template>
-    <div class="app-checkout">
-        <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
-        <app-header>
-            <template #header-right>
-                <div v-if="expiry_at" :class="flexCenter" class="checkout-timer background-violet-gradient mr-2">
-                    <CountDown
-                        :deadline="expiry_at"
-                        :showDays="false"
-                        :showHours="false"
-                        @timeElapsed="timeElapsedHandler"
-                    />
-                </div>
-            </template>
-        </app-header>
-        <div class="app-checkout-main">
-            <b-tabs
-                pills
-                v-model="tabIndex"
-                content-class="app-tabs-content"
-                nav-class="app-tabs-content-header"
-            >
+  <div class="app-checkout">
+    <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
+    <app-header>
+      <template #header-right>
+        <div v-if="expiry_at" :class="flexCenter" class="checkout-timer background-violet-gradient mr-2">
+          <CountDown
+              :deadline="expiry_at"
+              :showDays="false"
+              :showHours="false"
+              @timeElapsed="timeElapsedHandler"
+          />
+        </div>
+      </template>
+    </app-header>
+    <div class="app-checkout-main">
+      <b-tabs
+          pills
+          v-model="tabIndex"
+          content-class="app-tabs-content"
+          nav-class="app-tabs-content-header"
+      >
 
-                <!--  FIRST TAB    -->
-                <b-tab active>
-                    <template #title>
-                        <div class="app-tab-title d-flex align-items-center">
-                            <span :class="flexCenter" class="app-tab-title-number">1</span>
-                            <p class="app-tab-title-content">Детали договора</p>
-                            <span :class="flexCenter" class="app-tab-title-right-icon">
+        <!--  FIRST TAB    -->
+        <b-tab active>
+          <template #title>
+            <div class="app-tab-title d-flex align-items-center">
+              <span :class="flexCenter" class="app-tab-title-number">1</span>
+              <p class="app-tab-title-content">Детали договора</p>
+              <span :class="flexCenter" class="app-tab-title-right-icon">
               <base-right-icon :width="18" :height="18"/>
             </span>
-                        </div>
-                    </template>
+            </div>
+          </template>
 
                     <DetailsContract
                         ref="detail-contract"
@@ -41,65 +41,75 @@
                         @set-client="setClient"
                     />
 
-                </b-tab>
-                <!--  END OF FIRST TAB    -->
+        </b-tab>
+        <!--  END OF FIRST TAB    -->
 
-                <!--   SECOND TAB   -->
-                <b-tab :disabled="stepTwoDisable">
-                    <template #title>
-                        <div class="app-tab-title d-flex align-items-center">
-                            <span :class="flexCenter" class="app-tab-title-number">2</span>
-                            <p class="app-tab-title-content">Детали платежей</p>
-                        </div>
-                    </template>
+        <!--   SECOND TAB   -->
+        <b-tab :disabled="stepTwoDisable">
+          <template #title>
+            <div class="app-tab-title d-flex align-items-center">
+              <span :class="flexCenter" class="app-tab-title-number">2</span>
+              <p class="app-tab-title-content">Детали платежей</p>
+            </div>
+          </template>
 
-                    <div v-if="tabIndex===1" class="app-tab-content">
-                        <div>
-                            <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
-                                <h3 class="section-title">Информация клиента</h3>
-                                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
-                            </div>
-                            <b-collapse id="accordion-1">
-                                <ClientInformation :client="client"/>
-                            </b-collapse>
-                            <div class="app-tab__header-collapse" v-b-toggle.accordion-2>
-                                <h3 class="section-title">Список квартир</h3>
-                                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
-                            </div>
-                            <b-collapse id="accordion-2">
-                                <ApartmentItem :apartments="apartments"/>
-                            </b-collapse>
-                            <div class="app-tab__header">
-                                <h3 class="section-title">Детали платежа</h3>
-                            </div>
-                            <div class="app-checkout__calculator">
-                                <Calculator/>
-                            </div>
-                        </div>
-                    </div>
-                </b-tab>
-                <!--   END OF SECOND TAB   -->
+          <div v-if="tabIndex===1" class="app-tab-content">
+            <div>
+              <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
+                <h3 class="section-title">Информация клиента</h3>
+                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+              </div>
+              <b-collapse id="accordion-1">
+                <ClientInformation :client="client"/>
+              </b-collapse>
+              <div class="app-tab__header-collapse" v-b-toggle.accordion-2>
+                <h3 class="section-title">Список квартир</h3>
+                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+              </div>
+              <b-collapse id="accordion-2">
+                <div class="apartment-block">
+                  <ApartmentItem
+                      v-for="apartment in apartments"
+                      :key="apartment.id"
+                      :apartment="apartment"
+                      @update="updateApartmentCalc"
+                      class="mb-3"
+                  />
+                </div>
+              </b-collapse>
+              <div class="app-tab__header">
+                <h3 class="section-title">Детали платежа</h3>
+              </div>
+              <div class="app-checkout__calculator">
+                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>
+              </div>
+            </div>
+          </div>
+        </b-tab>
+        <!--   END OF SECOND TAB   -->
 
-                <!--        TABS END -->
-                <template #tabs-end>
-                    <b-nav-item role="presentation" href="#">
-                        <base-button @click="changeTab"
-                                     class="violet-gradient"
-                                     :text="$t('next')">
-                            <template #right-icon>
-                                <BaseArrowRightIcon fill="var(--white)"/>
-                            </template>
-                        </base-button>
-
-                    </b-nav-item>
-                </template>
-
-            </b-tabs>
-        </div>
+        <!--        TABS END -->
+        <template #tabs-end>
+          <b-nav-item role="presentation" href="#">
+            <base-button
+                @click="changeTab"
+                class="violet-gradient"
+                :text="`${ $t('next') }`"
+            >
+              <template #right-icon>
+                <BaseArrowRightIcon fill="var(--white)"/>
+              </template>
+            </base-button>
+          </b-nav-item>
+        </template>
+      </b-tabs>
     </div>
+  </div>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+import api from "@/services/api";
 import AppHeader from "@/components/AppHeader";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
 // import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
@@ -114,153 +124,169 @@ import BaseButton from "@/components/Reusable/BaseButton";
 // import BaseModal from "@/components/Reusable/BaseModal";
 import ClientInformation from "@/views/Checkout/ClientInformation";
 import ApartmentItem from "@/views/Checkout/ApartmentItem";
-import Calculator from "@/components/Dashboard/Apartment/Contract/Calculator";
-import {mapActions} from "vuex";
-import api from "@/services/api";
+import CheckoutCalculator from "@/components/Checkout/CheckoutCalculator";
 import ErrorNotification from "@/components/Reusable/ErrorNotification";
 // import FlipCountdown from "vue2-flip-countdown";
 import CountDown from "@/components/Reusable/CountDown";
 import DetailsContract from "@/views/Checkout/DetailsContract";
 
 export default {
-    name: "Checkout",
-    components: {
-        ErrorNotification,
-        Calculator,
-        ApartmentItem,
-        ClientInformation,
-        AppHeader,
-        // BaseInput,
-        // BaseSelect,
-        BaseButton,
-        // BaseModal,
-        // BaseEditIcon,
-        BaseRightIcon,
-        // BaseDatePicker,
-        // OutputInformation,
-        // BaseCircleWrapper,
-        BaseArrowRightIcon,
-        // BaseCloseIcon,
-        CountDown,
-        DetailsContract,
-    },
-    data() {
-        return {
-            newContractNumber: '',
-            changedContractNumber: false,
-            datePickerIconFill: 'var(--violet-600)',
-            tabIndex: 0,
-            form: {
-                contract_date: '',
-                passport_number: '',
-                passport_issue: '',
-                passport_date: '',
-                birthday: '',
-                last_name: {
-                    lotin: '',
-                    kirill: ''
-                },
-                first_name: {
-                    lotin: '',
-                    kirill: ''
-                },
-                second_name: {
-                    lotin: '',
-                    kirill: ''
-                },
-                phone: '',
-                other_phone: '',
-                language: '',
-                client_type: '',
-                friends: '',
-            },
-            client: {
-                first_name: {
-                    lotin: "",
-                    kirill: "",
-                },
-                last_name: {
-                    lotin: "",
-                    kirill: "",
-                },
-                second_name: {
-                    lotin: "",
-                    kirill: "",
-                },
-                passport_series: null,
-                issued_by_whom: null,
-                date_of_issue: null,
-                language: "uz",
-                friends: 'false',
-                birth_day: null,
-                phone: null,
-                other_phone: null,
-                first_payment_date: null,
-                payment_date: null,
-            },
-            apartments: [
-                {
-                    discount_id: "other",
-                    entrance: 2,
-                    floor: 3,
-                    block: {
-                        address: null,
-                        build_date: null,
-                        credit_month: null,
-                        id: 1,
-                        location: null,
-                        name: "Блок K",
-                    },
-                    building: {
-                        address: null,
-                        build_date: null,
-                        credit_month: null,
-                        id: 1,
-                        location: null,
-                        name: "87605",
-                    },
-                    plan: {
-                        area: 94.1,
-                        balcony: false,
-                        balcony_area: 0,
-                        id: 6,
-                    },
-                    object: {
-                        address: "71351 Von Hill Suite 928\nLake Napoleon, AK 91071-9471",
-                        build_date: "2022-11-03",
-                        credit_month: 32,
-                        id: 1,
-                    },
-                    id: "dab7329e-e6a8-42cc-a934-666c786747ff",
-                    number: "N-45",
-                    price: 617510924,
-                    price_calc: 617510924.4,
-                    price_edited: true,
-                    price_m2: 6562284,
-                    price_sold: 617510924,
-                    rooms: 3,
-                }
-            ],
-            order: {},
-            stepTwoDisable: true,
-            validationError: {
-                type: '',
-                message: '',
-                visible: false,
-            },
-            expiry_at: null,
-        }
-    },
-    watch: {
-        newContractNumber(value) {
-            this.changedContractNumber = !!(value && value.length && !(value === this.order.contract_number));
-        }
-    },
-    computed: {
-        flexCenter() {
-            return 'd-flex justify-content-center align-items-center'
+  name: "Checkout",
+  components: {
+    ErrorNotification,
+    CheckoutCalculator,
+    ApartmentItem,
+    ClientInformation,
+    AppHeader,
+    // BaseInput,
+    // BaseSelect,
+    BaseButton,
+    // BaseModal,
+    // BaseEditIcon,
+    BaseRightIcon,
+    // BaseDatePicker,
+    // OutputInformation,
+    // BaseCircleWrapper,
+    BaseArrowRightIcon,
+    // BaseCloseIcon,
+    CountDown,
+    DetailsContract,
+  },
+  data() {
+    return {
+      newContractNumber: '',
+      changedContractNumber: false,
+      datePickerIconFill: 'var(--violet-600)',
+      tabIndex: 1,
+      discounts: [],
+      form: {
+        contract_date: '',
+        passport_number: '',
+        passport_issue: '',
+        passport_date: '',
+        birthday: '',
+        last_name: {
+          lotin: '',
+          kirill: ''
         },
+        first_name: {
+          lotin: '',
+          kirill: ''
+        },
+        second_name: {
+          lotin: '',
+          kirill: ''
+        },
+        phone: '',
+        other_phone: '',
+        language: '',
+        client_type: '',
+        friends: false,
+      },
+      options: [
+        {
+          text: 'UZ',
+          value: 'uz'
+        },
+        {
+          text: 'RU',
+          value: 'ru'
+        }
+      ],
+      client: {
+        first_name: {
+          lotin: "",
+          kirill: "",
+        },
+        last_name: {
+          lotin: "",
+          kirill: "",
+        },
+        second_name: {
+          lotin: "",
+          kirill: "",
+        },
+        passport_series: null,
+        issued_by_whom: null,
+        date_of_issue: null,
+        language: "uz",
+        friends: false,
+        birth_day: null,
+        phone: null,
+        other_phone: null,
+        first_payment_date: null,
+        payment_date: null,
+      },
+      clientTypeOption: [
+        {text: 'Незнакомый', value: 'false'},
+        {text: 'Знакомый', value: 'true'},
+      ],
+      apartments: [
+        {
+          discount_id: "other",
+          entrance: 2,
+          floor: 3,
+          block: {
+            address: null,
+            build_date: null,
+            credit_month: null,
+            id: 1,
+            location: null,
+            name: "Блок K",
+          },
+          building: {
+            address: null,
+            build_date: null,
+            credit_month: null,
+            id: 1,
+            location: null,
+            name: "87605",
+          },
+          plan: {
+            area: 94.1,
+            balcony: false,
+            balcony_area: 0,
+            id: 6,
+          },
+          object: {
+            address: "71351 Von Hill Suite 928\nLake Napoleon, AK 91071-9471",
+            build_date: "2022-11-03",
+            credit_month: 32,
+            id: 1,
+          },
+          id: "dab7329e-e6a8-42cc-a934-666c786747ff",
+          number: "N-45",
+          price: 617510924,
+          price_calc: 617510924.4,
+          price_edited: true,
+          price_m2: 6562284,
+          price_sold: 617510924,
+          rooms: 3,
+        },
+      ],
+      calc: {
+        apartments: []
+      },
+      order: {},
+      stepTwoDisable: false,
+      validationError: {
+        type: '',
+        message: '',
+        visible: false,
+      },
+      expiry_at: null,
+    }
+  },
+  watch: {
+    newContractNumber(value) {
+      this.changedContractNumber = !!(value && value.length && !(value === this.order.contract_number));
+    }
+  },
+  computed: {
+    flexCenter() {
+      return 'd-flex justify-content-center align-items-center'
     },
+  },
 
     async created() {
         const apartments = ['9450d1fc-a2f3-43c6-ba11-770c5a903738']
@@ -381,6 +407,20 @@ export default {
             }
         },
     },
+    mutateCalcApartment(item) {
+        if (this.calc.apartments.length) {
+            const index = this.calc.apartments.findIndex(apartment => apartment.id === item.id)
+            if (index !== -1) {
+                this.calc.apartments[index] = item
+                return
+            }
+        }
+        this.calc.apartments.push(item)
+    },
+    updateApartmentCalc(item) {
+      this.mutateCalcApartment(item)
+    }
+  },
 }
 </script>
 
