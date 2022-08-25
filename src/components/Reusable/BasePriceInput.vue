@@ -141,7 +141,6 @@ export default {
     },
     setPlaceholder() {
       const {placeholder} = this
-      console.log(placeholder)
       if (placeholder) {
         const type = typeof placeholder
         if (isPrimitiveValue(type)) {

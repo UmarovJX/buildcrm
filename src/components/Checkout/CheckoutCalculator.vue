@@ -1,59 +1,47 @@
 <template>
   <div class="checkout">
-    <div class="calculator-wrapper">
+    <div class="calculator-wrapper mb-4">
       <!--  Вариант оплаты  -->
       <base-select
           v-model="calc.discount"
           :label="true"
           :noPlaceholder="true"
-          :options="options"
+          :options="paymentOptions"
           :placeholder="`${ $t('enter_discount') }`"
           class="discount-select"
       />
-      <!--  Рассрочка (monthly)  -->
-      <base-select
-          v-model="calc.monthly_payment_period"
-          :label="true"
-          :noPlaceholder="true"
-          :options="options"
-          :placeholder="`${ $t('installment') }`"
-          class="monthly-payment-period-select"
-      />
       <!--  Предоплата  -->
-      <base-select
+      <base-price-input
           v-model="calc.prepay_percentage"
+          :value="calc.prepay_percentage"
+          :permission-change="true"
           :label="true"
-          :noPlaceholder="true"
-          :options="options"
-          :placeholder="`${ $t('prepayment') }`"
-          class="prepay-percentage-select w-100"
+          :top-placeholder="true"
+          :currency="`${$t('ye')}`"
+          :placeholder="$t('prepayment')"
+          class="prepay-percentage-input w-100"
+      />
+      <!--  Рассрочка (monthly)  -->
+      <base-price-input
+          v-model="calc.monthly_payment_period"
+          :value="calc.monthly_payment_period"
+          :permission-change="true"
+          :label="true"
+          :top-placeholder="true"
+          :placeholder="$t('installment')"
+          currency="месяцев"
+          class="checkout-initial-price-input w-100"
       />
       <!--  Первоначальный взнос    -->
       <base-price-input
           v-model="calc.initial_price"
+          :value="calc.initial_price"
+          :permission-change="true"
           :label="true"
           :top-placeholder="true"
           :currency="`${$t('ye')}`"
           :placeholder="$t('payments.initial_fee')"
           class="checkout-initial-price-input w-100"
-      />
-      <!--  Общая скидка    -->
-      <base-price-input
-          v-model="calc.total_discount"
-          :label="true"
-          :top-placeholder="true"
-          :currency="`${ $t('ye') }`"
-          :placeholder="$t('total_discount')"
-          class="checkout-total-discount-input w-100"
-      />
-      <!--  Скидка за М2    -->
-      <base-price-input
-          v-model="calc.discount_per_m2"
-          :label="true"
-          :top-placeholder="true"
-          :currency="`${ $t('ye') }`"
-          :placeholder="$t('discount_per_m2')"
-          class="checkout-discount-per-m2-input w-100"
       />
       <!--  Дата первого платежа  -->
       <base-date-picker
@@ -104,8 +92,8 @@ export default {
       type: String,
       required: true
     },
-    checkoutInformation: {
-      type: Object,
+    discountOptions: {
+      type: Array,
       required: true
     }
   },
@@ -114,10 +102,8 @@ export default {
       calc: {
         discount: null,
         prepay_percentage: null,
-        monthly_payment_period: null,
+        monthly_payment_period: 20,
         initial_price: 0,
-        total_discount: 0,
-        discount_per_m2: 0,
         first_payment_date: null,
         payment_date: null
       },
@@ -134,6 +120,22 @@ export default {
       ]
     }
   },
+  computed: {
+    paymentOptions() {
+      return this.discountOptions.map((discount, index) => {
+        let text = this.$t("apartments.view.variant")
+        if (discount.type === 'promo') {
+          text += this.$t('promo.by_promo')
+        }
+        text += ` ${index + 1} - ${discount.prepay}%`
+        return {
+          text,
+          value: discount.id,
+          ...discount,
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -164,7 +166,7 @@ export default {
       grid-area: two;
     }
 
-    .prepay-percentage-select {
+    .prepay-percentage-input {
       grid-area: three;
     }
 
@@ -198,7 +200,8 @@ export default {
 
   &-initial-price-input,
   &-total-discount-input,
-  &-discount-per-m2-input {
+  &-discount-per-m2-input,
+  .prepay-percentage-input {
     height: 56px;
     display: flex;
     width: 229.5px;

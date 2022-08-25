@@ -79,7 +79,10 @@
                 <h3 class="section-title">Детали платежа</h3>
               </div>
               <div class="app-checkout__calculator">
-                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>
+                <checkout-calculator
+                    :discount-options="calc.discounts"
+                    date-picker-icon-fill="#7C3AED"
+                />
               </div>
             </div>
           </div>
@@ -156,7 +159,6 @@ export default {
       changedContractNumber: false,
       datePickerIconFill: 'var(--violet-600)',
       tabIndex: 1,
-      discounts: [],
       form: {
         contract_date: '',
         passport_number: '',
@@ -263,7 +265,8 @@ export default {
         },
       ],
       calc: {
-        apartments: []
+        apartments: [],
+        discounts: []
       },
       order: {},
       stepTwoDisable: false,
@@ -369,10 +372,9 @@ export default {
     async getClientData() {
       const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
       await api.contractV2.getUpdateContractView(uuid).then((res) => {
-        this.apartments = [...res.data.apartments, ...this.apartments]
-        this.discounts = this.apartments[0].discounts
         this.client = res.data.client
-        console.log(res.data.client, 'res.data.client');
+        this.apartments = [...res.data.apartments, ...this.apartments]
+        this.calc.discounts = this.apartments[0].discounts
       })
     },
     backToView() {
