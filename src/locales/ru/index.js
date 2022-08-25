@@ -106,7 +106,7 @@ export default {
             update_comments: 'Право на редактирования комментов',
             delete_comments: 'Право на удаления комментов',
             create_comments: 'Право на создания комментов',
-            read_comments: 'Право просмотра комментов'
+            read_comments: 'Право просмотра комментов',
         },
         users: {
             watch_users: 'Право просмотра списка пользователей',
@@ -491,6 +491,11 @@ export default {
             cost: 'Стоимость',
             object: 'Объект',
             date: 'Дата'
+        },
+        activity_log: {
+            reissue: "Внесены изменении в переоформление",
+            comments: "Внесены изменении в комментарие",
+            payments_histories: "Внесены изменении в историе оплаты"
         },
 
         status: {

@@ -1,18 +1,27 @@
 <template>
   <div>
     <div class="accordion" role="tablist">
-      <b-card no-body class="accordion-item">
+      <b-card v-for="(activity, index) in activityLog.items" :key="index" no-body class="accordion-item">
         <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-1 role="tab">
-          <div class="header-status warning">
-            <img :src="require('@/assets/icons/icon-paper-fail.svg')" alt="">
+          <div class="header-status deleted" v-if="activity.type==='deleted'">
+            <BasePaperFailIcon fill="white"/>
+          </div>
+          <div class="header-status created" v-else-if="activity.type==='created'">
+            <BaseEditIcon fill="white"/>
+          </div>
+          <div class="header-status edit" v-else-if="activity.type==='updated'">
+            <BaseEditIcon fill="white"/>
+          </div>
+          <div class="header-status warning" v-else>
+            {{ activity.type }}
           </div>
           <div class="header-nav">
             <div class="header-nav__item">
               <div class="avatar">
-                <img :src="require('@/assets/img/avatar.svg')" alt="">
+                <img :src="imageMaker(activity.user.avatar)" alt="">
               </div>
               <h5 class="name">
-                Темурбек Якубов
+                {{ activity.user.first_name }} {{ activity.user.last_name }}
                 <span class="name-dot">
                 ·
               </span>
@@ -22,7 +31,7 @@
               </h5>
             </div>
             <div class="header-nav__item">
-              <p class="date">10:53 27.06.2022</p>
+              <p class="date">{{ dateFormatter(activity.created_at) }}</p>
               <div class="collapse-button">
                 <img :src="require('@/assets/icons/icon-down.svg')" alt="">
               </div>
@@ -30,17 +39,18 @@
           </div>
           <div class="header-text">
             <p>
-              Внес(ла) изменения в договор
+              {{ activityDefiner(activity.action) }}
             </p>
           </div>
-          <div class="header-comment">
-            <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
+          <div v-if="hasComment(activity.properties.attributes)" class="header-comment">
+            <p>{{ activity.properties.attributes.comment }}</p>
           </div>
         </b-card-header>
-        <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+        <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel"
+                    v-if="activity.action==='reissue'">
           <b-card-body class="accordion-item__body">
             <h5 class="body-title">
-              Прикрепленные файлы
+              Изменённые файлы
             </h5>
             <div class="body-content">
               <base-button text="oldcontract.pdf">
@@ -57,121 +67,6 @@
           </b-card-body>
         </b-collapse>
       </b-card>
-
-      <b-card no-body class="accordion-item">
-        <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-2 role="tab">
-          <div class="header-status edit">
-            <img :src="require('@/assets/icons/icon-edit.svg')" alt="">
-          </div>
-          <div class="header-nav">
-            <div class="header-nav__item">
-              <div class="avatar">
-                <img :src="require('@/assets/img/avatar.svg')" alt="">
-              </div>
-              <h5 class="name">
-                Темурбек Якубов
-                <span class="name-dot">
-                ·
-              </span>
-                <span class="name-rank">
-                Менеджер продаж
-              </span>
-              </h5>
-            </div>
-            <div class="header-nav__item">
-              <p class="date">10:53 27.06.2022</p>
-              <div class="collapse-button">
-                <img :src="require('@/assets/icons/icon-down.svg')" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
-          </div>
-          <div class="header-comment">
-            <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
-          </div>
-        </b-card-header>
-        <b-collapse id="accordion-2" visible accordion="my-accordion" role="tabpanel">
-          <b-card-body class="accordion-item__body">
-            <h5 class="body-title">
-              Прикрепленные файлы
-            </h5>
-            <div class="body-content">
-              <base-button text="oldcontract.pdf">
-                <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-              <base-button text="newcontract.pdf">
-                <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-            </div>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
-
-      <b-card no-body class="accordion-item">
-        <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-3 role="tab">
-          <div class="header-status edit">
-            <img :src="require('@/assets/icons/icon-edit.svg')" alt="">
-          </div>
-          <div class="header-nav">
-            <div class="header-nav__item">
-              <div class="avatar">
-                <img :src="require('@/assets/img/avatar.svg')" alt="">
-              </div>
-              <h5 class="name">
-                Темурбек Якубов
-                <span class="name-dot">
-                ·
-              </span>
-                <span class="name-rank">
-                Менеджер продаж
-              </span>
-              </h5>
-            </div>
-            <div class="header-nav__item">
-              <p class="date">10:53 27.06.2022</p>
-              <div class="collapse-button">
-                <img :src="require('@/assets/icons/icon-down.svg')" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
-          </div>
-          <div class="header-comment">
-            <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
-          </div>
-        </b-card-header>
-        <b-collapse id="accordion-3" visible accordion="my-accordion" role="tabpanel">
-          <b-card-body class="accordion-item__body">
-            <h5 class="body-title">
-              Прикрепленные файлы
-            </h5>
-            <div class="body-content">
-              <base-button text="oldcontract.pdf">
-                <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-              <base-button text="newcontract.pdf">
-                <template #left-icon>
-                  <base-contracts-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-            </div>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
-
     </div>
   </div>
 </template>
@@ -180,14 +75,62 @@
 
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
+import api from "@/services/api";
+import moment from "moment";
+import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import BasePaperFailIcon from "@/components/icons/BasePaperFailIcon";
 
 export default {
   name: "ActivityLog",
-  components: {BaseContractsIcon, BaseButton},
+  components: {BasePaperFailIcon, BaseEditIcon, BaseContractsIcon, BaseButton},
 
   data() {
-    return {}
+    return {
+      activityLog: [],
+      comment: "",
+      activityStatus:{
+        reissue: "contracts.activity_log.reissue",
+        comments: "contracts.activity_log.comments",
+        payments_histories: "contracts.activity_log.payments_histories"
+      }
+    }
   },
+  async created() {
+    await this.fetchActivityLog()
+  },
+  methods: {
+    hasComment(attributes) {
+      return attributes && attributes.hasOwnProperty("comment") && attributes.comment !== null
+    },
+    activityDefiner(activity) {
+      return this.$t(this.activityStatus[activity])
+    },
+    imageMaker(image) {
+      return process.env.VUE_APP_URL + "/" + image
+    },
+    dateFormatter(date) {
+      // 10:53 27.06.2022
+      let d = moment(date).format('L')
+      d = d.replaceAll("/", ".")
+      let t = moment(date).format('LT')
+      t = t.slice(0, -2)
+      return t + d
+    },
+    async fetchActivityLog() {
+      const {id} = this.$route.params
+      await api.contractV2.fetchActivityLog(id)
+          .then((response) => {
+                this.activityLog = response.data;
+              }
+          )
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.showLoading = false
+          })
+    }
+  }
 }
 </script>
 
@@ -261,10 +204,14 @@ export default {
         background-color: var(--yellow-600);
       }
 
-      &.warning {
+      &.warning,
+      &.deleted {
         background-color: var(--red-600);
       }
 
+      &.created {
+        background-color: var(--green-600);
+      }
     }
 
     &:after {

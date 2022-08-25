@@ -105,7 +105,12 @@ export default {
             update_comments: 'Izohlarni tahrirlash huquqi',
             delete_comments: 'Izohlarni o\'chirish huquqi',
             create_comments: 'Izohlarni yaratish huquqi',
-            read_comments: 'Izohlarni ko\'rish huquqi'
+            read_comments: 'Izohlarni ko\'rish huquqi',
+            activity_log: {
+                reissue: "Qayta o'zgarishda o'zgarishlar kiritlgan",
+                comments: "Izohlarda o'zgarish kiritilgan",
+                payments_histories: "To'lovlar tarixida ozgarish kiritilgan"
+            }
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',

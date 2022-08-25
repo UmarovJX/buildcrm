@@ -240,7 +240,7 @@ import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
 import TabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
 import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
 import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
-// import ActivityLog from "@/components/Contracts/view/ActivityLog";
+import ActivityLog from "@/components/Contracts/view/ActivityLog";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
@@ -255,7 +255,7 @@ export default {
   name: "ContractView",
   components: {
     BaseWarningIcon,
-      BaseCloseIcon,
+    BaseCloseIcon,
     BaseFilterTabsContent,
     BaseDeleteIcon,
     BaseArrowRight,
@@ -265,7 +265,7 @@ export default {
     TabClientDetails,
     TabContractDetails,
     TabReContractDetails,
-    // ActivityLog,
+    ActivityLog,
     BaseModal,
     BaseLoading,
     BaseButton,
@@ -276,7 +276,7 @@ export default {
       order: {},
       showLoading: false,
       activeTab: 'TabPaymentSchedule',
-      tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'TabReContractDetails'],
+      tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'TabReContractDetails', 'ActivityLog'],
       deleteComment: null,
       errors: [],
       types: [],
@@ -323,9 +323,9 @@ export default {
         {
           name: this.$t('contract_details'),
         },
-        // {
-        //   name: this.$t('contract_log'),
-        // },
+        {
+          name: this.$t('contract_log'),
+        },
         {
           name: this.$t('recontract_details'),
         },
