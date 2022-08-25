@@ -1,167 +1,10 @@
 export default {
-    home: {
-        title: "Asosiy",
-    },
-    component: 'komponent',
-    roles_permission: {
-        activate_all: 'Hammasini faollashtirish',
-        placeholder_uz: "O'zbek tilida",
-        placeholder_ru: "Rus tilida",
-        slug: "Guruh nomi prefiksi",
-        titles: {
-            general: 'Umumiy',
-            objects: 'Obyektal',
-            promos: 'Chegirmalar',
-            layouts: 'Xonadon Rejalari',
-            apartments: 'Xonadonlar',
-            execution: 'Kelishuvlar',
-            contracts: 'Shartnomalar',
-            users: 'Foydalanuvchilar',
-            roles: 'Rollar',
-            debtors: 'Qarzdorlar',
-            companies: 'Kompaniyalar',
-            payment_account: 'Hisob',
-            branches: 'Filiallar'
-
-        },
-        general: {
-            role_name_ru: 'Rol (RU)',
-            role_name_uz: 'Rol (UZ)',
-            exchange_rates: 'Valyuta kursi',
-            theme: 'Interfeys (tungi, kunduzgi)',
-            language: 'Til (rus, o\'zbek)',
-            profile_settings: 'Profil sozlamalari',
-            user_data: 'Foydalanuvchi haqidagi ma\'lumotlarni o\'zgartirish huquqi',
-            user_password: 'Foydalanuvchi parolini o\'zgartirish huquqi',
-        },
-        objects: {
-            watch_objects: 'Obyektlar sahifasini ko\'rish huquqi',
-            create_object: 'Obyekt yaratish huquqi',
-            edit_object: 'Obyektlarni tahrirlash huquqi',
-            show_object: 'Bitta obyektni ko\'rish huquqi',
-            delete_object: 'Obyekt o\'chirish huquqi',
-            download_logo: 'Logotip yuklash huquqi'
-        },
-        promos: {
-            watch_promos_page: 'Chegirmalar sahifasini ko\'rish huquqi',
-            create_promo: 'Chegirma yaratish huquqi',
-            edit_promo: 'Chegirmani tahrirlash huquqi',
-            delete_promo: 'Chegirma o\'chirish huquqi'
-        },
-        layouts: {
-            watch_layouts: 'Xonadon rejasi sahifasini ko\'rish huquqi',
-            create_layouts: 'Xonadon rejasi yaratish huquqi',
-            edit_layouts: 'Xonadon rejasi tahrirlash huquqi',
-            delete_layouts: 'Xonadon rejasi o\'chirish huquqi'
-        },
-        apartments: {
-            watch_apartments: 'Xonadonlar sahifasini ko\'rish huquqi (bitta obyekt sahifasi)',
-            filter_apartments: 'Sahifadagi xonadonlar ro\'yxatini filtrlash huquqi',
-            edit_apartment: 'Xonadonni tahrirlash huquqi (bitta obyekt sahifasi)',
-            status_apartment: 'Xonadonni sotuvdan olish va qo\'yish huquqi (bitta obyekt sahifasi)',
-            change_list_apartments: 'Xonadonlar jadvalini ko\'rish huquqi',
-            list_apartments1: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 1.0 dan foydalanish huquqi',
-            list_apartments2: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 2.0 dan foydalanish huquqi',
-            using_layouts: 'Xonadonlar ro\'yxatini o\'zgartirish uchun xonadon rejasidan foydalanish huquqi'
-        },
-        execution: {
-            book_apartment: 'Xonadonni bron qilish huquqi (bitta obyekt sahifasi)',
-            decorate_apartment: 'Xonadonni ro\'xatdan o\'tkazish huquqi',
-            tag_acquaintances: 'Do\'stlarni belgilash huquqi',
-            change_payment: 'Boshqa narxda shartnoma tuzish huquqi',
-            edit_date: 'Xonadonni ro\'xatdan o\'tkazilish sanasini o\'zgartirish huquqi',
-            change_monthly_payment: 'Boshqa oylik to\'lovda shartnoma tuzish huquqi',
-            full_access: 'Barchasiga ruxsat berish'
-        },
-        contracts: {
-            watch_deals: 'Shartnomalar ro\'yxatini ko\'rish huquqi',
-            filter_deals: 'Shartnomalar ro\'yxatini filtrlash huquqi',
-            watch_deal: 'Bitta shartnomani ko\'rish huquqi',
-            download_deal: 'Shartnomalarni yuklash huquqi',
-            decline_deal: 'Shartnomani bekor qilish huquqi',
-            client_type: 'Mijoz turini o\'zgartirish huquqi (\'Mijoz haqida batafsil\' qismida)',
-            watch_branch_deals: 'Filialning barcha shartnomalarini ko\'rish huquqi (filial ish yurituvchisi)',
-            import: 'To\'lovlarni yuklab olish huquqi',
-            list: 'To\'lovlarni ko\'rish huquqi',
-            change_date_deal: 'Shartnoma sanasini o\'zgartirishga ruxsat berish',
-            edit_monthly_payment: 'Oylik toʻlovlarni tahrirlashga ruxsat berish',
-            edit_payment: 'To\'lovni tahrirlash huquqi (bitta shartnoma sahifasi)',
-            delete_payment: 'To\'lovni o\'chirish huquqi (bitta shartnoma sahifasi)',
-            add_payment: 'To\'lovni qo\'shish huquqi (bitta shartnoma sahifasi)',
-            create_type_payment: 'Dastlabki to\'lov turini yaratish huquqi',
-            edit_type_payment: 'Dastlabki to\'lov turini tahrirlash huquqi',
-            delete_type_payment: 'Dastlabki to\'lov turini o\'chirish huquqi',
-            create_monthly_payment: 'Dastlabki to\'lov turini yaratish huquqi',
-            edit_monthly_type: 'Oylik to\'lov turini tahrirlash huquqi',
-            delete_monthly_type: 'Oylik to\'lov turini o\'chirish huquqi',
-            reissue_view: 'Qayta tashkillashtirishni ko\'rish huquqi',
-            reissue_create: 'Qayta tashkillashtirish yaratish huquqi',
-            uniformity: 'Mutanosiblikni ko\'rish huquqi',
-            comments: 'Shartnomalarga izoh yozish huquqi',
-            edit: 'Shartnomalarni tahrirlash huquqi',
-            full_access: 'Barchasiga ruxsat berish',
-            update_comments: 'Izohlarni tahrirlash huquqi',
-            delete_comments: 'Izohlarni o\'chirish huquqi',
-            create_comments: 'Izohlarni yaratish huquqi',
-            read_comments: 'Izohlarni ko\'rish huquqi'
-        },
-        users: {
-            watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
-            create_user: 'Foydalanuvchilarni yaratish huquqi',
-            edit_user: 'Foydalanuchilarni tahrirlash huquqi',
-            delete_user: 'Foydalanuvchilarni o\'chirish huquqi'
-        },
-        roles: {
-            watch_roles: 'Rollar ro\'xatini ko\'rish huquqi',
-            add_roles: 'Rollar qo\'shish huquqi',
-            edit_roles: 'Rollarni tahrirlash huquqi',
-            delete_roles: 'Rollarni o\'chirish huquqi'
-        },
-        debtors: {
-            watch_debtors: 'Qarzdorlar ro\'yxatini ko\'rish huquqi',
-        },
-        companies: {
-            watch_companies: 'Kompaniyalar ro\'yxatini ko\'rish huquqi',
-            watch_company: 'Bitta kompaniyani ko\'rish huquqi',
-            create_company: 'Kompaniya yaratish huquqi',
-            edit_companies: 'Kompaniyani tahrirlash huquqi',
-            delete_company: 'Kompaniyani o\'chirish huquqi'
-        },
-        payment_account: {
-            access_payments_list: 'Hisob raqamlar ro\'yxatini ko\'rish huquqi',
-            add_payment: 'Hisob raqamini qo\'shish huquqi',
-            edit_payment: 'Hisob raqamini tahrirlash huquqi',
-            delete_payment: 'Hisob raqamini o\'chirish huquqi'
-        },
-        branches: {
-            watch_branches: 'Filiallar ro\'xatini ko\'rish huquqi',
-            edit_branch: 'Filialni tahrirlash huquqi',
-            delete_branch: 'Filialni o\'chirish huquqi',
-            add_branch: 'Filial qo\'shish huquqi',
-            watch_contract_template: 'Shartnomani na\'muna shablonini ko\'rish huquqi',
-            create_contract_template: 'Shartnomani na\'muna shablonini yaratish huquqi',
-            delete_contract_template: 'Shartnomani na\'muna shablonini o\'chirish huquqi',
-            make_main_branch_template: 'Asosiy filial shartnomani na\'munasini yaratish huquqi',
-            template_download: 'Shartnomani na\'muna shablonini yuklash huquqi',
-            template_instruction: 'Shartnomani na\'muna shablonini ko\'rsatmasini ko\'rish huquqi'
-        },
-    },
-    user: {
-        first_name: "Ism",
-        last_name: "Familiya",
-        second_name: "Otasining ismi",
-        phone: "Telefon raqami",
-        password: "Parol",
-        email: "E-mail",
-        role: "Rol",
-        phone_number: "Telefon raqami",
-        validation_last_password: 'Eski parol noto’g’ri terilgan!',
-        validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
-        validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
-    },
-
-    apartment: "Xonadon",
     xonsaroy: 'Xonsaroy',
+    installment: "Bo'lib to'lash rejasi",
+    prepayment: "Oldindan to'lov",
+    discount_per_m2: 'm2 uchun chegirma',
+    enter_discount: "To'lov turini tanlang",
+    apartment: "Xonadon",
     address_office: 'Toshkent shahri, Yunusobod tumani, Yangi shahar ko‘chasi, 64A-uy',
     motto: 'Orzular sari ishonchli qadam!',
     quarter: 'chorak',
@@ -380,6 +223,167 @@ export default {
         promo: 'Aksiya',
         on_payment: "To'lovda",
         closed: 'Yopilgan'
+    },
+
+    home: {
+        title: "Asosiy",
+    },
+    component: 'komponent',
+    roles_permission: {
+        activate_all: 'Hammasini faollashtirish',
+        placeholder_uz: "O'zbek tilida",
+        placeholder_ru: "Rus tilida",
+        slug: "Guruh nomi prefiksi",
+        titles: {
+            general: 'Umumiy',
+            objects: 'Obyektal',
+            promos: 'Chegirmalar',
+            layouts: 'Xonadon Rejalari',
+            apartments: 'Xonadonlar',
+            execution: 'Kelishuvlar',
+            contracts: 'Shartnomalar',
+            users: 'Foydalanuvchilar',
+            roles: 'Rollar',
+            debtors: 'Qarzdorlar',
+            companies: 'Kompaniyalar',
+            payment_account: 'Hisob',
+            branches: 'Filiallar'
+
+        },
+        general: {
+            role_name_ru: 'Rol (RU)',
+            role_name_uz: 'Rol (UZ)',
+            exchange_rates: 'Valyuta kursi',
+            theme: 'Interfeys (tungi, kunduzgi)',
+            language: 'Til (rus, o\'zbek)',
+            profile_settings: 'Profil sozlamalari',
+            user_data: 'Foydalanuvchi haqidagi ma\'lumotlarni o\'zgartirish huquqi',
+            user_password: 'Foydalanuvchi parolini o\'zgartirish huquqi',
+        },
+        objects: {
+            watch_objects: 'Obyektlar sahifasini ko\'rish huquqi',
+            create_object: 'Obyekt yaratish huquqi',
+            edit_object: 'Obyektlarni tahrirlash huquqi',
+            show_object: 'Bitta obyektni ko\'rish huquqi',
+            delete_object: 'Obyekt o\'chirish huquqi',
+            download_logo: 'Logotip yuklash huquqi'
+        },
+        promos: {
+            watch_promos_page: 'Chegirmalar sahifasini ko\'rish huquqi',
+            create_promo: 'Chegirma yaratish huquqi',
+            edit_promo: 'Chegirmani tahrirlash huquqi',
+            delete_promo: 'Chegirma o\'chirish huquqi'
+        },
+        layouts: {
+            watch_layouts: 'Xonadon rejasi sahifasini ko\'rish huquqi',
+            create_layouts: 'Xonadon rejasi yaratish huquqi',
+            edit_layouts: 'Xonadon rejasi tahrirlash huquqi',
+            delete_layouts: 'Xonadon rejasi o\'chirish huquqi'
+        },
+        apartments: {
+            watch_apartments: 'Xonadonlar sahifasini ko\'rish huquqi (bitta obyekt sahifasi)',
+            filter_apartments: 'Sahifadagi xonadonlar ro\'yxatini filtrlash huquqi',
+            edit_apartment: 'Xonadonni tahrirlash huquqi (bitta obyekt sahifasi)',
+            status_apartment: 'Xonadonni sotuvdan olish va qo\'yish huquqi (bitta obyekt sahifasi)',
+            change_list_apartments: 'Xonadonlar jadvalini ko\'rish huquqi',
+            list_apartments1: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 1.0 dan foydalanish huquqi',
+            list_apartments2: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 2.0 dan foydalanish huquqi',
+            using_layouts: 'Xonadonlar ro\'yxatini o\'zgartirish uchun xonadon rejasidan foydalanish huquqi'
+        },
+        execution: {
+            book_apartment: 'Xonadonni bron qilish huquqi (bitta obyekt sahifasi)',
+            decorate_apartment: 'Xonadonni ro\'xatdan o\'tkazish huquqi',
+            tag_acquaintances: 'Do\'stlarni belgilash huquqi',
+            change_payment: 'Boshqa narxda shartnoma tuzish huquqi',
+            edit_date: 'Xonadonni ro\'xatdan o\'tkazilish sanasini o\'zgartirish huquqi',
+            change_monthly_payment: 'Boshqa oylik to\'lovda shartnoma tuzish huquqi',
+            full_access: 'Barchasiga ruxsat berish'
+        },
+        contracts: {
+            watch_deals: 'Shartnomalar ro\'yxatini ko\'rish huquqi',
+            filter_deals: 'Shartnomalar ro\'yxatini filtrlash huquqi',
+            watch_deal: 'Bitta shartnomani ko\'rish huquqi',
+            download_deal: 'Shartnomalarni yuklash huquqi',
+            decline_deal: 'Shartnomani bekor qilish huquqi',
+            client_type: 'Mijoz turini o\'zgartirish huquqi (\'Mijoz haqida batafsil\' qismida)',
+            watch_branch_deals: 'Filialning barcha shartnomalarini ko\'rish huquqi (filial ish yurituvchisi)',
+            import: 'To\'lovlarni yuklab olish huquqi',
+            list: 'To\'lovlarni ko\'rish huquqi',
+            change_date_deal: 'Shartnoma sanasini o\'zgartirishga ruxsat berish',
+            edit_monthly_payment: 'Oylik toʻlovlarni tahrirlashga ruxsat berish',
+            edit_payment: 'To\'lovni tahrirlash huquqi (bitta shartnoma sahifasi)',
+            delete_payment: 'To\'lovni o\'chirish huquqi (bitta shartnoma sahifasi)',
+            add_payment: 'To\'lovni qo\'shish huquqi (bitta shartnoma sahifasi)',
+            create_type_payment: 'Dastlabki to\'lov turini yaratish huquqi',
+            edit_type_payment: 'Dastlabki to\'lov turini tahrirlash huquqi',
+            delete_type_payment: 'Dastlabki to\'lov turini o\'chirish huquqi',
+            create_monthly_payment: 'Dastlabki to\'lov turini yaratish huquqi',
+            edit_monthly_type: 'Oylik to\'lov turini tahrirlash huquqi',
+            delete_monthly_type: 'Oylik to\'lov turini o\'chirish huquqi',
+            reissue_view: 'Qayta tashkillashtirishni ko\'rish huquqi',
+            reissue_create: 'Qayta tashkillashtirish yaratish huquqi',
+            uniformity: 'Mutanosiblikni ko\'rish huquqi',
+            comments: 'Shartnomalarga izoh yozish huquqi',
+            edit: 'Shartnomalarni tahrirlash huquqi',
+            full_access: 'Barchasiga ruxsat berish',
+            update_comments: 'Izohlarni tahrirlash huquqi',
+            delete_comments: 'Izohlarni o\'chirish huquqi',
+            create_comments: 'Izohlarni yaratish huquqi',
+            read_comments: 'Izohlarni ko\'rish huquqi'
+        },
+        users: {
+            watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
+            create_user: 'Foydalanuvchilarni yaratish huquqi',
+            edit_user: 'Foydalanuchilarni tahrirlash huquqi',
+            delete_user: 'Foydalanuvchilarni o\'chirish huquqi'
+        },
+        roles: {
+            watch_roles: 'Rollar ro\'xatini ko\'rish huquqi',
+            add_roles: 'Rollar qo\'shish huquqi',
+            edit_roles: 'Rollarni tahrirlash huquqi',
+            delete_roles: 'Rollarni o\'chirish huquqi'
+        },
+        debtors: {
+            watch_debtors: 'Qarzdorlar ro\'yxatini ko\'rish huquqi',
+        },
+        companies: {
+            watch_companies: 'Kompaniyalar ro\'yxatini ko\'rish huquqi',
+            watch_company: 'Bitta kompaniyani ko\'rish huquqi',
+            create_company: 'Kompaniya yaratish huquqi',
+            edit_companies: 'Kompaniyani tahrirlash huquqi',
+            delete_company: 'Kompaniyani o\'chirish huquqi'
+        },
+        payment_account: {
+            access_payments_list: 'Hisob raqamlar ro\'yxatini ko\'rish huquqi',
+            add_payment: 'Hisob raqamini qo\'shish huquqi',
+            edit_payment: 'Hisob raqamini tahrirlash huquqi',
+            delete_payment: 'Hisob raqamini o\'chirish huquqi'
+        },
+        branches: {
+            watch_branches: 'Filiallar ro\'xatini ko\'rish huquqi',
+            edit_branch: 'Filialni tahrirlash huquqi',
+            delete_branch: 'Filialni o\'chirish huquqi',
+            add_branch: 'Filial qo\'shish huquqi',
+            watch_contract_template: 'Shartnomani na\'muna shablonini ko\'rish huquqi',
+            create_contract_template: 'Shartnomani na\'muna shablonini yaratish huquqi',
+            delete_contract_template: 'Shartnomani na\'muna shablonini o\'chirish huquqi',
+            make_main_branch_template: 'Asosiy filial shartnomani na\'munasini yaratish huquqi',
+            template_download: 'Shartnomani na\'muna shablonini yuklash huquqi',
+            template_instruction: 'Shartnomani na\'muna shablonini ko\'rsatmasini ko\'rish huquqi'
+        },
+    },
+    user: {
+        first_name: "Ism",
+        last_name: "Familiya",
+        second_name: "Otasining ismi",
+        phone: "Telefon raqami",
+        password: "Parol",
+        email: "E-mail",
+        role: "Rol",
+        phone_number: "Telefon raqami",
+        validation_last_password: 'Eski parol noto’g’ri terilgan!',
+        validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
+        validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
 
     promo: {

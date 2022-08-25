@@ -141,6 +141,7 @@ export default {
     },
     setPlaceholder() {
       const {placeholder} = this
+      console.log(placeholder)
       if (placeholder) {
         const type = typeof placeholder
         if (isPrimitiveValue(type)) {
@@ -244,7 +245,7 @@ export default {
 
 .price-input {
   border: none;
-  max-width: 70%;
+  max-width: 80%;
   background-color: transparent;
 
   &::placeholder {

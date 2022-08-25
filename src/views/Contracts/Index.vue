@@ -21,13 +21,13 @@
         :busy="showLoading"
         :items="tableItems"
         :fields="tableFields"
-        @row-clicked="contractView"
         class="table__list"
         :empty-text="$t('no_data')"
         thead-tr-class="row__head__bottom-border"
         tbody-tr-class="row__body__bottom-border cursor-pointer"
         show-empty
         sort-icon-left
+        @row-clicked="contractView"
     >
       <!--   Checkbox Head    -->
       <!--

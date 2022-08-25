@@ -8,7 +8,6 @@
         {{ placeholder }}
       </span>
     </div>
-    <!--    <span v-if="value && label" class="input-label">{{ placeholder }}</span>-->
     <select
         :name="name"
         :disabled="disabled"

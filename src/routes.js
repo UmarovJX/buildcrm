@@ -49,7 +49,7 @@ import Checkout from "@/views/Checkout";
 
 const routes = [
     {
-        path: '/',
+        path: '/dashboard',
         name: 'app-layout',
         component: AppLayout,
         children: [
@@ -408,11 +408,11 @@ const routes = [
             }
         ]
     },
-    // {
-    //     path: '/checkout',
-    //     name: 'checkout',
-    //     component: Checkout
-    // }
+    {
+        path: '/checkout',
+        name: 'checkout',
+        component: Checkout
+    }
 ]
 
 
