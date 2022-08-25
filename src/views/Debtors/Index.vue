@@ -874,11 +874,9 @@ export default {
   color: var(--gray-600);
   font-family: CraftworkSans, serif;
 }
-
 ::v-deep .table.b-table > thead > tr > [aria-sort="none"],
 ::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
   background-position: right calc(2rem / 2) center !important;
-  //background-position: right !important;
   padding-right: 20px;
 }
 
@@ -888,6 +886,7 @@ export default {
   background-size: 20px;
   background-image: url("../../assets/icons/icon-arrow-down.svg") !important;
 }
+
 
 ::v-deep .table.b-table > thead > tr > [aria-sort=descending],
 ::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
