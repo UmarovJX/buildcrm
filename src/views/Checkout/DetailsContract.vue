@@ -338,6 +338,11 @@ export default {
             timeoutId: null,
         }
     },
+    watch: {
+        newContractNumber(value) {
+            this.changedContractNumber = !!(value && value.length && !(value === this.order.contract_number));
+        }
+    },
     computed: {
         flexCenter() {
             return 'd-flex justify-content-center align-items-center'
