@@ -5,7 +5,11 @@
                 <section class="tab-section">
                     <h3 class="section-title">Детали договора</h3>
                     <div class="section-container">
-                        <output-information property="Номер договора" :value="order.contract_number">
+                        <output-information
+                            v-if="order && order.contract_number"
+                            property="Номер договора"
+                            :value="order.contract_number"
+                        >
                             <template #actions>
                                             <span
                                                 @click="openEditNumberModal"
@@ -41,11 +45,13 @@
                     <div class="section-container row-gap-1">
                         <ValidationProvider
                             name="Номер паспорта (напр. AB1234567)"
-                            rules="required"
+                            rules="required|min:9"
                             v-slot="{ errors }"
                         >
                             <base-input
                                 v-model="client.passport_series"
+                                @input="clientDebounce"
+                                mask="AA#######"
                                 :label="true"
                                 :error="!!errors[0]"
                                 class="w-100"
@@ -97,7 +103,7 @@
                         </ValidationProvider>
                         <ValidationProvider
                             name="Фамилия (кир.)"
-                            rules="required"
+                            rules="required|min:1"
                             v-slot="{ errors }"
                         >
                             <base-input
@@ -110,7 +116,7 @@
                         </ValidationProvider>
                         <ValidationProvider
                             name="Фамилия (лат.)"
-                            rules="required"
+                            rules="required|min:1"
                             v-slot="{ errors }"
                         >
                             <base-input
@@ -123,7 +129,7 @@
                         </ValidationProvider>
                         <ValidationProvider
                             name="Имя (кир.)"
-                            rules="required"
+                            rules="required|min:1"
                             v-slot="{ errors }"
                         >
                             <base-input
@@ -136,7 +142,7 @@
                         </ValidationProvider>
                         <ValidationProvider
                             name="Имя (лат.)"
-                            rules="required"
+                            rules="required|min:1"
                             v-slot="{ errors }"
                         >
                             <base-input
@@ -149,7 +155,7 @@
                         </ValidationProvider>
                         <ValidationProvider
                             name="Отчество (кир.)"
-                            rules="required"
+                            rules="required|min:1"
                             v-slot="{ errors }"
                         >
                             <base-input
@@ -162,7 +168,7 @@
                         </ValidationProvider>
                         <ValidationProvider
                             name="Отчество (лат.)"
-                            rules="required"
+                            rules="required|min:1"
                             v-slot="{ errors }"
                         >
                             <base-input
@@ -175,10 +181,11 @@
                         </ValidationProvider>
                         <ValidationProvider
                             name="Номер телефона"
-                            rules="required|min:17"
+                            rules="required|min:12"
                             v-slot="{ errors }"
                         >
                             <base-input
+                                ref="phone-input"
                                 v-model="client.phone"
                                 type="tel"
                                 :label="true"
@@ -194,7 +201,6 @@
                         >
                             <base-input
                                 v-model="client.other_phone"
-                                type="tel"
                                 :label="true"
                                 mask="+### ## ### ## ##"
                                 placeholder="Дополнительный номер телефона"
@@ -207,11 +213,12 @@
                             v-slot="{ errors }"
                         >
                             <base-select
-                                v-model="client.language"
                                 :label="true"
                                 :error="!!errors[0]"
                                 :noPlaceholder="true"
                                 :options="options"
+                                :value="client.language"
+                                @change="client.language = $event"
                                 placeholder="Язык"
                             />
                         </ValidationProvider>
@@ -221,11 +228,12 @@
                             v-slot="{ errors }"
                         >
                             <base-select
-                                v-model="client.friends"
                                 :label="true"
                                 :error="!!errors[0]"
                                 :noPlaceholder="true"
                                 :options="clientTypeOption"
+                                :value="client.friends"
+                                @change="client.friends = $event"
                                 placeholder="Тип клиента"
                             />
                         </ValidationProvider>
@@ -277,6 +285,7 @@ import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseModal from "@/components/Reusable/BaseModal";
+import api from "@/services/api";
 
 export default {
     name: "DetailsContract",
@@ -298,7 +307,7 @@ export default {
         apartments: {
             type: Array,
         },
-        client: {
+        clientData: {
             type: Object,
         }
     },
@@ -326,14 +335,67 @@ export default {
                 message: '',
                 visible: false,
             },
+            timeoutId: null,
         }
     },
     computed: {
         flexCenter() {
             return 'd-flex justify-content-center align-items-center'
         },
+        client: {
+            get() {
+                return this.clientData
+            },
+            set(value) {
+                return this.$emit('set-client', value)
+            }
+        }
     },
     methods: {
+        clientDebounce() {
+            if (this.timeoutId !== null) {
+                clearTimeout(this.timeoutId)
+            }
+            this.timeoutId = setTimeout(() => {
+                this.getClientByPassport()
+            }, 500)
+        },
+        getClientByPassport() {
+            if (this.client.passport_series.length === 9)
+                api.clientsV2.fetchClientData(this.client.passport_series)
+                    .then(response => {
+                        console.log(response, 'response');
+                        const newClient = response.data
+                        this.client = {...newClient, friends: 'false'}
+                    }).catch((error) => {
+                    this.client =
+                        {
+                            first_name: {
+                                lotin: "",
+                                kirill: "",
+                            },
+                            last_name: {
+                                lotin: "",
+                                kirill: "",
+                            },
+                            second_name: {
+                                lotin: "",
+                                kirill: "",
+                            },
+                            passport_series: this.client.passport_series,
+                            issued_by_whom: null,
+                            date_of_issue: null,
+                            language: "uz",
+                            friends: 'false',
+                            birth_day: null,
+                            phone: null,
+                            other_phone: null,
+                            first_payment_date: null,
+                            payment_date: null,
+                        }
+                    this.toastedWithErrorCode(error);
+                })
+        },
         setNewContractNumber() {
             this.order.contract_number = this.newContractNumber
             this.closeEditNumberModal()
@@ -345,6 +407,10 @@ export default {
         openEditNumberModal() {
             this.newContractNumber = this.order.contract_number
             this.$refs['edit-contract-number'].openModal()
+        },
+        setFormProperty(property, value) {
+            this.client[property] = value
+            this.errors[property] = false
         },
     }
 }
@@ -363,31 +429,5 @@ export default {
     height: 24px;
     margin-left: 1rem;
 }
-
-
-.section {
-    &-title {
-        font-size: 24px;
-        font-weight: 900;
-        margin-bottom: 2rem;
-        color: var(--gray-400);
-        font-family: CraftworkSans, serif;
-    }
-
-    &-container {
-        display: grid;
-        column-gap: 2rem;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .data-picker {
-        height: 56px;
-        max-height: 56px;
-        width: 100%;
-        border: 2px solid #E5E7EB;
-        border-radius: 32px;
-    }
-}
-
 
 </style>

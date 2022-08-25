@@ -97,6 +97,9 @@ export default {
         if (value && value.length) {
           this.dateValue = value
         }
+        else{
+            this.dateValue = null
+        }
       }
     }
   },

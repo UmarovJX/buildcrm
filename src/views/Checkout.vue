@@ -34,9 +34,11 @@
                     </template>
 
                     <DetailsContract
+                        ref="detail-contract"
                         :apartments="apartments"
                         :order="order"
-                        :client="client"
+                        :client-data="client"
+                        @set-client="setClient"
                     />
 
                 </b-tab>
@@ -170,18 +172,8 @@ export default {
                 other_phone: '',
                 language: '',
                 client_type: '',
-                friends: false,
+                friends: '',
             },
-            options: [
-                {
-                    text: 'UZ',
-                    value: 'uz'
-                },
-                {
-                    text: 'RU',
-                    value: 'ru'
-                }
-            ],
             client: {
                 first_name: {
                     lotin: "",
@@ -199,17 +191,13 @@ export default {
                 issued_by_whom: null,
                 date_of_issue: null,
                 language: "uz",
-                friends: false,
+                friends: 'false',
                 birth_day: null,
                 phone: null,
                 other_phone: null,
                 first_payment_date: null,
                 payment_date: null,
             },
-            clientTypeOption: [
-                {text: 'Незнакомый', value: 'false'},
-                {text: 'Знакомый', value: 'true'},
-            ],
             apartments: [
                 {
                     discount_id: "other",
@@ -281,13 +269,11 @@ export default {
                 if (response?.data) {
                     this.$route.params.id = response.data.uuid
                     this.order = response.data
-                    console.log(response.data.expiry_at, 'response.data.expiry_at');
                     this.expiry_at = response.data.expiry_at
                 }
             })
         this.$route.params.object = '3'
 
-        console.log(this.expiry_at, 'this.order.expiry_at');
         this.expiry_at = this.$moment(this.expiry_at)
             .utcOffset("+0500")
             .format("YYYY-MM-DD H:mm:ss");
@@ -315,9 +301,12 @@ export default {
     },
     methods: {
         ...mapActions(["fetchApartmentOrder"]),
-
+        setClient(value) {
+            console.log(value, 'setClient');
+            this.client = value
+        },
         async changeTab() {
-            await this.$refs['client-validation'].validate().then((res) => {
+            await this.$refs['detail-contract'].$refs['client-validation'].validate().then((res) => {
                 const body = {...this.client, type_client: this.client.friends ? 'friends' : 'unknown'}
                 if (res) {
                     api.clientsV2.createClient(body).then(() => {
@@ -358,6 +347,7 @@ export default {
             const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
             await api.contractV2.getUpdateContractView(uuid).then((res) => {
                 this.apartments = res.data.apartments
+                console.log(res.data.client, 'response.data');
                 this.client = res.data.client
                 console.log(res.data.client, 'res.data.client');
             })
@@ -461,6 +451,32 @@ export default {
         }
     }
 }
+
+
+.section {
+    &-title {
+        font-size: 24px;
+        font-weight: 900;
+        margin-bottom: 2rem;
+        color: var(--gray-400);
+        font-family: CraftworkSans, serif;
+    }
+
+    &-container {
+        display: grid;
+        column-gap: 2rem;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .data-picker {
+        height: 56px;
+        max-height: 56px;
+        width: 100%;
+        border: 2px solid #E5E7EB;
+        border-radius: 32px;
+    }
+}
+
 
 </style>
 
