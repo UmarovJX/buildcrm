@@ -324,10 +324,10 @@ export default {
           name: this.$t('contract_details'),
         },
         {
-          name: this.$t('contract_log'),
+          name: this.$t('recontract_details'),
         },
         {
-          name: this.$t('recontract_details'),
+          name: this.$t('contract_log'),
         },
 
       ]
@@ -463,7 +463,6 @@ export default {
         // console.log(this.tabs, 'this.tabs old ');
         this.tabs = this.tabs.filter(tab => tab !== 'TabReContractDetails')
         // console.log(this.tabs, 'this.tabs last ');
-
       }
     },
     startLoading() {
