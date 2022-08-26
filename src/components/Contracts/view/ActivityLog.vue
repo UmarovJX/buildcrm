@@ -11,179 +11,84 @@
         @reset-filter-fields="disableFilter"
         @sort-by-search="sortBySearchField"
     />
-    <div class="accordion" role="tablist">
-      <p class="date date-day">14 июль</p>
-      <b-card no-body class="accordion-item">
-        <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-1 role="tab">
-          <div class="header-status warning">
-            <img :src="require('@/assets/icons/icon-paper-fail.svg')" alt="">
-          </div>
-          <p class="date date-time">10:53</p>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
-          </div>
-          <div class="header-nav">
-            <div class="header-nav__item">
-              <div class="avatar">
-                <img :src="require('@/assets/img/avatar.svg')" alt="">
+    <div v-for="(activity, index) in daysList" :key="index">
+      <div class="accordion" role="tablist">
+          <p class="date date-day">{{ dateFormatter(activity.date) }}</p>
+          <b-card no-body class="accordion-item" v-for="(item, index) in activity.activities" :key="index">
+            <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle="'accordion-' + (index+1)"
+                           role="tab">
+              <div :class="activityType(item.type).class">
+                <component :is="activityType(item.type).component" fill="white"/>
               </div>
-              <h5 class="name">
-                Темурбек Якубов
-                <span class="name-dot">
+              <p class="date date-time">{{ timeFormatter(item.created_at) }}</p>
+              <div class="header-text">
+                <p>
+                  {{ activityDefiner(item.action) }}
+                </p>
+              </div>
+              <div class="header-nav">
+                <div class="header-nav__item">
+                  <div class="avatar">
+                    <img :src="require('@/assets/img/avatar.svg')" alt="">
+                  </div>
+                  <h5 class="name">
+                    {{ item.user.first_name }} {{ item.user.last_name }}
+                    <span class="name-dot">
                 ·
               </span>
-                <span class="name-rank">
+                    <span class="name-rank">
                 Менеджер продаж
               </span>
-              </h5>
-            </div>
-            <div class="header-nav__item">
-              <div class="collapse-button">
-                <img :src="require('@/assets/icons/icon-down.svg')" alt="">
+                  </h5>
+                </div>
+                <div class="header-nav__item">
+                  <div class="collapse-button">
+                    <img :src="require('@/assets/icons/icon-down.svg')" alt="">
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="header-comment">
-            <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
-          </div>
-        </b-card-header>
-        <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
-          <b-card-body class="accordion-item__body">
-            <h5 class="body-title">
-              Прикрепленные файлы
-            </h5>
-            <div class="body-content">
-              <base-button text="oldcontract.pdf">
-                <template #left-icon>
-                  <base-document-icon/>
-                </template>
-              </base-button>
-              <base-button text="newcontract.pdf">
-                <template #left-icon>
-                  <base-document-icon/>
-                </template>
-              </base-button>
-            </div>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
-
-      <b-card no-body class="accordion-item">
-        <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-2 role="tab">
-          <p class="date date-time">10:53</p>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
-          </div>
-          <div class="header-status edit">
-            <img :src="require('@/assets/icons/icon-edit.svg')" alt="">
-          </div>
-          <div class="header-nav">
-            <div class="header-nav__item">
-              <div class="avatar">
-                <img :src="require('@/assets/img/avatar.svg')" alt="">
+              <div v-if="hasComment(item.properties)" class="header-comment">
+                <p>{{ item.properties.attributes.comment }}</p>
               </div>
-              <h5 class="name">
-                Темурбек Якубов
-                <span class="name-dot">
-                ·
-              </span>
-                <span class="name-rank">
-                Менеджер продаж
-              </span>
-              </h5>
-            </div>
-            <div class="header-nav__item">
-              <div class="collapse-button">
-                <img :src="require('@/assets/icons/icon-down.svg')" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="header-comment">
-            <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
-          </div>
-        </b-card-header>
-        <b-collapse id="accordion-2" visible accordion="my-accordion" role="tabpanel">
-          <b-card-body class="accordion-item__body">
-            <h5 class="body-title">
-              Прикрепленные файлы
-            </h5>
-            <div class="body-content">
-              <base-button text="oldcontract.pdf">
-                <template #left-icon>
-                  <base-document-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-              <base-button text="newcontract.pdf">
-                <template #left-icon>
-                  <base-document-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-            </div>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
-
-      <b-card no-body class="accordion-item">
-        <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle.accordion-3 role="tab">
-          <p class="date date-time">10:53</p>
-          <div class="header-text">
-            <p>
-              Внес(ла) изменения в договор
-            </p>
-          </div>
-          <div class="header-status edit">
-            <img :src="require('@/assets/icons/icon-edit.svg')" alt="">
-          </div>
-          <div class="header-nav">
-            <div class="header-nav__item">
-              <div class="avatar">
-                <img :src="require('@/assets/img/avatar.svg')" alt="">
-              </div>
-              <h5 class="name">
-                Темурбек Якубов
-                <span class="name-dot">
-                ·
-              </span>
-                <span class="name-rank">
-                Менеджер продаж
-              </span>
-              </h5>
-            </div>
-            <div class="header-nav__item">
-              <div class="collapse-button">
-                <img :src="require('@/assets/icons/icon-down.svg')" alt="">
-              </div>
-            </div>
-          </div>
-          <div class="header-comment">
-            <p>Это удивительный комментарий к тому, что я сделал. Неважно, что я сделал, важно то, чего я не сделал.</p>
-          </div>
-        </b-card-header>
-        <b-collapse id="accordion-3" visible accordion="my-accordion" role="tabpanel">
-          <b-card-body class="accordion-item__body">
-            <h5 class="body-title">
-              Прикрепленные файлы
-            </h5>
-            <div class="body-content">
-              <base-button text="oldcontract.pdf">
-                <template #left-icon>
-                  <base-document-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-              <base-button text="newcontract.pdf">
-                <template #left-icon>
-                  <base-document-icon fill="var(--violet-600)"/>
-                </template>
-              </base-button>
-            </div>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
-
+            </b-card-header>
+            <b-collapse :id="`accordion-${index+1}`" :accordion="`accordion-${index+1}`" role="tabpanel">
+              <b-card-body class="accordion-item__body" v-if="item.action==='reissue'">
+                <h5 class="body-title">
+                  Прикрепленные файлы
+                </h5>
+                <div class="body-content">
+                  <base-button text="oldcontract.pdf">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                  <base-button text="newcontract.pdf">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                </div>
+              </b-card-body>
+              <b-card-body class="accordion-item__body" v-else-if="item.action==='payments_histories'">
+                <h5 class="body-title">
+                  Прикрепленные файлы
+                </h5>
+                <div class="body-content">
+                  <base-button text="oldcontract.pdf">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                  <base-button text="newcontract.pdf">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                </div>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+      </div>
     </div>
   </div>
 </template>
@@ -194,10 +99,93 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import FilterContent from "@/components/Contracts/FilterContent";
 import {dateConvertor, dateProperties, formatDateToYMD} from "@/util/calendar";
 import BaseDocumentIcon from "@/components/icons/BaseDocumentIcon";
+import api from "@/services/api";
+import moment from "moment"
+import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import BasePaperFailIcon from "@/components/icons/BasePaperFailIcon";
+
 export default {
   name: "ActivityLog",
-  components: {BaseDocumentIcon, FilterContent, BaseButton},
+  components: {BaseDocumentIcon, FilterContent, BaseButton, BaseEditIcon, BasePaperFailIcon},
+  data() {
+    return {
+      activityLog: [],
+      activityStatus: {
+        reissue: "contracts.activity_log.reissue",
+        payments_histories: "contracts.activity_log.payments_histories",
+        comments: "contracts.activity_log.comments"
+      },
+      activityTypes: {
+        created: {
+          component: BaseEditIcon,
+          class: "header-status created"
+        },
+        updated: {
+          component: BaseEditIcon,
+          class: "header-status updated"
+        },
+        deleted: {
+          component: BasePaperFailIcon,
+          class: "header-status warning"
+        },
+      },
+      dates: [],
+      daysList: []
+    }
+  },
+  async created() {
+    await this.fetchActivityLog()
+  },
   methods: {
+    activityType(type) {
+      return this.activityTypes[type]
+    },
+    dateFormatter(date) {
+      const d = moment(date).format('LL')
+      return d.slice(0, -6)
+    },
+    timeFormatter(date) {
+      const t = moment(date).format('LT')
+      return t.slice(0, -3)
+    },
+    hasComment(properties) {
+      return properties.attributes && properties.attributes.comment
+    },
+    activityDefiner(action) {
+      return this.$t(this.activityStatus[action])
+    },
+    async fetchActivityLog() {
+      const {id} = this.$route.params
+      await api.contractV2.fetchActivityLog(id)
+          .then((response) => {
+            response.data.items.forEach((item) => {
+              const index = this.daysList.findIndex(day => day.date.slice(0, 10) === item.created_at.slice(0, 10))
+              if (index !== -1) {
+                this.daysList[index].activities.push(item)
+              } else {
+                this.daysList.push({
+                  date: item.created_at,
+                  activities: [item]
+                })
+              }
+            })
+            this.daysList = this.getDateListByDescending(this.daysList)
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+          .finally(() => {
+            this.showLoading = false
+          })
+    },
+    getDateListByDescending(dateList) {
+      console.log("date-list", dateList);
+      return dateList.sort((a,b) => {
+        const firstDate = dateConvertor(a.date)
+        const secondDate = dateConvertor(b.date)
+        return secondDate.getTime() - firstDate.getTime()
+      })
+    },
     sortBySearchField(searchingValue) {
       let search = searchingValue
       if (!search) {
@@ -206,7 +194,7 @@ export default {
       this.changeRouterQuery({
         search
       })
-      this.initDebtorUi()
+      // this.initDebtorUi()
     },
     disableFilter() {
       const resetQuery = {
@@ -222,7 +210,7 @@ export default {
       }
 
       this.changeRouterQuery(resetQuery)
-      this.initDebtorUi()
+      // this.initDebtorUi()
     },
     showCurrentDay() {
       const {month, year, dayOfMonth} = dateProperties(new Date())
@@ -261,7 +249,7 @@ export default {
           }
         }
       }
-      this.initDebtorUi()
+      // this.initDebtorUi()
     },
     filterDebts({date, price_from, price_to, client_type, object_id}) {
       const type = this.typeOfView
@@ -288,7 +276,7 @@ export default {
         }
       }
 
-      this.initDebtorUi()
+      // this.initDebtorUi()
     },
     changeViewType(type) {
       if (type !== this.typeOfView) {
@@ -315,24 +303,44 @@ export default {
             this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
           }
         }
-        this.initDebtorUi()
+        // this.initDebtorUi()
       }
-    }
-  },
-  data() {
-    return {}
+    },
+    refreshRouteQuery(query) {
+      console.log("pagination is gotta be there", query)
+      // this.$router.push({
+      //   query
+      // })
+      // this.setLimitAndPage()
+    },
+    setLimitAndPage() {
+      console.log("pagination is gotta be there")
+      //   if (this.typeOfView === 'list') {
+    //     this.list.pagination.current = this.query.page ?? 1
+    //   } else if (this.typeOfView === 'day') {
+    //     this.day.pagination.current = this.query.page ?? 1
+    //   }
+    //
+    //   if (this.typeOfView === 'list') {
+    //     this.list.pagination.limit = this.query.limit ?? 10
+    //   } else if (this.typeOfView === 'day') {
+    //     this.day.pagination.limit = this.query.limit ?? 10
+    //   }
+    // }
+  }
   },
   computed: {
     query() {
       return Object.assign({}, this.$route.query)
     },
-  }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 ::v-deep.custom-filter {
   margin-top: 32px;
+
   .d-flex {
     .d-flex {
       .custom-select {
@@ -341,6 +349,7 @@ export default {
     }
   }
 }
+
 ::v-deep .accordion {
   margin-top: 2rem;
   display: flex;
@@ -351,12 +360,14 @@ export default {
     font-family: Craftwork Sans, sans-serif;
     font-weight: 900;
     color: #9CA3AF;
+
     &-day {
       line-height: 22px;
       margin: 20px 0 40px;
       font-size: 18px;
       align-self: center;
     }
+
     &-time {
       font-size: 14px;
       margin-bottom: 4px;
@@ -387,7 +398,14 @@ export default {
       margin: 0 !important;
     }
   }
-
+  .collapsed {
+    padding: 24px;
+    border-radius: 16px!important;
+    margin-top: -16px!important;
+  }
+  .collapsed:hover {
+    background: #F9FAFB;
+  }
   &-item {
     border: none;
     width: calc(100% - 68px);
@@ -405,8 +423,12 @@ export default {
       justify-content: center;
       z-index: 99;
 
-      &.edit {
+      &.updated {
         background-color: var(--yellow-600);
+      }
+
+      &.created {
+        background-color: var(--green-600);
       }
 
       &.warning {
@@ -441,10 +463,12 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         &__item {
           display: flex;
           align-items: center;
           column-gap: 1rem;
+
           h5 {
             margin-bottom: 0;
           }
