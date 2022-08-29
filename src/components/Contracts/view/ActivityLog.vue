@@ -29,7 +29,7 @@
               <div class="header-nav">
                 <div class="header-nav__item">
                   <div class="avatar">
-                    <img :src="require('@/assets/img/avatar.svg')" alt="">
+                    <img :src="item.user.avatar" alt="avatar"/>
                   </div>
                   <h5 class="name">
                     {{ item.user.first_name }} {{ item.user.last_name }}
@@ -37,7 +37,7 @@
                 ·
               </span>
                     <span class="name-rank">
-                Менеджер продаж
+                {{getClientRole(item.user.role.name)}}
               </span>
                   </h5>
                 </div>
@@ -222,6 +222,25 @@ export default {
       })
       this.setLimitAndPage()
     },
+    getClientRole(client) {
+      let language = 'kirill'
+      if (this.$i18n.locale === 'uz') {
+        language = 'lotin'
+      }
+      return this.clientRole(client, language)
+    },
+    clientRole(multiRole, language) {
+      const roleByLang = multiRole[language]
+      if (roleByLang) {
+        return roleByLang
+      } else {
+        const roleOtherLang = language === 'kirill' ? multiRole['ru'] : multiRole['uz']
+        if (roleOtherLang) return roleOtherLang
+      }
+
+      return ''
+    },
+
 
 
 
@@ -533,6 +552,12 @@ export default {
         width: 2rem;
         height: 2rem;
         border-radius: 50%;
+        img {
+          border-radius: 50%;
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+        }
       }
 
       .name {
