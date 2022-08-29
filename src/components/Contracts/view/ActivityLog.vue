@@ -54,7 +54,7 @@
             <b-collapse :id="`accordion-${index+1}`" :accordion="`accordion-${index+1}`" role="tabpanel">
               <b-card-body class="accordion-item__body" v-if="item.action==='reissue'">
                 <h5 class="body-title">
-                  Прикрепленные файлы
+                  {{ $t('contracts.activity_log.attached_files') }}
                 </h5>
                 <div class="body-content">
                   <base-button text="oldcontract.pdf">
@@ -71,7 +71,7 @@
               </b-card-body>
               <b-card-body class="accordion-item__body" v-else-if="item.action==='payments_histories'">
                 <h5 class="body-title">
-                  Прикрепленные файлы
+                  {{ $t('contracts.activity_log.attached_files') }}
                 </h5>
                 <div class="body-content">
                   <base-button text="oldcontract.pdf">

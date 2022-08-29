@@ -499,6 +499,7 @@ export default {
             comments: "Внесены изменении в комментарие",
             payments_histories: "Внесены изменении в историе оплаты",
             activity_type: "Тип активности",
+            attached_files: "Прикрепленные файлы",
             actions: {
                 deleted: "Удаление",
                 reissue: "Переоформление",

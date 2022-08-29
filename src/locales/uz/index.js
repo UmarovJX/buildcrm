@@ -507,6 +507,7 @@ export default {
             comments: "Izohlarda o'zgarish kiritilgan",
             payments_histories: "To'lovlar tarixida ozgarish kiritilgan",
             activity_type: "O'zgarish turi",
+            attached_files: "Biriktirilgan fayllar",
             actions: {
                 deleted: "O'chirilgan",
                 reissue: "Qayta tashkillashtirilgan",
