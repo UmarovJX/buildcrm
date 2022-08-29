@@ -345,8 +345,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .search__content {
+  padding-left: 0!important;
   margin-top: 2rem;
   margin-bottom: 1rem;
+  margin-left: 0!important;
   width: 100%;
   display: flex;
 

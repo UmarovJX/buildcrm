@@ -107,11 +107,6 @@ export default {
             delete_comments: 'Izohlarni o\'chirish huquqi',
             create_comments: 'Izohlarni yaratish huquqi',
             read_comments: 'Izohlarni ko\'rish huquqi',
-            activity_log: {
-                reissue: "Qayta o'zgarishda o'zgarishlar kiritlgan",
-                comments: "Izohlarda o'zgarish kiritilgan",
-                payments_histories: "To'lovlar tarixida ozgarish kiritilgan"
-            }
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
@@ -325,6 +320,7 @@ export default {
     selected_variant: "Tanlangan to'lov turi",
     other_variant: "Boshqa to'lov turlari",
     contract_number_or_full_name: 'Shartnoma raqami yoki FIO',
+    activity_type_full_name: "FIO yoki kiritilgan o'zgarish turi",
     base_price_from: "So`m (dan)",
     base_price_to: 'So`m (gacha)',
     client: 'Foydalanuvchi',
@@ -506,7 +502,18 @@ export default {
         edit_note: 'Eslatmani tahrirlash',
         note_text: 'Eslatma matni',
         individual: 'individual',
-
+        activity_log: {
+            reissue: "Qayta tashkillashtirish o'zgarishlar kiritlgan",
+            comments: "Izohlarda o'zgarish kiritilgan",
+            payments_histories: "To'lovlar tarixida ozgarish kiritilgan",
+            activity_type: "O'zgarish turi",
+            actions: {
+                deleted: "O'chirilgan",
+                reissue: "Qayta tashkillashtirilgan",
+                created: "Yaratilgan",
+                edited: "Tahrirlangan"
+            }
+        },
         table: {
             contract: 'Shartnoma',
             client: 'Foydalanuvchi',

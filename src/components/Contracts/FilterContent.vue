@@ -12,7 +12,7 @@
       <base-search-input
           v-if="showSearchContent"
           class="base-search-input mr-2"
-          :placeholder="`${ $t('contract_number_or_full_name') }`"
+          :placeholder="`${ $t('activity_type_full_name') }`"
           @trigger-input="filterBySearchContent"
       />
       <div class="d-flex align-items-center">
@@ -122,16 +122,24 @@ export default {
       return [
         {
           value: null,
-          text: this.$t('client_type')
+          text: this.$t('contracts.activity_log.activity_type')
         },
         {
-          value: 'friend',
-          text: this.$t('familiar')
+          value: 'created',
+          text: this.$t('contracts.activity_log.actions.created')
         },
         {
-          value: 'unknown',
-          text: this.$t('unfamiliar')
-        }
+          value: 'reissue',
+          text: this.$t('contracts.activity_log.actions.reissue')
+        },
+        {
+          value: 'deleted',
+          text: this.$t('contracts.activity_log.actions.deleted')
+        },
+        {
+          value: 'edited',
+          text: this.$t('contracts.activity_log.actions.edited')
+        },
       ]
     },
     executor() {

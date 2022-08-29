@@ -4,7 +4,7 @@
       <a @click="selectFirstPage()" @keyup.enter="selectFirstPage()" :class="pageLinkClass"
          :tabindex="firstPageSelected() ? -1 : 0" v-html="firstButtonText"></a>
     </li>
-
+<!--    prev content-->
     <li v-if="!(firstPageSelected() && hidePrevNext)" :class="[prevClass, firstPageSelected() ? disabledClass : '']">
       <a @click="prevPage()" @keyup.enter="prevPage()" :class="prevLinkClass" :tabindex="firstPageSelected() ? -1 : 0">
         <!--    Slot Prev Content    -->

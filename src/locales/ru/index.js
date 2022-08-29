@@ -306,6 +306,7 @@ export default {
     selected_variant: "Выбранный вариант оплаты",
     other_variant: 'Другие варианты оплат',
     contract_number_or_full_name: 'Номер договора или ФИО',
+    activity_type_full_name: "ФИО или тип активности",
     base_price_from: 'Сумма (от)',
     base_price_to: 'Сумма (до)',
     client: 'Клиент',
@@ -496,7 +497,14 @@ export default {
         activity_log: {
             reissue: "Внесены изменении в переоформление",
             comments: "Внесены изменении в комментарие",
-            payments_histories: "Внесены изменении в историе оплаты"
+            payments_histories: "Внесены изменении в историе оплаты",
+            activity_type: "Тип активности",
+            actions: {
+                deleted: "Удаление",
+                reissue: "Переоформление",
+                created: "Создание",
+                edited: "Редактирование"
+            }
         },
 
         status: {

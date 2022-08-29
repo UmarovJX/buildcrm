@@ -90,6 +90,21 @@
           </b-card>
       </div>
     </div>
+    <!-- PAGINATION   -->
+    <base-pagination
+        v-if="activityLog.length >= 60"
+        :default-count-view="activityLogPagination.per_page"
+        :pagination-current="activityLogPagination.current"
+        :pagination-count="3"
+        @change-page="swipeSchedulePage"
+    />
+    <base-pagination
+        v-else-if="activityLog.length >= 20"
+        :default-count-view="activityLogPagination.per_page"
+        :pagination-current="activityLogPagination.current"
+        :pagination-count="2"
+        @change-page="swipeSchedulePage"
+    />
   </div>
 </template>
 
@@ -103,10 +118,11 @@ import api from "@/services/api";
 import moment from "moment"
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
 import BasePaperFailIcon from "@/components/icons/BasePaperFailIcon";
+import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 
 export default {
   name: "ActivityLog",
-  components: {BaseDocumentIcon, FilterContent, BaseButton, BaseEditIcon, BasePaperFailIcon},
+  components: {BasePagination, BaseDocumentIcon, FilterContent, BaseButton, BaseEditIcon, BasePaperFailIcon},
   data() {
     return {
       activityLog: [],
@@ -129,8 +145,11 @@ export default {
           class: "header-status warning"
         },
       },
-      dates: [],
-      daysList: []
+      daysList: [],
+      activityLogPagination: {
+        next: null,
+        per_page: 20
+      }
     }
   },
   async created() {
@@ -156,8 +175,10 @@ export default {
     },
     async fetchActivityLog() {
       const {id} = this.$route.params
-      await api.contractV2.fetchActivityLog(id)
+      await api.contractV2.fetchActivityLog(id, this.activityLogPagination)
           .then((response) => {
+            this.activityLogPagination.current = response.data.pagination.current
+            this.activityLogPagination.per_page = response.data.pagination.per_page
             response.data.items.forEach((item) => {
               const index = this.daysList.findIndex(day => day.date.slice(0, 10) === item.created_at.slice(0, 10))
               if (index !== -1) {
@@ -186,6 +207,26 @@ export default {
         return secondDate.getTime() - firstDate.getTime()
       })
     },
+    swipeSchedulePage(page) {
+      this.activityLogPagination.current = page
+      this.activityLogPagination.next = ++page
+      this.activityLogPagination.previous = --page
+      this.fetchActivityLog()
+      this.changeRouterQuery()
+    },
+    changeRouterQuery() {
+      this.$router.push({
+        query: {
+          ...this.activityLogPagination
+        }
+      })
+      this.setLimitAndPage()
+    },
+
+
+
+
+
     sortBySearchField(searchingValue) {
       let search = searchingValue
       if (!search) {
@@ -194,7 +235,7 @@ export default {
       this.changeRouterQuery({
         search
       })
-      // this.initDebtorUi()
+      // this.initActivityLogUi()
     },
     disableFilter() {
       const resetQuery = {
@@ -275,8 +316,6 @@ export default {
           this.changeRouterQuery(query)
         }
       }
-
-      // this.initDebtorUi()
     },
     changeViewType(type) {
       if (type !== this.typeOfView) {
@@ -306,28 +345,6 @@ export default {
         // this.initDebtorUi()
       }
     },
-    refreshRouteQuery(query) {
-      console.log("pagination is gotta be there", query)
-      // this.$router.push({
-      //   query
-      // })
-      // this.setLimitAndPage()
-    },
-    setLimitAndPage() {
-      console.log("pagination is gotta be there")
-      //   if (this.typeOfView === 'list') {
-    //     this.list.pagination.current = this.query.page ?? 1
-    //   } else if (this.typeOfView === 'day') {
-    //     this.day.pagination.current = this.query.page ?? 1
-    //   }
-    //
-    //   if (this.typeOfView === 'list') {
-    //     this.list.pagination.limit = this.query.limit ?? 10
-    //   } else if (this.typeOfView === 'day') {
-    //     this.day.pagination.limit = this.query.limit ?? 10
-    //   }
-    // }
-  }
   },
   computed: {
     query() {

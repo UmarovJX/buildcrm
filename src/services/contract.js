@@ -40,8 +40,8 @@ class ContractV2 extends Core {
         return this.get(`contracts/${id}`)
     }
 
-    fetchActivityLog(id) {
-        return this.get(`contracts/${id}/logs`)
+    fetchActivityLog(id, params) {
+        return this.get('contracts/' + id + '/logs', {params})
     }
 
     getUpdateContractView(id) {
