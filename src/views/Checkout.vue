@@ -68,6 +68,7 @@
                                     v-for="apartment in apartments"
                                     :key="apartment.id"
                                     :apartment="apartment"
+                                    :remove-btn="apartments.length>1"
                                     @update="updateApartmentCalc"
                                 />
                             </div>
@@ -85,9 +86,9 @@
                                 <h3 class="section-title">График оплаты (12 месяцев)</h3>
                             </div>
                             <div class="app-checkout__calculator">
-<!--                                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>-->
+                                <PaymentMonths/>
+                                <!--                                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>-->
                             </div>
-
 
                         </div>
                     </div>
@@ -135,6 +136,7 @@ import ErrorNotification from "@/components/Reusable/ErrorNotification";
 // import FlipCountdown from "vue2-flip-countdown";
 import CountDown from "@/components/Reusable/CountDown";
 import DetailsContract from "@/views/Checkout/DetailsContract";
+import PaymentMonths from "@/views/Checkout/PaymentMonths";
 
 export default {
     name: "Checkout",
@@ -157,6 +159,7 @@ export default {
         // BaseCloseIcon,
         CountDown,
         DetailsContract,
+        PaymentMonths,
     },
     data() {
         return {
@@ -376,7 +379,27 @@ export default {
             await api.contractV2.getUpdateContractView(uuid).then((res) => {
                 this.apartments = res.data.apartments
                 console.log(res.data.client, 'response.data');
-                this.client = res.data.client
+                this.client = {
+                    first_name: res.data.client.first_name ?? {
+                        lotin: null,
+                        kirill: null,
+                    },
+                    last_name: res.data.client.last_name ?? {
+                        lotin: null,
+                        kirill: null,
+                    },
+                    second_name: res.data.client.second_name ?? {
+                        lotin: null,
+                        kirill: null,
+                    },
+                    passport_series: res.data.client.passport_series,
+                    issued_by_whom: res.data.client.issued_by_whom,
+                    language: res.data.client.language,
+                    birth_day: res.data.client.birth_day,
+                    phone: this.phone(res.data.client.phone),
+                    other_phone: this.phone(res.data.client.other_phone),
+                    date_of_issue: res.data.client.date_of_issue,
+                };
                 console.log(res.data.client, 'res.data.client');
             })
         },

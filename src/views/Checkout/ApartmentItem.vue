@@ -148,7 +148,7 @@
             </div>
         </div>
 
-        <div class="apartment-card__clear">
+        <div v-if="removeBtn" class="apartment-card__clear">
             <base-button text="Убрать квартиру">
                 <template #left-icon>
                     <BaseDeleteIcon fill="var(--violet-600)"/>
@@ -177,6 +177,10 @@ export default {
         apartment: {
             type: Object,
             required: true
+        },
+        removeBtn: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

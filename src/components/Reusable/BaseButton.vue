@@ -1,19 +1,19 @@
 <template>
-  <button
-      @click="triggerEvent"
-      :type="type"
-      :disabled="disabled"
-      class="base__button"
-      :class="[design, {'disabled':disabled}]"
-  >
+    <button
+        @click="triggerEvent"
+        :type="type"
+        :disabled="disabled"
+        class="base__button"
+        :class="[design, {'disabled':disabled}]"
+    >
     <span v-if="hasLeftSlot" class="left__icon">
       <slot name="left-icon"/>
     </span>
-    <span v-if="text" class="text">{{ text }}</span>
-    <span v-if="hasRightSlot" class="right__icon">
+        <span v-if="text" class="text">{{ text }}</span>
+        <span v-if="hasRightSlot" class="right__icon">
       <slot name="right-icon"/>
     </span>
-  </button>
+    </button>
 </template>
 
 <script>
@@ -80,13 +80,12 @@ export default {
 
     .left__icon
         display: flex
-        //margin-right: .5rem
         margin-right: 1rem
 
     .right__icon
         display: flex
         margin-left: 1rem
-//margin-left: .5rem
+
 
 .disabled
     background: var(--gray-500)
@@ -97,6 +96,14 @@ export default {
 
 .violet
     background-color: var(--violet-700)
+    color: var(--white) !important
+
+.red
+    background-color: var(--red-600)
+    color: var(--white) !important
+
+.green
+    background-color: var(--teal-600)
     color: var(--white) !important
 
 .violet-gradient

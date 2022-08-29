@@ -173,6 +173,7 @@ export default {
         grid-template-columns: 1fr 1fr;
         grid-template-rows: auto;
         grid-gap: 1rem;
+        column-gap: .5rem;
         grid-template-areas:
     "one one"
     "two two"
