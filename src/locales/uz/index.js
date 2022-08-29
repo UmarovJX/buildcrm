@@ -530,7 +530,7 @@ export default {
             booked: 'Band qilingan',
             sold: "To'lovda",
             closed: 'Yopilgan',
-            contract: 'Sotilgan'
+            contract: 'Sotilgan',
         },
 
         view: {
@@ -711,6 +711,8 @@ export default {
             available: 'Sotuvda',
             unavailable: 'Sotilmaydi',
             hold: 'Band qilinmoqda',
+            not_available: "Sotuvda emas",
+            decorated: "Bezatilgan",
         },
 
         list: {

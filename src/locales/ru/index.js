@@ -707,6 +707,8 @@ export default {
             closed: 'Закрыто',
             available: 'Свободно',
             unavailable: 'Hе продается',
+            decorated: "Оформлено",
+            not_available: "Недоступно"
         },
 
         list: {

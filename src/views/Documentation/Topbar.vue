@@ -1,5 +1,5 @@
 <template>
-  <div class="topbar-container">
+  <main class="topbar-container">
     <DocHeader title="topbar"/>
     <div class="topbar-container-content">
       <div class="d-flex">
@@ -41,7 +41,7 @@
         <BaseTimer minute="29" second="59"/>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>

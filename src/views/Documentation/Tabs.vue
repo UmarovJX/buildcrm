@@ -1,10 +1,10 @@
 <template>
-  <div class="tabs">
+  <main class="tabs">
     <DocHeader title="tabs"/>
     <div class="tabs-content">
       <BaseTabs :tabs="tabs"/>
     </div>
-  </div>
+  </main>
 </template>
 <script>
 

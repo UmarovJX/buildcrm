@@ -1,5 +1,5 @@
 <template>
-  <div class="button">
+  <main class="button">
     <DocHeader title="button"/>
     <div class="button-content">
       <div class="button-content-part1">
@@ -109,7 +109,7 @@
         </BaseButton>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 <script>
 
