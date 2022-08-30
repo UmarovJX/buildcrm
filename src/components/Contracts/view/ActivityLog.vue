@@ -14,8 +14,8 @@
     <div v-for="(activity, index) in daysList" :key="index">
       <div class="accordion" role="tablist">
           <p class="date date-day">{{ dateFormatter(activity.date) }}</p>
-          <b-card no-body class="accordion-item" v-for="(item, index) in activity.activities" :key="index">
-            <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle="'accordion-' + (index+1)"
+          <b-card no-body class="accordion-item" v-for="(item, index2) in activity.activities" :key="index2">
+            <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle="'accordion-' + (index+index2+1)"
                            role="tab">
               <div :class="activityType(item.type).class">
                 <component :is="activityType(item.type).component" fill="white"/>
@@ -51,7 +51,7 @@
                 <p>{{ item.properties.attributes.comment }}</p>
               </div>
             </b-card-header>
-            <b-collapse :id="`accordion-${index+1}`" :accordion="`accordion-${index+1}`" role="tabpanel">
+            <b-collapse :id="`accordion-${index+index2+1}`" :accordion="`accordion-${index+index2+1}`" role="tabpanel">
               <b-card-body class="accordion-item__body" v-if="item.action==='orders'">
                 <h5 class="body-title">
                   {{ $t('contracts.activity_log.edited_file') }}
