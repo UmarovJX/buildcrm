@@ -495,11 +495,12 @@ export default {
             date: 'Дата'
         },
         activity_log: {
-            reissue: "Внесены изменении в переоформление",
-            comments: "Внесены изменении в комментарие",
-            payments_histories: "Внесены изменении в историе оплаты",
+            reissue: "в переоформление",
+            comments: "в комментарие",
+            payments_histories: "в историе оплаты",
             activity_type: "Тип активности",
-            attached_files: "Прикрепленные файлы",
+            orders: "в договоре",
+            edited_file: "Изменённый файл",
             actions: {
                 deleted: "Удаление",
                 reissue: "Переоформление",

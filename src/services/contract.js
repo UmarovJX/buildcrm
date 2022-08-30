@@ -19,8 +19,6 @@ class Contract extends Core {
             responseType: 'blob'
         })
     }
-
-
 }
 
 class ContractV2 extends Core {

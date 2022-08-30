@@ -23,7 +23,7 @@
               <p class="date date-time">{{ timeFormatter(item.created_at) }}</p>
               <div class="header-text">
                 <p>
-                  {{ activityDefiner(item.action) }}
+                  {{ activityDefiner(item.action, item.type) }}
                 </p>
               </div>
               <div class="header-nav">
@@ -39,7 +39,7 @@
                     <span class="name-rank">
                 {{getClientRole(item.user.role.name)}}
               </span>
-                  </h5>
+              </h5>
                 </div>
                 <div class="header-nav__item">
                   <div class="collapse-button">
@@ -52,40 +52,93 @@
               </div>
             </b-card-header>
             <b-collapse :id="`accordion-${index+1}`" :accordion="`accordion-${index+1}`" role="tabpanel">
-              <b-card-body class="accordion-item__body" v-if="item.action==='reissue'">
+              <b-card-body class="accordion-item__body" v-if="item.action==='orders'">
                 <h5 class="body-title">
-                  {{ $t('contracts.activity_log.attached_files') }}
+                  {{ $t('contracts.activity_log.edited_file') }}
                 </h5>
                 <div class="body-content">
-                  <base-button text="oldcontract.pdf">
-                    <template #left-icon>
-                      <base-document-icon/>
-                    </template>
-                  </base-button>
-                  <base-button text="newcontract.pdf">
-                    <template #left-icon>
-                      <base-document-icon/>
-                    </template>
-                  </base-button>
+                  <a v-if="item.properties.old && item.properties.old.length" :href="item.properties.old.path" :download="item.properties.old.name">
+                    <base-button :text="item.properties.old.name">
+                      <template #left-icon>
+                        <base-document-icon/>
+                      </template>
+                    </base-button>
+                  </a>
+                  <a v-if="item.properties.files" :href="`http://xonsaroy-dev.buildit.uz:9080$/${item.properties.files.path}`" :download="item.properties.files.name">
+                    <base-button :text="item.properties.files.name">
+                      <template #left-icon>
+                        <base-document-icon/>
+                      </template>
+                    </base-button>
+                  </a>
                 </div>
               </b-card-body>
-              <b-card-body class="accordion-item__body" v-else-if="item.action==='payments_histories'">
+              <b-card-body class="accordion-item__body" v-else-if="item.action==='payment_histories'">
                 <h5 class="body-title">
-                  {{ $t('contracts.activity_log.attached_files') }}
+                  {{ $t('contracts.activity_log.edited_file') }}
                 </h5>
                 <div class="body-content">
-                  <base-button text="oldcontract.pdf">
-                    <template #left-icon>
-                      <base-document-icon/>
-                    </template>
-                  </base-button>
-                  <base-button text="newcontract.pdf">
-                    <template #left-icon>
-                      <base-document-icon/>
-                    </template>
-                  </base-button>
+                  <a v-if="item.properties.old && item.properties.old" :href="`http://xonsaroy-dev.buildit.uz:9080/${item.properties.old.path}`" :download="item.properties.old.name">
+                    <base-button :text="item.properties.old.name">
+                      <template #left-icon>
+                        <base-document-icon/>
+                      </template>
+                    </base-button>
+                  </a>
+                  <a v-if="item.properties.files" :href="`http://xonsaroy-dev.buildit.uz:9080/${item.properties.files.path}`" :download="item.properties.files.name">
+                    <base-button :text="item.properties.files.name">
+                      <template #left-icon>
+                        <base-document-icon/>
+                      </template>
+                    </base-button>
+                  </a>
                 </div>
               </b-card-body>
+              <h5 class="body-title" v-if="item.type='updated'">
+                {{ $t('contracts.activity_log.actions.edited') }}:
+              </h5>
+              <h5 class="body-title" v-else-if="item.type='created'">
+                {{ $t('contracts.activity_log.actions.created') }}:
+              </h5>
+              <h5 class="body-title" v-else-if="item.type='deleted'">
+                {{ $t('contracts.activity_log.actions.deleted') }}:
+              </h5>
+              <h5 class="body-title" v-else-if="item.type='reissue'">
+                {{ $t('contracts.activity_log.actions.reissue') }}:
+              </h5>
+              <div v-if="item.properties.old || item.properties.attributes" class="header-data">
+                <div class="header-data-row"  v-if="item.properties.old">
+                  <output-information v-if="item.properties.old.amount" :value="item.properties.old.amount" property="Label"/>
+                  <output-information v-if="item.properties.old.date_paid" :value="item.properties.old.date_paid" property="Label"/>
+                  <output-information v-if="item.properties.old.payment_type" :value="item.properties.old.payment_type" property="Label"/>
+                  <output-information v-if="item.properties.old.status" :value="item.properties.old.status" property="Label"/>
+                  <output-information v-if="item.properties.old.type" :value="item.properties.old.type" property="Label"/>
+                </div>
+                <div class="header-data-row row-icons"  v-if="item.properties.attributes && item.properties.old">
+                  <template v-if="item.properties.attributes.amount">
+                    <BaseRightIcon height="56"/>
+                  </template>
+                  <template v-if="item.properties.attributes.date_paid">
+                    <BaseRightIcon height="56"/>
+                  </template>
+                  <template v-if="item.properties.attributes.payment_type">
+                    <BaseRightIcon height="56"/>
+                  </template>
+                  <template v-if="item.properties.attributes.status">
+                    <BaseRightIcon height="56"/>
+                  </template>
+                  <template v-if="item.properties.attributes.type">
+                    <BaseRightIcon height="56"/>
+                  </template>
+                </div>
+                <div class="header-data-row"  v-if="item.properties.attributes">
+                  <output-information v-if="item.properties.attributes.amount" :value="item.properties.attributes.amount" property="Label"/>
+                  <output-information v-if="item.properties.attributes.date_paid" :value="item.properties.attributes.date_paid" property="Label"/>
+                  <output-information v-if="item.properties.attributes.payment_type" :value="item.properties.attributes.payment_type" property="Label"/>
+                  <output-information v-if="item.properties.attributes.status" :value="item.properties.attributes.status" property="Label"/>
+                  <output-information v-if="item.properties.attributes.type" :value="item.properties.attributes.type" property="Label"/>
+                </div>
+              </div>
             </b-collapse>
           </b-card>
       </div>
@@ -119,17 +172,29 @@ import moment from "moment"
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
 import BasePaperFailIcon from "@/components/icons/BasePaperFailIcon";
 import BasePagination from "@/components/Reusable/Navigation/BasePagination";
+import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
+import BaseRightIcon from "@/components/icons/BaseRightIcon";
 
 export default {
   name: "ActivityLog",
-  components: {BasePagination, BaseDocumentIcon, FilterContent, BaseButton, BaseEditIcon, BasePaperFailIcon},
+  components: {
+    BaseRightIcon,
+    OutputInformation,
+    BasePagination, BaseDocumentIcon, FilterContent, BaseButton, BaseEditIcon, BasePaperFailIcon},
   data() {
     return {
       activityLog: [],
       activityStatus: {
         reissue: "contracts.activity_log.reissue",
         payments_histories: "contracts.activity_log.payments_histories",
-        comments: "contracts.activity_log.comments"
+        comments: "contracts.activity_log.comments",
+        orders: "contracts.activity_log.orders"
+      },
+      activityActionType: {
+        deleted: "contracts.activity_log.actions.deleted",
+        updated: "contracts.activity_log.actions.edited",
+        created: "contracts.activity_log.actions.created",
+        reissue: "contracts.activity_log.actions.reissue",
       },
       activityTypes: {
         created: {
@@ -170,8 +235,8 @@ export default {
     hasComment(properties) {
       return properties.attributes && properties.attributes.comment
     },
-    activityDefiner(action) {
-      return this.$t(this.activityStatus[action])
+    activityDefiner(action, type) {
+      return `${this.$t(this.activityActionType[type])} ${this.$t(this.activityStatus[action])}`
     },
     async fetchActivityLog() {
       const {id} = this.$route.params
@@ -343,18 +408,18 @@ export default {
         const {year, month, dayOfMonth} = dateProperties(dateConvertor(starter))
         if (type === 'day') {
           this.day.starter = starter
-          this.refreshRouteQuery({
-            date: [starter, starter],
-            type_of_view: 'day',
-            starter_moment: starter
-          })
+          // this.refreshRouteQuery({
+          //   date: [starter, starter],
+          //   type_of_view: 'day',
+          //   starter_moment: starter
+          // })
         } else {
           const starter = formatDateToYMD(new Date(year, month, 1))
-          this.refreshRouteQuery({
-            date: undefined,
-            starter_moment: starter,
-            type_of_view: type
-          })
+          // this.refreshRouteQuery({
+          //   date: undefined,
+          //   starter_moment: starter,
+          //   type_of_view: type
+          // })
           if (type === 'month') {
             this.month.starter = starter
           } else if (type === 'week') {
@@ -411,7 +476,27 @@ export default {
       font-weight: 600;
     }
   }
-
+  .body-title{
+    margin: 1rem 0;
+  }
+  .header-data {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    &-row {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .row-icons {
+      align-items: center;
+      width: auto!important;
+    }
+  }
+  .show {
+    padding: 0 24px;
+  }
   header[aria-expanded="true"] {
     .collapse-button {
       transform: rotate(-180deg);
@@ -420,7 +505,6 @@ export default {
     .header-comment {
       display: flex;
     }
-
   }
 
   .card {
@@ -490,7 +574,6 @@ export default {
 
     &__header {
       padding: 0 1.5rem 1.5rem;
-
       .collapse-button {
         transition: all linear .3s;
       }

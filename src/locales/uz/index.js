@@ -512,7 +512,7 @@ export default {
                 deleted: "O'chirilgan",
                 reissue: "Qayta tashkillashtirilgan",
                 created: "Yaratilgan",
-                edited: "Tahrirlangan"
+                edited: "Tahrirlangan",
             }
         },
         table: {
