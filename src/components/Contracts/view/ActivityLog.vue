@@ -57,14 +57,14 @@
                   {{ $t('contracts.activity_log.edited_file') }}
                 </h5>
                 <div class="body-content">
-                  <a v-if="item.properties.old && item.properties.old.length" :href="item.properties.old.path" :download="item.properties.old.name">
+                  <a v-if="item.properties.old.length" target="_blank" :href="item.properties.old.path" :download="item.properties.old.name">
                     <base-button :text="item.properties.old.name">
                       <template #left-icon>
                         <base-document-icon/>
                       </template>
                     </base-button>
                   </a>
-                  <a v-if="item.properties.files" :href="`http://xonsaroy-dev.buildit.uz:9080$/${item.properties.files.path}`" :download="item.properties.files.name">
+                  <a v-if="item.properties.files" :href="item.download_url" target="_blank" :download="item.properties.files.name">
                     <base-button :text="item.properties.files.name">
                       <template #left-icon>
                         <base-document-icon/>
@@ -78,14 +78,14 @@
                   {{ $t('contracts.activity_log.edited_file') }}
                 </h5>
                 <div class="body-content">
-                  <a v-if="item.properties.old && item.properties.old" :href="`http://xonsaroy-dev.buildit.uz:9080/${item.properties.old.path}`" :download="item.properties.old.name">
+                  <a v-if="item.properties.old && item.properties.old" :href="item.download_url" :download="item.properties.old.name">
                     <base-button :text="item.properties.old.name">
                       <template #left-icon>
                         <base-document-icon/>
                       </template>
                     </base-button>
                   </a>
-                  <a v-if="item.properties.files" :href="`http://xonsaroy-dev.buildit.uz:9080/${item.properties.files.path}`" :download="item.properties.files.name">
+                  <a v-if="item.properties.files" :href="item.download_url" :download="item.properties.files.name">
                     <base-button :text="item.properties.files.name">
                       <template #left-icon>
                         <base-document-icon/>
@@ -94,20 +94,20 @@
                   </a>
                 </div>
               </b-card-body>
-              <h5 class="body-title" v-if="item.type='updated'">
+              <h5 class="body-title" v-if="item.type==='updated' && (!Array.isArray(item.properties.old)  || Array.isArray(item.properties.attributes))">
                 {{ $t('contracts.activity_log.actions.edited') }}:
               </h5>
-              <h5 class="body-title" v-else-if="item.type='created'">
+              <h5 class="body-title" v-else-if="item.type==='created' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
                 {{ $t('contracts.activity_log.actions.created') }}:
               </h5>
-              <h5 class="body-title" v-else-if="item.type='deleted'">
+              <h5 class="body-title" v-else-if="item.type==='deleted' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
                 {{ $t('contracts.activity_log.actions.deleted') }}:
               </h5>
-              <h5 class="body-title" v-else-if="item.type='reissue'">
+              <h5 class="body-title" v-else-if="item.type==='reissue' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
                 {{ $t('contracts.activity_log.actions.reissue') }}:
               </h5>
               <div v-if="item.properties.old || item.properties.attributes" class="header-data">
-                <div class="header-data-row"  v-if="item.properties.old">
+                <div :class="!item.properties.attributes ? 'header-data-row w-100' : 'header-data-row'"  v-if="item.properties.old">
                   <output-information v-if="item.properties.old.amount" :value="item.properties.old.amount" property="Label"/>
                   <output-information v-if="item.properties.old.date_paid" :value="item.properties.old.date_paid" property="Label"/>
                   <output-information v-if="item.properties.old.payment_type" :value="item.properties.old.payment_type" property="Label"/>
@@ -131,7 +131,7 @@
                     <BaseRightIcon height="56"/>
                   </template>
                 </div>
-                <div class="header-data-row"  v-if="item.properties.attributes">
+                <div  :class="!item.properties.old? 'header-data-row w-100' : 'header-data-row'"  v-if="item.properties.attributes">
                   <output-information v-if="item.properties.attributes.amount" :value="item.properties.attributes.amount" property="Label"/>
                   <output-information v-if="item.properties.attributes.date_paid" :value="item.properties.attributes.date_paid" property="Label"/>
                   <output-information v-if="item.properties.attributes.payment_type" :value="item.properties.attributes.payment_type" property="Label"/>
@@ -264,6 +264,32 @@ export default {
             this.showLoading = false
           })
     },
+    // async downloadActivityLog() {
+    //   const {id} = this.$route.params
+    //   await api.contractV2.downloadActivityLog(id, this.activityLogPagination)
+    //       .then((response) => {
+    //         this.activityLogPagination.current = response.data.pagination.current
+    //         this.activityLogPagination.per_page = response.data.pagination.per_page
+    //         response.data.items.forEach((item) => {
+    //           const index = this.daysList.findIndex(day => day.date.slice(0, 10) === item.created_at.slice(0, 10))
+    //           if (index !== -1) {
+    //             this.daysList[index].activities.push(item)
+    //           } else {
+    //             this.daysList.push({
+    //               date: item.created_at,
+    //               activities: [item]
+    //             })
+    //           }
+    //         })
+    //         this.daysList = this.getDateListByDescending(this.daysList)
+    //       })
+    //       .catch((error) => {
+    //         this.toastedWithErrorCode(error)
+    //       })
+    //       .finally(() => {
+    //         this.showLoading = false
+    //       })
+    // },
     getDateListByDescending(dateList) {
       console.log("date-list", dateList);
       return dateList.sort((a,b) => {
@@ -491,11 +517,15 @@ export default {
     }
     .row-icons {
       align-items: center;
+      justify-content: center;
       width: auto!important;
     }
   }
   .show {
     padding: 0 24px;
+  }
+  .w-100 {
+    width: 100%!important;
   }
   header[aria-expanded="true"] {
     .collapse-button {

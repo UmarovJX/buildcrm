@@ -100,6 +100,12 @@ class ContractV2 extends Core {
         })
     }
 
+    // downloadActivityLog() {
+    //     return this.get('contracts/template', {
+    //         responseType: 'blob'
+    //     })
+    // }
+
     downloadReContract(id) {
         return this.get('contracts/' + id + '/reissue/contract', {
             responseType: 'blob'
