@@ -225,7 +225,6 @@ export default {
     this.currentPage = Number(this.filter.page)
   },
   data() {
-
     const showByOptions = []
 
     for (let number = 10; number <= 50; number += 10) {

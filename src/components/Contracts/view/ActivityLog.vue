@@ -243,6 +243,9 @@ export default {
   },
   data() {
     let {limit: showByValue} = this.$route.query
+    if (!showByValue) {
+      showByValue = 20
+    }
     const showByOptions = []
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
@@ -313,8 +316,6 @@ export default {
       const query = sortObjectValues(this.query)
       await api.contractV2.fetchActivityLog(id, query)
           .then((response) => {
-            console.log(query);
-
             response.data.items.forEach((item) => {
               const index = this.daysList.findIndex(day => day.date.slice(0, 10) === item.created_at.slice(0, 10))
               if (index !== -1) {

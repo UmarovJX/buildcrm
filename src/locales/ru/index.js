@@ -512,7 +512,7 @@ export default {
         status: {
             waiting: 'На оплате',
             booked: 'Забронирован',
-            sold: 'На оплате',
+            sold: 'Продан',
             closed: 'Закрыт',
             contract: 'Оформлен'
         },
