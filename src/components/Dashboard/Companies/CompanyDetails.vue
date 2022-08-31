@@ -248,7 +248,7 @@ hr {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin-bottom: 6rem;
+  padding-bottom: 6rem;
   margin-top: 50px;
 }
 

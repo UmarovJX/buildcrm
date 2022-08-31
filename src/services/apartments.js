@@ -45,7 +45,7 @@ class ApartmentsV2 extends Core {
     }
 
     getApartmentView(object, id) {
-        return this.get(`apartments/objects/${object}/apartments/${id}`)
+        return this.get(`apartments/objects/${object}/${id}`)
     }
 }
 
