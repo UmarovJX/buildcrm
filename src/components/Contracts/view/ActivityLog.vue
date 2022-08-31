@@ -13,151 +13,203 @@
     />
     <div v-for="(activity, index) in daysList" :key="index">
       <div class="accordion" role="tablist">
-          <p class="date date-day">{{ dateFormatter(activity.date) }}</p>
-          <b-card no-body class="accordion-item" v-for="(item, index2) in activity.activities" :key="index2">
-            <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle="'accordion-' + (index+index2+1)"
-                           role="tab">
-              <div :class="activityType(item.type).class">
-                <component :is="activityType(item.type).component" fill="white"/>
-              </div>
-              <p class="date date-time">{{ timeFormatter(item.created_at) }}</p>
-              <div class="header-text">
-                <p>
-                  {{ activityDefiner(item.action, item.type) }}
-                </p>
-              </div>
-              <div class="header-nav">
-                <div class="header-nav__item">
-                  <div class="avatar">
-                    <img :src="item.user.avatar" alt="avatar"/>
-                  </div>
-                  <h5 class="name">
-                    {{ item.user.first_name }} {{ item.user.last_name }}
-                    <span class="name-dot">
+        <p class="date date-day">{{ dateFormatter(activity.date) }}</p>
+        <b-card no-body class="accordion-item" v-for="(item, index2) in activity.activities" :key="index2">
+          <b-card-header header-tag="header" class="accordion-item__header" v-b-toggle="'accordion-' + (index+index2+1)"
+                         role="tab">
+            <div :class="activityType(item.type).class">
+              <component :is="activityType(item.type).component" fill="white"/>
+            </div>
+            <p class="date date-time">{{ timeFormatter(item.created_at) }}</p>
+            <div class="header-text">
+              <p>
+                {{ activityDefiner(item.action, item.type) }}
+              </p>
+            </div>
+            <div class="header-nav">
+              <div class="header-nav__item">
+                <div class="avatar">
+                  <img :src="item.user.avatar" alt="avatar"/>
+                </div>
+                <h5 class="name">
+                  {{ item.user.first_name }} {{ item.user.last_name }}
+                  <span class="name-dot">
                 ·
               </span>
-                    <span class="name-rank">
-                {{getClientRole(item.user.role.name)}}
+                  <span class="name-rank">
+                {{ getClientRole(item.user.role.name) }}
               </span>
-              </h5>
-                </div>
-                <div class="header-nav__item">
-                  <div class="collapse-button">
-                    <img :src="require('@/assets/icons/icon-down.svg')" alt="">
-                  </div>
-                </div>
-              </div>
-              <div v-if="hasComment(item.properties)" class="header-comment">
-                <p>{{ item.properties.attributes.comment }}</p>
-              </div>
-            </b-card-header>
-            <b-collapse :id="`accordion-${index+index2+1}`" :accordion="`accordion-${index+index2+1}`" role="tabpanel">
-              <b-card-body class="accordion-item__body" v-if="item.action==='orders'">
-                <h5 class="body-title">
-                  {{ $t('contracts.activity_log.edited_file') }}
                 </h5>
-                <div class="body-content">
-                  <a v-if="item.properties.old.length" target="_blank" :href="item.properties.old.path" :download="item.properties.old.name">
-                    <base-button :text="item.properties.old.name">
-                      <template #left-icon>
-                        <base-document-icon/>
-                      </template>
-                    </base-button>
-                  </a>
-                  <a v-if="item.properties.files" :href="item.download_url" target="_blank" :download="item.properties.files.name">
-                    <base-button :text="item.properties.files.name">
-                      <template #left-icon>
-                        <base-document-icon/>
-                      </template>
-                    </base-button>
-                  </a>
-                </div>
-              </b-card-body>
-              <b-card-body class="accordion-item__body" v-else-if="item.action==='payment_histories'">
-                <h5 class="body-title">
-                  {{ $t('contracts.activity_log.edited_file') }}
-                </h5>
-                <div class="body-content">
-                  <a v-if="item.properties.old && item.properties.old" :href="item.download_url" :download="item.properties.old.name">
-                    <base-button :text="item.properties.old.name">
-                      <template #left-icon>
-                        <base-document-icon/>
-                      </template>
-                    </base-button>
-                  </a>
-                  <a v-if="item.properties.files" :href="item.download_url" :download="item.properties.files.name">
-                    <base-button :text="item.properties.files.name">
-                      <template #left-icon>
-                        <base-document-icon/>
-                      </template>
-                    </base-button>
-                  </a>
-                </div>
-              </b-card-body>
-              <h5 class="body-title" v-if="item.type==='updated' && (!Array.isArray(item.properties.old)  || Array.isArray(item.properties.attributes))">
-                {{ $t('contracts.activity_log.actions.edited') }}:
-              </h5>
-              <h5 class="body-title" v-else-if="item.type==='created' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
-                {{ $t('contracts.activity_log.actions.created') }}:
-              </h5>
-              <h5 class="body-title" v-else-if="item.type==='deleted' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
-                {{ $t('contracts.activity_log.actions.deleted') }}:
-              </h5>
-              <h5 class="body-title" v-else-if="item.type==='reissue' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
-                {{ $t('contracts.activity_log.actions.reissue') }}:
-              </h5>
-              <div v-if="item.properties.old || item.properties.attributes" class="header-data">
-                <div :class="!item.properties.attributes ? 'header-data-row w-100' : 'header-data-row'"  v-if="item.properties.old">
-                  <output-information v-if="item.properties.old.amount" :value="item.properties.old.amount" property="Label"/>
-                  <output-information v-if="item.properties.old.date_paid" :value="item.properties.old.date_paid" property="Label"/>
-                  <output-information v-if="item.properties.old.payment_type" :value="item.properties.old.payment_type" property="Label"/>
-                  <output-information v-if="item.properties.old.status" :value="item.properties.old.status" property="Label"/>
-                  <output-information v-if="item.properties.old.type" :value="item.properties.old.type" property="Label"/>
-                </div>
-                <div class="header-data-row row-icons"  v-if="item.properties.attributes && item.properties.old">
-                  <template v-if="item.properties.attributes.amount">
-                    <BaseRightIcon height="56"/>
-                  </template>
-                  <template v-if="item.properties.attributes.date_paid">
-                    <BaseRightIcon height="56"/>
-                  </template>
-                  <template v-if="item.properties.attributes.payment_type">
-                    <BaseRightIcon height="56"/>
-                  </template>
-                  <template v-if="item.properties.attributes.status">
-                    <BaseRightIcon height="56"/>
-                  </template>
-                  <template v-if="item.properties.attributes.type">
-                    <BaseRightIcon height="56"/>
-                  </template>
-                </div>
-                <div  :class="!item.properties.old? 'header-data-row w-100' : 'header-data-row'"  v-if="item.properties.attributes">
-                  <output-information v-if="item.properties.attributes.amount" :value="item.properties.attributes.amount" property="Label"/>
-                  <output-information v-if="item.properties.attributes.date_paid" :value="item.properties.attributes.date_paid" property="Label"/>
-                  <output-information v-if="item.properties.attributes.payment_type" :value="item.properties.attributes.payment_type" property="Label"/>
-                  <output-information v-if="item.properties.attributes.status" :value="item.properties.attributes.status" property="Label"/>
-                  <output-information v-if="item.properties.attributes.type" :value="item.properties.attributes.type" property="Label"/>
+              </div>
+              <div class="header-nav__item">
+                <div class="collapse-button">
+                  <img :src="require('@/assets/icons/icon-down.svg')" alt="">
                 </div>
               </div>
-            </b-collapse>
-          </b-card>
+            </div>
+            <div v-if="hasComment(item.properties)" class="header-comment">
+              <p>{{ item.properties.attributes.comment }}</p>
+            </div>
+          </b-card-header>
+          <b-collapse :id="`accordion-${index+index2+1}`" :accordion="`accordion-${index+index2+1}`" role="tabpanel">
+            <b-card-body class="accordion-item__body" v-if="item.action==='orders'">
+              <h5 class="body-title">
+                {{ $t('contracts.activity_log.edited_file') }}
+              </h5>
+              <div class="body-content">
+                <a v-if="item.properties.old.length" target="_blank" :href="item.properties.old.path"
+                   :download="item.properties.old.name">
+                  <base-button :text="item.properties.old.name">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                </a>
+                <a v-if="item.properties.files" :href="item.download_url" target="_blank"
+                   :download="item.properties.files.name">
+                  <base-button :text="item.properties.files.name">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                </a>
+              </div>
+            </b-card-body>
+            <b-card-body class="accordion-item__body" v-else-if="item.action==='payment_histories'">
+              <h5 class="body-title">
+                {{ $t('contracts.activity_log.edited_file') }}
+              </h5>
+              <div class="body-content">
+                <a v-if="item.properties.old && item.properties.old" :href="item.download_url"
+                   :download="item.properties.old.name">
+                  <base-button :text="item.properties.old.name">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                </a>
+                <a v-if="item.properties.files" :href="item.download_url" :download="item.properties.files.name">
+                  <base-button :text="item.properties.files.name">
+                    <template #left-icon>
+                      <base-document-icon/>
+                    </template>
+                  </base-button>
+                </a>
+              </div>
+            </b-card-body>
+            <h5 class="body-title"
+                v-if="item.type==='updated' && (!Array.isArray(item.properties.old)  || Array.isArray(item.properties.attributes))">
+              {{ $t('contracts.activity_log.actions.edited') }}:
+            </h5>
+            <h5 class="body-title"
+                v-else-if="item.type==='created' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
+              {{ $t('contracts.activity_log.actions.created') }}:
+            </h5>
+            <h5 class="body-title"
+                v-else-if="item.type==='deleted' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
+              {{ $t('contracts.activity_log.actions.deleted') }}:
+            </h5>
+            <h5 class="body-title"
+                v-else-if="item.type==='reissue' && (!Array.isArray(item.properties.old) || Array.isArray(item.properties.attributes))">
+              {{ $t('contracts.activity_log.actions.reissue') }}:
+            </h5>
+            <div v-if="item.properties.old || item.properties.attributes" class="header-data">
+              <div :class="!item.properties.attributes ? 'header-data-row w-100' : 'header-data-row'"
+                   v-if="item.properties.old">
+                <output-information v-if="item.properties.old.amount" :value="item.properties.old.amount"
+                                    property="Label"/>
+                <output-information v-if="item.properties.old.date_paid" :value="item.properties.old.date_paid"
+                                    property="Label"/>
+                <output-information v-if="item.properties.old.payment_type" :value="item.properties.old.payment_type"
+                                    property="Label"/>
+                <output-information v-if="item.properties.old.status" :value="item.properties.old.status"
+                                    property="Label"/>
+                <output-information v-if="item.properties.old.type" :value="item.properties.old.type" property="Label"/>
+              </div>
+              <div class="header-data-row row-icons" v-if="item.properties.attributes && item.properties.old">
+                <template v-if="item.properties.attributes.amount">
+                  <BaseRightIcon height="56"/>
+                </template>
+                <template v-if="item.properties.attributes.date_paid">
+                  <BaseRightIcon height="56"/>
+                </template>
+                <template v-if="item.properties.attributes.payment_type">
+                  <BaseRightIcon height="56"/>
+                </template>
+                <template v-if="item.properties.attributes.status">
+                  <BaseRightIcon height="56"/>
+                </template>
+                <template v-if="item.properties.attributes.type">
+                  <BaseRightIcon height="56"/>
+                </template>
+              </div>
+              <div :class="!item.properties.old? 'header-data-row w-100' : 'header-data-row'"
+                   v-if="item.properties.attributes">
+                <output-information v-if="item.properties.attributes.amount" :value="item.properties.attributes.amount"
+                                    property="Label"/>
+                <output-information v-if="item.properties.attributes.date_paid"
+                                    :value="item.properties.attributes.date_paid" property="Label"/>
+                <output-information v-if="item.properties.attributes.payment_type"
+                                    :value="item.properties.attributes.payment_type" property="Label"/>
+                <output-information v-if="item.properties.attributes.status" :value="item.properties.attributes.status"
+                                    property="Label"/>
+                <output-information v-if="item.properties.attributes.type" :value="item.properties.attributes.type"
+                                    property="Label"/>
+              </div>
+            </div>
+          </b-collapse>
+        </b-card>
       </div>
     </div>
     <!-- PAGINATION   -->
-    <base-pagination
-        v-if="activityLog.length >= 60"
-        :default-count-view="activityLogPagination.per_page"
-        :pagination-current="activityLogPagination.current"
-        :pagination-count="3"
-        @change-page="swipeSchedulePage"
-    />
-    <base-pagination
-        v-else-if="activityLog.length >= 20"
-        :default-count-view="activityLogPagination.per_page"
-        :pagination-current="activityLogPagination.current"
-        :pagination-count="2"
-        @change-page="swipeSchedulePage"
-    />
+<!--    <base-pagination-->
+<!--        :default-count-view="activityLogPagination.page"-->
+<!--        :pagination-current="activityLogPagination.limit"-->
+<!--        :pagination-count="2"-->
+<!--        @change-page="swipeSchedulePage"-->
+<!--    />-->
+    <div v-if="countOfItems" class="pagination__vue">
+      <!--   Pagination   -->
+      <vue-paginate
+          :page-count="activityLogPagination.total"
+          :value="activityLogPagination.current"
+          :container-class="'container'"
+          :page-class="'page-item'"
+          :page-link-class="'page-link'"
+          :next-class="'page-item'"
+          :prev-class="'page-item'"
+          :prev-link-class="'page-link'"
+          :next-link-class="'page-link'"
+          @change-page="changeCurrentPage"
+      >
+        <template #next-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-right-icon/>
+          </span>
+        </template>
+
+        <template #prev-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-left-icon/>
+          </span>
+        </template>
+      </vue-paginate>
+
+      <!--  Show By Select    -->
+      <div class="show__by">
+        <span class="show__by__content">
+          <span class="description">{{ $t('contracts.show_by') }}:</span>
+          <b-form-select
+              @input="limitChanged"
+              v-model="showByValue"
+              :options="showByOptions"
+          ></b-form-select>
+          <span class="arrow__down">
+            <base-down-icon/>
+          </span>
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -174,14 +226,30 @@ import BasePaperFailIcon from "@/components/icons/BasePaperFailIcon";
 import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseDownIcon from "@/components/icons/BaseDownIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import {sortObjectValues} from "@/util/reusable";
 
 export default {
   name: "ActivityLog",
   components: {
+    BaseArrowLeftIcon,
+    BaseDownIcon,
     BaseRightIcon,
+    BaseArrowRightIcon,
     OutputInformation,
-    BasePagination, BaseDocumentIcon, FilterContent, BaseButton, BaseEditIcon, BasePaperFailIcon},
+    BasePagination, BaseDocumentIcon, FilterContent, BaseButton, BaseEditIcon, BasePaperFailIcon
+  },
   data() {
+    let {limit: showByValue} = this.$route.query
+    const showByOptions = []
+    for (let number = 10; number <= 50; number += 10) {
+      showByOptions.push({
+        value: number,
+        text: number
+      })
+    }
     return {
       activityLog: [],
       activityStatus: {
@@ -211,10 +279,11 @@ export default {
         },
       },
       daysList: [],
-      activityLogPagination: {
-        next: null,
-        per_page: 20
-      }
+      showByValue,
+      showByOptions,
+      page: 1,
+      currentPage: 1,
+      activityLogPagination: {}
     }
   },
   async created() {
@@ -239,11 +308,13 @@ export default {
       return `${this.$t(this.activityActionType[type])} ${this.$t(this.activityStatus[action])}`
     },
     async fetchActivityLog() {
+      this.daysList = []
       const {id} = this.$route.params
-      await api.contractV2.fetchActivityLog(id, this.activityLogPagination)
+      const query = sortObjectValues(this.query)
+      await api.contractV2.fetchActivityLog(id, query)
           .then((response) => {
-            this.activityLogPagination.current = response.data.pagination.current
-            this.activityLogPagination.per_page = response.data.pagination.per_page
+            console.log(query);
+
             response.data.items.forEach((item) => {
               const index = this.daysList.findIndex(day => day.date.slice(0, 10) === item.created_at.slice(0, 10))
               if (index !== -1) {
@@ -255,7 +326,7 @@ export default {
                 })
               }
             })
-            this.daysList = this.getDateListByDescending(this.daysList)
+            // this.daysList = this.getDateListByDescending(this.daysList)
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
@@ -264,55 +335,39 @@ export default {
             this.showLoading = false
           })
     },
-    // async downloadActivityLog() {
-    //   const {id} = this.$route.params
-    //   await api.contractV2.downloadActivityLog(id, this.activityLogPagination)
-    //       .then((response) => {
-    //         this.activityLogPagination.current = response.data.pagination.current
-    //         this.activityLogPagination.per_page = response.data.pagination.per_page
-    //         response.data.items.forEach((item) => {
-    //           const index = this.daysList.findIndex(day => day.date.slice(0, 10) === item.created_at.slice(0, 10))
-    //           if (index !== -1) {
-    //             this.daysList[index].activities.push(item)
-    //           } else {
-    //             this.daysList.push({
-    //               date: item.created_at,
-    //               activities: [item]
-    //             })
-    //           }
-    //         })
-    //         this.daysList = this.getDateListByDescending(this.daysList)
-    //       })
-    //       .catch((error) => {
-    //         this.toastedWithErrorCode(error)
-    //       })
-    //       .finally(() => {
-    //         this.showLoading = false
-    //       })
-    // },
-    getDateListByDescending(dateList) {
-      console.log("date-list", dateList);
-      return dateList.sort((a,b) => {
-        const firstDate = dateConvertor(a.date)
-        const secondDate = dateConvertor(b.date)
-        return secondDate.getTime() - firstDate.getTime()
-      })
-    },
-    swipeSchedulePage(page) {
-      this.activityLogPagination.current = page
-      this.activityLogPagination.next = ++page
-      this.activityLogPagination.previous = --page
+    changeCurrentPage(page) {
+      const currentPage = this.query.page
+      if (page === currentPage) return
+      this.replaceRouter({...this.query, page})
       this.fetchActivityLog()
-      this.changeRouterQuery()
     },
-    changeRouterQuery() {
-      this.$router.push({
-        query: {
-          ...this.activityLogPagination
-        }
-      })
-      this.setLimitAndPage()
+    limitChanged() {
+      this.changeFetchLimit()
     },
+    replaceRouter(query) {
+      const sortQuery = sortObjectValues(query)
+      this.$router.replace({query: sortQuery})
+    },
+    changeFetchLimit() {
+      const query = {
+        ...this.query, page: 1
+      }
+      const limit = this.showByValue
+      this.replaceRouter({...query, limit})
+      this.fetchActivityLog()
+    },
+    // getDateListByDescending(dateList) {
+    //   console.log("date-list", dateList);
+    //   return dateList.sort((a,b) => {
+    //     const firstDate = dateConvertor(a.date)
+    //     const secondDate = dateConvertor(b.date)
+    //     return secondDate.getTime() - firstDate.getTime()
+    //   })
+    // },
+    // swipeSchedulePage(page) {
+    //   this.activityLogPagination.page = page
+    //   this.fetchActivityLog(this.activityLogPagination)
+    // },
     getClientRole(client) {
       let language = 'kirill'
       if (this.$i18n.locale === 'uz') {
@@ -331,10 +386,6 @@ export default {
 
       return ''
     },
-
-
-
-
 
 
     sortBySearchField(searchingValue) {
@@ -460,11 +511,16 @@ export default {
     query() {
       return Object.assign({}, this.$route.query)
     },
+    countOfItems() {
+      return this.daysList.length
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/scss/utils/pagination";
+
 ::v-deep.custom-filter {
   margin-top: 32px;
 
@@ -502,31 +558,38 @@ export default {
       font-weight: 600;
     }
   }
-  .body-title{
+
+  .body-title {
     margin: 1rem 0;
   }
+
   .header-data {
     display: flex;
     width: 100%;
     justify-content: space-between;
+
     &-row {
       width: 50%;
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
+
     .row-icons {
       align-items: center;
       justify-content: center;
-      width: auto!important;
+      width: auto !important;
     }
   }
+
   .show {
-    padding: 0 24px;
+    padding: 0 30px;
   }
+
   .w-100 {
-    width: 100%!important;
+    width: 100% !important;
   }
+
   header[aria-expanded="true"] {
     .collapse-button {
       transform: rotate(-180deg);
@@ -548,14 +611,17 @@ export default {
       margin: 0 !important;
     }
   }
+
   .collapsed {
     padding: 24px;
-    border-radius: 16px!important;
-    margin-top: -16px!important;
+    border-radius: 16px !important;
+    margin-top: -16px !important;
   }
+
   .collapsed:hover {
     background: #F9FAFB;
   }
+
   &-item {
     border: none;
     width: calc(100% - 68px);
@@ -604,6 +670,7 @@ export default {
 
     &__header {
       padding: 0 1.5rem 1.5rem;
+
       .collapse-button {
         transition: all linear .3s;
       }
@@ -665,6 +732,7 @@ export default {
         width: 2rem;
         height: 2rem;
         border-radius: 50%;
+
         img {
           border-radius: 50%;
           object-fit: cover;
