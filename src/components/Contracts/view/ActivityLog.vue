@@ -4,12 +4,7 @@
         ref="filter-content"
         class="custom-filter"
         :query="query"
-        @change-view-type="changeViewType"
-        @change-date="changeCalendarDate"
-        @sort-items="filterDebts"
-        @go-to-today="showCurrentDay"
-        @reset-filter-fields="disableFilter"
-        @sort-by-search="sortBySearchField"
+        @sort-by-search="SearchInput"
     />
     <div v-for="(activity, index) in daysList" :key="index">
       <div class="accordion" role="tablist">
@@ -162,12 +157,6 @@
       </div>
     </div>
     <!-- PAGINATION   -->
-<!--    <base-pagination-->
-<!--        :default-count-view="activityLogPagination.page"-->
-<!--        :pagination-current="activityLogPagination.limit"-->
-<!--        :pagination-count="2"-->
-<!--        @change-page="swipeSchedulePage"-->
-<!--    />-->
     <div v-if="countOfItems" class="pagination__vue">
       <!--   Pagination   -->
       <vue-paginate
@@ -217,7 +206,6 @@
 
 import BaseButton from "@/components/Reusable/BaseButton";
 import FilterContent from "@/components/Contracts/FilterContent";
-import {dateConvertor, dateProperties, formatDateToYMD} from "@/util/calendar";
 import BaseDocumentIcon from "@/components/icons/BaseDocumentIcon";
 import api from "@/services/api";
 import moment from "moment"
@@ -286,7 +274,8 @@ export default {
       showByOptions,
       page: 1,
       currentPage: 1,
-      activityLogPagination: {}
+      activityLogPagination: {},
+      users: []
     }
   },
   async created() {
@@ -316,6 +305,7 @@ export default {
       const query = sortObjectValues(this.query)
       await api.contractV2.fetchActivityLog(id, query)
           .then((response) => {
+            this.activityLogPagination = response.data.pagination
             response.data.items.forEach((item) => {
               const index = this.daysList.findIndex(day => day.date.slice(0, 10) === item.created_at.slice(0, 10))
               if (index !== -1) {
@@ -357,18 +347,6 @@ export default {
       this.replaceRouter({...query, limit})
       this.fetchActivityLog()
     },
-    // getDateListByDescending(dateList) {
-    //   console.log("date-list", dateList);
-    //   return dateList.sort((a,b) => {
-    //     const firstDate = dateConvertor(a.date)
-    //     const secondDate = dateConvertor(b.date)
-    //     return secondDate.getTime() - firstDate.getTime()
-    //   })
-    // },
-    // swipeSchedulePage(page) {
-    //   this.activityLogPagination.page = page
-    //   this.fetchActivityLog(this.activityLogPagination)
-    // },
     getClientRole(client) {
       let language = 'kirill'
       if (this.$i18n.locale === 'uz') {
@@ -387,126 +365,14 @@ export default {
 
       return ''
     },
-
-
-    sortBySearchField(searchingValue) {
-      let search = searchingValue
-      if (!search) {
-        search = undefined
+    SearchInput(event) {
+      const query = {
+        ...this.query, page: 1
       }
-      this.changeRouterQuery({
-        search
-      })
-      // this.initActivityLogUi()
-    },
-    disableFilter() {
-      const resetQuery = {
-        date: undefined,
-        price_from: undefined,
-        price_to: undefined,
-        client_type: undefined,
-        object_id: undefined
-      }
-
-      if (this.type === 'calendar') {
-        delete resetQuery.date
-      }
-
-      this.changeRouterQuery(resetQuery)
-      // this.initDebtorUi()
-    },
-    showCurrentDay() {
-      const {month, year, dayOfMonth} = dateProperties(new Date())
-      let firstOfCurrentDay = formatDateToYMD(new Date(year, month, 1))
-      if (this.typeOfView === 'week') {
-        firstOfCurrentDay = formatDateToYMD(new Date(year, month, dayOfMonth))
-      }
-      this.setStarterByTypeOfView(firstOfCurrentDay)
-    },
-    changeCalendarDate(lastDate) {
-      const {year, month, dayOfMonth, ymd} = dateProperties(lastDate)
-      switch (this.typeOfView) {
-        case 'month': {
-          const ymd = formatDateToYMD(new Date(year, month, 1))
-          if (ymd !== this.month.starter) {
-            this.month.starter = ymd
-            this.month.items = []
-          }
-          break
-        }
-        case 'week': {
-          const ymd = formatDateToYMD(new Date(year, month, dayOfMonth))
-          if (ymd !== this.week.starter) {
-            this.week.starter = ymd
-            this.week.items = []
-          }
-          break
-        }
-        case 'day': {
-          if (ymd !== this.day.starter) {
-            this.day.starter = ymd
-            this.changeRouterQuery({
-              date: [this.day.starter, this.day.starter]
-            })
-            this.day.items = []
-          }
-        }
-      }
-      // this.initDebtorUi()
-    },
-    filterDebts({date, price_from, price_to, client_type, object_id}) {
-      const type = this.typeOfView
-      const query = {price_from, price_to, client_type, object_id}
-      for (let [key, value] of Object.entries(query)) {
-        if (value === null) {
-          query[key] = undefined
-        }
-      }
-      query.page = undefined
-      switch (type) {
-        case 'month':
-        case 'week' : {
-          this.changeRouterQuery(query)
-          break
-        }
-        default: {
-          if (date === null) {
-            query.date = undefined
-          } else {
-            query.date = date
-          }
-          this.changeRouterQuery(query)
-        }
-      }
-    },
-    changeViewType(type) {
-      if (type !== this.typeOfView) {
-        this.typeOfView = type
-        const starter = this.query.starter_moment ?? formatDateToYMD(new Date())
-        const {year, month, dayOfMonth} = dateProperties(dateConvertor(starter))
-        if (type === 'day') {
-          this.day.starter = starter
-          // this.refreshRouteQuery({
-          //   date: [starter, starter],
-          //   type_of_view: 'day',
-          //   starter_moment: starter
-          // })
-        } else {
-          const starter = formatDateToYMD(new Date(year, month, 1))
-          // this.refreshRouteQuery({
-          //   date: undefined,
-          //   starter_moment: starter,
-          //   type_of_view: type
-          // })
-          if (type === 'month') {
-            this.month.starter = starter
-          } else if (type === 'week') {
-            this.week.starter = formatDateToYMD(new Date(year, month, dayOfMonth))
-          }
-        }
-        // this.initDebtorUi()
-      }
-    },
+      const search = event
+      this.replaceRouter({...query, search})
+      this.fetchActivityLog()
+    }
   },
   computed: {
     query() {
@@ -516,6 +382,11 @@ export default {
       return this.daysList.length
     },
   },
+  watch: {
+    query() {
+      this.fetchActivityLog()
+    }
+  }
 }
 </script>
 

@@ -42,6 +42,10 @@ class ContractV2 extends Core {
         return this.get('contracts/' + id + '/logs', {params})
     }
 
+    fetchActivityLogFilterFields(id) {
+        return this.get('contracts/' + id + '/logs/filter-fields')
+    }
+
     getUpdateContractView(id) {
         return this.get(`contracts/${id}/update`)
     }

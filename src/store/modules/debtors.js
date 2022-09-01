@@ -18,7 +18,6 @@ export default {
         async fetchDebtorsFilter(ctx, vm) {
             ctx.commit("updateLoading", true, {root: true});
             try {
-
                 const body = {
                     contract_number: vm.search,
                     date: vm.date,

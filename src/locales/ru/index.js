@@ -505,7 +505,8 @@ export default {
                 deleted: "Удаление",
                 reissue: "Переоформление",
                 created: "Создание",
-                edited: "Редактирование"
+                edited: "Редактирование",
+                updated: "Редактирование",
             }
         },
 
