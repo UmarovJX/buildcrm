@@ -71,6 +71,7 @@ export default {
     },
     clearFilter() {
       this.$emit('reset-fields')
+      this.$refs['base-modal'].hide()
     },
     searchByFilterField() {
       this.$emit('start-filtering')
