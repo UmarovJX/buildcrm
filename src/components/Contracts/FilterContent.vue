@@ -28,19 +28,19 @@
             :class="{ 'client-type-selection' : !filterFields.actions }"
             :options="actionsTypes"
             :default-value="$t('contracts.activity_log.'+filterFields.actions[0])"
-            @select="(newValue) => filter.actions = newValue"
+            @select="newValue => this.filter.actions = Object.entries(this.filterItemsValues.actions).filter(item => item[1] === newValue)[0][0]"
         />
         <bootstrap-select
             :class="{ 'client-type-selection' : !filterFields.types }"
             :options="typesOptions"
             :default-value="$t('contracts.activity_log.actions.'+filterFields.types[0])"
-            @select="(newValue) => filter.types = newValue"
+            @select="newValue => this.filter.types = Object.entries(this.filterItemsValues.types).filter(item => item[1] === newValue)[0][0]"
         />
         <bootstrap-select
             :class="{ 'client-type-selection' : !filterFields.users }"
             :options="usersOptions"
             :default-value="filterFields.users[0].first_name + ' ' + filterFields.users[0].last_name"
-            @select="(newValue) => filter.user = newValue"
+            @select="newValue => this.filter.users = this.filterFields.users.filter(user => user.first_name+' '+user.last_name===newValue)[0].id"
         />
       </div>
     </base-right-modal>
@@ -72,7 +72,7 @@ export default {
     },
     usersOptions() {
       return this.filterFields.users.map(user => `${user.first_name} ${user.last_name}`)
-    }
+    },
   },
   emits: [
     'reset-filter-fields',
@@ -82,20 +82,25 @@ export default {
   data() {
     return {
       filter: {
-        actions: {
-          text: null,
-          value: null
-        },
-        types: {
-          text: null,
-          value: null
-        },
-        user: {
-          text: null,
-          value: null
-        },
+        actions: null,
+        types: null,
+        users: null
       },
       filterFields: null,
+      filterItemsValues: {
+        types: {
+          deleted: "Удаление",
+          reissue: "Переоформление",
+          created: "Создание",
+          updated: "Редактирование",
+        },
+        actions: {
+          reissue: "в переоформление",
+          comments: "в комментарие",
+          payments_histories: "в историе оплаты",
+          orders: "в договоре",
+        }
+      }
     }
   },
   created() {
@@ -123,14 +128,13 @@ export default {
       this.$refs['filter-modal'].show()
     },
     filterItems() {
-
       this.replaceRouter()
       this.$emit('sort-items', this.filter)
     },
     resetFilterFields() {
       this.filter.types = null
       this.filter.actions = null
-      this.filter.user = null
+      this.filter.users = null
       this.query = this.filter
       this.$emit('reset-filter-fields')
     },
