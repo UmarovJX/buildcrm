@@ -28,13 +28,13 @@
             :class="{ 'client-type-selection' : !filterFields.actions }"
             :options="actionsTypes"
             :default-value="$t('contracts.activity_log.'+filterFields.actions[0])"
-            @select="newValue => this.filter.actions = Object.entries(this.filterItemsValues.actions).filter(item => item[1] === newValue)[0][0]"
+            @select="newValue => this.filter.action = Object.entries(this.filterItemsValues.actions).filter(item => item[1] === newValue)[0][0]"
         />
         <bootstrap-select
             :class="{ 'client-type-selection' : !filterFields.types }"
             :options="typesOptions"
             :default-value="$t('contracts.activity_log.actions.'+filterFields.types[0])"
-            @select="newValue => this.filter.types = Object.entries(this.filterItemsValues.types).filter(item => item[1] === newValue)[0][0]"
+            @select="newValue => this.filter.type = Object.entries(this.filterItemsValues.types).filter(item => item[1] === newValue)[0][0]"
         />
         <bootstrap-select
             :class="{ 'client-type-selection' : !filterFields.users }"
@@ -82,9 +82,9 @@ export default {
   data() {
     return {
       filter: {
-        actions: null,
-        types: null,
-        users: null
+        action: null,
+        type: null,
+        user: null
       },
       filterFields: null,
       filterItemsValues: {
@@ -132,9 +132,9 @@ export default {
       this.$emit('sort-items', this.filter)
     },
     resetFilterFields() {
-      this.filter.types = null
-      this.filter.actions = null
-      this.filter.users = null
+      this.filter.type = null
+      this.filter.action = null
+      this.filter.user = null
       this.query = this.filter
       this.$emit('reset-filter-fields')
     },
