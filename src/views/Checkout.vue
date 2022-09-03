@@ -1,5 +1,5 @@
 <template>
-    <div class="app-checkout">
+    <div class="app-checkout" style="background-color: white">
         <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
         <app-header>
             <template #header-right>
