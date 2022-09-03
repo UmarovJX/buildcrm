@@ -35,45 +35,43 @@ import Debtors from "./modules/debtors";
 import Settings from "./modules/settings";
 import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
-import Checkout from "@/store/modules/Checkout"
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    modules: {
-        Loading,
-        Features,
-        managers,
-        managers_info,
-        Checkout,
-        accountants,
-        accountants_info,
+  modules: {
+    Loading,
+    Features,
+    managers,
+    managers_info,
 
-        cashiers,
-        cashiers_info,
+    accountants,
+    accountants_info,
 
-        auth,
-        me,
-        getAuth,
+    cashiers,
+    cashiers_info,
 
-        menus,
-        objects,
-        objects_filter,
-        apartments,
+    auth,
+    me,
+    getAuth,
 
-        typePlan,
-        clients,
+    menus,
+    objects,
+    objects_filter,
+    apartments,
 
-        ApartmentView,
-        ApartmentOrder,
-        Role,
+    typePlan,
+    clients,
 
-        HomeCount,
-        Currencies,
-        Companies,
-        Contracts,
-        Debtors,
-        Settings,
-        Promo
-    },
+    ApartmentView,
+    ApartmentOrder,
+    Role,
+
+    HomeCount,
+    Currencies,
+    Companies,
+    Contracts,
+    Debtors,
+    Settings,
+    Promo
+  },
 })

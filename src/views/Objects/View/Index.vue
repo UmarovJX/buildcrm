@@ -802,6 +802,7 @@ export default {
         async getBlockName() {
             const id = this.$route.params.object
             await api.objectsV2.getObjectName(id).then((res) => {
+                console.log(res, 'getObjectName');
                 this.objectName = res.data.name
             }).catch((err) => {
                 return err
