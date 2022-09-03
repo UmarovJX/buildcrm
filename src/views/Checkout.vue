@@ -1,114 +1,117 @@
 <template>
-  <div class="app-checkout">
-    <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
-    <app-header>
-      <template #header-right>
-        <div v-if="expiry_at" :class="flexCenter" class="checkout-timer background-violet-gradient mr-2">
-          <CountDown
-              :deadline="expiry_at"
-              :showDays="false"
-              :showHours="false"
-              @timeElapsed="timeElapsedHandler"
-          />
-        </div>
-      </template>
-    </app-header>
-    <div class="app-checkout-main">
-      <b-tabs
-          pills
-          v-model="tabIndex"
-          content-class="app-tabs-content"
-          nav-class="app-tabs-content-header"
-      >
+    <div style="background-color:#fff;">
+        <div class="app-checkout">
+            <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
+            <app-header>
+                <template #header-right>
+                    <div v-if="expiry_at" :class="flexCenter" class="checkout-timer background-violet-gradient mr-2">
+                        <CountDown
+                            :deadline="expiry_at"
+                            :showDays="false"
+                            :showHours="false"
+                            @timeElapsed="timeElapsedHandler"
+                        />
+                    </div>
+                </template>
+            </app-header>
+            <div class="app-checkout-main">
+                <b-tabs
+                    pills
+                    v-model="tabIndex"
+                    content-class="app-tabs-content"
+                    nav-class="app-tabs-content-header"
+                >
 
-        <!--  FIRST TAB    -->
-        <b-tab active>
-          <template #title>
-            <div class="app-tab-title d-flex align-items-center">
-              <span :class="flexCenter" class="app-tab-title-number">1</span>
-              <p class="app-tab-title-content">Детали договора</p>
-              <span :class="flexCenter" class="app-tab-title-right-icon">
+                    <!--  FIRST TAB    -->
+                    <b-tab active>
+                        <template #title>
+                            <div class="app-tab-title d-flex align-items-center">
+                                <span :class="flexCenter" class="app-tab-title-number">1</span>
+                                <p class="app-tab-title-content">Детали договора</p>
+                                <span :class="flexCenter" class="app-tab-title-right-icon">
               <base-right-icon :width="18" :height="18"/>
             </span>
+                            </div>
+                        </template>
+
+                        <DetailsContract
+                            :apartments="apartments"
+                            :order="order"
+                            :client="client"
+                        />
+
+                    </b-tab>
+                    <!--  END OF FIRST TAB    -->
+
+                    <!--   SECOND TAB   -->
+                    <b-tab :disabled="stepTwoDisable">
+                        <template #title>
+                            <div class="app-tab-title d-flex align-items-center">
+                                <span :class="flexCenter" class="app-tab-title-number">2</span>
+                                <p class="app-tab-title-content">Детали платежей</p>
+                            </div>
+                        </template>
+
+                        <div v-if="tabIndex===1" class="app-tab-content">
+                            <div>
+                                <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
+                                    <h3 class="section-title">Информация клиента</h3>
+                                    <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+                                </div>
+                                <b-collapse id="accordion-1">
+                                    <ClientInformation :client="client"/>
+                                </b-collapse>
+                                <div class="app-tab__header-collapse" v-b-toggle.accordion-2>
+                                    <h3 class="section-title">Список квартир</h3>
+                                    <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+                                </div>
+                                <b-collapse id="accordion-2">
+                                    <div class="apartment-block">
+                                        <ApartmentItem
+                                            v-for="apartment in apartments"
+                                            :key="apartment.id"
+                                            :apartment="apartment"
+                                            @update="updateApartmentCalc"
+                                            class="mb-3"
+                                        />
+                                    </div>
+                                </b-collapse>
+                                <div class="app-tab__header">
+                                    <h3 class="section-title">Детали платежа</h3>
+                                </div>
+                                <div class="app-checkout__calculator">
+                                    <checkout-calculator
+                                        :apartments="apartments"
+                                        :discount-options="calc.discounts"
+                                        :payment-options="paymentOptions"
+                                        :order="order"
+                                        date-picker-icon-fill="#7C3AED"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </b-tab>
+                    <!--   END OF SECOND TAB   -->
+
+                    <!--        TABS END -->
+                    <template #tabs-end>
+                        <b-nav-item role="presentation" href="#">
+                            <base-button
+                                @click="changeTab"
+                                class="violet-gradient"
+                                :text="`${ $t('next') }`"
+                            >
+                                <template #right-icon>
+                                    <BaseArrowRightIcon fill="var(--white)"/>
+                                </template>
+                            </base-button>
+                        </b-nav-item>
+                    </template>
+                </b-tabs>
             </div>
-          </template>
-
-          <DetailsContract
-              :apartments="apartments"
-              :order="order"
-              :client="client"
-          />
-
-        </b-tab>
-        <!--  END OF FIRST TAB    -->
-
-        <!--   SECOND TAB   -->
-        <b-tab :disabled="stepTwoDisable">
-          <template #title>
-            <div class="app-tab-title d-flex align-items-center">
-              <span :class="flexCenter" class="app-tab-title-number">2</span>
-              <p class="app-tab-title-content">Детали платежей</p>
-            </div>
-          </template>
-
-          <div v-if="tabIndex===1" class="app-tab-content">
-            <div>
-              <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
-                <h3 class="section-title">Информация клиента</h3>
-                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
-              </div>
-              <b-collapse id="accordion-1">
-                <ClientInformation :client="client"/>
-              </b-collapse>
-              <div class="app-tab__header-collapse" v-b-toggle.accordion-2>
-                <h3 class="section-title">Список квартир</h3>
-                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
-              </div>
-              <b-collapse id="accordion-2">
-                <div class="apartment-block">
-                  <ApartmentItem
-                      v-for="apartment in apartments"
-                      :key="apartment.id"
-                      :apartment="apartment"
-                      @update="updateApartmentCalc"
-                      class="mb-3"
-                  />
-                </div>
-              </b-collapse>
-              <div class="app-tab__header">
-                <h3 class="section-title">Детали платежа</h3>
-              </div>
-              <div class="app-checkout__calculator">
-                <checkout-calculator
-                    :apartments="apartments"
-                    :discount-options="calc.discounts"
-                    :payment-options="paymentOptions"
-                    :order="order"
-                    date-picker-icon-fill="#7C3AED"
-                />
-              </div>
-            </div>
-          </div>
-        </b-tab>
-        <!--   END OF SECOND TAB   -->
-
-        <!--        TABS END -->
-        <template #tabs-end>
-          <b-nav-item role="presentation" href="#">
-            <base-button
-                @click="changeTab"
-                class="violet-gradient"
-                :text="`${ $t('next') }`"
-            >
-              <template #right-icon>
-                <BaseArrowRightIcon fill="var(--white)"/>
-              </template>
-            </base-button>
-          </b-nav-item>
-        </template>
-      </b-tabs>
+        </div>
     </div>
-  </div>
+
 </template>
 
 <script>
