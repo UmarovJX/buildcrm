@@ -173,7 +173,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 ::v-deep .row__head__bottom-border {
   border-bottom: 2px solid var(--gray-200) !important;
 }

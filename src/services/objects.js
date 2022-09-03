@@ -189,9 +189,6 @@ class ObjectsV1Crm extends Core {
     getObjectPlans(objectId) {
         return this.get(`objects/${objectId}/plans`)
     }
-
-
-
 }
 
 class ObjectsV2 extends Core {
@@ -208,11 +205,11 @@ class ObjectsV2 extends Core {
     }
 
     getApartments(objectId, body) {
-        return this.get(`apartments/objects/${objectId}/grid`, {params: body})
+        return this.get(`apartments/objects/${objectId}/apartments/grid`, {params: body})
     }
 
     getObjectPlans(objectId) {
-        return this.get(`/apartments/objects/${objectId}/plans`)
+        return this.get(`/apartments/objects/${objectId}/apartments/plans`)
     }
 
     getDealTemplateList(objectId) {
@@ -240,19 +237,11 @@ class ObjectsV2 extends Core {
     }
 
     fetchObjectApartments(object, params) {
-        return this.get(`apartments/objects/${object}`, {params})
+        return this.get(`apartments/objects/${object}/apartments`, {params})
     }
 
     reContract(id){
         return this.post(`/v2/contracts/${id}/reorder`)
-    }
-
-    getPlanItem(objectId, planId) {
-        return this.get(`apartments/objects/${objectId}/plans/${planId}`)
-    }
-
-    getObjectName(objectId){
-        return this.get(`apartments/objects/${objectId}/information`)
     }
 }
 
