@@ -45,6 +45,7 @@ import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 import Documentation from "@/views/Documentation/documentation";
+import ReleaseNote from "@/views/ReleaseNote/Index";
 
 const routes = [
     {
@@ -103,6 +104,12 @@ const routes = [
                 meta: {
                     requiresAuth: "objects",
                 },
+            },
+            {
+                /* OBJECTS */
+                name: "release-note",
+                path: "/release-note",
+                component: ReleaseNote,
             },
 
             {

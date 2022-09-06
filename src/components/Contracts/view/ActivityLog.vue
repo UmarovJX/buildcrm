@@ -412,7 +412,7 @@ export default {
   align-items: flex-end;
 
   .date {
-    font-family: Craftwork Sans, sans-serif;
+    font-family: 'CraftworkSans', sans-serif;
     font-weight: 900;
     color: #9CA3AF;
 

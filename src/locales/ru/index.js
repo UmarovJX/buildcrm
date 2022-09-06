@@ -183,6 +183,7 @@ export default {
     save_changes: "Сохранить изменения",
     reason_recontract: 'Причина переоформлении',
     number_agree: "Номер соглошения",
+    recheck: "Предпросмотр",
     create_date: 'Дата cоставления',
     recontract_details: 'Детали переоформлении',
     contract_log: 'Журнал активности',
@@ -553,7 +554,14 @@ export default {
             actions: 'Действия'
         },
     },
-
+    release_note: {
+      add_release_note: "Добавить примечания к выпуску",
+      release_note: "Примечания к выпуску",
+      version_number: "Номер версии",
+      texts: "Тексты",
+      new: "Новый",
+      comment: "Вы всегда можете найти примечания к выпуску в настройках, щелкнув номер версии."
+    },
     roles: {
         title: "Роли",
         name: "Название",
