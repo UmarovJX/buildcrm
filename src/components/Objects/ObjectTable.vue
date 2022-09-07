@@ -36,6 +36,7 @@
 
         <template #cell(number)="data" class="p-0">
           <div class="d-flex position-relative">
+            <BaseCheckbox/>
             <div v-if="!data.item.is_sold" class="apartments__lock">
               <svg
                   width="16"
@@ -316,6 +317,7 @@ import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
 // import ViewClient from "@/components/Dashboard/Apartment/ViewClient";
 import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
 import ApartmentsPermission from "@/permission/apartments";
+import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
 // import InfoManager from "@/components/Dashboard/Apartment/InfoManager";
 // import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
 // import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
@@ -323,6 +325,7 @@ import ApartmentsPermission from "@/permission/apartments";
 export default {
   name: 'ObjectTable',
   components: {
+    BaseCheckbox,
     BaseArrowRightIcon,
     BaseArrowLeftIcon,
     BaseDownIcon,
@@ -366,6 +369,7 @@ export default {
       fields: [
         {
           key: "number",
+          icon: BaseCheckbox,
           label: this.$t('object.sort.number_flat'),
           sortable: true,
         },
