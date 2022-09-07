@@ -83,6 +83,7 @@ export default {
     deactivate: "To'xtatish",
     monthly_payment: "Oylik to'lov",
     sum_text: "So'm",
+    sum: "So'm",
     usd_text: 'Usd',
     text: 'Matn',
     apartments_count: "Xonadonlar soni",
@@ -178,6 +179,7 @@ export default {
     details_of_the_agreement: 'Kelishuv tafsilotlari',
     date_of_the_agreement: 'Kelishuv sanasi',
     reason_for_reissuing: 'Qayta rasmiylashtirish sababi',
+    apply: 'Применить',
     agreement_number: 'Shartnoma raqami',
 
     monday: 'Dushanba',

@@ -301,9 +301,8 @@ import ClientInformation from "./Contract/ClientInformation";
 import ApartmentsList from "./Contract/ApartmentsList";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import BaseValidationBottomWarning from "@/components/Reusable/BaseValidationBottomWarning";
-import Calculator from "./Contract/Calculator";
 import Confirm from "./Contract/Confirm";
-
+import Calculator from "@/components/Dashboard/Apartment/Contract/Calculator";
 import {
   editedCreditMonths,
   getDebt,
@@ -691,7 +690,6 @@ export default {
           if (this.edited.contract_number)
             formData.append("type_client", this.client.type_client);
 
-          // formData.append("monthly_edited", this.edit.monthly_edited ? 1 : 0);
           formData.append("client_id", this.client?.id);
 
           if (this.monthlyPermission) {

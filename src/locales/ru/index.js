@@ -81,6 +81,7 @@ export default {
     initial_payment: 'Первоначальный',
     monthly_pay: 'Ежемесячный',
     sum_text: 'В суммах',
+    sum: 'Сумма',
     usd_text: 'В долларах',
     text: 'Текст',
     apartments_count: "Количество квартир",
@@ -178,6 +179,7 @@ export default {
     date_of_the_agreement: 'Дата составления',
     agreement_number: 'Номер соглашения',
     reason_for_reissuing: 'Причина переоформлении',
+    apply: "Qo'llash",
 
     monday: 'Понедельник',
     tuesday: 'Вторник',

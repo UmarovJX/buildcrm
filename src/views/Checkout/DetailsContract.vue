@@ -377,7 +377,6 @@ export default {
             if (this.client.passport_series.length === 9)
                 api.clientsV2.fetchClientData(this.client.passport_series)
                     .then(response => {
-                        console.log(response, 'response');
                         const newClient = response.data
                         this.client = {...newClient, friends: 'false'}
                     }).catch((error) => {

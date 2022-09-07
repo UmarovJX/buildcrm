@@ -35,7 +35,7 @@ import Debtors from "./modules/debtors";
 import Settings from "./modules/settings";
 import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
-import Checkout from "@/store/modules/Checkout"
+import checkout from "@/store/modules/Checkout"
 
 Vue.use(Vuex);
 
@@ -45,7 +45,7 @@ export default new Vuex.Store({
         Features,
         managers,
         managers_info,
-        Checkout,
+        checkout,
         accountants,
         accountants_info,
 
