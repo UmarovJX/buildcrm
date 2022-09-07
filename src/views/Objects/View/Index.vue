@@ -1,5 +1,5 @@
 <template>
-    <main class="app-content">
+    <div>
         <!--  Header Navigation  -->
         <div v-if="finishLoading && objectName.length" class="navigation__content justify-content-between">
             <div class="d-flex align-items-center">
@@ -117,7 +117,7 @@
             :plan-id="planView.item.id"
             @hide-plan-sidebar-view="hidePlanSidebarView"
         />
-    </main>
+    </div>
 </template>
 
 <script>

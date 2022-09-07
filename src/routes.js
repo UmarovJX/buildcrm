@@ -397,6 +397,7 @@ const routes = [
                 path: '/documentation/icons',
                 name: 'icons',
                 component: () => import('@/views/Documentation/icons')
+
             },
             {
                 path: '/documentation/sidebar',

@@ -1,125 +1,125 @@
 <template>
-  <main>
-    <div class="app-content">
-      <branches-bread-crumbs/>
+    <div>
+        <div>
+            <branches-bread-crumbs/>
 
-      <div class="pt-2">
-        <b-table
-            sticky-header
-            borderless
-            responsive
-            :items="branches"
-            :fields="fields"
-            show-empty
-            :sort-by.sync="sortBy"
-            :sort-desc.sync="sortDesc"
-            sort-icon-left
-            class="custom-table"
-            :empty-text="$t('no_data')"
-        >
-          <template #empty="scope" class="text-center">
+            <div class="pt-2">
+                <b-table
+                    sticky-header
+                    borderless
+                    responsive
+                    :items="branches"
+                    :fields="fields"
+                    show-empty
+                    :sort-by.sync="sortBy"
+                    :sort-desc.sync="sortDesc"
+                    sort-icon-left
+                    class="custom-table"
+                    :empty-text="$t('no_data')"
+                >
+                    <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}
             </span>
-          </template>
+                    </template>
 
-          <template #table-busy>
-            <div class="d-flex justify-content-center w-100">
-              <div class="lds-ellipsis">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </div>
-          </template>
+                    <template #table-busy>
+                        <div class="d-flex justify-content-center w-100">
+                            <div class="lds-ellipsis">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </template>
 
-          <template #cell(name)="data">
-            {{ data.item.name }}
-          </template>
+                    <template #cell(name)="data">
+                        {{ data.item.name }}
+                    </template>
 
-          <template #cell(manager)="data">
-            {{ getFullName(data.item) }}
-          </template>
+                    <template #cell(manager)="data">
+                        {{ getFullName(data.item) }}
+                    </template>
 
-          <template #cell(address)="data">
-            {{ data.item.address }}
-          </template>
+                    <template #cell(address)="data">
+                        {{ data.item.address }}
+                    </template>
 
-          <template #cell(phone)="data">
-            {{ data.item.phone }}
-          </template>
+                    <template #cell(phone)="data">
+                        {{ data.item.phone }}
+                    </template>
 
-          <template #cell(actions)="data">
-            <div class="float-right">
-              <div
-                  v-if="deletePermission || viewTemplatesPermission || editPermission"
-                  class="dropdown my-dropdown dropleft"
-              >
-                <button
-                    type="button"
-                    class="dropdown-toggle"
-                    data-toggle="dropdown"
-                >
-                  <i class="far fa-ellipsis-h"></i>
-                </button>
+                    <template #cell(actions)="data">
+                        <div class="float-right">
+                            <div
+                                v-if="deletePermission || viewTemplatesPermission || editPermission"
+                                class="dropdown my-dropdown dropleft"
+                            >
+                                <button
+                                    type="button"
+                                    class="dropdown-toggle"
+                                    data-toggle="dropdown"
+                                >
+                                    <i class="far fa-ellipsis-h"></i>
+                                </button>
 
-                <div
-                    class="dropdown-menu"
-                >
-                  <router-link
-                      v-if="editPermission"
-                      :to="{
+                                <div
+                                    class="dropdown-menu"
+                                >
+                                    <router-link
+                                        v-if="editPermission"
+                                        :to="{
                         name:'edit-branch',
                         params: { id: data.item.id, historyForm:data.item, }
                       }"
-                      :class="'dropdown-item dropdown-item--inside'"
-                  >
-                    <i class="fas fa-pen"></i>
-                    {{ $t("edit") }}
-                  </router-link>
+                                        :class="'dropdown-item dropdown-item--inside'"
+                                    >
+                                        <i class="fas fa-pen"></i>
+                                        {{ $t("edit") }}
+                                    </router-link>
 
-                  <router-link
-                      v-if="viewTemplatesPermission"
-                      :to="{name:'object-deal-template', params:{id:data.item.id}}"
-                      :class="'dropdown-item dropdown-item--inside'"
-                  >
-                    <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}
-                  </router-link>
+                                    <router-link
+                                        v-if="viewTemplatesPermission"
+                                        :to="{name:'object-deal-template', params:{id:data.item.id}}"
+                                        :class="'dropdown-item dropdown-item--inside'"
+                                    >
+                                        <i class="far fa-file-alt"></i> {{ $t('objects.deal_template.name') }}
+                                    </router-link>
 
-                  <button
-                      v-if="deletePermission"
-                      class="dropdown-item dropdown-item--inside"
-                      @click="deleteBranch(data.item.id)"
-                  >
+                                    <button
+                                        v-if="deletePermission"
+                                        class="dropdown-item dropdown-item--inside"
+                                        @click="deleteBranch(data.item.id)"
+                                    >
                     <span>
                       <i class="far fa-trash"></i>
                     </span>
-                    <span class="ml-2">
+                                        <span class="ml-2">
                       {{ $t("delete") }}
                     </span>
-                  </button>
-                </div>
-              </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </b-table>
             </div>
-          </template>
-        </b-table>
-      </div>
-    </div>
-
-    <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
-      <template #overlay>
-        <div class="d-flex justify-content-center w-100">
-          <div class="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
         </div>
-      </template>
-    </b-overlay>
-  </main>
+
+        <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
+            <template #overlay>
+                <div class="d-flex justify-content-center w-100">
+                    <div class="lds-ellipsis">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </template>
+        </b-overlay>
+    </div>
 </template>
 
 <script>
@@ -130,94 +130,94 @@ import {mapGetters} from "vuex";
 import TemplatesPermission from "@/permission/templates";
 
 export default {
-  name: 'BranchesPage',
-  components: {
-    BranchesBreadCrumbs
-  },
-  data() {
-    return {
-      editPermission: BranchesPermission.getBranchesEditPermission(),
-      deletePermission: BranchesPermission.getBranchesDeletePermission(),
-      viewTemplatesPermission: TemplatesPermission.getTemplatesViewPermission(),
-      loading: false,
-      sortBy: "id",
-      sortDesc: false,
-      fields: [
-        {
-          key: "id",
-          label: "#",
-        },
-        {
-          key: "name",
-          label: this.$t("roles.name"),
-        },
-        {
-          key: "address",
-          label: this.$t("address"),
-        },
-        {
-          key: "manager",
-          label: this.$t("roles.manager")
-        },
-        {
-          key: "phone",
-          label: this.$t("clients.phone"),
-        },
-        {
-          key: "users_count",
-          label: this.$t("roles.users"),
-        },
-        {
-          key: "actions",
-          label: '',
+    name: 'BranchesPage',
+    components: {
+        BranchesBreadCrumbs
+    },
+    data() {
+        return {
+            editPermission: BranchesPermission.getBranchesEditPermission(),
+            deletePermission: BranchesPermission.getBranchesDeletePermission(),
+            viewTemplatesPermission: TemplatesPermission.getTemplatesViewPermission(),
+            loading: false,
+            sortBy: "id",
+            sortDesc: false,
+            fields: [
+                {
+                    key: "id",
+                    label: "#",
+                },
+                {
+                    key: "name",
+                    label: this.$t("roles.name"),
+                },
+                {
+                    key: "address",
+                    label: this.$t("address"),
+                },
+                {
+                    key: "manager",
+                    label: this.$t("roles.manager")
+                },
+                {
+                    key: "phone",
+                    label: this.$t("clients.phone"),
+                },
+                {
+                    key: "users_count",
+                    label: this.$t("roles.users"),
+                },
+                {
+                    key: "actions",
+                    label: '',
+                }
+            ],
+            branches: []
         }
-      ],
-      branches: []
-    }
-  },
-
-  computed: {
-    ...mapGetters({
-      permission: 'getPermission'
-    })
-  },
-
-  async created() {
-    await this.getBranchesList()
-  },
-  methods: {
-    async getBranchesList() {
-      this.loading = true
-      await api.branches.getBranchesList()
-          .then((response) => {
-            this.branches = response.data
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
-            this.loading = false
-          })
     },
-    deleteBranch(id) {
-      this.loading = true
-      api.branches.deleteBranch(id)
-          .then(() => {
-            const findIndex = this.branches.findIndex(branch => branch.id === id)
-            this.branches.splice(findIndex, 1)
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
-            this.loading = false
-          })
+
+    computed: {
+        ...mapGetters({
+            permission: 'getPermission'
+        })
     },
-    getFullName(item) {
-      const {last_name, first_name} = item.manager
-      return last_name + ' ' + first_name
+
+    async created() {
+        await this.getBranchesList()
+    },
+    methods: {
+        async getBranchesList() {
+            this.loading = true
+            await api.branches.getBranchesList()
+                .then((response) => {
+                    this.branches = response.data
+                })
+                .catch((error) => {
+                    this.toastedWithErrorCode(error)
+                })
+                .finally(() => {
+                    this.loading = false
+                })
+        },
+        deleteBranch(id) {
+            this.loading = true
+            api.branches.deleteBranch(id)
+                .then(() => {
+                    const findIndex = this.branches.findIndex(branch => branch.id === id)
+                    this.branches.splice(findIndex, 1)
+                })
+                .catch((error) => {
+                    this.toastedWithErrorCode(error)
+                })
+                .finally(() => {
+                    this.loading = false
+                })
+        },
+        getFullName(item) {
+            const {last_name, first_name} = item.manager
+            return last_name + ' ' + first_name
+        }
     }
-  }
 }
 </script>
 

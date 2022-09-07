@@ -1,5 +1,5 @@
 <template>
-    <main class="main__class">
+    <div>
         <!--  Header Navigation  -->
         <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">
             <div class="d-flex align-items-center">
@@ -230,7 +230,7 @@
                 </div>
             </template>
         </base-modal>
-    </main>
+    </div>
 </template>
 <script>
 import api from "@/services/api";

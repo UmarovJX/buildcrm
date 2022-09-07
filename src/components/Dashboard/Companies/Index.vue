@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <div class="search__content">
       <base-search-input
           class="base-search-input w-50 mr-2"
@@ -40,7 +40,7 @@
         </div>
       </template>
     </b-overlay>
-  </main>
+  </div>
 </template>
 
 <script>

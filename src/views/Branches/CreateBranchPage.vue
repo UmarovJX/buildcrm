@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <create-branch-bread-crumb/>
     <branch-form-content
         :submit-button-text="submitButtonText"
@@ -9,7 +9,7 @@
         @make-default-count-down="dismissedAlert"
         @change-count-down="countDownChanged"
     />
-  </main>
+  </div>
 </template>
 
 <script>

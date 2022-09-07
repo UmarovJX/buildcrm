@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <div class="search__content">
       <!--  Search Content  -->
       <base-search-input
@@ -14,7 +14,7 @@
       </BaseButton>
     </div>
 
-    <div class="app-content">
+    <div>
 
       <div class="mt-4">
         <b-table
@@ -100,7 +100,7 @@
 
       />
     </div>
-  </main>
+  </div>
 </template>
 
 <script>
