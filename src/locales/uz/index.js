@@ -513,6 +513,7 @@ export default {
                 reissue: "Qayta tashkillashtirilgan",
                 created: "Yaratilgan",
                 edited: "Tahrirlangan",
+                updated: "Tahrirlangan",
             }
         },
         table: {
