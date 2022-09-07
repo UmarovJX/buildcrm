@@ -93,7 +93,6 @@ export default {
     triggerInputEvent() {
       this.$emit('trigger-input', this.debounceInput)
     },
-
   }
 }
 </script>

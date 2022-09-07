@@ -51,8 +51,8 @@
           <p>{{ item.plan.area }} m<sup>2</sup></p>
         </div>
         <div class="plan-item">
-          <h5>{{ price(item.price) }} {{ $t('ye') }}</h5>
-          <p>{{ price(item.price_m2) }} {{ $t('ye') }}/m <sup>2</sup></p>
+          <h5>{{ price(item.prices.price) }} {{ $t('ye') }}</h5>
+          <p>{{ price(item.prices.price_m2) }} {{ $t('ye') }}/m <sup>2</sup></p>
         </div>
         <div class="apartment-promo-icon">
           <img v-if="item.is_promo" src="../../../../assets/icons/bonuses.svg" alt="">

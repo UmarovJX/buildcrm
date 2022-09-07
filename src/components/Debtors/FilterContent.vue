@@ -15,7 +15,7 @@
           :type-of-view="typeOfView"
           @change-date="changeCalendarDate"
       />
-      <base-search-input
+      <BaseSearchInput
           v-if="showSearchContent"
           class="base-search-input mr-2"
           :placeholder="`${ $t('contract_number_or_full_name') }`"

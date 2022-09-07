@@ -45,7 +45,7 @@
               :to="{
                   name: 'apartment-view',
                     params: {
-                      object: apartment.object.id,
+                      object: sidebarApartment.object.id,
                       id: apartment.uuid
                     }
                   }"

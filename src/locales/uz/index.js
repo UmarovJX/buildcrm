@@ -162,13 +162,16 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
-
-    apartment: "Xonadon",
     xonsaroy: 'Xonsaroy',
+    installment: "Bo'lib to'lash rejasi",
+    prepayment: "Oldindan to'lov",
+    discount_per_m2: 'm2 uchun chegirma',
+    enter_discount: "To'lov turini tanlang",
     address_office: 'Toshkent shahri, Yunusobod tumani, Yangi shahar ko‘chasi, 64A-uy',
     motto: 'Orzular sari ishonchli qadam!',
     quarter: 'chorak',
     of_the_year: 'yil',
+    peculiarities: "O'ziga xos xususiyatlar",
     thank_you: 'Rahmat',
     no_cancel: "Yo'q, bekor qiling",
     yes_delete: "Ha, o'chirilsin",
@@ -847,6 +850,7 @@ export default {
         no_img: "(xonadon rejasi mavjud emas)",
         yes_img: "(xonadon rejasi mavjud)",
         plan: "Xonadon rejasi",
+        floor: 'Qavat',
         plans: "Barcha xonadon rejalari",
         list: "Xonadon rejalari ro'yxati",
         plan_required: "Xonadon loyihasini tanlashingiz shart",
@@ -954,7 +958,9 @@ export default {
                 balcony: "Balkoni bormi?",
                 balcony_area: "Balkon maydoni",
                 balcony_paid: "Balkon pullimi?",
-                add: 'Xonadon rejasini qo\'shish'
+                add: 'Xonadon rejasini qo\'shish',
+                search: 'Xonadon rejasi nomi',
+                add_image: 'Rasm qo\'shish',
             },
 
             apartments: "Xonadonlar",

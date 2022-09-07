@@ -14,9 +14,10 @@
 
 .app-content {
   border: none;
-  margin-bottom: 2rem;
+  padding-bottom: 2rem;
   background-clip: border-box;
-  border-radius: 0.428rem;
+  //border-radius: 0.428rem;
+  border-radius: 0 0 0 56px;
 }
 
 img[lazy="error"] {
@@ -115,7 +116,7 @@ table.b-table[aria-busy="true"] {
   padding-left: calc(0.75rem + 0.65em);
 }
 
-.fixed-menu,
+
 .object__link {
   box-shadow: 0 0 15px 0 rgba(34, 41, 47, 0.05);
 }

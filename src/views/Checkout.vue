@@ -28,15 +28,17 @@
                             <span :class="flexCenter" class="app-tab-title-number">1</span>
                             <p class="app-tab-title-content">Детали договора</p>
                             <span :class="flexCenter" class="app-tab-title-right-icon">
-              <base-right-icon :width="18" :height="18"/>
-            </span>
+                              <base-right-icon :width="18" :height="18"/>
+                            </span>
                         </div>
                     </template>
 
                     <DetailsContract
+                        ref="detail-contract"
                         :apartments="apartments"
                         :order="order"
-                        :client="client"
+                        :client-data="client"
+                        @set-client="setClient"
                     />
 
                 </b-tab>
@@ -60,19 +62,34 @@
                             <b-collapse id="accordion-1">
                                 <ClientInformation :client="client"/>
                             </b-collapse>
-                            <div class="app-tab__header-collapse" v-b-toggle.accordion-2>
-                                <h3 class="section-title">Список квартир</h3>
-                                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+
+                            <div class="apartments-list">
+                                <ApartmentItem
+                                    v-for="apartment in apartments"
+                                    :key="apartment.id"
+                                    :apartment="apartment"
+                                    :remove-btn="apartments.length>1"
+                                    @update="updateApartmentCalc"
+                                />
                             </div>
-                            <b-collapse id="accordion-2">
-                                <ApartmentItem :apartments="apartments"/>
-                            </b-collapse>
+
+
                             <div class="app-tab__header">
                                 <h3 class="section-title">Детали платежа</h3>
                             </div>
                             <div class="app-checkout__calculator">
-                                <Calculator/>
+                                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>
                             </div>
+
+
+                            <div class="app-tab__header">
+                                <h3 class="section-title">График оплаты (12 месяцев)</h3>
+                            </div>
+                            <div class="app-checkout__calculator">
+                                <PaymentMonths/>
+                                <!--                                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>-->
+                            </div>
+
                         </div>
                     </div>
                 </b-tab>
@@ -81,23 +98,25 @@
                 <!--        TABS END -->
                 <template #tabs-end>
                     <b-nav-item role="presentation" href="#">
-                        <base-button @click="changeTab"
-                                     class="violet-gradient"
-                                     :text="$t('next')">
+                        <base-button
+                            @click="changeTab"
+                            class="violet-gradient"
+                            :text="`${ $t('next') }`"
+                        >
                             <template #right-icon>
                                 <BaseArrowRightIcon fill="var(--white)"/>
                             </template>
                         </base-button>
-
                     </b-nav-item>
                 </template>
-
             </b-tabs>
         </div>
     </div>
 </template>
 
 <script>
+import {mapActions} from "vuex";
+import api from "@/services/api";
 import AppHeader from "@/components/AppHeader";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
 // import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
@@ -112,19 +131,18 @@ import BaseButton from "@/components/Reusable/BaseButton";
 // import BaseModal from "@/components/Reusable/BaseModal";
 import ClientInformation from "@/views/Checkout/ClientInformation";
 import ApartmentItem from "@/views/Checkout/ApartmentItem";
-import Calculator from "@/components/Dashboard/Apartment/Contract/Calculator";
-import {mapActions} from "vuex";
-import api from "@/services/api";
+import CheckoutCalculator from "@/components/Checkout/CheckoutCalculator";
 import ErrorNotification from "@/components/Reusable/ErrorNotification";
 // import FlipCountdown from "vue2-flip-countdown";
 import CountDown from "@/components/Reusable/CountDown";
 import DetailsContract from "@/views/Checkout/DetailsContract";
+import PaymentMonths from "@/views/Checkout/PaymentMonths";
 
 export default {
     name: "Checkout",
     components: {
         ErrorNotification,
-        Calculator,
+        CheckoutCalculator,
         ApartmentItem,
         ClientInformation,
         AppHeader,
@@ -141,47 +159,12 @@ export default {
         // BaseCloseIcon,
         CountDown,
         DetailsContract,
+        PaymentMonths,
     },
     data() {
         return {
-            newContractNumber: '',
-            changedContractNumber: false,
-            datePickerIconFill: 'var(--violet-600)',
-            tabIndex: 0,
-            form: {
-                contract_date: '',
-                passport_number: '',
-                passport_issue: '',
-                passport_date: '',
-                birthday: '',
-                last_name: {
-                    lotin: '',
-                    kirill: ''
-                },
-                first_name: {
-                    lotin: '',
-                    kirill: ''
-                },
-                second_name: {
-                    lotin: '',
-                    kirill: ''
-                },
-                phone: '',
-                other_phone: '',
-                language: '',
-                client_type: '',
-                friends: false,
-            },
-            options: [
-                {
-                    text: 'UZ',
-                    value: 'uz'
-                },
-                {
-                    text: 'RU',
-                    value: 'ru'
-                }
-            ],
+            tabIndex: 1,
+            discounts: [],
             client: {
                 first_name: {
                     lotin: "",
@@ -206,10 +189,6 @@ export default {
                 first_payment_date: null,
                 payment_date: null,
             },
-            clientTypeOption: [
-                {text: 'Незнакомый', value: 'false'},
-                {text: 'Знакомый', value: 'true'},
-            ],
             apartments: [
                 {
                     discount_id: "other",
@@ -251,23 +230,63 @@ export default {
                     price_m2: 6562284,
                     price_sold: 617510924,
                     rooms: 3,
-                }
+                },
+                {
+                    discount_id: "other",
+                    entrance: 2,
+                    floor: 3,
+                    block: {
+                        address: null,
+                        build_date: null,
+                        credit_month: null,
+                        id: 1,
+                        location: null,
+                        name: "Блок K",
+                    },
+                    building: {
+                        address: null,
+                        build_date: null,
+                        credit_month: null,
+                        id: 1,
+                        location: null,
+                        name: "87605",
+                    },
+                    plan: {
+                        area: 94.1,
+                        balcony: false,
+                        balcony_area: 0,
+                        id: 6,
+                    },
+                    object: {
+                        address: "71351 Von Hill Suite 928\nLake Napoleon, AK 91071-9471",
+                        build_date: "2022-11-03",
+                        credit_month: 32,
+                        id: 1,
+                    },
+                    id: "dab7329e-e6a8-42cc-a934-666c786747ff",
+                    number: "N-45",
+                    price: 617510924,
+                    price_calc: 617510924.4,
+                    price_edited: true,
+                    price_m2: 6562284,
+                    price_sold: 617510924,
+                    rooms: 3,
+                },
             ],
-            order: {},
-            stepTwoDisable: true,
+            calc: {
+                apartments: []
+            },
             validationError: {
                 type: '',
                 message: '',
                 visible: false,
             },
+            order: {},
+            stepTwoDisable: false,
             expiry_at: null,
         }
     },
-    watch: {
-        newContractNumber(value) {
-            this.changedContractNumber = !!(value && value.length && !(value === this.order.contract_number));
-        }
-    },
+
     computed: {
         flexCenter() {
             return 'd-flex justify-content-center align-items-center'
@@ -281,13 +300,11 @@ export default {
                 if (response?.data) {
                     this.$route.params.id = response.data.uuid
                     this.order = response.data
-                    console.log(response.data.expiry_at, 'response.data.expiry_at');
                     this.expiry_at = response.data.expiry_at
                 }
             })
         this.$route.params.object = '3'
 
-        console.log(this.expiry_at, 'this.order.expiry_at');
         this.expiry_at = this.$moment(this.expiry_at)
             .utcOffset("+0500")
             .format("YYYY-MM-DD H:mm:ss");
@@ -315,9 +332,12 @@ export default {
     },
     methods: {
         ...mapActions(["fetchApartmentOrder"]),
-
+        setClient(value) {
+            console.log(value, 'setClient');
+            this.client = value
+        },
         async changeTab() {
-            await this.$refs['client-validation'].validate().then((res) => {
+            await this.$refs['detail-contract'].$refs['client-validation'].validate().then((res) => {
                 const body = {...this.client, type_client: this.client.friends ? 'friends' : 'unknown'}
                 if (res) {
                     api.clientsV2.createClient(body).then(() => {
@@ -358,7 +378,28 @@ export default {
             const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
             await api.contractV2.getUpdateContractView(uuid).then((res) => {
                 this.apartments = res.data.apartments
-                this.client = res.data.client
+                console.log(res.data.client, 'response.data');
+                this.client = {
+                    first_name: res.data.client.first_name ?? {
+                        lotin: null,
+                        kirill: null,
+                    },
+                    last_name: res.data.client.last_name ?? {
+                        lotin: null,
+                        kirill: null,
+                    },
+                    second_name: res.data.client.second_name ?? {
+                        lotin: null,
+                        kirill: null,
+                    },
+                    passport_series: res.data.client.passport_series,
+                    issued_by_whom: res.data.client.issued_by_whom,
+                    language: res.data.client.language,
+                    birth_day: res.data.client.birth_day,
+                    phone: this.phone(res.data.client.phone),
+                    other_phone: this.phone(res.data.client.other_phone),
+                    date_of_issue: res.data.client.date_of_issue,
+                };
                 console.log(res.data.client, 'res.data.client');
             })
         },
@@ -390,6 +431,21 @@ export default {
                 this.loading = false;
             }
         },
+
+        mutateCalcApartment(item) {
+            if (this.calc.apartments.length) {
+                const index = this.calc.apartments.findIndex(apartment => apartment.id === item.id)
+                if (index !== -1) {
+                    this.calc.apartments[index] = item
+                    return
+                }
+            }
+            this.calc.apartments.push(item)
+        },
+
+        updateApartmentCalc(item) {
+            this.mutateCalcApartment(item)
+        }
     },
 }
 </script>
@@ -462,10 +518,46 @@ export default {
     }
 }
 
+
+.section {
+    &-title {
+        font-size: 24px;
+        font-weight: 900;
+        margin-bottom: 2rem;
+        color: var(--gray-400);
+        font-family: CraftworkSans, serif;
+    }
+
+    &-container {
+        display: grid;
+        column-gap: 2rem;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .data-picker {
+        height: 56px;
+        max-height: 56px;
+        width: 100%;
+        border: 2px solid #E5E7EB;
+        border-radius: 32px;
+    }
+}
+
+
 </style>
 
 
 <style lang="scss" scoped>
+
+
+.apartments-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
 
 .app-checkout {
     .checkout-timer {

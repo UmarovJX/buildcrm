@@ -613,6 +613,7 @@ export default {
           .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
           .replace(/(\..*?)\..*/g, "$1");
     },
+
     symbolIsLatin(event) {
       return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
     },

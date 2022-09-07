@@ -45,10 +45,11 @@ import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 import Documentation from "@/views/Documentation/documentation";
+import Checkout from "@/views/Checkout";
 
 const routes = [
     {
-        path: '/',
+        path: '/dashboard',
         name: 'app-layout',
         component: AppLayout,
         children: [
@@ -59,11 +60,13 @@ const routes = [
                 component: Dashboard,
             },
 
-            /*{
+            /*
+            {
                 path: '/experiment',
                 name: 'experiment',
                 component: () => import('@/views/experience')
-            },*/
+            },
+            */
 
             {
                 path: '/experiment',
@@ -473,6 +476,11 @@ const routes = [
                 component: PageNotFound,
             }
         ]
+    },
+    {
+        path: '/checkout',
+        name: 'checkout',
+        component: Checkout
     }
 ]
 

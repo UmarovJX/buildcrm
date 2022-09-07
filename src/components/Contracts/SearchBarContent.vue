@@ -49,7 +49,6 @@
 
         <div class="modal__content-main">
           <div class="filter__inputs">
-
             <base-multiselect
                 :default-values="filter.object_id"
                 :options="objectOptions"

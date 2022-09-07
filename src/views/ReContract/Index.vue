@@ -723,18 +723,18 @@ export default {
       this.timeoutId = setTimeout(() => {
         switch (type) {
           case 'first_name':
-            if (!this.newClient.first_name.kirill) {
-              this.newClient.first_name.kirill = this.symbolCyrillicToLatin(event);
+            if (!this.newClient.first_name.lotin) {
+              this.newClient.first_name.lotin = this.symbolCyrillicToLatin(event);
             }
             break;
           case 'last_name':
-            if (!this.newClient.last_name.kirill) {
-              this.newClient.last_name.kirill = this.symbolCyrillicToLatin(event);
+            if (!this.newClient.last_name.lotin) {
+              this.newClient.last_name.lotin = this.symbolCyrillicToLatin(event);
             }
             break;
           case 'second_name':
-            if (!this.newClient.second_name.kirill) {
-              this.newClient.second_name.kirill = this.symbolCyrillicToLatin(event);
+            if (!this.newClient.second_name.lotin) {
+              this.newClient.second_name.lotin = this.symbolCyrillicToLatin(event);
             }
             break;
         }
