@@ -47,6 +47,18 @@ class ApartmentsV2 extends Core {
     getApartmentView(object, id) {
         return this.get(`apartments/objects/${object}/${id}`)
     }
+
+    isAvailableToSold(id, apartment_uuid, body) {
+        return this.put(`apartments/objects/${id}/${apartment_uuid}/is-sold`, body)
+    }
+
+    getApartmentComments(id, apartment_uuid) {
+        return this.put(`apartments/objects/${id}/${apartment_uuid}/is-sold`)
+    }
+
+    editApartmentComment(id, apartment_uuid, body) {
+        return this.put(`apartments/objects/${id}/${apartment_uuid}/is-sold`, body)
+    }
 }
 
 export default {
