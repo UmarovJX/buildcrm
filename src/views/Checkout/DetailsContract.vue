@@ -10,7 +10,7 @@
                 property="Номер договора"
                 :value="order.contract_number"
             >
-              <template #actions>
+              <template #right-icon>
                 <span
                     @click="openEditNumberModal"
                     class="d-flex align-items-center cursor-pointer"
@@ -369,6 +369,9 @@ export default {
     // phone(value) {
     //     return phonePrettier(value)
     // },
+    async validate() {
+      return await this.$refs['client-validation'].validate()
+    },
     clientDebounce() {
       if (this.timeoutId !== null) {
         clearTimeout(this.timeoutId)
@@ -382,7 +385,11 @@ export default {
         api.clientsV2.fetchClientData(this.client.passport_series)
             .then(response => {
               const newClient = response.data
-              this.client = {...newClient, friends: 'false'}
+              this.client = {
+                ...newClient,
+                friends: 'false',
+                contract_date: this.client.contract_date
+              }
             }).catch((error) => {
           this.client =
               {
@@ -707,4 +714,7 @@ export default {
   margin-left: 1rem;
 }
 
+.go__back {
+  cursor: pointer;
+}
 </style>

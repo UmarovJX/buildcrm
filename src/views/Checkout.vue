@@ -1,8 +1,5 @@
 <template>
-  <div
-      class="app-checkout"
-      style="background-color: white;padding-top: 2rem;margin-bottom: 2rem"
-  >
+  <div class="app-checkout">
     <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
     <app-header>
       <template #header-right>
@@ -322,42 +319,41 @@ export default {
       }
     },
     async changeTab() {
-      await this.$refs['client-validation'].validate().then((res) => {
+      const clientFieldValidation = await this.$refs['detail-contract'].validate()
+      if (clientFieldValidation) {
         const body = {...this.client, type_client: this.client.friends ? 'friends' : 'unknown'}
-        if (res) {
-          api.clientsV2.createClient(body).then(() => {
-            this.validationError = {
-              visible: true,
-              message: 'Успешно',
-              type: "success"
-            }
-            if (this.tabIndex === 0) {
-              this.stepTwoDisable = false
-              setTimeout(() => {
-                this.tabIndex = 1
-              }, 100)
-            }
-          }).catch((err) => {
-            let error = []
-            for (const value of Object.values(err.response.data)) {
-              error = [...error, value]
-            }
-            this.validationError = {
-              visible: true,
-              message: error.join(', '),
-              type: "error"
-            }
-            this.stepTwoDisable = true
-          })
-        } else {
+        api.clientsV2.createClient(body).then(() => {
           this.validationError = {
             visible: true,
-            message: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+            message: 'Успешно',
+            type: "success"
+          }
+          if (this.tabIndex === 0) {
+            this.stepTwoDisable = false
+            setTimeout(() => {
+              this.tabIndex = 1
+            }, 100)
+          }
+        }).catch((err) => {
+          let error = []
+          for (const value of Object.values(err.response.data)) {
+            error = [...error, value]
+          }
+          this.validationError = {
+            visible: true,
+            message: error.join(', '),
             type: "error"
           }
           this.stepTwoDisable = true
+        })
+      } else {
+        this.validationError = {
+          visible: true,
+          message: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+          type: "error"
         }
-      })
+        this.stepTwoDisable = true
+      }
     },
     backToView() {
       if (this.order.status === "sold") {
@@ -480,6 +476,9 @@ export default {
 
 
 <style lang="scss">
+.app-checkout-main {
+  margin-top: 2rem;
+}
 
 .app-tab {
   &-title {
