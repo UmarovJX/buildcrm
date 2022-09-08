@@ -28,8 +28,8 @@
                             <span :class="flexCenter" class="app-tab-title-number">1</span>
                             <p class="app-tab-title-content">Детали договора</p>
                             <span :class="flexCenter" class="app-tab-title-right-icon">
-                              <base-right-icon :width="18" :height="18"/>
-                            </span>
+                <base-right-icon :width="18" :height="18"/>
+              </span>
                         </div>
                     </template>
 
@@ -39,6 +39,7 @@
                         :order="order"
                         :client-data="client"
                         @set-client="setClient"
+                        @change-contract-number="setNewContractNumber"
                     />
 
                 </b-tab>
@@ -65,11 +66,13 @@
 
                             <div class="apartments-list">
                                 <ApartmentItem
-                                    v-for="apartment in apartments"
-                                    :key="apartment.id"
+                                    v-for="(apartment,index) in apartments"
+                                    :key="apartment.id + index"
                                     :apartment="apartment"
-                                    :remove-btn="apartments.length>1"
-                                    @update="updateApartmentCalc"
+                                    :remove-btn="apartments.length > 1"
+                                    :remove-item="removeApartment"
+                                    :other-price="otherPrice"
+                                    @update="updateItem"
                                 />
                             </div>
 
@@ -78,7 +81,13 @@
                                 <h3 class="section-title">Детали платежа</h3>
                             </div>
                             <div class="app-checkout__calculator">
-                                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>
+                                <checkout-calculator
+                                    :order="order"
+                                    :apartments="apartments"
+                                    :payment-options="paymentOptions"
+                                    date-picker-icon-fill="#7C3AED"
+                                    @update="updateState"
+                                />
                             </div>
 
 
@@ -86,7 +95,7 @@
                                 <h3 class="section-title">График оплаты (12 месяцев)</h3>
                             </div>
                             <div class="app-checkout__calculator">
-                                <PaymentMonths/>
+                                <PaymentMonths :date-picker-icon-fill="datePickerIconFill"/>
                                 <!--                                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>-->
                             </div>
 
@@ -111,11 +120,12 @@
                 </template>
             </b-tabs>
         </div>
+
+        <TrashBasket @return-apartment="returnApartments" :apartment-count="trashStorage.length"/>
     </div>
 </template>
 
 <script>
-import {mapActions} from "vuex";
 import api from "@/services/api";
 import AppHeader from "@/components/AppHeader";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
@@ -137,6 +147,9 @@ import ErrorNotification from "@/components/Reusable/ErrorNotification";
 import CountDown from "@/components/Reusable/CountDown";
 import DetailsContract from "@/views/Checkout/DetailsContract";
 import PaymentMonths from "@/views/Checkout/PaymentMonths";
+import {mapActions, mapGetters, mapState} from 'vuex'
+import {dateProperties} from "@/util/calendar";
+import TrashBasket from "@/components/Checkout/TrashBasket";
 
 export default {
     name: "Checkout",
@@ -160,9 +173,15 @@ export default {
         CountDown,
         DetailsContract,
         PaymentMonths,
+        TrashBasket
+
     },
     data() {
         return {
+            holdList: ['7d497657-3461-4da9-8c0a-0e0b534880f6', '5a7d2b3e-cada-4041-ad1a-8e4c1b7f0e2e'],
+            newContractNumber: '',
+            changedContractNumber: false,
+            datePickerIconFill: 'var(--violet-600)',
             tabIndex: 1,
             discounts: [],
             client: {
@@ -189,219 +208,165 @@ export default {
                 first_payment_date: null,
                 payment_date: null,
             },
-            apartments: [
-                {
-                    discount_id: "other",
-                    entrance: 2,
-                    floor: 3,
-                    block: {
-                        address: null,
-                        build_date: null,
-                        credit_month: null,
-                        id: 1,
-                        location: null,
-                        name: "Блок K",
-                    },
-                    building: {
-                        address: null,
-                        build_date: null,
-                        credit_month: null,
-                        id: 1,
-                        location: null,
-                        name: "87605",
-                    },
-                    plan: {
-                        area: 94.1,
-                        balcony: false,
-                        balcony_area: 0,
-                        id: 6,
-                    },
-                    object: {
-                        address: "71351 Von Hill Suite 928\nLake Napoleon, AK 91071-9471",
-                        build_date: "2022-11-03",
-                        credit_month: 32,
-                        id: 1,
-                    },
-                    id: "dab7329e-e6a8-42cc-a934-666c786747ff",
-                    number: "N-45",
-                    price: 617510924,
-                    price_calc: 617510924.4,
-                    price_edited: true,
-                    price_m2: 6562284,
-                    price_sold: 617510924,
-                    rooms: 3,
-                },
-                {
-                    discount_id: "other",
-                    entrance: 2,
-                    floor: 3,
-                    block: {
-                        address: null,
-                        build_date: null,
-                        credit_month: null,
-                        id: 1,
-                        location: null,
-                        name: "Блок K",
-                    },
-                    building: {
-                        address: null,
-                        build_date: null,
-                        credit_month: null,
-                        id: 1,
-                        location: null,
-                        name: "87605",
-                    },
-                    plan: {
-                        area: 94.1,
-                        balcony: false,
-                        balcony_area: 0,
-                        id: 6,
-                    },
-                    object: {
-                        address: "71351 Von Hill Suite 928\nLake Napoleon, AK 91071-9471",
-                        build_date: "2022-11-03",
-                        credit_month: 32,
-                        id: 1,
-                    },
-                    id: "dab7329e-e6a8-42cc-a934-666c786747ff",
-                    number: "N-45",
-                    price: 617510924,
-                    price_calc: 617510924.4,
-                    price_edited: true,
-                    price_m2: 6562284,
-                    price_sold: 617510924,
-                    rooms: 3,
-                },
-            ],
-            calc: {
-                apartments: []
-            },
             validationError: {
                 type: '',
                 message: '',
                 visible: false,
             },
-            order: {},
             stepTwoDisable: false,
-            expiry_at: null,
         }
     },
-
     computed: {
+        ...mapState('checkout', {
+            calc: 'calc',
+            apartments: 'apartments',
+            discount: 'discount',
+            month: 'month',
+            created_by: 'created_by',
+            contract_number: 'contract_number',
+            expiry_at: 'expiry_at',
+            uuid: 'uuid',
+            order: 'order',
+            initial_payments: 'initial_payments',
+            credit_months: 'credit_months',
+            comment: 'comment',
+            trashStorage: 'trashStorage'
+        }),
+        ...mapGetters('checkout', {
+            otherPrice: 'isDiscountOtherType'
+        }),
         flexCenter() {
             return 'd-flex justify-content-center align-items-center'
         },
-    },
+        paymentOptions() {
+            if (this.apartments.length && this.apartments[0]?.discounts) {
+                const discounts = this.apartments[0].discounts.map((discount, index) => {
+                    let text = this.$t("apartments.view.variant")
+                    if (discount.type === 'promo') {
+                        text += this.$t('promo.by_promo')
+                    }
+                    text += ` ${index + 1} - ${discount.prepay}%`
+                    return {
+                        text,
+                        value: discount.id,
+                        ...discount,
+                    }
+                })
 
-    async created() {
-        const apartments = ['9450d1fc-a2f3-43c6-ba11-770c5a903738']
-        await api.orders.holdOrder(apartments)
-            .then((response) => {
-                if (response?.data) {
-                    this.$route.params.id = response.data.uuid
-                    this.order = response.data
-                    this.expiry_at = response.data.expiry_at
-                }
-            })
-        this.$route.params.object = '3'
-
-        this.expiry_at = this.$moment(this.expiry_at)
-            .utcOffset("+0500")
-            .format("YYYY-MM-DD H:mm:ss");
-    },
-    mounted() {
-        this.getClientData()
-
-        const current = this.$moment(new Date())
-            .utcOffset("+0500")
-            .format("YYYY-MM-DD H:mm:ss");
-
-        const expired = this.$moment(this.order.expiry_at)
-            .utcOffset("+0500")
-            .format("YYYY-MM-DD H:mm:ss");
-
-        // console.log(expired, 'expired');
-        // console.log(expired, 'expiry_at');
-        // this.expiry_at = expired;
-
-        const time = new Date(current) - new Date(expired);
-        console.log(time, 'time');
-        if (time > 0) {
-            this.timeElapsedHandler();
+                discounts.push({
+                    text: ' ' + this.$t('apartments.view.other_variant'),
+                    value: 'other',
+                    type: 'percent',
+                    currency: null,
+                    amount: 0,
+                    id: 'other',
+                    prepay: 30
+                })
+                return discounts
+            }
+            return []
         }
     },
+    watch: {
+        newContractNumber(value) {
+            this.changedContractNumber = !!(value && value.length && !(value === this.order.contract_number));
+        }
+    },
+    created() {
+        this.setHoldApartments()
+    },
     methods: {
-        ...mapActions(["fetchApartmentOrder"]),
+        ...mapActions('checkout', {
+            setup: 'setup',
+            updateState: 'updateState',
+            updateApartment: 'updateApartment'
+        }),
+        returnApartments() {
+            console.log('returned')
+        },
+        removeApartment(apartment) {
+            this.removeApartment(apartment)
+        },
+        updateItem(item) {
+            this.updateApartment(item)
+        },
+        async setHoldApartments() {
+            try {
+                const {data} = await api.orders.holdOrder(this.holdList)
+                if (data) {
+                    const context = {
+                        order: data,
+                        uuid: data.uuid,
+                        expiry_at: data.expiry_at,
+                        apartments: data.apartments,
+                        contract_number: data.contract_number,
+                        discounts: data.apartments[0].discounts,
+                        discount: data.apartments[0].discounts[0]
+                    }
+                    this.setup(context)
+                    this.startCounter()
+                }
+            } catch (e) {
+                this.toastedWithErrorCode(e)
+            }
+        },
         setClient(value) {
-            console.log(value, 'setClient');
             this.client = value
         },
+        startCounter() {
+            this.expiry_at = this.$moment(this.expiry_at)
+                .utcOffset("+0500")
+                .format("YYYY-MM-DD H:mm:ss");
+
+            const current = this.$moment(new Date())
+                .utcOffset("+0500")
+                .format("YYYY-MM-DD H:mm:ss");
+
+            const expired = this.$moment(this.order.expiry_at)
+                .utcOffset("+0500")
+                .format("YYYY-MM-DD H:mm:ss");
+
+            const time = new Date(current) - new Date(expired);
+            if (time > 0) {
+                this.timeElapsedHandler();
+            }
+        },
         async changeTab() {
-            await this.$refs['detail-contract'].$refs['client-validation'].validate().then((res) => {
+            const clientFieldValidation = await this.$refs['detail-contract'].validate()
+            if (clientFieldValidation) {
                 const body = {...this.client, type_client: this.client.friends ? 'friends' : 'unknown'}
-                if (res) {
-                    api.clientsV2.createClient(body).then(() => {
-                        this.validationError = {
-                            visible: true,
-                            message: 'Успешно',
-                            type: "success"
-                        }
-                        if (this.tabIndex === 0) {
-                            this.stepTwoDisable = false
-                            setTimeout(() => {
-                                this.tabIndex = 1
-                            }, 100)
-                        }
-                    }).catch((err) => {
-                        let error = []
-                        for (const value of Object.values(err.response.data)) {
-                            error = [...error, value]
-                        }
-                        this.validationError = {
-                            visible: true,
-                            message: error.join(', '),
-                            type: "error"
-                        }
-                        this.stepTwoDisable = true
-                    })
-                } else {
+                api.clientsV2.createClient(body).then(() => {
                     this.validationError = {
                         visible: true,
-                        message: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+                        message: 'Успешно',
+                        type: "success"
+                    }
+                    if (this.tabIndex === 0) {
+                        this.stepTwoDisable = false
+                        setTimeout(() => {
+                            this.tabIndex = 1
+                        }, 100)
+                    }
+                }).catch((err) => {
+                    let error = []
+                    for (const value of Object.values(err.response.data)) {
+                        error = [...error, value]
+                    }
+                    this.validationError = {
+                        visible: true,
+                        message: error.join(', '),
                         type: "error"
                     }
                     this.stepTwoDisable = true
+                })
+            } else {
+                this.validationError = {
+                    visible: true,
+                    message: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+                    type: "error"
                 }
-            })
-        },
-        async getClientData() {
-            const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
-            await api.contractV2.getUpdateContractView(uuid).then((res) => {
-                this.apartments = res.data.apartments
-                console.log(res.data.client, 'response.data');
-                this.client = {
-                    first_name: res.data.client.first_name ?? {
-                        lotin: null,
-                        kirill: null,
-                    },
-                    last_name: res.data.client.last_name ?? {
-                        lotin: null,
-                        kirill: null,
-                    },
-                    second_name: res.data.client.second_name ?? {
-                        lotin: null,
-                        kirill: null,
-                    },
-                    passport_series: res.data.client.passport_series,
-                    issued_by_whom: res.data.client.issued_by_whom,
-                    language: res.data.client.language,
-                    birth_day: res.data.client.birth_day,
-                    phone: this.phone(res.data.client.phone),
-                    other_phone: this.phone(res.data.client.other_phone),
-                    date_of_issue: res.data.client.date_of_issue,
-                };
-                console.log(res.data.client, 'res.data.client');
-            })
+                this.stepTwoDisable = true
+            }
         },
         backToView() {
             if (this.order.status === "sold") {
@@ -412,7 +377,6 @@ export default {
             }
         },
         timeElapsedHandler() {
-            console.log('time is up');
             this.expiredConfirm();
         },
         async expiredConfirm() {
@@ -431,27 +395,103 @@ export default {
                 this.loading = false;
             }
         },
+        setNewContractNumber(newNumber) {
+            this.changedContractNumber = true
+            this.newContractNumber = newNumber
+        },
+        async submitConcludeContract() {
+            const {
+                discount,
+                client,
+                credit_months,
+                initial_payments,
+                calc, edit,
+                comment,
+                order,
+                apartments,
+                changedContractNumber,
+                newContractNumber
+            } = this
 
-        mutateCalcApartment(item) {
-            if (this.calc.apartments.length) {
-                const index = this.calc.apartments.findIndex(apartment => apartment.id === item.id)
-                if (index !== -1) {
-                    this.calc.apartments[index] = item
-                    return
+            const form = new FormData()
+            form.append('discount_id', discount.id)
+            form.append('type_client', client.friends)
+            form.append('client_id', client.id)
+
+            for (let i = 0; i < credit_months.length; i++) {
+                const p = credit_months[i]
+                const {ymd} = dateProperties(p.month, 'string')
+                form.append(`monthly[${i}][date]`, ymd)
+                form.append(`monthly[${i}][amount]`, p.amount)
+                form.append(`monthly[${i}][edited]`, (+p.edit).toString())
+            }
+
+            for (let i = 0; i < initial_payments.length; i++) {
+                const p = initial_payments[i]
+                const {ymd} = dateProperties(p.month, 'string')
+                form.append(`initial_payments[${i}][date]`, ymd)
+                form.append(`initial_payments[${i}][amount]`, p.amount)
+                form.append(`initial_payments[${i}][edited]`, (+p.edit).toString())
+            }
+
+            if (edit.prepay) {
+                form.append('prepay_edited', calc.prepay)
+            }
+
+            form.append('comment', comment)
+            form.append('months', calc.monthly_payment_period)
+            form.append('first_payment_date', calc.first_payment_date)
+            form.append('discount_amount', discount.amount)
+
+            if (discount.id === 'other') {
+                for (let i = 0; i < apartments.length; i++) {
+                    form.append(`apartments[${i}][id]`, apartments[i].id)
+                    form.append(`apartments[${i}][price]`, apartments[i].price)
                 }
             }
-            this.calc.apartments.push(item)
-        },
 
-        updateApartmentCalc(item) {
-            this.mutateCalcApartment(item)
+            if (client.contract_date) {
+                form.append('contract_date', client.contract_date)
+            }
+
+            if (calc.payment_date) {
+                form.append('payment_date', calc.payment_date)
+            }
+
+            if (changedContractNumber) {
+                form.append('contract_number', newContractNumber)
+            }
+
+            try {
+                const response = await api.orders.reserveApartment(order.uuid, form)
+                console.log(response)
+            } catch (e) {
+                this.toastedWithErrorCode(e)
+            }
         }
-    },
+        // async getClientDetails() {
+        //   const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
+        //   await api.contractV2.getUpdateContractView(uuid).then((res) => {
+        //     this.client = res.data.client
+        //     this.apartments = [...res.data.apartments, ...res.data.apartments, ...res.data.apartments]
+        //         .map((apartment, index) => {
+        //           return {
+        //             ...apartment,
+        //             id: `${apartment.id}${index}`
+        //           }
+        //         })
+        //     this.calc.discounts = this.apartments[0].discounts
+        //   })
+        // }
+    }
 }
 </script>
 
 
 <style lang="scss">
+.app-checkout-main {
+    margin-top: 2rem;
+}
 
 .app-tab {
     &-title {
@@ -548,8 +588,6 @@ export default {
 
 
 <style lang="scss" scoped>
-
-
 .apartments-list {
     display: flex;
     flex-direction: column;

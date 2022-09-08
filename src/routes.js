@@ -45,6 +45,7 @@ import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 import Documentation from "@/views/Documentation/documentation";
+import Checkout from "@/views/Checkout";
 
 const routes = [
     {
@@ -81,6 +82,12 @@ const routes = [
                 path: "/login",
                 name: "login",
                 component: Auth,
+            },
+
+            {
+                path: '/checkout/:apartments*',
+                name: 'checkout',
+                component: Checkout
             },
 
             /*
@@ -394,6 +401,7 @@ const routes = [
                 path: '/documentation/icons',
                 name: 'icons',
                 component: () => import('@/views/Documentation/icons')
+
             },
             {
                 path: '/documentation/sidebar',

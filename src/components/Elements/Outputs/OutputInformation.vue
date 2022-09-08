@@ -34,11 +34,11 @@ export default {
   name: "OutputInformation",
   props: {
     property: {
-      type: String,
+      type: [String, Number],
       required: true
     },
     value: {
-      type: String,
+      type: [String, Number],
       required: true
     },
     translate: {

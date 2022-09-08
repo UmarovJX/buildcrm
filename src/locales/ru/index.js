@@ -106,7 +106,7 @@ export default {
             update_comments: 'Право на редактирования комментов',
             delete_comments: 'Право на удаления комментов',
             create_comments: 'Право на создания комментов',
-            read_comments: 'Право просмотра комментов'
+            read_comments: 'Право просмотра комментов',
         },
         users: {
             watch_users: 'Право просмотра списка пользователей',
@@ -226,6 +226,7 @@ export default {
     initial_payment: 'Первоначальный',
     monthly_pay: 'Ежемесячный',
     sum_text: 'В суммах',
+    sum: 'Сумма',
     usd_text: 'В долларах',
     text: 'Текст',
     apartments_count: "Количество квартир",
@@ -262,11 +263,12 @@ export default {
     phone: "Номер телефона",
     other_phone: "Дополнительный номер телефона",
     extra: "дополнительный",
-    client_type: "тип клиента",
+    client_type: "Тип клиента",
     birth_day: "Дата рождения",
     series: 'СЕРИЯ',
     given: 'ВЫДАН',
     given_date: 'ДАТА ВЫДАЧИ',
+    executor: "Исполнитель",
     company: 'КОМПАНИЯ',
     agent: 'ПРЕДСТАВИТЕЛЬ',
     pc: "Р/С",
@@ -305,6 +307,7 @@ export default {
     selected_variant: "Выбранный вариант оплаты",
     other_variant: 'Другие варианты оплат',
     contract_number_or_full_name: 'Номер договора или ФИО',
+    activity_type_full_name: "ФИО или тип активности",
     base_price_from: 'Сумма (от)',
     base_price_to: 'Сумма (до)',
     client: 'Клиент',
@@ -323,6 +326,7 @@ export default {
     date_of_the_agreement: 'Дата составления',
     agreement_number: 'Номер соглашения',
     reason_for_reissuing: 'Причина переоформлении',
+    apply: "Qo'llash",
 
     monday: 'Понедельник',
     tuesday: 'Вторник',
@@ -492,11 +496,26 @@ export default {
             object: 'Объект',
             date: 'Дата'
         },
+        activity_log: {
+            reissue: "в переоформление",
+            comments: "в комментарие",
+            payments_histories: "в историе оплаты",
+            activity_type: "Тип активности",
+            orders: "в договоре",
+            edited_file: "Изменённый файл",
+            actions: {
+                deleted: "Удаление",
+                reissue: "Переоформление",
+                created: "Создание",
+                edited: "Редактирование",
+                updated: "Редактирование",
+            }
+        },
 
         status: {
             waiting: 'На оплате',
             booked: 'Забронирован',
-            sold: 'На оплате',
+            sold: 'Продан',
             closed: 'Закрыт',
             contract: 'Оформлен'
         },
@@ -620,6 +639,8 @@ export default {
         },
 
         admin: "Администратор", manager: "Менеджер", accountant: "Бухгалтер",
+        executor: "Исполнитель",
+        sales_department: "Отдел продаж", security_manager: "Менеджер по безопасности"
     },
 
     clients: {
@@ -690,6 +711,8 @@ export default {
             closed: 'Закрыто',
             available: 'Свободно',
             unavailable: 'Hе продается',
+            decorated: "Оформлено",
+            not_available: "Недоступно"
         },
 
         list: {

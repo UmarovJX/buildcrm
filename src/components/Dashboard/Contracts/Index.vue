@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <base-bread-crumb
         :active-content="activeContent"
     >
@@ -193,7 +193,7 @@
         </div>
       </template>
     </b-overlay>
-  </main>
+  </div>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
-  <main>
-    <div class="app-content">
+  <div>
+    <div >
       <div
           class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
       >
@@ -526,7 +526,7 @@
           @savePlan="savePlan"
       ></type-plan-create>
     </div>
-  </main>
+  </div>
 </template>
 
 <script>

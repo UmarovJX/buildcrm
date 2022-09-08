@@ -1,5 +1,5 @@
 <template>
-  <main class="search__content">
+  <div class="search__content">
     <div class="search__content-input">
       <div @click="focusOnSearchInput" class="search__content-input-icon">
         <base-search-icon/>
@@ -143,7 +143,7 @@
         </div>
       </div>
     </b-modal>
-  </main>
+  </div>
 </template>
 
 <script>
@@ -344,8 +344,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .search__content {
+  padding-left: 0!important;
   margin-top: 2rem;
   margin-bottom: 1rem;
+  margin-left: 0!important;
   width: 100%;
   display: flex;
 

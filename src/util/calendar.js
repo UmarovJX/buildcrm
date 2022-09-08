@@ -26,7 +26,14 @@ export function dateConvertor(date) {
     return new Date(date)
 }
 
-export function dateProperties(date) {
+export function dateProperties(point, type = 'date') {
+    let date
+    if (type === 'date') {
+        date = point
+    } else if (type === 'string') {
+        date = new Date(point)
+    }
+
     const time = date.getTime()
     const dayOfWeek = date.getDay()
     const dayOfMonth = date.getDate()
@@ -34,8 +41,22 @@ export function dateProperties(date) {
     const year = date.getFullYear()
     const ymd = formatDateToYMD(date)
     const starter = formatDateToYMD(new Date(year, month, 1))
+    const lastDayOfMonth = new Date(year, month + 1, 0)
+    const lastDateOfMonth = lastDayOfMonth.getDate()
+    const isLastDayOfMonth = lastDateOfMonth === dayOfMonth
+    const nextMonthOfDate = date.setMonth(date.getMonth() + 1)
     return {
-        time, dayOfWeek, dayOfMonth, month, year, ymd, starter
+        ymd,
+        year,
+        time,
+        month,
+        starter,
+        dayOfWeek,
+        dayOfMonth,
+        lastDayOfMonth,
+        lastDateOfMonth,
+        nextMonthOfDate,
+        isLastDayOfMonth,
     }
 }
 

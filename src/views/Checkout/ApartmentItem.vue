@@ -6,33 +6,33 @@
         <div class="apartment-card__body">
             <div class="apartment-card__info">
                 <div class="apartment-item">
-      <span class="apartment-label">
-        {{ $t("apartments.view.number") }}
-      </span>
+                    <p class="apartment-label">
+                        {{ $t("apartments.view.number") }}
+                    </p>
                     <p class="apartment-value">
                         {{ apartment.number }}
                     </p>
                 </div>
-                <div class="apartment-item">
-      <span class="apartment-label">
-       {{ $t("completion_date") }}
-      </span>
+                <div class="apartment-item" v-if="apartment.building.build_date">
+                    <p class="apartment-label">
+                        {{ $t("completion_date") }}
+                    </p>
                     <p class="apartment-value">
                         {{ momentQuarter(apartment.building.build_date) }}
                     </p>
                 </div>
                 <div class="apartment-item">
-          <span class="apartment-label">
-        {{ $t('plan_area') }}
-      </span>
+                    <p class="apartment-label">
+                        {{ $t('plan_area') }}
+                    </p>
                     <p class="apartment-value">
                         {{ apartment.plan.area }} м²
                     </p>
                 </div>
                 <div class="apartment-item">
-           <span class="apartment-label">
-        {{ $t("apartments.list.balcony") }}
-      </span>
+                    <p class="apartment-label">
+                        {{ $t("apartments.list.balcony") }}
+                    </p>
                     <p class="apartment-value">
                         <template v-if="apartment.plan.balcony">
                             {{ apartment.plan.balcony_area }} м²
@@ -41,25 +41,25 @@
                     </p>
                 </div>
                 <div class="apartment-item">
-                <span class="apartment-label">
-                  {{ $t("apartments.view.rooms") }}
-                </span>
+                    <p class="apartment-label">
+                        {{ $t("apartments.view.rooms") }}
+                    </p>
                     <p class="apartment-value">
                         {{ apartment.rooms }}
                     </p>
                 </div>
                 <div class="apartment-item">
-                  <span class="apartment-label">
-                   {{ $t("apartments.view.floor") }}
-                  </span>
+                    <p class="apartment-label">
+                        {{ $t("apartments.view.floor") }}
+                    </p>
                     <p class="apartment-value">
                         {{ apartment.floor }}
                     </p>
                 </div>
                 <div class="apartment-item">
-        <span class="apartment-label">
-          {{ $t("apartments.view.number_of_blocks") }}
-        </span>
+                    <p class="apartment-label">
+                        {{ $t("apartments.view.number_of_blocks") }}
+                    </p>
                     <p class="apartment-value">
                         <!--          {{ apartment.block }}-->
                     </p>
@@ -67,14 +67,15 @@
             </div>
             <!--  INPUT    -->
             <div class="apartment-card__calc">
-                <b-form-checkbox
-                    :name="apartment.id"
-                    v-model="item.other_price"
-                    @input="mutateOtherPrice"
-                >
-                    Другая цена
-                </b-form-checkbox>
-                <template v-if="item.other_price">
+                <!--        <b-form-checkbox-->
+                <!--            :name="apartment.id"-->
+                <!--            v-model="item.other_price"-->
+                <!--            @input="mutateOtherPrice"-->
+                <!--        >-->
+                <!--          Другая цена-->
+                <!--        </b-form-checkbox>-->
+                <template v-if="otherPrice">
+                    <p>Другая цена</p>
                     <base-price-input
                         ref="base_price"
                         :label="true"
@@ -83,7 +84,7 @@
                         :permission-change="true"
                         :value="item.price"
                         v-model="item.price"
-                        @change="mutateTotalPriceInput"
+                        @input="mutateTotalPriceInput"
                         placeholder="Начальная цена"
                         class="base-price-input"
                     />
@@ -128,17 +129,17 @@
                         />
                     </div>
                     <div class="apartment-item">
-                    <span class="apartment-label">
-                     Начальная цена
-                    </span>
+                        <p class="apartment-label">
+                            Начальная цена
+                        </p>
                         <p class="apartment-value">
                             {{ totalPrice }}
                         </p>
                     </div>
                     <div class="apartment-item">
-                    <span class="apartment-label">
-                     Цена за М2
-                    </span>
+                        <p class="apartment-label">
+                            Цена за М2
+                        </p>
                         <p class="apartment-value">
                             {{ pricePerSquare }}
                         </p>
@@ -149,14 +150,12 @@
         </div>
 
         <div v-if="removeBtn" class="apartment-card__clear">
-            <base-button text="Убрать квартиру">
+            <base-button @click="deleteApartment" text="Убрать квартиру">
                 <template #left-icon>
                     <BaseDeleteIcon fill="var(--violet-600)"/>
                 </template>
             </base-button>
         </div>
-
-
     </div>
 </template>
 
@@ -165,6 +164,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import {formatToPrice} from "@/util/reusable";
+import {mapActions} from "vuex";
 
 export default {
     name: "ApartmentItem",
@@ -181,6 +181,10 @@ export default {
         removeBtn: {
             type: Boolean,
             default: false
+        },
+        otherPrice: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -191,8 +195,7 @@ export default {
                 price_m2: price_m2.toFixed(2),
                 area: plan.area,
                 total_discount: 0,
-                discount_per_m2: 0,
-                other_price: false,
+                discount_per_m2: 0
             }
         }
     },
@@ -215,6 +218,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions('checkout', {
+            removeApartment: 'removeApartment'
+        }),
         formatToPrice,
         momentQuarter(val) {
             return this.$moment(val).quarter()
@@ -224,6 +230,10 @@ export default {
         },
         handleUpdate(item) {
             this.$emit('update', {...item, id: this.apartment.id})
+        },
+        deleteApartment() {
+            this.$emit('remove-item', this.apartment)
+
         },
         mutateOtherPrice() {
             const {price, price_m2} = this.apartment

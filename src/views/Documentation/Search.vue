@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <main class="search">
     <DocHeader title="search"/>
     <div class="search-content">
       <div class="search-content-item">
@@ -15,7 +15,7 @@
         <BaseSearchInput value="Введенные слова для поиска"/>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 <script>
 

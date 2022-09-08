@@ -288,123 +288,121 @@
 
 <!--</style>-->
 <template>
-    <main class="main__content">
-        <div class="app-content">
-            <div
-                class="
+    <div>
+        <div
+            class="
           d-flex
           justify-content-end
           align-items-center
           flex-md-row flex-column
         "
+        >
+            <!--                <div class="d-flex align-items-center">-->
+            <!--                    <BaseSearchInput class="w-100" :placeholder="$t('users.placeholder')"/>-->
+            <!--                    <base-button-->
+            <!--                        v-if="getPermission.users && getPermission.users.create"-->
+            <!--                        design="violet-gradient"-->
+            <!--                        :text="$t('add')"-->
+            <!--                        v-b-modal.modal-create-->
+            <!--                        class="ml-4"-->
+            <!--                    >-->
+            <!--                        <template #left-icon>-->
+            <!--                            <i class="fal fa-plus mr-2"></i>-->
+            <!--                        </template>-->
+            <!--                    </base-button>-->
+            <!--                </div>div-->
+
+
+            <base-button
+                v-if="createPermission"
+                design="violet-gradient"
+                @click="$router.push({name: 'roles-store'})"
+                :text="$t('add')"
+                class="ml-4"
             >
-                <!--                <div class="d-flex align-items-center">-->
-                <!--                    <BaseSearchInput class="w-100" :placeholder="$t('users.placeholder')"/>-->
-                <!--                    <base-button-->
-                <!--                        v-if="getPermission.users && getPermission.users.create"-->
-                <!--                        design="violet-gradient"-->
-                <!--                        :text="$t('add')"-->
-                <!--                        v-b-modal.modal-create-->
-                <!--                        class="ml-4"-->
-                <!--                    >-->
-                <!--                        <template #left-icon>-->
-                <!--                            <i class="fal fa-plus mr-2"></i>-->
-                <!--                        </template>-->
-                <!--                    </base-button>-->
-                <!--                </div>div-->
+                <template #left-icon>
+                    <BasePlusIcon fill="var(--white)"/>
+                </template>
+            </base-button>
+        </div>
 
-
-                <base-button
-                    v-if="createPermission"
-                    design="violet-gradient"
-                    @click="$router.push({name: 'roles-store'})"
-                    :text="$t('add')"
-                    class="ml-4"
-                >
-                    <template #left-icon>
-                        <BasePlusIcon fill="var(--white)"/>
-                    </template>
-                </base-button>
-            </div>
-
-            <div class="">
-                <b-table
-                    sticky-header
-                    borderless
-                    responsive
-                    :items="getRoles"
-                    :fields="fields"
-                    :busy="getLoading"
-                    show-empty
-                    :sort-by.sync="sortBy"
-                    :sort-desc.sync="sortDesc"
-                    sort-icon-left
-                    class="custom-table"
-                    :empty-text="$t('no_data')"
-                >
-                    <template #empty="scope" class="text-center">
+        <div class="">
+            <b-table
+                sticky-header
+                borderless
+                responsive
+                :items="getRoles"
+                :fields="fields"
+                :busy="getLoading"
+                show-empty
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                sort-icon-left
+                class="custom-table"
+                :empty-text="$t('no_data')"
+            >
+                <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">
               {{ scope.emptyText }}</span>
-                    </template>
+                </template>
 
-                    <template #table-busy>
-                        <div class="d-flex justify-content-center w-100">
-                            <div class="lds-ellipsis">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
+                <template #table-busy>
+                    <div class="d-flex justify-content-center w-100">
+                        <div class="lds-ellipsis">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
                         </div>
-                    </template>
+                    </div>
+                </template>
 
-                    <template #cell(name)="data">
-                        {{ getName(data.item.name) }}
-                    </template>
+                <template #cell(name)="data">
+                    {{ getName(data.item.name) }}
+                </template>
 
-                    <template #cell(actions)="data">
-                        <div class="float-right">
-                            <div
-                                class="dropdown my-dropdown dropleft"
-                                v-if="data.item.id !== 1 && (editPermission || deletePermission)"
+                <template #cell(actions)="data">
+                    <div class="float-right">
+                        <div
+                            class="dropdown my-dropdown dropleft"
+                            v-if="data.item.id !== 1 && (editPermission || deletePermission)"
+                        >
+                            <button
+                                type="button"
+                                class="dropdown-toggle"
+                                data-toggle="dropdown"
                             >
-                                <button
-                                    type="button"
-                                    class="dropdown-toggle"
-                                    data-toggle="dropdown"
-                                >
-                                    <i class="far fa-ellipsis-h"></i>
-                                </button>
+                                <i class="far fa-ellipsis-h"></i>
+                            </button>
 
-                                <div
-                                    class="dropdown-menu"
-                                    v-if="editPermission || deletePermission"
+                            <div
+                                class="dropdown-menu"
+                                v-if="editPermission || deletePermission"
+                            >
+                                <router-link
+                                    :to="{name: 'roles-update', params: {id: data.item.id}}"
+                                    v-if="data.item.id !== 1 && editPermission"
+                                    :class="'dropdown-item dropdown-item--inside'"
                                 >
-                                    <router-link
-                                        :to="{name: 'roles-update', params: {id: data.item.id}}"
-                                        v-if="data.item.id !== 1 && editPermission"
-                                        :class="'dropdown-item dropdown-item--inside'"
-                                    >
-                                        <i class="fas fa-pen"></i>
-                                        {{ $t("edit") }}
-                                    </router-link>
+                                    <i class="fas fa-pen"></i>
+                                    {{ $t("edit") }}
+                                </router-link>
 
-                                    <a
-                                        class="dropdown-item dropdown-item--inside"
-                                        v-if="data.item.id !== 1 &&  deletePermission"
-                                        @click="deleteRole(data.item.id)"
-                                        href="#"
-                                    >
-                                        <i class="far fa-trash"></i> {{ $t("delete") }}
-                                    </a>
-                                </div>
+                                <a
+                                    class="dropdown-item dropdown-item--inside"
+                                    v-if="data.item.id !== 1 &&  deletePermission"
+                                    @click="deleteRole(data.item.id)"
+                                    href="#"
+                                >
+                                    <i class="far fa-trash"></i> {{ $t("delete") }}
+                                </a>
                             </div>
                         </div>
-                    </template>
-                </b-table>
-            </div>
+                    </div>
+                </template>
+            </b-table>
         </div>
-    </main>
+    </div>
 </template>
 
 <script>

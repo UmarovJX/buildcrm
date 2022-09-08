@@ -101,7 +101,6 @@ export default {
 
 <style lang="scss" scoped>
 .app-header {
-  margin: 3rem;
   font-family: Inter, sans-serif;
 
   &-back-button {

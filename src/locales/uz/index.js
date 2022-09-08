@@ -84,6 +84,7 @@ export default {
             client_type: 'Mijoz turini o\'zgartirish huquqi (\'Mijoz haqida batafsil\' qismida)',
             watch_branch_deals: 'Filialning barcha shartnomalarini ko\'rish huquqi (filial ish yurituvchisi)',
             import: 'To\'lovlarni yuklab olish huquqi',
+            executor: "Ijro etuvchi",
             list: 'To\'lovlarni ko\'rish huquqi',
             change_date_deal: 'Shartnoma sanasini o\'zgartirishga ruxsat berish',
             edit_monthly_payment: 'Oylik toʻlovlarni tahrirlashga ruxsat berish',
@@ -105,7 +106,7 @@ export default {
             update_comments: 'Izohlarni tahrirlash huquqi',
             delete_comments: 'Izohlarni o\'chirish huquqi',
             create_comments: 'Izohlarni yaratish huquqi',
-            read_comments: 'Izohlarni ko\'rish huquqi'
+            read_comments: 'Izohlarni ko\'rish huquqi',
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
@@ -161,9 +162,11 @@ export default {
         validation_password: 'Parol kamida 8 ta harf yoki raqamlardan iborat bo’lishi kerak!',
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
-
-    apartment: "Xonadon",
     xonsaroy: 'Xonsaroy',
+    installment: "Bo'lib to'lash rejasi",
+    prepayment: "Oldindan to'lov",
+    discount_per_m2: 'm2 uchun chegirma',
+    enter_discount: "To'lov turini tanlang",
     address_office: 'Toshkent shahri, Yunusobod tumani, Yangi shahar ko‘chasi, 64A-uy',
     motto: 'Orzular sari ishonchli qadam!',
     quarter: 'chorak',
@@ -241,6 +244,7 @@ export default {
     deactivate: "To'xtatish",
     monthly_payment: "Oylik to'lov",
     sum_text: "So'm",
+    sum: "So'm",
     usd_text: 'Usd',
     text: 'Matn',
     apartments_count: "Xonadonlar soni",
@@ -319,6 +323,7 @@ export default {
     selected_variant: "Tanlangan to'lov turi",
     other_variant: "Boshqa to'lov turlari",
     contract_number_or_full_name: 'Shartnoma raqami yoki FIO',
+    activity_type_full_name: "FIO yoki kiritilgan o'zgarish turi",
     base_price_from: "So`m (dan)",
     base_price_to: 'So`m (gacha)',
     client: 'Foydalanuvchi',
@@ -336,6 +341,7 @@ export default {
     details_of_the_agreement: 'Kelishuv tafsilotlari',
     date_of_the_agreement: 'Kelishuv sanasi',
     reason_for_reissuing: 'Qayta rasmiylashtirish sababi',
+    apply: 'Применить',
     agreement_number: 'Shartnoma raqami',
 
     monday: 'Dushanba',
@@ -500,7 +506,20 @@ export default {
         edit_note: 'Eslatmani tahrirlash',
         note_text: 'Eslatma matni',
         individual: 'individual',
-
+        activity_log: {
+            reissue: "Qayta tashkillashtirish o'zgarishlar kiritlgan",
+            comments: "Izohlarda o'zgarish kiritilgan",
+            payments_histories: "To'lovlar tarixida ozgarish kiritilgan",
+            activity_type: "O'zgarish turi",
+            attached_files: "Biriktirilgan fayllar",
+            actions: {
+                deleted: "O'chirilgan",
+                reissue: "Qayta tashkillashtirilgan",
+                created: "Yaratilgan",
+                edited: "Tahrirlangan",
+                updated: "Tahrirlangan",
+            }
+        },
         table: {
             contract: 'Shartnoma',
             client: 'Foydalanuvchi',
@@ -516,7 +535,7 @@ export default {
             booked: 'Band qilingan',
             sold: "To'lovda",
             closed: 'Yopilgan',
-            contract: 'Sotilgan'
+            contract: 'Sotilgan',
         },
 
         view: {
@@ -638,6 +657,8 @@ export default {
         },
 
         admin: "Administrator", manager: "Menedjer", accountant: "Xisobchi",
+        executor: "Ijro etuvchi",
+        sales_department: "Savdo rahbariyati", security_manager: "Xavfsizlik boshlig'i"
     },
 
     companies: {
@@ -695,6 +716,8 @@ export default {
             available: 'Sotuvda',
             unavailable: 'Sotilmaydi',
             hold: 'Band qilinmoqda',
+            not_available: "Sotuvda emas",
+            decorated: "Bezatilgan",
         },
 
         list: {
@@ -828,6 +851,7 @@ export default {
         no_img: "(xonadon rejasi mavjud emas)",
         yes_img: "(xonadon rejasi mavjud)",
         plan: "Xonadon rejasi",
+        floor: 'Qavat',
         plans: "Barcha xonadon rejalari",
         list: "Xonadon rejalari ro'yxati",
         plan_required: "Xonadon loyihasini tanlashingiz shart",
@@ -935,7 +959,9 @@ export default {
                 balcony: "Balkoni bormi?",
                 balcony_area: "Balkon maydoni",
                 balcony_paid: "Balkon pullimi?",
-                add: 'Xonadon rejasini qo\'shish'
+                add: 'Xonadon rejasini qo\'shish',
+                search: 'Xonadon rejasi nomi',
+                add_image: 'Rasm qo\'shish',
             },
 
             apartments: "Xonadonlar",

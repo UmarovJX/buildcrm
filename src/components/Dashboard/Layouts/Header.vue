@@ -69,6 +69,7 @@
                     <theme-button :theme="theme"/>
                 </div>
 
+
                 <div class="dropdown my-dropdown dropdown-user dropleft">
                     <button
                         type="button"
@@ -195,11 +196,14 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 import ThemeButton from "@/components/ThemeButton.vue";
 import GeneralPermission from "@/permission/general";
 import api from "@/services/api";
-
+// import BaseAvatar from "@/components/Reusable/BaseAvatar";
 
 export default {
     name: 'Header',
-    components: {ThemeButton},
+    components: {
+        ThemeButton,
+        // BaseAvatar
+    },
     props: {
         theme: {
             type: String,

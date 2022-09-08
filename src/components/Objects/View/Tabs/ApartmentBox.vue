@@ -7,7 +7,7 @@
           </p>
           <img v-if="apartment.is_promo" src="../../../../assets/icons/bonuses.svg" alt="">
         </div>
-        <p v-if="statusList[apartment.status]" class="apartment-box-content">{{ statusList[apartment.status].text }}</p>
+        <p v-if="statusList[apartment.status]" class="apartment-box-content">{{ $t(statusList[apartment.status].text) }}</p>
         <p v-else class="apartment-box-content">{{ apartment.cost }}</p>
         <div class="d-flex apartment-box-footer">
           <p>{{ apartment.surface }} M<sup>2</sup></p>
@@ -30,19 +30,19 @@ export default {
     return {
       statusList:{
         booked: {
-          text: 'Забронировано',
+          text: 'apartments.status.booked',
           class: 'apartment-box-booked'
         },
         sold: {
-          text: 'Продано',
+          text: 'apartments.status.sold',
           class: 'apartment-box-sold'
         },
         decorated: {
-          text: 'Оформлено',
+          text: 'apartments.status.decorated',
           class: 'apartment-box-decorated'
         },
         not_available: {
-          text: 'Недоступно',
+          text: 'apartments.status.not_available',
           class: 'apartment-box-not-available'
         }
       },

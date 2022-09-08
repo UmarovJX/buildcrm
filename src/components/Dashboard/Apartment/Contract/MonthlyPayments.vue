@@ -344,7 +344,6 @@ export default {
       getTotal(this.apartments, this.contract)
       getPrepay(this.apartments, this.contract)
       editedCreditMonths(this.apartments, this.contract)
-      console.log('lll')
     },
 
     editInitialPayment(index) {

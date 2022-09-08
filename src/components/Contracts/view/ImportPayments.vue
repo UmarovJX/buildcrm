@@ -1,5 +1,5 @@
 <template>
-  <main class="main__class">
+  <div class="main__class">
     <!--  HEADER NAVIGATION  -->
     <div v-if="haveConstructorOrder" class="navigation__content">
       <span class="go__back" @click="backNavigation">
@@ -200,7 +200,7 @@
         </template>
       </b-table>
     </div>
-  </main>
+  </div>
 </template>
 
 <script>

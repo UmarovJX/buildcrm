@@ -1,7 +1,7 @@
 <template>
-  <main>
+  <div>
     <canvas ref="canvas"></canvas>
-  </main>
+  </div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
 <!--    <div class="d-flex align-items-center">-->
 <!--        <span class="go__back" @click="backNavigation">-->
 <!--          <base-arrow-left :width="32" :height="32"></base-arrow-left>-->
@@ -74,7 +74,7 @@
         </div>
       </template>
     </b-overlay>
-  </main>
+  </div>
 </template>
 
 <script>
