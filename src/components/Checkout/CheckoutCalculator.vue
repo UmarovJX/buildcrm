@@ -138,7 +138,6 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {formatToPrice} from "@/util/reusable";
 import {mapActions, mapMutations, mapState} from 'vuex'
-
 export default {
   name: "CheckoutCalculator",
   components: {
@@ -178,7 +177,8 @@ export default {
     ...mapActions('checkout', {
       changeDiscount: 'changeDiscount',
       changePaymentDate: 'changePaymentDate',
-      changeFirstPaymentDate: 'changeFirstPaymentDate'
+      changeFirstPaymentDate: 'changeFirstPaymentDate',
+      changePrepay: 'changePrepay'
     }),
     prettier: formatToPrice,
     mutateInitialPrice() {
@@ -191,7 +191,7 @@ export default {
     },
     mutatePrepayment() {
       this.editState('prepayment')
-      this.update()
+      this.changePrepay(this.calc.prepay)
     },
     updateDiscount(id) {
       const currentDiscount = this.paymentOptions.find(pmOp => pmOp.id === id)

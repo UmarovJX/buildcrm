@@ -13,7 +13,7 @@
             {{ apartment.number }}
           </p>
         </div>
-        <div class="apartment-item">
+        <div class="apartment-item" v-if="apartment.building.build_date">
           <p class="apartment-label">
             {{ $t("completion_date") }}
           </p>
@@ -84,7 +84,7 @@
               :permission-change="true"
               :value="item.price"
               v-model="item.price"
-              @change="mutateTotalPriceInput"
+              @input="mutateTotalPriceInput"
               placeholder="Начальная цена"
               class="base-price-input"
           />
@@ -150,7 +150,7 @@
     </div>
 
     <div v-if="removeBtn" class="apartment-card__clear">
-      <base-button text="Убрать квартиру">
+      <base-button @click="deleteApartment" text="Убрать квартиру">
         <template #left-icon>
           <BaseDeleteIcon fill="var(--violet-600)"/>
         </template>
@@ -164,6 +164,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import {formatToPrice} from "@/util/reusable";
+import {mapActions} from "vuex";
 
 export default {
   name: "ApartmentItem",
@@ -217,6 +218,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions('checkout', {
+      removeApartment: 'removeApartment'
+    }),
     formatToPrice,
     momentQuarter(val) {
       return this.$moment(val).quarter()
@@ -226,6 +230,9 @@ export default {
     },
     handleUpdate(item) {
       this.$emit('update', {...item, id: this.apartment.id})
+    },
+    deleteApartment() {
+      this.removeApartment(this.apartment)
     },
     mutateOtherPrice() {
       const {price, price_m2} = this.apartment
@@ -249,7 +256,6 @@ export default {
       this.changeDiscountPerSquare(discountPerSquare)
     },
     changePricePerSquare(pricePerSquare) {
-      console.log(pricePerSquare)
       this.item.price_m2 = this.getFixedAmount(pricePerSquare)
     },
     changeTotalPrice(totalPrice) {

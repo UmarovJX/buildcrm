@@ -42,6 +42,7 @@
               :order="order"
               :client-data="client"
               @set-client="setClient"
+              @change-contract-number="setNewContractNumber"
           />
 
         </b-tab>
@@ -147,6 +148,7 @@ import CountDown from "@/components/Reusable/CountDown";
 import DetailsContract from "@/views/Checkout/DetailsContract";
 import PaymentMonths from "@/views/Checkout/PaymentMonths";
 import {mapActions, mapGetters, mapState} from 'vuex'
+import {dateProperties} from "@/util/calendar";
 
 export default {
   name: "Checkout",
@@ -222,6 +224,9 @@ export default {
       expiry_at: 'expiry_at',
       uuid: 'uuid',
       order: 'order',
+      initial_payments: 'initial_payments',
+      credit_months: 'credit_months',
+      comment: 'comment'
     }),
     ...mapGetters('checkout', {
       otherPrice: 'isDiscountOtherType'
@@ -381,6 +386,80 @@ export default {
         this.loading = false;
       }
     },
+    setNewContractNumber(newNumber) {
+      this.changedContractNumber = true
+      this.newContractNumber = newNumber
+    },
+    async submitConcludeContract() {
+      const {
+        discount,
+        client,
+        credit_months,
+        initial_payments,
+        calc, edit,
+        comment,
+        order,
+        apartments,
+        changedContractNumber,
+        newContractNumber
+      } = this
+
+      const form = new FormData()
+      form.append('discount_id', discount.id)
+      form.append('type_client', client.friends)
+      form.append('client_id', client.id)
+
+      for (let i = 0; i < credit_months.length; i++) {
+        const p = credit_months[i]
+        const {ymd} = dateProperties(p.month, 'string')
+        form.append(`monthly[${i}][date]`, ymd)
+        form.append(`monthly[${i}][amount]`, p.amount)
+        form.append(`monthly[${i}][edited]`, (+p.edit).toString())
+      }
+
+      for (let i = 0; i < initial_payments.length; i++) {
+        const p = initial_payments[i]
+        const {ymd} = dateProperties(p.month, 'string')
+        form.append(`initial_payments[${i}][date]`, ymd)
+        form.append(`initial_payments[${i}][amount]`, p.amount)
+        form.append(`initial_payments[${i}][edited]`, (+p.edit).toString())
+      }
+
+      if (edit.prepay) {
+        form.append('prepay_edited', calc.prepay)
+      }
+
+      form.append('comment', comment)
+      form.append('months', calc.monthly_payment_period)
+      form.append('first_payment_date', calc.first_payment_date)
+      form.append('discount_amount', discount.amount)
+
+      if (discount.id === 'other') {
+        for (let i = 0; i < apartments.length; i++) {
+          form.append(`apartments[${i}][id]`, apartments[i].id)
+          form.append(`apartments[${i}][price]`, apartments[i].price)
+        }
+      }
+
+      if (client.contract_date) {
+        form.append('contract_date', client.contract_date)
+      }
+
+      if (calc.payment_date) {
+        form.append('payment_date', calc.payment_date)
+      }
+
+      if (changedContractNumber) {
+        form.append('contract_number', newContractNumber)
+      }
+
+      try {
+        const response = await api.orders.reserveApartment(order.uuid, form)
+        console.log(response)
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      }
+    }
     // async getClientDetails() {
     //   const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
     //   await api.contractV2.getUpdateContractView(uuid).then((res) => {

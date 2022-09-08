@@ -49,7 +49,7 @@ import Checkout from "@/views/Checkout";
 
 const routes = [
     {
-        path: '/dashboard',
+        path: '/',
         name: 'app-layout',
         component: AppLayout,
         children: [
@@ -85,6 +85,12 @@ const routes = [
                 path: "/login",
                 name: "login",
                 component: Auth,
+            },
+
+            {
+                path: '/checkout/:apartments*',
+                name: 'checkout',
+                component: Checkout
             },
 
             /*
@@ -407,11 +413,6 @@ const routes = [
                 component: PageNotFound,
             }
         ]
-    },
-    {
-        path: '/checkout',
-        name: 'checkout',
-        component: Checkout
     }
 ]
 
