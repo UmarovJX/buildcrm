@@ -156,6 +156,7 @@ export default {
     of_the_year: 'года',
     no_cancel: "Нет, отменить",
     yes_delete: "Да, удалить",
+    chosen: "Выбрано",
     remove_payment: "Удалить оплату ?",
     deleted: "Удалено",
     successfully: 'Успешно!',

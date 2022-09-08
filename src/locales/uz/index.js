@@ -172,6 +172,7 @@ export default {
     quarter: 'chorak',
     of_the_year: 'yil',
     thank_you: 'Rahmat',
+    chosen: "Tanlandi",
     no_cancel: "Yo'q, bekor qiling",
     yes_delete: "Ha, o'chirilsin",
     remove_payment: "To'lov o'chirilsinmi ?",

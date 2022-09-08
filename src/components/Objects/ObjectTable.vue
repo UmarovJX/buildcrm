@@ -35,15 +35,15 @@
         </template>
         <template #head(check)="data" class="p-0">
           <span @click="() => check_all = !check_all">
-            <base-checkbox/>
+            <base-checkbox ref="checkbox"/>
           </span>
         </template>
         <template #cell(check)="data" class="p-0">
           <span @click="checked(data)" v-if="check_all">
-            <base-checkbox checked/>
+            <base-checkbox checked ref="checkbox"/>
           </span>
           <span v-else @click="checked(data)">
-            <base-checkbox/>
+            <base-checkbox ref="checkbox"/>
           </span>
         </template>
         <template #cell(number)="data" class="p-0">
@@ -310,6 +310,7 @@
 
     </div>
 
+    <BaseCheckboxModal @return-checked="returnChecked" :chosen="chosen"/>
 
   </div>
 </template>
@@ -329,6 +330,7 @@ import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
 import EditApartment from "@/components/Dashboard/Apartment/Components/Edit";
 import ApartmentsPermission from "@/permission/apartments";
 import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
+import BaseCheckboxModal from "@/components/Reusable/BaseCheckboxModal";
 // import InfoManager from "@/components/Dashboard/Apartment/InfoManager";
 // import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
 // import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
@@ -336,6 +338,7 @@ import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
 export default {
   name: 'ObjectTable',
   components: {
+    BaseCheckboxModal,
     BaseCheckbox,
     BaseArrowRightIcon,
     BaseArrowLeftIcon,
@@ -378,6 +381,7 @@ export default {
       order_id: 0,
       edit: false,
       check_all: false,
+      chosen: 0,
       fields: [
         {
           key: "check",
@@ -502,11 +506,17 @@ export default {
   },
 
   methods: {
+    returnChecked() {
+      console.log("hello world")
+    },
     limitChanged() {
       this.changeFetchLimit()
     },
     checked(data) {
-      console.log(data);
+      if (this.$refs["checkbox"].checked){
+        this.chosen++;
+        console.log(data);
+      }
     },
     async fetchContractList() {
       this.showLoading = true
