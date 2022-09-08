@@ -213,11 +213,11 @@ export default {
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')
     },
-    changePrepay({state, commit, dispatch}, prepay) {
-        if (!prepay) {
-            commit('deactivateState', 'prepay')
-            commit('setPrepay', state.discount)
-        }
+    changePrepay({dispatch}) {
+        // if (!prepay) {
+        //     commit('deactivateState', 'prepay')
+        //     commit('setPrepay', state.discount)
+        // }
 
         dispatch('calculate')
         dispatch('initialPaymentsSetter')

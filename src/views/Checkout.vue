@@ -123,56 +123,50 @@
 </template>
 
 <script>
-import api from "@/services/api";
 import AppHeader from "@/components/AppHeader";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
-// import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
-// import BaseEditIcon from "@/components/icons/BaseEditIcon";
-// import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-// import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-// import BaseInput from "@/components/Reusable/BaseInput";
-// import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseButton from "@/components/Reusable/BaseButton";
-// import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-// import BaseModal from "@/components/Reusable/BaseModal";
 import ClientInformation from "@/views/Checkout/ClientInformation";
 import ApartmentItem from "@/views/Checkout/ApartmentItem";
 import CheckoutCalculator from "@/components/Checkout/CheckoutCalculator";
 import ErrorNotification from "@/components/Reusable/ErrorNotification";
-// import FlipCountdown from "vue2-flip-countdown";
 import CountDown from "@/components/Reusable/CountDown";
 import DetailsContract from "@/views/Checkout/DetailsContract";
 import PaymentMonths from "@/views/Checkout/PaymentMonths";
 import {mapActions, mapGetters, mapState} from 'vuex'
+import api from "@/services/api";
 import {dateProperties} from "@/util/calendar";
 
 export default {
   name: "Checkout",
   components: {
+    CountDown,
+    AppHeader,
+    BaseButton,
+    BaseRightIcon,
+    ApartmentItem,
+    PaymentMonths,
+    DetailsContract,
     ErrorNotification,
     CheckoutCalculator,
-    ApartmentItem,
     ClientInformation,
-    AppHeader,
-    // BaseInput,
-    // BaseSelect,
-    BaseButton,
-    // BaseModal,
-    // BaseEditIcon,
-    BaseRightIcon,
-    // BaseDatePicker,
-    // OutputInformation,
-    // BaseCircleWrapper,
     BaseArrowRightIcon,
-    // BaseCloseIcon,
-    CountDown,
-    DetailsContract,
-    PaymentMonths,
+  },
+  beforeRouteEnter(to, from, next) {
+    const hasIds = to.params.hasOwnProperty('ids')
+    if (hasIds && to.params.ids) {
+      const {ids} = to.params
+      const allowState = (typeof ids === 'string') || (Array.isArray(ids) && ids.length)
+      if (allowState) {
+        return next()
+      }
+    }
+    next({name: 'not_found'})
   },
   data() {
     return {
-      holdList: ['7d497657-3461-4da9-8c0a-0e0b534880f6', '5a7d2b3e-cada-4041-ad1a-8e4c1b7f0e2e'],
+      holdList: [],
       newContractNumber: '',
       changedContractNumber: false,
       datePickerIconFill: 'var(--violet-600)',
@@ -277,7 +271,21 @@ export default {
     updateItem(item) {
       this.updateApartment(item)
     },
+    setIds() {
+      const ids = this.$route.params
+      if (typeof ids === 'string') {
+        const divideIds = ids.split('/')
+        divideIds.forEach((id) => this.holdList.push(id))
+        return true
+      } else if (Array.isArray(ids) && ids.length) {
+        this.holdList = ids
+        return true
+      }
+      return false
+    },
     async setHoldApartments() {
+      this.setIds()
+      console.log(this.holdList, this.$route)
       try {
         const {data} = await api.orders.holdOrder(this.holdList)
         if (data) {
