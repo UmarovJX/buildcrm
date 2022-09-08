@@ -1,6 +1,6 @@
 <template>
-  <main>
-    <div class="app-content">
+  <div>
+    <div>
       <base-bread-crumb
           :bread-crumbs="breadCrumbs"
           :active-content="activeContent"
@@ -80,7 +80,7 @@
         </div>
       </template>
     </b-overlay>
-  </main>
+  </div>
 </template>
 
 <script>

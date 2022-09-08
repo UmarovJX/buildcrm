@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <div class="app-content apartment-list-filter">
       <base-bread-crumb
           :bread-crumbs="breadCrumbs"
@@ -407,7 +407,7 @@
       </div>
     </div>
     <apartments-booking-modal @set-client-data="bookSelectedApartments"/>
-  </main>
+  </div>
 </template>
 
 <script>

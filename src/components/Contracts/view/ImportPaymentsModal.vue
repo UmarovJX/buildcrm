@@ -14,51 +14,7 @@
     <template #main>
       <p class="instruction">{{ $t('payments.import') }}</p>
 
-      <div class="upload__content">
-        <!--   IF FILE UPLOAD     -->
-        <div class="d-flex justify-content-between w-100 mr-4 ml-4" v-if="excelFile">
-          <div class="d-flex">
-            <span class="xls__logo">.XLS</span>
-            <span class="d-flex flex-column ml-3">
-            <span>{{ excelFile.name }}</span>
-            <span class="mt-1">{{ size }}</span>
-          </span>
-          </div>
-
-          <div class="edit__content">
-            <input
-                type="file"
-                accept=".xlsx, .xls, .csv"
-                name="upload-excel"
-                class="upload__content-input"
-                @change="triggerUploadEvent"
-                ref="file-input"
-            >
-            <base-button text="Заменить" class="edit__upload"/>
-          </div>
-        </div>
-
-        <!--   FILE NOT UPLOAD YET     -->
-        <span v-else class="d-flex justify-content-center align-items-center">
-          <span class="arrow__down">
-            <base-arrow-down-icon :width="56" :height="56" fill="#9CA3AF"/>
-          </span>
-          <span class="max-width-16">
-            {{ $t('payments.drag_file') }}
-            <span class="color-violet-600"> {{ $t('payments.click_file') }}</span>
-          </span>
-        </span>
-
-        <input
-            v-if="!excelFile"
-            type="file"
-            accept=".xlsx, .xls, .csv"
-            name="upload-excel"
-            class="upload__content-input"
-            @change="triggerUploadEvent"
-            ref="file-input"
-        >
-      </div>
+      <FileUploader/>
 
       <base-button @click="downloadTemplate" :text="$t('payments.download_template')" class="download__template"/>
 
@@ -88,18 +44,18 @@
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import readExcelFile from 'read-excel-file'
 import {mapMutations} from "vuex";
 import api from "@/services/api";
+import FileUploader from "@/components/Reusable/FileUploader";
 
 export default {
   name: "ImportPaymentsModal",
   components: {
+    FileUploader,
     BaseModal,
     BaseButton,
     BaseArrowLeftIcon,
-    BaseArrowDownIcon
   },
   props: {
     contract: {

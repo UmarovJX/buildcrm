@@ -19,8 +19,6 @@ class Contract extends Core {
             responseType: 'blob'
         })
     }
-
-
 }
 
 class ContractV2 extends Core {
@@ -38,6 +36,14 @@ class ContractV2 extends Core {
 
     fetchContractView(id) {
         return this.get(`contracts/${id}`)
+    }
+
+    fetchActivityLog(id, params) {
+        return this.get('contracts/' + id + '/logs', {params})
+    }
+
+    fetchActivityLogFilterFields(id) {
+        return this.get('contracts/' + id + '/logs/filter-fields')
     }
 
     getUpdateContractView(id) {

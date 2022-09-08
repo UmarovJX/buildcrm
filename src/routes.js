@@ -44,7 +44,7 @@ import Debtors from "@/views/Debtors/Index"
 import Experiment from "@/views/Experiment";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
-import Documentation from "@/views/documentation";
+import Documentation from "@/views/Documentation/documentation";
 import Checkout from "@/views/Checkout";
 
 const routes = [
@@ -79,7 +79,6 @@ const routes = [
                 name: 'documentation',
                 component: Documentation
             },
-
             {
                 /* LOGIN */
                 path: "/login",
@@ -401,9 +400,80 @@ const routes = [
             },
 
             {
-                path: '/icons',
+                path: '/documentation/icons',
                 name: 'icons',
-                component: () => import('@/views/icons')
+                component: () => import('@/views/Documentation/icons')
+
+            },
+            {
+                path: '/documentation/sidebar',
+                name: 'sidebar',
+                component: () => import('@/views/Documentation/Sidebar')
+            },
+            {
+                path: '/documentation/topbar',
+                name: 'topbar',
+                component: () => import('@/views/Documentation/Topbar')
+            },
+            {
+                path: '/documentation/buttons',
+                name: 'buttons',
+                component: () => import('@/views/Documentation/Buttons')
+            },
+            {
+                path: '/documentation/text-fields',
+                name: 'text-fields',
+                component: () => import('@/views/Documentation/TextFields')
+            },
+            {
+                path: '/documentation/checkbox',
+                name: 'checkbox',
+                component: () => import('@/views/Documentation/Checkbox')
+            },
+            {
+                path: '/documentation/loader',
+                name: 'loader',
+                component: () => import('@/views/Documentation/Loader')
+            },
+            {
+                path: '/documentation/notification',
+                name: 'notification',
+                component: () => import('@/views/Documentation/Notification')
+            },
+            {
+                path: '/documentation/calendar',
+                name: 'calendar',
+                component: () => import('@/views/Documentation/Calendar')
+            },
+            {
+                path: '/documentation/search',
+                name: 'search',
+                component: () => import('@/views/Documentation/Search')
+            },
+            {
+                path: '/documentation/tooltip',
+                name: 'tooltip',
+                component: () => import('@/views/Documentation/Tooltip')
+            },
+            {
+                path: '/documentation/note',
+                name: 'note',
+                component: () => import('@/views/Documentation/Note')
+            },
+            {
+                path: '/documentation/checkmate',
+                name: 'checkmate',
+                component: () => import('@/views/Documentation/Checkmate')
+            },
+            {
+                path: '/documentation/tabs',
+                name: 'tabs',
+                component: () => import('@/views/Documentation/Tabs')
+            },
+            {
+                path: '/documentation/actions',
+                name: 'actions',
+                component: () => import('@/views/Documentation/Actions')
             },
 
             {

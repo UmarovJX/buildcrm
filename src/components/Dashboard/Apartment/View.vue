@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <div v-if="Object.keys(apartment).length" class="app-content print-page">
       <base-bread-crumb
           :bread-crumbs="breadCrumbs"
@@ -554,7 +554,7 @@
         </div>
       </template>
     </b-overlay>
-  </main>
+  </div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <base-bread-crumb
         :bread-crumbs="breadCrumbs"
         :active-content="activeContent"
@@ -32,7 +32,7 @@
 
     <!--  Loading Content  -->
     <base-loading-content :loading="loading"/>
-  </main>
+  </div>
 </template>
 
 <script>
