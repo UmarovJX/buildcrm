@@ -278,7 +278,7 @@ export default {
             order: {},
             showLoading: false,
             activeTab: 'TabPaymentSchedule',
-            tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'ActivityLog', 'TabReContractDetails'],
+            tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'TabReContractDetails'],
             deleteComment: null,
             errors: [],
             types: [],
@@ -325,9 +325,9 @@ export default {
                 {
                     name: this.$t('contract_details'),
                 },
-                {
-                    name: this.$t('contract_log'),
-                },
+                // {
+                //     name: this.$t('contract_log'),
+                // },
                 {
                     name: this.$t('recontract_details'),
                 },
