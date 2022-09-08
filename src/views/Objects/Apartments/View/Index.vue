@@ -399,23 +399,12 @@ export default {
     async orderApartment() {
       this.appLoading = true
       const apartments = [this.apartment.id]
-      await api.orders.holdOrder(apartments)
-          .then((response) => {
-            if (response?.data) {
-              this.$router.push({
-                name: "checkout",
-                params: {
-                  ids: [response.data.uuid, response.data.uuid]
-                }
-              })
-            }
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
-            this.appLoading = false
-          })
+      await this.$router.push({
+        name: "checkout",
+        params: {
+          ids: apartments
+        }
+      })
     },
     continueApartmentOrder() {
       this.$router.push({

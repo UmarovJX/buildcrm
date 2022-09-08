@@ -107,6 +107,17 @@
         <template #tabs-end>
           <b-nav-item role="presentation" href="#">
             <base-button
+                v-if="tabIndex"
+                @click="submitConcludeContract"
+                class="violet-gradient"
+                :text="`${ $t('create_agree') }`"
+            >
+              <template #right-icon>
+                <BaseArrowRightIcon fill="var(--white)"/>
+              </template>
+            </base-button>
+            <base-button
+                v-else
                 @click="changeTab"
                 class="violet-gradient"
                 :text="`${ $t('next') }`"
@@ -119,6 +130,12 @@
         </template>
       </b-tabs>
     </div>
+
+    <success-agree
+        :uuid="order.uuid"
+        :apartments="apartments"
+        :contract="successContract"
+    />
   </div>
 </template>
 
@@ -134,6 +151,7 @@ import ErrorNotification from "@/components/Reusable/ErrorNotification";
 import CountDown from "@/components/Reusable/CountDown";
 import DetailsContract from "@/views/Checkout/DetailsContract";
 import PaymentMonths from "@/views/Checkout/PaymentMonths";
+import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
 import {mapActions, mapGetters, mapState} from 'vuex'
 import api from "@/services/api";
 import {dateProperties} from "@/util/calendar";
@@ -146,6 +164,7 @@ export default {
     BaseButton,
     BaseRightIcon,
     ApartmentItem,
+    SuccessAgree,
     PaymentMonths,
     DetailsContract,
     ErrorNotification,
@@ -167,6 +186,9 @@ export default {
   data() {
     return {
       holdList: [],
+      successContract: {
+        contract: null
+      },
       newContractNumber: '',
       changedContractNumber: false,
       datePickerIconFill: 'var(--violet-600)',
@@ -217,7 +239,8 @@ export default {
       order: 'order',
       initial_payments: 'initial_payments',
       credit_months: 'credit_months',
-      comment: 'comment'
+      comment: 'comment',
+      edit: 'edit'
     }),
     ...mapGetters('checkout', {
       otherPrice: 'isDiscountOtherType'
@@ -260,6 +283,7 @@ export default {
     }
   },
   created() {
+    this.setIds()
     this.setHoldApartments()
   },
   methods: {
@@ -272,20 +296,15 @@ export default {
       this.updateApartment(item)
     },
     setIds() {
-      const ids = this.$route.params
+      const {ids} = this.$route.params
       if (typeof ids === 'string') {
         const divideIds = ids.split('/')
         divideIds.forEach((id) => this.holdList.push(id))
-        return true
       } else if (Array.isArray(ids) && ids.length) {
         this.holdList = ids
-        return true
       }
-      return false
     },
     async setHoldApartments() {
-      this.setIds()
-      console.log(this.holdList, this.$route)
       try {
         const {data} = await api.orders.holdOrder(this.holdList)
         if (data) {
@@ -395,73 +414,91 @@ export default {
       this.newContractNumber = newNumber
     },
     async submitConcludeContract() {
-      const {
-        discount,
-        client,
-        credit_months,
-        initial_payments,
-        calc, edit,
-        comment,
-        order,
-        apartments,
-        changedContractNumber,
-        newContractNumber
-      } = this
+      const agree = await this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text_agree"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes_agree"),
+      })
 
-      const form = new FormData()
-      form.append('discount_id', discount.id)
-      form.append('type_client', client.friends)
-      form.append('client_id', client.id)
+      if (agree.value) {
+        const {
+          discount,
+          client,
+          credit_months,
+          initial_payments,
+          calc, edit,
+          comment,
+          order,
+          apartments,
+          changedContractNumber,
+          newContractNumber,
+        } = this
 
-      for (let i = 0; i < credit_months.length; i++) {
-        const p = credit_months[i]
-        const {ymd} = dateProperties(p.month, 'string')
-        form.append(`monthly[${i}][date]`, ymd)
-        form.append(`monthly[${i}][amount]`, p.amount)
-        form.append(`monthly[${i}][edited]`, (+p.edit).toString())
-      }
+        const form = new FormData()
+        form.append('discount_id', discount.id)
+        form.append('type_client', client.friends)
+        form.append('client_id', client.id)
 
-      for (let i = 0; i < initial_payments.length; i++) {
-        const p = initial_payments[i]
-        const {ymd} = dateProperties(p.month, 'string')
-        form.append(`initial_payments[${i}][date]`, ymd)
-        form.append(`initial_payments[${i}][amount]`, p.amount)
-        form.append(`initial_payments[${i}][edited]`, (+p.edit).toString())
-      }
-
-      if (edit.prepay) {
-        form.append('prepay_edited', calc.prepay)
-      }
-
-      form.append('comment', comment)
-      form.append('months', calc.monthly_payment_period)
-      form.append('first_payment_date', calc.first_payment_date)
-      form.append('discount_amount', discount.amount)
-
-      if (discount.id === 'other') {
-        for (let i = 0; i < apartments.length; i++) {
-          form.append(`apartments[${i}][id]`, apartments[i].id)
-          form.append(`apartments[${i}][price]`, apartments[i].price)
+        if (edit.monthly) {
+          for (let i = 0; i < credit_months.length; i++) {
+            const p = credit_months[i]
+            const {ymd} = dateProperties(p.month, 'string')
+            form.append(`monthly[${i}][date]`, ymd)
+            form.append(`monthly[${i}][amount]`, p.amount)
+            form.append(`monthly[${i}][edited]`, (+p.edit).toString())
+          }
         }
-      }
 
-      if (client.contract_date) {
-        form.append('contract_date', client.contract_date)
-      }
+        if (initial_payments.length > 1) {
+          for (let i = 0; i < initial_payments.length; i++) {
+            const p = initial_payments[i]
+            const {ymd} = dateProperties(p.month, 'string')
+            form.append(`initial_payments[${i}][date]`, ymd)
+            form.append(`initial_payments[${i}][amount]`, p.amount)
+            form.append(`initial_payments[${i}][edited]`, (+p.edit).toString())
+          }
+        }
 
-      if (calc.payment_date) {
-        form.append('payment_date', calc.payment_date)
-      }
+        if (edit.prepay) {
+          form.append('prepay_edited', calc.prepay)
+        }
 
-      if (changedContractNumber) {
-        form.append('contract_number', newContractNumber)
-      }
+        form.append('comment', comment)
+        form.append('months', calc.monthly_payment_period)
+        form.append('first_payment_date', calc.first_payment_date)
+        form.append('discount_amount', discount.amount)
 
-      try {
-        const response = await api.orders.reserveApartment(order.uuid, form)
-        console.log(response)
-      } catch (e) {
-        this.toastedWithErrorCode(e)
+        if (discount.id === 'other') {
+          for (let i = 0; i < apartments.length; i++) {
+            form.append(`apartments[${i}][id]`, apartments[i].id)
+            form.append(`apartments[${i}][price]`, apartments[i].price)
+          }
+        }
+
+        if (client.contract_date) {
+          form.append('contract_date', client.contract_date)
+        }
+
+        if (calc.payment_date) {
+          form.append('payment_date', calc.payment_date)
+        }
+
+        if (changedContractNumber) {
+          form.append('contract_number', newContractNumber)
+        }
+
+        try {
+          const response = await api.orders.reserveApartment(order.uuid, form)
+          this.successContract = response.data
+          this.toasted(response.data.message, "success")
+          this.$bvModal.hide("modal-agree")
+          this.$bvModal.show("modal-success-agree")
+        } catch (e) {
+          this.toastedWithErrorCode(e)
+        }
       }
     }
     // async getClientDetails() {

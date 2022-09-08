@@ -43,6 +43,7 @@
       <template #cell(actions)="data">
         <div class="action-buttons">
           <BaseButton
+              v-if="parseInt(data.index) > 0"
               text=''
               class="violet rounded-circle"
               @click="editSelectedPayment(data.item)"

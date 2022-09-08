@@ -31,7 +31,7 @@
           float-right
         "
       >
-        <button type="button" class="btn btn-default mr-2" @click="resetModal">
+        <button type="button" class="btn btn-default mr-2" @click="goApartment">
           {{ $t("close") }}
         </button>
       </div>
@@ -66,8 +66,13 @@ export default {
       type: Object,
     },
     apartments: {
-      type: Number,
+      type: Array,
+      required: true
     },
+    uuid: {
+      type: String,
+      required: true
+    }
   },
   emits: ['redirect-to-main-page'],
   mounted() {
@@ -75,8 +80,7 @@ export default {
   },
   methods: {
     downloadContractLink() {
-      const {id} = this.$route.params
-      api.contract.downloadContract(id)
+      api.contract.downloadContract(this.uuid)
           .then(({data, headers}) => {
             const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
             const fileURL = window.URL.createObjectURL(new Blob([data]))
@@ -136,7 +140,7 @@ export default {
         });
       } else {
         this.$router.push({
-          name: "apartment-view",
+          name: "apartments",
           params: {object: this.apartments[0].object.id, id: this.$route.params.id},
         });
       }
