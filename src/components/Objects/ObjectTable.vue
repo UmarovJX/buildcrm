@@ -33,10 +33,21 @@
               {{ scope.emptyText }}
             </span>
         </template>
-
+        <template #head(check)="data" class="p-0">
+          <span @click="() => check_all = !check_all">
+            <base-checkbox/>
+          </span>
+        </template>
+        <template #cell(check)="data" class="p-0">
+          <span @click="checked(data)" v-if="check_all">
+            <base-checkbox checked/>
+          </span>
+          <span v-else @click="checked(data)">
+            <base-checkbox/>
+          </span>
+        </template>
         <template #cell(number)="data" class="p-0">
           <div class="d-flex position-relative">
-            <BaseCheckbox/>
             <div v-if="!data.item.is_sold" class="apartments__lock">
               <svg
                   width="16"
@@ -366,10 +377,14 @@ export default {
       apartment_id: 0,
       order_id: 0,
       edit: false,
+      check_all: false,
       fields: [
         {
+          key: "check",
+          item: BaseCheckbox,
+        },
+        {
           key: "number",
-          icon: BaseCheckbox,
           label: this.$t('object.sort.number_flat'),
           sortable: true,
         },
@@ -489,6 +504,9 @@ export default {
   methods: {
     limitChanged() {
       this.changeFetchLimit()
+    },
+    checked(data) {
+      console.log(data);
     },
     async fetchContractList() {
       this.showLoading = true
@@ -740,6 +758,12 @@ export default {
 
 ::v-deep .row__head__bottom-border {
   border-bottom: 2px solid var(--gray-200) !important;
+  th:first-child{
+    input {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
 }
 
 ::v-deep .row__body__bottom-border:not(:last-child) {
