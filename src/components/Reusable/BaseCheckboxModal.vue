@@ -83,7 +83,7 @@ export default {
   }
   .base__button {
     padding: 13px 24px;
-    ont-family: 'Inter', serif;
+    font-family: 'Inter', serif;
     font-weight: 600;
     font-size: 16px;
     line-height: 22px;
