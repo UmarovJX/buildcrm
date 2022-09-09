@@ -107,7 +107,7 @@ export default {
         margin: 3.5rem 0
 
         input
-          border-radius: 2rem
+          border-radius: .5rem
           background-color: var(--gray-100)
           padding: 1rem 1.25rem
           border: none
