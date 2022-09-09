@@ -33,17 +33,20 @@
               {{ scope.emptyText }}
             </span>
         </template>
-        <template #head(check)="data" class="p-0">
-          <span @click="() => check_all = !check_all">
-            <base-checkbox ref="checkbox"/>
+        <template #head(check)="{item}" class="p-0">
+          <span>
+            <base-checkbox
+                :checked="checkAll"
+                @input="chooseAllApartment"
+            />
           </span>
         </template>
         <template #cell(check)="data" class="p-0">
-          <span @click="checked(data)" v-if="check_all">
-            <base-checkbox checked ref="checkbox"/>
-          </span>
-          <span v-else @click="checked(data)">
-            <base-checkbox ref="checkbox"/>
+          <span>
+            <base-checkbox
+                :checked="data.item.checked"
+                @input="activateApartment(data,$event)"
+            />
           </span>
         </template>
         <template #cell(number)="data" class="p-0">
@@ -310,7 +313,7 @@
 
     </div>
 
-    <BaseCheckboxModal @return-checked="returnChecked" :chosen="chosen"/>
+    <BaseCheckboxModal @return-checked="returnChecked" :chosen="checkedApartments.length"/>
 
   </div>
 </template>
@@ -470,6 +473,8 @@ export default {
         confirm: false,
         values: [],
       },
+      checkoutList: [],
+      checkAll: false,
       editPermission: ApartmentsPermission.getApartmentEditPermission(),
       isSoldPermission: ApartmentsPermission.getApartmentIsSoldPermission(),
       viewPermission: ApartmentsPermission.getApartmentViewPermission()
@@ -486,6 +491,10 @@ export default {
     ...mapActions(["fetchApartments", "fetchReserveClient"]),
     hasPermission() {
       return this.editPermission || this.isSoldPermission || this.viewPermission
+    },
+
+    checkedApartments() {
+      return this.checkoutList.filter(ch => ch.checked)
     },
 
     query() {
@@ -506,17 +515,57 @@ export default {
   },
 
   methods: {
+    activateApartment({index, item}, event) {
+      const {current} = this.pagination
+      const {checked} = event.target
+      this.apartments[index].checked = checked
+      if (checked) {
+        this.checkoutList.push({checked, id: item.id, page: current})
+        const allActive = this.apartments.every(a => a.checked === true)
+        if (allActive) {
+          this.checkAll = true
+        }
+      } else {
+        this.checkoutList = this.checkoutList.filter(ch => ch.id !== item.id)
+        if (this.checkAll) {
+          this.checkAll = false
+        }
+      }
+    },
+    chooseAllApartment(event) {
+      const {current} = this.pagination
+      const {checked} = event.target
+      this.checkAll = checked
+      this.apartments = this.apartments.map(a => ({...a, checked}))
+      this.apartments.forEach(a => {
+        const index = this.checkoutList.findIndex(ch => ch.id === a.id)
+        if (a.checked) {
+          if (index === -1) {
+            this.checkoutList.push({checked, id: a.id, page: current})
+          }
+        } else {
+          if (index !== -1) {
+            this.checkoutList.splice(index, 1)
+          }
+        }
+      })
+    },
     returnChecked() {
       console.log("hello world")
     },
     limitChanged() {
       this.changeFetchLimit()
     },
-    checked(data) {
-      if (this.$refs["checkbox"].checked){
-        this.chosen++;
-        console.log(data);
+    checked(data, type) {
+      if (type === "checked_all") {
+        this.chosen = data.length
+        return;
       }
+      if (this.$refs["checkbox"].checked) {
+        this.chosen--;
+        return;
+      }
+      this.chosen++;
     },
     async fetchContractList() {
       this.showLoading = true
@@ -533,12 +582,27 @@ export default {
       })
 
       const {object} = this.$route.params
+      this.checkAll = false
       await api.objectsV2.fetchObjectApartments(object, query)
           .then((response) => {
             this.$emit('counter', response.data.counts)
-            this.apartments = response.data.items
             this.pagination = response.data.pagination
             this.showByValue = response.data.pagination.perPage
+            this.apartments = response.data.items.map((item) => {
+              const isChecked = this.checkoutList.find(ch => ch.id === item.id)
+              if (isChecked) {
+                return {
+                  ...item,
+                  checked: true
+                }
+              } else {
+                return {
+                  ...item,
+                  checked: false
+                }
+              }
+            })
+            this.checkAll = this.apartments.every(apm => apm.checked)
           }).catch((err) => {
             this.toastedWithErrorCode(err)
           })
@@ -768,7 +832,8 @@ export default {
 
 ::v-deep .row__head__bottom-border {
   border-bottom: 2px solid var(--gray-200) !important;
-  th:first-child{
+
+  th:first-child {
     input {
       width: 1rem;
       height: 1rem;

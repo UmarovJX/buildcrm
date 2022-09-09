@@ -1,12 +1,16 @@
 <template>
-  <div class="basket" :class="[chosen?'':'d-none']">
+  <div class="basket">
     <div class="basket-block">
       <base-checkbox disabled checked/>
       <p>
-        {{$t("chosen")}}: {{ chosen }}
+        {{ $t("chosen") }}: {{ chosen }}
       </p>
     </div>
-    <base-button @click="returnChecked" design="violet400" :text="$t('contracts.download')"/>
+    <base-button
+        @click="returnChecked"
+        design="violet400"
+        :text="$t('contracts.download')"
+    />
   </div>
 </template>
 
@@ -52,19 +56,23 @@ export default {
   z-index: 999;
   animation: fade-top .5s linear;
   background-color: var(--violet-600);
+
   &-block {
     display: flex;
     gap: 16px;
     justify-content: center;
     align-items: center;
+
     ::v-deep .base-checkbox > input {
-      background-color: white!important;
+      background-color: white !important;
+
       &::before {
         background: #7C3AED;
         height: 8px;
       }
     }
   }
+
   .violet400 {
     background-color: var(--violet-400);
     color: var(--white);
@@ -81,6 +89,7 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+
   .base__button {
     padding: 13px 24px;
     font-family: 'Inter', serif;
