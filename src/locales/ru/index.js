@@ -181,6 +181,7 @@ export default {
     back: "Назад",
     next: "Продолжить",
     create_agree: "Оформить",
+    create_agree_apartments: "Оформить квартиры",
     save_changes: "Сохранить изменения",
     reason_recontract: 'Причина переоформлении',
     number_agree: "Номер соглошения",

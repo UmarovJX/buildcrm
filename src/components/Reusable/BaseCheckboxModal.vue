@@ -1,5 +1,5 @@
 <template>
-  <div class="basket">
+  <div :class="chosen ? 'basket' : 'd-none'">
     <div class="basket-block">
       <base-checkbox disabled checked/>
       <p>
@@ -7,9 +7,8 @@
       </p>
     </div>
     <base-button
-        @click="returnChecked"
         design="violet400"
-        :text="$t('contracts.download')"
+        :text="$t('create_agree_apartments')"
     />
   </div>
 </template>
@@ -30,11 +29,6 @@ export default {
       default: 0
     }
   },
-  methods: {
-    returnChecked() {
-      this.$emit('return-checked')
-    }
-  }
 
 }
 </script>

@@ -199,6 +199,7 @@ export default {
     back: "Ortga",
     next: "Davom etish",
     create_agree: "Tasdiqlash",
+    create_agree_apartments: "Xonadonlarni ro'yxatdan o'tkazish",
     save_changes: "O'zgarishlarni saqlash",
     reason_recontract: 'Qayta rasmiylashtirish sababi',
     number_agree: "Shartnoma raqami",

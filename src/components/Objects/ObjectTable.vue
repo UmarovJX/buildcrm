@@ -550,22 +550,8 @@ export default {
         }
       })
     },
-    returnChecked() {
-      console.log("hello world")
-    },
     limitChanged() {
       this.changeFetchLimit()
-    },
-    checked(data, type) {
-      if (type === "checked_all") {
-        this.chosen = data.length
-        return;
-      }
-      if (this.$refs["checkbox"].checked) {
-        this.chosen--;
-        return;
-      }
-      this.chosen++;
     },
     async fetchContractList() {
       this.showLoading = true
@@ -863,6 +849,9 @@ export default {
       color: var(--gray-400) !important;
       padding: 1.125rem 1rem;
       vertical-align: middle;
+    }
+    thead tr th:first-child {
+      padding-left: 0.75rem;
     }
 
     td {
