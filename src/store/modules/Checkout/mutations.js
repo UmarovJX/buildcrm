@@ -133,8 +133,16 @@ export default {
     deleteApartment(state, apartment) {
         state.apartments = state.apartments.filter(pm => pm.id !== apartment.id)
     },
+    clearTrashStorage(state) {
+        state.trashStorage = []
+    },
     addToTrashStorage(state, apartment) {
         state.trashStorage.push(apartment)
+    },
+    addApartment(state, apartments) {
+        for (let i = 0; i < apartments.length; i++) {
+            state.apartments.push(apartments[i])
+        }
     },
     setMonthlyAmount(state, monthly) {
         state.calc.monthly_payment = monthly

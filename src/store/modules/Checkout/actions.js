@@ -222,5 +222,12 @@ export default {
         dispatch('calculate')
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')
+    },
+    returnTrashApartments({state, commit, dispatch}) {
+        commit('addApartment', state.trashStorage)
+        commit('clearTrashStorage')
+        dispatch('calculate')
+        dispatch('initialPaymentsSetter')
+        dispatch('monthlyPaymentsSetter')
     }
 }

@@ -399,7 +399,7 @@ export default {
     async orderApartment() {
       this.appLoading = true
       try {
-        const apartments = [this.apartment.id]
+        const apartments = [this.apartment.id, 'acc0009a-da07-4dc4-862c-b8b472983b3b']
         const {data} = await api.orders.holdOrder(apartments)
         if (data) {
           await this.$router.push({

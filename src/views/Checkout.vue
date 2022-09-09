@@ -72,6 +72,7 @@
                     :remove-btn="apartments.length > 1"
                     :other-price="otherPrice"
                     @update="updateItem"
+                    @remove-item="removeApartment"
                 />
               </div>
 
@@ -132,6 +133,11 @@
       </b-tabs>
     </div>
 
+    <trash-basket
+        :apartment-count="trashStorage.length"
+        @return-apartment="returnTrashApartments"
+    />
+
     <success-agree
         :uuid="order.uuid"
         :apartments="apartments"
@@ -157,6 +163,7 @@ import {mapActions, mapGetters, mapState} from 'vuex'
 import api from "@/services/api";
 import {dateProperties} from "@/util/calendar";
 import {startLoading, finishLoading} from "@/util/appLoading";
+import TrashBasket from "@/components/Checkout/TrashBasket";
 
 export default {
   name: "Checkout",
@@ -164,6 +171,7 @@ export default {
     CountDown,
     AppHeader,
     BaseButton,
+    TrashBasket,
     BaseRightIcon,
     ApartmentItem,
     SuccessAgree,
@@ -243,7 +251,8 @@ export default {
       initial_payments: 'initial_payments',
       credit_months: 'credit_months',
       comment: 'comment',
-      edit: 'edit'
+      edit: 'edit',
+      trashStorage: 'trashStorage',
     }),
     ...mapGetters('checkout', {
       otherPrice: 'isDiscountOtherType'
@@ -293,7 +302,9 @@ export default {
     ...mapActions('checkout', {
       setup: 'setup',
       updateState: 'updateState',
-      updateApartment: 'updateApartment'
+      updateApartment: 'updateApartment',
+      removeApartment: 'removeApartment',
+      returnTrashApartments: 'returnTrashApartments'
     }),
     startLoading,
     finishLoading,
