@@ -111,6 +111,7 @@
                 @click="submitConcludeContract"
                 class="violet-gradient"
                 :text="`${ $t('create_agree') }`"
+                :app-loading="appLoading"
             >
               <template #right-icon>
                 <BaseArrowRightIcon fill="var(--white)"/>
@@ -118,9 +119,9 @@
             </base-button>
             <base-button
                 v-else
-                @click="changeTab"
-                class="violet-gradient"
                 :text="`${ $t('next') }`"
+                class="violet-gradient"
+                @click="changeTab"
             >
               <template #right-icon>
                 <BaseArrowRightIcon fill="var(--white)"/>
@@ -155,6 +156,7 @@ import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgr
 import {mapActions, mapGetters, mapState} from 'vuex'
 import api from "@/services/api";
 import {dateProperties} from "@/util/calendar";
+import {startLoading, finishLoading} from "@/util/appLoading";
 
 export default {
   name: "Checkout",
@@ -172,7 +174,7 @@ export default {
     ClientInformation,
     BaseArrowRightIcon,
   },
-  beforeRouteEnter(to, from, next) {
+  /*beforeRouteEnter(to, from, next) {
     const hasIds = to.params.hasOwnProperty('ids')
     if (hasIds && to.params.ids) {
       const {ids} = to.params
@@ -182,10 +184,11 @@ export default {
       }
     }
     next({name: 'not_found'})
-  },
+  },*/
   data() {
     return {
       holdList: [],
+      appLoading: false,
       successContract: {
         contract: null
       },
@@ -283,7 +286,7 @@ export default {
     }
   },
   created() {
-    this.setIds()
+    // this.setIds()
     this.setHoldApartments()
   },
   methods: {
@@ -292,10 +295,12 @@ export default {
       updateState: 'updateState',
       updateApartment: 'updateApartment'
     }),
+    startLoading,
+    finishLoading,
     updateItem(item) {
       this.updateApartment(item)
     },
-    setIds() {
+    /*setIds() {
       const {ids} = this.$route.params
       if (typeof ids === 'string') {
         const divideIds = ids.split('/')
@@ -303,10 +308,11 @@ export default {
       } else if (Array.isArray(ids) && ids.length) {
         this.holdList = ids
       }
-    },
+    },*/
     async setHoldApartments() {
       try {
-        const {data} = await api.orders.holdOrder(this.holdList)
+        const orderId = this.$route.params.id
+        const {data} = await api.orders.fetchHoldOrder(orderId)
         if (data) {
           const context = {
             order: data,
@@ -322,6 +328,12 @@ export default {
         }
       } catch (e) {
         this.toastedWithErrorCode(e)
+        this.redirect(e)
+      }
+    },
+    redirect(error) {
+      if (error.response.status >= 400 && error.response.status < 600) {
+        this.$router.push({name: 'objects'})
       }
     },
     setClient(value) {
@@ -383,7 +395,7 @@ export default {
       }
     },
     backToView() {
-      if (this.order.status === "sold") {
+      if (this.order.status === 'sold') {
         this.$router.push({
           name: "contracts-view",
           params: {id: this.$route.params.id},
@@ -424,6 +436,7 @@ export default {
       })
 
       if (agree.value) {
+        this.startLoading()
         const {
           discount,
           client,
@@ -498,6 +511,8 @@ export default {
           this.$bvModal.show("modal-success-agree")
         } catch (e) {
           this.toastedWithErrorCode(e)
+        } finally {
+          this.finishLoading()
         }
       }
     }

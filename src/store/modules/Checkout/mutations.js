@@ -90,7 +90,9 @@ export default {
             }
         }
 
-        state.edit.monthly = true
+        if (type === 'monthly') {
+            state.edit.monthly = true
+        }
     },
     deleteSchedule(state, {type, amount, month}) {
         let paymentType = type === 'initial' ? 'initial_payments' : 'credit_months'
