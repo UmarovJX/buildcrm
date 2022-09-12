@@ -1,17 +1,12 @@
 <template>
   <div class="base-checkbox">
-    <template v-if="checked & disabled">
-      <input type="checkbox" name="checkbox" checked disabled/>
-    </template>
-    <template v-else-if="checked && !disabled">
-      <input type="checkbox" name="checkbox" checked/>
-    </template>
-    <template v-else-if="!checked && disabled">
-      <input type="checkbox" name="checkbox" disabled/>
-    </template>
-    <template v-else>
-      <input type="checkbox" name="checkbox"/>
-    </template>
+    <input
+        :disabled="disabled"
+        type="checkbox"
+        name="checkbox"
+        v-model="inlineWatcher"
+        @input="$emit('input',$event)"
+    />
   </div>
 </template>
 
@@ -29,6 +24,18 @@ export default {
       type: Boolean,
       required: false,
       default: () => false
+    }
+  },
+  data() {
+    return {
+      inlineWatcher: this.checked
+    }
+  },
+  watch: {
+    checked(latest) {
+      if (latest !== this.inlineWatcher) {
+        this.inlineWatcher = latest
+      }
     }
   }
 }
@@ -76,14 +83,17 @@ export default {
   input[type="checkbox"]:checked::before {
     transform: scale(1);
   }
+
   input[type="checkbox"]:checked {
     background-color: #7C3AED;
     border: none;
   }
+
   input[type="checkbox"]:checked:disabled {
     background-color: #9CA3AF;
     border: none;
   }
+
   input[type="checkbox"]:checked:hover {
     background-color: #6D28D9;
     border: none;
