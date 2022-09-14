@@ -26,6 +26,7 @@
             @clear-status="clearStatus"
             @current-tab="changeTab"
         />
+
         <div class="status-row"
              v-if="(apartmentsFilterPermission) && currentTab !== 'ObjectPlan'">
             <b-form-checkbox-group
@@ -797,7 +798,7 @@ export default {
         async getBlockName() {
             const id = this.$route.params.object
             await api.objectsV2.getObjectName(id).then((res) => {
-                console.log(res, 'getObjectName');
+                // console.log(res, 'getObjectName');
                 this.objectName = res.data.name
             }).catch((err) => {
                 return err
@@ -959,6 +960,10 @@ export default {
     column-gap: 30px;
     margin-bottom: 21px;
     font-family: Inter, sans-serif;
+
+    .custom-control-input:checked ~ .custom-control-label::after {
+        top: 0.3rem;
+    }
 
     .badge {
         font-family: Inter, sans-serif;

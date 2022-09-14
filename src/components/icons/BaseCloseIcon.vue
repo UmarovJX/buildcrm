@@ -1,5 +1,5 @@
 <template>
-  <svg :width="width" :height="height" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg class="close-icon" :width="width" :height="height" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="28" cy="28" r="28" :fill="fill"/>
     <path d="M36 20L20 36" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <path d="M20 20L36 36" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

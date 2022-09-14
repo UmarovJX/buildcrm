@@ -640,7 +640,7 @@ export default {
     width: calc(4rem + 2px);
     height: calc(56px + 2px);
     background-color: var(--gray-50);
-    border: 2px solid var(--gray-100);
+    border: 1px solid var(--gray-100);
     cursor: pointer;
     box-sizing: border-box;
   }

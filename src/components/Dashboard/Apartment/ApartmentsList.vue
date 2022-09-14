@@ -235,13 +235,13 @@
 
 
                     <!--        Вернуть к продаже          -->
-                    <b-link
-                        v-if="data.item.is_sold && data.item.order.status === 'available'"
-                        @click="toggleApartmentToSale(data.item)"
-                        class="dropdown-item dropdown-item--inside"
-                    >
-                      <i class="far fa-unlock"></i> {{ $t("remove_from_sale") }}
-                    </b-link>
+<!--                    <b-link-->
+<!--                        v-if="data.item.is_sold && data.item.order.status === 'available'"-->
+<!--                        @click="toggleApartmentToSale(data.item)"-->
+<!--                        class="dropdown-item dropdown-item&#45;&#45;inside"-->
+<!--                    >-->
+<!--                      <i class="far fa-unlock"></i> {{ $t("remove_from_sale") }}-->
+<!--                    </b-link>-->
 
                     <b-link
                         v-if="!data.item.is_sold && data.item.order.status === 'available'"
@@ -556,7 +556,7 @@ export default {
     this.currentPage = Number(this.filter.page);
     this.loading = this.getLoading;
 
-    this.fetchApartments(this)
+    // this.fetchApartments(this)
     this.getUnfinishedOrders();
   },
 
@@ -646,7 +646,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["fetchApartments", "fetchReserveClient"]),
+    ...mapActions([, "fetchReserveClient"]),
     ...mapMutations(['updateSpecificApartment']),
     bookSelectedApartments(client) {
       const {values: apartments} = this.selected
@@ -684,7 +684,7 @@ export default {
       })
     },
     updateContent() {
-      this.fetchApartments(this)
+      // this.fetchApartments(this)
       this.getUnfinishedOrders()
     },
     statusHold(data) {
@@ -711,15 +711,15 @@ export default {
       const secondOption = (this.getPermission.apartments && this.getPermission.apartments.root_contract && data.item.order.status === 'booked')
       return firstOption || secondOption
     },
-    async toggleApartmentToSale(item) {
-      const {status} = this.$route.query
-      const id = this.$route.params.object
-      const apartmentUID = item.id
-      // console.log(status, 'apartmen status');
-      await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
-        this.updateSpecificApartment({updatingApartment: response.data, status})
-      })
-    },
+    // async toggleApartmentToSale(item) {
+    //   const {status} = this.$route.query
+    //   const id = this.$route.params.object
+    //   const apartmentUID = item.id
+    //   // console.log(status, 'apartmen status');
+    //   // await api.apartments.isAvailableToSold(id, apartmentUID).then(response => {
+    //   //   this.updateSpecificApartment({updatingApartment: response.data, status})
+    //   // })
+    // },
     async getUnfinishedOrders() {
       await api.orders.fetchUnfinishedOrders().then((res) => {
         if (res) {
@@ -805,10 +805,10 @@ export default {
         name: "apartments",
         query: this.filter,
       });
-      await this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table");
-        element.scrollIntoView();
-      });
+      // await this.fetchApartments(this).then(() => {
+      //   const element = document.getElementById("my-table");
+      //   element.scrollIntoView();
+      // });
     },
     async getFilterTabsContent(status) {
       this.filter.status = status
@@ -818,10 +818,10 @@ export default {
         name: "apartments",
         query: this.filter,
       })
-      await this.fetchApartments(this).then(() => {
-        const element = document.getElementById("my-table")
-        element.scrollIntoView()
-      });
+      // await this.fetchApartments(this).then(() => {
+      //   const element = document.getElementById("my-table")
+      //   element.scrollIntoView()
+      // });
     },
     async handleScroll(event) {
       if (!this.scrollActive) {
@@ -841,7 +841,7 @@ export default {
             name: "apartments",
             query: this.filter,
           });
-          await this.fetchApartments(this);
+          // await this.fetchApartments(this);
         }
       }
     },
@@ -855,12 +855,12 @@ export default {
         name: "apartments",
         query: this.filter,
       });
-      setTimeout(() => {
-        this.fetchApartments(this).then(() => {
-          const element = document.getElementById("my-table");
-          element.scrollIntoView();
-        });
-      }, 1000);
+      // setTimeout(() => {
+      //   this.fetchApartments(this).then(() => {
+      //     const element = document.getElementById("my-table");
+      //     element.scrollIntoView();
+      //   });
+      // }, 1000);
     },
 
     rowClass(item, type) {
@@ -906,7 +906,7 @@ export default {
       });
 
       const vm = this;
-      await this.fetchApartments(vm)
+      // await this.fetchApartments(vm)
     },
 
     CreateReserve(id) {
