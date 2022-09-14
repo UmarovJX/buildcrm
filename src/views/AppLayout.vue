@@ -4,7 +4,6 @@
             v-if="showHeaderContent"
             :theme="theme"
         />
-
         <main v-if="showHeaderContent" class="main-content">
             <!--            <header>-->
             <!--                <slot name="breadcrumb"></slot>-->
