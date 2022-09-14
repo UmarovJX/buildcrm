@@ -7,8 +7,9 @@
       </p>
     </div>
     <base-button
+        @click="makeContract"
         design="violet400"
-        :text="$t('create_agree_apartments')"
+        :text="`${$t('create_agree_apartments')}`"
     />
   </div>
 </template>
@@ -29,7 +30,12 @@ export default {
       default: 0
     }
   },
-
+  emits: ['go-to-contract'],
+  methods: {
+    makeContract() {
+      this.$emit('go-to-contract')
+    }
+  }
 }
 </script>
 

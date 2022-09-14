@@ -7,15 +7,15 @@
                     <base-arrow-left :width="32" :height="32"></base-arrow-left>
                 </router-link>
                 <span class="breadcrumb__content">
-          <span class="d-flex align-items-center">
-            <span class="mr-2">{{ $t('objects.title') }}</span>
-            <base-arrow-right :width="16" :height="16"/>
-            <span class="ml-2">{{ objectName }}</span>
-          </span>
-          <span class="head">
-            <span class="contract__number">{{ objectName }}</span>
-          </span>
-        </span>
+                  <span class="d-flex align-items-center">
+                    <span class="mr-2">{{ $t('objects.title') }}</span>
+                    <base-arrow-right :width="16" :height="16"/>
+                    <span class="ml-2">{{ objectName }}</span>
+                  </span>
+                  <span class="head">
+                    <span class="contract__number">{{ objectName }}</span>
+                  </span>
+                </span>
             </div>
         </div>
 
@@ -75,14 +75,10 @@
                 >
                     <!--    CELL OF COMMENT      -->
                     <template #cell(level)="data">
-                        <!--            {{ data }}-->
                         <span>{{ data.item.type }}</span>
-                        <!--            <span v-else class=""> - </span>-->
                     </template>
                     <template #cell(price_m2)="data">
-                        <!--            {{ data }}-->
                         <span>{{ data.item.amount }}</span>
-                        <!--            <span v-else class=""> - </span>-->
                     </template>
 
                     <template v-for="(price) of priceList" v-slot:cell()="data">
@@ -133,12 +129,11 @@ import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseModal from "@/components/Reusable/BaseModal";
+import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
+import ApartmentsPermission from "@/permission/apartments";
+import {mapGetters} from "vuex";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import {mapGetters} from "vuex";
-import ApartmentsPermission from "@/permission/apartments";
-// import ObjectsPermission from "@/permission/objects";
 
 export default {
     name: "Objects",

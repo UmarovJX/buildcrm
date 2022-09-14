@@ -27,11 +27,12 @@ export default {
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')
     },
-    initialPaymentsSetter({state, getters}) {
+    initialPaymentsSetter({state,getters}) {
         const {first_payment_date} = state.calc
         let today = first_payment_date ? new Date(first_payment_date) : new Date()
         const {year: todayYear, month: todayMonth, dayOfMonth: todayDate} = dateProperties(today)
-        const lastDateOfCurrentMonth = (new Date(todayYear, todayMonth + 1, 0)).getDate()
+        const lastDayOfMonth = new Date(todayYear, todayMonth + 1, 0)
+        const lastDateOfCurrentMonth = lastDayOfMonth.getDate()
         let calculateByLastDay = todayDate === lastDateOfCurrentMonth
         state.initial_payments = []
         const initialMonth = {
@@ -39,10 +40,9 @@ export default {
             amount: getters.getInitialPrice,
             edit: false,
             edited: false,
-            month: today,
+            month: new Date(today),
         }
-        const lastDayOfMonth = new Date(todayYear, todayMonth + 1, 0)
-        initialMonth.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth())
+        initialMonth.month = calculateByLastDay ? lastDayOfMonth : new Date(today)
         state.initial_payments.push(initialMonth)
     },
     monthlyPaymentsSetter({state, getters}) {

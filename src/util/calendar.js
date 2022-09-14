@@ -12,6 +12,9 @@ export const monthsNameList = [
     'november',
     'december',
 ]
+/*
+* the bug that was showing the wrong date when choosing the initial and monthly payment has been eliminated
+* */
 
 export const weekDaysNameList = []
 
@@ -49,7 +52,7 @@ export function dateProperties(point, type = 'date') {
     const lastDayOfMonth = new Date(year, month + 1, 0)
     const lastDateOfMonth = lastDayOfMonth.getDate()
     const isLastDayOfMonth = lastDateOfMonth === dayOfMonth
-    const nextMonthOfDate = date.setMonth(date.getMonth() + 1)
+    const nextMonthOfDate = (new Date(date)).setMonth(date.getMonth() + 1)
     const nextMonthYmd = formatDateToYMD(new Date(nextMonthOfDate))
     return {
         ymd,

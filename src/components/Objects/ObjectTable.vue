@@ -186,8 +186,13 @@
 
                 <!--  Подробная информация  -->
                 <router-link
-                    :to="{name: 'apartment-view',
-                          params: {object: $route.params.object, id: data.item.id}}"
+                    :to="{
+                        name: 'apartment-view',
+                        params: {
+                          object: $route.params.object,
+                          id: data.item.id
+                        }
+                    }"
                     :class="'dropdown-item dropdown-item--inside'"
                 >
                   <i class="far fa-eye"></i>
@@ -313,7 +318,10 @@
 
     </div>
 
-    <BaseCheckboxModal @return-checked="returnChecked" :chosen="checkedApartments.length"/>
+    <BaseCheckboxModal
+        :chosen="checkedApartments.length"
+        @go-to-contract="makeContract"
+    />
 
   </div>
 </template>
@@ -515,6 +523,9 @@ export default {
   },
 
   methods: {
+    makeContract() {
+
+    },
     activateApartment({index, item}, event) {
       const {current} = this.pagination
       const {checked} = event.target
@@ -556,7 +567,15 @@ export default {
     async fetchContractList() {
       this.showLoading = true
       let query = sortObjectValues(this.query)
-      const queryArrayFareList = ['status', 'area', 'rooms', 'floors', 'number', 'object', 'blocks']
+      const queryArrayFareList = [
+        'status',
+        'area',
+        'rooms',
+        'floors',
+        'number',
+        'object',
+        'blocks'
+      ]
 
       const queryPair = Object.entries(query)
       queryPair.forEach(([key, value]) => {
@@ -675,16 +694,17 @@ export default {
 
 
     async EditApartment() {
-      this.apartment_id = 0;
-      this.edit = false;
-
+      this.apartment_id = 0
+      this.edit = false
       await this.$router.push({
         name: "apartments",
         query: this.filter,
-      });
+      })
 
-      if (this.filter.filtered) await this.fetchApartments(this);
-      else await this.fetchApartments(this);
+      if (this.filter.filtered)
+        await this.fetchApartments(this)
+      else
+        await this.fetchApartments(this)
     },
 
     CreateReserve(id) {
@@ -850,6 +870,7 @@ export default {
       padding: 1.125rem 1rem;
       vertical-align: middle;
     }
+
     thead tr th:first-child {
       padding-left: 0.75rem;
     }

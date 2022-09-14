@@ -197,9 +197,7 @@ export default {
       editPaymentSchedule: 'editPaymentSchedule',
       deletePaymentSchedule: 'deletePaymentSchedule'
     }),
-    formatDate(date) {
-      return formatDateWithDot(date)
-    },
+    formatDate: formatDateWithDot,
     editSelectedPayment(payment) {
       const {ymd} = dateProperties(payment.month, 'string')
       this.editContext = {
