@@ -163,6 +163,7 @@ export default {
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
     xonsaroy: 'Xonsaroy',
+    apartment_make_contract: 'Xonadon rasmiylashtirish',
     installment: "Bo'lib to'lash rejasi",
     prepayment: "Oldindan to'lov",
     discount_per_m2: 'm2 uchun chegirma',

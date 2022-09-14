@@ -1,9 +1,17 @@
 <template>
   <div class="app-checkout">
     <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
-    <app-header>
+    <app-header
+        :page="header.page"
+        :page-info="header.pageInfo"
+        :breadcrumbs="header.breadcrumbs"
+    >
       <template #header-right>
-        <div v-if="expiry_at" :class="flexCenter" class="checkout-timer background-violet-gradient mr-2">
+        <div
+            v-if="expiry_at"
+            :class="flexCenter"
+            class="checkout-timer background-violet-gradient mr-2"
+        >
           <CountDown
               :deadline="expiry_at"
               :showDays="false"
@@ -195,6 +203,28 @@ export default {
   },*/
   data() {
     return {
+      header: {
+        pageInfo: {
+          title: '',
+          titleHighlight: ''
+        },
+        page: {
+          type: 'string',
+          path: 'Оформление'
+        },
+        breadcrumbs: [
+          {
+            content: {
+              type: 'multi_language',
+              path: 'objects.title'
+            },
+            route: {
+              name: 'objects',
+              path: '/objects'
+            }
+          }
+        ],
+      },
       holdList: [],
       appLoading: false,
       successContract: {
@@ -336,10 +366,53 @@ export default {
           }
           this.setup(context)
           this.startCounter()
+          this.initBreadcrumbs(data.apartments)
         }
       } catch (e) {
         this.toastedWithErrorCode(e)
         this.redirect(e)
+      }
+    },
+    initBreadcrumbs(apartments) {
+      const {object} = apartments[0]
+      this.header.breadcrumbs.push({
+        content: {
+          type: 'string',
+          path: object.name
+        },
+        route: {
+          name: 'apartments',
+          params: {
+            object: object.id
+          }
+        }
+      })
+
+      const apmTitles = apartments.reduce((acc, apm, idx, arr) => {
+        let str = apm.number
+        if (arr.length - 1 !== idx) {
+          str += ','
+        }
+        return acc + str
+      }, '')
+
+      this.header.breadcrumbs.push({
+        content: {
+          type: 'string',
+          path: this.$t('apartment') + ' №' + apmTitles
+        },
+        route: {
+          name: 'apartment-view',
+          params: {
+            object: object.id,
+            id: apartments[0].id
+          }
+        }
+      })
+
+      this.header.pageInfo = {
+        title: this.$t('apartment_make_contract'),
+        titleHighlight: '№' + apmTitles
       }
     },
     redirect(error) {
