@@ -43,6 +43,7 @@
       <template #cell(actions)="data">
         <div class="action-buttons">
           <BaseButton
+              v-if="parseInt(data.index) > 0"
               text=''
               class="violet rounded-circle"
               @click="editSelectedPayment(data.item)"
@@ -196,9 +197,7 @@ export default {
       editPaymentSchedule: 'editPaymentSchedule',
       deletePaymentSchedule: 'deletePaymentSchedule'
     }),
-    formatDate(date) {
-      return formatDateWithDot(date)
-    },
+    formatDate: formatDateWithDot,
     editSelectedPayment(payment) {
       const {ymd} = dateProperties(payment.month, 'string')
       this.editContext = {

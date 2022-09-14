@@ -12,7 +12,6 @@ export const monthsNameList = [
     'november',
     'december',
 ]
-
 export const weekDaysNameList = []
 
 export function getDaysInMonth(date) {
@@ -31,7 +30,12 @@ export function dateProperties(point, type = 'date') {
     if (type === 'date') {
         date = point
     } else if (type === 'string') {
-        date = new Date(point)
+        const undefinedState = [null, undefined, '']
+        if (undefinedState.includes(point)) {
+            date = new Date()
+        } else {
+            date = new Date(point)
+        }
     }
 
     const time = date.getTime()
@@ -44,7 +48,8 @@ export function dateProperties(point, type = 'date') {
     const lastDayOfMonth = new Date(year, month + 1, 0)
     const lastDateOfMonth = lastDayOfMonth.getDate()
     const isLastDayOfMonth = lastDateOfMonth === dayOfMonth
-    const nextMonthOfDate = date.setMonth(date.getMonth() + 1)
+    const nextMonthOfDate = (new Date(date)).setMonth(date.getMonth() + 1)
+    const nextMonthYmd = formatDateToYMD(new Date(nextMonthOfDate))
     return {
         ymd,
         year,
@@ -53,6 +58,7 @@ export function dateProperties(point, type = 'date') {
         starter,
         dayOfWeek,
         dayOfMonth,
+        nextMonthYmd,
         lastDayOfMonth,
         lastDateOfMonth,
         nextMonthOfDate,

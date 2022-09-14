@@ -1,7 +1,15 @@
 <template>
   <div class="app-breadcrumb d-flex align-items-center">
     <div v-for="(breadcrumb,index) in breadcrumbs" :key="index" :class="breadcrumb.class">
-      <router-link :to="{name:breadcrumb.route.name}" :class="breadcrumb.route.class" class="app-breadcrumb-link">
+      <router-link
+          :to="{
+            name:breadcrumb.route.name,
+            params:breadcrumb.route.params,
+            query:breadcrumb.route.query
+          }"
+          :class="breadcrumb.route.class"
+          class="app-breadcrumb-link"
+      >
         <slot :name="`${breadcrumb.route.name}-left`"></slot>
         <span class="app-breadcrumb-link-content">
           {{ (breadcrumb.content.type === 'string') ? breadcrumb.content.path : $t(breadcrumb.content.path) }}

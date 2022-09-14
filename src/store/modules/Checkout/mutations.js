@@ -4,7 +4,6 @@ export default {
     initializeState(state, context) {
         const {
             uuid,
-            month,
             discount,
             expiry_at,
             created_by,
@@ -12,13 +11,13 @@ export default {
             contract_number,
         } = context
         state.uuid = uuid
-        state.month = month
         state.order = context
         state.discount = discount
         state.expiry_at = expiry_at
         state.created_by = created_by
         state.contract_number = contract_number
         state.calc.prepayment = discount.prepay
+        state.calc.monthly_payment_period = apartments[0].object.credit_month
         state.apartments = apartments.map(apartment => {
             return {
                 ...apartment,
@@ -90,6 +89,10 @@ export default {
                 state[paymentType][index].edit = true
             }
         }
+
+        if (type === 'monthly') {
+            state.edit.monthly = true
+        }
     },
     deleteSchedule(state, {type, amount, month}) {
         let paymentType = type === 'initial' ? 'initial_payments' : 'credit_months'
@@ -130,8 +133,16 @@ export default {
     deleteApartment(state, apartment) {
         state.apartments = state.apartments.filter(pm => pm.id !== apartment.id)
     },
+    clearTrashStorage(state) {
+        state.trashStorage = []
+    },
     addToTrashStorage(state, apartment) {
         state.trashStorage.push(apartment)
+    },
+    addApartment(state, apartments) {
+        for (let i = 0; i < apartments.length; i++) {
+            state.apartments.push(apartments[i])
+        }
     },
     setMonthlyAmount(state, monthly) {
         state.calc.monthly_payment = monthly

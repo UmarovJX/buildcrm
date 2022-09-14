@@ -6,7 +6,10 @@
           <base-left-icon :width="32" :height="32"/>
         </div>
         <div class="app-header-page-content">
-          <app-breadcrumb :page="breadcrumbPage" :breadcrumbs="breadcrumbs"/>
+          <app-breadcrumb
+              :page="page"
+              :breadcrumbs="breadcrumbs"
+          />
           <div class="app-header-page-title">
             {{ pageInfo.title }}
             <span class="app-header-page-title-active">
@@ -45,6 +48,20 @@ import AppQuestionIcon from "@/components/Reusable/Question/AppQuestionIcon";
 
 export default {
   name: "AppHeader",
+  props: {
+    pageInfo: {
+      type: Object,
+      required: true
+    },
+    breadcrumbs: {
+      type: Array,
+      required: true
+    },
+    page: {
+      type: Object,
+      required: true
+    }
+  },
   components: {
     AppDropdown,
     BaseLeftIcon,
@@ -53,48 +70,7 @@ export default {
     AppNotificationIcon
   },
   data() {
-    return {
-      pageInfo: {
-        title: 'Договор',
-        titleHighlight: '56APL29C'
-      },
-      breadcrumbPage: {
-        type: 'string',
-        path: 'Оформление'
-      },
-      breadcrumbs: [
-        {
-          content: {
-            type: 'multi_language',
-            path: 'objects.title'
-          },
-          route: {
-            name: 'objects',
-            path: '/objects'
-          }
-        },
-        {
-          content: {
-            type: 'string',
-            path: 'Sayram'
-          },
-          route: {
-            name: 'objects',
-            path: '/objects'
-          }
-        },
-        {
-          content: {
-            type: 'string',
-            path: 'Квартира №34'
-          },
-          route: {
-            name: 'objects',
-            path: '/objects'
-          }
-        }
-      ],
-    }
+    return {}
   },
 }
 </script>

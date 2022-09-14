@@ -61,13 +61,11 @@ const routes = [
                 component: Dashboard,
             },
 
-            /*
-            {
+            /*{
                 path: '/experiment',
                 name: 'experiment',
                 component: () => import('@/views/experience')
-            },
-            */
+            },*/
 
             {
                 path: '/experiment',
@@ -88,7 +86,7 @@ const routes = [
             },
 
             {
-                path: '/checkout/:apartments*',
+                path: '/checkout/:id',
                 name: 'checkout',
                 component: Checkout
             },

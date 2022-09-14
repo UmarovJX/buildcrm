@@ -1,3 +1,6 @@
+import {dateProperties} from "@/util/calendar";
+
+const {ymd, nextMonthYmd} = dateProperties('', 'string')
 export default {
     apartments: [],
     discount: {
@@ -13,11 +16,11 @@ export default {
     calc: {
         prepay: 0,
         monthly_payment_period: 20,
-        first_payment_date: null,
-        payment_date: null,
+        first_payment_date: ymd,
+        payment_date: nextMonthYmd,
         monthly_payment: 0,
         discount: null,
-        contract_date: null,
+        contract_date: ymd,
         base_price: 0,
         initial_price: 0,
         remainder: 0,
@@ -40,7 +43,8 @@ export default {
         initial_price: false,
         monthly_payment_period: false,
         prepay: false,
-        discount: false
+        discount: false,
+        monthly: false
     },
     trashStorage: []
 }

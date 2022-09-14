@@ -1,43 +1,43 @@
 <template>
-  <div class="basket" :class="{'d-none':!apartmentCount}">
-    <p>
-      Убранные квартиры: {{ apartmentCount }}
-    </p>
+  <div :class="chosen ? 'basket' : 'd-none'">
+    <div class="basket-block">
+      <base-checkbox disabled checked/>
+      <p>
+        {{ $t("chosen") }}: {{ chosen }}
+      </p>
+    </div>
     <base-button
-        @click="returnApartment"
-        design="violet500"
-        text="Вернуть все квартиры"
+        @click="makeContract"
+        design="violet400"
+        :text="`${$t('create_agree_apartments')}`"
     />
   </div>
 </template>
 
 <script>
 import BaseButton from "@/components/Reusable/BaseButton";
+import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
 
 export default {
-  name: "TrashBasket",
+  name: "BaseCheckboxModal",
   components: {
+    BaseCheckbox,
     BaseButton
   },
-
   props: {
-    apartmentCount: {
+    chosen: {
       type: Number,
       default: 0
     }
   },
-
-  emits: ['return-apartment'],
-
+  emits: ['go-to-contract'],
   methods: {
-    returnApartment() {
-      this.$emit('return-apartment')
+    makeContract() {
+      this.$emit('go-to-contract')
     }
   }
-
 }
 </script>
-
 
 <style lang="scss" scoped>
 .basket {
@@ -57,8 +57,24 @@ export default {
   animation: fade-top .5s linear;
   background-color: var(--violet-600);
 
-  .violet500 {
-    background-color: var(--violet-500);
+  &-block {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+
+    ::v-deep .base-checkbox > input {
+      background-color: white !important;
+
+      &::before {
+        background: #7C3AED;
+        height: 8px;
+      }
+    }
+  }
+
+  .violet400 {
+    background-color: var(--violet-400);
     color: var(--white);
   }
 
@@ -72,6 +88,14 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  .base__button {
+    padding: 13px 24px;
+    font-family: 'Inter', serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
   }
 
   @keyframes fade-top {
