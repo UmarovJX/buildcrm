@@ -34,7 +34,7 @@
           <template #title>
             <div class="app-tab-title d-flex align-items-center">
               <span :class="flexCenter" class="app-tab-title-number">1</span>
-              <p class="app-tab-title-content">Детали договора</p>
+              <p class="app-tab-title-content">{{ $t('contract_details') }}</p>
               <span :class="flexCenter" class="app-tab-title-right-icon">
                 <base-right-icon :width="18" :height="18"/>
               </span>
@@ -58,14 +58,14 @@
           <template #title>
             <div class="app-tab-title d-flex align-items-center">
               <span :class="flexCenter" class="app-tab-title-number">2</span>
-              <p class="app-tab-title-content">Детали платежей</p>
+              <p class="app-tab-title-content">{{ $t('payment_details') }}</p>
             </div>
           </template>
 
           <div v-if="tabIndex===1" class="app-tab-content">
             <div>
               <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
-                <h3 class="section-title">Информация клиента</h3>
+                <h3 class="section-title">{{ $t('client_info') }}</h3>
                 <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
               </div>
               <b-collapse id="accordion-1">
@@ -203,28 +203,6 @@ export default {
   },*/
   data() {
     return {
-      header: {
-        pageInfo: {
-          title: '',
-          titleHighlight: ''
-        },
-        page: {
-          type: 'string',
-          path: 'Оформление'
-        },
-        breadcrumbs: [
-          {
-            content: {
-              type: 'multi_language',
-              path: 'objects.title'
-            },
-            route: {
-              name: 'objects',
-              path: '/objects'
-            }
-          }
-        ],
-      },
       holdList: [],
       appLoading: false,
       successContract: {
@@ -317,6 +295,82 @@ export default {
         return discounts
       }
       return []
+    },
+    header() {
+      const {apartments} = this.order
+      const h = {
+        pageInfo: {
+          title: '',
+          titleHighlight: ''
+        },
+        page: {
+          type: 'string',
+          path: this.$t('checkout_booking')
+        },
+        breadcrumbs: [
+          {
+            content: {
+              type: 'multi_language',
+              path: 'objects.title'
+            },
+            route: {
+              name: 'objects',
+              path: '/objects'
+            }
+          }
+        ],
+      }
+
+      if (!apartments) {
+        return h
+      }
+
+      const apmTitles = apartments.reduce((acc, apm, idx, arr) => {
+        let str = apm.number
+        if (arr.length - 1 !== idx) {
+          str += ','
+        }
+        return acc + str
+      }, '')
+
+      const {object} = apartments[0]
+      console.log(apartments)
+      if (object) {
+        h.breadcrumbs.push({
+          content: {
+            type: 'string',
+            path: object.name
+          },
+          route: {
+            name: 'apartments',
+            params: {
+              object: object.id
+            }
+          }
+        })
+
+        h.breadcrumbs.push({
+          content: {
+            type: 'string',
+            path: this.$t('apartment') + ' №' + apmTitles
+          },
+          route: {
+            name: 'apartment-view',
+            params: {
+              object: object.id,
+              id: apartments[0].id
+            }
+          }
+        })
+      }
+
+
+      h.pageInfo = {
+        title: this.$t('apartment_make_contract'),
+        titleHighlight: '№' + apmTitles
+      }
+
+      return h
     }
   },
   watch: {
@@ -366,53 +420,10 @@ export default {
           }
           this.setup(context)
           this.startCounter()
-          this.initBreadcrumbs(data.apartments)
         }
       } catch (e) {
         this.toastedWithErrorCode(e)
         this.redirect(e)
-      }
-    },
-    initBreadcrumbs(apartments) {
-      const {object} = apartments[0]
-      this.header.breadcrumbs.push({
-        content: {
-          type: 'string',
-          path: object.name
-        },
-        route: {
-          name: 'apartments',
-          params: {
-            object: object.id
-          }
-        }
-      })
-
-      const apmTitles = apartments.reduce((acc, apm, idx, arr) => {
-        let str = apm.number
-        if (arr.length - 1 !== idx) {
-          str += ','
-        }
-        return acc + str
-      }, '')
-
-      this.header.breadcrumbs.push({
-        content: {
-          type: 'string',
-          path: this.$t('apartment') + ' №' + apmTitles
-        },
-        route: {
-          name: 'apartment-view',
-          params: {
-            object: object.id,
-            id: apartments[0].id
-          }
-        }
-      })
-
-      this.header.pageInfo = {
-        title: this.$t('apartment_make_contract'),
-        titleHighlight: '№' + apmTitles
       }
     },
     redirect(error) {

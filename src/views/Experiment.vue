@@ -26,7 +26,7 @@
           <template #title>
             <div class="app-tab-title d-flex align-items-center">
               <span :class="flexCenter" class="app-tab-title-number">1</span>
-              <p class="app-tab-title-content">Детали договора</p>
+              <p class="app-tab-title-content">{{ $t('contract_details') }}</p>
               <span :class="flexCenter" class="app-tab-title-right-icon">
                 <base-right-icon :width="18" :height="18"/>
               </span>
@@ -50,14 +50,14 @@
           <template #title>
             <div class="app-tab-title d-flex align-items-center">
               <span :class="flexCenter" class="app-tab-title-number">2</span>
-              <p class="app-tab-title-content">Детали платежей</p>
+              <p class="app-tab-title-content">{{ $t('payment_details') }}</p>
             </div>
           </template>
 
           <div v-if="tabIndex===1" class="app-tab-content">
             <div>
               <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
-                <h3 class="section-title">Информация клиента</h3>
+                <h3 class="section-title">{{ $t('client_info') }}</h3>
                 <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
               </div>
               <b-collapse id="accordion-1">

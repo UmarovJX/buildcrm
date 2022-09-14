@@ -2,6 +2,12 @@ export default {
     home: {
         title: "Asosiy",
     },
+    remainder: 'Qoldiq',
+    apartment_details: 'Kvartira tafsilotlari',
+    payment_details: `To'lov tafsilotlari`,
+    price_m2: "M2 uchun narx",
+    other_price: 'Boshqa narx',
+    remove_apartment: `Kvartirani o'chirish`,
     hide_menu: "Menuni yashirish",
     component: 'komponent',
     roles_permission: {
@@ -163,7 +169,9 @@ export default {
         validation_confirm_password: 'Tasdiqlash paroli yangi parol bilan bir xil bo’lishi kerak'
     },
     xonsaroy: 'Xonsaroy',
+    checkout_booking: 'Rasmiylashtirish',
     apartment_make_contract: 'Xonadon rasmiylashtirish',
+    apartment: 'Xonadon',
     installment: "Bo'lib to'lash rejasi",
     prepayment: "Oldindan to'lov",
     discount_per_m2: 'm2 uchun chegirma',
@@ -231,7 +239,7 @@ export default {
     category: 'Kategoriya',
     full: "To'liqligicha",
     monthly: "Oylik",
-    month: 'Oy',
+    month: 'oy',
     months: 'Oylar',
     months_to: 'oygacha',
     table_months_payment: "Oylik to'lovlar jadvali",

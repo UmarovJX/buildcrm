@@ -1,7 +1,7 @@
 <template>
   <div class="apartment-card">
     <!--        TITLE-->
-    <h3 class="apartment-card__title">Детали квартиры №34</h3>
+    <h3 class="apartment-card__title">{{ $t('apartment_details') }} №{{ apartment.number }}</h3>
     <!--  INFO    -->
     <div class="apartment-card__body">
       <div class="apartment-card__info">
@@ -75,7 +75,7 @@
         <!--          Другая цена-->
         <!--        </b-form-checkbox>-->
         <template v-if="otherPrice">
-          <p>Другая цена</p>
+          <p>{{ $t('other_price') }}</p>
           <base-price-input
               ref="base_price"
               :label="true"
@@ -85,7 +85,7 @@
               :value="item.price"
               v-model="item.price"
               @input="mutateTotalPriceInput"
-              placeholder="Начальная цена"
+              :placeholder="$t('starting_price')"
               class="base-price-input"
           />
           <base-price-input
@@ -97,7 +97,7 @@
               :value="item.price_m2"
               v-model="item.price_m2"
               @input="mutatePricePerSquareInput"
-              :placeholder="`Цена за М2`"
+              :placeholder="$t('price_m2')"
               class="base-price-input"
           />
         </template>
@@ -112,7 +112,7 @@
                 :value="item.total_discount"
                 v-model="item.total_discount"
                 @input="mutateTotalDiscountInput"
-                placeholder="Общая скидка"
+                :placeholder="$t('total_discount')"
                 class="base-price-input"
             />
             <base-price-input
@@ -124,13 +124,13 @@
                 :value="item.discount_per_m2"
                 v-model="item.discount_per_m2"
                 @input="mutateDiscountPerSquareInput"
-                placeholder="Скидка за М2"
+                :placeholder="$t('discount_per_m2')"
                 class="base-price-input"
             />
           </div>
           <div class="apartment-item">
             <p class="apartment-label">
-              Начальная цена
+              {{ $t('starting_price') }}
             </p>
             <p class="apartment-value">
               {{ totalPrice }}
@@ -138,7 +138,7 @@
           </div>
           <div class="apartment-item">
             <p class="apartment-label">
-              Цена за М2
+              {{ $t('price_m2') }}
             </p>
             <p class="apartment-value">
               {{ pricePerSquare }}
@@ -150,7 +150,10 @@
     </div>
 
     <div v-if="removeBtn" class="apartment-card__clear">
-      <base-button @click="deleteApartment" text="Убрать квартиру">
+      <base-button
+          @click="deleteApartment"
+          :text="`${$t('remove_apartment')}`"
+      >
         <template #left-icon>
           <BaseDeleteIcon fill="var(--violet-600)"/>
         </template>

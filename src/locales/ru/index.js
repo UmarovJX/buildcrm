@@ -2,6 +2,12 @@ export default {
     home: {
         title: "Главная",
     },
+    remainder: 'Остаток',
+    apartment_details: 'Детали квартиры',
+    payment_details: 'Детали платежей',
+    price_m2: "Цена за м2",
+    other_price: 'Другая цена',
+    remove_apartment: 'Убрать квартиру',
     selected: "Выбранный",
     pointed: "Наведенный",
     not_selected: "Не выбранный",
@@ -150,6 +156,7 @@ export default {
         },
     },
     xonsaroy: 'Хонсарой',
+    checkout_booking: 'Оформление',
     apartment_make_contract: 'Оформление квартиры',
     address_office: 'город Ташкент, Юнусабадский район, улица Янги шахар, дом 64А',
     motto: 'Уверенный шаг к вашим мечтам!',
@@ -784,7 +791,7 @@ export default {
             address: "Адрес", // asd
             completion_date: "Дата завершения строительства", // asd
             price_for_m2: "Цена продажы за м2", // asd
-            discount_per_m2: "Скидка за м2:", // asd
+            discount_per_m2: "Скидка за м2", // asd
             discount_all: 'Общая скидка',
             discount_price: 'Скидка от общей суммы',
             prepayment: "Предоплата", // asd

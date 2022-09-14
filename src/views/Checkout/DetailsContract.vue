@@ -3,7 +3,7 @@
     <div class="app-tab-content">
       <ValidationObserver ref="client-validation">
         <section class="tab-section">
-          <h3 class="section-title">Детали договора</h3>
+          <h3 class="section-title">{{ $t('contract_details') }}</h3>
           <div class="section-container">
             <output-information
                 v-if="order && order.contract_number"
@@ -41,7 +41,7 @@
         </section>
 
         <section class="tab-section mt-5 mb-5">
-          <h3 class="section-title">Детали клиента</h3>
+          <h3 class="section-title">{{ $t('client_details') }}</h3>
           <div class="section-container row-gap-1">
             <ValidationProvider
                 name="Номер паспорта (напр. AB1234567)"

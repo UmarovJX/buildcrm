@@ -322,8 +322,8 @@
           <div class="sticky-top">
             <!-- Info -->
             <div class="new-object p-0">
-              <div v-b-toggle.collapse-info block class="d-flex p-3">
-                <span>Информация клиента</span>
+              <div v-b-toggle.collapse-info  class="d-flex p-3">
+                <span>{{ $t('client_info') }}</span>
                 <strong v-if="isVisible" aria-hidden="true" class="ml-auto">
                   <i class="fal fa-chevron-up"></i>
                 </strong>
