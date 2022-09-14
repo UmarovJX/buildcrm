@@ -416,7 +416,7 @@ export default {
       // this.showPdfContent = false
     },
     generatePdf() {
-      this.htmlToPdfOptions.filename = this.apartment.object.name + ', ' + this.apartment.number + ' - ' + this.$t('apartment')
+      this.htmlToPdfOptions.filename = this.apartment?.object?.name + ', ' + this.apartment.number + ' - ' + this.$t('apartment')
       this.$refs.html2Pdf.generatePdf()
     },
     buildingDate(time) {

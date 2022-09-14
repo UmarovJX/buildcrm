@@ -2,21 +2,35 @@
     <div>
         <div class="comments">
             <div class="comments-header">
-                <h4 v-if="hasComment" class="comments-header__title">
-                    {{ this.$t('contracts.note') }} ({{ pagination.totalItems }} {{ $t('contracts.notes') }})
+                <h4 v-if="expressView" class="comments-header__title express-title">
+                    Последние примечание
+                </h4>
+                <h4 v-else-if="hasComment" class="comments-header__title">
+                    {{ this.$t('contracts.note') }} ( {{ pagination.totalItems }} {{ $t('contracts.notes') }} )
                 </h4>
                 <h4 v-else class="comments-header__title">
                     {{ this.$t('contracts.note') }} ({{ $t('contracts.no_notes') }})
                 </h4>
-                <base-button v-if="createCommentPermission" @click="openCreateModal"
-                             :text="`${ $t('contracts.add_note') }`">
-                    <template #left-icon>
-                        <BasePlusIcon fill="var(--violet-600)"/>
-                    </template>
-                </base-button>
+                <template v-if="expressView">
+                    <base-button @click="viewAllComments"
+                                 :text="`${ $t('filter_names.all') }`">
+                        <template #right-icon>
+                            <BaseArrowRightIcon/>
+                        </template>
+                    </base-button>
+                </template>
+                <template v-else>
+                    <base-button v-if="createCommentPermission" @click="openCreateModal"
+                                 :text="`${ $t('contracts.add_note') }`">
+                        <template #left-icon>
+                            <BasePlusIcon fill="var(--violet-600)"/>
+                        </template>
+                    </base-button>
+                </template>
+
             </div>
 
-            <div v-if="hasComment" class="comments-body">
+            <div v-if="hasComment && !commentLoading" class="comments-body">
                 <div v-for="comment in comments" class="comment" :key="comment.id">
                     <div class="comment-content">
                         <div class="comment-text">
@@ -28,7 +42,8 @@
                                 <template #button-content>
                                     <BaseDotsIcon/>
                                 </template>
-                                <b-dropdown-item v-if="editCommentPermission" href="#" @click="openEditModal(comment)">
+                                <b-dropdown-item v-if="editCommentPermission" href="#"
+                                                 @click="openEditModal(comment)">
                   <span class="d-flex mr-2">
                    <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
                   </span>
@@ -68,7 +83,8 @@
                     </div>
                 </div>
 
-                <div v-if="countOfPaymentItems" class="pagination__vue">
+
+                <div v-if="!expressView && countOfPaymentItems" class="pagination__vue">
                     <!--   Pagination   -->
                     <vue-paginate
                         :page-count="pagination.total"
@@ -110,13 +126,35 @@
         </span>
                     </div>
                 </div>
-
             </div>
 
             <div v-else class="comments-body">
                 <p class="comment-empty">
                     {{ $t('contracts.no_note') }}.
                 </p>
+                <div v-if="expressView" class="d-flex justify-content-end">
+                    <base-button @click="openCreateModal"
+                                 :text="`${ $t('contracts.add_note') }`">
+                        <template #left-icon>
+                            <BasePlusIcon fill="var(--violet-600)"/>
+                        </template>
+                    </base-button>
+                </div>
+            </div>
+
+            <div v-if="commentLoading">
+                <b-overlay :show="commentLoading" no-wrap opacity="0.5" style="z-index: 2222">
+                    <template #overlay>
+                        <div class="d-flex justify-content-center w-100">
+                            <div class="lds-ellipsis">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </template>
+                </b-overlay>
             </div>
 
         </div>
@@ -170,7 +208,7 @@
 
             <template #footer>
                 <div>
-                    <base-button @click="saveComment" :fixed="true" class="violet-gradient"
+                    <base-button :disabled="loading" @click="saveComment" class="w-100 violet-gradient"
                                  :text="$t(`${modalProperties.btnText}`)"/>
                 </div>
             </template>
@@ -205,16 +243,14 @@
             </template>
 
             <template #footer>
-                <div class="warning__before__delete-footer">
+                <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
                     <base-button
                         @click="cancelDelete"
-                        :fixed="true"
                         :text="`${ $t('no_cancel') }`"
                     >
                     </base-button>
                     <base-button
                         @click="deleteComment"
-                        :fixed="true"
                         :text="`${ $t('yes_delete') }`"
                         class="violet-gradient"
                     >
@@ -224,7 +260,6 @@
         </base-modal>
 
     </div>
-
 </template>
 
 <script>
@@ -243,7 +278,7 @@ import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import ContractsPermission from "@/permission/contract";
 
 export default {
-    name: "ContractComments",
+    name: "ApartmentComment",
     components: {
         BaseDeleteIcon,
         BaseButton,
@@ -256,6 +291,24 @@ export default {
         BaseCloseIcon,
         BaseModal,
     },
+    props: {
+        expressView: {
+            type: Boolean,
+            default: false
+        },
+        apartmentUuid: {
+            type: String,
+            required: '',
+        },
+        commentsData: {
+            type: Object,
+            required: true,
+        },
+        commentLoading: {
+            type: Boolean,
+            default: false
+        }
+    },
 
     data() {
         const showByOptions = []
@@ -267,8 +320,10 @@ export default {
             })
         }
 
+        const objectId = this.$route.params.object
         return {
             showByOptions,
+            objectId,
             pagination: {},
             params: {
                 limit: 20,
@@ -281,10 +336,19 @@ export default {
                 type: '',
                 title: '',
             },
-            contractId: this.$route.params.id,
+            loading: false,
             createCommentPermission: ContractsPermission.getContractsCreateCommentPermission(),
             editCommentPermission: ContractsPermission.getContractsEditCommentPermission(),
             deleteCommentPermission: ContractsPermission.getContractsInitialDeletePermission(),
+        }
+    },
+    watch: {
+        commentsData: {
+            deep: true,
+            immediate: true,
+            handler() {
+                this.setComments()
+            }
         }
     },
     computed: {
@@ -296,25 +360,47 @@ export default {
             return this.comments && this.comments.length > 0
         }
     },
-    async created() {
-        await this.getComments()
+    created() {
+        this.setComments()
     },
     methods: {
-        async getComments() {
-            await api.contractV2.getCommentList(this.contractId, this.params).then((res) => {
-                this.comments = res.data.items
-                this.pagination = res.data.pagination
-            }).catch((err) => {
-                this.toasted(err.message, "error");
-            })
+        setComments() {
+            if (this.expressView) {
+                this.comments = this.commentsData.items.slice(0, 2)
+            }
+            this.pagination = this.commentsData.pagination
         },
+        viewAllComments() {
+            this.$router.push({
+                    name: 'apartment-view-comment',
+                    params: {
+                        object: this.$route.params.object,
+                        id: this.apartmentUuid
+                    }
+                }
+            )
+        },
+        // async getComments() {
+        //     await api.apartmentsV2.getApartmentComments(this.objectId, this.apartmentUuid).then((res) => {
+        //         if (this.expressView) {
+        //             this.comments = res.data.items.slice(0, 2)
+        //         } else {
+        //             this.comments = res.data.items
+        //         }
+        //         this.pagination = res.data.pagination
+        //     }).catch((err) => {
+        //         this.toasted(err.message, "error");
+        //     })
+        // },
         swipeCommentsPage(page) {
             this.params.page = page
             this.getComments()
+            this.$emit('update-comments')
         },
         changeCommentsShowingLimit() {
             this.params.page = 1
-            this.getComments()
+            this.$emit('update-comments')
+            // this.getComments()
         },
         fullName(value) {
             if (value.first_name && value.last_name)
@@ -379,7 +465,7 @@ export default {
             this.$refs['warning-before-delete'].closeModal()
         },
         deleteComment() {
-            api.contractV2.deleteComment(this.contractId, this.commentId)
+            api.apartmentsV2.deleteApartmentComment(this.objectId, this.apartmentUuid, this.commentId)
                 .then(() => {
                     this.toasted(`${this.$t('sweetAlert.deleted')}`, "success");
                 })
@@ -388,7 +474,8 @@ export default {
                 })
                 .finally(() => {
                     this.$refs['warning-before-delete'].closeModal()
-                    this.getComments()
+                    // this.getComments()
+                    this.$emit('update-comments')
                 })
         },
         async saveComment() {
@@ -398,42 +485,45 @@ export default {
                     const data = {
                         comment: this.comment
                     }
+                    this.loading = true
                     if (this.modalProperties.type === 'create') {
-                        await api.contractV2.addComment(this.contractId, data)
+                        await api.apartmentsV2.createApartmentComment(this.objectId, this.apartmentUuid, data)
                             .then(() => {
                                 this.toasted(`${this.$t('sweetAlert.success_create_comment')}`, "success");
+                                this.closeCreateModal()
                             })
                             .catch((err) => {
                                 this.toasted(err.message, "error");
                             })
                     } else {
-                        await api.contractV2.editComment(this.contractId, this.commentId, data)
+                        await api.apartmentsV2.editApartmentComment(this.objectId, this.apartmentUuid, this.commentId, data)
                             .then(() => {
                                 this.toasted(`${this.$t('sweetAlert.successfully_edited')}`, "success");
+                                this.closeCreateModal()
                             })
                             .catch((err) => {
                                 this.toasted(err.message, "error");
                             })
                     }
-                    this.closeCreateModal()
-                    await this.getComments()
+                    this.loading = false
+                    await this.$emit('update-comments')
+                    // await this.getComments()
                 }
             })
 
         },
-
     }
+
 }
 </script>
 
 <style lang="scss" scoped>
 
-@import "../../../assets/scss/utils/pagination";
+@import "../../../../assets/scss/utils/pagination";
 
 .comments {
-    margin-top: 2rem;
-    border-top: 6px solid var(--gray-100);
     padding-top: 2rem;
+    padding-bottom: 2rem;
 
     p {
         margin-bottom: 0;
@@ -452,7 +542,12 @@ export default {
             line-height: 28px;
             color: var(--gray-600);
             margin-bottom: 0;
+
+            &.express-title {
+                color: var(--gray-400);
+            }
         }
+
     }
 
     &-body {
@@ -631,10 +726,131 @@ export default {
     }
 
     &-footer {
-        display: flex;
-        align-items: center;
         gap: 2rem;
+
+        button {
+            flex-grow: 1;
+        }
     }
 }
+
+
+::v-deep {
+    .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
+        font-family: Inter, sans-serif;
+        padding: 1rem 1rem 1rem 1.5rem !important;
+        height: 56px;
+        font-style: normal;
+        line-height: 22px !important;
+        border-radius: 2rem !important;
+        color: var(--gray-400) !important;
+        font-size: 1rem !important;
+        border: none !important;
+        outline: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        background-color: var(--gray-100) !important;
+        margin: 0 !important;
+        gap: .5rem;
+        //width: 100%;
+
+        &:hover {
+            -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
+            box-shadow: 0 8px 25px -8px var(--gray-400) !important;
+        }
+
+        .input-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .input-label {
+            font-weight: 900;
+            font-size: 8px;
+            line-height: 10px;
+            margin: 0 2px 0 0;
+            //margin-bottom: 2px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--gray-400);
+        }
+
+        .input-text {
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 22px;
+            color: var(--gray-600);
+            margin: 0;
+            max-width: 150px;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .default-label {
+            line-height: 22px;
+            font-size: 1rem;
+            color: var(--gray-400);
+            margin: 0;
+        }
+
+    }
+
+    .dropdown-toggle::after {
+        border: none;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        margin-left: 1rem;
+        background: url("../../../../assets/icons/icon-down.svg");
+        transition: all .2s ease-in-out;
+    }
+
+    .show .dropdown-toggle::after {
+        transform: rotate(-180deg);
+    }
+
+    .dropdown-menu {
+        flex-direction: column;
+        border: 1px solid var(--gray-200);
+        box-sizing: border-box;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+        border-radius: 24px;
+        padding: .5rem;
+        row-gap: .5rem;
+
+
+        .dropdown-item {
+            font-weight: 600 !important;
+            font-size: 16px !important;
+            line-height: 22px !important;
+            border-radius: 1rem;
+            padding: 12px 17px;
+            min-width: 256px;
+
+            &.show {
+                display: flex;
+            }
+
+            &:hover {
+                background-color: var(--gray-200);
+            }
+        }
+
+    }
+
+
+    .b-dropdown-text {
+        min-width: 16rem;
+        padding: .5rem !important;
+
+        .form-group {
+            margin-bottom: 0;
+        }
+    }
+}
+
 
 </style>

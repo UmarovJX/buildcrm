@@ -58,13 +58,13 @@
                 </template>
 
                 <template #cell(balcony)="data">
-            <span v-if="data.item.plan.balcony">
-              {{ data.item.plan.balcony_area }} м²
-            </span>
+                    <span v-if="data.item.plan.balcony">
+                      {{ data.item.plan.balcony_area }} м²
+                    </span>
 
                     <span v-else>
-              {{ $t("no") }}
-            </span>
+                      {{ $t("no") }}
+                    </span>
                 </template>
 
                 <template #cell(price)="data">
@@ -356,7 +356,7 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import {isPrimitiveValue, sortObjectValues} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading";
-import {mapActions, mapGetters} from "vuex";
+import {mapGetters} from "vuex";
 // import Filter from "@/components/Dashboard/Apartment/Components/ApartmentsFilter";
 import ReserveAdd from "@/components/Dashboard/Apartment/Components/Reserve";
 // import ViewClient from "@/components/Dashboard/Apartment/ViewClient";
@@ -517,7 +517,7 @@ export default {
     },
     computed: {
         ...mapGetters(["getPermission", "getMe"]),
-        ...mapActions(["fetchApartments", "fetchReserveClient"]),
+        // ...mapActions([ "fetchReserveClient"]),
         hasPermission() {
             return this.editPermission || this.isSoldPermission || this.viewPermission
         },
@@ -532,10 +532,12 @@ export default {
 
     watch: {
         '$route.query': {
-            handler() {
-                this.fetchContractList()
+            handler(value) {
+                if (value) {
+                    this.fetchContractList()
+                }
             },
-            deep: true
+            deep: true,
         },
     },
 
@@ -606,6 +608,7 @@ export default {
             //   name: "apartment-view",
             //   params: {object: this.$route.params.object, id: items[0].id},
             // });
+            console.log(items, 'is_sold');
             this.$emit('show-express-sidebar', items[0])
         },
 
@@ -666,8 +669,8 @@ export default {
                 query: this.filter,
             });
 
-            if (this.filter.filtered) await this.fetchApartments(this);
-            else await this.fetchApartments(this);
+            // if (this.filter.filtered) await this.fetchApartments(this);
+            // else await this.fetchApartments(this);
         },
 
         CreateReserve(id) {
@@ -675,27 +678,27 @@ export default {
             this.apartment_id = id;
         },
 
-        CreateReserveSuccess() {
-            this.fetchApartments(this).then(() => {
-                location.reload();
-            });
-        },
+        // CreateReserveSuccess() {
+        //     this.fetchApartments(this).then(() => {
+        //         location.reload();
+        //     });
+        // },
 
         CloseReserveInfo() {
             this.info_reserve = false;
             this.apartment_preview = {};
-            this.fetchApartments(this).then(() => {
-                location.reload();
-            });
+            // this.fetchApartments(this).then(() => {
+            //     location.reload();
+            // });
         },
 
         ReserveInfo(apartment) {
             this.info_reserve = true;
             this.apartment_preview = apartment;
             this.order_id = apartment.order.id;
-            this.fetchReserveClient(this).then(() => {
-                this.$root.$emit("bv::show::modal", "modal-view-reserved-client");
-            });
+            // this.fetchReserveClient(this).then(() => {
+            //     this.$root.$emit("bv::show::modal", "modal-view-reserved-client");
+            // });
         },
 
         getInfoReserve(apartment) {
@@ -731,6 +734,7 @@ export default {
         },
 
         async toggleApartmentToSale() {
+            console.log('this.soldComment', this.soldComment);
             if (this.soldComment) {
                 const body = {
                     comment: this.soldComment
@@ -791,8 +795,8 @@ export default {
                 query: this.filter,
             });
 
-            const vm = this;
-            await this.fetchApartments(vm)
+            // const vm = this;
+            // await this.fetchApartments(vm)
         },
     },
 

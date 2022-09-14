@@ -46,7 +46,8 @@ import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 import Documentation from "@/views/Documentation/documentation";
 import Checkout from "@/views/Checkout";
-
+import ApartmentContract from '@/views/Objects/Apartments/View/ContractTab'
+import ApartmentCommentTab from "@/views/Objects/Apartments/View/CommentTab";
 const routes = [
     {
         path: '/',
@@ -188,6 +189,24 @@ const routes = [
                 meta: {
                     requiresAuth: "apartments",
                 },
+                children: [
+                    {
+                        name: "checkout",
+                        path: "/objects/:object/apartments/checkout",
+                        component: ObjectsView,
+                        meta: {
+                            requiresAuth: "apartments",
+                        },
+                    },
+                    {
+                        name: "comments",
+                        path: "/objects/:object/apartments/comments",
+                        component: ObjectsView,
+                        meta: {
+                            requiresAuth: "apartments",
+                        },
+                    }
+                ]
             },
 
             {
@@ -212,12 +231,30 @@ const routes = [
 
             {
                 /* APARTMENT VIEW */
-                name: "apartment-view",
+                // name: "apartment-view",
                 path: "/objects/:object/apartment/:id",
                 component: ApartmentView,
                 meta: {
                     requiresAuth: "apartments",
                 },
+                children: [
+                    {
+                        name: "apartment-view",
+                        path: "contract",
+                        component: ApartmentContract,
+                        meta: {
+                            requiresAuth: "apartments",
+                        },
+                    },
+                    {
+                        name: "apartment-view-comment",
+                        path: "comment",
+                        component: ApartmentCommentTab,
+                        meta: {
+                            requiresAuth: "apartments",
+                        },
+                    }
+                ]
             },
 
             {

@@ -3,13 +3,13 @@
         <!--  Header Navigation  -->
         <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">
             <div class="d-flex align-items-center">
-        <span class="go__back" @click="backNavigation">
-          <base-arrow-left :width="32" :height="32"></base-arrow-left>
-        </span>
+                <span class="go__back" @click="backNavigation">
+                  <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+                </span>
                 <span class="breadcrumb__content">
           <span>
             {{ $t('payments.payment_list') }}
-            <base-arrow-right :width="18" :height="18"/>
+            <BaseArrowRight :width="18" :height="18"/>
             <span>{{ order.contract }}</span>
           </span>
           <span class="head">
@@ -86,6 +86,7 @@
             :filter-tab-list="filterTabList"
             @get-new-content="changeTabOrder"
         />
+
         <component
             :is="activeTab"
             :order="order"
@@ -98,20 +99,14 @@
         </component>
 
         <base-loading v-if="showLoading"/>
+
         <!-- WARNING BEFORE DELETE CONTRACT -->
         <base-modal ref="payment-deletion-warning">
             <template #header>
           <span class="warning__before__delete-head">
-            <span>
-              <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path opacity="0.4"
-                      d="M51.3346 27.9996C51.3346 40.8889 40.8883 51.3329 28.0013 51.3329C15.1143 51.3329 4.66797 40.8889 4.66797 27.9996C4.66797 15.1149 15.1143 4.66626 28.0013 4.66626C40.8883 4.66626 51.3346 15.1149 51.3346 27.9996"
-                      fill="#EF4444"/>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M30.3081 29.5574C30.3081 30.7612 29.2661 31.7427 27.988 31.7427C26.71 31.7427 25.668 30.7612 25.668 29.5574V18.5185C25.668 17.3148 26.71 16.3333 27.988 16.3333C29.2661 16.3333 30.3081 17.3148 30.3081 18.5185V29.5574ZM25.6811 37.4814C25.6811 36.2776 26.7178 35.2961 27.9879 35.2961C29.2951 35.2961 30.3345 36.2776 30.3345 37.4814C30.3345 38.6852 29.2951 39.6667 28.0144 39.6667C26.7284 39.6667 25.6811 38.6852 25.6811 37.4814Z"
-                      fill="#EF4444"/>
-              </svg>
-            </span>
+                <span class="go__back" @click="backNavigation">
+                    <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+                 </span>
             <span class="title">{{ $t('contracts.warning') }}</span>
           </span>
             </template>
@@ -147,16 +142,18 @@
             </template>
 
             <template #footer>
-                <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
+                <div class="warning__before__delete-footer">
                     <base-button
+                        :fixed="true"
                         @click="closePaymentDeletionModal"
                         :text="`${ $t('no_cancel') }`"
                     >
                     </base-button>
                     <base-button
+                        :fixed="true"
                         @click="deleteContact"
                         :text="`${ $t('yes_delete') }`"
-                        class="add__button"
+                        class="violet-gradient"
                     >
                     </base-button>
                 </div>
@@ -220,8 +217,9 @@
             </template>
 
             <template #footer>
-                <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
+                <div class="warning__before__delete-footer">
                     <base-button
+                        :fixed="true"
                         @click="nextReContract"
                         :text="`${ $t('next') }`"
                         class="violet-gradient"
@@ -500,21 +498,26 @@ export default {
     color: var(--gray-600);
 }
 
+.go__back {
+    width: 56px;
+    height: 56px;
+    border-radius: 100%;
+    background-color: var(--gray-100);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--gray-200);
+    }
+}
+
 .navigation__content {
     display: flex;
     align-items: center;
     margin-bottom: 52px;
 
-    .go__back {
-        width: 56px;
-        height: 56px;
-        border-radius: 100%;
-        background-color: var(--gray-100);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
 
     .breadcrumb__content {
         display: inline-flex;
@@ -631,11 +634,8 @@ export default {
     }
 
     &-footer {
+        display: flex;
         gap: 2rem;
-
-        button {
-            flex-grow: 1;
-        }
     }
 }
 

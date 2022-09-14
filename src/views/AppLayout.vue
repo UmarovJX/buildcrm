@@ -5,22 +5,26 @@
             :theme="theme"
         />
 
-        <main class="main-content">
-<!--            <header>-->
-<!--                <slot name="breadcrumb"></slot>-->
-<!--                <BaseAvatar :avatar="getUserAvatarUrl">-->
-<!--                    <template #full_name>-->
-<!--                        {{ getNameSnippet }}-->
-<!--                    </template>-->
-<!--                    <template #role>-->
-<!--                        {{ getRole }}-->
-<!--                    </template>-->
-<!--                </BaseAvatar>-->
-<!--            </header>-->
+        <main v-if="showHeaderContent" class="main-content">
+            <!--            <header>-->
+            <!--                <slot name="breadcrumb"></slot>-->
+            <!--                <BaseAvatar :avatar="getUserAvatarUrl">-->
+            <!--                    <template #full_name>-->
+            <!--                        {{ getNameSnippet }}-->
+            <!--                    </template>-->
+            <!--                    <template #role>-->
+            <!--                        {{ getRole }}-->
+            <!--                    </template>-->
+            <!--                </BaseAvatar>-->
+            <!--            </header>-->
             <div class="app-content">
                 <router-view/>
             </div>
         </main>
+        <template v-else>
+            <router-view/>
+        </template>
+
     </div>
 </template>
 
