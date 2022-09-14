@@ -12,10 +12,6 @@ export const monthsNameList = [
     'november',
     'december',
 ]
-/*
-* the bug that was showing the wrong date when choosing the initial and monthly payment has been eliminated
-* */
-
 export const weekDaysNameList = []
 
 export function getDaysInMonth(date) {
