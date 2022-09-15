@@ -14,6 +14,7 @@
       />
       <!--  Рассрочка (monthly)  -->
       <base-price-input
+          v-if="showMonthlyInputField"
           v-model="calc.monthly_payment_period"
           :value="calc.monthly_payment_period"
           :permission-change="true"
@@ -114,7 +115,7 @@
       -->
       <div class="apartment-item">
         <span class="apartment-label">
-         Скидка от общей суммы
+         {{ $t('apartments.view.discount_price') }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.total_discount) }}
@@ -122,7 +123,7 @@
       </div>
       <div class="apartment-item">
         <span class="apartment-label">
-          Итого
+          {{ $t('total') }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.total) }}
@@ -169,7 +170,10 @@ export default {
     ...mapState('checkout', {
       calc: 'calc',
       discount: 'discount'
-    })
+    }),
+    showMonthlyInputField() {
+      return this.calc.prepay !== 100
+    },
   },
   methods: {
     ...mapMutations('checkout', {

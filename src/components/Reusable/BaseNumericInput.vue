@@ -1,11 +1,12 @@
 <template>
   <input
       v-if="!readOnly"
-      ref="numeric"
-      :placeholder="placeholder"
-      :disabled="disabled"
       v-model="amount"
       type="text"
+      ref="numeric"
+      :style="fieldStyle"
+      :disabled="disabled"
+      :placeholder="placeholder"
       @blur="onBlurHandler"
       @input="onInputHandler"
       @focus="onFocusHandler"
@@ -171,6 +172,11 @@ export default {
       default: 'prefix',
       required: false
     },
+
+    fieldStyle: {
+      type: Object,
+      default: () => ({})
+    }
   },
 
   data: () => ({

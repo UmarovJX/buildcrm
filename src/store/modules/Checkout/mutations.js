@@ -1,4 +1,5 @@
 import {dateProperties} from "@/util/calendar";
+import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 
 export default {
     initializeState(state, context) {
@@ -96,7 +97,9 @@ export default {
     },
     deleteSchedule(state, {type, amount, month}) {
         let paymentType = type === 'initial' ? 'initial_payments' : 'credit_months'
-        const deleteIndex = state[paymentType].findIndex(pm => pm.type === type && pm.month === month && pm.amount === amount)
+        const deleteIndex = state[paymentType].findIndex(pm => {
+            return pm.type === type && pm.month === month && pm.amount === amount
+        })
         if (deleteIndex !== -1) {
             state[paymentType].splice(deleteIndex, 1)
         }
@@ -145,15 +148,15 @@ export default {
         }
     },
     setMonthlyAmount(state, monthly) {
-        state.calc.monthly_payment = monthly
+        state.calc.monthly_payment = fmd(monthly)
     },
     setMonth(state, month) {
         state.calc.monthly_payment_period = month
     },
     setInitialResult(state, initial) {
-        state.calc.initial_price = initial
+        state.calc.initial_price = fmd(initial)
     },
     setRemainAmount(state, remainPrice) {
-        state.calc.remainder = remainPrice
+        state.calc.remainder = fmd(remainPrice)
     }
 }

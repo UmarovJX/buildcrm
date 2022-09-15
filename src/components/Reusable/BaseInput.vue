@@ -15,6 +15,7 @@
         separator="space"
         :placeholder="placeholder"
         ref="base-input"
+        :field-style="inputFieldStyle"
         @input="triggerNumberEvent"
     />
     <input
@@ -24,6 +25,7 @@
         :disabled="disable"
         id="base-input"
         ref="base-input"
+        :style="inputFieldStyle"
         :placeholder="placeholder"
         @input="triggerInputEvent"
     />
@@ -35,6 +37,7 @@
         :disabled="disable"
         id="base-input-mask"
         ref="base-input"
+        :style="inputFieldStyle"
         :placeholder="placeholder"
         @input="triggerInputEvent"
     />
@@ -52,6 +55,10 @@
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import {debounce} from "@/util/reusable";
 
+const cssDefaultProperty = {
+  type: String,
+  default: ''
+}
 export default {
   name: "BaseInput",
   components: {
@@ -90,7 +97,17 @@ export default {
     disable: {
       type: Boolean,
       default: () => false
-    }
+    },
+    margin: cssDefaultProperty,
+    padding: cssDefaultProperty,
+    paddingLeft: cssDefaultProperty,
+    paddingRight: cssDefaultProperty,
+    paddingBottom: cssDefaultProperty,
+    paddingTop: cssDefaultProperty,
+    marginTop: cssDefaultProperty,
+    marginBottom: cssDefaultProperty,
+    marginLeft: cssDefaultProperty,
+    marginRight: cssDefaultProperty
   },
   data() {
     return {
@@ -105,6 +122,32 @@ export default {
       },
       set(val) {
         this.$emit('input', val)
+      }
+    },
+    inputFieldStyle() {
+      const {
+        margin,
+        padding,
+        paddingLeft,
+        paddingRight,
+        paddingBottom,
+        paddingTop,
+        marginTop,
+        marginBottom,
+        marginLeft,
+        marginRight
+      } = this
+      return {
+        margin,
+        padding,
+        paddingLeft,
+        paddingRight,
+        paddingBottom,
+        paddingTop,
+        marginTop,
+        marginBottom,
+        marginLeft,
+        marginRight
       }
     }
   },
@@ -143,10 +186,7 @@ export default {
     triggerNumberEvent($event) {
       this.debounceInput = $event
       this.$emit('trigger-input', this.debounceInput)
-    },
-    // setTriggerValue(value) {
-    //   this.$refs['base-input'].setVModalValue(value)
-    // },
+    }
   },
 }
 </script>

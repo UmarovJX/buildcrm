@@ -86,7 +86,7 @@
 
 
               <div class="app-tab__header">
-                <h3 class="section-title">Детали платежа</h3>
+                <h3 class="section-title">{{ $t('payment_details') }}</h3>
               </div>
               <div class="app-checkout__calculator">
                 <checkout-calculator
@@ -100,7 +100,11 @@
 
 
               <div class="app-tab__header">
-                <h3 class="section-title">График оплаты (12 месяцев)</h3>
+                <h3 class="section-title">
+                  {{ $t('payment_schedule') }}
+                  ({{ calc.monthly_payment_period }}
+                  {{ $t('month') }})
+                </h3>
               </div>
               <div class="app-checkout__calculator">
                 <PaymentMonths :date-picker-icon-fill="datePickerIconFill"/>

@@ -1,15 +1,15 @@
 <template>
   <div class="payments-list">
     <b-table
-        class="table__list font-inter"
-        thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border"
         sticky-header
         borderless
         responsive
-        :items="paymentsSchedule"
-        :fields="fields"
         show-empty
+        class="table__list font-inter"
+        thead-tr-class="row__head__bottom-border"
+        tbody-tr-class="row__body__bottom-border"
+        :fields="fields"
+        :items="paymentsSchedule"
         :empty-text="$t('no_data')"
     >
       <template class="header_label" #head(name)="data">
@@ -173,15 +173,15 @@ export default {
       return [
         {
           key: 'month',
-          label: 'Дата',
+          label: this.$t('date')
         },
         {
           key: 'type',
-          label: 'Тип',
+          label: this.$t('type'),
         },
         {
           key: 'amount',
-          label: 'Сумма',
+          label: this.$t('sum'),
           formatter: (value) => formatToPrice(value, 2)
         },
         {
