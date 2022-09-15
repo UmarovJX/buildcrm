@@ -208,8 +208,12 @@
 
             <template #footer>
                 <div>
-                    <base-button :disabled="loading" @click="saveComment" class="w-100 violet-gradient"
-                                 :text="$t(`${modalProperties.btnText}`)"/>
+                    <base-button
+                        :disabled="loading"
+                        @click="saveComment"
+                        :fixed="true"
+                        design="violet-gradient"
+                        :text="$t(`${modalProperties.btnText}`)"/>
                 </div>
             </template>
         </base-modal>
@@ -243,16 +247,17 @@
             </template>
 
             <template #footer>
-                <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
+                <div class="warning__before__delete-footer">
                     <base-button
                         @click="cancelDelete"
+                        :fixed="true"
                         :text="`${ $t('no_cancel') }`"
-                    >
-                    </base-button>
+                    />
                     <base-button
                         @click="deleteComment"
+                        :fixed="true"
                         :text="`${ $t('yes_delete') }`"
-                        class="violet-gradient"
+                        design="violet-gradient"
                     >
                     </base-button>
                 </div>
@@ -727,10 +732,8 @@ export default {
 
     &-footer {
         gap: 2rem;
-
-        button {
-            flex-grow: 1;
-        }
+        display: flex;
+        align-items: center;
     }
 }
 

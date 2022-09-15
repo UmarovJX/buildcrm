@@ -113,7 +113,7 @@
       <template #footer>
         <base-button
             @click="editPayment"
-            class="apply-button w-100"
+            :fixed="true"
             :text="`${ $t('apply') }`"
         />
       </template>
@@ -351,9 +351,4 @@ export default {
   cursor: pointer;
 }
 
-.apply-button {
-  background-color: var(--gray-100);
-  color: var(--gray-600);
-  font-family: Inter, sans-serif;
-}
 </style>

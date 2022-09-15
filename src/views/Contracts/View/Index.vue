@@ -153,7 +153,7 @@
                         :fixed="true"
                         @click="deleteContact"
                         :text="`${ $t('yes_delete') }`"
-                        class="violet-gradient"
+                        design="violet-gradient"
                     >
                     </base-button>
                 </div>
@@ -222,7 +222,7 @@
                         :fixed="true"
                         @click="nextReContract"
                         :text="`${ $t('next') }`"
-                        class="violet-gradient"
+                        design="violet-gradient"
                     >
                     </base-button>
                 </div>

@@ -163,7 +163,12 @@
                         spinner-variant="primary"
                         class="d-inline-block w-100"
                     >
-                        <base-button :text="$t('add')" @click="submitNewPayment" class="w-100 violet-gradient"/>
+                        <base-button
+                            :text="$t('add')"
+                            @click="submitNewPayment"
+                            :fixed="true"
+                            design="violet-gradient"
+                        />
                     </b-overlay>
                 </template>
             </base-modal>
@@ -454,7 +459,11 @@
                         spinner-variant="primary"
                         class="d-inline-block w-100 mr-3"
                     >
-                        <base-button @click="payOnlyInitialPayment" text="Отменить" class="w-100"/>
+                        <base-button
+                            @click="payOnlyInitialPayment"
+                            text="Отменить"
+                            :fixed="true"
+                        />
                     </b-overlay>
                     <b-overlay
                         :show="monthlyPaymentLoading"

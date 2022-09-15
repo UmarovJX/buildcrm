@@ -86,7 +86,11 @@
           spinner-variant="primary"
           class="d-inline-block w-100"
       >
-        <base-button text="Применить" @click="submitModifyTransaction" class="w-100 add__button"/>
+        <base-button
+            text="Применить"
+            @click="submitModifyTransaction"
+            :fixed="true"
+            design="violet-gradient"/>
       </b-overlay>
     </template>
   </base-modal>
@@ -247,8 +251,5 @@ export default {
     margin: 0 1rem
     width: 100%
 
-.add__button
-  background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
-  color: #FFFFFF
 
 </style>
