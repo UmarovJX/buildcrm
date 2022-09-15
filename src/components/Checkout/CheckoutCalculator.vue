@@ -19,7 +19,7 @@
           :permission-change="true"
           :label="true"
           :top-placeholder="true"
-          :placeholder="$t('installment') + ' month'"
+          :placeholder="$t('installment') +' '+ $t('month')"
           currency="месяцев"
           class="checkout-monthly-payment-period"
           @input="mutateMonthlyPaymentPeriod"
@@ -88,7 +88,7 @@
     <div class="calculator-result">
       <div class="apartment-item">
         <span class="apartment-label">
-         Начальная цена
+         {{ $t('starting_price') }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.initial_price) }}
@@ -96,7 +96,7 @@
       </div>
       <div class="apartment-item">
         <span class="apartment-label">
-         Остаток
+         {{ $t('remainder') }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.remainder) }}
