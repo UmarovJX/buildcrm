@@ -1,16 +1,16 @@
 <template>
-    <main>
+    <div>
         <base-button class="mb-4" @click="openReleaseModal" text="add release note"/>
         <base-button @click="openReleaseNote" text="about release note"/>
 
         <base-modal ref="release-note-modal" design="release-note">
             <template #header>
-      <span class="release-note-header">
-        <p>{{ $t("release_note.add_release_note") }}</p>
-        <p @click="closeReleaseModal" class="cursor-pointer">
-          <BaseCloseIcon/>
-        </p>
-      </span>
+                <div class="release-note-header">
+                    <p>{{ $t("release_note.add_release_note") }}</p>
+                    <p @click="closeReleaseModal" class="cursor-pointer">
+                        <BaseCloseIcon/>
+                    </p>
+                </div>
             </template>
             <template #main>
                 <div class="release-note-main">
@@ -18,7 +18,7 @@
                         <h3 class="block-title">{{ $t("main") }}</h3>
                         <base-select
                             :label="true"
-                            :value="form.release"
+                            :value="form.version"
                             :no-placeholder="false"
                             @change="setFormProperty('release', $event)"
                             :placeholder="$t('release_note.version_number')"
@@ -30,45 +30,45 @@
                             <h3 class="block-title">{{ $t("release_note.texts") }}</h3>
                         </div>
                         <div class="release-note__block-item col-6">
-                            <p>{{ $t("release_note.new") }}</p>
+                            <p>{{ $t("release_note.new") }} (UZ)</p>
                             <base-input
-                                v-model="form.new_text"
+                                v-model="form.latest['uz']"
                                 :placeholder="`${ $t('text') }`"
                             />
                         </div>
                         <div class="release-note__block-item col-6">
-                            <p>{{ $t("release_note.new") }}</p>
+                            <p>{{ $t("release_note.new") }} (RU)</p>
                             <base-input
-                                v-model="form.new_text"
+                                v-model="form.latest['ru']"
                                 :placeholder="`${ $t('text') }`"
                             />
                         </div>
                         <div class="release-note__block-item col-6">
-                            <p>{{ $t("edited") }}</p>
+                            <p>{{ $t("edited") }} (UZ)</p>
                             <base-input
-                                v-model="form.edited_text"
+                                v-model="form.fixed['uz']"
                                 :placeholder="`${ $t('text') }`"
                             />
                         </div>
                         <div class="release-note__block-item col-6">
-                            <p>{{ $t("edited") }}</p>
+                            <p>{{ $t("edited") }} (RU)</p>
                             <base-input
-                                v-model="form.edited_text"
+                                v-model="form.fixed['ru']"
                                 :placeholder="`${ $t('text') }`"
                             />
                         </div>
-
                     </div>
                 </div>
             </template>
             <template #footer>
-      <span class="release-note-footer">
-        <base-button @click="closeReleaseModal" :text="`${ $t('cancel') }`"/>
-        <base-button @click="recheckRelease" :text="`${ $t('recheck') }`"/>
-        <base-button @click="addRelease" design="violet-gradient" :text="`${ $t('add') }`"/>
-      </span>
+                <div class="release-note-footer">
+                    <base-button @click="closeReleaseModal" :text="`${ $t('cancel') }`"/>
+                    <base-button @click="recheckRelease" :text="`${ $t('recheck') }`"/>
+                    <base-button @click="addRelease" design="violet-gradient" :text="`${ $t('add') }`"/>
+                </div>
             </template>
         </base-modal>
+
 
         <base-modal ref="release-note" design="release-info">
             <template #header>
@@ -107,7 +107,7 @@
                 </div>
             </template>
         </base-modal>
-    </main>
+    </div>
 </template>
 
 <script>
@@ -140,9 +140,15 @@ export default {
         return {
             releaseNotes,
             form: {
-                release: null,
-                new_text: null,
-                edited_text: null
+                version: null,
+                latest: {
+                    uz: null,
+                    ru: null
+                },
+                fixed: {
+                    uz: null,
+                    ru: null
+                }
             },
         }
     },
