@@ -32,7 +32,8 @@
                 <base-button
                     :text="$t('next')"
                     @click="importUploadExcel"
-                    class="w-100 violet-gradient"
+                    :fixed="true"
+                    design="violet-gradient"
                 />
             </b-overlay>
         </template>

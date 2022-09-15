@@ -314,14 +314,15 @@
                     <div class="d-flex justify-content-between" style="gap: 2rem">
                         <base-button
                             @click="closeSoldModal"
-                            class="w-100"
-                            text="Отменить"
+                            :fixed="true"
+                            :text="$t('cancel')"
                         />
                         <base-button
                             @click="toggleApartmentToSale"
                             :disabled="!soldComment"
-                            class="violet-gradient w-100"
-                            text="Оформить"
+                            :fixed="true"
+                            design="violet-gradient"
+                            :text="$t('create_agree')"
                         />
                     </div>
                 </template>

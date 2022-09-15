@@ -271,7 +271,8 @@
         <base-button
             @click="setNewContractNumber"
             :disabled="!changedContractNumber"
-            class="violet-gradient w-100"
+            :fixed="true"
+            design="violet-gradient"
             text="Применить"
         />
       </template>
