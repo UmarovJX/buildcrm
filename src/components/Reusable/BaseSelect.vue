@@ -100,9 +100,10 @@ export default {
   methods: {
     triggerEvent() {
       this.$emit('change', this.inlineValue)
+      this.$emit('input', this.inlineValue)
     },
     settingUp() {
-      if (!this.placeholder || this.noPlaceholder) {
+      if (this.options.length && (!this.placeholder || this.noPlaceholder)) {
         this.inlineValue = this.options[0][this.valueField]
       }
     },

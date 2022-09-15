@@ -90,12 +90,15 @@ export default {
   watch: {
     dateValue(lastValue) {
       this.$emit('input', lastValue)
+      this.$emit('select', lastValue)
     },
     value: {
       immediate: true,
       handler(value) {
         if (value && value.length) {
           this.dateValue = value
+        } else {
+          this.dateValue = null
         }
       }
     }

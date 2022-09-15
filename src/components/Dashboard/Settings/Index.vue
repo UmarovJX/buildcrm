@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div>
     <div class="card">
       <div class="card-content">
         <div class="card-header">
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <script>

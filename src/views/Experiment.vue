@@ -1,152 +1,667 @@
 <template>
-  <main>
-    <div class="input-number-content">
-      <base-price-input
-          class="input-component"
-          placeholder="input price"
-          value="100,2121.2121"
-          :precision="2"
-      />
-      <div class="base-calendar">
-        <date-picker
-            type="date"
-            value-type="format"
-            :format="format"
-            :placeholder="placeholder"
-            v-model="dateValue"
-            class="date-picker"
-            :range="range"
-        ></date-picker>
-      <span class="calendar-icon">
-      <base-calendar-icon
-          :fill="iconFill"
-          :width="iconSquareSize"
-          :height="iconSquareSize"
-      />
-    </span>
-      </div>
+  <div class="app-checkout">
+    <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
+    <app-header>
+      <template #header-right>
+        <div v-if="expiry_at" :class="flexCenter" class="checkout-timer background-violet-gradient mr-2">
+          <CountDown
+              :deadline="expiry_at"
+              :showDays="false"
+              :showHours="false"
+              @timeElapsed="timeElapsedHandler"
+          />
+        </div>
+      </template>
+    </app-header>
+    <div class="app-checkout-main">
+      <b-tabs
+          pills
+          v-model="tabIndex"
+          content-class="app-tabs-content"
+          nav-class="app-tabs-content-header"
+      >
+
+        <!--  FIRST TAB    -->
+        <b-tab active>
+          <template #title>
+            <div class="app-tab-title d-flex align-items-center">
+              <span :class="flexCenter" class="app-tab-title-number">1</span>
+              <p class="app-tab-title-content">{{ $t('contract_details') }}</p>
+              <span :class="flexCenter" class="app-tab-title-right-icon">
+                <base-right-icon :width="18" :height="18"/>
+              </span>
+            </div>
+          </template>
+
+          <DetailsContract
+              ref="detail-contract"
+              :apartments="apartments"
+              :order="order"
+              :client-data="client"
+              @set-client="setClient"
+              @change-contract-number="setNewContractNumber"
+          />
+
+        </b-tab>
+        <!--  END OF FIRST TAB    -->
+
+        <!--   SECOND TAB   -->
+        <b-tab :disabled="stepTwoDisable">
+          <template #title>
+            <div class="app-tab-title d-flex align-items-center">
+              <span :class="flexCenter" class="app-tab-title-number">2</span>
+              <p class="app-tab-title-content">{{ $t('payment_details') }}</p>
+            </div>
+          </template>
+
+          <div v-if="tabIndex===1" class="app-tab-content">
+            <div>
+              <div class="app-tab__header-collapse" v-b-toggle.accordion-1>
+                <h3 class="section-title">{{ $t('client_info') }}</h3>
+                <img class="collapse-icon" :src="require('@/assets/icons/icon-down.svg')" alt="">
+              </div>
+              <b-collapse id="accordion-1">
+                <ClientInformation :client="client"/>
+              </b-collapse>
+
+              <div class="apartments-list">
+                <ApartmentItem
+                    v-for="(apartment,index) in apartments"
+                    :key="apartment.id + index"
+                    :apartment="apartment"
+                    :remove-btn="apartments.length > 1"
+                    :remove-item="removeApartment"
+                    :other-price="otherPrice"
+                    @update="updateItem"
+                />
+              </div>
+
+
+              <div class="app-tab__header">
+                <h3 class="section-title">Детали платежа</h3>
+              </div>
+              <div class="app-checkout__calculator">
+                <checkout-calculator
+                    :order="order"
+                    :apartments="apartments"
+                    :payment-options="paymentOptions"
+                    date-picker-icon-fill="#7C3AED"
+                    @update="updateState"
+                />
+              </div>
+
+
+              <div class="app-tab__header">
+                <h3 class="section-title">График оплаты (12 месяцев)</h3>
+              </div>
+              <div class="app-checkout__calculator">
+                <PaymentMonths :date-picker-icon-fill="datePickerIconFill"/>
+                <!--                                <checkout-calculator checkout-information="" date-picker-icon-fill=""/>-->
+              </div>
+
+            </div>
+          </div>
+        </b-tab>
+        <!--   END OF SECOND TAB   -->
+
+        <!--        TABS END -->
+        <template #tabs-end>
+          <b-nav-item role="presentation" href="#">
+            <base-button
+                @click="changeTab"
+                class="violet-gradient"
+                :text="`${ $t('next') }`"
+            >
+              <template #right-icon>
+                <BaseArrowRightIcon fill="var(--white)"/>
+              </template>
+            </base-button>
+          </b-nav-item>
+        </template>
+      </b-tabs>
     </div>
-  </main>
+
+    <TrashBasket @return-apartment="returnApartments" :apartment-count="trashStorage.length"/>
+  </div>
 </template>
 
 <script>
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import "vue2-datepicker/index.css";
-import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
-import DatePicker from "vue2-datepicker";
+import api from "@/services/api";
+import AppHeader from "@/components/AppHeader";
+import BaseRightIcon from "@/components/icons/BaseRightIcon";
+// import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
+// import BaseEditIcon from "@/components/icons/BaseEditIcon";
+// import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+// import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+// import BaseInput from "@/components/Reusable/BaseInput";
+// import BaseSelect from "@/components/Reusable/BaseSelect";
+import BaseButton from "@/components/Reusable/BaseButton";
+// import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
+// import BaseModal from "@/components/Reusable/BaseModal";
+import ClientInformation from "@/views/Checkout/ClientInformation";
+import ApartmentItem from "@/views/Checkout/ApartmentItem";
+import CheckoutCalculator from "@/components/Checkout/CheckoutCalculator";
+import ErrorNotification from "@/components/Reusable/ErrorNotification";
+// import FlipCountdown from "vue2-flip-countdown";
+import CountDown from "@/components/Reusable/CountDown";
+import DetailsContract from "@/views/Checkout/DetailsContract";
+import PaymentMonths from "@/views/Checkout/PaymentMonths";
+import {mapActions, mapGetters, mapState} from 'vuex'
+import {dateProperties} from "@/util/calendar";
+import TrashBasket from "@/components/Checkout/TrashBasket";
 
 export default {
-  name: "Experiment",
+  name: "Checkout",
   components: {
-    BasePriceInput,
-    DatePicker,
-    BaseCalendarIcon
-  },
-  emits: ['input'],
-  props: {
-    defaultValue: {
-      type: [Array, String],
-      default: () => []
-    },
-    range: {
-      type: Boolean,
-      default: () => true
-    },
-    format: {
-      type: String,
-      default: 'YYYY-MM-DD'
-    },
-    placeholder: {
-      type: String,
-      default: 'Select date range'
-    },
-    iconSquareSize: {
-      type: Number,
-      default: 24
-    },
-    iconFill: {
-      type: String,
-      default: '#9CA3AF'
-    }
+    ErrorNotification,
+    CheckoutCalculator,
+    ApartmentItem,
+    ClientInformation,
+    AppHeader,
+    // BaseInput,
+    // BaseSelect,
+    BaseButton,
+    // BaseModal,
+    // BaseEditIcon,
+    BaseRightIcon,
+    // BaseDatePicker,
+    // OutputInformation,
+    // BaseCircleWrapper,
+    BaseArrowRightIcon,
+    // BaseCloseIcon,
+    CountDown,
+    DetailsContract,
+    PaymentMonths,
+    TrashBasket
+
   },
   data() {
     return {
-      dateValue: null
+      holdList: ['7d497657-3461-4da9-8c0a-0e0b534880f6', '5a7d2b3e-cada-4041-ad1a-8e4c1b7f0e2e'],
+      newContractNumber: '',
+      changedContractNumber: false,
+      datePickerIconFill: 'var(--violet-600)',
+      tabIndex: 1,
+      discounts: [],
+      client: {
+        first_name: {
+          lotin: "",
+          kirill: "",
+        },
+        last_name: {
+          lotin: "",
+          kirill: "",
+        },
+        second_name: {
+          lotin: "",
+          kirill: "",
+        },
+        passport_series: null,
+        issued_by_whom: null,
+        date_of_issue: null,
+        language: "uz",
+        friends: false,
+        birth_day: null,
+        phone: null,
+        other_phone: null,
+        first_payment_date: null,
+        payment_date: null,
+      },
+      validationError: {
+        type: '',
+        message: '',
+        visible: false,
+      },
+      stepTwoDisable: false,
+    }
+  },
+  computed: {
+    ...mapState('checkout', {
+      calc: 'calc',
+      apartments: 'apartments',
+      discount: 'discount',
+      month: 'month',
+      created_by: 'created_by',
+      contract_number: 'contract_number',
+      expiry_at: 'expiry_at',
+      uuid: 'uuid',
+      order: 'order',
+      initial_payments: 'initial_payments',
+      credit_months: 'credit_months',
+      comment: 'comment',
+      trashStorage: 'trashStorage'
+    }),
+    ...mapGetters('checkout', {
+      otherPrice: 'isDiscountOtherType'
+    }),
+    flexCenter() {
+      return 'd-flex justify-content-center align-items-center'
+    },
+    paymentOptions() {
+      if (this.apartments.length && this.apartments[0]?.discounts) {
+        const discounts = this.apartments[0].discounts.map((discount, index) => {
+          let text = this.$t("apartments.view.variant")
+          if (discount.type === 'promo') {
+            text += this.$t('promo.by_promo')
+          }
+          text += ` ${index + 1} - ${discount.prepay}%`
+          return {
+            text,
+            value: discount.id,
+            ...discount,
+          }
+        })
+
+        discounts.push({
+          text: ' ' + this.$t('apartments.view.other_variant'),
+          value: 'other',
+          type: 'percent',
+          currency: null,
+          amount: 0,
+          id: 'other',
+          prepay: 30
+        })
+        return discounts
+      }
+      return []
     }
   },
   watch: {
-    dateValue(lastValue) {
-      this.$emit('input', lastValue)
-    },
-    defaultValue: {
-      immediate: true,
-      handler() {
-        if (this.defaultValue && this.defaultValue.length) {
-          this.dateValue = this.defaultValue
-        }
-      }
+    newContractNumber(value) {
+      this.changedContractNumber = !!(value && value.length && !(value === this.order.contract_number));
     }
   },
-  // mounted() {
-  // this.initDefaultValue()
-  // },
+  created() {
+    this.setHoldApartments()
+  },
   methods: {
-    // initDefaultValue() {
-    //   console.log(this.defaultValue, 'defaultValue');
-    //   if (this.defaultValue && this.defaultValue.length) {
-    //     console.log(this.defaultValue, 'ifni ichida defaultValue');
-    //
-    //     this.dateValue = this.defaultValue
-    //   }
-    // },
-    clearField() {
-      this.dateValue = undefined
+    ...mapActions('checkout', {
+      setup: 'setup',
+      updateState: 'updateState',
+      updateApartment: 'updateApartment'
+    }),
+    returnApartments() {
+      console.log('returned')
+    },
+    removeApartment(apartment) {
+      this.removeApartment(apartment)
+    },
+    updateItem(item) {
+      this.updateApartment(item)
+    },
+    async setHoldApartments() {
+      try {
+        const {data} = await api.orders.holdOrder(this.holdList)
+        if (data) {
+          const context = {
+            order: data,
+            uuid: data.uuid,
+            expiry_at: data.expiry_at,
+            apartments: data.apartments,
+            contract_number: data.contract_number,
+            discounts: data.apartments[0].discounts,
+            discount: data.apartments[0].discounts[0]
+          }
+          this.setup(context)
+          this.startCounter()
+        }
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      }
+    },
+    setClient(value) {
+      this.client = value
+    },
+    startCounter() {
+      this.expiry_at = this.$moment(this.expiry_at)
+          .utcOffset("+0500")
+          .format("YYYY-MM-DD H:mm:ss");
+
+      const current = this.$moment(new Date())
+          .utcOffset("+0500")
+          .format("YYYY-MM-DD H:mm:ss");
+
+      const expired = this.$moment(this.order.expiry_at)
+          .utcOffset("+0500")
+          .format("YYYY-MM-DD H:mm:ss");
+
+      const time = new Date(current) - new Date(expired);
+      if (time > 0) {
+        this.timeElapsedHandler();
+      }
+    },
+    async changeTab() {
+      const clientFieldValidation = await this.$refs['detail-contract'].validate()
+      if (clientFieldValidation) {
+        const body = {...this.client, type_client: this.client.friends ? 'friends' : 'unknown'}
+        api.clientsV2.createClient(body).then(() => {
+          this.validationError = {
+            visible: true,
+            message: 'Успешно',
+            type: "success"
+          }
+          if (this.tabIndex === 0) {
+            this.stepTwoDisable = false
+            setTimeout(() => {
+              this.tabIndex = 1
+            }, 100)
+          }
+        }).catch((err) => {
+          let error = []
+          for (const value of Object.values(err.response.data)) {
+            error = [...error, value]
+          }
+          this.validationError = {
+            visible: true,
+            message: error.join(', '),
+            type: "error"
+          }
+          this.stepTwoDisable = true
+        })
+      } else {
+        this.validationError = {
+          visible: true,
+          message: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+          type: "error"
+        }
+        this.stepTwoDisable = true
+      }
+    },
+    backToView() {
+      if (this.order.status === "sold") {
+        this.$router.push({
+          name: "contracts-view",
+          params: {id: this.$route.params.id},
+        });
+      }
+    },
+    timeElapsedHandler() {
+      this.expiredConfirm();
+    },
+    async expiredConfirm() {
+      try {
+        this.loading = true;
+        await api.orders.deactivateOrderHold(this.order.uuid)
+            .then(() => {
+              this.$router.push({
+                name: "apartments",
+              });
+            })
+            .catch();
+      } catch (error) {
+        this.toastedWithErrorCode(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    setNewContractNumber(newNumber) {
+      this.changedContractNumber = true
+      this.newContractNumber = newNumber
+    },
+    async submitConcludeContract() {
+      const {
+        discount,
+        client,
+        credit_months,
+        initial_payments,
+        calc, edit,
+        comment,
+        order,
+        apartments,
+        changedContractNumber,
+        newContractNumber
+      } = this
+
+      const form = new FormData()
+      form.append('discount_id', discount.id)
+      form.append('type_client', client.friends)
+      form.append('client_id', client.id)
+
+      for (let i = 0; i < credit_months.length; i++) {
+        const p = credit_months[i]
+        const {ymd} = dateProperties(p.month, 'string')
+        form.append(`monthly[${i}][date]`, ymd)
+        form.append(`monthly[${i}][amount]`, p.amount)
+        form.append(`monthly[${i}][edited]`, (+p.edit).toString())
+      }
+
+      for (let i = 0; i < initial_payments.length; i++) {
+        const p = initial_payments[i]
+        const {ymd} = dateProperties(p.month, 'string')
+        form.append(`initial_payments[${i}][date]`, ymd)
+        form.append(`initial_payments[${i}][amount]`, p.amount)
+        form.append(`initial_payments[${i}][edited]`, (+p.edit).toString())
+      }
+
+      if (edit.prepay) {
+        form.append('prepay_edited', calc.prepay)
+      }
+
+      form.append('comment', comment)
+      form.append('months', calc.monthly_payment_period)
+      form.append('first_payment_date', calc.first_payment_date)
+      form.append('discount_amount', discount.amount)
+
+      if (discount.id === 'other') {
+        for (let i = 0; i < apartments.length; i++) {
+          form.append(`apartments[${i}][id]`, apartments[i].id)
+          form.append(`apartments[${i}][price]`, apartments[i].price)
+        }
+      }
+
+      if (client.contract_date) {
+        form.append('contract_date', client.contract_date)
+      }
+
+      if (calc.payment_date) {
+        form.append('payment_date', calc.payment_date)
+      }
+
+      if (changedContractNumber) {
+        form.append('contract_number', newContractNumber)
+      }
+
+      try {
+        const response = await api.orders.reserveApartment(order.uuid, form)
+        console.log(response)
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      }
     }
+    // async getClientDetails() {
+    //   const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
+    //   await api.contractV2.getUpdateContractView(uuid).then((res) => {
+    //     this.client = res.data.client
+    //     this.apartments = [...res.data.apartments, ...res.data.apartments, ...res.data.apartments]
+    //         .map((apartment, index) => {
+    //           return {
+    //             ...apartment,
+    //             id: `${apartment.id}${index}`
+    //           }
+    //         })
+    //     this.calc.discounts = this.apartments[0].discounts
+    //   })
+    // }
   }
 }
 </script>
 
-<style scoped>
-.input-number-content {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+<style lang="scss">
+.app-checkout-main {
+  margin-top: 2rem;
 }
 
-.input-component {
-  padding: 0.5rem 1rem;
-  width: 200px;
+.app-tab {
+  &-title {
+    display: flex;
+    justify-content: center;
+    font-family: Inter, sans-serif;
+    font-style: normal;
+    font-weight: 600;
+
+
+    &-number {
+      width: 2rem;
+      height: 2rem;
+      font-size: 14px;
+      line-height: 20px;
+      border-radius: 50%;
+      margin-right: .5rem;
+      color: var(--gray-400);
+      background-color: var(--gray-100);
+    }
+
+    &-content {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      line-height: 22px;
+      margin-bottom: 0;
+      color: var(--gray-400);
+    }
+
+
+    &-right-icon {
+      display: flex;
+      align-items: center;
+      margin-left: 12px;
+    }
+  }
+
+  &-content {
+    margin-left: 3rem;
+    margin-right: 3rem;
+  }
+
+  &__header-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    .section-title {
+      margin-bottom: 0;
+    }
+
+    .collapse-icon {
+      transition: all .3s linear;
+    }
+
+    &.not-collapsed {
+
+      .collapse-icon {
+        transform: rotate(-180deg);
+      }
+    }
+  }
 }
-.base-calendar {
-  position: relative;
+
+
+.section {
+  &-title {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 2rem;
+    color: var(--gray-400);
+    font-family: CraftworkSans, serif;
+  }
+
+  &-container {
+    display: grid;
+    column-gap: 2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .data-picker {
+    height: 56px;
+    max-height: 56px;
+    width: 100%;
+    border: 2px solid #E5E7EB;
+    border-radius: 32px;
+  }
 }
-.base-calendar .date-picker {
-  width: 100%;
+
+
+</style>
+
+
+<style lang="scss" scoped>
+.apartments-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
-.base-calendar .date-picker ::v-deep .mx-input-wrapper .mx-input {
-  box-shadow: none;
-  border: none;
-  border-radius: 2rem;
-  padding: 2rem 1.25rem;
-  background-color: var(--gray-100);
+
+
+.app-checkout {
+  .checkout-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 30px;
+    color: var(--white);
+    border-radius: 28px;
+    height: 56px;
+    min-width: 102px;
+
+    &-inner {
+      padding: 13px 16px;
+    }
+  }
+
+  &__calculator {
+
+  }
 }
-.base-calendar .date-picker ::v-deep .mx-input-wrapper .mx-input .popup-style {
-  background: #000;
+
+::v-deep .app-tabs-content {
+  &-header {
+    display: flex;
+    align-items: center !important;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    margin-bottom: 2rem;
+    border-top: 6px solid var(--gray-100);
+    border-bottom: 6px solid var(--gray-100);
+    padding: 20px 3rem;
+
+    .nav-item {
+      min-width: max-content;
+
+      .nav-link {
+        padding: 8px 6px;
+      }
+
+      .active {
+        background-color: transparent;
+
+        .app-tab-title-number {
+          background-color: var(--violet-600);
+          color: white;
+        }
+
+        p {
+          color: var(--violet-600);
+        }
+      }
+
+      &:last-child {
+        width: 100%;
+
+        .nav-link {
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+
+    }
+  }
 }
-.base-calendar .date-picker ::v-deep .mx-input-wrapper .mx-input::placeholder {
-  background-color: transparent;
-  color: var(--gray-400);
-  font-family: CraftworkSans, serif;
-}
-.base-calendar .date-picker ::v-deep .mx-input-wrapper .mx-icon-calendar, .base-calendar .date-picker ::v-deep .mx-input-wrapper .mx-icon-clear {
-  display: none;
-}
-.base-calendar .calendar-icon {
-  position: absolute;
-  right: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-}
+
 </style>

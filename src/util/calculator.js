@@ -33,7 +33,7 @@ export function getPrepay(apartments, contract) {
             total += parseFloat(contract.initial_payments[i].amount)
         }
         return total;
-    }
+    }   
 
     if (contract.prepay_edited) {
         return parseFloat(contract.prepay_amount);

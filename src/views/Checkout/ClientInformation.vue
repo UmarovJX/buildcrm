@@ -51,7 +51,7 @@
           {{ client.phone }}
         </p>
       </div>
-      <div class="info-item">
+      <div v-if="client.other_phone.length > 5" class="info-item">
         <span class="label">
           {{ $t("apartments.agree.other_phone") }}
         </span>

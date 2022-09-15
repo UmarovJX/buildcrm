@@ -75,15 +75,15 @@ export default {
 
             // if (router.name !== "apartments") return;
 
-            try {
-                const object = router.params.object
-                let {data} = await api.objects.fetchObjectApartments(object, router.query)
-                ctx.commit("updateApartment", data)
-            } catch (error) {
-                vm.toastedWithErrorCode(error);
-            } finally {
-                ctx.commit("updateLoading", false, {root: true});
-            }
+            // try {
+            //     const object = router.params.object
+            //     let {data} = await api.objectsV2.fetchObjectApartments(object, router.query)
+            //     ctx.commit("updateApartment", data)
+            // } catch (error) {
+            //     vm.toastedWithErrorCode(error);
+            // } finally {
+            //     ctx.commit("updateLoading", false, {root: true});
+            // }
         },
 
         async fetchApartmentsFilter(ctx, vm) {

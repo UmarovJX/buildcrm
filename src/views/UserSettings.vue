@@ -1,56 +1,56 @@
 <template>
-  <main class="app-content">
-    <base-bread-crumb
-        :active-content="activeContent"
-        class="mb-4"
-    >
-    </base-bread-crumb>
+    <div>
+        <base-bread-crumb
+            :active-content="activeContent"
+            class="mb-4"
+        >
+        </base-bread-crumb>
 
-    <!--    <base-input-->
-    <!--        v-model="search"-->
-    <!--        :placeholder="$t('users.name')"-->
-    <!--        type="date"-->
-    <!--        :label="true"-->
-    <!--        :error="false"-->
-    <!--    />-->
-    <!--    <base-select-->
-    <!--        :options="array"-->
-    <!--        placeholder="label"-->
-    <!--        :label="true"-->
-    <!--        :error="false"/>-->
+        <!--    <base-input-->
+        <!--        v-model="search"-->
+        <!--        :placeholder="$t('users.name')"-->
+        <!--        type="date"-->
+        <!--        :label="true"-->
+        <!--        :error="false"-->
+        <!--    />-->
+        <!--    <base-select-->
+        <!--        :options="array"-->
+        <!--        placeholder="label"-->
+        <!--        :label="true"-->
+        <!--        :error="false"/>-->
 
-    <!--    <warning-success status="warning" ref="base-modal"/>-->
+        <!--    <warning-success status="warning" ref="base-modal"/>-->
 
 
-    <!--    <b-btn @click="openModal">click</b-btn>-->
+        <!--    <b-btn @click="openModal">click</b-btn>-->
 
-    <b-card no-body>
-      <b-tabs
-          v-model="tabIndex"
-          pills card vertical
-          active-tab-class="user__active__tab"
-      >
-        <b-tab v-if="profileSettingsPermission" active>
-          <template #title>
+        <b-card no-body>
+            <b-tabs
+                v-model="tabIndex"
+                pills card vertical
+                active-tab-class="user__active__tab"
+            >
+                <b-tab v-if="profileSettingsPermission" active>
+                    <template #title>
             <span class="d-flex align-items-center">
                 <base-user-account-icon :width="16" :height="16" :fill="activeTabIconColor(0)"/>
                 <span class="ml-2">{{ $t('profile') }}</span>
             </span>
-          </template>
-          <tab-user-me/>
-        </b-tab>
-        <b-tab v-if="passwordPermission">
-          <template #title>
+                    </template>
+                    <tab-user-me/>
+                </b-tab>
+                <b-tab v-if="passwordPermission">
+                    <template #title>
             <span class="d-flex align-items-center">
-                <base-user-password-icon :width="16" :height="16" :fill="activeTabIconColor(1)" />
+                <base-user-password-icon :width="16" :height="16" :fill="activeTabIconColor(1)"/>
                 <span class="ml-2">{{ $t('edit_password') }}</span>
             </span>
-          </template>
-          <tab-change-password/>
-        </b-tab>
-      </b-tabs>
-    </b-card>
-  </main>
+                    </template>
+                    <tab-change-password/>
+                </b-tab>
+            </b-tabs>
+        </b-card>
+    </div>
 </template>
 
 <script>
@@ -67,54 +67,54 @@ import GeneralPermission from "@/permission/general";
 
 
 export default {
-  name: 'UserSettings',
-  components: {
-    TabUserMe,
-    BaseBreadCrumb,
-    TabChangePassword,
-    BaseUserAccountIcon,
-    BaseUserPasswordIcon,
-    // WarningSuccess,
-    // BaseSelect,
-    // BaseInput,
-  },
-  data() {
-    return {
-      tabIndex: 0,
-      search: '',
-      array: [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-      ],
-      passwordPermission: GeneralPermission.getGeneralPermission('password_settings'),
-      profileSettingsPermission: GeneralPermission.getGeneralPermission('profile_settings')
-    }
-  },
-  computed: {
-    ...mapGetters({
-      theme: 'getTheme',
-      permission: 'getPermission'
-    }),
-    activeContent() {
-      return this.$t('profile')
+    name: 'UserSettings',
+    components: {
+        TabUserMe,
+        BaseBreadCrumb,
+        TabChangePassword,
+        BaseUserAccountIcon,
+        BaseUserPasswordIcon,
+        // WarningSuccess,
+        // BaseSelect,
+        // BaseInput,
     },
-    // passwordPermission() {
-    //   return GeneralPermission.getPasswordSettingsPermission()
-    // },
-    // profileSettingsPermission() {
-    //   return GeneralPermission.getProfileSettingsPermission()
-    // },
-  },
-  methods: {
-    openModal() {
-      this.$refs["base-modal"].openModal()
+    data() {
+        return {
+            tabIndex: 0,
+            search: '',
+            array: [
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            ],
+            passwordPermission: GeneralPermission.getGeneralPermission('password_settings'),
+            profileSettingsPermission: GeneralPermission.getGeneralPermission('profile_settings')
+        }
     },
-    activeTabIconColor(index) {
-      if (this.theme === 'light-theme' && this.tabIndex === index) {
-        return '#fff'
-      }
-      return '#000'
+    computed: {
+        ...mapGetters({
+            theme: 'getTheme',
+            permission: 'getPermission'
+        }),
+        activeContent() {
+            return this.$t('profile')
+        },
+        // passwordPermission() {
+        //   return GeneralPermission.getPasswordSettingsPermission()
+        // },
+        // profileSettingsPermission() {
+        //   return GeneralPermission.getProfileSettingsPermission()
+        // },
+    },
+    methods: {
+        openModal() {
+            this.$refs["base-modal"].openModal()
+        },
+        activeTabIconColor(index) {
+            if (this.theme === 'light-theme' && this.tabIndex === index) {
+                return '#fff'
+            }
+            return '#000'
+        }
     }
-  }
 }
 </script>
 
@@ -122,10 +122,10 @@ export default {
 
 
 .user__account__icons {
-  fill: var(--dark);
+    fill: var(--dark);
 }
 
 .user__account__icons-active {
-  fill: white !important;
+    fill: white !important;
 }
 </style>

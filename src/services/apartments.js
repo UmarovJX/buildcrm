@@ -6,9 +6,9 @@ class ApartmentsV1 extends Core {
         super(axios);
     }
 
-    isAvailableToSold(id, apartment_uuid) {
-        return this.put(`objects/${id}/apartments/${apartment_uuid}/is-sold`)
-    }
+    // isAvailableToSold(id, apartment_uuid) {
+    //     return this.put(`objects/${id}/apartments/${apartment_uuid}/is-sold`)
+    // }
 
     getApartmentsList(id, status = 'all') {
         return this.get(`objects/${id}/apartments`, {
@@ -45,7 +45,27 @@ class ApartmentsV2 extends Core {
     }
 
     getApartmentView(object, id) {
-        return this.get(`apartments/objects/${object}/apartments/${id}`)
+        return this.get(`apartments/objects/${object}/${id}`)
+    }
+
+    isAvailableToSold(id, apartment_uuid, body) {
+        return this.put(`apartments/objects/${id}/${apartment_uuid}/is-sold`, body)
+    }
+
+    getApartmentComments(id, apartment_uuid) {
+        return this.get(`apartments/objects/${id}/${apartment_uuid}/comments`)
+    }
+
+    createApartmentComment(id, apartment_uuid, body) {
+        return this.post(`apartments/objects/${id}/${apartment_uuid}/comments`, body)
+    }
+
+    editApartmentComment(id, apartment_uuid, commentId, body) {
+        return this.put(`apartments/objects/${id}/${apartment_uuid}/comments/${commentId}`, body)
+    }
+
+    deleteApartmentComment(id, apartment_uuid, commentId) {
+        return this.delete(`apartments/objects/${id}/${apartment_uuid}/comments/${commentId}`)
     }
 }
 

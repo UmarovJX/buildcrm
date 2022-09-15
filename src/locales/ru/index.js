@@ -2,6 +2,12 @@ export default {
     home: {
         title: "Главная",
     },
+    remainder: 'Остаток',
+    apartment_details: 'Детали квартиры',
+    payment_details: 'Детали платежей',
+    price_m2: "Цена за м2",
+    other_price: 'Другая цена',
+    remove_apartment: 'Убрать квартиру',
     selected: "Выбранный",
     pointed: "Наведенный",
     not_selected: "Не выбранный",
@@ -150,12 +156,15 @@ export default {
         },
     },
     xonsaroy: 'Хонсарой',
+    checkout_booking: 'Оформление',
+    apartment_make_contract: 'Оформление квартиры',
     address_office: 'город Ташкент, Юнусабадский район, улица Янги шахар, дом 64А',
     motto: 'Уверенный шаг к вашим мечтам!',
     quarter: 'четверть',
     of_the_year: 'года',
     no_cancel: "Нет, отменить",
     yes_delete: "Да, удалить",
+    chosen: "Выбрано",
     remove_payment: "Удалить оплату ?",
     deleted: "Удалено",
     successfully: 'Успешно!',
@@ -180,6 +189,7 @@ export default {
     back: "Назад",
     next: "Продолжить",
     create_agree: "Оформить",
+    create_agree_apartments: "Оформить квартиры",
     save_changes: "Сохранить изменения",
     reason_recontract: 'Причина переоформлении',
     number_agree: "Номер соглошения",
@@ -227,6 +237,7 @@ export default {
     initial_payment: 'Первоначальный',
     monthly_pay: 'Ежемесячный',
     sum_text: 'В суммах',
+    sum: 'Сумма',
     usd_text: 'В долларах',
     text: 'Текст',
     apartments_count: "Количество квартир",
@@ -326,6 +337,7 @@ export default {
     date_of_the_agreement: 'Дата составления',
     agreement_number: 'Номер соглашения',
     reason_for_reissuing: 'Причина переоформлении',
+    apply: "Qo'llash",
 
     monday: 'Понедельник',
     tuesday: 'Вторник',
@@ -787,7 +799,7 @@ export default {
             address: "Адрес", // asd
             completion_date: "Дата завершения строительства", // asd
             price_for_m2: "Цена продажы за м2", // asd
-            discount_per_m2: "Скидка за м2:", // asd
+            discount_per_m2: "Скидка за м2", // asd
             discount_all: 'Общая скидка',
             discount_price: 'Скидка от общей суммы',
             prepayment: "Предоплата", // asd

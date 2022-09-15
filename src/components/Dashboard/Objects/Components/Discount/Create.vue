@@ -428,10 +428,22 @@
 
             <template #footer>
                 <div class="footer-btn">
-                    <base-button @click="closeModal" :text="$t('cancel')"/>
-                    <base-button v-if="checkStatus === 'create'" @click="saveDiscount" class="violet-gradient"
-                                 :text="$t('add')"/>
-                    <base-button v-else @click="saveDiscount" class="violet-gradient" :text="$t('save')"/>
+                    <base-button
+                        @click="closeModal"
+                        :text="$t('cancel')"
+                    />
+                    <base-button
+                        v-if="checkStatus === 'create'"
+                        @click="saveDiscount"
+                        design="violet-gradient"
+                        :text="$t('add')"
+                    />
+                    <base-button
+                        v-else
+                        @click="saveDiscount"
+                        design="violet-gradient"
+                        :text="$t('save')"
+                    />
                 </div>
             </template>
 

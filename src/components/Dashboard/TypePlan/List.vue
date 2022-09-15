@@ -1,58 +1,26 @@
 <template>
-  <main>
-    <div class="app-content">
-      <div
-          class="
-          d-flex
-          justify-content-between
-          align-items-center
-          flex-md-row flex-column
-          pb-3
-          pt-0
-          px-0
-          py-lg-3
-        "
-      >
-        <div
-            class="
-            d-flex
-            w-100
-            align-items-center
-            flex-md-row flex-column
-            mb-md-0 mb-3
-          "
-        >
-          <h1 class="title__big my-0 order-md-0 order-1">
-            {{ $t("type_plan.list") }}
-          </h1>
-          <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0 align-self-start">
-            <li class="breadcrumb-item">
-              <router-link :to="{name: 'home'}">
-                <i class="far fa-home"></i>
-              </router-link>
-            </li>
+  <div>
+    <div class="search__content">
+      <!--  Search Content  -->
+      <base-search-input
+          class="base-search-input w-50 mr-2"
+          :placeholder="`${ $t('objects.create.plan.search') }`"
+      />
 
-            <li class="breadcrumb-item">
-              <router-link :to="{name: 'type_plan'}">
-                {{ $t("type_plan.title") }}
-              </router-link>
-            </li>
+      <BaseButton @click="showAddModal" class="text" :text="$t('objects.create.plan.add')">
+        <template #left-icon>
+          <i class="fal fa-plus color-gray-900"></i>
+        </template>
+      </BaseButton>
+    </div>
 
-            <li class="breadcrumb-item">
-              <a href="#">
-                {{ getPlan.name }}
-              </a>
-            </li>
-
-            <li class="breadcrumb-item active">
-              {{ $t("type_plan.list") }}
-            </li>
-          </ul>
-        </div>
-      </div>
+    <div>
 
       <div class="mt-4">
         <b-table
+            thead-tr-class="row__head__bottom-border"
+            tbody-tr-class="row__body__bottom-border"
+            class="table__list"
             sticky-header
             show-empty
             borderless
@@ -61,7 +29,6 @@
             :empty-text="$t('no_data')"
             :fields="fields"
             :busy="showLoading"
-            class="custom-table"
         >
           <template #empty="scope" class="text-center">
             <span class="d-flex justify-content-center align-items-center">
@@ -83,8 +50,8 @@
                 style="cursor: pointer; object-fit: contain"
                 :data-fancybox="data.value[0]"
                 :src="data.value[0]"
-                width="150"
-                height="100"
+                width="80"
+                height="80"
                 alt="plan_image"
                 fluid
             />
@@ -95,46 +62,29 @@
           </template>
 
           <template #cell(actions)="data">
-            <div class="float-right">
-              <div
-                  v-if="editPermission || deletePermission"
-                  class="dropdown my-dropdown dropleft"
-              >
-                <button
-                    type="button"
-                    class="dropdown-toggle"
-                    data-toggle="dropdown"
+            <div v-if="editPermission || deletePermission"
+                 class="actions">
+                <BaseButton
+                    v-if="editPermission"
+                    class="button rounded-circle"
+                    text=''
+                    @click="edit(data.item.id)"
                 >
-                  <i class="far fa-ellipsis-h"></i>
-                </button>
-
-                <div class="dropdown-menu">
-                  <button
-                      v-if="editPermission"
-                      class="dropdown-item dropdown-item--inside"
-                      @click="edit(data.item.id)"
-                  >
-                    <i class="fas fa-pen"></i>
-                    <span class="ml-3">
-                      {{ $t("edit") }}
-                    </span>
-                  </button>
-
-                  <button
-                      v-if="deletePermission"
-                      class="dropdown-item dropdown-item--inside"
-                      @click="deleteTypePlan(data.item)"
-                  >
-                    <span>
-                      <i class="far fa-trash"></i>
-                    </span>
-                    <span class="ml-3">
-                      {{ $t("delete") }}
-                    </span>
-                  </button>
-                </div>
+                  <template #right-icon>
+                    <BaseEditIcon fill="#ffff"/>
+                  </template>
+                </BaseButton>
+                <BaseButton
+                    v-if="deletePermission"
+                    class="bg-danger button rounded-circle"
+                    text=''
+                    @click="deleteTypePlan(data.item)"
+                >
+                  <template #right-icon>
+                    <BaseDeleteIcon fill="#ffff"/>
+                  </template>
+                </BaseButton>
               </div>
-            </div>
           </template>
         </b-table>
       </div>
@@ -146,8 +96,11 @@
           @successfully-updated="successfullyDeletePlan"
           @close-delete-modal="closeDeletePlanModal"
       />
+      <create-modal
+
+      />
     </div>
-  </main>
+  </div>
 </template>
 
 <script>
@@ -155,12 +108,22 @@ import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import {mapGetters, mapActions} from "vuex";
 import api from "@/services/api";
+import CreateModal from "@/components/Dashboard/TypePlan/Components/CreateModal";
+import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import BaseEditIcon from "@/components/icons/BaseEditIcon"
 import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
 import PlansPermission from "@/permission/plans";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 
 export default {
   name: 'TypePlanList',
   components: {
+    BaseDeleteIcon,
+    CreateModal,
+    BaseSearchInput,
+    BaseButton,
+    BaseEditIcon,
     DeleteHasApartment
   },
   data() {
@@ -174,20 +137,24 @@ export default {
         headers: {
           Authorization: "Bearer " + localStorage.token,
         },
+        modalProperties: {
+          position: 'create',
+          title: this.$t('add')
+        },
       },
       fields: [
         {
-          key: "id",
-          label: "#",
-        },
-        {
           key: "image",
-          label: this.$t('type_plan.title'),
-          // image: false,
+          label: "",
         },
         {
-          key: "name",
-          label: this.$t('type_plan.name'),
+          key: "plan",
+          label: this.$t('type_plan.plan'),
+        },
+        {
+          key: "floor",
+          label: this.$t('type_plan.floor'),
+          sortable: true
         },
         {
           key: "area",
@@ -256,6 +223,9 @@ export default {
             })
       }
     },
+    showAddModal() {
+      this.$bvModal.show('modal-create')
+    },
     successfullyDeletePlan() {
       this.closeDeletePlanModal()
       const message = `${this.$t("sweetAlert.deleted")}`
@@ -275,4 +245,98 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.label {
+  color: #7C3AED;
+  margin-right: 3px;
+  font-weight: 500;
+}
+
+.fal {
+  font-weight: 500;
+}
+.text {
+  font-weight: 600;
+}
+.button {
+  height: auto;
+  background-color: #7C3AED;
+  width: auto;
+  padding: 8px;
+
+  ::v-deep span {
+    margin-left: 0 !important;
+  }
+}
+.actions {
+    display: flex;
+    gap: 16px;
+}
+.search__content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+::v-deep .row__head__bottom-border {
+  border-bottom: 2px solid var(--gray-200) !important;
+}
+
+::v-deep .row__body__bottom-border:not(:last-child) {
+  border-bottom: 2px solid var(--gray-200) !important;
+}
+
+::v-deep .table__list {
+  min-height: 250px;
+  max-height: none;
+
+table {
+  color: var(--gray-600);
+
+thead tr th {
+  font-family: CraftworkSans, serif;
+  font-weight: 900;
+  font-size: 14px;
+  line-height: 14px;
+  letter-spacing: 1px;
+  color: var(--gray-400) !important;
+  padding: 1.125rem 1rem;
+  vertical-align: middle;
+
+//&.b-table-sort-icon-left {
+   //display: flex;
+   //align-items: center;
+   //}
+}
+
+td {
+  vertical-align: middle;
+}
+}
+
+.table.b-table[aria-busy=true] {
+  opacity: 1 !important;
+}
+}
+
+
+::v-deep .table.b-table > thead > tr > [aria-sort="none"],
+::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
+  background-position: right calc(2rem / 2) center !important;
+//background-position: right !important;
+  padding-right: 20px;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../../assets/icons/icon-arrow-down.svg") !important;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=descending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
+  background-position: right calc(2rem / 2) center !important;
+  background-size: 20px;
+  background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
+}
+</style>

@@ -1,15 +1,15 @@
 <template>
-  <main class="main__class">
-    <!--  Header Navigation  -->
-    <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">
-      <div class="d-flex align-items-center">
-        <span class="go__back" @click="backNavigation">
-          <base-arrow-left :width="32" :height="32"></base-arrow-left>
-        </span>
-        <span class="breadcrumb__content">
+    <div>
+        <!--  Header Navigation  -->
+        <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">
+            <div class="d-flex align-items-center">
+                <span class="go__back" @click="backNavigation">
+                  <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+                </span>
+                <span class="breadcrumb__content">
           <span>
             {{ $t('payments.payment_list') }}
-            <base-arrow-right :width="18" :height="18"/>
+            <BaseArrowRight :width="18" :height="18"/>
             <span>{{ order.contract }}</span>
           </span>
           <span class="head">
@@ -18,21 +18,21 @@
         </span>
 
 
-        <span
-            class="apartment__status d-flex justify-content-center align-items-center"
-            :class="`status-${order.status}`"
-        >
+                <span
+                    class="apartment__status d-flex justify-content-center align-items-center"
+                    :class="`status-${order.status}`"
+                >
               {{ $t(`apartments.status.${order.status}`) }}
             </span>
 
 
-      </div>
-      <div v-if="hasAction">
-        <b-dropdown right>
-          <template #button-content>
-            {{ $t('contracts.view.actions') }}
-          </template>
-          <b-dropdown-item v-if="downloadPermission" href="#" @click="downloadContact">
+            </div>
+            <div v-if="hasAction">
+                <b-dropdown right>
+                    <template #button-content>
+                        {{ $t('contracts.view.actions') }}
+                    </template>
+                    <b-dropdown-item v-if="downloadPermission" href="#" @click="downloadContact">
             <span class="mr-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -40,12 +40,12 @@
                       fill="black"/>
                 </svg>
             </span>
-            {{ $t('contracts.view.download_contract') }}
-          </b-dropdown-item>
-          <b-dropdown-item
-              v-if="editPermission"
-              :to="{name:'edit-apartment', params:{id:$route.params.id}}"
-          >
+                        {{ $t('contracts.view.download_contract') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                        v-if="editPermission"
+                        :to="{name:'edit-apartment', params:{id:$route.params.id}}"
+                    >
             <span class="mr-2">
                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -53,9 +53,9 @@
                       fill="black"/>
                 </svg>
             </span>
-            {{ $t('contracts.view.update_contract') }}
-          </b-dropdown-item>
-          <b-dropdown-item v-if="deletePermission" href="#" @click="openPaymentDeletionModal">
+                        {{ $t('contracts.view.update_contract') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item v-if="deletePermission" href="#" @click="openPaymentDeletionModal">
             <span class="mr-2">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -63,12 +63,12 @@
                     fill="black"/>
               </svg>
             </span>
-            {{ $t('contracts.view.cancel_contract') }}
-          </b-dropdown-item>
-          <b-dropdown-item
-              v-if="reContractPermission"
-              @click="openReContractModal"
-          >
+                        {{ $t('contracts.view.cancel_contract') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                        v-if="reContractPermission"
+                        @click="openReContractModal"
+                    >
             <span class="mr-2">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -76,97 +76,94 @@
                       fill="black"/>
                 </svg>
             </span>
-            {{ $t('re_contract') }}
-          </b-dropdown-item>
-        </b-dropdown>
-      </div>
-    </div>
-    <!--  Tabs  -->
-    <base-filter-tabs-content
-        :filter-tab-list="filterTabList"
-        @get-new-content="changeTabOrder"
-    />
-    <component
-        :is="activeTab"
-        :order="order"
-        :has-constructor-order="hasConstructorOrder"
-        v-show="!showLoading"
-        @start-loading="startLoading"
-        @finish-loading="finishLoading"
-        @refresh-details="refreshDetails"
-    >
-    </component>
+                        {{ $t('re_contract') }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
+        </div>
+        <!--  Tabs  -->
+        <base-filter-tabs-content
+            :filter-tab-list="filterTabList"
+            @get-new-content="changeTabOrder"
+        />
 
-    <base-loading v-if="showLoading"/>
-    <!-- WARNING BEFORE DELETE CONTRACT -->
-    <base-modal ref="payment-deletion-warning">
-      <template #header>
+        <component
+            :is="activeTab"
+            :order="order"
+            :has-constructor-order="hasConstructorOrder"
+            v-show="!showLoading"
+            @start-loading="startLoading"
+            @finish-loading="finishLoading"
+            @refresh-details="refreshDetails"
+        >
+        </component>
+
+        <base-loading v-if="showLoading"/>
+
+        <!-- WARNING BEFORE DELETE CONTRACT -->
+        <base-modal ref="payment-deletion-warning">
+            <template #header>
           <span class="warning__before__delete-head">
-            <span>
-              <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path opacity="0.4"
-                      d="M51.3346 27.9996C51.3346 40.8889 40.8883 51.3329 28.0013 51.3329C15.1143 51.3329 4.66797 40.8889 4.66797 27.9996C4.66797 15.1149 15.1143 4.66626 28.0013 4.66626C40.8883 4.66626 51.3346 15.1149 51.3346 27.9996"
-                      fill="#EF4444"/>
-                <path fill-rule="evenodd" clip-rule="evenodd"
-                      d="M30.3081 29.5574C30.3081 30.7612 29.2661 31.7427 27.988 31.7427C26.71 31.7427 25.668 30.7612 25.668 29.5574V18.5185C25.668 17.3148 26.71 16.3333 27.988 16.3333C29.2661 16.3333 30.3081 17.3148 30.3081 18.5185V29.5574ZM25.6811 37.4814C25.6811 36.2776 26.7178 35.2961 27.9879 35.2961C29.2951 35.2961 30.3345 36.2776 30.3345 37.4814C30.3345 38.6852 29.2951 39.6667 28.0144 39.6667C26.7284 39.6667 25.6811 38.6852 25.6811 37.4814Z"
-                      fill="#EF4444"/>
-              </svg>
-            </span>
+                <span class="go__back" @click="backNavigation">
+                    <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+                 </span>
             <span class="title">{{ $t('contracts.warning') }}</span>
           </span>
-      </template>
+            </template>
 
-      <template #main>
+            <template #main>
         <span class="warning__before__delete-main mb-2">
           {{ $t('contracts.warn_before_delete_contract') }}
         </span>
-        <validation-observer ref="comment">
-          <ValidationProvider
-              :name="`${ $t('contracts.comment') }`"
-              rules="required|min:3"
-              v-slot="{errors}"
-              class="mb-3"
-          >
-            <b-form-group
-                class="delete-comment__title"
-                :label="$t('contracts.comment_delete_contract')"
-                label-for="comment"
-                desclass="mb-0"
-            >
-              <b-form-textarea
-                  class="delete-comment"
-                  ref="comment-area"
-                  v-model="deleteComment"
-              />
-            </b-form-group>
-            <span class="error__provider" v-if="errors[0]">
+                <validation-observer ref="comment">
+                    <ValidationProvider
+                        :name="`${ $t('contracts.comment') }`"
+                        rules="required|min:3"
+                        v-slot="{errors}"
+                        class="mb-3"
+                    >
+                        <b-form-group
+                            class="delete-comment__title"
+                            :label="$t('contracts.comment_delete_contract')"
+                            label-for="comment"
+                            desclass="mb-0"
+                        >
+                            <b-form-textarea
+                                class="delete-comment"
+                                ref="comment-area"
+                                v-model="deleteComment"
+                            />
+                        </b-form-group>
+                        <span class="error__provider" v-if="errors[0]">
             {{ errors[0] }}
           </span>
-          </ValidationProvider>
-        </validation-observer>
-      </template>
+                    </ValidationProvider>
+                </validation-observer>
+            </template>
 
-      <template #footer>
-        <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
-          <base-button
-              @click="closePaymentDeletionModal"
-              :text="`${ $t('no_cancel') }`"
-          >
-          </base-button>
-          <base-button
-              @click="deleteContact"
-              :text="`${ $t('yes_delete') }`"
-              class="add__button"
-          >
-          </base-button>
-        </div>
-      </template>
-    </base-modal>
+            <template #footer>
+                <div class="warning__before__delete-footer">
+                    <base-button
+                        :fixed="true"
+                        @click="closePaymentDeletionModal"
+                        :text="`${ $t('no_cancel') }`"
+                    >
+                    </base-button>
+                    <base-button
+                        :fixed="true"
+                        @click="deleteContact"
+                        :text="`${ $t('yes_delete') }`"
+                        design="violet-gradient"
+                    >
+                    </base-button>
+                </div>
+            </template>
+        </base-modal>
 
 
-    <!--RE - CONTRACT-->
-    <base-modal design="reContract-modal auto-height" ref="re-contract">
-      <template #header>
+        <!--RE - CONTRACT-->
+        <base-modal design="reContract-modal auto-height" ref="re-contract">
+            <template #header>
            <span class="d-flex align-items-center justify-content-between">
               <span class="title">{{ $t('re_contract') }}</span>
 
@@ -174,61 +171,64 @@
               <BaseCloseIcon/>
             </span>
         </span>
-      </template>
-
-      <template #main>
-        <div class="reContract-modal__warning">
-          <BaseWarningIcon style="min-width: 40px" fill="#F97316" :width="40" :height="40"/>
-          <p>
-            {{ $t('contracts.view.regenerate_warning') }}
-          </p>
-        </div>
-        <div class="reContract-modal__select">
-          <label>{{ $t('contracts.view.regenerate_select_reason') }}</label>
-          <!--          <base-select v-model="reason_type"-->
-          <!--                       textField="value"-->
-          <!--                       :options="options"-->
-          <!--                       @change="setFormProperty('reason_type',$event)"-->
-          <!--                       :placeholder="$t('reason_recontract')"-->
-          <!--                       :label="true"/>
-          -->
-          <b-dropdown left>
-            <template v-if="reason_type" #button-content>
-              <div class="input-block">
-                <span class="input-label">{{ $t('reason_recontract') }}</span>
-                <p class="input-text">
-                  {{ checkLocales(reason_type.name) }}
-                </p>
-              </div>
             </template>
-            <template v-else #button-content>
-              <p class="default-label">
-                {{ $t('reason_recontract') }}
-              </p>
+
+            <template #main>
+                <div class="reContract-modal__warning">
+                    <BaseWarningIcon style="min-width: 40px" fill="#F97316" :width="40" :height="40"/>
+                    <p>
+                        {{ $t('contracts.view.regenerate_warning') }}
+                    </p>
+                </div>
+                <div class="reContract-modal__select">
+                    <label>{{ $t('contracts.view.regenerate_select_reason') }}</label>
+                    <!--          <base-select v-model="reason_type"-->
+                    <!--                       textField="value"-->
+                    <!--                       :options="options"-->
+                    <!--                       @change="setFormProperty('reason_type',$event)"-->
+                    <!--                       :placeholder="$t('reason_recontract')"-->
+                    <!--                       :label="true"/>
+                    -->
+
+                    <b-dropdown left>
+                        <template v-if="reason_type" #button-content>
+                            <div class="input-block">
+                                <span class="input-label">{{ $t('reason_recontract') }}</span>
+                                <p class="input-text">
+                                    {{ checkLocales(reason_type.name) }}
+                                </p>
+                            </div>
+                        </template>
+                        <template v-else #button-content>
+                            <p class="default-label">
+                                {{ $t('reason_recontract') }}
+                            </p>
+                        </template>
+                        <b-dropdown-text href="#">
+
+                            <b-form-checkbox v-model="reason_type" v-for="option in types" :key="option.id"
+                                             :value="option">
+                                {{ checkLocales(option.name) }}
+                            </b-form-checkbox>
+                        </b-dropdown-text>
+                    </b-dropdown>
+                </div>
+
             </template>
-            <b-dropdown-text href="#">
 
-              <b-form-checkbox v-model="reason_type" v-for="option in types" :key="option.id" :value="option">
-                {{ checkLocales(option.name) }}
-              </b-form-checkbox>
-            </b-dropdown-text>
-          </b-dropdown>
-        </div>
-
-      </template>
-
-      <template #footer>
-        <div class="d-flex justify-content-between align-items-center warning__before__delete-footer">
-          <base-button
-              @click="nextReContract"
-              :text="`${ $t('next') }`"
-              class="violet-gradient"
-          >
-          </base-button>
-        </div>
-      </template>
-    </base-modal>
-  </main>
+            <template #footer>
+                <div class="warning__before__delete-footer">
+                    <base-button
+                        :fixed="true"
+                        @click="nextReContract"
+                        :text="`${ $t('next') }`"
+                        design="violet-gradient"
+                    >
+                    </base-button>
+                </div>
+            </template>
+        </base-modal>
+    </div>
 </template>
 <script>
 import api from "@/services/api";
@@ -252,260 +252,253 @@ import BaseSelect from "@/components/Reusable/BaseSelect";
 import ContractsPermission from "@/permission/contract";
 
 export default {
-  name: "ContractView",
-  components: {
-    BaseWarningIcon,
-    BaseCloseIcon,
-    BaseFilterTabsContent,
-    BaseDeleteIcon,
-    BaseArrowRight,
-    BaseArrowLeft,
-    TabPaymentSchedule,
-    TabObjectDetails,
-    TabClientDetails,
-    TabContractDetails,
-    TabReContractDetails,
-    ActivityLog,
-    BaseModal,
-    BaseLoading,
-    BaseButton,
-    BaseSelect
-  },
-  data() {
-    return {
-      order: {},
-      showLoading: false,
-      activeTab: 'TabPaymentSchedule',
-      tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'TabReContractDetails', 'ActivityLog'],
-      deleteComment: null,
-      errors: [],
-      types: [],
-      reason_type: '',
-      reContractViewPermission: ContractsPermission.getContractsReissueViewPermission(),
-      downloadPermission: ContractsPermission.getContractsDownloadPermission(),
-      deletePermission: ContractsPermission.getContractsCancelPermission(),
-    }
-  },
-  computed: {
-    ...mapGetters({
-      permission: 'getPermission',
-      me: 'getMe'
-    }),
-    role() {
-      return this.me.role
+    name: "ContractView",
+    components: {
+        BaseWarningIcon,
+        BaseCloseIcon,
+        BaseFilterTabsContent,
+        BaseDeleteIcon,
+        BaseArrowRight,
+        BaseArrowLeft,
+        TabPaymentSchedule,
+        TabObjectDetails,
+        TabClientDetails,
+        TabContractDetails,
+        TabReContractDetails,
+        ActivityLog,
+        BaseModal,
+        BaseLoading,
+        BaseButton,
+        BaseSelect
     },
-    isStatusContract() {
-      return this.order.status === 'contract'
-    },
-    hasAction() {
-      return this.reContractPermission || this.editPermission || this.deletePermission || this.downloadPermission
-    },
-    // reContractViewPermission(){
-    //   return ContractsPermission.getContractsReissueViewPermission()
-    // },
-    reContractPermission() {
-      return ContractsPermission.getContractsReissueCreatePermission() && this.order.reissue && this.order.reissue.re_order
-    },
-    editPermission() {
-      return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
-    },
-    filterTabList() {
-      const list = [
-        {
-          name: this.$t('payment_schedule'),
-        },
-        {
-          name: this.$t('object_details'),
-        },
-        {
-          name: this.$t('client_details'),
-        },
-        {
-          name: this.$t('contract_details'),
-        },
-        {
-          name: this.$t('recontract_details'),
-        },
-        {
-          name: this.$t('contract_log'),
-        },
-
-      ]
-
-      const {status, reissue} = this.order
-      if (status === 'booked') {
-        return list.slice(1).map((ls, index) => ({...ls, status: index}))
-      }
-      if (!(this.reContractViewPermission && reissue?.view)) {
-        return list.slice(0, -1).map((ls, index) => ({...ls, status: index}))
-      }
-      return list.map((ls, index) => ({...ls, status: index}))
-    },
-    hasConstructorOrder() {
-      return Object.keys(this.order).length > 0
-    },
-  },
-  async created() {
-    await this.fetchContractData()
-  },
-  methods: {
-    checkLocales(name) {
-      if (localStorage.locale)
-        return name[localStorage.locale]
-      else
-        return name['ru']
-    },
-    nextReContract() {
-      this.$router.push({
-        name: 're-contract',
-        params: {
-          id: this.$route.params.id,
-          type: this.reason_type.id
-        },
-      })
-    },
-    setFormProperty(property, value) {
-      this.form[property] = value
-      this.errors[property] = false
-    },
-    openReContractModal() {
-      this.$refs['re-contract'].openModal()
-      this.getType()
-    },
-    getType() {
-      const id = this.$route.params.id
-      api.contractV2.reOrderDetails(id).then(res => {
-        this.types = res.data.types
-      }).catch(err =>
-          console.log(err)
-      )
-    },
-    closeReContractModal() {
-      this.$refs['re-contract'].closeModal()
-    },
-    async downloadContact() {
-      const {id} = this.$route.params
-      await api.contract.downloadContract(id)
-          .then(({data, headers}) => {
-            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
-            const fileURL = window.URL.createObjectURL(new Blob([data]))
-            const fileLink = document.createElement('a')
-            fileLink.href = fileURL
-            fileLink.setAttribute('download', filename)
-            document.body.appendChild(fileLink)
-            fileLink.click()
-          })
-          .catch(() => {
-            return '#'
-          })
-
-    },
-    openPaymentDeletionModal() {
-      this.$refs['payment-deletion-warning'].openModal()
-    },
-    closePaymentDeletionModal() {
-      // deleteComment
-      this.$refs['payment-deletion-warning'].closeModal()
-    },
-    async deleteContact() {
-      if (this.$refs['comment'].flags.valid) {
-        const {id} = this.$route.params
-        const body = {
-          comment: this.deleteComment
+    data() {
+        return {
+            order: {},
+            showLoading: false,
+            activeTab: 'TabPaymentSchedule',
+            tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'TabReContractDetails'],
+            deleteComment: null,
+            errors: [],
+            types: [],
+            reason_type: '',
+            reContractViewPermission: ContractsPermission.getContractsReissueViewPermission(),
+            downloadPermission: ContractsPermission.getContractsDownloadPermission(),
+            deletePermission: ContractsPermission.getContractsCancelPermission(),
         }
-        this.showLoading = true
-        this.closePaymentDeletionModal()
-        await api.contractV2.deleteContract(id, body)
-            .then(() => {
-              this.$router.push({
-                name: 'contracts'
-              })
-              this.$swal({
-                title: this.$t('successfully'),
-                icon: "success",
-                button: this.$t('yes')
-              })
+    },
+    computed: {
+        ...mapGetters({
+            permission: 'getPermission',
+            me: 'getMe'
+        }),
+        role() {
+            return this.me.role
+        },
+        isStatusContract() {
+            return this.order.status === 'contract'
+        },
+        hasAction() {
+            return this.reContractPermission || this.editPermission || this.deletePermission || this.downloadPermission
+        },
+        // reContractViewPermission(){
+        //   return ContractsPermission.getContractsReissueViewPermission()
+        // },
+        reContractPermission() {
+            return ContractsPermission.getContractsReissueCreatePermission() && this.order.reissue && this.order.reissue.re_order
+        },
+        editPermission() {
+            return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
+        },
+        filterTabList() {
+            const list = [
+                {
+                    name: this.$t('payment_schedule'),
+                },
+                {
+                    name: this.$t('object_details'),
+                },
+                {
+                    name: this.$t('client_details'),
+                },
+                {
+                    name: this.$t('contract_details'),
+                },
+                // {
+                //     name: this.$t('contract_log'),
+                // },
+                {
+                    name: this.$t('recontract_details'),
+                },
+            ]
+            const {status, reissue} = this.order
+            if (status === 'booked') {
+                return list.slice(1).map((ls, index) => ({...ls, status: index}))
+            }
+            if (!(this.reContractViewPermission && reissue?.view)) {
+                return list.slice(0, -1).map((ls, index) => ({...ls, status: index}))
+            }
+            return list.map((ls, index) => ({...ls, status: index}))
+        },
+        hasConstructorOrder() {
+            return Object.keys(this.order).length > 0
+        },
+    },
+    async created() {
+        await this.fetchContractData()
+    },
+    methods: {
+        checkLocales(name) {
+            if (localStorage.locale)
+                return name[localStorage.locale]
+            else
+                return name['ru']
+        },
+        nextReContract() {
+            this.$router.push({
+                name: 're-contract',
+                params: {
+                    id: this.$route.params.id,
+                    type: this.reason_type.id
+                },
             })
-            .catch((error) => {
-              this.toastedWithErrorCode(error)
-            })
-            .finally(() => {
-              this.deleteComment = null
-              this.showLoading = false
-            })
-      } else {
-        this.$refs['comment-area'].focus()
-      }
+        },
+        setFormProperty(property, value) {
+            this.form[property] = value
+            this.errors[property] = false
+        },
+        openReContractModal() {
+            this.$refs['re-contract'].openModal()
+            this.getType()
+        },
+        getType() {
+            const id = this.$route.params.id
+            api.contractV2.reOrderDetails(id).then(res => {
+                this.types = res.data.types
+            }).catch(err =>
+                console.log(err)
+            )
+        },
+        closeReContractModal() {
+            this.$refs['re-contract'].closeModal()
+        },
+        async downloadContact() {
+            const {id} = this.$route.params
+            await api.contract.downloadContract(id)
+                .then(({data, headers}) => {
+                    const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
+                    const fileURL = window.URL.createObjectURL(new Blob([data]))
+                    const fileLink = document.createElement('a')
+                    fileLink.href = fileURL
+                    fileLink.setAttribute('download', filename)
+                    document.body.appendChild(fileLink)
+                    fileLink.click()
+                })
+                .catch(() => {
+                    return '#'
+                })
 
-    },
-    async fetchContractData() {
-      this.showLoading = true
-      const {id} = this.$route.params
-      await api.contractV2.fetchContractView(id)
-          .then((response) => {
-            this.order = response.data
-            this.tabsConfiguration()
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
+        },
+        openPaymentDeletionModal() {
+            this.$refs['payment-deletion-warning'].openModal()
+        },
+        closePaymentDeletionModal() {
+            // deleteComment
+            this.$refs['payment-deletion-warning'].closeModal()
+        },
+        async deleteContact() {
+            if (this.$refs['comment'].flags.valid) {
+                const {id} = this.$route.params
+                const body = {
+                    comment: this.deleteComment
+                }
+                this.showLoading = true
+                this.closePaymentDeletionModal()
+                await api.contractV2.deleteContract(id, body)
+                    .then(() => {
+                        this.$router.push({
+                            name: 'contracts'
+                        })
+                        this.$swal({
+                            title: this.$t('successfully'),
+                            icon: "success",
+                            button: this.$t('yes')
+                        })
+                    })
+                    .catch((error) => {
+                        this.toastedWithErrorCode(error)
+                    })
+                    .finally(() => {
+                        this.deleteComment = null
+                        this.showLoading = false
+                    })
+            } else {
+                this.$refs['comment-area'].focus()
+            }
+
+        },
+        async fetchContractData() {
+            this.showLoading = true
+            const {id} = this.$route.params
+            await api.contractV2.fetchContractView(id)
+                .then((response) => {
+                    this.order = response.data
+                    this.tabsConfiguration()
+                })
+                .catch((error) => {
+                    this.toastedWithErrorCode(error)
+                })
+                .finally(() => {
+                    this.showLoading = false
+                })
+        },
+        tabsConfiguration() {
+            const {status, reissue} = this.order
+            if (status === 'booked') {
+                this.activeTab = 'TabObjectDetails'
+                this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
+            }
+            if (!(reissue?.view && this.reContractViewPermission)) {
+                // console.log(this.tabs, 'this.tabs old ');
+                this.tabs = this.tabs.filter(tab => tab !== 'TabReContractDetails')
+                // console.log(this.tabs, 'this.tabs last ');
+            }
+        },
+        startLoading() {
+            this.showLoading = true
+        },
+        finishLoading() {
             this.showLoading = false
-          })
-    },
-    tabsConfiguration() {
-      const {status, reissue} = this.order
-      if (status === 'booked') {
-        this.activeTab = 'TabObjectDetails'
-        this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
-      }
-      if (!(reissue?.view && this.reContractViewPermission)) {
-        // console.log(this.tabs, 'this.tabs old ');
-        this.tabs = this.tabs.filter(tab => tab !== 'TabReContractDetails')
-        // console.log(this.tabs, 'this.tabs last ');
-      }
-    },
-    startLoading() {
-      this.showLoading = true
-    },
-    finishLoading() {
-      this.showLoading = false
-    },
-    backNavigation() {
-      this.$router.go(-1)
-    },
-    changeTabOrder(status) {
-      this.activeTab = this.tabs[status]
-    },
-    refreshDetails() {
-      this.fetchContractData()
+        },
+        backNavigation() {
+            this.$router.go(-1)
+        },
+        changeTabOrder(status) {
+            this.activeTab = this.tabs[status]
+        },
+        refreshDetails() {
+            this.fetchContractData()
+        }
     }
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 * {
-  font-family: Inter, serif;
-  font-style: normal;
-  line-height: 22px;
-  color: var(--gray-600);
-  font-weight: 600;
+    font-family: Inter, serif;
+    font-style: normal;
+    line-height: 22px;
+    color: var(--gray-600);
+    font-weight: 600;
 }
 
 .main__class {
-  background-color: white;
-  padding: 3rem;
-  min-height: 100vh;
-  color: var(--gray-600);
+    background-color: white;
+    padding: 3rem;
+    min-height: 100vh;
+    color: var(--gray-600);
 }
 
-.navigation__content {
-  display: flex;
-  align-items: center;
-  margin-bottom: 52px;
-
-  .go__back {
+.go__back {
     width: 56px;
     height: 56px;
     border-radius: 100%;
@@ -514,357 +507,364 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-  }
 
-  .breadcrumb__content {
-    display: inline-flex;
-    flex-direction: column;
-    margin-left: 1rem;
-    font-weight: 600;
-    font-size: 14px;
-    color: #9CA3AF;
-  }
-
-  .head {
-    font-size: 24px;
-    line-height: 28px;
-    color: #4B5563;
-
-    .contract__number {
-      color: var(--violet-600);
+    &:hover {
+        background-color: var(--gray-200);
     }
-  }
+}
+
+.navigation__content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 52px;
+
+
+    .breadcrumb__content {
+        display: inline-flex;
+        flex-direction: column;
+        margin-left: 1rem;
+        font-weight: 600;
+        font-size: 14px;
+        color: #9CA3AF;
+    }
+
+    .head {
+        font-size: 24px;
+        line-height: 28px;
+        color: #4B5563;
+
+        .contract__number {
+            color: var(--violet-600);
+        }
+    }
 }
 
 .delete-comment {
-  width: 100%;
-  height: 100px;
+    width: 100%;
+    height: 100px;
 
-  &__title {
-    font-weight: 600;
-    font-size: 18px;
-    color: var(--gray-600);
-    margin-top: 1.5rem;
-  }
+    &__title {
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--gray-600);
+        margin-top: 1.5rem;
+    }
 }
 
 ::v-deep {
-  .b-dropdown {
-    width: 100%;
-  }
-
-  .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-    font-family: Inter, serif;
-    padding: 1rem 1rem 1rem 1.5rem !important;
-    height: 56px;
-    font-weight: 600 !important;
-    line-height: 22px !important;
-    border-radius: 2rem !important;
-    color: var(--gray-600) !important;
-    font-size: 1rem !important;
-    border: none !important;
-    outline: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: var(--gray-200) !important;
-    margin: 0 !important;
-  }
-
-  .dropdown-toggle::after {
-    border: none;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    margin-left: 1rem;
-    background: url("../../../assets/icons/icon-down.svg");
-    transition: all .2s ease-in-out;
-  }
-
-  .show .dropdown-toggle::after {
-    transform: rotate(-180deg);
-  }
-
-
-  .dropdown-menu {
-    border: 1px solid var(--gray-200);
-    box-sizing: border-box;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-    border-radius: 24px;
-    padding: .5rem;
-
-
-    .dropdown-item {
-      font-weight: 600 !important;
-      font-size: 16px !important;
-      line-height: 22px !important;
-      border-radius: 1rem;
-      padding: 12px 17px;
-      min-width: 256px;
-
-      &:hover {
-        background-color: var(--gray-200);
-      }
+    .b-dropdown {
+        width: 100%;
     }
-  }
+
+    .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
+        font-family: Inter, serif;
+        padding: 1rem 1rem 1rem 1.5rem !important;
+        height: 56px;
+        font-weight: 600 !important;
+        line-height: 22px !important;
+        border-radius: 2rem !important;
+        color: var(--gray-600) !important;
+        font-size: 1rem !important;
+        border: none !important;
+        outline: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        background-color: var(--gray-200) !important;
+        margin: 0 !important;
+    }
+
+    .dropdown-toggle::after {
+        border: none;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        margin-left: 1rem;
+        background: url("../../../assets/icons/icon-down.svg");
+        transition: all .2s ease-in-out;
+    }
+
+    .show .dropdown-toggle::after {
+        transform: rotate(-180deg);
+    }
+
+
+    .dropdown-menu {
+        border: 1px solid var(--gray-200);
+        box-sizing: border-box;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+        border-radius: 24px;
+        padding: .5rem;
+
+
+        .dropdown-item {
+            font-weight: 600 !important;
+            font-size: 16px !important;
+            line-height: 22px !important;
+            border-radius: 1rem;
+            padding: 12px 17px;
+            min-width: 256px;
+
+            &:hover {
+                background-color: var(--gray-200);
+            }
+        }
+    }
 }
 
 .warning__before__delete {
-  &-head {
-    display: flex;
-    align-items: center;
+    &-head {
+        display: flex;
+        align-items: center;
 
-    .title {
-      font-size: 2.25rem;
-      line-height: 42px;
-      margin-left: 1rem;
+        .title {
+            font-size: 2.25rem;
+            line-height: 42px;
+            margin-left: 1rem;
+        }
     }
-  }
 
-  &-main {
-    display: block;
-    max-width: 60%;
-    font-family: Inter, sans-serif;
-    color: var(--gray-600);
-    //margin-left: 0.5rem;
-  }
-
-  &-footer {
-    gap: 2rem;
-
-    button {
-      flex-grow: 1;
+    &-main {
+        display: block;
+        max-width: 60%;
+        font-family: Inter, sans-serif;
+        color: var(--gray-600);
+        //margin-left: 0.5rem;
     }
-  }
+
+    &-footer {
+        display: flex;
+        gap: 2rem;
+    }
 }
 
 .reContract-modal {
 
-  & .modal-dialog .modal-content .title {
-    font-family: CraftworkSans, serif;
-    font-weight: 900;
-    font-size: 36px;
-    line-height: 42px;
-  }
-
-  &__warning {
-    display: flex;
-    align-items: center;
-    padding: 24px;
-    column-gap: 12px;
-    background: var(--orange-50);
-    border-radius: 32px;
-
-    p {
-      margin-bottom: 0;
-      color: var(--orange-600);
+    & .modal-dialog .modal-content .title {
+        font-family: CraftworkSans, serif;
+        font-weight: 900;
+        font-size: 36px;
+        line-height: 42px;
     }
 
-  }
+    &__warning {
+        display: flex;
+        align-items: center;
+        padding: 24px;
+        column-gap: 12px;
+        background: var(--orange-50);
+        border-radius: 32px;
 
-  &__select {
-    margin-top: 2rem;
-  }
+        p {
+            margin-bottom: 0;
+            color: var(--orange-600);
+        }
+
+    }
+
+    &__select {
+        margin-top: 2rem;
+    }
 
 
 }
 
 ::v-deep {
-  .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-    font-family: Inter, sans-serif;
-    padding: 1rem 1rem 1rem 1.5rem !important;
-    height: 56px;
-    font-style: normal;
-    line-height: 22px !important;
-    border-radius: 2rem !important;
-    color: var(--gray-400) !important;
-    font-size: 1rem !important;
-    border: none !important;
-    outline: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    background-color: var(--gray-100) !important;
-    margin: 0 !important;
-    //width: 100%;
+    .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
+        font-family: Inter, sans-serif;
+        padding: 1rem 1rem 1rem 1.5rem !important;
+        height: 56px;
+        font-style: normal;
+        line-height: 22px !important;
+        border-radius: 2rem !important;
+        color: var(--gray-400) !important;
+        font-size: 1rem !important;
+        border: none !important;
+        outline: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        background-color: var(--gray-100) !important;
+        margin: 0 !important;
+        //width: 100%;
 
-    &:hover {
-      -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
-      box-shadow: 0 8px 25px -8px var(--gray-400) !important;
+        &:hover {
+            -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
+            box-shadow: 0 8px 25px -8px var(--gray-400) !important;
+        }
+
+        .input-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .input-label {
+            font-weight: 900;
+            font-size: 8px;
+            line-height: 10px;
+            margin: 0 2px 0 0;
+            //margin-bottom: 2px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--gray-400);
+        }
+
+        .input-text {
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 22px;
+            color: var(--gray-600);
+            margin: 0;
+            max-width: 300px;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .default-label {
+            line-height: 22px;
+            font-size: 1rem;
+            color: var(--gray-400);
+            margin: 0;
+        }
+
     }
 
-    .input-block {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+    .dropdown-toggle::after {
+        border: none;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        margin-left: 1rem;
+        background: url("../../../assets/icons/icon-down.svg");
+        transition: all .2s ease-in-out;
     }
 
-    .input-label {
-      font-weight: 900;
-      font-size: 8px;
-      line-height: 10px;
-      margin: 0 2px 0 0;
-      //margin-bottom: 2px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--gray-400);
+    .show .dropdown-toggle::after {
+        transform: rotate(-180deg);
     }
 
-    .input-text {
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 22px;
-      color: var(--gray-600);
-      margin: 0;
-      max-width: 300px;
-      overflow-x: hidden;
-      text-overflow: ellipsis;
+    .dropdown-menu {
+        border: 1px solid var(--gray-200);
+        box-sizing: border-box;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+        border-radius: 24px;
+        padding: .5rem;
+
+        .dropdown-item {
+            font-weight: 600 !important;
+            font-size: 16px !important;
+            line-height: 22px !important;
+            border-radius: 1rem;
+            padding: 12px 17px;
+            min-width: 256px;
+
+            &:hover {
+                background-color: var(--gray-200);
+            }
+        }
+
     }
 
-    .default-label {
-      line-height: 22px;
-      font-size: 1rem;
-      color: var(--gray-400);
-      margin: 0;
+
+    .b-dropdown-text {
+        min-width: 16rem;
+        padding: .5rem !important;
+
+        .form-group {
+            margin-bottom: 0;
+        }
     }
 
-  }
+    .custom-control-label {
+        display: flex;
+        align-items: center;
+        padding-left: 2rem;
+        width: 100%;
+        height: 100%;
 
-  .dropdown-toggle::after {
-    border: none;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    margin-left: 1rem;
-    background: url("../../../assets/icons/icon-down.svg");
-    transition: all .2s ease-in-out;
-  }
-
-  .show .dropdown-toggle::after {
-    transform: rotate(-180deg);
-  }
-
-  .dropdown-menu {
-    border: 1px solid var(--gray-200);
-    box-sizing: border-box;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-    border-radius: 24px;
-    padding: .5rem;
-
-    .dropdown-item {
-      font-weight: 600 !important;
-      font-size: 16px !important;
-      line-height: 22px !important;
-      border-radius: 1rem;
-      padding: 12px 17px;
-      min-width: 256px;
-
-      &:hover {
-        background-color: var(--gray-200);
-      }
+        &:before, &:after {
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+        }
     }
 
-  }
-
-
-  .b-dropdown-text {
-    min-width: 16rem;
-    padding: .5rem !important;
-
-    .form-group {
-      margin-bottom: 0;
+    .custom-control-input:focus ~ .custom-control-label::before {
+        -webkit-box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
+        box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
     }
-  }
 
-  .custom-control-label {
-    display: flex;
-    align-items: center;
-    padding-left: 2rem;
-    width: 100%;
-    height: 100%;
-
-    &:before, &:after {
-      top: 50%;
-      transform: translateY(-50%);
-      left: 0;
+    .custom-control-input:checked ~ .custom-control-label::before {
+        border-color: var(--violet-600);
+        background-color: var(--violet-600);
     }
-  }
 
-  .custom-control-input:focus ~ .custom-control-label::before {
-    -webkit-box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
-    box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
-  }
+    .custom-checkbox {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: .15rem .15rem .15rem 1rem;
+        height: 50px;
+        font-weight: 600;
+        border-radius: 1rem;
+        color: var(--gray-600);
+        font-size: 1rem;
 
-  .custom-control-input:checked ~ .custom-control-label::before {
-    border-color: var(--violet-600);
-    background-color: var(--violet-600);
-  }
-
-  .custom-checkbox {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    padding: .15rem .15rem .15rem 1rem;
-    height: 50px;
-    font-weight: 600;
-    border-radius: 1rem;
-    color: var(--gray-600);
-    font-size: 1rem;
-
-    &:hover {
-      background-color: var(--gray-200);
+        &:hover {
+            background-color: var(--gray-200);
+        }
     }
-  }
 }
 
 
 .apartment__status {
-  font-family: Inter, sans-serif;
-  background-color: var(--gray-100);
-  border-radius: 2rem;
-  font-size: 16px;
-  min-width: max-content;
-  padding: 1rem 3rem;
-  margin: 0 2rem;
+    font-family: Inter, sans-serif;
+    background-color: var(--gray-100);
+    border-radius: 2rem;
+    font-size: 16px;
+    min-width: max-content;
+    padding: 1rem 3rem;
+    margin: 0 2rem;
 }
 
 .status {
-  &-waiting {
-    background-color: var(--yellow-100) !important;
-    color: var(--yellow-600) !important;
-  }
+    &-waiting {
+        background-color: var(--yellow-100) !important;
+        color: var(--yellow-600) !important;
+    }
 
-  &-contract {
-    background-color: var(--blue-100) !important;
-    color: var(--blue-600) !important;
-  }
+    &-contract {
+        background-color: var(--blue-100) !important;
+        color: var(--blue-600) !important;
+    }
 
-  &-booked {
-    background-color: var(--yellow-100) !important;
-    color: var(--yellow-600) !important;
-  }
+    &-booked {
+        background-color: var(--yellow-100) !important;
+        color: var(--yellow-600) !important;
+    }
 
-  &-cancelled {
-    background-color: var(--pink-100) !important;
-    color: var(--pink-600) !important;
-  }
+    &-cancelled {
+        background-color: var(--pink-100) !important;
+        color: var(--pink-600) !important;
+    }
 
-  &-available {
-    background-color: var(--teal-100) !important;
-    color: var(--teal-600) !important;
-  }
+    &-available {
+        background-color: var(--teal-100) !important;
+        color: var(--teal-600) !important;
+    }
 
-  &-sold {
-    background-color: var(--gray-100) !important;
-    color: var(--gray-600) !important;
-  }
+    &-sold {
+        background-color: var(--gray-100) !important;
+        color: var(--gray-600) !important;
+    }
 
-  &-unavailable {
-    background-color: var(--gray-500) !important;
-    color: var(--white) !important;
-  }
+    &-unavailable {
+        background-color: var(--gray-500) !important;
+        color: var(--white) !important;
+    }
 }
 
 

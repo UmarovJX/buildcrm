@@ -11,11 +11,13 @@
       {{ placeholderFormat }}
     </span>
     <input
+        v-bind="$attrs"
         type="text"
         ref="price-input"
         class="price-input"
+        :class="inputClass"
+        :style="inputStyle"
         :placeholder="placeholderFormat"
-        v-bind="$attrs"
         v-model="priceAmount"
         @blur="onBlurHandler"
         @input="onInputHandler"
@@ -98,6 +100,14 @@ export default {
     topPlaceholder: {
       type: Boolean,
       default: false
+    },
+    inputClass: {
+      type: String,
+      default: ''
+    },
+    inputStyle: {
+      type: [String, Object],
+      default: ''
     }
   },
   emits: ['input', 'focus-on'],
@@ -244,7 +254,7 @@ export default {
 
 .price-input {
   border: none;
-  max-width: 70%;
+  max-width: 80%;
   background-color: transparent;
 
   &::placeholder {
