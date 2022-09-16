@@ -13,6 +13,35 @@ class Settings extends Core {
     fetchCurrency() {
         return this.get('currency')
     }
+
+    fetchVersionList() {
+        return this.get('versions')
+    }
+
+    createVersion(body) {
+        return this.post('versions', body)
+    }
+
+    getVersion(id) {
+        return this.get(`versions/${id}`)
+    }
+
+    updateVersion(id) {
+        return this.put(`versions/${id}`)
+    }
+
+    deleteVersion(id) {
+        return this.delete(`versions/${id}`)
+    }
+
+    getLastVersion() {
+        return this.get('versions/latest')
+    }
+
+    confirmLastVersion() {
+        return this.post('versions/confirm')
+    }
+
 }
 
 class SettingsV2 extends Core {
@@ -27,6 +56,8 @@ class SettingsV2 extends Core {
     fetchCurrency() {
         return this.get('currency')
     }
+
+
 }
 
 export default {Settings, SettingsV2}

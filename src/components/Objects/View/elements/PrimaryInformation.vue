@@ -41,7 +41,9 @@
 
 
         <b-tabs card class="calculator-tab">
-            <div class="bottom__line"></div>
+            <template #tabs-start>
+                <div class="bottom__line"/>
+            </template>
             <b-tab :title="$t('details')" active>
                 <!--   PRICE CONTENT     -->
                 <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
@@ -293,6 +295,16 @@ export default {
 
 
 ::v-deep .calculator-tab
+
+    .bottom__line
+        height: 8px
+        width: 100%
+        position: absolute
+        bottom: 0
+        left: 0
+        border-radius: 1rem 1rem 0 0
+        background-color: var(--gray-100)
+
     .card-header
         padding: 0
         background-color: transparent
@@ -300,7 +312,8 @@ export default {
         border-bottom: none
 
     .tab-content
-        padding-top: 12px
+        position: relative
+    //padding-top: 12px
 
     .card-body
         padding: 0
@@ -308,22 +321,13 @@ export default {
     .card-header-tabs
         margin: 0
 
+
     .nav-tabs
         display: flex
         flex-wrap: nowrap
         column-gap: .5rem
         justify-content: space-around
         position: relative
-
-        &:after
-            content: ''
-            height: 8px
-            width: 100%
-            position: absolute
-            bottom: 0
-            left: 0
-            border-radius: 1rem 1rem 0 0
-            background-color: var(--gray-100)
 
         .nav-item
             width: 100%
@@ -345,7 +349,7 @@ export default {
                     height: 8px
                     width: 100%
                     position: absolute
-                    bottom: 0
+                    bottom: 1px
                     left: 0
                     border-radius: 1rem 1rem 0 0
                     background-color: var(--violet-600)

@@ -16,46 +16,63 @@
                 <div class="release-note-main">
                     <div class="release-note__select">
                         <h3 class="block-title">{{ $t("main") }}</h3>
-                        <base-select
-                            :label="true"
-                            :value="form.version"
-                            :no-placeholder="false"
-                            @change="setFormProperty('release', $event)"
-                            :placeholder="$t('release_note.version_number')"
-                            :options="releaseNotes"
-                        />
+                        <ValidationProvider
+                            rules="required"
+                            :name="`${$t('release_note.version_number')}`"
+                            v-slot="{errors}"
+                        >
+                            <base-input
+                                v-model="form.version"
+                                :label="true"
+                                :placeholder="`${ $t('release_note.version_number') }`"
+                            />
+                            <span v-if="errors[0]" style="color: red">{{ errors[0] }}</span>
+                        </ValidationProvider>
                     </div>
                     <div class="row release-note__block">
                         <div class="col-12">
                             <h3 class="block-title">{{ $t("release_note.texts") }}</h3>
                         </div>
-                        <div class="release-note__block-item col-6">
-                            <p>{{ $t("release_note.new") }} (UZ)</p>
-                            <base-input
-                                v-model="form.latest['uz']"
-                                :placeholder="`${ $t('text') }`"
-                            />
-                        </div>
-                        <div class="release-note__block-item col-6">
-                            <p>{{ $t("release_note.new") }} (RU)</p>
-                            <base-input
-                                v-model="form.latest['ru']"
-                                :placeholder="`${ $t('text') }`"
-                            />
-                        </div>
-                        <div class="release-note__block-item col-6">
-                            <p>{{ $t("edited") }} (UZ)</p>
-                            <base-input
-                                v-model="form.fixed['uz']"
-                                :placeholder="`${ $t('text') }`"
-                            />
-                        </div>
-                        <div class="release-note__block-item col-6">
-                            <p>{{ $t("edited") }} (RU)</p>
-                            <base-input
-                                v-model="form.fixed['ru']"
-                                :placeholder="`${ $t('text') }`"
-                            />
+                        <div class="col-12">
+                            <b-tabs card class="custom-tab">
+                                <div class="bottom__line"></div>
+                                <b-tab title="На русском" active>
+                                    <div class="release-note__block-item">
+                                        <p>{{ $t("release_note.new") }} (UZ)</p>
+                                        <vue-editor v-model="form.latest['uz']"></vue-editor>
+                                        <!--                            <base-input-->
+                                        <!--                                v-model="form.latest['uz']"-->
+                                        <!--                                :placeholder="`${ $t('text') }`"-->
+                                        <!--                            />-->
+                                    </div>
+                                    <div class="release-note__block-item">
+                                        <p>{{ $t("edited") }} (UZ)</p>
+                                        <vue-editor v-model="form.fixed['uz']"></vue-editor>
+                                        <!--                            <base-input
+                                                                        v-model="form.fixed['uz']"
+                                                                        :placeholder="`${ $t('text') }`"
+                                                                    />-->
+                                    </div>
+                                </b-tab>
+                                <b-tab title="O’zbekchada">
+                                    <div class="release-note__block-item">
+                                        <p>{{ $t("release_note.new") }} (RU)</p>
+                                        <vue-editor v-model="form.latest['ru']"></vue-editor>
+                                        <!--                            <base-input-->
+                                        <!--                                v-model="form.latest['ru']"-->
+                                        <!--                                :placeholder="`${ $t('text') }`"-->
+                                        <!--                            />-->
+                                    </div>
+                                    <div class="release-note__block-item">
+                                        <p>{{ $t("edited") }} (RU)</p>
+                                        <vue-editor v-model="form.fixed['ru']"></vue-editor>
+                                        <!--                            <base-input-->
+                                        <!--                                v-model="form.fixed['ru']"-->
+                                        <!--                                :placeholder="`${ $t('text') }`"-->
+                                        <!--                            />-->
+                                    </div>
+                                </b-tab>
+                            </b-tabs>
                         </div>
                     </div>
                 </div>
@@ -64,7 +81,12 @@
                 <div class="release-note-footer">
                     <base-button @click="closeReleaseModal" :text="`${ $t('cancel') }`"/>
                     <base-button @click="recheckRelease" :text="`${ $t('recheck') }`"/>
-                    <base-button @click="addRelease" design="violet-gradient" :text="`${ $t('add') }`"/>
+                    <base-button
+                        type="submit"
+                        @click="createReleaseNote"
+                        design="violet-gradient"
+                        :text="`${ $t('add') }`"
+                    />
                 </div>
             </template>
         </base-modal>
@@ -114,13 +136,21 @@
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
+import {VueEditor} from 'vue2-editor'
+import api from "@/services/api";
 
 export default {
     name: "ReleaseNote",
-    components: {BaseQuestionsIcon, BaseInput, BaseCloseIcon, BaseSelect, BaseButton, BaseModal},
+    components: {
+        BaseQuestionsIcon,
+        BaseInput,
+        BaseCloseIcon,
+        BaseButton,
+        BaseModal,
+        VueEditor
+    },
     data() {
         const releaseNotes = [
             {
@@ -148,11 +178,30 @@ export default {
                 fixed: {
                     uz: null,
                     ru: null
-                }
+                },
+                published: true
             },
         }
     },
     methods: {
+        createReleaseNote() {
+            let body = Object.assign(this.form, {})
+            if (!(body.latest && body.latest.uz && body.latest.ru)) {
+                delete body.latest
+            }
+            if (!(body.fixed && body.fixed.uz && body.fixed.ru)) {
+                delete body.fixed
+            }
+            if (this.form.version) {
+                api.settings.createVersion(body).then((res) => {
+                    body = Object.assign(this.form, {})
+                    console.log(res, 'res');
+                }).catch((err) => {
+                    body = Object.assign(this.form, {})
+                    return this.toastedWithErrorCode(err)
+                })
+            }
+        },
         openReleaseModal() {
             this.$refs["release-note-modal"].openModal()
         },
@@ -179,7 +228,12 @@ export default {
 }
 </script>
 
+
 <style scoped lang="scss">
+
+@import '../../assets/scss/utils/tab.sass';
+
+
 p {
     margin-bottom: 0 !important;
 }
@@ -232,6 +286,7 @@ p {
             flex-direction: column;
             gap: 16px;
             font-family: 'Inter', serif;
+            margin: 2rem 0;
 
             p {
                 font-weight: 600;
@@ -333,4 +388,7 @@ p {
         }
     }
 }
+
+
 </style>
+

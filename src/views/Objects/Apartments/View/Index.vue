@@ -4,36 +4,36 @@
 
         <div class="header-navigation d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-          <span
-              class="go__back"
-              @click="$router.push(
+                <div
+                    class="go__back"
+                    @click="$router.push(
                     {name:'apartments',
                     params:{object: $route.params.object}})">
-            <base-arrow-left :width="32" :height="32"></base-arrow-left>
-          </span>
-                <span class="breadcrumb__content">
-          <span class="d-flex align-items-center">
-            <span class="mr-2">{{ $t('objects.title') }}</span>
-            <base-arrow-right :width="16" :height="16"/>
-            <span class="ml-2">{{ apartmentName }}</span>
-            <base-arrow-right :width="16" :height="16"/>
-            <span class="ml-2">
-              {{ $t('apartment') }} № {{ apartment.number }}
-            </span>
-          </span>
-          <span class="head color-violet-600">
-            {{ $t('apartment') }} № {{ apartment.number }}
-          </span>
-        </span>
+                    <base-arrow-left :width="32" :height="32"></base-arrow-left>
+                </div>
+                <div class="breadcrumb__content">
+                    <div class="d-flex align-items-center">
+                        <span class="mr-2">{{ $t('objects.title') }}</span>
+                        <base-arrow-right :width="16" :height="16"/>
+                        <span class="ml-2">{{ apartmentName }}</span>
+                        <base-arrow-right :width="16" :height="16"/>
+                        <div class="ml-2">
+                            {{ $t('apartment') }} № {{ apartment.number }}
+                        </div>
+                    </div>
+                    <div class="head color-violet-600">
+                        {{ $t('apartment') }} № {{ apartment.number }}
+                    </div>
+                </div>
             </div>
 
             <div>
-          <span
-              class="apartment__status d-flex justify-content-center align-items-center"
-              :class="`status-${status}`"
-          >
-              {{ $t(`apartments.status.${status}`) }}
-            </span>
+                <div
+                    class="apartment__status d-flex justify-content-center align-items-center"
+                    :class="`status-${status}`"
+                >
+                    {{ $t(`apartments.status.${status}`) }}
+                </div>
             </div>
         </div>
 
@@ -147,6 +147,7 @@ export default {
 
 <style lang="sass" scoped>
 
+
 .header-navigation
     margin-right: 4.25rem
     //max-width: 640px
@@ -219,6 +220,16 @@ export default {
 ::v-deep .custom-tab
     margin-top: 3rem
 
+    .bottom__line
+        display: flex
+        height: 8px
+        width: 100%
+        position: absolute
+        bottom: 0
+        left: 0
+        border-radius: 1rem 1rem 0 0
+        background-color: var(--gray-100)
+
     .card-header
         padding: 0
         background-color: transparent
@@ -226,7 +237,8 @@ export default {
         border-bottom: none
 
     .tab-content
-        padding-top: 12px
+        position: relative
+        //padding-top: 12px
 
     .card-body
         padding: 0
@@ -241,7 +253,7 @@ export default {
         position: relative
 
         &:after
-            content: ''
+            //content: ''
             height: 8px
             width: 100%
             position: absolute
@@ -266,6 +278,7 @@ export default {
             &.active
                 position: relative
                 color: var(--violet-600)
+
 
                 &:after
                     content: ''
