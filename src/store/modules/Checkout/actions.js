@@ -214,7 +214,8 @@ export default {
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')
     },
-    changePrepay({dispatch}) {
+    changePrepay({commit, dispatch}) {
+        commit('deactivateState', 'initial_price')
         dispatch('calculate')
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')

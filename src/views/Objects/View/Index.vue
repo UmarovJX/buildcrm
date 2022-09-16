@@ -54,13 +54,13 @@
             <template #header>
                 <!--   GO BACK     -->
                 <span class="d-flex align-items-center justify-content-between">
-          <!--    TITLE      -->
-            <span class="title">{{ $t('objects.create.prices') }}</span>
-                    <!--          CLOSE-->
-          <span class="go__back" @click="closeMapModal">
-              <BaseCloseIcon :width="40" :height="40"/>
-            </span>
-        </span>
+                  <!--    TITLE      -->
+                    <span class="title">{{ $t('objects.create.prices') }}</span>
+                            <!--          CLOSE-->
+                  <span class="go__back" @click="closeMapModal">
+                      <BaseCloseIcon :width="40" :height="40"/>
+                    </span>
+                </span>
             </template>
             <template #main>
                 <b-table

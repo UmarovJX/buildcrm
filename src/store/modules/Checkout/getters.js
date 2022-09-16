@@ -75,6 +75,9 @@ export default {
     },
     getInitialPrice: (state, getters) => {
         if (state.edit.initial_price) {
+            if (state.calc.initial_price.toString() === '') {
+                return 0
+            }
             return state.calc.initial_price
         }
 

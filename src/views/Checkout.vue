@@ -1,6 +1,9 @@
 <template>
   <div class="app-checkout">
-    <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
+    <ErrorNotification
+        :value="validationError"
+        @close-bar="validationError.visible = false"
+    />
     <app-header
         :page="header.page"
         :page-info="header.pageInfo"
@@ -338,7 +341,6 @@ export default {
       }, '')
 
       const {object} = apartments[0]
-      console.log(apartments)
       if (object) {
         h.breadcrumbs.push({
           content: {
@@ -564,7 +566,7 @@ export default {
           }
         }
 
-        if (initial_payments.length > 1) {
+        if (initial_payments.length > 1 || edit.initial_price) {
           for (let i = 0; i < initial_payments.length; i++) {
             const p = initial_payments[i]
             const {ymd} = dateProperties(p.month, 'string')

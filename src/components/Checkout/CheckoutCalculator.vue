@@ -49,23 +49,6 @@
           :placeholder="$t('payments.initial_fee')"
           class="checkout-initial-price-input w-100"
       />
-      <!--  Общая скидка    -->
-      <!--      <base-price-input
-                :label="true"
-                :top-placeholder="true"
-                :currency="`${ $t('ye') }`"
-                :placeholder="$t('total_discount')"
-                class="checkout-total-discount-input w-100"
-            />-->
-      <!--  Скидка за М2    -->
-      <!--      <base-price-input
-                :label="true"
-                :top-placeholder="true"
-                :currency="`${ $t('ye') }`"
-                :placeholder="$t('discount_per_m2')"
-                class="checkout-discount-per-m2-input w-100"
-            />-->
-      <!--  Дата первого платежа  -->
       <base-date-picker
           v-model="calc.first_payment_date"
           :range="false"
