@@ -297,22 +297,6 @@
           flex-md-row flex-column
         "
         >
-            <!--                <div class="d-flex align-items-center">-->
-            <!--                    <BaseSearchInput class="w-100" :placeholder="$t('users.placeholder')"/>-->
-            <!--                    <base-button-->
-            <!--                        v-if="getPermission.users && getPermission.users.create"-->
-            <!--                        design="violet-gradient"-->
-            <!--                        :text="$t('add')"-->
-            <!--                        v-b-modal.modal-create-->
-            <!--                        class="ml-4"-->
-            <!--                    >-->
-            <!--                        <template #left-icon>-->
-            <!--                            <i class="fal fa-plus mr-2"></i>-->
-            <!--                        </template>-->
-            <!--                    </base-button>-->
-            <!--                </div>div-->
-
-
             <base-button
                 v-if="createPermission"
                 design="violet-gradient"

@@ -183,12 +183,11 @@
             </template>
 
             <template #modal-footer>
-                <router-link
-                    class="d-flex align-items-center justify-content-center go-to-contract"
-                    :to="{ name: 'contracts-view', params:{ id:debtorViewModalItem.order.uuid } }"
-                >
-                    {{ $t('go_to_contract') }}
-                </router-link>
+                <base-button
+                    :text="$t('go_to_contract')"
+                    :fixed="true"
+                    @click="$router.push({ name: 'contracts-view', params:{ id:debtorViewModalItem.order.uuid } })"
+                />
             </template>
         </base-right-modal>
     </div>
@@ -206,6 +205,7 @@ import BaseRightModal from "@/components/Reusable/BaseRightModal";
 import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
 import WeeklyDebtsUi from "@/components/Debtors/WeeklyDebtsUi";
 import BaseStarIcon from "@/components/icons/BaseStarIcon";
+import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
     name: "Debtors",
@@ -217,7 +217,8 @@ export default {
         BaseHugeCalendarUi,
         BaseRightModal,
         OutputInformation,
-        WeeklyDebtsUi
+        WeeklyDebtsUi,
+        BaseButton
     },
     data() {
         const query = Object.assign({}, this.$route.query)
@@ -845,14 +846,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../assets/scss/reusable/table-depend-on-design";
-
-.go-to-contract {
-    width: 100%;
-    border-radius: 2rem;
-    background-color: var(--gray-100);
-    color: var(--gray-600);
-    padding: 1rem 0;
-}
 
 .contract-details {
     margin-top: 3.5rem;
