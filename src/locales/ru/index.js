@@ -2,6 +2,8 @@ export default {
     home: {
         title: "Главная",
     },
+    installment: 'Рассрочка',
+    enter_discount: "Вариант оплаты",
     type: 'Тип',
     total: "Итого",
     language: "Язык",
@@ -168,6 +170,7 @@ export default {
         },
     },
     xonsaroy: 'Хонсарой',
+    discount_per_m2: "Скидка за м2",
     checkout_booking: 'Оформление',
     apartment_make_contract: 'Оформление квартиры',
     address_office: 'город Ташкент, Юнусабадский район, улица Янги шахар, дом 64А',

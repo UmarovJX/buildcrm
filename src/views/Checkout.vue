@@ -607,6 +607,7 @@ export default {
         try {
           const response = await api.orders.reserveApartment(order.uuid, form)
           this.successContract = response.data
+          console.log(response.data)
           this.toasted(response.data.message, "success")
           this.$bvModal.hide("modal-agree")
           this.$bvModal.show("modal-success-agree")
