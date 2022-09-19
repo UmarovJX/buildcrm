@@ -77,8 +77,44 @@ export default {
             state.credit_months = []
         }
     },
+    addPaymentSchedule({state, getters}, {amount, month, type, edit}) {
+        const {
+            lastDayOfMonth,
+            isLastDayOfMonth,
+            nextMonthOfDate
+        } = dateProperties(month, 'string')
+        const nextMonth = isLastDayOfMonth ? lastDayOfMonth : nextMonthOfDate
+        const schedule = {
+            edit,
+            type,
+            amount,
+            month: nextMonth,
+            edited: false,
+        }
+
+        if (type === 'initial') {
+            const length = state.initial_payments.length
+            if (length === 1) {
+                const initialPerMonth = getters.getInitialPrice / (length + 1)
+                state.initial_payments.push(schedule)
+                state.initial_payments = state.initial_payments.map(initial => {
+                    return {
+                        ...initial,
+                        amount: fmd(initialPerMonth)
+                    }
+                })
+            } else {
+                state.initial_payments.push({
+                    ...schedule,
+                    amount: 0
+                })
+            }
+        } else {
+            state.credit_months.push(schedule)
+        }
+    },
     addNewPaymentSchedule({getters, commit, dispatch}, {type, amount, month, edit}) {
-        commit('addPaymentSchedule', {amount, month, type, edit})
+        dispatch('addPaymentSchedule', {amount, month, type, edit})
         commit('sortPaymentSchedule', type)
         commit('reorderScheduleDate', type)
 
@@ -180,10 +216,10 @@ export default {
     },
     reInitCalc({getters, dispatch, commit}, payment) {
         if (payment.type === 'initial') {
-            if (getters.uneditedInitial.length) {
-                let initially = (getters.initiallyTotal - getters.getInitialEditTotalPrice) / getters.uneditedInitial.length
-                dispatch('changeInitiallyByEdit', {initially})
-            }
+            // if (getters.uneditedInitial.length) {
+            //     let initially = (getters.initiallyTotal - getters.getInitialEditTotalPrice) / getters.uneditedInitial.length
+            //     dispatch('changeInitiallyByEdit', {initially})
+            // }
 
             if (getters.getMonth) {
                 const excessAmount = (getters.getTotal - getters.initiallyTotal) / getters.getMonth
