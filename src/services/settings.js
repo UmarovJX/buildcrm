@@ -26,8 +26,8 @@ class Settings extends Core {
         return this.get(`versions/${id}`)
     }
 
-    updateVersion(id) {
-        return this.put(`versions/${id}`)
+    updateVersion(id, body) {
+        return this.put(`versions/${id}`, body)
     }
 
     deleteVersion(id) {

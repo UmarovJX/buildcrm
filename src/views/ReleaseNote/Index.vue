@@ -1,9 +1,10 @@
 <template>
     <div>
         <base-button class="mb-4" @click="openReleaseModal" text="add release note"/>
+        <base-button class="mb-4" @click="getUpdateRelease" text="update release note"/>
         <base-button @click="openReleaseNote" text="about release note"/>
 
-        <base-modal ref="release-note-modal" design="release-note">
+        <base-modal ref="create-modal" design="release-note">
             <template #header>
                 <div class="release-note-header">
                     <p>{{ $t("release_note.add_release_note") }}</p>
@@ -92,7 +93,7 @@
         </base-modal>
 
 
-        <base-modal ref="release-note" design="release-info">
+        <base-modal v-if="version && Object.keys(version).length" ref="view-modal" design="release-info">
             <template #header>
                 <div class="release-note-header">
                     <p>{{ $t("release_note.release_note") }}</p>
@@ -104,21 +105,30 @@
             <template #main>
                 <div class="release-info-main">
                     <div class="release-info-main-block">
-                        <p class="release-info-main-block-release">{{ form.release }}</p>
+                        <p class="release-info-main-block-release">{{ version.version }}</p>
                         <p class="release-info-main-block-date">22 June, 2022</p>
                     </div>
                     <div class="release-info-main-block">
-                        <div class="release-info-main-block-tag release-info-main-block-tag-new">{{
-                                $t('release_note.new')
-                            }}
+                        <div class="release-info-main-block-tag release-info-main-block-tag-new">
+                            {{ $t('release_note.new') }}
                         </div>
-                        <p class="release-new">{{ form.new_text }}</p>
+                        <div>
+                            <p class="release-new" v-html="version.fixed['uz']"/>
+                        </div>
+                        <div>
+                            <p class="release-new" v-html="version.fixed['ru']"/>
+                        </div>
                     </div>
                     <div class="release-info-main-block">
                         <span class="release-info-main-block-tag release-info-main-block-tag-edited">{{
                                 $t('edited')
                             }}</span>
-                        <p class="release-edited">{{ form.edited_text }}</p>
+                        <div>
+                            <p class="release-edited" v-html="version.latest['uz']"/>
+                        </div>
+                        <div>
+                            <p class="release-edited" v-html="version.latest['ru']"/>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -181,45 +191,92 @@ export default {
                 },
                 published: true
             },
+            version: {},
+            modalPosition: 'create'
         }
+    },
+    async mounted() {
+        await this.getReleaseModal()
     },
     methods: {
         createReleaseNote() {
-            let body = Object.assign(this.form, {})
+            let body = {...this.form}
             if (!(body.latest && body.latest.uz && body.latest.ru)) {
                 delete body.latest
             }
             if (!(body.fixed && body.fixed.uz && body.fixed.ru)) {
                 delete body.fixed
             }
-            if (this.form.version) {
-                api.settings.createVersion(body).then((res) => {
-                    body = Object.assign(this.form, {})
-                    console.log(res, 'res');
-                }).catch((err) => {
-                    body = Object.assign(this.form, {})
-                    return this.toastedWithErrorCode(err)
-                })
+            if (body.version) {
+                if (this.modalPosition === 'create') {
+                    api.settings.createVersion(body).then((res) => {
+                        console.log(res, 'res');
+                    }).catch((err) => {
+                        return this.toastedWithErrorCode(err)
+                    }).finally(() => {
+                        this.$refs['create-modal'].closeModal()
+                    })
+                } else {
+                    api.settings.updateVersion(28, body).then((res) => {
+                        console.log(res, 'res');
+                    }).catch((err) => {
+                        return this.toastedWithErrorCode(err)
+                    }).finally(() => {
+                        this.$refs['create-modal'].closeModal()
+                    })
+                }
             }
         },
+        async getReleaseModal() {
+            await api.settings.getLastVersion().then((res) => {
+                this.version = res.data
+            }).catch((err) => {
+                return this.toastedWithErrorCode(err)
+            })
+        },
+        async getUpdateRelease() {
+            this.modalPosition = 'update'
+            await api.settings.getVersion(28).then((res) => {
+                this.form = res.data
+            }).catch((err) => {
+                return this.toastedWithErrorCode(err)
+            }).finally(() => {
+                this.$refs["create-modal"].openModal()
+            })
+        },
+
         openReleaseModal() {
-            this.$refs["release-note-modal"].openModal()
+            this.modalPosition = 'create'
+            this.form = {
+                version: null,
+                latest: {
+                    uz: null,
+                    ru: null
+                },
+                fixed: {
+                    uz: null,
+                    ru: null
+                },
+                published: true
+            }
+            this.$refs["create-modal"].openModal()
         },
         closeReleaseModal() {
-            this.$refs["release-note-modal"].closeModal()
+            this.$refs["create-modal"].closeModal()
         },
-        openReleaseNote() {
-            this.$refs["release-note"].openModal()
+        async openReleaseNote() {
+            await this.getReleaseModal()
+            this.$refs["view-modal"].openModal()
         },
         closeReleaseNote() {
-            this.$refs["release-note"].closeModal()
+            this.$refs["view-modal"].closeModal()
         },
         recheckRelease() {
-            this.$refs["release-note"].openModal()
+            this.$refs["view-modal"].openModal()
         },
         addRelease() {
             this.$emit('add-release-note', this.form)
-            this.$refs["release-note-modal"].closeModal()
+            this.$refs["create-modal"].closeModal()
         },
         setFormProperty(property, value) {
             this.form[property] = value
