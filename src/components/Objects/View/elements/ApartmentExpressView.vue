@@ -551,7 +551,7 @@ export default {
                 background: #FFFFFF
                 display: block
 
-.checkout__button
+//.checkout__button
 //padding: 1rem 3rem
 
 .action-block

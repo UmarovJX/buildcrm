@@ -398,7 +398,7 @@ export default {
             })
         },
         setComments() {
-            if (this.expressView) {
+            if (this.expressView && this.commentsData && this.commentsData.items) {
                 this.comments = this.commentsData.items.slice(0, 2)
             } else {
                 this.comments = this.commentsData.items

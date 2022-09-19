@@ -33,7 +33,7 @@
                         {{ $t('contracts.view.actions') }}
                     </template>
                     <b-dropdown-item v-if="downloadPermission" href="#" @click="downloadContact">
-                        <div class="mr-2">
+                        <div>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -47,7 +47,7 @@
                         v-if="editPermission"
                         :to="{name:'edit-apartment', params:{id:$route.params.id}}"
                     >
-                        <div class="mr-2">
+                        <div>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -58,7 +58,7 @@
                         {{ $t('contracts.view.update_contract') }}
                     </b-dropdown-item>
                     <b-dropdown-item v-if="deletePermission" href="#" @click="openPaymentDeletionModal">
-                        <div class="mr-2">
+                        <div>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -72,7 +72,7 @@
                         v-if="reContractPermission"
                         @click="openReContractModal"
                     >
-                        <div class="mr-2">
+                        <div>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -593,7 +593,6 @@ export default {
         transform: rotate(-180deg);
     }
 
-
     .dropdown-menu {
         border: 1px solid var(--gray-200);
         box-sizing: border-box;
@@ -603,6 +602,9 @@ export default {
 
 
         .dropdown-item {
+            display: flex;
+            align-items: center;
+            column-gap: .5rem;
             font-weight: 600 !important;
             font-size: 16px !important;
             line-height: 22px !important;
@@ -674,154 +676,155 @@ export default {
 
 }
 
-::v-deep {
-    .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-        font-family: Inter, sans-serif;
-        padding: 1rem 1rem 1rem 1.5rem !important;
-        height: 56px;
-        font-style: normal;
-        line-height: 22px !important;
-        border-radius: 2rem !important;
-        color: var(--gray-400) !important;
-        font-size: 1rem !important;
-        border: none !important;
-        outline: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        background-color: var(--gray-100) !important;
-        margin: 0 !important;
-        //width: 100%;
-
-        &:hover {
-            -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
-            box-shadow: 0 8px 25px -8px var(--gray-400) !important;
-        }
-
-        .input-block {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .input-label {
-            font-weight: 900;
-            font-size: 8px;
-            line-height: 10px;
-            margin: 0 2px 0 0;
-            //margin-bottom: 2px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--gray-400);
-        }
-
-        .input-text {
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 22px;
-            color: var(--gray-600);
-            margin: 0;
-            max-width: 300px;
-            overflow-x: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .default-label {
-            line-height: 22px;
-            font-size: 1rem;
-            color: var(--gray-400);
-            margin: 0;
-        }
-
-    }
-
-    .dropdown-toggle::after {
-        border: none;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        margin-left: 1rem;
-        background: url("../../../assets/icons/icon-down.svg");
-        transition: all .2s ease-in-out;
-    }
-
-    .show .dropdown-toggle::after {
-        transform: rotate(-180deg);
-    }
-
-    .dropdown-menu {
-        border: 1px solid var(--gray-200);
-        box-sizing: border-box;
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-        border-radius: 24px;
-        padding: .5rem;
-
-        .dropdown-item {
-            font-weight: 600 !important;
-            font-size: 16px !important;
-            line-height: 22px !important;
-            border-radius: 1rem;
-            padding: 12px 17px;
-            min-width: 256px;
-
-            &:hover {
-                background-color: var(--gray-200);
-            }
-        }
-
-    }
-
-
-    .b-dropdown-text {
-        min-width: 16rem;
-        padding: .5rem !important;
-
-        .form-group {
-            margin-bottom: 0;
-        }
-    }
-
-    .custom-control-label {
-        display: flex;
-        align-items: center;
-        padding-left: 2rem;
-        width: 100%;
-        height: 100%;
-
-        &:before, &:after {
-            top: 50%;
-            transform: translateY(-50%);
-            left: 0;
-        }
-    }
-
-    .custom-control-input:focus ~ .custom-control-label::before {
-        -webkit-box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
-        box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
-    }
-
-    .custom-control-input:checked ~ .custom-control-label::before {
-        border-color: var(--violet-600);
-        background-color: var(--violet-600);
-    }
-
-    .custom-checkbox {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: .15rem .15rem .15rem 1rem;
-        height: 50px;
-        font-weight: 600;
-        border-radius: 1rem;
-        color: var(--gray-600);
-        font-size: 1rem;
-
-        &:hover {
-            background-color: var(--gray-200);
-        }
-    }
-}
+//
+//::v-deep {
+//    .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
+//        font-family: Inter, sans-serif;
+//        padding: 1rem 1rem 1rem 1.5rem !important;
+//        height: 56px;
+//        font-style: normal;
+//        line-height: 22px !important;
+//        border-radius: 2rem !important;
+//        color: var(--gray-400) !important;
+//        font-size: 1rem !important;
+//        border: none !important;
+//        outline: none;
+//        display: flex;
+//        justify-content: space-between;
+//        align-items: center;
+//        cursor: pointer;
+//        background-color: var(--gray-100) !important;
+//        margin: 0 !important;
+//        //width: 100%;
+//
+//        &:hover {
+//            -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
+//            box-shadow: 0 8px 25px -8px var(--gray-400) !important;
+//        }
+//
+//        .input-block {
+//            display: flex;
+//            flex-direction: column;
+//            align-items: flex-start;
+//        }
+//
+//        .input-label {
+//            font-weight: 900;
+//            font-size: 8px;
+//            line-height: 10px;
+//            margin: 0 2px 0 0;
+//            //margin-bottom: 2px;
+//            letter-spacing: 1px;
+//            text-transform: uppercase;
+//            color: var(--gray-400);
+//        }
+//
+//        .input-text {
+//            font-weight: 600;
+//            font-size: 16px;
+//            line-height: 22px;
+//            color: var(--gray-600);
+//            margin: 0;
+//            max-width: 300px;
+//            overflow-x: hidden;
+//            text-overflow: ellipsis;
+//        }
+//
+//        .default-label {
+//            line-height: 22px;
+//            font-size: 1rem;
+//            color: var(--gray-400);
+//            margin: 0;
+//        }
+//
+//    }
+//
+//    .dropdown-toggle::after {
+//        border: none;
+//        width: 24px;
+//        height: 24px;
+//        display: flex;
+//        margin-left: 1rem;
+//        background: url("../../../assets/icons/icon-down.svg");
+//        transition: all .2s ease-in-out;
+//    }
+//
+//    .show .dropdown-toggle::after {
+//        transform: rotate(-180deg);
+//    }
+//
+//    .dropdown-menu {
+//        border: 1px solid var(--gray-200);
+//        box-sizing: border-box;
+//        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+//        border-radius: 24px;
+//        padding: .5rem;
+//
+//        .dropdown-item {
+//            font-weight: 600 !important;
+//            font-size: 16px !important;
+//            line-height: 22px !important;
+//            border-radius: 1rem;
+//            padding: 12px 17px;
+//            min-width: 256px;
+//
+//            &:hover {
+//                background-color: var(--gray-200);
+//            }
+//        }
+//
+//    }
+//
+//
+//    .b-dropdown-text {
+//        min-width: 16rem;
+//        padding: .5rem !important;
+//
+//        .form-group {
+//            margin-bottom: 0;
+//        }
+//    }
+//
+//    .custom-control-label {
+//        display: flex;
+//        align-items: center;
+//        padding-left: 2rem;
+//        width: 100%;
+//        height: 100%;
+//
+//        &:before, &:after {
+//            top: 50%;
+//            transform: translateY(-50%);
+//            left: 0;
+//        }
+//    }
+//
+//    .custom-control-input:focus ~ .custom-control-label::before {
+//        -webkit-box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
+//        box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
+//    }
+//
+//    .custom-control-input:checked ~ .custom-control-label::before {
+//        border-color: var(--violet-600);
+//        background-color: var(--violet-600);
+//    }
+//
+//    .custom-checkbox {
+//        width: 100%;
+//        display: flex;
+//        align-items: center;
+//        padding: .15rem .15rem .15rem 1rem;
+//        height: 50px;
+//        font-weight: 600;
+//        border-radius: 1rem;
+//        color: var(--gray-600);
+//        font-size: 1rem;
+//
+//        &:hover {
+//            background-color: var(--gray-200);
+//        }
+//    }
+//}
 
 
 .apartment__status {
