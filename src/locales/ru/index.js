@@ -2,6 +2,20 @@ export default {
     home: {
         title: "Главная",
     },
+    installment: 'Рассрочка',
+    enter_discount: "Вариант оплаты",
+    type: 'Тип',
+    total: "Итого",
+    language: "Язык",
+    additional: 'Дополнительный',
+    passport_series: "Номер паспорта",
+    name: 'Имя',
+    second_name: "Отчество",
+    last_name: "Фамилия",
+    cyrillic_shortcut: 'кир',
+    latin_shortcut: 'лат',
+    passport_issue_date: 'Дата выдачи паспорта',
+    for_example: 'например',
     remainder: 'Остаток',
     apartment_details: 'Детали квартиры',
     payment_details: 'Детали платежей',
@@ -156,6 +170,7 @@ export default {
         },
     },
     xonsaroy: 'Хонсарой',
+    discount_per_m2: "Скидка за м2",
     checkout_booking: 'Оформление',
     apartment_make_contract: 'Оформление квартиры',
     address_office: 'город Ташкент, Юнусабадский район, улица Янги шахар, дом 64А',
@@ -337,7 +352,7 @@ export default {
     date_of_the_agreement: 'Дата составления',
     agreement_number: 'Номер соглашения',
     reason_for_reissuing: 'Причина переоформлении',
-    apply: "Qo'llash",
+    apply: "Применить",
 
     monday: 'Понедельник',
     tuesday: 'Вторник',
@@ -803,7 +818,6 @@ export default {
             discount_all: 'Общая скидка',
             discount_price: 'Скидка от общей суммы',
             prepayment: "Предоплата", // asd
-            total: "Итого", // asd
             print: "Печатать", // asd
         },
 

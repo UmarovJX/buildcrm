@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <!--  HEADER NAVIGATION  -->
+  <div>
+    <!--  HEADER NAVIGATION  -->
 
         <div class="header-navigation d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
@@ -192,12 +192,12 @@ export default {
 
 
 .breadcrumb__content
-    display: inline-flex
-    flex-direction: column
-    margin-left: 1rem
-    font-weight: 600
-    font-size: 14px
-    color: #9CA3AF
+  display: inline-flex
+  flex-direction: column
+  margin-left: 1rem
+  font-weight: 600
+  font-size: 14px
+  color: #9CA3AF
 
 
 .go__back
@@ -264,20 +264,20 @@ export default {
 
         //.nav-item
 
-        .nav-link
-            display: flex
-            justify-content: center
-            align-items: center
-            border: none
-            font-weight: 600
-            font-size: 16px
-            line-height: 22px
-            padding: 0 .5rem 1.5rem
-            color: var(--gray-600)
+    .nav-link
+      display: flex
+      justify-content: center
+      align-items: center
+      border: none
+      font-weight: 600
+      font-size: 16px
+      line-height: 22px
+      padding: 0 .5rem 1.5rem
+      color: var(--gray-600)
 
-            &.active
-                position: relative
-                color: var(--violet-600)
+      &.active
+        position: relative
+        color: var(--violet-600)
 
 
                 &:after

@@ -7,7 +7,7 @@
           <div class="section-container">
             <output-information
                 v-if="order && order.contract_number"
-                property="Номер договора"
+                :property="$t('apartments.agree.number')"
                 :value="order.contract_number"
             >
               <template #right-icon>
@@ -44,9 +44,9 @@
           <h3 class="section-title">{{ $t('client_details') }}</h3>
           <div class="section-container row-gap-1">
             <ValidationProvider
-                name="Номер паспорта (напр. AB1234567)"
-                rules="required|min:9"
                 v-slot="{ errors }"
+                rules="required|min:9"
+                :name="`${ $t('passport_series') } (${ $t('for_example') }. AB1234567)`"
             >
               <base-input
                   v-model="client.passport_series"
@@ -55,11 +55,11 @@
                   :label="true"
                   :error="!!errors[0]"
                   class="w-100"
-                  placeholder="Номер паспорта (напр. AB1234567)"
+                  :placeholder="`${ $t('apartments.agree.passport_series') } (${ $t('for_example') }. AB1234567) `"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Место выдачи паспорта"
+                :name="`${ $t('apartments.agree.passport_series') }`"
                 rules="required"
                 v-slot="{ errors }"
             >
@@ -67,12 +67,12 @@
                   v-model="client.issued_by_whom"
                   :label="true"
                   :error="!!errors[0]"
-                  placeholder="Место выдачи паспорта"
+                  :placeholder="`${ $t('apartments.agree.passport_series') }`"
                   class="w-100"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Дата выдачи паспорта"
+                :name="`${ $t('passport_issue_date') }`"
                 rules="required"
                 v-slot="{ errors }"
             >
@@ -82,12 +82,12 @@
                   :error="!!errors[0]"
                   class="data-picker"
                   format="DD.MM.YYYY"
-                  placeholder="Дата выдачи паспорта"
+                  :placeholder="`${ $t('passport_issue_date') }`"
                   :icon-fill="datePickerIconFill"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Дата рождения"
+                :name="`${ $t('birth_day') }`"
                 rules="required"
                 v-slot="{ errors }"
             >
@@ -97,122 +97,122 @@
                   :range="false"
                   :error="!!errors[0]"
                   format="DD.MM.YYYY"
-                  placeholder="Дата рождения"
+                  :placeholder="`${ $t('birth_day') }`"
                   :icon-fill="datePickerIconFill"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Фамилия (кир.)"
+                :name="`${ $t('last_name') } (${ $t('cyrillic_shortcut') }.)`"
                 rules="required|min:1"
                 v-slot="{ errors }"
             >
               <base-input
+                  :label="true"
+                  class="w-100"
+                  :error="!!errors[0]"
                   v-model="client.last_name.kirill"
-                  :label="true"
-                  :error="!!errors[0]"
-                  placeholder="Фамилия (кир.)"
-                  class="w-100"
                   @input="translateLatin('last_name', $event)"
+                  :placeholder="`${ $t('last_name') } (${ $t('cyrillic_shortcut') }.)`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Фамилия (лат.)"
+                :name="`${ $t('last_name') } (${ $t('latin_shortcut') }.)`"
                 rules="required|min:1"
                 v-slot="{ errors }"
             >
               <base-input
+                  class="w-100"
+                  :label="true"
+                  :error="!!errors[0]"
                   v-model="client.last_name.lotin"
-                  :label="true"
-                  :error="!!errors[0]"
-                  placeholder="Фамилия (лат.)"
-                  class="w-100"
                   @input="translateCyrillic('last_name', $event)"
+                  :placeholder="`${ $t('last_name') } (${ $t('latin_shortcut') }.)`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Имя (кир.)"
+                :name="`${ $t('name') } (${ $t('cyrillic_shortcut') }.)`"
                 rules="required|min:1"
                 v-slot="{ errors }"
             >
               <base-input
+                  class="w-100"
+                  :label="true"
+                  :error="!!errors[0]"
                   v-model="client.first_name.kirill"
-                  :label="true"
-                  :error="!!errors[0]"
-                  placeholder="Имя (кир.)"
-                  class="w-100"
                   @input="translateLatin('first_name', $event)"
+                  :placeholder="`${ $t('name') } (${ $t('cyrillic_shortcut') }.)`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Имя (лат.)"
+                :name="`${ $t('name') } (${ $t('latin_shortcut') }.)`"
                 rules="required|min:1"
                 v-slot="{ errors }"
             >
               <base-input
+                  class="w-100"
+                  :label="true"
+                  :error="!!errors[0]"
                   v-model="client.first_name.lotin"
-                  :label="true"
-                  :error="!!errors[0]"
-                  placeholder="Имя (лат.)"
-                  class="w-100"
                   @input="translateCyrillic('first_name', $event)"
+                  :placeholder="`${ $t('name') } (${ $t('latin_shortcut') }.)`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Отчество (кир.)"
+                :name="`${ $t('second_name') } (${ $t('cyrillic_shortcut') }.)`"
                 rules="required|min:1"
                 v-slot="{ errors }"
             >
               <base-input
+                  class="w-100"
+                  :label="true"
+                  :error="!!errors[0]"
                   v-model="client.second_name.kirill"
-                  :label="true"
-                  :error="!!errors[0]"
-                  placeholder="Отчество (кир.)"
-                  class="w-100"
                   @input="translateLatin('second_name', $event)"
+                  :placeholder="`${ $t('second_name') } (${ $t('cyrillic_shortcut') }.)`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Отчество (лат.)"
+                :name="`${ $t('second_name') } (${ $t('latin_shortcut') }.)`"
                 rules="required|min:1"
                 v-slot="{ errors }"
             >
               <base-input
-                  v-model="client.second_name.lotin"
+                  class="w-100"
                   :label="true"
                   :error="!!errors[0]"
-                  placeholder="Отчество (лат.)"
-                  class="w-100"
+                  v-model="client.second_name.lotin"
                   @input="translateCyrillic('second_name', $event)"
+                  :placeholder="`${ $t('second_name') } (${ $t('latin_shortcut') }.)`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Номер телефона"
+                :name="`${ $t('phone') }`"
                 rules="required|min:12"
                 v-slot="{ errors }"
             >
               <base-input
-                  v-model="client.phone"
+                  class="w-100"
                   :label="true"
                   :error="!!errors[0]"
+                  v-model="client.phone"
                   mask="+### ## ### ## ##"
-                  placeholder="Номер телефона"
-                  class="w-100"
+                  :placeholder="`${ $t('phone') }`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Дополнительный номер телефона"
+                :name="`${ $t('additional') } ${ $t('phone') }`"
                 v-slot="{ errors }"
             >
               <base-input
-                  v-model="client.other_phone"
-                  :label="true"
-                  mask="+### ## ### ## ##"
-                  placeholder="Дополнительный номер телефона"
                   class="w-100"
+                  :label="true"
+                  v-model="client.other_phone"
+                  mask="+### ## ### ## ##"
+                  :placeholder="`${ $t('additional') } ${ $t('phone') }`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Язык"
+                :name="`${ $t('language') }`"
                 rules="required"
                 v-slot="{ errors }"
             >
@@ -223,11 +223,11 @@
                   :options="options"
                   :value="client.language"
                   @change="client.language = $event"
-                  placeholder="Язык"
+                  :placeholder="`${ $t('language') }`"
               />
             </ValidationProvider>
             <ValidationProvider
-                name="Тип клиента"
+                :name="`${ $t('client_type') }`"
                 rules="required"
                 v-slot="{ errors }"
             >
@@ -238,7 +238,7 @@
                   :options="clientTypeOption"
                   :value="client.friends"
                   @change="client.friends = $event"
-                  placeholder="Тип клиента"
+                  :placeholder="`${ $t('client_type') }`"
               />
             </ValidationProvider>
           </div>
@@ -260,10 +260,11 @@
       <template #main>
         <div>
           <base-input
-              v-model="newContractNumber"
               :label="true"
-              placeholder="Номер договора"
               class="w-100"
+              padding-left="2px !important"
+              v-model="newContractNumber"
+              :placeholder="`${ $t('apartments.agree.number') }`"
           />
         </div>
       </template>
@@ -271,9 +272,8 @@
         <base-button
             @click="setNewContractNumber"
             :disabled="!changedContractNumber"
-            :fixed="true"
-            design="violet-gradient"
-            text="Применить"
+            class="violet-gradient w-100"
+            :text="`${ $t('apply') }`"
         />
       </template>
     </base-modal>
@@ -333,10 +333,6 @@ export default {
           value: 'ru'
         }
       ],
-      clientTypeOption: [
-        {text: 'Незнакомый', value: 'false'},
-        {text: 'Знакомый', value: 'true'},
-      ],
       validationError: {
         type: '',
         message: '',
@@ -354,6 +350,16 @@ export default {
     }
   },
   computed: {
+    clientTypeOption() {
+      return [
+        {
+          text: this.$t('unfamiliar'), value: 'false'
+        },
+        {
+          text: this.$t('familiar'), value: 'true'
+        },
+      ]
+    },
     flexCenter() {
       return 'd-flex justify-content-center align-items-center'
     },

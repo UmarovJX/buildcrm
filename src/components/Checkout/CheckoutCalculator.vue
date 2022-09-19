@@ -14,6 +14,7 @@
       />
       <!--  Рассрочка (monthly)  -->
       <base-price-input
+          v-if="showMonthlyInputField"
           v-model="calc.monthly_payment_period"
           :value="calc.monthly_payment_period"
           :permission-change="true"
@@ -48,23 +49,6 @@
           :placeholder="$t('payments.initial_fee')"
           class="checkout-initial-price-input w-100"
       />
-      <!--  Общая скидка    -->
-      <!--      <base-price-input
-                :label="true"
-                :top-placeholder="true"
-                :currency="`${ $t('ye') }`"
-                :placeholder="$t('total_discount')"
-                class="checkout-total-discount-input w-100"
-            />-->
-      <!--  Скидка за М2    -->
-      <!--      <base-price-input
-                :label="true"
-                :top-placeholder="true"
-                :currency="`${ $t('ye') }`"
-                :placeholder="$t('discount_per_m2')"
-                class="checkout-discount-per-m2-input w-100"
-            />-->
-      <!--  Дата первого платежа  -->
       <base-date-picker
           v-model="calc.first_payment_date"
           :range="false"
@@ -114,7 +98,7 @@
       -->
       <div class="apartment-item">
         <span class="apartment-label">
-         Скидка от общей суммы
+         {{ $t('apartments.view.discount_price') }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.total_discount) }}
@@ -122,7 +106,7 @@
       </div>
       <div class="apartment-item">
         <span class="apartment-label">
-          Итого
+          {{ $t('total') }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.total) }}
@@ -169,7 +153,10 @@ export default {
     ...mapState('checkout', {
       calc: 'calc',
       discount: 'discount'
-    })
+    }),
+    showMonthlyInputField() {
+      return this.calc.prepay !== 100
+    },
   },
   methods: {
     ...mapMutations('checkout', {

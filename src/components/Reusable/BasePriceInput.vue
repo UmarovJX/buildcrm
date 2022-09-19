@@ -114,8 +114,21 @@ export default {
   data() {
     return {
       priceAmount: null,
-      placeholderFormat: null,
       sideEffect: true
+    }
+  },
+  computed: {
+    placeholderFormat() {
+      const {placeholder} = this
+      if (placeholder) {
+        const type = typeof placeholder
+        if (isPrimitiveValue(type)) {
+          return placeholder
+        } else {
+          return this.$t(placeholder.lang)
+        }
+      }
+      return ''
     }
   },
   watch: {
@@ -146,19 +159,7 @@ export default {
       return primitiveValue
     },
     initComponent() {
-      this.setPlaceholder()
       this.setInitialAmountValue()
-    },
-    setPlaceholder() {
-      const {placeholder} = this
-      if (placeholder) {
-        const type = typeof placeholder
-        if (isPrimitiveValue(type)) {
-          this.placeholderFormat = placeholder
-        } else {
-          this.placeholderFormat = this.$t(placeholder.lang)
-        }
-      }
     },
     setInitialAmountValue() {
       if (this.value && this.permissionChange) {

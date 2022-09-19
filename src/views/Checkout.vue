@@ -1,6 +1,9 @@
 <template>
   <div class="app-checkout">
-    <ErrorNotification :value="validationError" @close-bar="validationError.visible = false"/>
+    <ErrorNotification
+        :value="validationError"
+        @close-bar="validationError.visible = false"
+    />
     <app-header
         :page="header.page"
         :page-info="header.pageInfo"
@@ -86,7 +89,7 @@
 
 
               <div class="app-tab__header">
-                <h3 class="section-title">Детали платежа</h3>
+                <h3 class="section-title">{{ $t('payment_details') }}</h3>
               </div>
               <div class="app-checkout__calculator">
                 <checkout-calculator
@@ -100,7 +103,11 @@
 
 
               <div class="app-tab__header">
-                <h3 class="section-title">График оплаты (12 месяцев)</h3>
+                <h3 class="section-title">
+                  {{ $t('payment_schedule') }}
+                  ({{ calc.monthly_payment_period }}
+                  {{ $t('month') }})
+                </h3>
               </div>
               <div class="app-checkout__calculator">
                 <PaymentMonths :date-picker-icon-fill="datePickerIconFill"/>
@@ -334,7 +341,6 @@ export default {
       }, '')
 
       const {object} = apartments[0]
-      console.log(apartments)
       if (object) {
         h.breadcrumbs.push({
           content: {
@@ -560,7 +566,7 @@ export default {
           }
         }
 
-        if (initial_payments.length > 1) {
+        if (initial_payments.length > 1 || edit.initial_price) {
           for (let i = 0; i < initial_payments.length; i++) {
             const p = initial_payments[i]
             const {ymd} = dateProperties(p.month, 'string')
@@ -601,6 +607,7 @@ export default {
         try {
           const response = await api.orders.reserveApartment(order.uuid, form)
           this.successContract = response.data
+          console.log(response.data)
           this.toasted(response.data.message, "success")
           this.$bvModal.hide("modal-agree")
           this.$bvModal.show("modal-success-agree")

@@ -1,4 +1,5 @@
 import {dateProperties} from "@/util/calendar";
+import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 
 export default {
     setup({commit, dispatch}, context) {
@@ -6,11 +7,11 @@ export default {
         dispatch('calculate')
     },
     calculate({state, getters}) {
-        state.calc.total = getters.getTotal
-        state.calc.monthly_payment = getters.getMonthlyPaymentAmount
-        state.calc.initial_price = getters.getInitialPrice
-        state.calc.remainder = getters.getRemainPrice
-        state.calc.base_price = getters.getBasePrice
+        state.calc.total = fmd(getters.getTotal)
+        state.calc.monthly_payment = fmd(getters.getMonthlyPaymentAmount)
+        state.calc.initial_price = fmd(getters.getInitialPrice)
+        state.calc.remainder = fmd(getters.getRemainPrice)
+        state.calc.base_price = fmd(getters.getBasePrice)
         state.calc.total_discount = getters.getDiscount
     },
     changeDiscount({state}, discount) {
@@ -27,7 +28,7 @@ export default {
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')
     },
-    initialPaymentsSetter({state,getters}) {
+    initialPaymentsSetter({state, getters}) {
         const {first_payment_date} = state.calc
         let today = first_payment_date ? new Date(first_payment_date) : new Date()
         const {year: todayYear, month: todayMonth, dayOfMonth: todayDate} = dateProperties(today)
@@ -37,7 +38,7 @@ export default {
         state.initial_payments = []
         const initialMonth = {
             type: 'initial',
-            amount: getters.getInitialPrice,
+            amount: fmd(getters.getInitialPrice),
             edit: false,
             edited: false,
             month: new Date(today),
@@ -57,7 +58,7 @@ export default {
             if (monthly_payment_period > 0) {
                 for (let i = 0; i < monthly_payment_period; i++) {
                     const creditMonth = {
-                        amount: getters.getMonthlyPaymentAmount,
+                        amount: fmd(getters.getMonthlyPaymentAmount),
                         edit: false,
                         edited: false,
                         month: today,
@@ -143,7 +144,7 @@ export default {
         state.initial_payments = state.initial_payments.map(creditMonth => {
             return {
                 ...creditMonth,
-                amount: initially
+                amount: fmd(initially)
             }
         })
     },
@@ -151,7 +152,7 @@ export default {
         state.credit_months = state.credit_months.map(creditMonth => {
             return {
                 ...creditMonth,
-                amount: monthly
+                amount: fmd(monthly)
             }
         })
     },
@@ -160,7 +161,7 @@ export default {
             if (!initPm.edit) {
                 return {
                     ...initPm,
-                    amount: initially
+                    amount: fmd(initially)
                 }
             }
             return initPm
@@ -171,7 +172,7 @@ export default {
             if (!creditMonth.edit) {
                 return {
                     ...creditMonth,
-                    amount: monthly
+                    amount: fmd(monthly)
                 }
             }
             return creditMonth
@@ -213,12 +214,8 @@ export default {
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')
     },
-    changePrepay({dispatch}) {
-        // if (!prepay) {
-        //     commit('deactivateState', 'prepay')
-        //     commit('setPrepay', state.discount)
-        // }
-
+    changePrepay({commit, dispatch}) {
+        commit('deactivateState', 'initial_price')
         dispatch('calculate')
         dispatch('initialPaymentsSetter')
         dispatch('monthlyPaymentsSetter')
