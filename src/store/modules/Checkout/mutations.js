@@ -60,23 +60,6 @@ export default {
             }
         }
     },
-    addPaymentSchedule(state, {amount, month, type, edit}) {
-        const {
-            lastDayOfMonth,
-            isLastDayOfMonth,
-            nextMonthOfDate
-        } = dateProperties(month, 'string')
-        const nextMonth = isLastDayOfMonth ? lastDayOfMonth : nextMonthOfDate
-        const schedule = {
-            edit,
-            type,
-            amount,
-            month: nextMonth,
-            edited: false,
-        }
-        const paymentType = type === 'initial' ? 'initial_payments' : 'credit_months'
-        state[paymentType].push(schedule)
-    },
     editSchedule(state, {amount, type, month, tracker}) {
         let paymentType = type === 'initial' ? 'initial_payments' : 'credit_months'
         const index = state[paymentType].findIndex((pm) => pm.amount === tracker.amount && pm.month === tracker.month)

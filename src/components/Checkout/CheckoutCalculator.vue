@@ -86,16 +86,6 @@
           {{ prettier(calc.remainder) }}
         </p>
       </div>
-      <!--
-        <div class="apartment-item">
-          <span class="apartment-label">
-           Ежемесячно оплата
-          </span>
-          <p class="apartment-value">
-            {{ prettier(calc.monthly_payment) }}
-          </p>
-        </div>
-      -->
       <div class="apartment-item">
         <span class="apartment-label">
          {{ $t('apartments.view.discount_price') }}
