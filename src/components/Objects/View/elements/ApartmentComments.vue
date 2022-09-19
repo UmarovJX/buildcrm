@@ -82,6 +82,14 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="expressView" class="d-flex justify-content-end">
+                    <base-button @click="openCreateModal"
+                                 :text="`${ $t('contracts.add_note') }`">
+                        <template #left-icon>
+                            <BasePlusIcon fill="var(--violet-600)"/>
+                        </template>
+                    </base-button>
+                </div>
 
 
                 <div v-if="!expressView && countOfPaymentItems" class="pagination__vue">
@@ -117,7 +125,7 @@
           <span class="description">{{ $t('contracts.show_by') }}:</span>
           <b-form-select
               @input="changeCommentsShowingLimit"
-              v-model="params.limit"
+              v-model="showByValue"
               :options="showByOptions"
           ></b-form-select>
           <span class="arrow__down">
@@ -281,9 +289,10 @@ import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import ContractsPermission from "@/permission/contract";
+import {sortInFirstRelationship, sortObjectValues} from "@/util/reusable";
 
 export default {
-    name: "ApartmentComment",
+    name: "ApartmentComments",
     components: {
         BaseDeleteIcon,
         BaseButton,
@@ -325,8 +334,15 @@ export default {
             })
         }
 
+        let {limit: showByValue} = this.$route.query
+
+        if (!showByValue) {
+            showByValue = 20
+        }
+
         const objectId = this.$route.params.object
         return {
+            showByValue,
             showByOptions,
             objectId,
             pagination: {},
@@ -354,7 +370,7 @@ export default {
             handler() {
                 this.setComments()
             }
-        }
+        },
     },
     computed: {
         countOfPaymentItems() {
@@ -363,17 +379,35 @@ export default {
         },
         hasComment() {
             return this.comments && this.comments.length > 0
-        }
+        },
+        query() {
+            return Object.assign({}, this.$route.query)
+        },
     },
     created() {
         this.setComments()
     },
     methods: {
+        changeRoute() {
+            const sortingQuery = Object.assign({}, this.query)
+            this.$router.push({
+                query: {
+                    ...this.query,
+                    ...sortInFirstRelationship(sortingQuery)
+                }
+            })
+        },
         setComments() {
             if (this.expressView) {
                 this.comments = this.commentsData.items.slice(0, 2)
+            } else {
+                this.comments = this.commentsData.items
             }
             this.pagination = this.commentsData.pagination
+
+            if (this.pagination.current > this.pagination.total) {
+                this.swipeCommentsPage(this.pagination.total)
+            }
         },
         viewAllComments() {
             this.$router.push({
@@ -385,27 +419,23 @@ export default {
                 }
             )
         },
-        // async getComments() {
-        //     await api.apartmentsV2.getApartmentComments(this.objectId, this.apartmentUuid).then((res) => {
-        //         if (this.expressView) {
-        //             this.comments = res.data.items.slice(0, 2)
-        //         } else {
-        //             this.comments = res.data.items
-        //         }
-        //         this.pagination = res.data.pagination
-        //     }).catch((err) => {
-        //         this.toasted(err.message, "error");
-        //     })
-        // },
         swipeCommentsPage(page) {
-            this.params.page = page
-            this.getComments()
-            this.$emit('update-comments')
+            const currentPage = this.query.page
+            if (page === currentPage) return
+            this.replaceRouter({...this.query, page})
+            this.$emit('update-comments', this.query)
+        },
+        replaceRouter(query) {
+            const sortQuery = sortObjectValues(query)
+            this.$router.replace({query: sortQuery})
         },
         changeCommentsShowingLimit() {
-            this.params.page = 1
-            this.$emit('update-comments')
-            // this.getComments()
+            const query = {
+                ...this.query, page: 1
+            }
+            const limit = this.showByValue
+            this.replaceRouter({...query, limit})
+            this.$emit('update-comments', this.query)
         },
         fullName(value) {
             if (value.first_name && value.last_name)
@@ -480,7 +510,7 @@ export default {
                 .finally(() => {
                     this.$refs['warning-before-delete'].closeModal()
                     // this.getComments()
-                    this.$emit('update-comments')
+                    this.$emit('update-comments', this.params)
                 })
         },
         async saveComment() {
@@ -511,7 +541,7 @@ export default {
                             })
                     }
                     this.loading = false
-                    await this.$emit('update-comments')
+                    await this.$emit('update-comments', this.params)
                     // await this.getComments()
                 }
             })

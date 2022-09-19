@@ -111,8 +111,9 @@ export default {
     },
     methods: {
         async getComments() {
+            const paramsData = this.$route.query
             this.commentLoading = true
-            await api.apartmentsV2.getApartmentComments(this.objectId, this.apartment.uuid).then((res) => {
+            await api.apartmentsV2.getApartmentComments(this.objectId, this.apartment.uuid, paramsData).then((res) => {
                 this.commentsData = res.data
             }).catch((err) => {
                 this.toasted(err.message, "error");

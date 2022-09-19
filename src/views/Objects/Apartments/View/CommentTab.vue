@@ -2,7 +2,7 @@
     <div>
         <ApartmentComments
             :comments-data="commentsData"
-            @update-comments="$emit('update-comments')"
+            @update-comments="updateComments"
             :express-view="false"
             :comment-loading="commentLoading"
             :apartment-uuid="apartment.uuid"
@@ -32,6 +32,11 @@ export default {
             required: true
         }
     },
+    methods: {
+        updateComments(data) {
+            this.$emit('update-comments', data)
+        }
+    }
 }
 </script>
 

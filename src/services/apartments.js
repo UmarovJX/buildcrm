@@ -52,8 +52,8 @@ class ApartmentsV2 extends Core {
         return this.put(`apartments/objects/${id}/${apartment_uuid}/is-sold`, body)
     }
 
-    getApartmentComments(id, apartment_uuid) {
-        return this.get(`apartments/objects/${id}/${apartment_uuid}/comments`)
+    getApartmentComments(id, apartment_uuid, params) {
+        return this.get(`apartments/objects/${id}/${apartment_uuid}/comments`, {params})
     }
 
     createApartmentComment(id, apartment_uuid, body) {
