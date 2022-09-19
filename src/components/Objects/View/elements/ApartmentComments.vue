@@ -405,7 +405,7 @@ export default {
             }
             this.pagination = this.commentsData.pagination
 
-            if (this.pagination.current > this.pagination.total) {
+            if (this.pagination && (this.pagination.current > this.pagination.total)) {
                 this.swipeCommentsPage(this.pagination.total)
             }
         },
