@@ -3,7 +3,7 @@
         <!--  BASE ACTION LIST-->
         <div class="item">
             <p>BaseActionList {{ $t('component') }}</p>
-            <BaseActionList :position-right="true">
+            <BaseActionList :position-right="false">
                 <template #header>
                     {{ $t('contracts.view.actions') }}
                 </template>

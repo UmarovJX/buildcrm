@@ -23,27 +23,25 @@
                             <p>{{ comment.comment }}</p>
                         </div>
                         <div class="comment-action">
-
-                            <b-dropdown v-if="deleteCommentPermission || editCommentPermission" right>
-                                <template #button-content>
+                            <app-dropdown :position-right="true"
+                                          :collapse-arrow="true"
+                                          v-if="deleteCommentPermission || editCommentPermission">
+                                <template #header>
                                     <BaseDotsIcon/>
                                 </template>
-                                <b-dropdown-item v-if="editCommentPermission" href="#" @click="openEditModal(comment)">
-                  <span class="d-flex mr-2">
-                   <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
-                  </span>
-                                    {{ $t('edit') }}
-                                    <!--                  {{ $t('contracts.view.cancel_contract') }}-->
-                                </b-dropdown-item>
-                                <b-dropdown-item v-if="deleteCommentPermission" href="#"
-                                                 @click="warnBeforeDelete(comment.id)">
-                  <span class="d-flex mr-2">
-                    <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
-                  </span>
-                                    {{ $t('delete') }}
-                                    <!--                  {{ $t('contracts.view.cancel_contract')   }}-->
-                                </b-dropdown-item>
-                            </b-dropdown>
+                                <template #list>
+                                    <b-dropdown-item v-if="editCommentPermission" href="#"
+                                                     @click="openEditModal(comment)">
+                                        <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
+                                        {{ $t('edit') }}
+                                    </b-dropdown-item>
+                                    <b-dropdown-item v-if="deleteCommentPermission" href="#"
+                                                     @click="warnBeforeDelete(comment.id)">
+                                        <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
+                                        {{ $t('delete') }}
+                                    </b-dropdown-item>
+                                </template>
+                            </app-dropdown>
                         </div>
                     </div>
                     <div class="comment-footer">
@@ -241,10 +239,12 @@ import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import ContractsPermission from "@/permission/contract";
+import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 
 export default {
     name: "ContractComments",
     components: {
+        AppDropdown,
         BaseDeleteIcon,
         BaseButton,
         BasePlusIcon,
@@ -526,37 +526,6 @@ export default {
     &-action {
         display: flex;
         height: 100%;
-
-        ::v-deep {
-            .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-                height: auto;
-                width: auto;
-                border: none !important;
-                outline: none;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                background-color: transparent !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            .dropdown-item {
-                height: 56px;
-                display: flex;
-                align-items: center;
-            }
-
-            .dropdown-toggle::after {
-                display: none;
-            }
-
-            .btn svg {
-                margin: 0;
-            }
-
-        }
     }
 
     &-info {

@@ -38,27 +38,26 @@
                         </div>
                         <div class="comment-action">
 
-                            <b-dropdown v-if="deleteCommentPermission || editCommentPermission" right>
-                                <template #button-content>
+                            <app-dropdown
+                                :collapse-arrow="true"
+                                :position-right="true"
+                                v-if="deleteCommentPermission || editCommentPermission">
+                                <template #header>
                                     <BaseDotsIcon/>
                                 </template>
-                                <b-dropdown-item v-if="editCommentPermission" href="#"
-                                                 @click="openEditModal(comment)">
-                  <span class="d-flex mr-2">
-                   <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
-                  </span>
-                                    {{ $t('edit') }}
-                                    <!--                  {{ $t('contracts.view.cancel_contract') }}-->
-                                </b-dropdown-item>
-                                <b-dropdown-item v-if="deleteCommentPermission" href="#"
-                                                 @click="warnBeforeDelete(comment.id)">
-                  <span class="d-flex mr-2">
-                    <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
-                  </span>
-                                    {{ $t('delete') }}
-                                    <!--                  {{ $t('contracts.view.cancel_contract')   }}-->
-                                </b-dropdown-item>
-                            </b-dropdown>
+                                <template #list>
+                                    <b-dropdown-item v-if="editCommentPermission" href="#"
+                                                     @click="openEditModal(comment)">
+                                        <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
+                                        {{ $t('edit') }}
+                                    </b-dropdown-item>
+                                    <b-dropdown-item v-if="deleteCommentPermission" href="#"
+                                                     @click="warnBeforeDelete(comment.id)">
+                                        <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
+                                        {{ $t('delete') }}
+                                    </b-dropdown-item>
+                                </template>
+                            </app-dropdown>
                         </div>
                     </div>
                     <div class="comment-footer">
@@ -290,10 +289,12 @@ import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import ContractsPermission from "@/permission/contract";
 import {sortInFirstRelationship, sortObjectValues} from "@/util/reusable";
+import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 
 export default {
     name: "ApartmentComments",
     components: {
+        AppDropdown,
         BaseDeleteIcon,
         BaseButton,
         BasePlusIcon,
@@ -656,37 +657,6 @@ export default {
     &-action {
         display: flex;
         height: 100%;
-
-        ::v-deep {
-            .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-                height: auto;
-                width: auto;
-                border: none !important;
-                outline: none;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                background-color: transparent !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            .dropdown-item {
-                height: 56px;
-                display: flex;
-                align-items: center;
-            }
-
-            .dropdown-toggle::after {
-                display: none;
-            }
-
-            .btn svg {
-                margin: 0;
-            }
-
-        }
     }
 
     &-info {
@@ -764,124 +734,6 @@ export default {
         gap: 2rem;
         display: flex;
         align-items: center;
-    }
-}
-
-
-::v-deep {
-    .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-        font-family: Inter, sans-serif;
-        padding: 1rem 1rem 1rem 1.5rem !important;
-        height: 56px;
-        font-style: normal;
-        line-height: 22px !important;
-        border-radius: 2rem !important;
-        color: var(--gray-400) !important;
-        font-size: 1rem !important;
-        border: none !important;
-        outline: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        background-color: var(--gray-100) !important;
-        margin: 0 !important;
-        gap: .5rem;
-        //width: 100%;
-
-        &:hover {
-            -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
-            box-shadow: 0 8px 25px -8px var(--gray-400) !important;
-        }
-
-        .input-block {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .input-label {
-            font-weight: 900;
-            font-size: 8px;
-            line-height: 10px;
-            margin: 0 2px 0 0;
-            //margin-bottom: 2px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--gray-400);
-        }
-
-        .input-text {
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 22px;
-            color: var(--gray-600);
-            margin: 0;
-            max-width: 150px;
-            overflow-x: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .default-label {
-            line-height: 22px;
-            font-size: 1rem;
-            color: var(--gray-400);
-            margin: 0;
-        }
-
-    }
-
-    .dropdown-toggle::after {
-        border: none;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        margin-left: 1rem;
-        background: url("../../../../assets/icons/icon-down.svg");
-        transition: all .2s ease-in-out;
-    }
-
-    .show .dropdown-toggle::after {
-        transform: rotate(-180deg);
-    }
-
-    .dropdown-menu {
-        flex-direction: column;
-        border: 1px solid var(--gray-200);
-        box-sizing: border-box;
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-        border-radius: 24px;
-        padding: .5rem;
-        row-gap: .5rem;
-
-
-        .dropdown-item {
-            font-weight: 600 !important;
-            font-size: 16px !important;
-            line-height: 22px !important;
-            border-radius: 1rem;
-            padding: 12px 17px;
-            min-width: 256px;
-
-            &.show {
-                display: flex;
-            }
-
-            &:hover {
-                background-color: var(--gray-200);
-            }
-        }
-
-    }
-
-
-    .b-dropdown-text {
-        min-width: 16rem;
-        padding: .5rem !important;
-
-        .form-group {
-            margin-bottom: 0;
-        }
     }
 }
 
