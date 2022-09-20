@@ -50,6 +50,15 @@ import ApartmentContract from '@/views/Objects/Apartments/View/ContractTab'
 import ApartmentCommentTab from "@/views/Objects/Apartments/View/CommentTab";
 import ReleaseNote from "@/views/ReleaseNote/Index";
 
+/*  CONTRACT VIEW COMPONENTS */
+import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
+import TabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
+import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
+import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
+import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
+import ActivityLog from "@/components/Contracts/view/ActivityLog";
+
+
 const routes = [
     {
         path: '/',
@@ -343,12 +352,62 @@ const routes = [
 
             {
                 /* CONTRACTS VIEW */
-                name: "contracts-view",
+                // name: "contracts-view",
                 path: "/contracts/:id",
                 component: ContractView,
                 meta: {
                     requiresAuth: "contracts"
-                }
+                },
+                children: [
+                    {
+                        name: "contracts-view",
+                        path: "/",
+                        component: TabPaymentSchedule,
+                        meta: {
+                            requiresAuth: "contracts",
+                        },
+                    },
+                    {
+                        name: "contract-object-details",
+                        path: "object-details",
+                        component: TabObjectDetails,
+                        meta: {
+                            requiresAuth: "contracts",
+                        },
+                    },
+                    {
+                        name: "contract-client-details",
+                        path: "client-details",
+                        component: TabClientDetails,
+                        meta: {
+                            requiresAuth: "contracts",
+                        },
+                    },
+                    {
+                        name: "contract-details",
+                        path: "contract-details",
+                        component: TabContractDetails,
+                        meta: {
+                            requiresAuth: "contracts",
+                        },
+                    },
+                    {
+                        name: "reissue-details",
+                        path: "reissue-details",
+                        component: TabReContractDetails,
+                        meta: {
+                            requiresAuth: "contracts",
+                        },
+                    },
+                    {
+                        name: "contract-logs",
+                        path: "contract-logs",
+                        component: ActivityLog,
+                        meta: {
+                            requiresAuth: "contracts",
+                        },
+                    }
+                ]
             },
 
             {
@@ -541,6 +600,7 @@ const router = new VueRouter({
 
 let user = null
 import Permission from "@/permission";
+import tabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
 
 router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')

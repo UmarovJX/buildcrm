@@ -49,6 +49,7 @@
                 <!--   PRICE CONTENT     -->
             </b-tab>
         </b-tabs>
+
         <router-view
             :apartment="apartment"
             :app-loading="appLoading"

@@ -89,22 +89,43 @@
 
             </div>
         </div>
-        <!--  Tabs  -->
-        <base-filter-tabs-content
-            :filter-tab-list="filterTabList"
-            @get-new-content="changeTabOrder"
-        />
 
-        <component
-            :is="activeTab"
+
+        <!--  Tabs  -->
+        <!--        <base-filter-tabs-content-->
+        <!--            :filter-tab-list="filterTabList"-->
+        <!--            @get-new-content="changeTabOrder"-->
+        <!--        />-->
+
+
+        <b-tabs v-model="tabIndex" card class="custom-tab">
+            <div class="bottom__line"></div>
+            <b-tab v-for="tab in tabs" :key="tab.route" @click="tabChange(tab.id)" :title="tab.title">
+                <!--   PRICE CONTENT     -->
+            </b-tab>
+        </b-tabs>
+
+        <router-view
             :order="order"
             :has-constructor-order="hasConstructorOrder"
             v-show="!showLoading"
             @start-loading="startLoading"
             @finish-loading="finishLoading"
             @refresh-details="refreshDetails"
-        >
-        </component>
+        />
+
+
+        <!--        <component-->
+        <!--            :is="activeTab"-->
+        <!--            :order="order"-->
+        <!--            :has-constructor-order="hasConstructorOrder"-->
+        <!--            v-show="!showLoading"-->
+        <!--            @start-loading="startLoading"-->
+        <!--            @finish-loading="finishLoading"-->
+        <!--            @refresh-details="refreshDetails"-->
+        <!--        >-->
+        <!--        </component>-->
+
 
         <base-loading v-if="showLoading"/>
 
@@ -243,20 +264,11 @@ import api from "@/services/api";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
-import TabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
-import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
-import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
-import ActivityLog from "@/components/Contracts/view/ActivityLog";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
 import {mapGetters} from "vuex";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseWarningIcon from "@/components/icons/BaseWarningIcon";
-import BaseSelect from "@/components/Reusable/BaseSelect";
 import ContractsPermission from "@/permission/contract";
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 
@@ -266,27 +278,49 @@ export default {
         AppDropdown,
         BaseWarningIcon,
         BaseCloseIcon,
-        BaseFilterTabsContent,
-        BaseDeleteIcon,
         BaseArrowRight,
         BaseArrowLeft,
-        TabPaymentSchedule,
-        TabObjectDetails,
-        TabClientDetails,
-        TabContractDetails,
-        TabReContractDetails,
-        ActivityLog,
         BaseModal,
         BaseLoading,
         BaseButton,
-        BaseSelect
     },
     data() {
         return {
             order: {},
             showLoading: false,
-            activeTab: 'TabPaymentSchedule',
-            tabs: ['TabPaymentSchedule', 'TabObjectDetails', 'TabClientDetails', 'TabContractDetails', 'TabReContractDetails'],
+            activeTab: 0,
+            tabs: [
+                {
+                    id: 0,
+                    title: this.$t('payment_schedule'),
+                    route: 'contracts-view'
+                },
+                {
+                    id: 1,
+                    title: this.$t('object_details'),
+                    route: 'contract-object-details'
+                },
+                {
+                    id: 2,
+                    title: this.$t('client_details'),
+                    route: 'contract-client-details'
+                },
+                {
+                    id: 3,
+                    title: this.$t('contract_details'),
+                    route: 'contract-details'
+                },
+                // {
+                //     id: 5,
+                //     title: this.$t('contract_log'),
+                //     route: 'contract-logs'
+                // },
+                {
+                    id: 4,
+                    title: this.$t('recontract_details'),
+                    route: 'reissue-details'
+                },
+            ],
             deleteComment: null,
             errors: [],
             types: [],
@@ -301,6 +335,16 @@ export default {
             permission: 'getPermission',
             me: 'getMe'
         }),
+        tabIndex: {
+            get() {
+                const {name} = this.$route
+                const index = this.tabs.filter(item => item.route === name)
+                return index[0].id
+            },
+            set(value) {
+                return value
+            }
+        },
         role() {
             return this.me.role
         },
@@ -319,36 +363,6 @@ export default {
         editPermission() {
             return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
         },
-        filterTabList() {
-            const list = [
-                {
-                    name: this.$t('payment_schedule'),
-                },
-                {
-                    name: this.$t('object_details'),
-                },
-                {
-                    name: this.$t('client_details'),
-                },
-                {
-                    name: this.$t('contract_details'),
-                },
-                // {
-                //     name: this.$t('contract_log'),
-                // },
-                {
-                    name: this.$t('recontract_details'),
-                },
-            ]
-            const {status, reissue} = this.order
-            if (status === 'booked') {
-                return list.slice(1).map((ls, index) => ({...ls, status: index}))
-            }
-            if (!(this.reContractViewPermission && reissue?.view)) {
-                return list.slice(0, -1).map((ls, index) => ({...ls, status: index}))
-            }
-            return list.map((ls, index) => ({...ls, status: index}))
-        },
         hasConstructorOrder() {
             return Object.keys(this.order).length > 0
         },
@@ -357,6 +371,11 @@ export default {
         await this.fetchContractData()
     },
     methods: {
+        tabChange(currentTabs) {
+            console.log(currentTabs, 'current');
+            const index = this.tabs.filter(item => item.id === currentTabs)
+            this.$router.push({name: index[0].route})
+        },
         checkLocales(name) {
             if (localStorage.locale)
                 return name[localStorage.locale]
@@ -464,13 +483,11 @@ export default {
         tabsConfiguration() {
             const {status, reissue} = this.order
             if (status === 'booked') {
-                this.activeTab = 'TabObjectDetails'
-                this.tabs = this.tabs.filter(tab => tab !== 'TabPaymentSchedule')
+                this.tabs = this.tabs.filter(tab => tab.id !== 0)
+                this.activeTab = this.tabs[0]
             }
             if (!(reissue?.view && this.reContractViewPermission)) {
-                // console.log(this.tabs, 'this.tabs old ');
-                this.tabs = this.tabs.filter(tab => tab !== 'TabReContractDetails')
-                // console.log(this.tabs, 'this.tabs last ');
+                this.tabs = this.tabs.filter(tab => tab.id !== 4)
             }
         },
         startLoading() {
@@ -482,9 +499,6 @@ export default {
         backNavigation() {
             this.$router.go(-1)
         },
-        changeTabOrder(status) {
-            this.activeTab = this.tabs[status]
-        },
         refreshDetails() {
             this.fetchContractData()
         }
@@ -493,6 +507,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+@import "../../../assets/scss/utils/tab.sass";
+
 * {
     font-family: Inter, serif;
     font-style: normal;

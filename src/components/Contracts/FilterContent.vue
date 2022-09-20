@@ -37,6 +37,7 @@
             @select="newValue => this.filter.type = Object.entries(this.filterItemsValues.types).filter(item => item[1] === newValue)[0][0]"
         />
         <bootstrap-select
+            v-if="filterFields.users[0] && filterFields.users[0].first_name && filterFields.users[0].last_name"
             :class="{ 'client-type-selection' : !filterFields.users }"
             :options="usersOptions"
             :default-value="filterFields.users[0].first_name + ' ' + filterFields.users[0].last_name"
