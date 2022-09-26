@@ -867,6 +867,7 @@ export default {
 
     type_plan: {
         title: "Xonadon rejalari",
+        image: "Ko'rinishi",
         name: "Nomlanishi",
         area: "Maydoni",
         balcony: "Balkon",

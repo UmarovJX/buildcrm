@@ -6,7 +6,7 @@
                 <!--     MAIN CONTENT OF SLIDE       -->
                 <div class="swiper-wrapper">
                     <div
-                        v-for="(image,index) in apartment.plan.image"
+                        v-for="(image,index) in apartment.plan.images"
                         :key="index"
                         class="swiper-slide"
                     >
