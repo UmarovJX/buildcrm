@@ -320,7 +320,7 @@
         <!--  PAYMENT SCHEDULE  -->
         <div class="payment__schedule">
             <div>
-                <h3 class="title">{{ $t('payment_schedule') }} ({{ order.payments.monthly_payments_count }}
+                <h3 class="title">{{ $t('payment_schedule') }} ({{ monthlyPaymentsCount }}
                     {{ $t('month') }}.)</h3>
                 <div class="addition__button"></div>
             </div>
@@ -626,6 +626,9 @@ export default {
         },
         listPermission() {
             return ContractsPermission.getContractsPaymentsListPermission()
+        },
+        monthlyPaymentsCount() {
+            return this.order?.payments?.monthly_payments_count
         },
         paymentTypeOptionsPermission() {
             const listOption = []

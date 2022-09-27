@@ -14,7 +14,7 @@
         <template #main>
             <p class="instruction">{{ $t('payments.import') }}</p>
 
-            <FileUploader/>
+            <FileUploader ref="file-upload" :contract="contract"/>
 
             <base-button @click="downloadTemplate" :text="$t('payments.download_template')" class="download__template"/>
 
@@ -109,7 +109,8 @@ export default {
             this.$refs['base-modal'].closeModal()
         },
         importUploadExcel() {
-            if (this.excelFile) {
+            const file = this.$refs['file-upload'].excelFile
+            if (file) {
                 this.$router.push({
                     name: 'contract-import-payments',
                     params: {
