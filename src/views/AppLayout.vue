@@ -5,17 +5,22 @@
             :theme="theme"
         />
         <main v-if="showHeaderContent" class="main-content">
-            <!--            <header>-->
-            <!--                <slot name="breadcrumb"></slot>-->
-            <!--                <BaseAvatar :avatar="getUserAvatarUrl">-->
-            <!--                    <template #full_name>-->
-            <!--                        {{ getNameSnippet }}-->
-            <!--                    </template>-->
-            <!--                    <template #role>-->
-            <!--                        {{ getRole }}-->
-            <!--                    </template>-->
-            <!--                </BaseAvatar>-->
-            <!--            </header>-->
+            <header>
+                <div class="slot-block">
+                    <slot name="breadcrumb"></slot>
+                </div>
+                <div class="user-block ">
+                    <slot name="actions"></slot>
+                    <BaseAvatar class="collapsed" :avatar="getUserAvatarUrl">
+                        <template #full_name>
+                            {{ getNameSnippet }}
+                        </template>
+                        <template #role>
+                            {{ getRole }}
+                        </template>
+                    </BaseAvatar>
+                </div>
+            </header>
             <div class="app-content">
                 <router-view/>
             </div>
@@ -29,12 +34,12 @@
 
 <script>
 import {mapGetters} from "vuex";
-// import BaseAvatar from "@/components/Reusable/BaseAvatar";
+import BaseAvatar from "@/components/Reusable/BaseAvatar";
 
 export default {
     name: "AppLayout",
     components: {
-        // BaseAvatar
+        BaseAvatar
     },
 
     props: {
@@ -90,6 +95,22 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
 
+    .slots-block {
+
+    }
+
+    .user-block {
+        display: flex;
+        justify-self: flex-end;
+
+
+    }
+}
 </style>

@@ -6,10 +6,14 @@
             :src="imagePath" alt="img"
         />
         <div class="person">
-            <span class="full_name"><slot name="full_name"></slot></span>
-            <span class="full_name" v-if="!hasFullNameSlot">{{ full_name }}</span>
-            <span class="role"><slot name="role"></slot></span>
-            <span class="role" v-if="!hasRoleSlot">{{ role }}</span>
+            <p class="full_name">
+                <slot name="full_name"></slot>
+            </p>
+            <p class="full_name" v-if="!hasFullNameSlot">{{ full_name }}</p>
+            <p class="role">
+                <slot name="role"></slot>
+            </p>
+            <p class="role" v-if="!hasRoleSlot">{{ role }}</p>
         </div>
     </div>
 </template>
@@ -58,8 +62,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
 .base-avatar {
-    margin-top: 3rem;
     display: flex;
     gap: 8px;
     width: max-content;
@@ -68,7 +73,27 @@ export default {
     margin-right: 0;
     padding: 7px 16px 7px 8px;
 
+    &.collapsed {
+        padding: 7px 8px;
+
+        .person {
+            display: none !important;
+        }
+    }
+
+
+    p {
+        margin-bottom: 0;
+        max-width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     img {
+        border-radius: 32px;
+        background-color: red;
+        object-fit: contain;
         width: 40px;
         height: 40px;
     }
@@ -79,14 +104,14 @@ export default {
         flex-direction: column;
 
         .full_name {
-            color: #4B5563;
+            color: var(--gray-600);
             font-weight: 600;
             font-size: 16px;
             line-height: 22px;
         }
 
         .role {
-            color: #9CA3AF;
+            color: var(--gray-400);
             font-weight: 600;
             font-size: 14px;
             line-height: 20px;
