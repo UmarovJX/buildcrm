@@ -6,7 +6,7 @@
         <!--     MAIN CONTENT OF SLIDE       -->
         <div class="swiper-wrapper">
           <div
-              v-for="(image,index) in plan.image"
+              v-for="(image,index) in plan.images"
               :key="index"
               class="swiper-slide"
           >

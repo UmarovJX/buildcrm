@@ -53,8 +53,8 @@
                     <template #cell(image)="data">
                         <img
                             style="cursor: pointer; object-fit: contain"
-                            :data-fancybox="data.item.images[0].path"
-                            :src="data.item.images[0].path"
+                            :data-fancybox="imagePath(data.item)"
+                            :src="imagePath(data.item)"
                             width="80"
                             height="80"
                             alt="plan_image"
@@ -197,6 +197,10 @@ export default {
     },
     methods: {
         ...mapActions(["fetchPlans"]),
+        imagePath(item) {
+            if (item && item.images[0]) return item.images[0].path
+            return null
+        },
         async deleteTypePlan(item) {
             const objectId = this.$route.params.id
             const {apartments_count, id: planId} = item

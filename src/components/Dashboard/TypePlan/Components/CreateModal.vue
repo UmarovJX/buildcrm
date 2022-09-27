@@ -125,7 +125,7 @@ export default {
             planData: {
                 name: null,
                 area: null,
-                balcony_area: 0,
+                balcony_area: null,
                 images: [],
                 plan_id: null
             },

@@ -30,17 +30,17 @@
                     <section slot="pdf-content">
                         <!--  HEAD    -->
                         <div v-if="visible" class="head d-flex justify-content-between pdf-item">
-            <span class="d-flex justify-content-center align-items-center">
-              <span
-                  @click="hidePlanSidebar"
-                  class="close__button d-flex justify-content-center align-items-center"
-              >
-                <base-arrow-left-icon :width="32" :height="32"/>
-              </span>
-              <span class="section__title">
-                {{ plan.name }}
-              </span>
-            </span>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div
+                                    @click="hidePlanSidebar"
+                                    class="close__button d-flex justify-content-center align-items-center"
+                                >
+                                    <base-arrow-left-icon :width="32" :height="32"/>
+                                </div>
+                                <span class="section__title">
+                                    {{ plan.name }}
+                                  </span>
+                            </div>
                         </div>
 
                         <!--  MAIN    -->
@@ -163,8 +163,6 @@ export default {
     methods: {
         async getPlan() {
             const {object} = this.$route.params
-            console.log(object, 'object');
-            console.log(this.planId, 'this.planId');
             await api.objectsV2.getPlanItem(object, this.planId).then((response) => {
                 this.plan = response.data
             }).catch((err) => {
