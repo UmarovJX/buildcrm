@@ -78,7 +78,7 @@
 
 
               <div class="app-tab__header">
-                <h3 class="section-title">Детали платежа</h3>
+                <h3 class="section-title">{{ $t('payment_details') }}</h3>
               </div>
               <div class="app-checkout__calculator">
                 <checkout-calculator

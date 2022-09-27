@@ -137,7 +137,7 @@
 
       <!--      Total Price          -->
       <div class="d-flex justify-content-between">
-        <span class="property d-block color-violet-600">{{ $t('apartments.view.total') }}</span>
+        <span class="property d-block color-violet-600">{{ $t('total') }}</span>
         <span class="price d-block color-violet-600 total-price">
           {{ pricePrettier(calc.total, 2) }}  {{ $t('ye') }}
         </span>

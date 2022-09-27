@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
+    prepayment: "Предоплата",
     installment: 'Рассрочка',
     enter_discount: "Вариант оплаты",
     type: 'Тип',
