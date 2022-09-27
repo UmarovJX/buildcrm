@@ -47,7 +47,6 @@
                     </b-badge>
                 </b-form-checkbox>
             </b-form-checkbox-group>
-
         </div>
 
         <base-modal ref="price-table">

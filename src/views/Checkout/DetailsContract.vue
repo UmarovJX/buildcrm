@@ -339,6 +339,7 @@ export default {
         visible: false,
       },
       timeoutId: null,
+      autoFill: false
     }
   },
   watch: {
@@ -373,19 +374,29 @@ export default {
     }
   },
   methods: {
-    // phone(value) {
-    //     return phonePrettier(value)
-    // },
     async validate() {
       return await this.$refs['client-validation'].validate()
     },
     clientDebounce() {
-      if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId)
+      if (this.client.passport_series) {
+        if (this.timeoutId !== null) {
+          clearTimeout(this.timeoutId)
+        }
+        this.timeoutId = setTimeout(() => {
+          this.getClientByPassport()
+        }, 500)
+      } else {
+        if (this.autoFill) {
+          this.resetClientContext()
+          this.turnedOffAutoFill()
+        }
       }
-      this.timeoutId = setTimeout(() => {
-        this.getClientByPassport()
-      }, 500)
+    },
+    turnedOnAutoFill() {
+      this.autoFill = true
+    },
+    turnedOffAutoFill() {
+      this.autoFill = false
     },
     getClientByPassport() {
       if (this.client.passport_series.length === 9)
@@ -397,34 +408,40 @@ export default {
                 friends: 'false',
                 contract_date: this.client.contract_date
               }
-            }).catch((error) => {
-          this.client =
-              {
-                first_name: {
-                  lotin: "",
-                  kirill: "",
-                },
-                last_name: {
-                  lotin: "",
-                  kirill: "",
-                },
-                second_name: {
-                  lotin: "",
-                  kirill: "",
-                },
-                passport_series: this.client.passport_series,
-                issued_by_whom: null,
-                date_of_issue: null,
-                language: "uz",
-                friends: 'false',
-                birth_day: null,
-                phone: null,
-                other_phone: null,
-                first_payment_date: null,
-                payment_date: null,
-              }
-          this.toastedWithErrorCode(error);
-        })
+              this.turnedOnAutoFill()
+            })
+            .catch((error) => {
+              this.resetClientContext()
+              this.toastedWithErrorCode(error);
+              this.turnedOffAutoFill()
+            })
+    },
+    resetClientContext() {
+      this.client =
+          {
+            first_name: {
+              lotin: null,
+              kirill: null,
+            },
+            last_name: {
+              lotin: null,
+              kirill: null,
+            },
+            second_name: {
+              lotin: null,
+              kirill: null,
+            },
+            passport_series: this.client.passport_series,
+            issued_by_whom: null,
+            date_of_issue: null,
+            language: null,
+            friends: 'false',
+            birth_day: null,
+            phone: null,
+            other_phone: null,
+            first_payment_date: null,
+            payment_date: null,
+          }
     },
     setNewContractNumber() {
       this.order.contract_number = this.newContractNumber
