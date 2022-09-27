@@ -89,16 +89,16 @@ export default {
             case 'fixed':
             case 'promo':
             case 'addition': {
-                return getters.calculateTotalPriceByFixed * getters.getPrepay / 100
+                return getters.calculateTotalPriceByFixed * getters.getPrepay / 100 - getters.getDiscount
             }
             case 'other': {
-                return getters.calculateTotalPriceByDefault
+                return getters.calculateTotalPriceByDefault - getters.getDiscount
             }
             case 'percent': {
-                return getters.calculateTotalPriceByDefault * getters.getPrepay / 100
+                return getters.calculateTotalPriceByDefault * getters.getPrepay / 100 - getters.getDiscount
             }
             default: {
-                return getters.calculateTotalPriceByDefault * getters.discountAmount / 100
+                return getters.calculateTotalPriceByDefault * getters.discountAmount / 100 - getters.getDiscount
             }
         }
     },

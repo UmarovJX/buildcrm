@@ -272,7 +272,8 @@ export default {
       trashStorage: 'trashStorage',
     }),
     ...mapGetters('checkout', {
-      otherPrice: 'isDiscountOtherType'
+      otherPrice: 'isDiscountOtherType',
+      getDiscountAmount: 'getDiscount'
     }),
     flexCenter() {
       return 'd-flex justify-content-center align-items-center'
@@ -551,6 +552,7 @@ export default {
           apartments,
           changedContractNumber,
           newContractNumber,
+          getDiscountAmount
         } = this
 
         const form = new FormData()
@@ -585,7 +587,7 @@ export default {
         form.append('comment', comment)
         form.append('months', calc.monthly_payment_period)
         form.append('first_payment_date', calc.first_payment_date)
-        form.append('discount_amount', discount.amount)
+        form.append('discount_amount', getDiscountAmount) 
 
         if (discount.id === 'other') {
           for (let i = 0; i < apartments.length; i++) {
@@ -619,20 +621,6 @@ export default {
         }
       }
     }
-    // async getClientDetails() {
-    //   const uuid = 'ef77be1c-cbd8-4b69-bc71-ce13456d3b61'
-    //   await api.contractV2.getUpdateContractView(uuid).then((res) => {
-    //     this.client = res.data.client
-    //     this.apartments = [...res.data.apartments, ...res.data.apartments, ...res.data.apartments]
-    //         .map((apartment, index) => {
-    //           return {
-    //             ...apartment,
-    //             id: `${apartment.id}${index}`
-    //           }
-    //         })
-    //     this.calc.discounts = this.apartments[0].discounts
-    //   })
-    // }
   }
 }
 </script>
