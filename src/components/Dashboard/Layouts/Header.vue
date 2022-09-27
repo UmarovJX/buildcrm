@@ -3,124 +3,124 @@
         class="navbar-top"
         :class="{'menu-collapsed': isActive, 'menu-expanded': menuExpanded}"
     >
-        <nav
-            class="
-        navbar navbar-expand-sm
-        d-flex
-        justify-content-between
-        align-items-center
-        fixed-top
-        px-lg-4 px-md-3 px-auto
-      "
-        >
-            <ul class="nav navbar-nav d-xl-none">
-                <li class="nav-item">
-                    <a
-                        href="javascript:"
-                        target="_self"
-                        class="nav-link"
-                        @click="isActive = true"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="21px"
-                            height="21px"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-menu text-white"
-                        >
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg
-                        >
-                    </a>
-                </li>
-            </ul>
+<!--        <nav-->
+<!--            class="-->
+<!--        navbar navbar-expand-sm-->
+<!--        d-flex-->
+<!--        justify-content-between-->
+<!--        align-items-center-->
+<!--        fixed-top-->
+<!--        px-lg-4 px-md-3 px-auto-->
+<!--      "-->
+<!--        >-->
+<!--            <ul class="nav navbar-nav d-xl-none">-->
+<!--                <li class="nav-item">-->
+<!--                    <a-->
+<!--                        href="javascript:"-->
+<!--                        target="_self"-->
+<!--                        class="nav-link"-->
+<!--                        @click="isActive = true"-->
+<!--                    >-->
+<!--                        <svg-->
+<!--                            xmlns="http://www.w3.org/2000/svg"-->
+<!--                            width="21px"-->
+<!--                            height="21px"-->
+<!--                            viewBox="0 0 24 24"-->
+<!--                            fill="none"-->
+<!--                            stroke="currentColor"-->
+<!--                            stroke-width="2"-->
+<!--                            stroke-linecap="round"-->
+<!--                            stroke-linejoin="round"-->
+<!--                            class="feather feather-menu text-white"-->
+<!--                        >-->
+<!--                            <line x1="3" y1="12" x2="21" y2="12"></line>-->
+<!--                            <line x1="3" y1="6" x2="21" y2="6"></line>-->
+<!--                            <line x1="3" y1="18" x2="21" y2="18"></line>-->
+<!--                        </svg-->
+<!--                        >-->
+<!--                    </a>-->
+<!--                </li>-->
+<!--            </ul>-->
 
-            <button
-                v-if="routePermission"
-                class="btn-back d-xl-block d-none"
-                @click="$router.go(-1)"
-            >
-                <i class="fal fa-arrow-left mr-2"></i>
-                <span>{{ $t('go_back') }}</span>
-            </button>
+<!--            <button-->
+<!--                v-if="routePermission"-->
+<!--                class="btn-back d-xl-block d-none"-->
+<!--                @click="$router.go(-1)"-->
+<!--            >-->
+<!--                <i class="fal fa-arrow-left mr-2"></i>-->
+<!--                <span>{{ $t('go_back') }}</span>-->
+<!--            </button>-->
 
-            <div class="ml-auto d-flex justify-content-center align-items-center">
-                <div
-                    class="
-            d-none d-md-flex
-            justify-content-md-end justify-content-center
-            mr-3
-          "
-                >
-                    <div v-if="currencyPermission"
-                         class="currency d-flex align-items-center">
-                        <div class="currency__price">1 USD = {{ getCurrency.usd }} UZS</div>
-                    </div>
-                </div>
+<!--            <div class="ml-auto d-flex justify-content-center align-items-center">-->
+<!--                <div-->
+<!--                    class="-->
+<!--            d-none d-md-flex-->
+<!--            justify-content-md-end justify-content-center-->
+<!--            mr-3-->
+<!--          "-->
+<!--                >-->
+<!--                    <div v-if="currencyPermission"-->
+<!--                         class="currency d-flex align-items-center">-->
+<!--                        <div class="currency__price">1 USD = {{ getCurrency.usd }} UZS</div>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-                <div v-if="themePermission" class="d-nones">
-                    <theme-button :theme="theme"/>
-                </div>
+<!--                <div v-if="themePermission" class="d-nones">-->
+<!--                    <theme-button :theme="theme"/>-->
+<!--                </div>-->
 
 
-                <div class="dropdown my-dropdown dropdown-user dropleft">
-                    <button
-                        type="button"
-                        class="dropdown-toggle dropdown-user__button"
-                        data-toggle="dropdown"
-                    >
-                        <div class="user d-flex align-items-center">
-                            <b-avatar
-                                variant="primary"
-                                :src="getUserAvatarUrl"
-                                :text="getNameSnippet"
-                                size="3rem"
-                                class="avatar-wrapper"
-                            ></b-avatar>
+<!--                <div class="dropdown my-dropdown dropdown-user dropleft">-->
+<!--                    <button-->
+<!--                        type="button"-->
+<!--                        class="dropdown-toggle dropdown-user__button"-->
+<!--                        data-toggle="dropdown"-->
+<!--                    >-->
+<!--                        <div class="user d-flex align-items-center">-->
+<!--                            <b-avatar-->
+<!--                                variant="primary"-->
+<!--                                :src="getUserAvatarUrl"-->
+<!--                                :text="getNameSnippet"-->
+<!--                                size="3rem"-->
+<!--                                class="avatar-wrapper"-->
+<!--                            ></b-avatar>-->
 
-                            <div class="ml-2 d-none d-sm-block">
-                                <div class="user__name" v-if="getMe.user">
-                                    {{ getMe.user.firstName }} {{ getMe.user.lastName }}
-                                </div>
-                                <div class="user__permission" v-if="getMe.role">
-                                    {{ getName(getMe.role.name) }}
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu__user">
-                        <a v-if="languagePermission" class="dropdown-item"
-                           href="javascript:void(0)">
-                            <label class="switch">
-                                <input type="checkbox" @click="changeLocale" v-model="locale"/>
-                                <div class="slider round">
-                                    <span>Ру</span>
-                                    <span>Uz</span>
-                                </div>
-                            </label>
-                        </a>
-                        <router-link
-                            v-if="settingsPermission"
-                            :to="{name:'user-settings'}"
-                            class="dropdown-item"
-                        >
-                            <i class="fas fa-cog"></i> {{ $t("settings.title") }}
-                        </router-link>
+<!--                            <div class="ml-2 d-none d-sm-block">-->
+<!--                                <div class="user__name" v-if="getMe.user">-->
+<!--                                    {{ getMe.user.firstName }} {{ getMe.user.lastName }}-->
+<!--                                </div>-->
+<!--                                <div class="user__permission" v-if="getMe.role">-->
+<!--                                    {{ getName(getMe.role.name) }}-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </button>-->
+<!--                    <div class="dropdown-menu dropdown-menu__user">-->
+<!--                        <a v-if="languagePermission" class="dropdown-item"-->
+<!--                           href="javascript:void(0)">-->
+<!--                            <label class="switch">-->
+<!--                                <input type="checkbox" @click="changeLocale" v-model="locale"/>-->
+<!--                                <div class="slider round">-->
+<!--                                    <span>Ру</span>-->
+<!--                                    <span>Uz</span>-->
+<!--                                </div>-->
+<!--                            </label>-->
+<!--                        </a>-->
+<!--                        <router-link-->
+<!--                            v-if="settingsPermission"-->
+<!--                            :to="{name:'user-settings'}"-->
+<!--                            class="dropdown-item"-->
+<!--                        >-->
+<!--                            <i class="fas fa-cog"></i> {{ $t("settings.title") }}-->
+<!--                        </router-link>-->
 
-                        <a class="dropdown-item" @click="Logout" href="#">
-                            <i class="fas fa-sign-out"></i> {{ $t("logout") }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
+<!--                        <a class="dropdown-item" @click="Logout" href="#">-->
+<!--                            <i class="fas fa-sign-out"></i> {{ $t("logout") }}-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </nav>-->
 
         <!-- <div class="header-navbar-shadow"></div> -->
         <div
@@ -193,7 +193,7 @@
 <script>
 import {localeChanged} from 'vee-validate'
 import {mapActions, mapGetters, mapMutations} from "vuex";
-import ThemeButton from "@/components/ThemeButton.vue";
+// import ThemeButton from "@/components/ThemeButton.vue";
 import GeneralPermission from "@/permission/general";
 import api from "@/services/api";
 // import BaseAvatar from "@/components/Reusable/BaseAvatar";
@@ -201,7 +201,7 @@ import api from "@/services/api";
 export default {
     name: 'Header',
     components: {
-        ThemeButton,
+        // ThemeButton,
         // BaseAvatar
     },
     props: {

@@ -1,5 +1,10 @@
 <template>
     <div>
+        <app-header-new>
+            <template #title>
+                Должники
+            </template>
+        </app-header-new>
         <!--  FILTER CONTENT  -->
         <filter-content
             ref="filter-content"
@@ -206,10 +211,12 @@ import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
 import WeeklyDebtsUi from "@/components/Debtors/WeeklyDebtsUi";
 import BaseStarIcon from "@/components/icons/BaseStarIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
+import AppHeaderNew from "@/views/AppHeaderNew";
 
 export default {
     name: "Debtors",
     components: {
+        AppHeaderNew,
         BaseStarIcon,
         BaseLoading,
         BasePagination,

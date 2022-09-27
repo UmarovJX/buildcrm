@@ -1,10 +1,16 @@
 <template>
     <div class="base-avatar" :style="{background: background}">
         <slot name="avatar"></slot>
-        <img
-            v-if="!hasAvatarSlot"
-            :src="imagePath" alt="img"
-        />
+<!--        <img-->
+<!--            v-if="!hasAvatarSlot"-->
+<!--            :src="imagePath" alt="img"-->
+<!--        />-->
+        <b-avatar
+            variant="primary"
+            :src="imagePath"
+            :text="nameSnippet"
+            size="40px"
+        ></b-avatar>
         <div class="person">
             <p class="full_name">
                 <slot name="full_name"></slot>
@@ -39,6 +45,10 @@ export default {
         role: {
             type: String,
             required: false
+        },
+        nameSnippet: {
+            type: String,
+            required: false
         }
     },
     computed: {
@@ -55,7 +65,7 @@ export default {
             if (this.avatar !== '') {
                 return require(`${this.avatar}`);
             }
-            return require("@/assets/img/object__img1.png")
+            return ''
         }
     },
 }
