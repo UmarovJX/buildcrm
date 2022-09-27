@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+    please_select: 'Пожалуйста выберите',
     type: 'Turi',
     total: 'Umumiy',
     additional: `Qo'shimcha`,

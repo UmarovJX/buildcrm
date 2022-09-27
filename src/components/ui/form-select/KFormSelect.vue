@@ -9,7 +9,7 @@
       >
         <slot name="placeholder"/>
         <div
-            :class="{'k-form-option-label':selectList}"
+            :class="{'k-form-option-label':showLabel}"
             v-if="showPlaceholder"
         >
           <span>{{ placeholder }}</span>
@@ -18,11 +18,17 @@
           {{ selectList }}
         </div>
       </div>
-      <span class="k-form-select-down-icon" :class="{'k-form-spin-down-icon':open}">
+      <span
+          class="k-form-select-icon"
+          :class="{'k-form-select-icon-open':open}"
+      >
         <base-down-icon/>
       </span>
     </div>
     <ul v-show="open" class="k-form-select-main">
+      <k-form-select-option
+          :option="placeholderOption"
+      />
       <k-form-select-option
           v-for="(option,index) in options"
           :key="`k-form-select-option-${index}`"
@@ -77,12 +83,36 @@ export default {
     }
   },
   computed: {
+    showLabel() {
+      const {multiple, selectList, selected, placeholderOption, valueField} = this
+      if (multiple) {
+        return selectList
+      } else {
+        return selectList && selected !== placeholderOption[valueField]
+      }
+    },
+    placeholderOption() {
+      const {valueField, textField, placeholder} = this
+      let option = {}
+      option[valueField] = null
+      if (placeholder) {
+        option[textField] = placeholder
+      } else {
+        option[textField] = this.$t('please_select')
+      }
+      return option
+    },
     absentPlaceholderSlot() {
       return !this.$slots.hasOwnProperty('placeholder')
     },
     showPlaceholder() {
-      const {absentPlaceholderSlot, placeholder} = this
-      return absentPlaceholderSlot && placeholder
+      const {absentPlaceholderSlot, placeholder, multiple, selected} = this
+      const dRequirement = absentPlaceholderSlot && placeholder
+      if (multiple) {
+        return dRequirement && selected
+      } else {
+        return dRequirement
+      }
     },
     selectList() {
       if (this.multiple) {
@@ -191,15 +221,16 @@ export default {
     padding: 0;
   }
 
-  &-down-icon {
+  .k-form-select-icon {
     position: absolute;
     top: 50%;
     right: 20px;
-    transform: translateY(-50%);
-  }
+    transform: translateY(-50%) rotateZ(0);
+    transition: transform 0.35s ease-in-out;
 
-  .k-form-spin-down-icon{
-    //transform: ;
+    &-open {
+      transform: translateY(-50%) rotateZ(-180deg);
+    }
   }
 }
 

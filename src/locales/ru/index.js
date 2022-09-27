@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
+    please_select: 'Пожалуйста выберите',
     installment: 'Рассрочка',
     enter_discount: "Вариант оплаты",
     type: 'Тип',
@@ -582,12 +583,12 @@ export default {
         },
     },
     release_note: {
-      add_release_note: "Добавить примечания к выпуску",
-      release_note: "Примечания к выпуску",
-      version_number: "Номер версии",
-      texts: "Тексты",
-      new: "Новый",
-      comment: "Вы всегда можете найти примечания к выпуску в настройках, щелкнув номер версии."
+        add_release_note: "Добавить примечания к выпуску",
+        release_note: "Примечания к выпуску",
+        version_number: "Номер версии",
+        texts: "Тексты",
+        new: "Новый",
+        comment: "Вы всегда можете найти примечания к выпуску в настройках, щелкнув номер версии."
     },
     roles: {
         title: "Роли",
