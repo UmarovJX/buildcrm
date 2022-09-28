@@ -490,6 +490,7 @@ export default {
     },
 
     contracts: {
+        list_contracts: "Shartnomalar ro'yxati",
         name: 'Shartnomalar',
         reset_filter: "Filterni tozalash",
         apply_filter: 'Qidirish',

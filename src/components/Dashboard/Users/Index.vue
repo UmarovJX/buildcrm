@@ -1,5 +1,11 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{ $t('users.title') }}
+            </template>
+        </app-header>
+
         <div class="d-flex align-items-center">
             <base-search-input class="w-100" :placeholder="$t('users.placeholder')" @trigger-input="setSearchValue"/>
             <base-button
@@ -200,10 +206,12 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseDownIcon from "@/components/icons/BaseArrowDownIcon";
 import {mapGetters} from "vuex";
 import UsersPermission from "@/permission/users"
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: 'UsersPage',
     components: {
+        AppHeader,
         BaseSearchInput,
         BaseLoading,
         BaseButton,

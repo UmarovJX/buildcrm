@@ -1,5 +1,12 @@
 <template>
     <div>
+
+        <app-header>
+            <template #header-title>
+                {{ $t('contracts.list_contracts') }}
+            </template>
+        </app-header>
+
         <!--  Tabs  -->
         <base-filter-tabs-content
             :filter-tab-list="filterTabList"
@@ -159,10 +166,12 @@ import {
 } from "@/util/reusable";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: "Contracts",
     components: {
+        AppHeader,
         BaseFilterTabsContent,
         BaseArrowDownIcon,
         SearchBarContent,
