@@ -1,5 +1,10 @@
 <template>
     <div>
+      <app-header>
+        <template #header-title>
+          Release Note
+        </template>
+      </app-header>
         <base-button class="mb-4" @click="openReleaseModal" text="add release note"/>
         <base-button class="mb-4" @click="getUpdateRelease" text="update release note"/>
         <base-button @click="openReleaseNote" text="about release note"/>
@@ -148,12 +153,14 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
+import AppHeader from "@/components/Header/AppHeader";
 import {VueEditor} from 'vue2-editor'
 import api from "@/services/api";
 
 export default {
     name: "ReleaseNote",
     components: {
+      AppHeader,
         BaseQuestionsIcon,
         BaseInput,
         BaseCloseIcon,
