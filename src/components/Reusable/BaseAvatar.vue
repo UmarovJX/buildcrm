@@ -151,6 +151,12 @@ export default {
 
 }
 
+::v-deep {
+    .b-avatar .b-avatar-text {
+        line-height: initial;
+    }
+}
+
 .base-avatar {
     display: flex;
     gap: 8px;

@@ -333,6 +333,10 @@ export default {
         }
 
         td {
+            font-family: Inter, sans-serif;
+            font-size: 1rem;
+            line-height: 22px;
+            font-weight: 600;
             vertical-align: middle;
         }
     }
