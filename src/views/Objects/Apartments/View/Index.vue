@@ -1,41 +1,78 @@
 <template>
     <div>
-        <!--  HEADER NAVIGATION  -->
 
-        <div class="header-navigation d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <div
-                    class="go__back"
-                    @click="$router.push(
+        <app-header>
+            <template #header-breadcrumb>
+                <div class="header-navigation d-flex align-items-center">
+                    <div
+                        class="go__back"
+                        @click="$router.push(
                     {name:'apartments',
                     params:{object: $route.params.object}})">
-                    <base-arrow-left :width="32" :height="32"></base-arrow-left>
-                </div>
-                <div class="breadcrumb__content">
-                    <div class="d-flex align-items-center">
-                        <span class="mr-2">{{ $t('objects.title') }}</span>
-                        <base-arrow-right :width="16" :height="16"/>
-                        <span class="ml-2">{{ apartmentName }}</span>
-                        <base-arrow-right :width="16" :height="16"/>
-                        <div class="ml-2">
+                        <base-arrow-left :width="32" :height="32"></base-arrow-left>
+                    </div>
+                    <div class="breadcrumb__content">
+                        <div class="d-flex align-items-center">
+                            <span class="mr-2">{{ $t('objects.title') }}</span>
+                            <base-arrow-right :width="16" :height="16"/>
+                            <span class="ml-2">{{ apartmentName }}</span>
+                            <base-arrow-right :width="16" :height="16"/>
+                            <div class="ml-2">
+                                {{ $t('apartment') }} № {{ apartment.number }}
+                            </div>
+                        </div>
+                        <div class="head color-violet-600">
                             {{ $t('apartment') }} № {{ apartment.number }}
                         </div>
                     </div>
-                    <div class="head color-violet-600">
-                        {{ $t('apartment') }} № {{ apartment.number }}
-                    </div>
                 </div>
-            </div>
-
-            <div>
+            </template>
+            <template #header-status>
                 <div
                     class="apartment__status d-flex justify-content-center align-items-center"
                     :class="`status-${status}`"
                 >
                     {{ $t(`apartments.status.${status}`) }}
                 </div>
-            </div>
-        </div>
+            </template>
+        </app-header>
+
+        <!--  HEADER NAVIGATION  -->
+
+        <!--        <div class="header-navigation d-flex justify-content-between align-items-center">-->
+        <!--            <div class="d-flex align-items-center">-->
+        <!--                <div-->
+        <!--                    class="go__back"-->
+        <!--                    @click="$router.push(-->
+        <!--                    {name:'apartments',-->
+        <!--                    params:{object: $route.params.object}})">-->
+        <!--                    <base-arrow-left :width="32" :height="32"></base-arrow-left>-->
+        <!--                </div>-->
+        <!--                <div class="breadcrumb__content">-->
+        <!--                    <div class="d-flex align-items-center">-->
+        <!--                        <span class="mr-2">{{ $t('objects.title') }}</span>-->
+        <!--                        <base-arrow-right :width="16" :height="16"/>-->
+        <!--                        <span class="ml-2">{{ apartmentName }}</span>-->
+        <!--                        <base-arrow-right :width="16" :height="16"/>-->
+        <!--                        <div class="ml-2">-->
+        <!--                            {{ $t('apartment') }} № {{ apartment.number }}-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                    <div class="head color-violet-600">-->
+        <!--                        {{ $t('apartment') }} № {{ apartment.number }}-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <div>-->
+        <!--                <div-->
+        <!--                    class="apartment__status d-flex justify-content-center align-items-center"-->
+        <!--                    :class="`status-${status}`"-->
+        <!--                >-->
+        <!--                    {{ $t(`apartments.status.${status}`) }}-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
 
         <!--  END HEADER NAVIGATION  -->
 
@@ -66,10 +103,12 @@
 import api from "@/services/api";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: "Index",
     components: {
+        AppHeader,
         BaseArrowLeft,
         BaseArrowRight,
     },

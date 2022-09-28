@@ -1,5 +1,11 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{ $t('branches.title') }}
+            </template>
+        </app-header>
+
         <create-branch-bread-crumb/>
         <branch-form-content
             :submit-button-text="submitButtonText"
@@ -17,12 +23,14 @@ import api from "@/services/api";
 import {mapGetters} from "vuex";
 import CreateBranchBreadCrumb from "@/components/Branches/CreateBranchBreadCrumb";
 import BranchFormContent from "@/components/Branches/BranchFormContent";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: "TabChangePassword",
     components: {
         CreateBranchBreadCrumb,
-        BranchFormContent
+        BranchFormContent,
+        AppHeader
     },
     data() {
         return {

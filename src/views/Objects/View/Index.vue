@@ -1,23 +1,46 @@
 <template>
     <div>
+
+        <app-header>
+            <template #header-breadcrumb>
+                <div v-if="finishLoading && objectName.length" class="navigation__content">
+                    <div class="d-flex align-items-center">
+                        <router-link class="go__back" :to="{name: 'objects'}">
+                            <base-arrow-left :width="32" :height="32"></base-arrow-left>
+                        </router-link>
+                        <div class="breadcrumb__content">
+                            <div class="d-flex align-items-center">
+                                <span class="mr-2">{{ $t('objects.title') }}</span>
+                                <base-arrow-right :width="16" :height="16"/>
+                                <span class="ml-2">{{ objectName }}</span>
+                            </div>
+                            <div class="head">
+                                <span class="contract__number">{{ objectName }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </app-header>
+
         <!--  Header Navigation  -->
-        <div v-if="finishLoading && objectName.length" class="navigation__content justify-content-between">
-            <div class="d-flex align-items-center">
-                <router-link class="go__back" :to="{name: 'objects'}">
-                    <base-arrow-left :width="32" :height="32"></base-arrow-left>
-                </router-link>
-                <span class="breadcrumb__content">
-                  <span class="d-flex align-items-center">
-                    <span class="mr-2">{{ $t('objects.title') }}</span>
-                    <base-arrow-right :width="16" :height="16"/>
-                    <span class="ml-2">{{ objectName }}</span>
-                  </span>
-                  <span class="head">
-                    <span class="contract__number">{{ objectName }}</span>
-                  </span>
-                </span>
-            </div>
-        </div>
+        <!--        <div v-if="finishLoading && objectName.length" class="navigation__content justify-content-between">-->
+        <!--            <div class="d-flex align-items-center">-->
+        <!--                <router-link class="go__back" :to="{name: 'objects'}">-->
+        <!--                    <base-arrow-left :width="32" :height="32"></base-arrow-left>-->
+        <!--                </router-link>-->
+        <!--                <span class="breadcrumb__content">-->
+        <!--                  <span class="d-flex align-items-center">-->
+        <!--                    <span class="mr-2">{{ $t('objects.title') }}</span>-->
+        <!--                    <base-arrow-right :width="16" :height="16"/>-->
+        <!--                    <span class="ml-2">{{ objectName }}</span>-->
+        <!--                  </span>-->
+        <!--                  <span class="head">-->
+        <!--                    <span class="contract__number">{{ objectName }}</span>-->
+        <!--                  </span>-->
+        <!--                </span>-->
+        <!--            </div>-->
+        <!--        </div>-->
 
         <object-sort
             :filter-fields="filterFields"
@@ -55,7 +78,7 @@
                 <span class="d-flex align-items-center justify-content-between">
                   <!--    TITLE      -->
                     <span class="title">{{ $t('objects.create.prices') }}</span>
-                            <!--          CLOSE-->
+                    <!--          CLOSE-->
                   <span class="go__back" @click="closeMapModal">
                       <BaseCloseIcon :width="40" :height="40"/>
                     </span>
@@ -134,10 +157,12 @@ import ApartmentsPermission from "@/permission/apartments";
 import {mapGetters} from "vuex";
 import {isPrimitiveValue} from "@/util/reusable";
 import {sessionStorageGetItem, sessionStorageSetItem} from "@/util/storage";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: "Objects",
     components: {
+        AppHeader,
         BaseCloseIcon,
         BaseArrowRight,
         BaseArrowLeft,
@@ -901,7 +926,8 @@ export default {
 .navigation__content {
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
+    justify-content: space-between;
+    //margin-bottom: 2rem;
 
     .go__back {
         width: 56px;

@@ -289,26 +289,46 @@
 <!--</style>-->
 <template>
     <div>
-        <div
-            class="
-          d-flex
-          justify-content-end
-          align-items-center
-          flex-md-row flex-column
-        "
-        >
-            <base-button
-                v-if="createPermission"
-                design="violet-gradient"
-                @click="$router.push({name: 'roles-store'})"
-                :text="$t('add')"
-                class="ml-4"
-            >
-                <template #left-icon>
-                    <BasePlusIcon fill="var(--white)"/>
-                </template>
-            </base-button>
-        </div>
+
+        <app-header>
+            <template #header-title>
+                {{ $t('roles.title') }}
+            </template>
+            <template #header-actions>
+                <base-button
+                    v-if="createPermission"
+                    design="violet-gradient"
+                    @click="$router.push({name: 'roles-store'})"
+                    :text="$t('add')"
+                    class="ml-4"
+                >
+                    <template #left-icon>
+                        <BasePlusIcon fill="var(--white)"/>
+                    </template>
+                </base-button>
+            </template>
+        </app-header>
+
+<!--        <div-->
+<!--            class="-->
+<!--          d-flex-->
+<!--          justify-content-end-->
+<!--          align-items-center-->
+<!--          flex-md-row flex-column-->
+<!--        "-->
+<!--        >-->
+<!--            <base-button-->
+<!--                v-if="createPermission"-->
+<!--                design="violet-gradient"-->
+<!--                @click="$router.push({name: 'roles-store'})"-->
+<!--                :text="$t('add')"-->
+<!--                class="ml-4"-->
+<!--            >-->
+<!--                <template #left-icon>-->
+<!--                    <BasePlusIcon fill="var(&#45;&#45;white)"/>-->
+<!--                </template>-->
+<!--            </base-button>-->
+<!--        </div>-->
 
         <div class="">
             <b-table
@@ -396,12 +416,14 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import RolesPermission from "@/permission/roles";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 // import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: 'Roles',
     components: {
         BasePlusIcon,
         BaseButton,
+        AppHeader,
         // BaseSearchInput
     },
     data() {

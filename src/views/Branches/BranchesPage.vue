@@ -1,7 +1,20 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{ $t('branches.title') }}
+            </template>
+            <template #header-actions>
+                <base-button v-if="createPermission" :text="$t('add')" design="violet-gradient" @click="createBranch">
+                    <template #left-icon>
+                        <BasePlusIcon fill="var(--white)"></BasePlusIcon>
+                    </template>
+                </base-button>
+            </template>
+        </app-header>
+
         <div>
-            <branches-bread-crumbs/>
+            <!--            <branches-bread-crumbs/>-->
 
             <div class="pt-2">
                 <b-table
@@ -18,9 +31,9 @@
                     :empty-text="$t('no_data')"
                 >
                     <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">
-              {{ scope.emptyText }}
-            </span>
+                        <div class="d-flex justify-content-center align-items-center">
+                            {{ scope.emptyText }}
+                        </div>
                     </template>
 
                     <template #table-busy>
@@ -124,18 +137,25 @@
 
 <script>
 import api from "@/services/api";
-import BranchesBreadCrumbs from "@/components/Branches/BranchesBreadCrumbs";
+// import BranchesBreadCrumbs from "@/components/Branches/BranchesBreadCrumbs";
 import BranchesPermission from "@/permission/branches";
 import {mapGetters} from "vuex";
 import TemplatesPermission from "@/permission/templates";
+import AppHeader from "@/components/Header/AppHeader";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
 
 export default {
     name: 'BranchesPage',
     components: {
-        BranchesBreadCrumbs
+        AppHeader,
+        BaseButton,
+        BasePlusIcon
+        // BranchesBreadCrumbs
     },
     data() {
         return {
+            createPermission: BranchesPermission.getBranchesCreatePermission(),
             editPermission: BranchesPermission.getBranchesEditPermission(),
             deletePermission: BranchesPermission.getBranchesDeletePermission(),
             viewTemplatesPermission: TemplatesPermission.getTemplatesViewPermission(),
@@ -186,6 +206,9 @@ export default {
         await this.getBranchesList()
     },
     methods: {
+        createBranch() {
+            this.$router.push({name: 'create-branch'})
+        },
         async getBranchesList() {
             this.loading = true
             await api.branches.getBranchesList()
