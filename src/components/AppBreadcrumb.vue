@@ -91,45 +91,51 @@ export default {
       * */
     },
     pageInfo: {
-      type: Object,
+      type: [Object, String],
       required: true
     },
   },
   computed: {
     title() {
-      const {$t, pageInfo} = this
+      const {pageInfo} = this
       const {title: pageTitle} = pageInfo
 
       if (typeof pageInfo === 'string') {
-        return $t(pageInfo)
+        return this.$t(pageInfo)
       }
 
       if (typeof pageTitle === 'object') {
         if (pageTitle.type === 'i18n') {
-          return $t(pageTitle.content)
+          return this.$t(pageTitle.content)
         }
       }
 
       return pageTitle
     },
     highlight() {
-      const {titleHighlight: pageHighlight} = this.pageInfo
+      const {pageInfo} = this
+      if (typeof pageInfo === 'string') {
+        return null
+      }
+
+      const {titleHighlight: pageHighlight} = pageInfo
       if (typeof pageHighlight === 'object') {
         if (pageHighlight.type === 'i18n') {
           return this.$t(pageHighlight.content)
         }
       }
+
       return pageHighlight
     },
     pageOutput() {
-      const {page, $t} = this
+      const {page} = this
       if (typeof page === 'object') {
         if (page.type === 'string') {
           return page.path
         }
-        return $t(page.path)
+        return this.$t(page.path)
       }
-      return $t(page)
+      return this.$t(page)
     }
 
   }
