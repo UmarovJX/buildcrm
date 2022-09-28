@@ -23,9 +23,9 @@
                     >
 
                         <div class="header">
-              <span>
-                {{ apartment.name }} / {{ value.name }}
-              </span>
+                            <div>
+                                {{ apartment.name }} / {{ value.name }}
+                            </div>
                         </div>
 
                         <div class="item" style="margin-right: 30px">
@@ -196,13 +196,15 @@ export default {
     padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    //gap: 4px;
     width: 16.5rem;
-    height: 96px;
+    height: 92px;
     background-color: var(--gray-50);
     font-family: Inter, sans-serif;
-    border: 1px solid var(--gray-100);
+    //border: 2px solid var(--white);
     cursor: pointer;
+    outline: none;
+
 
     p {
         font-weight: 600;
@@ -241,151 +243,188 @@ export default {
 
 
     &.yellow {
+        background-color: var(--yellow-100);
+
+
         h5 {
             color: var(--yellow-600);
         }
 
-        background-color: var(--yellow-600);
-
-        p, h5 {
-            color: var(--white);
-        }
-
-        &:hover {
-            background-color: var(--gray-50);
-
-            h5 {
-                color: var(--yellow-600);
-            }
-
-            .square-footer {
+        .square {
+            &-header {
                 p {
                     color: var(--gray-600);
                 }
             }
 
-            .square-header {
+            &-footer {
                 p {
-                    color: var(--gray-500);
+                    color: var(--gray-700);
                 }
             }
         }
+
+        &:hover {
+            outline: var(--yellow-600) solid 2px !important;
+            background-color: var(--white);
+        }
+
     }
 
     &.teal {
+        background-color: var(--teal-100);
 
-        background-color: var(--teal-600);
-
-        p, h5 {
-            color: var(--white);
+        h5 {
+            color: var(--teal-600);
         }
 
-        &:hover {
-            background-color: var(--gray-50);
 
-            h5 {
-                color: var(--teal-600);
-            }
-
-            .square-footer {
+        .square {
+            &-header {
                 p {
                     color: var(--gray-600);
                 }
             }
 
-            .square-header {
+            &-footer {
                 p {
-                    color: var(--gray-500);
+                    color: var(--gray-700);
                 }
             }
         }
+
+        &:hover {
+            outline: var(--teal-600) solid 2px !important;
+            background-color: var(--white);
+
+        }
+
+
     }
 
     &.blue {
-        background-color: var(--light-blue-600);
+        background-color: var(--light-blue-100);
 
-        p, h5 {
-            color: var(--white);
+        h5 {
+            color: var(--light-blue-600);
         }
 
-        &:hover {
-            background-color: var(--gray-50);
-
-            h5 {
-                color: var(--light-blue-600);
-            }
-
-            .square-footer {
+        .square {
+            &-header {
                 p {
                     color: var(--gray-600);
                 }
             }
 
-            .square-header {
+            &-footer {
                 p {
-                    color: var(--gray-500);
+                    color: var(--gray-700);
                 }
             }
         }
+
+        &:hover {
+            outline: var(--blue-600) solid 2px !important;
+            background-color: var(--white);
+
+            .square {
+                &-header {
+                    p {
+                        color: var(--gray-600);
+                    }
+                }
+
+                &-footer {
+                    p {
+                        color: var(--gray-400);
+                    }
+                }
+            }
+        }
+
     }
 
     &.gray {
+        box-sizing: inherit;
+        background-color: var(--red-100);
+
+        h5 {
+            color: var(--red-600);
+        }
+
+        .square {
+            &-header {
+                p {
+                    color: var(--gray-700);
+                }
+            }
+
+            &-footer {
+                p {
+                    color: var(--gray-600);
+                }
+            }
+        }
+
 
         &:hover {
-            background-color: var(--gray-50);
+            outline: var(--red-600) solid 2px !important;
+            background-color: var(--white);
 
-            h5 {
-                color: var(--red-600);
-            }
+            .square {
+                &-header {
+                    p {
+                        color: var(--gray-600);
+                    }
+                }
 
-            .square-footer {
-                p {
-                    color: var(--gray-400);
+                &-footer {
+                    p {
+                        color: var(--gray-400);
+                    }
                 }
             }
-
-            .square-header {
-                p {
-                    color: var(--gray-500);
-                }
-            }
-
         }
-
-        background-color: var(--red-600);
-
-        p, h5 {
-            color: var(--white);
-        }
-
     }
 
     &.disable {
         background-color: var(--gray-50);
 
-        p, h5 {
+        h5, p {
             color: var(--gray-400);
         }
 
-        .square-footer {
-            p {
-                color: var(--gray-400);
-            }
-        }
-
-        &:hover {
-            background-color: var(--gray-50);
-
-            p, h5 {
-                color: var(--gray-400);
+        .square {
+            &-header {
+                p {
+                    color: var(--gray-500);
+                }
             }
 
-            .square-footer {
+            &-footer {
                 p {
                     color: var(--gray-400);
                 }
             }
         }
+
+        &:hover {
+            background-color: var(--gray-50);
+            outline: none !important;
+
+            h5, p {
+                color: var(--gray-400);
+            }
+
+            .square {
+                &-header {
+                    p {
+                        color: var(--gray-500);
+                    }
+                }
+            }
+        }
+
     }
 }
 
@@ -410,6 +449,15 @@ export default {
     height: 96px;
 }
 
+.item {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+    //padding-left: 4px;
+    //padding-top: 4px;
+    padding: 4px;
+}
+
 .block {
     display: flex;
     height: 100%;
@@ -422,6 +470,7 @@ export default {
         //border: 1px solid var(--gray-100);
         //min-height: 56px;
         height: auto;
+        column-gap: 2px;
     }
 
 

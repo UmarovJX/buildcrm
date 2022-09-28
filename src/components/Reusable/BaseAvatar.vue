@@ -23,18 +23,18 @@
                 </div>
             </template>
             <template #list>
-                <b-dropdown-item style="touch-action: none">
-                    <a v-if="languagePermission"
-                       href="javascript:void(0)">
-                        <label class="switch" @click="changeLocale">
-                            <input type="checkbox" v-model="locale"/>
-                            <div class="slider round">
-                                <span>Ру</span>
-                                <span>Uz</span>
-                            </div>
-                        </label>
-                    </a>
-                </b-dropdown-item>
+                <!--                                <b-dropdown-item style="touch-action: none">-->
+                <a v-if="languagePermission"
+                   href="javascript:void(0)" class="lang-switcher">
+                    <label class="switch" @click="changeLocale">
+                        <input type="checkbox" v-model="locale"/>
+                        <div class="slider round">
+                            <span>Ру</span>
+                            <span>Uz</span>
+                        </div>
+                    </label>
+                </a>
+                <!--                                </b-dropdown-item>-->
                 <b-dropdown-item>
                     <router-link
                         v-if="settingsPermission"
@@ -163,6 +163,13 @@ export default {
     .b-avatar .b-avatar-text {
         line-height: initial;
     }
+}
+
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding: 1rem;
 }
 
 .base-avatar {
