@@ -1,5 +1,10 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{ $t('roles.title') }}
+            </template>
+        </app-header>
 
         <div
             class="
@@ -110,9 +115,13 @@
 <script>
 import api from "@/services/api";
 import {v4 as uuid} from 'uuid';
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: 'Roles',
+    components: {
+        AppHeader
+    },
     props: {
         comeFrom: {
             type: String,

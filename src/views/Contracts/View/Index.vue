@@ -5,19 +5,19 @@
             <template #header-breadcrumb>
                 <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">
                     <div class="d-flex align-items-center">
-                <span class="go__back" @click="backNavigation">
-                  <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
-                </span>
-                        <span class="breadcrumb__content">
-                <span>
-                  {{ $t('payments.payment_list') }}
-                  <BaseArrowRight :width="18" :height="18"/>
-                  <span>{{ order.contract }}</span>
-                </span>
-                <span class="head">
+                        <div class="go__back" @click="backNavigation">
+                            <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
+                        </div>
+                        <div class="breadcrumb__content">
+                            <div>
+                                {{ $t('payments.payment_list') }}
+                                <BaseArrowRight :width="18" :height="18"/>
+                                <span>{{ order.contract }}</span>
+                            </div>
+                            <span class="head">
                   {{ $t('payments.contract') }} <span class="contract__number">{{ order.contract }}</span>
                 </span>
-              </span>
+                        </div>
 
                     </div>
 
@@ -25,6 +25,7 @@
             </template>
             <template #header-status>
                 <div
+                    v-if="hasConstructorOrder"
                     class="apartment__status d-flex justify-content-center align-items-center"
                     :class="`status-${order.status}`"
                 >
