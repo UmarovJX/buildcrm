@@ -144,7 +144,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .collapsed {
   .base-avatar {
     display: flex;
@@ -156,8 +155,6 @@ export default {
       display: none !important;
     }
   }
-
-
 }
 
 ::v-deep {

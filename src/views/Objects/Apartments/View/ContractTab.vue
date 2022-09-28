@@ -54,16 +54,16 @@
           <!--          </div>-->
           <!--        <div class="col-12 col-lg-5">-->
           <PrimaryTabItem class="primary__information" :apartment="apartment"/>
-          <div class="peculiarities">
-            <h1 class="mb-4">{{ $t("peculiarities") }}</h1>
-            <div class="d-flex flex-wrap list-boxes">
-              <PeculiarityBox name="Большой балкон"/>
-              <PeculiarityBox name="Шикарный вид"/>
-              <PeculiarityBox name="Эко-парковка"/>
-              <PeculiarityBox name="Секретный шкаф"/>
-              <PeculiarityBox name="Красный ковер"/>
-            </div>
-          </div>
+          <!--          <div class="peculiarities">-->
+          <!--            <h1 class="mb-4">{{ $t("peculiarities") }}</h1>-->
+          <!--            <div class="d-flex flex-wrap list-boxes">-->
+          <!--              <PeculiarityBox name="Большой балкон"/>-->
+          <!--              <PeculiarityBox name="Шикарный вид"/>-->
+          <!--              <PeculiarityBox name="Эко-парковка"/>-->
+          <!--              <PeculiarityBox name="Секретный шкаф"/>-->
+          <!--              <PeculiarityBox name="Красный ковер"/>-->
+          <!--            </div>-->
+          <!--          </div>-->
         </div>
         <!--        <primary-information class="primary__information" :apartment="apartment"/>-->
         <!--        </div>-->
@@ -183,7 +183,7 @@ import "@fancyapps/ui/dist/fancybox.css";
 import PdfTemplate from "@/components/PdfTemplate";
 import {formatToPrice} from "@/util/reusable";
 import CheckoutPermission from "@/permission/checkout";
-import PeculiarityBox from "@/components/Objects/View/elements/PeculiarityBox";
+// import PeculiarityBox from "@/components/Objects/View/elements/PeculiarityBox";
 
 export default {
   name: "ApartmentView",
@@ -195,7 +195,7 @@ export default {
     BaseLoading,
     PromoSection,
     BasePrintIcon,
-    PeculiarityBox,
+    // PeculiarityBox,
     PrimaryTabItem,
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
@@ -369,12 +369,20 @@ export default {
         const apartments = [this.apartment.id]
         const {data} = await api.orders.holdOrder(apartments)
         if (data) {
+          const objectId = data.apartments[0].object.id
           await this.$router.push({
-            name: "checkout",
+            name: 'confirm-apartment',
             params: {
-              id: data.uuid
+              id: data.uuid,
+              object: objectId
             }
           })
+          // await this.$router.push({
+          //   name: "checkout",
+          //   params: {
+          //     id: data.uuid
+          //   }
+          // })
         }
       } catch (e) {
         this.toastedWithErrorCode(e)
@@ -382,12 +390,20 @@ export default {
         this.appLoading = false
       }
     },
-    continueApartmentOrder() {
-      this.$router.push({
-        name: "checkout",
+    async continueApartmentOrder() {
+      // this.$router.push({
+      //   name: "checkout",
+      //   params: {
+      //     id: this.apartment.order.id
+      //   },
+      // })
+      const {object} = this.$route.params
+      await this.$router.push({
+        name: 'confirm-apartment',
         params: {
-          id: this.apartment.order.id
-        },
+          object,
+          id: this.apartment.order.id,
+        }
       })
     },
     updateContent() {

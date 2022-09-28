@@ -144,7 +144,7 @@
         class="mb-1"
         label-cols="12"
         content-cols="12"
-        :label="$t('apartments.view.total')"
+        :label="$t('total')"
         label-for="total"
     >
       <base-numeric-input
