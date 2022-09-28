@@ -26,18 +26,18 @@
           </router-link>
         </div>
         <span class="app-breadcrumb-page">
-          {{ (page.type === 'string') ? page.path : $t(page.path) }}
+          {{ pageOutput }}
         </span>
       </div>
-      <div class="app-header-page-title">
-        <p>{{ pageInfo.title }}</p>
-        <p class="app-header-page-title-active">
-          {{ pageInfo.titleHighlight }}
+      <div v-if="title" class="app-header-page-title">
+        <p>{{ title }}</p>
+        <p v-if="highlight" class="app-header-page-title-active">
+          {{ highlight }}
         </p>
       </div>
     </div>
     <!-- TODO:SLOT BREADCRUMB_RIGHT   -->
-    <slot name="breadcrumb-right" />
+    <slot name="breadcrumb-right"/>
   </div>
 </template>
 
@@ -53,7 +53,7 @@ export default {
   },
   props: {
     page: {
-      type: Object,
+      type: [Object, String],
       required: true
       /*
       *
@@ -95,7 +95,44 @@ export default {
       required: true
     },
   },
+  computed: {
+    title() {
+      const {$t, pageInfo} = this
+      const {title: pageTitle} = pageInfo
 
+      if (typeof pageInfo === 'string') {
+        return $t(pageInfo)
+      }
+
+      if (typeof pageTitle === 'object') {
+        if (pageTitle.type === 'i18n') {
+          return $t(pageTitle.content)
+        }
+      }
+
+      return pageTitle
+    },
+    highlight() {
+      const {titleHighlight: pageHighlight} = this.pageInfo
+      if (typeof pageHighlight === 'object') {
+        if (pageHighlight.type === 'i18n') {
+          return this.$t(pageHighlight.content)
+        }
+      }
+      return pageHighlight
+    },
+    pageOutput() {
+      const {page, $t} = this
+      if (typeof page === 'object') {
+        if (page.type === 'string') {
+          return page.path
+        }
+        return $t(page.path)
+      }
+      return $t(page)
+    }
+
+  }
 }
 </script>
 
@@ -142,7 +179,8 @@ export default {
   font-family: Inter, sans-serif;
 
   &-back-button {
-    padding: 12px;
+    width: 56px;
+    height: 56px;
     cursor: pointer;
     border-radius: 50%;
     background-color: var(--gray-100);
