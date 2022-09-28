@@ -2,12 +2,8 @@
     <div>
         <app-dropdown :collapse-arrow="true" :position-right="true">
             <template #header>
-                <div class="base-avatar" :style="{background: background}">
+                <div class="base-avatar" :style="{background}">
                     <slot name="avatar"></slot>
-                    <!--        <img-->
-                    <!--            v-if="!hasAvatarSlot"-->
-                    <!--            :src="imagePath" alt="img"-->
-                    <!--        />-->
                     <b-avatar
                         variant="primary"
                         :src="imagePath"
@@ -111,7 +107,7 @@ export default {
         },
         imagePath() {
             if (this.avatar !== '') {
-                return require(`${this.avatar}`);
+                return this.avatar
             }
             return ''
         }

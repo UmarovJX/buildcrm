@@ -1,13 +1,12 @@
 <template>
     <div>
-
         <app-header>
             <template #header-breadcrumb>
                 <div class="header-navigation d-flex align-items-center">
                     <div
                         class="go__back"
                         @click="$router.push(
-                    {name:'apartments',
+                    {       name:'apartments',
                     params:{object: $route.params.object}})">
                         <base-arrow-left :width="32" :height="32"></base-arrow-left>
                     </div>

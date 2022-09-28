@@ -2,23 +2,7 @@
   <div>
     <app-header>
       <template #header-title>
-        <div
-            class="
-          d-flex
-          justify-content-between
-          align-items-center
-          flex-md-row flex-column
-          pb-3
-        "
-        >
-          <div
-              class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
-          >
-            <h1 class="title__big my-0">
-              {{ $t("home.title") }}
-            </h1>
-          </div>
-        </div>
+        {{ $t("home.title") }}
       </template>
     </app-header>
 
