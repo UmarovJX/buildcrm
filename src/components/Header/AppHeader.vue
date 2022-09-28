@@ -41,9 +41,9 @@
 </template>
 
 <script>
-import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
-import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
-import BaseNotificationsIcon from "@/components/icons/BaseNotificationsIcon";
+// import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
+// import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
+// import BaseNotificationsIcon from "@/components/icons/BaseNotificationsIcon";
 import BaseAvatar from "@/components/Reusable/BaseAvatar";
 import {mapGetters} from "vuex";
 
@@ -51,9 +51,9 @@ export default {
   name: "AppHeader",
   components: {
     BaseAvatar,
-    BaseCircleWrapper,
-    BaseQuestionsIcon,
-    BaseNotificationsIcon
+    // BaseCircleWrapper,
+    // BaseQuestionsIcon,
+    // BaseNotificationsIcon
   },
   data() {
     return {}

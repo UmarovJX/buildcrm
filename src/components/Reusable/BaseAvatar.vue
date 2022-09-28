@@ -57,6 +57,7 @@
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 import {localeChanged} from "vee-validate";
 import GeneralPermission from "@/permission/general";
+import {mapActions} from "vuex";
 
 export default {
     name: "BaseAvatar",
@@ -116,6 +117,10 @@ export default {
         this.locale = localStorage.locale !== "uz"
     },
     methods: {
+        ...mapActions([
+            "nullableAuth",
+            "nullMe",
+        ]),
         changeLocale() {
             if (this.locale === false) {
                 localStorage.locale = "ru";
