@@ -23,18 +23,18 @@
                 </div>
             </template>
             <template #list>
-                <!--                                <b-dropdown-item style="touch-action: none">-->
-                <a v-if="languagePermission"
-                   href="javascript:void(0)" class="lang-switcher">
-                    <label class="switch" @click="changeLocale">
-                        <input type="checkbox" v-model="locale"/>
-                        <div class="slider round">
-                            <span>Ру</span>
-                            <span>Uz</span>
-                        </div>
-                    </label>
-                </a>
-                <!--                                </b-dropdown-item>-->
+                <b-dropdown-item style="touch-action: none">
+                    <a v-if="languagePermission"
+                       href="javascript:void(0)">
+                        <label class="switch" @click="changeLocale">
+                            <input type="checkbox" v-model="locale"/>
+                            <div class="slider round">
+                                <span>Ру</span>
+                                <span>Uz</span>
+                            </div>
+                        </label>
+                    </a>
+                </b-dropdown-item>
                 <b-dropdown-item>
                     <router-link
                         v-if="settingsPermission"
@@ -60,110 +60,111 @@ import GeneralPermission from "@/permission/general";
 import {mapActions} from "vuex";
 
 export default {
-  name: "BaseAvatar",
-  components: {
-    AppDropdown
-  },
-  props: {
-    background: {
-      type: String,
-      required: false,
-      default: "#F3F4F6"
+    name: "BaseAvatar",
+    components: {
+        AppDropdown
     },
-    avatar: {
-      type: String,
-      required: false
+    props: {
+        background: {
+            type: String,
+            required: false,
+            default: "#F3F4F6"
+        },
+        avatar: {
+            type: String,
+            required: false
+        },
+        full_name: {
+            type: String,
+            required: false
+        },
+        role: {
+            type: String,
+            required: false
+        },
+        nameSnippet: {
+            type: String,
+            required: false
+        }
     },
-    full_name: {
-      type: String,
-      required: false
+    data() {
+        const settingsPermission = GeneralPermission.getSettingsPermission()
+            && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
+        return {
+            settingsPermission,
+            locale: null,
+            languagePermission: GeneralPermission.getLanguagePermission(),
+        }
     },
-    role: {
-      type: String,
-      required: false
+    computed: {
+        hasAvatarSlot() {
+            return this.$slots.hasOwnProperty('avatar')
+        },
+        hasFullNameSlot() {
+            return this.$slots.hasOwnProperty('full_name')
+        },
+        hasRoleSlot() {
+            return this.$slots.hasOwnProperty('role')
+        },
+        imagePath() {
+            if (this.avatar !== '') {
+                return this.avatar
+            }
+            return ''
+        }
     },
-    nameSnippet: {
-      type: String,
-      required: false
+    created() {
+        this.locale = localStorage.locale !== "uz"
+    },
+    methods: {
+        ...mapActions([
+            "nullableAuth",
+            "nullMe",
+        ]),
+        changeLocale() {
+            if (this.locale === false) {
+                localStorage.locale = "ru";
+                this.$root.$i18n.locale = "ru";
+                this.locale = true
+                localeChanged()
+            } else {
+                localStorage.locale = "uz";
+                this.$root.$i18n.locale = "uz";
+                this.locale = false
+                localeChanged()
+            }
+        },
+        logout() {
+            localStorage.removeItem('auth__access__token')
+            localStorage.removeItem('auth__refresh__token')
+            this.$router.push({name: "login"})
+        },
     }
-  },
-  data() {
-    const settingsPermission = GeneralPermission.getSettingsPermission()
-        && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
-    return {
-      settingsPermission,
-      locale: null,
-      languagePermission: GeneralPermission.getLanguagePermission(),
-    }
-  },
-  computed: {
-    hasAvatarSlot() {
-      return this.$slots.hasOwnProperty('avatar')
-    },
-    hasFullNameSlot() {
-      return this.$slots.hasOwnProperty('full_name')
-    },
-    hasRoleSlot() {
-      return this.$slots.hasOwnProperty('role')
-    },
-    imagePath() {
-      if (this.avatar !== '') {
-        return this.avatar
-      }
-      return ''
-    }
-  },
-  created() {
-    this.locale = localStorage.locale !== "uz"
-  },
-  methods: {
-    ...mapActions([
-      "nullableAuth",
-      "nullMe",
-    ]),
-    changeLocale() {
-      if (this.locale === false) {
-        localStorage.locale = "ru";
-        this.$root.$i18n.locale = "ru";
-        this.locale = true
-        localeChanged()
-      } else {
-        localStorage.locale = "uz";
-        this.$root.$i18n.locale = "uz";
-        this.locale = false
-        localeChanged()
-      }
-    },
-    logout() {
-      localStorage.removeItem('auth__access__token')
-      localStorage.removeItem('auth__refresh__token')
-      this.$router.push({name: "login"})
-    },
-  }
 }
 </script>
+
 
 <style lang="scss" scoped>
 
 .collapsed {
-  .base-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 7px !important;
+    .base-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px !important;
 
-    .person {
-      display: none !important;
+        .person {
+            display: none !important;
+        }
     }
-  }
 
 
 }
 
 ::v-deep {
-  .b-avatar .b-avatar-text {
-    line-height: initial;
-  }
+    .b-avatar .b-avatar-text {
+        line-height: initial;
+    }
 }
 
 .lang-switcher {
@@ -174,25 +175,25 @@ export default {
 }
 
 .base-avatar {
-  display: flex;
-  gap: 8px;
-  width: max-content;
-  align-items: center;
-  border-radius: 32px;
-  margin-right: 0;
-  padding: 7px 16px 7px 8px;
-  height: 56px;
-  min-width: 56px;
+    display: flex;
+    gap: 8px;
+    width: max-content;
+    align-items: center;
+    border-radius: 32px;
+    margin-right: 0;
+    padding: 7px 16px 7px 8px;
+    height: 56px;
+    min-width: 56px;
 
-  &:hover {
-    background-color: var(--gray-200) !important;
+    &:hover {
+        background-color: var(--gray-200) !important;
 
-    .person {
-      .full_name {
-        color: var(--violet-600)
-      }
+        .person {
+            .full_name {
+                color: var(--violet-600)
+            }
+        }
     }
-  }
 
 
     p {
