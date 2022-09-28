@@ -1,5 +1,12 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{ $t('type_plan.plan') }}
+            </template>
+        </app-header>
+
+
         <div class="search__content">
             <!--  Search Content  -->
             <base-search-input
@@ -128,6 +135,7 @@ import PlansPermission from "@/permission/plans";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import BaseLoadingContent from "@/components/BaseLoadingContent";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
     name: 'TypePlanList',
@@ -138,7 +146,8 @@ export default {
         BaseSearchInput,
         BaseButton,
         BaseEditIcon,
-        DeleteHasApartment
+        DeleteHasApartment,
+        AppHeader
     },
     data() {
         return {

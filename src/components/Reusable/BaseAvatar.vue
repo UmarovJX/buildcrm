@@ -141,7 +141,10 @@ export default {
 
 .collapsed {
     .base-avatar {
-        padding: 7px 8px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px !important;
 
         .person {
             display: none !important;

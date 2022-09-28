@@ -1,5 +1,10 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{$t('type_plan.plan')}}
+            </template>
+        </app-header>
         <div>
             <div
                 class="
@@ -195,8 +200,10 @@ import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import Compressor from "compressorjs";
 import api from "@/services/api";
+import AppHeader from "@/components/Header/AppHeader";
 
 export default {
+    components: {AppHeader},
     data() {
         return {
             plan: {
