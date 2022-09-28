@@ -28,85 +28,85 @@
                             </div>
                         </div>
 
-                        <div class="item" style="margin-right: 30px">
-                            <div v-for="item in value.floors" :key="item.name">
-                                <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
-                                    <div
-                                        v-for="elem in item.apartments"
-                                        :key="elem.id"
-                                        class="block-item"
-                                        :class="{
-                      'inactive-apartment':
-                      hasQuery &&
-                      inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
-                    }"
-                                    >
-                                        <div class="square"
-                                             @click="showExpressSidebar(elem,item.floorActive,value.blockActive)"
-                                             :class="[status(elem.order.status).class, elem.is_sold ? '' : 'disable']">
-                                            <div class="square-header">
-                                                <p class="apartment-number">Кв. № {{ elem.number }}</p>
-                                                <div v-if="elem.is_promo" class="h-auto d-flex apartment-promo-icon">
-                                                    <img src="../../../../assets/icons/bonuses.svg" alt="">
-                                                </div>
-                                            </div>
-                                            <div class="square-body">
-                                                <h5 v-if="!elem.is_sold">
-                                                    <template>
-                            <span class="apartment-status">
-                              {{ $t('not_for_sale') }}
-                            </span>
-                                                    </template>
-                                                </h5>
-                                                <h5 v-else>
-                                                    <template v-if="status(elem.order.status).statusText">
-                            <span class="apartment-status">
-                              {{ status(elem.order.status).statusText }}
-                            </span>
-                                                    </template>
-                                                    <template v-else>
-                                                        <span class="apartment-price">{{ price(elem.prices.price, 2) }} сум</span>
-                                                    </template>
-                                                </h5>
-                                            </div>
-                                            <div class="square-footer">
-                                                <p class="apartment-area">{{ elem.plan.area }} m<sup>2</sup></p>
-                                                <p
-                                                    class="apartment-square-price"
-                                                    v-if="elem.order.status !== 'sold' && elem.is_sold"
-                                                >
-                                                    {{ price(elem.prices.price_m2) }} {{ $t('ye') }}/m<sup>2</sup>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div v-else class="block-item">
-                                    <div class="square">
-                                    </div>
-                                </div>
-                            </div>
+            <div class="item" style="margin-right: 30px">
+              <div v-for="item in value.floors" :key="item.name">
+                <div v-if="item.apartments.length" class="d-flex flex-nowrap block-content">
+                  <div
+                      v-for="elem in item.apartments"
+                      :key="elem.id"
+                      class="block-item"
+                      :class="{
+                                          'inactive-apartment':
+                                          hasQuery &&
+                                          inactiveApartment(elem.apartmentActive,item.floorActive,value.blockActive)
+                                        }"
+                  >
+                    <div class="square"
+                         @click="showExpressSidebar(elem,item.floorActive,value.blockActive)"
+                         :class="[status(elem.order.status).class, elem.is_sold ? '' : 'disable']">
+                      <div class="square-header">
+                        <p class="apartment-number">Кв. № {{ elem.number }}</p>
+                        <div v-if="elem.is_promo" class="h-auto d-flex apartment-promo-icon">
+                          <img src="../../../../assets/icons/bonuses.svg" alt="">
                         </div>
+                      </div>
+                      <div class="square-body">
+                        <h5 v-if="!elem.is_sold">
+                          <template>
+                                                      <span class="apartment-status">
+                                                        {{ $t('not_for_sale') }}
+                                                      </span>
+                          </template>
+                        </h5>
+                        <h5 v-else>
+                          <template v-if="status(elem.order.status).statusText">
+                                                      <span class="apartment-status">
+                                                        {{ status(elem.order.status).statusText }}
+                                                      </span>
+                          </template>
+                          <template v-else>
+                            <span class="apartment-price">{{ price(elem.prices.price, 2) }} сум</span>
+                          </template>
+                        </h5>
+                      </div>
+                      <div class="square-footer">
+                        <p class="apartment-area">{{ elem.plan.area }} m<sup>2</sup></p>
+                        <p
+                            class="apartment-square-price"
+                            v-if="elem.order.status !== 'sold' && elem.is_sold"
+                        >
+                          {{ price(elem.prices.price_m2) }} {{ $t('ye') }}/m<sup>2</sup>
+                        </p>
+                      </div>
                     </div>
-                </template>
-            </div>
-        </div>
-
-        <b-overlay :show="loading" no-wrap opacity="0" style="z-index: 2222">
-            <template #overlay>
-                <div class="d-flex justify-content-center w-100">
-                    <div class="lds-ellipsis">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
+                  </div>
                 </div>
-            </template>
-        </b-overlay>
 
+                <div v-else class="block-item">
+                  <div class="square">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
     </div>
+
+    <b-overlay :show="loading" no-wrap opacity="0" style="z-index: 2222">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+
+  </div>
 </template>
 
 <script>
@@ -114,80 +114,80 @@ import {mapGetters} from "vuex";
 import {formatToPrice} from "@/util/reusable";
 
 export default {
-    name: "ObjectBlock",
-    props: {
-        apartments: {
-            type: Array,
-            required: true,
-        },
-        loading: {
-            type: Boolean,
-            required: false,
-        }
+  name: "ObjectBlock",
+  props: {
+    apartments: {
+      type: Array,
+      required: true,
     },
-    emits: ['show-express-sidebar'],
-    computed: {
-        ...mapGetters(["getPermission"]),
-        query() {
-            return this.$route.query
-        },
-        hasQuery() {
-            return Object.keys(this.query).length > 0
-        }
-    },
-    methods: {
-        status(value) {
-            switch (value) {
-                case 'available': {
-                    return {statusText: '', class: 'teal'}
-                }
-                case 'hold': {
-                    return {statusText: this.$t('object.status.hold'), class: 'yellow'}
-                }
-                case 'waiting':
-                case 'sold':
-                case 'closed': {
-                    return {statusText: this.$t('object.status.sold'), class: 'gray'}
-                }
-                case 'booked': {
-                    return {statusText: this.$t('object.status.booked'), class: 'yellow'}
-                }
-                case 'contract': {
-                    return {statusText: this.$t('object.status.contract'), class: 'blue'}
-                }
-                default:
-                    return {statusText: '', class: 'teal'}
-            }
-        },
-        price(value, decimalCount = 0) {
-            return formatToPrice(value, decimalCount)
-        },
-        levelLarge(index) {
-            const apartmentFloorsNumbers = this.apartments[index].blocks.map(item => item.floors.length)
-            if (apartmentFloorsNumbers.length) {
-                return Math.max(...apartmentFloorsNumbers)
-            }
-            return 0
-        },
-        showExpressSidebar(item, floorActive, blockActive) {
-            const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
-            if (isActive) {
-                this.$emit('show-express-sidebar', item)
-            }
-        },
-        inactiveApartment(apartmentActive, floorActive, blockActive) {
-            if (apartmentActive === undefined || floorActive === undefined || blockActive === undefined)
-                return false
-            return !(blockActive && floorActive && apartmentActive)
-        },
-        showBlock(blockActive) {
-            if (blockActive === undefined) {
-                return true
-            } else {
-                return blockActive
-            }
-        }
+    loading: {
+      type: Boolean,
+      required: false,
     }
+  },
+  emits: ['show-express-sidebar'],
+  computed: {
+    ...mapGetters(["getPermission"]),
+    query() {
+      return this.$route.query
+    },
+    hasQuery() {
+      return Object.keys(this.query).length > 0
+    }
+  },
+  methods: {
+    status(value) {
+      switch (value) {
+        case 'available': {
+          return {statusText: '', class: 'teal'}
+        }
+        case 'hold': {
+          return {statusText: this.$t('object.status.hold'), class: 'yellow'}
+        }
+        case 'waiting':
+        case 'sold':
+        case 'closed': {
+          return {statusText: this.$t('object.status.sold'), class: 'gray'}
+        }
+        case 'booked': {
+          return {statusText: this.$t('object.status.booked'), class: 'yellow'}
+        }
+        case 'contract': {
+          return {statusText: this.$t('object.status.contract'), class: 'blue'}
+        }
+        default:
+          return {statusText: '', class: 'teal'}
+      }
+    },
+    price(value, decimalCount = 0) {
+      return formatToPrice(value, decimalCount)
+    },
+    levelLarge(index) {
+      const apartmentFloorsNumbers = this.apartments[index].blocks.map(item => item.floors.length)
+      if (apartmentFloorsNumbers.length) {
+        return Math.max(...apartmentFloorsNumbers)
+      }
+      return 0
+    },
+    showExpressSidebar(item, floorActive, blockActive) {
+      const isActive = !this.inactiveApartment(item.apartmentActive, floorActive, blockActive)
+      if (isActive) {
+        this.$emit('show-express-sidebar', item)
+      }
+    },
+    inactiveApartment(apartmentActive, floorActive, blockActive) {
+      if (apartmentActive === undefined || floorActive === undefined || blockActive === undefined)
+        return false
+      return !(blockActive && floorActive && apartmentActive)
+    },
+    showBlock(blockActive) {
+      if (blockActive === undefined) {
+        return true
+      } else {
+        return blockActive
+      }
+    }
+  }
 }
 </script>
 

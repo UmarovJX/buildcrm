@@ -191,7 +191,6 @@ class ObjectsV1Crm extends Core {
     }
 
 
-
 }
 
 class ObjectsV2 extends Core {
@@ -243,7 +242,7 @@ class ObjectsV2 extends Core {
         return this.get(`apartments/objects/${object}`, {params})
     }
 
-    reContract(id){
+    reContract(id) {
         return this.post(`/v2/contracts/${id}/reorder`)
     }
 
@@ -251,8 +250,12 @@ class ObjectsV2 extends Core {
         return this.get(`apartments/objects/${objectId}/plans/${planId}`)
     }
 
-    getObjectName(objectId){
+    getObjectName(objectId) {
         return this.get(`apartments/objects/${objectId}/information`)
+    }
+
+    getOptimizeApartments(object, block) {
+        return this.get(`apartments/objects/${object}/grid/${block}`)
     }
 }
 
