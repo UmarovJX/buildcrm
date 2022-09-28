@@ -2,7 +2,11 @@
   <div>
     <app-header>
       <template #header-breadcrumb>
-        <app-breadcrumb page-info="list" breadcrumbs="" page=""/>
+        <app-breadcrumb
+            :page="page"
+            page-info="promo.promos"
+            :breadcrumbs="breadCrumbs"
+        />
       </template>
 
       <template #header-actions>
@@ -18,19 +22,19 @@
         </base-button>
       </template>
     </app-header>
-    <base-bread-crumb
-        :bread-crumbs="breadCrumbs"
-        :active-content="activeContent"
-    >
-      <template #extra-content>
-        <base-button v-if="createPromoPermission" design="violet-gradient" @click="addNewPromo"
-                     :text="$t('add')">
-          <template #left-icon>
-            <base-plus-icon fill="var(--white)"/>
-          </template>
-        </base-button>
-      </template>
-    </base-bread-crumb>
+    <!--    <base-bread-crumb-->
+    <!--        :bread-crumbs="breadCrumbs"-->
+    <!--        :active-content="activeContent"-->
+    <!--    >-->
+    <!--      <template #extra-content>-->
+    <!--        <base-button v-if="createPromoPermission" design="violet-gradient" @click="addNewPromo"-->
+    <!--                     :text="$t('add')">-->
+    <!--          <template #left-icon>-->
+    <!--            <base-plus-icon fill="var(&#45;&#45;white)"/>-->
+    <!--          </template>-->
+    <!--        </base-button>-->
+    <!--      </template>-->
+    <!--    </base-bread-crumb>-->
 
     <!--  List Of Promos  -->
     <list-content
@@ -54,7 +58,6 @@
 <script>
 import api from '@/services/api'
 import {mapGetters, mapMutations} from "vuex"
-import BaseBreadCrumb from "@/components/BaseBreadCrumb"
 import BaseLoadingContent from "@/components/BaseLoadingContent"
 import CreationContent from "@/components/Dashboard/Objects/Promo/components/CreationContent";
 import ListContent from "@/components/Dashboard/Objects/Promo/components/ListContent";
@@ -73,7 +76,6 @@ export default {
     BaseButton,
     ListContent,
     CreationContent,
-    BaseBreadCrumb,
     BaseLoadingContent,
   },
   data() {
@@ -81,6 +83,7 @@ export default {
       promos: [],
       loading: false,
       promoUsage: [],
+      page: '',
       createPromoPermission: PromosPermission.getPromosCreatePermission(),
     }
   },
@@ -92,8 +95,13 @@ export default {
     breadCrumbs() {
       return [
         {
-          routeName: 'objects-promo',
-          textContent: this.$t('promo.promos')
+          route: {
+            name: 'objects',
+          },
+          content: {
+            type: 'i18n',
+            path: 'objects.title'
+          }
         }
       ]
     }
@@ -115,6 +123,7 @@ export default {
       await api.promo.fetchPromoList(id)
           .then(response => {
             this.promos = response.data
+            this.page = this.promos[0].object_name
           })
           .catch((error) => {
             this.toastedWithErrorCode(error)
