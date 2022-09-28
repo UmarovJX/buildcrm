@@ -13,17 +13,17 @@
       <!--  TODO:SLOT HEADER_ACTIONS      -->
       <slot name="header-actions"></slot>
 
-      <div class="header-notification">
-        <base-circle-wrapper>
-          <base-notifications-icon/>
-        </base-circle-wrapper>
-      </div>
+<!--      <div class="header-notification">-->
+<!--        <base-circle-wrapper>-->
+<!--          <base-notifications-icon/>-->
+<!--        </base-circle-wrapper>-->
+<!--      </div>-->
 
-      <div class="header-instruction">
-        <base-circle-wrapper>
-          <base-questions-icon/>
-        </base-circle-wrapper>
-      </div>
+<!--      <div class="header-instruction">-->
+<!--        <base-circle-wrapper>-->
+<!--          <base-questions-icon/>-->
+<!--        </base-circle-wrapper>-->
+<!--      </div>-->
 
       <BaseAvatar
           :class="{'collapsed':userCollapse}"
