@@ -4,8 +4,8 @@
       <template #header-breadcrumb>
         <app-breadcrumb
             :page="page"
-            page-info="promo.promos"
             :breadcrumbs="breadCrumbs"
+            page-info="promo.promos"
         />
       </template>
 

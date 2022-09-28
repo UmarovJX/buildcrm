@@ -1,34 +1,40 @@
 <template>
   <div>
     <div>
-      <base-bread-crumb
-          :bread-crumbs="breadCrumbs"
-          :active-content="activeContent"
-      >
-        <template #extra-content>
-          <div class="d-flex justify-content-end">
-            <b-button
-                v-if="instructionPermission"
-                v-b-modal.instructions-content
-                class="button__new__contract"
-                variant="info"
-            >
-              <i class="far fa-info-circle mr-2"></i>
-              <span>{{ $t('instruction') }}</span>
-            </b-button>
-            <b-button
-                v-if="createPermission"
-                v-b-modal.creation-content
-                class="button__new__contract"
-                variant="primary"
-            >
-              <i class="fal fa-plus mr-2"></i>
-              {{ $t("add") }}
-            </b-button>
-          </div>
+      <app-header>
+        <!--        <template #header-breadcrumb>-->
+        <!--          <app-breadcrumb-->
+        <!--              page="objects.deal_template.title"-->
+        <!--              page-info="objects.deal_template.name"-->
+        <!--          />-->
+        <!--        </template>-->
+
+        <template #header-title>
+          {{ $t('objects.deal_template.name') }}
         </template>
-      </base-bread-crumb>
-      <!--   Add New Contract    -->
+
+        <template #header-actions>
+          <b-button
+              v-if="instructionPermission"
+              v-b-modal.instructions-content
+              class="button__new__contract"
+              variant="info"
+          >
+            <i class="far fa-info-circle mr-2"></i>
+            <span>{{ $t('instruction') }}</span>
+          </b-button>
+          <b-button
+              v-if="createPermission"
+              v-b-modal.creation-content
+              class="button__new__contract"
+              variant="primary"
+          >
+            <i class="fal fa-plus mr-2"></i>
+            {{ $t("add") }}
+          </b-button>
+        </template>
+      </app-header>
+
 
       <!--   Contract List    -->
       <b-card no-body class="mt-3">
@@ -84,18 +90,18 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
 import api from "@/services/api";
-import BaseBreadCrumb from "@/components/BaseBreadCrumb";
+import TemplatesPermission from "@/permission/templates";
 import InstructionsModal from "@/components/Dashboard/Objects/Components/DealDocsTemplate/InstructionsModal";
 import BaseContractListTable from "@/components/Dashboard/Objects/Components/BaseContractListTable";
 import CreateDealDocsTemplate from "@/components/Dashboard/Objects/Components/Deals/CreateDealDocsTemplate";
-import {mapGetters} from "vuex";
-import TemplatesPermission from "@/permission/templates";
+import AppHeader from '@/components/Header/AppHeader'
 
 export default {
   name: 'DealDocsTemplate',
   components: {
-    BaseBreadCrumb,
+    AppHeader,
     InstructionsModal,
     BaseContractListTable,
     CreateDealDocsTemplate
@@ -110,8 +116,13 @@ export default {
       objectName: '',
       breadCrumbs: [
         {
-          routeName: 'object-deal-template',
-          textContent: this.$t('objects.deal_template.name')
+          route: {
+            name: 'object-deal-template'
+          },
+          content: {
+            type: 'i18n',
+            path: 'objects.deal_template.name'
+          }
         }
       ]
     }
@@ -171,10 +182,15 @@ export default {
           .then((response) => {
             this.contracts = response.data.data
             const objectCrumb = {
-              routeName: 'apartments',
-              textContent: response.data.object_name,
-              params: {
-                object: this.$route.params.id
+              route: {
+                name: 'apartments',
+                params: {
+                  object: this.$route.params.id
+                }
+              },
+              content: {
+                type: 'string',
+                path: response.data.object_name
               }
             }
             const hasApartmentLink = this.breadCrumbs.findIndex(breadcrumb => breadcrumb.routeName === 'apartments')
@@ -196,6 +212,7 @@ export default {
 <style lang="scss">
 .button__new__contract {
   margin-right: 0;
+  margin-top: 0 !important;
 }
 
 .active__contract__tab {
