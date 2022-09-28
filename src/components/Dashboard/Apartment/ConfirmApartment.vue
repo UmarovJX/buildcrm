@@ -1,5 +1,10 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{ $t('apartment_make_contract') }} №{{ apartmentNumber }}
+            </template>
+        </app-header>
 
         <div>
             <div class="go__back__button">
@@ -321,6 +326,8 @@ import api from "@/services/api";
 import CheckoutPermission from "@/permission/checkout";
 import {formatDateWithDot} from "@/util/reusable";
 
+import AppHeader from "@/components/Header/AppHeader";
+
 export default {
     name: "ConfirmApartment",
     components: {
@@ -334,6 +341,7 @@ export default {
         BaseBreadCrumb,
         Calculator,
         Confirm,
+        AppHeader
     },
 
     data() {
@@ -437,6 +445,12 @@ export default {
                 return this.order.apartments[0].object.name
             }
             return '';
+        },
+        apartmentNumber() {
+            if (this.order && this.order.apartments) {
+                return this.order.apartments[0].number
+            }
+            return ''
         },
         breadCrumbs() {
             return [
@@ -858,5 +872,9 @@ export default {
     color: red;
     display: block;
     font-size: 14px;
+}
+
+::v-deep .dropdown-menu {
+    z-index: 10000 !important;
 }
 </style>

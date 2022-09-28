@@ -602,7 +602,6 @@ const router = new VueRouter({
 
 let user = null
 import Permission from "@/permission";
-import tabObjectDetails from "@/components/Contracts/view/TabObjectDetails";
 
 router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')

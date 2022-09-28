@@ -1,5 +1,11 @@
 <template>
     <div>
+        <app-header>
+            <template #header-title>
+                {{ $t('profile') }}
+            </template>
+        </app-header>
+
         <base-bread-crumb
             :active-content="activeContent"
             class="mb-4"
@@ -61,6 +67,7 @@ import BaseUserAccountIcon from "@/components/icons/BaseUserAccountIcon";
 import BaseUserPasswordIcon from "@/components/icons/BaseUserPasswordIcon";
 import BaseBreadCrumb from "@/components/BaseBreadCrumb";
 import GeneralPermission from "@/permission/general";
+import AppHeader from "@/components/Header/AppHeader";
 // import BaseSelect from "@/components/Reusable/BaseSelect";
 // import BaseInput from "@/components/Reusable/BaseInput";
 // import WarningSuccess from "@/components/Reusable/WarningSuccess";
@@ -69,6 +76,7 @@ import GeneralPermission from "@/permission/general";
 export default {
     name: 'UserSettings',
     components: {
+        AppHeader,
         TabUserMe,
         BaseBreadCrumb,
         TabChangePassword,

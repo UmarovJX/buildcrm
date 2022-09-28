@@ -159,6 +159,8 @@ export default {
     border-radius: 32px;
     margin-right: 0;
     padding: 7px 16px 7px 8px;
+    height: 56px;
+    min-width: 56px;
 
     &:hover {
         background-color: var(--gray-200) !important;
