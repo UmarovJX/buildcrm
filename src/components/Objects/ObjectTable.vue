@@ -42,7 +42,7 @@
           </span>
         </template>
         <template #cell(check)="data" class="p-0">
-          <span>
+          <span v-if="data.item.is_sold && data.item.order.status === 'available'">
             <base-checkbox
                 :checked="data.item.checked"
                 @input="activateApartment(data,$event)"
@@ -629,7 +629,7 @@ export default {
       this.apartments.forEach(a => {
         const index = this.checkoutList.findIndex(ch => ch.id === a.id)
         if (a.checked) {
-          if (index === -1) {
+          if (index === -1 && a.is_sold && a.order.status === 'available') {
             this.checkoutList.push({checked, id: a.id, page: current})
           }
         } else {
