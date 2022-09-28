@@ -5,15 +5,13 @@
             :theme="theme"
         />
         <main v-if="showHeaderContent" class="main-content">
-
             <div class="app-content">
-                <router-view @header-content="setHeaderProperties"/>
+                <router-view />
             </div>
         </main>
         <template v-else>
             <router-view/>
         </template>
-
     </div>
 </template>
 
