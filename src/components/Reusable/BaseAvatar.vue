@@ -1,7 +1,5 @@
 <template>
     <div>
-
-
         <app-dropdown :collapse-arrow="true" :position-right="true">
             <template #header>
                 <div class="base-avatar" :style="{background: background}">
@@ -57,7 +55,6 @@
             </template>
         </app-dropdown>
     </div>
-
 </template>
 
 <script>
@@ -146,6 +143,17 @@ export default {
 
 <style lang="scss" scoped>
 
+.collapsed {
+    .base-avatar {
+        padding: 7px 8px !important;
+
+        .person {
+            display: none !important;
+        }
+    }
+
+
+}
 
 .base-avatar {
     display: flex;
@@ -163,14 +171,6 @@ export default {
             .full_name {
                 color: var(--violet-600)
             }
-        }
-    }
-
-    &.collapsed {
-        padding: 7px 8px;
-
-        .person {
-            display: none !important;
         }
     }
 

@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <app-header>
             <template #header-title>
                 {{ $t('users.title') }}

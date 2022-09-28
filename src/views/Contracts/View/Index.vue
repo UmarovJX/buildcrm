@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <app-header>
+        <AppHeader>
             <template #header-breadcrumb>
                 <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">
                     <div class="d-flex align-items-center">
@@ -92,28 +92,28 @@
                     </AppDropdown>
                 </div>
             </template>
-        </app-header>
+        </AppHeader>
 
         <!--  Header Navigation  -->
-<!--        <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">-->
-<!--            <div class="d-flex align-items-center">-->
-<!--                <span class="go__back" @click="backNavigation">-->
-<!--                  <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>-->
-<!--                </span>-->
-<!--                <span class="breadcrumb__content">-->
-<!--                <span>-->
-<!--                  {{ $t('payments.payment_list') }}-->
-<!--                  <BaseArrowRight :width="18" :height="18"/>-->
-<!--                  <span>{{ order.contract }}</span>-->
-<!--                </span>-->
-<!--                <span class="head">-->
-<!--                  {{ $t('payments.contract') }} <span class="contract__number">{{ order.contract }}</span>-->
-<!--                </span>-->
-<!--              </span>-->
+        <!--        <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">-->
+        <!--            <div class="d-flex align-items-center">-->
+        <!--                <span class="go__back" @click="backNavigation">-->
+        <!--                  <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>-->
+        <!--                </span>-->
+        <!--                <span class="breadcrumb__content">-->
+        <!--                <span>-->
+        <!--                  {{ $t('payments.payment_list') }}-->
+        <!--                  <BaseArrowRight :width="18" :height="18"/>-->
+        <!--                  <span>{{ order.contract }}</span>-->
+        <!--                </span>-->
+        <!--                <span class="head">-->
+        <!--                  {{ $t('payments.contract') }} <span class="contract__number">{{ order.contract }}</span>-->
+        <!--                </span>-->
+        <!--              </span>-->
 
-<!--            </div>-->
+        <!--            </div>-->
 
-<!--        </div>-->
+        <!--        </div>-->
 
 
         <!--  Tabs  -->

@@ -56,15 +56,16 @@ export default {
         BaseNotificationsIcon
     },
     data() {
-        return {
-            userCollapse: false
-        }
+        return {}
     },
     computed: {
         ...mapGetters({
             pms: 'getPermission',
             me: 'getMe'
         }),
+        userCollapse() {
+            return this.$slots.hasOwnProperty('header-actions')
+        },
         getFullName() {
             if (this.me?.user) {
                 const {firstName, lastName} = this.me.user
