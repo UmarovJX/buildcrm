@@ -18,7 +18,7 @@
       </div>
 
       <!--     INPUT MONTHLY PAYMENT       -->
-      <div class="monthly" v-show="showMonthlyCalculation">
+      <div class="calc_monthly" v-show="showMonthlyCalculation">
         <div class="placeholder font-weight-600">{{ $t('monthly_payment') }}</div>
         <div class="input d-flex justify-content-between">
           <input
@@ -275,6 +275,9 @@ export default {
       this.calc.month = this.discount.installment_month
       this.calc.total_discount = this.totalDiscount
       this.calc.less_price = this.lessPrice
+      if (this.calc.month === 0 || Number.isNaN(this.calc.month) || this.calc.month === null) {
+        this.calc.month = 12
+      }
       this.upHillForPrint()
     },
     async changeDiscount(selectOption) {
@@ -283,6 +286,7 @@ export default {
       if (this.discount.type === 'percent' && this.discount.prepay === 100) {
         this.calc.total = this.apartment.price;
         this.calc.prepay = 100;
+        this.calc.month = 0
         this.calc.price_for_m2 = this.apartment.price_m2;
         if (this.calc.discount_price > 0) {
           this.calc.price_for_m2 -= this.calc.discount_price
@@ -476,7 +480,7 @@ export default {
       color: var(--gray-400)
 
 
-.monthly
+.calc_monthly
   background-color: var(--gray-100)
   border-radius: 1rem
   margin-top: 1.5rem

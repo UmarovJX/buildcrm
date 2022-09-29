@@ -69,18 +69,22 @@
         <!--        </div>-->
         <!--        <div class="col-12 col-lg-7">-->
         <div class="calculator w-100 d-flex flex-column">
-          <h2>Акции</h2>
-          <span v-if="apartment.is_promo">
-            <PromoSection :promo="apartment.promo"/>
-          </span>
-          <span v-else class="no_promos">
-            На данный момент нет акции.
-          </span>
+          <!--          <h2>Акции</h2>-->
+          <!--          <span v-if="apartment.is_promo">-->
+          <!--            <PromoSection :promo="apartment.promo"/>-->
+          <!--          </span>-->
+          <!--          <span v-else class="no_promos">-->
+          <!--            На данный момент нет акции.-->
+          <!--          </span>-->
           <div>
             <h4 class="calculator-title color-gray-600 font-craftworksans">
               {{ $t("type_payment") }}
             </h4>
-            <calculator @for-print="getCalc" :apartment="apartment" :has-apartment="hasApartment"/>
+            <calculator
+                @for-print="getCalc"
+                :apartment="apartment"
+                :has-apartment="hasApartment"
+            />
           </div>
 
           <div class="align-self-stretch d-flex justify-content-end">
@@ -177,7 +181,7 @@ import PrimaryTabItem from "@/components/Objects/View/elements/PrimaryTabItem";
 import {directive} from "vue-awesome-swiper";
 import 'swiper/css/swiper.css'
 
-import PromoSection from "@/components/Objects/View/elements/PromoSection";
+// import PromoSection from "@/components/Objects/View/elements/PromoSection";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import PdfTemplate from "@/components/PdfTemplate";
@@ -193,7 +197,7 @@ export default {
     Calculator,
     PdfTemplate,
     BaseLoading,
-    PromoSection,
+    // PromoSection,
     BasePrintIcon,
     // PeculiarityBox,
     PrimaryTabItem,
