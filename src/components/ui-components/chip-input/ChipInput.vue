@@ -41,6 +41,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-@import "chip-input.scss";
-</style>
+<style lang="scss" src="./chip-input.scss" scoped/>

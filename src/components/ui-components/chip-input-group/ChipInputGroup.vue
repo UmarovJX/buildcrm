@@ -35,6 +35,4 @@ export default {
 }
 </script>
 
-<style scoped>
-@import "chip-input-group.scss";
-</style>
+<style lang="scss" src="./chip-input-group.scss" scoped/>

@@ -295,6 +295,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import "form-select";
-</style>
+<style lang="scss" src="./form-select.scss" scoped/>

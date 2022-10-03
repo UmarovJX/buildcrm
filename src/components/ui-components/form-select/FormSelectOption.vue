@@ -156,6 +156,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import "form-select-option";
-</style>
+<style lang="scss" src="./form-select-option.scss" scoped/>
