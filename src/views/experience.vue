@@ -17,8 +17,8 @@
       </k-form-select-option>
       <k-form-select-option
           :option="{
-            value:'Hamid',
-            text:'Hamid'
+            value:'Дропдаун',
+            text:'Дропдаун'
           }"
       >
       </k-form-select-option>

@@ -5,6 +5,7 @@
   cursor: pointer;
   padding: 1rem;
   border-radius: 16px;
+  font-weight: 600;
 
   &:hover {
     background-color: var(--gray-100);
@@ -19,7 +20,7 @@
 
   .option-check-icon {
     position: absolute;
-    right: 20px;
+    right: 18px;
     top: 50%;
     transform: translateY(-50%);
   }

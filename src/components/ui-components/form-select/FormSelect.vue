@@ -1,5 +1,9 @@
 <template>
-  <div class="k-form-select" v-click-outside="closeOptionList">
+  <div
+      ref="k-form-select"
+      class="k-form-select"
+      v-click-outside="closeOptionList"
+  >
     <div
         @click="toggleOptionList"
         class="k-form-select-header"
@@ -14,7 +18,7 @@
             :class="{'k-form-option-label':showLabel}"
         >
           <slot name="placeholder"/>
-          <span v-if="!hasPlaceholderSlot">
+          <span v-if="showPlaceholder">
             {{ localePlaceholder }}
           </span>
         </div>
@@ -28,7 +32,12 @@
             />
           </div>
           <div v-else>
-            {{ selectList.value }}
+            <slot name="output"/>
+            <template v-if="!hasOutputSlot">
+              <slot name="output-prefix"/>
+              {{ selectList.value }}
+              <slot name="output-suffix"/>
+            </template>
           </div>
         </div>
       </div>
@@ -39,7 +48,12 @@
         <base-down-icon/>
       </span>
     </div>
-    <ul v-show="open" class="k-form-select-main">
+    <ul
+        ref="k-form-options-wrapper"
+        class="k-form-select-main"
+        :style="optionWrapperStyle"
+        :class="{'k-form-select-position-top':showBottomToTop}"
+    >
       <k-form-select-option
           v-for="(option,index) in options"
           :key="`k-form-select-option-${index}`"
@@ -101,13 +115,35 @@ export default {
     let selected = this.multiple ? [] : null
     return {
       selected,
-      open: false
+      open: false,
+      showBottomToTop: false,
+      formOptionsWrapperHeight: 0
     }
   },
 
   computed: {
+    optionWrapperStyle() {
+      if (!this.open) {
+        return {
+          visibility: 'hidden'
+        }
+      }
+      return {}
+    },
+    showPlaceholder() {
+      if (this.hasPlaceholderSlot) {
+        return false
+      }
+
+      if (this.multiple) {
+        return !!this.selected.length
+      }
+
+      return !this.selected
+    },
     showLabel() {
       const {multiple, selectList, selected} = this
+      if (!this.label) return false
       if (multiple) {
         return selectList.value.length
       } else {
@@ -125,6 +161,9 @@ export default {
     hasPlaceholderSlot() {
       return this.$slots.hasOwnProperty('placeholder')
     },
+    hasOutputSlot() {
+      return this.$slots.hasOwnProperty('output')
+    },
     selectList() {
       if (this.multiple) {
         if (this.selected.length) {
@@ -140,7 +179,6 @@ export default {
         }
       } else {
         const {selected, textField} = this
-        console.log(selected)
         if (selected) {
           return {
             show: true,
@@ -165,7 +203,18 @@ export default {
     this.lunch()
   },
 
+  mounted() {
+    this.findOutputPosition()
+  },
+
   methods: {
+    findOutputPosition() {
+      const windowHeight = window.innerHeight
+      const formSelectRect = this.$refs['k-form-select'].getBoundingClientRect()
+      const {height: optionsTotalHeight} = this.$refs['k-form-options-wrapper'].getBoundingClientRect()
+      const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom
+      this.showBottomToTop = distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight
+    },
     lunch() {
       const _dValue = this.$attrs.value ?? this.value
       const typeArray = isArray(_dValue)
@@ -193,12 +242,18 @@ export default {
       }
     },
     handleChange() {
-      const {multiple, selected} = this
-      if (multiple && !selected.length) {
-        this.$emit('change', null)
+      const {multiple, selected, valueField: vField} = this
+      if (multiple) {
+        if (!selected.length) {
+          this.$emit('change', null)
+        } else {
+          const _values = selected.map(scd => scd[vField])
+          this.$emit('change', _values)
+        }
         return
       }
-      this.$emit('change', selected)
+
+      this.$emit('change', selected[vField])
     },
     selectHandler({value, text, disabled}) {
       if (disabled) {

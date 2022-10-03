@@ -1,6 +1,7 @@
 .k-form-select {
   font-family: Inter, sans-serif;
   position: relative;
+  z-index: 3;
 
   &-header {
     background-color: var(--gray-100);
@@ -13,6 +14,8 @@
 
 
     &-content {
+      padding-right: 20px;
+
       .k-form-option-label {
         display: flex;
         font-size: 8px;
@@ -36,6 +39,13 @@
     width: 100%;
     border-radius: 24px;
     padding: 0;
+    background-color: white;
+
+
+    &.k-form-select-position-top {
+      top: auto;
+      bottom: 100%;
+    }
   }
 
   .k-form-select-icon {

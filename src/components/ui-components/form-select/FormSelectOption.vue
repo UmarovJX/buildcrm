@@ -137,6 +137,8 @@ export default {
       } else if (isObject(_dValue)) {
         const isEqual = _dValue[vField] === option[vField]
         isEqual && this.makeActive()
+      } else {
+        (_dValue === option[vField]) && this.makeActive()
       }
     },
     optionClickHandle() {
