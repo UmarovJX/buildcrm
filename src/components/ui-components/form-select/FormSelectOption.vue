@@ -24,31 +24,37 @@ import BaseCheckIcon from "@/components/icons/BaseCheckIcon";
 import {
   PROP_TYPE_NUMBER_STRING,
   PROP_TYPE_OBJECT_NUMBER_STRING_BOOLEAN,
-  PROP_TYPE_STRING
 } from '@/constants/props'
 import {
   EVENT_NAME_CHANGE
 } from '@/constants/events'
 import {makeProp as p} from "@/util/props";
-import {isUndefinedOrNull, isObject, isString} from '@/util/inspect'
+import {isUndefinedOrNull, isObject, isString, isArray} from '@/util/inspect'
 
 export default {
   name: "KFormSelectOption",
+
   components: {
     BaseCheckIcon
   },
+
   props: {
     id: p(PROP_TYPE_NUMBER_STRING, undefined),
     option: p(PROP_TYPE_OBJECT_NUMBER_STRING_BOOLEAN, undefined),
-    valueField: p(PROP_TYPE_STRING, 'value'),
-    textField: p(PROP_TYPE_STRING, 'text'),
   },
+
   emits: [EVENT_NAME_CHANGE],
+
   data() {
+    const valueField = this.$parent.valueField ?? 'value'
+    const textField = this.$parent.textField ?? 'text'
     return {
-      checked: false
+      textField,
+      valueField,
+      checked: false,
     }
   },
+
   computed: {
     absentDefaultSlot() {
       return !this.$slots.hasOwnProperty('default')
@@ -115,43 +121,41 @@ export default {
       return kOptionClass
     }
   },
+
+  created() {
+    this.initOption()
+  },
+
   methods: {
+    initOption() {
+      const {valueField: vField, option} = this
+      const _dValue = this.$parent.$attrs.value ?? this.$parent.value
+      if (isUndefinedOrNull(_dValue)) return
+      if (isArray(_dValue)) {
+        const _idx = _dValue.find(_dv => _dv[vField] === option[vField])
+        _idx && this.makeActive()
+      } else if (isObject(_dValue)) {
+        const isEqual = _dValue[vField] === option[vField]
+        isEqual && this.makeActive()
+      }
+    },
     optionClickHandle() {
-      this.checked = !this.checked
       const {value, text} = this.inlineOption
+      this.checked = !this.checked
       this.$parent.optionSelected({
         value, text, disabled: !this.checked
       })
+    },
+    makeActive() {
+      this.checked = true
+    },
+    makeInactive() {
+      this.checked = false
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.k-form-option {
-  position: relative;
-  list-style-type: none;
-  margin: 8px;
-  cursor: pointer;
-  padding: 1rem;
-  border-radius: 16px;
-
-  &:hover {
-    background-color: var(--gray-100);
-    color: var(--gray-600);
-  }
-
-  &-active,
-  &-active:hover {
-    background-color: var(--violet-100);
-    color: var(--violet-600);
-  }
-
-  .option-check-icon {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-}
+@import "form-select-option";
 </style>
