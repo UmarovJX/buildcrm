@@ -13,6 +13,7 @@
         @get-new-content="fetchContentByStatus"
     />
 
+
     <!--  Search Content  -->
     <search-bar-content
         v-if="filterPermission"
