@@ -1,0 +1,26 @@
+.k-form-option {
+  position: relative;
+  list-style-type: none;
+  margin: 8px;
+  cursor: pointer;
+  padding: 1rem;
+  border-radius: 16px;
+
+  &:hover {
+    background-color: var(--gray-100);
+    color: var(--gray-600);
+  }
+
+  &-active,
+  &-active:hover {
+    background-color: var(--violet-100);
+    color: var(--violet-600);
+  }
+
+  .option-check-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

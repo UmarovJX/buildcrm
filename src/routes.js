@@ -72,11 +72,11 @@ const routes = [
                 component: Dashboard,
             },
 
-            /*{
+            {
                 path: '/experiment',
                 name: 'experiment',
                 component: () => import('@/views/experience')
-            },*/
+            },
 
             {
                 path: '/experiment',

@@ -1,0 +1,26 @@
+.k-chip-input {
+  background-color: var(--violet-600);
+  color: var(--white);
+  border-radius: 18px;
+  font-family: Inter, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 8px 12px;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.k-chip-input-remove {
+  background-color: var(--violet-400);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+}
