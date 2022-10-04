@@ -7,7 +7,7 @@
     <slot name="option-left"/>
     <slot name="default"/>
     <span v-if="absentDefaultSlot">
-      {{ inlineOption.text }}
+      {{ inlineOption[textField] }}
     </span>
     <slot name="option-right"/>
     <span
@@ -29,7 +29,7 @@ import {
   EVENT_NAME_CHANGE
 } from '@/constants/events'
 import {makeProp as p} from "@/util/props";
-import {isUndefinedOrNull, isObject, isString, isArray} from '@/util/inspect'
+import {isUndefinedOrNull, isObject, isString, isArray, isPrimitive} from '@/util/inspect'
 
 export default {
   name: "KFormSelectOption",
@@ -68,17 +68,11 @@ export default {
     inlineOption() {
       const {option, valueField, textField} = this
       if (isUndefinedOrNull(option)) {
-        return {
-          value: null,
-          text: null
-        }
+        return this.generateOps(null, null)
       }
 
       if (isString(option)) {
-        return {
-          value: option,
-          text: option
-        }
+        return this.generateOps(option, option)
       }
 
       if (isObject(option)) {
@@ -88,30 +82,18 @@ export default {
         if (hValueField) {
           const value = option[valueField]
           if (hTextField) {
-            return {
-              value,
-              text: option[textField]
-            }
+            return option
           } else {
-            return {
-              value,
-              text: value
-            }
+            return this.generateOps(value, value)
           }
         }
 
         if (hTextField) {
-          return {
-            value: option[textField],
-            text: option[textField]
-          }
+          return this.generateOps(textField, textField)
         }
       }
 
-      return {
-        value: null,
-        text: null
-      }
+      return this.generateOps(null, null)
     },
     optionClass() {
       const kOptionClass = ['k-form-option']
@@ -127,11 +109,25 @@ export default {
   },
 
   methods: {
+    generateOps(value, text) {
+      let ops = {}
+      ops[this.valueField] = value
+      ops[this.textField] = text
+      return ops
+    },
     initOption() {
       const {valueField: vField, option} = this
       const _dValue = this.$parent.$attrs.value ?? this.$parent.value
       if (isUndefinedOrNull(_dValue)) return
       if (isArray(_dValue)) {
+        const isContainPrimitives = isPrimitive(_dValue[0])
+
+        if (isContainPrimitives) {
+          const _idx = _dValue.find(_dv => _dv === option[vField])
+          _idx && this.makeActive()
+          return
+        }
+
         const _idx = _dValue.find(_dv => _dv[vField] === option[vField])
         _idx && this.makeActive()
       } else if (isObject(_dValue)) {
@@ -142,10 +138,9 @@ export default {
       }
     },
     optionClickHandle() {
-      const {value, text} = this.inlineOption
       this.checked = !this.checked
       this.$parent.optionSelected({
-        value, text, disabled: !this.checked
+        ...this.inlineOption, disabled: !this.checked
       })
     },
     makeActive() {

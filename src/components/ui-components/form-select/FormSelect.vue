@@ -48,19 +48,23 @@
         <base-down-icon/>
       </span>
     </div>
-    <ul
+    <div
         ref="k-form-options-wrapper"
         class="k-form-select-main"
         :style="optionWrapperStyle"
         :class="{'k-form-select-position-top':showBottomToTop}"
     >
-      <k-form-select-option
-          v-for="(option,index) in options"
-          :key="`k-form-select-option-${index}`"
-          :option="option"
-      />
-      <slot name="default"/>
-    </ul>
+      <ul
+          class="k-form-select-options"
+      >
+        <k-form-select-option
+            v-for="(option,index) in options"
+            :key="`k-form-select-option-${index}`"
+            :option="option"
+        />
+        <slot name="default"/>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -135,8 +139,12 @@ export default {
         return false
       }
 
+      if (this.label) {
+        return true
+      }
+
       if (this.multiple) {
-        return !!this.selected.length
+        return !this.selected.length
       }
 
       return !this.selected
@@ -216,6 +224,7 @@ export default {
       this.showBottomToTop = distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight
     },
     lunch() {
+      const {textField, valueField} = this
       const _dValue = this.$attrs.value ?? this.value
       const typeArray = isArray(_dValue)
       const typeObject = isObject(_dValue)
@@ -223,7 +232,18 @@ export default {
         return
       if (this.multiple) {
         if (typeArray) {
-          this.selected = [..._dValue]
+          const isContainObjects = _dValue.every(v => isObject(v))
+          const isContainPrimitives = _dValue.every(v => isPrimitive(v))
+          if (isContainObjects) {
+            this.selected = [..._dValue]
+          } else if (isContainPrimitives) {
+            this.selected = _dValue.map(_vc => {
+              const c = {}
+              c[valueField] = _vc
+              c[textField] = _vc
+              return c
+            })
+          }
         } else if (typeObject(_dValue)) {
           this.selected.push(_dValue)
         }
@@ -247,8 +267,7 @@ export default {
         if (!selected.length) {
           this.$emit('change', null)
         } else {
-          const _values = selected.map(scd => scd[vField])
-          this.$emit('change', _values)
+          this.$emit('change', selected)
         }
         return
       }
@@ -258,17 +277,24 @@ export default {
     selectHandler({value, text, disabled}) {
       if (disabled) {
         if (this.multiple) {
-          this.selected = this.selected.filter(s => s.value !== value)
+          this.selected = this.selected.filter(s => s[this.valueField] !== value)
         } else {
           this.selected = null
         }
       } else {
         if (this.multiple) {
-          this.selected.push({value, text})
+          const option = this.generateOps(value, text)
+          this.selected.push(option)
         } else {
-          this.selected = {value, text}
+          this.selected = this.generateOps(value, text)
         }
       }
+    },
+    generateOps(value, text) {
+      let ops = {}
+      ops[this.valueField] = value
+      ops[this.textField] = text
+      return ops
     },
     toggleOptionList() {
       this.open = !this.open
@@ -323,7 +349,7 @@ export default {
     inactiveOption(_oValue) {
       this.$children.forEach((ch, idx) => {
         const isOption = ch.$el.tagName.toLocaleLowerCase() === 'li'
-        if (isOption && ch.option.value === _oValue) {
+        if (isOption && ch.option[this.valueField] === _oValue) {
           this.$children[idx].checked = false
         }
       })
@@ -340,11 +366,14 @@ export default {
       const {multiple, valueField: vField} = this
       if (!multiple) return
       const hValueField = removeOption.hasOwnProperty(vField)
+      let _value
       if (hValueField) {
-        const _value = removeOption[vField]
-        this.inactiveOption(_value)
-        this.selected = this.selected.filter(_c => _c[vField] !== _value)
+        _value = removeOption[vField]
+      } else {
+        _value = removeOption
       }
+      this.inactiveOption(_value)
+      this.selected = this.selected.filter(_c => _c[vField] !== _value)
     }
   }
 }

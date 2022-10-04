@@ -34,7 +34,6 @@ export default {
   },
   methods: {
     removeChipItem() {
-      console.log('from chip')
       this.$emit('remove', this.chip)
     }
   }
