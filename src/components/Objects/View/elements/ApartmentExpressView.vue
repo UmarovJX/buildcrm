@@ -441,9 +441,10 @@ export default {
     },
     continueApartmentOrder() {
       this.$router.push({
-        name: 'checkout',
+        name: 'confirm-apartment',
         params: {
-          id: this.sidebarApartment.order.id
+          id: this.sidebarApartment.order.id,
+          object: this.apartment.object.id
         },
       })
     },

@@ -257,7 +257,7 @@ const routes = [
                 children: [
                     {
                         name: "apartment-view",
-                        path: "contract",
+                        path: "",
                         component: ApartmentContract,
                         meta: {
                             requiresAuth: "apartments",
