@@ -2,7 +2,6 @@
   <div class="d-flex flex-wrap justify-content-between">
     <!--    INPUTS      -->
     <div class="w-100 inputs">
-
       <!--    PAYMENT OPTIONS       -->
       <div>
         <!--        <base-select-->
