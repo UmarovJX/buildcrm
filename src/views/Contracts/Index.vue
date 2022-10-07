@@ -139,7 +139,7 @@
         <!--              :options="showByOptions"-->
         <!--          ></b-form-select>-->
 
-        <!--          <span class="arrow__down">-->
+        <!--          <span class="arrow__down">  -->
         <!--            <base-down-icon/>-->
         <!--          </span>-->
         <!--        </span>-->
@@ -180,6 +180,7 @@ import {
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 import AppHeader from "@/components/Header/AppHeader";
+import {isObject} from "@/util/inspect";
 
 export default {
   name: "Contracts",
@@ -370,6 +371,10 @@ export default {
       }
     },
     clientName(multiName, language) {
+      if (!isObject(multiName)) {
+        return ''
+      }
+
       const lastNameByLang = multiName[language]
       if (lastNameByLang) {
         return lastNameByLang
