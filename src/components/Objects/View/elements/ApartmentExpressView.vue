@@ -35,7 +35,11 @@
         </div>
 
         <!--  MAIN    -->
-        <primary-information class="pdf-item" @for-print="getCalc" :apartment="sidebarApartment"/>
+        <primary-information
+            class="pdf-item"
+            :apartment="sidebarApartment"
+            @for-print="getCalc"
+        />
 
         <ApartmentComments
             :comments-data="commentsData"

@@ -104,7 +104,6 @@ export default {
     required: p(PROP_TYPE_BOOLEAN, false),
     disabled: p(PROP_TYPE_BOOLEAN, false),
     multiple: p(PROP_TYPE_BOOLEAN, false),
-    pure: p(PROP_TYPE_BOOLEAN, false),
     value: p(PROP_TYPE_ARRAY_OBJECT_NUMBER_STRING),
     options: p(PROP_TYPE_ARRAY, []),
     valueField: p(PROP_TYPE_STRING, 'value'),
@@ -112,7 +111,10 @@ export default {
     optionStyle: p(PROP_TYPE_OBJECT_STRING, {}),
     optionClass: p(PROP_TYPE_OBJECT_STRING, {}),
     placeholder: p(PROP_TYPE_STRING, undefined),
-    label: p(PROP_TYPE_BOOLEAN, true)
+    label: p(PROP_TYPE_BOOLEAN, true),
+    getter: p(PROP_TYPE_STRING, 'value', (vGetter) => {
+      return ['full', 'text', 'value'].includes(vGetter)
+    })
   },
 
   data() {
@@ -207,11 +209,8 @@ export default {
     }
   },
 
-  created() {
-    this.lunch()
-  },
-
   mounted() {
+    this.lunch()
     this.findOutputPosition()
   },
 
@@ -238,10 +237,14 @@ export default {
             this.selected = [..._dValue]
           } else if (isContainPrimitives) {
             this.selected = _dValue.map(_vc => {
-              const c = {}
-              c[valueField] = _vc
-              c[textField] = _vc
-              return c
+              const _fChild = this.findOption(_vc)
+              if (isUndefinedOrNull(_fChild)) {
+                const c = {}
+                c[valueField] = _vc
+                c[textField] = _vc
+                return c
+              }
+              return _fChild.option
             })
           }
         } else if (typeObject(_dValue)) {
@@ -256,8 +259,13 @@ export default {
           this.selected = _dValue
         } else if (isPrimitive(_dValue)) {
           this.selected = {}
-          this.selected[this.textField] = _dValue
-          this.selected[this.valueField] = _dValue
+          const _fChild = this.findOption(_dValue)
+          if (isUndefinedOrNull(_fChild)) {
+            this.selected[this.textField] = _dValue
+            this.selected[this.valueField] = _dValue
+          } else {
+            this.selected = _fChild.option
+          }
         }
       }
     },
@@ -267,12 +275,45 @@ export default {
         if (!selected.length) {
           this.$emit('change', null)
         } else {
-          this.$emit('change', selected)
+          switch (this.getter) {
+            case 'value': {
+              const _cValue = selected.map(vSelect => vSelect[this.valueField])
+              this.$emit('change', _cValue)
+              break
+            }
+            case 'text': {
+              const _cText = selected.map(vSelect => vSelect[this.textField])
+              this.$emit('change', _cText)
+              break
+            }
+            default: {
+              this.$emit('change', selected)
+            }
+          }
         }
         return
       }
 
-      this.$emit('change', selected[vField])
+      if (isUndefinedOrNull(selected)) {
+        this.$emit('change', null)
+        return
+      }
+
+
+      switch (this.getter) {
+        case 'value': {
+          this.$emit('change', selected[vField])
+          break
+        }
+        case 'text': {
+          const _cText = selected.map(vSelect => vSelect[this.textField])
+          this.$emit('change', _cText)
+          break
+        }
+        default: {
+          this.$emit('change', selected)
+        }
+      }
     },
     selectHandler({value, text, disabled}) {
       if (disabled) {
@@ -340,6 +381,11 @@ export default {
 
       this.selectHandler({value, text, disabled: chOption.disabled})
     },
+    findOption(optionValue) {
+      const {valueField: vField} = this
+      return this.$children
+          .find(_ch => _ch.$el.tagName.toLocaleLowerCase() === 'li' && _ch.option[vField] === optionValue)
+    },
     getOptionIndex(_value) {
       return this.$children
           .findIndex(_ch => {
@@ -357,7 +403,7 @@ export default {
     inactiveAllOption(_cValue) {
       this.$children.forEach((ch, idx) => {
         const isOption = ch.$el.tagName.toLocaleLowerCase() === 'li'
-        if (isOption && ch.option.value !== _cValue) {
+        if (isOption && ch.option[this.valueField] !== _cValue) {
           this.$children[idx].checked = false
         }
       })

@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <app-header>
       <template #header-title>
         {{ $t('contracts.list_contracts') }}
@@ -469,7 +468,6 @@ export default {
       })
     },
     searchQueryFilter(searchQuery) {
-      console.log(searchQuery)
       const hasQueryStatus = this.query.hasOwnProperty('status')
       if (hasQueryStatus) {
         const {status} = this.query

@@ -1,11 +1,11 @@
 <template>
     <div>
         <ApartmentComments
-            :comments-data="commentsData"
-            @update-comments="updateComments"
             :express-view="false"
+            :comments-data="commentsData"
             :comment-loading="commentLoading"
             :apartment-uuid="apartment.uuid"
+            @update-comments="updateComments"
         />
     </div>
 </template>
@@ -39,7 +39,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

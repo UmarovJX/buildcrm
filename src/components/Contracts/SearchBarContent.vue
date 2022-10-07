@@ -27,18 +27,19 @@
       <div class="modal__content">
         <!--   Go Back     -->
         <span class="d-flex align-items-center">
-                  <span class="go__back" @click="hideFilterModal">
-                    <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
-                  </span>
+          <span class="go__back" @click="hideFilterModal">
+            <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+          </span>
           <!--    Title      -->
-                  <span class="title"> {{ $t('contracts.filter_title') }} </span>
-                </span>
+          <span class="title"> {{ $t('contracts.filter_title') }} </span>
+        </span>
 
         <div class="modal__content-main">
           <div class="filter__inputs">
             <k-form-select
                 value-field="id"
                 text-field="name"
+                getter="full"
                 v-model="filter.object_id"
                 :multiple="true"
                 :options="objectOptions"
@@ -86,10 +87,10 @@
 
             <!--     Apartment Price     -->
             <div class="filter__apartment__price">
-              <b-form-select
+              <k-form-select
                   v-model="currency"
+                  :label="false"
                   :options="currencyOptions"
-                  class="inline price__currency"
               />
               <div class="middle__position">
                 <base-numeric-input
@@ -116,21 +117,29 @@
             </div>
 
             <!--   Client Type     -->
-            <div class="filter__inputs-input">
-              <b-form-select
-                  v-model="filter.client_type" class="inline" :options="clientTypeOptions">
-                <template #first>
-                  <b-form-select-option
-                      :value="null"
-                      disabled
-                  >
-                    <span class="disabled__option">
-                      {{ $t('contracts.client_type') }}
-                    </span>
-                  </b-form-select-option>
-                </template>
-              </b-form-select>
-            </div>
+            <k-form-select
+                class="mt-4"
+                v-model="filter.client_type"
+                :options="clientTypeOptions"
+                :placeholder="$t('contracts.client_type')"
+            />
+
+            <!--              <b-form-select-->
+            <!--                  v-model="filter.client_type"-->
+            <!--                  :options="clientTypeOptions"-->
+            <!--                  class="inline"-->
+            <!--              >-->
+            <!--                <template #first>-->
+            <!--                  <b-form-select-option-->
+            <!--                      :value="null"-->
+            <!--                      disabled-->
+            <!--                  >-->
+            <!--                    <span class="disabled__option">-->
+            <!--                      {{ $t('contracts.client_type') }}-->
+            <!--                    </span>-->
+            <!--                  </b-form-select-option>-->
+            <!--                </template>-->
+            <!--              </b-form-select>-->
           </div>
 
           <!--  Modal Footer    -->
@@ -196,7 +205,16 @@ export default {
       },
       objectOptions: [],
       clientTypeOptions: [],
-      currencyOptions: [this.$t('uzs'), this.$t('_usd')],
+      currencyOptions: [
+        {
+          value: this.$t('uzs'),
+          text: this.$t('uzs')
+        },
+        {
+          value: this.$t('_usd'),
+          text: this.$t('_usd')
+        }
+      ],
       searchInput: this.$route.query.search,
       debounceInput: this.$route.query.search,
       showClearIcon: false,

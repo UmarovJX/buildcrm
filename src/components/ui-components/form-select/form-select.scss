@@ -1,7 +1,6 @@
 .k-form-select {
   font-family: Inter, sans-serif;
   position: relative;
-  z-index: 3;
 
   &-header {
     min-height: 56px;
@@ -48,6 +47,7 @@
     width: 100%;
     border-radius: 24px;
     background-color: white;
+    z-index: 3;
 
 
     &.k-form-select-position-top {

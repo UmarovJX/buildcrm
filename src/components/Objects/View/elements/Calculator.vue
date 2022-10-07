@@ -5,16 +5,25 @@
 
       <!--    PAYMENT OPTIONS       -->
       <div>
-        <base-select
-            :disabled="!monthlyPermission"
-            :label="true"
+        <!--        <base-select-->
+        <!--            :disabled="!monthlyPermission"-->
+        <!--            :label="true"-->
+        <!--            :options="paymentOption"-->
+        <!--            :no-placeholder="true"-->
+        <!--            :value="discount"-->
+        <!--            value-field="value"-->
+        <!--            @change="changeDiscount"-->
+        <!--            :placeholder="`${ $t('payment_discount') }`"-->
+        <!--        ></base-select>-->
+
+        <k-form-select
+            :value="discount.id"
             :options="paymentOption"
-            :no-placeholder="true"
-            :value="discount"
-            value-field="value"
+            :placeholder="$t('payment_discount')"
+            getter="full"
+            value-field="id"
             @change="changeDiscount"
-            :placeholder="`${ $t('payment_discount') }`"
-        ></base-select>
+        />
       </div>
 
       <!--     INPUT MONTHLY PAYMENT       -->
@@ -148,15 +157,17 @@
 
 <script>
 import {formatToPrice} from "@/util/reusable";
-import BaseSelect from "@/components/Reusable/BaseSelect";
+// import BaseSelect from "@/components/Reusable/BaseSelect";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import {KFormSelect} from "@/components/ui-components/form-select";
 import {mapGetters} from "vuex";
 import CheckoutPermission from "@/permission/checkout";
 
 export default {
   name: "Calculator",
   components: {
-    BaseSelect,
+    // BaseSelect,
+    KFormSelect,
     BasePriceInput
   },
   props: {
@@ -173,9 +184,7 @@ export default {
   data() {
     return {
       monthly_price: 0,
-      discount: {
-        amount: 0
-      },
+      discount: this.apartment.discounts[0],
       calc: {
         amount: 0,
         price_for_m2: 0,
@@ -280,8 +289,8 @@ export default {
       }
       this.upHillForPrint()
     },
-    async changeDiscount(selectOption) {
-      this.discount = this.paymentOption.find(option => option.value.id === selectOption.id).value
+    async changeDiscount(optSelect) {
+      this.discount = this.paymentOption.find(option => option.value.id === optSelect.id).value
       this.calc.prepay_percente = this.discount.prepay;
       if (this.discount.type === 'percent' && this.discount.prepay === 100) {
         this.calc.total = this.apartment.price;
