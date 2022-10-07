@@ -184,7 +184,7 @@
               <div class="row pdf-payment__last">
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__total pdf-payment__item">
-                    <p class="option">{{ $t('apartments.view.total') }}: </p>
+                    <p class="option">{{ $t('total') }}: </p>
                     <p class="value">{{ pricePrettier(printCalc.total) }} {{ $t('ye') }}</p>
                   </div>
                   <div class="pdf-payment__item">

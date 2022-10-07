@@ -20,7 +20,7 @@
   .modal-body p {
     font-size: 22px;
     font-weight: 300;
-    color: var(--link);
+    //color: var(--link);
     margin-top: 5px;
     margin-bottom: 5px;
     line-height: 1.5;
@@ -92,7 +92,7 @@
 .modal-content {
   background-color: var(--background-color-nav);
 
-  * {
-    color: var(--link);
-  }
+  //* {
+  //  color: var(--link);
+  //}
 }

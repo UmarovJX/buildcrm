@@ -35,7 +35,11 @@
         </div>
 
         <!--  MAIN    -->
-        <primary-information class="pdf-item" @for-print="getCalc" :apartment="sidebarApartment"/>
+        <primary-information
+            class="pdf-item"
+            :apartment="sidebarApartment"
+            @for-print="getCalc"
+        />
 
         <ApartmentComments
             :comments-data="commentsData"
@@ -437,9 +441,10 @@ export default {
     },
     continueApartmentOrder() {
       this.$router.push({
-        name: 'checkout',
+        name: 'confirm-apartment',
         params: {
-          id: this.sidebarApartment.order.id
+          id: this.sidebarApartment.order.id,
+          object: this.apartment.object.id
         },
       })
     },

@@ -3,6 +3,7 @@ export default {
         title: "Главная",
     },
     prepayment: "Предоплата",
+    please_select: 'Пожалуйста выберите',
     installment: 'Рассрочка',
     enter_discount: "Вариант оплаты",
     type: 'Тип',

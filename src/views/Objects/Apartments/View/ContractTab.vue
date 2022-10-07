@@ -54,33 +54,37 @@
           <!--          </div>-->
           <!--        <div class="col-12 col-lg-5">-->
           <PrimaryTabItem class="primary__information" :apartment="apartment"/>
-          <div class="peculiarities">
-            <h1 class="mb-4">{{ $t("peculiarities") }}</h1>
-            <div class="d-flex flex-wrap list-boxes">
-              <PeculiarityBox name="Большой балкон"/>
-              <PeculiarityBox name="Шикарный вид"/>
-              <PeculiarityBox name="Эко-парковка"/>
-              <PeculiarityBox name="Секретный шкаф"/>
-              <PeculiarityBox name="Красный ковер"/>
-            </div>
-          </div>
+          <!--          <div class="peculiarities">-->
+          <!--            <h1 class="mb-4">{{ $t("peculiarities") }}</h1>-->
+          <!--            <div class="d-flex flex-wrap list-boxes">-->
+          <!--              <PeculiarityBox name="Большой балкон"/>-->
+          <!--              <PeculiarityBox name="Шикарный вид"/>-->
+          <!--              <PeculiarityBox name="Эко-парковка"/>-->
+          <!--              <PeculiarityBox name="Секретный шкаф"/>-->
+          <!--              <PeculiarityBox name="Красный ковер"/>-->
+          <!--            </div>-->
+          <!--          </div>-->
         </div>
         <!--        <primary-information class="primary__information" :apartment="apartment"/>-->
         <!--        </div>-->
         <!--        <div class="col-12 col-lg-7">-->
         <div class="calculator w-100 d-flex flex-column">
-          <h2>Акции</h2>
-          <span v-if="apartment.is_promo">
-            <PromoSection :promo="apartment.promo"/>
-          </span>
-          <span v-else class="no_promos">
-            На данный момент нет акции.
-          </span>
+          <!--          <h2>Акции</h2>-->
+          <!--          <span v-if="apartment.is_promo">-->
+          <!--            <PromoSection :promo="apartment.promo"/>-->
+          <!--          </span>-->
+          <!--          <span v-else class="no_promos">-->
+          <!--            На данный момент нет акции.-->
+          <!--          </span>-->
           <div>
             <h4 class="calculator-title color-gray-600 font-craftworksans">
               {{ $t("type_payment") }}
             </h4>
-            <calculator @for-print="getCalc" :apartment="apartment" :has-apartment="hasApartment"/>
+            <calculator
+                @for-print="getCalc"
+                :apartment="apartment"
+                :has-apartment="hasApartment"
+            />
           </div>
 
           <div class="align-self-stretch d-flex justify-content-end">
@@ -177,13 +181,13 @@ import PrimaryTabItem from "@/components/Objects/View/elements/PrimaryTabItem";
 import {directive} from "vue-awesome-swiper";
 import 'swiper/css/swiper.css'
 
-import PromoSection from "@/components/Objects/View/elements/PromoSection";
+// import PromoSection from "@/components/Objects/View/elements/PromoSection";
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import PdfTemplate from "@/components/PdfTemplate";
 import {formatToPrice} from "@/util/reusable";
 import CheckoutPermission from "@/permission/checkout";
-import PeculiarityBox from "@/components/Objects/View/elements/PeculiarityBox";
+// import PeculiarityBox from "@/components/Objects/View/elements/PeculiarityBox";
 
 export default {
   name: "ApartmentView",
@@ -193,9 +197,9 @@ export default {
     Calculator,
     PdfTemplate,
     BaseLoading,
-    PromoSection,
+    // PromoSection,
     BasePrintIcon,
-    PeculiarityBox,
+    // PeculiarityBox,
     PrimaryTabItem,
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
@@ -369,12 +373,20 @@ export default {
         const apartments = [this.apartment.id]
         const {data} = await api.orders.holdOrder(apartments)
         if (data) {
+          const objectId = data.apartments[0].object.id
           await this.$router.push({
-            name: "checkout",
+            name: 'confirm-apartment',
             params: {
-              id: data.uuid
+              id: data.uuid,
+              object: objectId
             }
           })
+          // await this.$router.push({
+          //   name: "checkout",
+          //   params: {
+          //     id: data.uuid
+          //   }
+          // })
         }
       } catch (e) {
         this.toastedWithErrorCode(e)
@@ -382,12 +394,20 @@ export default {
         this.appLoading = false
       }
     },
-    continueApartmentOrder() {
-      this.$router.push({
-        name: "checkout",
+    async continueApartmentOrder() {
+      // this.$router.push({
+      //   name: "checkout",
+      //   params: {
+      //     id: this.apartment.order.id
+      //   },
+      // })
+      const {object} = this.$route.params
+      await this.$router.push({
+        name: 'confirm-apartment',
         params: {
-          id: this.apartment.order.id
-        },
+          object,
+          id: this.apartment.order.id,
+        }
       })
     },
     updateContent() {

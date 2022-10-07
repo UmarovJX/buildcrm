@@ -2,23 +2,31 @@
   <div class="d-flex flex-wrap justify-content-between">
     <!--    INPUTS      -->
     <div class="w-100 inputs">
-
       <!--    PAYMENT OPTIONS       -->
       <div>
-        <base-select
-            :disabled="!monthlyPermission"
-            :label="true"
+        <!--        <base-select-->
+        <!--            :disabled="!monthlyPermission"-->
+        <!--            :label="true"-->
+        <!--            :options="paymentOption"-->
+        <!--            :no-placeholder="true"-->
+        <!--            :value="discount"-->
+        <!--            value-field="value"-->
+        <!--            @change="changeDiscount"-->
+        <!--            :placeholder="`${ $t('payment_discount') }`"-->
+        <!--        ></base-select>-->
+
+        <k-form-select
+            :value="discount.id"
             :options="paymentOption"
-            :no-placeholder="true"
-            :value="discount"
-            value-field="value"
+            :placeholder="$t('payment_discount')"
+            getter="full"
+            value-field="id"
             @change="changeDiscount"
-            :placeholder="`${ $t('payment_discount') }`"
-        ></base-select>
+        />
       </div>
 
       <!--     INPUT MONTHLY PAYMENT       -->
-      <div class="monthly" v-show="showMonthlyCalculation">
+      <div class="calc_monthly" v-show="showMonthlyCalculation">
         <div class="placeholder font-weight-600">{{ $t('monthly_payment') }}</div>
         <div class="input d-flex justify-content-between">
           <input
@@ -148,15 +156,17 @@
 
 <script>
 import {formatToPrice} from "@/util/reusable";
-import BaseSelect from "@/components/Reusable/BaseSelect";
+// import BaseSelect from "@/components/Reusable/BaseSelect";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import {KFormSelect} from "@/components/ui-components/form-select";
 import {mapGetters} from "vuex";
 import CheckoutPermission from "@/permission/checkout";
 
 export default {
   name: "Calculator",
   components: {
-    BaseSelect,
+    // BaseSelect,
+    KFormSelect,
     BasePriceInput
   },
   props: {
@@ -173,9 +183,7 @@ export default {
   data() {
     return {
       monthly_price: 0,
-      discount: {
-        amount: 0
-      },
+      discount: this.apartment.discounts[0],
       calc: {
         amount: 0,
         price_for_m2: 0,
@@ -275,14 +283,18 @@ export default {
       this.calc.month = this.discount.installment_month
       this.calc.total_discount = this.totalDiscount
       this.calc.less_price = this.lessPrice
+      if (this.calc.month === 0 || Number.isNaN(this.calc.month) || this.calc.month === null) {
+        this.calc.month = 12
+      }
       this.upHillForPrint()
     },
-    async changeDiscount(selectOption) {
-      this.discount = this.paymentOption.find(option => option.value.id === selectOption.id).value
+    async changeDiscount(optSelect) {
+      this.discount = this.paymentOption.find(option => option.value.id === optSelect.id).value
       this.calc.prepay_percente = this.discount.prepay;
       if (this.discount.type === 'percent' && this.discount.prepay === 100) {
         this.calc.total = this.apartment.price;
         this.calc.prepay = 100;
+        this.calc.month = 0
         this.calc.price_for_m2 = this.apartment.price_m2;
         if (this.calc.discount_price > 0) {
           this.calc.price_for_m2 -= this.calc.discount_price
@@ -476,7 +488,7 @@ export default {
       color: var(--gray-400)
 
 
-.monthly
+.calc_monthly
   background-color: var(--gray-100)
   border-radius: 1rem
   margin-top: 1.5rem
