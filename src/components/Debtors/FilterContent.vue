@@ -74,11 +74,16 @@
             :default-to="filter.price_to"
             @input="setFilterPrice"
         />
-        <bootstrap-select
-            :class="{ 'client-type-selection' : !filter.client_type }"
+        <!--        <bootstrap-select-->
+        <!--            :class="{ 'client-type-selection' : !filter.client_type }"-->
+        <!--            :options="clientTypes"-->
+        <!--            :default-value="filter.client_type"-->
+        <!--            @select="(newValue) => filter.client_type = newValue"-->
+        <!--        />-->
+        <k-form-select
             :options="clientTypes"
-            :default-value="filter.client_type"
-            @select="(newValue) => filter.client_type = newValue"
+            :placeholder="$t('client_type')"
+            v-model="filter.client_type"
         />
       </div>
     </base-right-modal>
@@ -90,7 +95,7 @@ import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import InputPriceFromTo from "@/components/Elements/Inputs/InputPriceFromTo";
-import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
+// import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
 import CalendarNavigation from "@/components/Debtors/Elements/CalendarNavigation";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
@@ -104,7 +109,7 @@ export default {
     BaseRightModal,
     BaseDatePicker,
     InputPriceFromTo,
-    BootstrapSelect,
+    // BootstrapSelect,
     CalendarNavigation,
     BaseButton,
     BaseFilterIcon,
@@ -149,10 +154,6 @@ export default {
   computed: {
     clientTypes() {
       return [
-        {
-          value: null,
-          text: this.$t('client_type')
-        },
         {
           value: 'friend',
           text: this.$t('familiar')
