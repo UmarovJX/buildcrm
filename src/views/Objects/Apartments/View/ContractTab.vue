@@ -148,7 +148,6 @@
     </div>
 
     <!--  MAKE A RESERVATION MODAL    -->
-
     <reserve
         v-if="showReservationModal"
         :apartment="apartment.id"
