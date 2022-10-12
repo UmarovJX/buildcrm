@@ -27,13 +27,18 @@
             <base-filter-icon fill="var(--violet-600)"/>
           </template>
         </base-button>
-        <bootstrap-select
-            ref="client-type-select"
-            class="client-type"
-            :default-value="defaultTypeOfView"
+        <k-form-select
+            :value="defaultTypeOfView"
             :options="viewTypes"
-            @select="changeTypeOfView"
+            @change="changeTypeOfView"
         />
+        <!--        <bootstrap-select-->
+        <!--            ref="client-type-select"-->
+        <!--            class="client-type"-->
+        <!--            :default-value="defaultTypeOfView"-->
+        <!--            :options="viewTypes"-->
+        <!--            @select="changeTypeOfView"-->
+        <!--        />-->
       </div>
     </div>
 
