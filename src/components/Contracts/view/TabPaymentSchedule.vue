@@ -269,18 +269,35 @@
           </vue-paginate>
 
           <!--  Show By Select    -->
-          <div class="show__by">
-        <span class="show__by__content">
-          <span class="description">{{ $t('contracts.show_by') }}:</span>
-          <b-form-select
-              @input="changePaymentsShowingLimit"
-              v-model="paymentHistory.params.limit"
-              :options="showByOptions"
-          ></b-form-select>
-          <span class="arrow__down">
-            <base-down-icon/>
-          </span>
-        </span>
+          <!--          <div class="show__by">-->
+          <!--            <span class="show__by__content">-->
+          <!--              <span class="description">{{ $t('contracts.show_by') }}:</span>-->
+          <!--              <b-form-select-->
+          <!--                  @input="changePaymentsShowingLimit"-->
+          <!--                  v-model="paymentHistory.params.limit"-->
+          <!--                  :options="showByOptions"-->
+          <!--              ></b-form-select>-->
+          <!--              <span class="arrow__down">-->
+          <!--                <base-down-icon/>-->
+          <!--              </span>-->
+          <!--            </span>-->
+          <!--          </div>-->
+
+          <div class="show-by">
+            <k-form-select
+                :label="false"
+                :options="showByOptions"
+                v-model="paymentHistory.params.limit"
+                @change="changePaymentsShowingLimit"
+            >
+              <template #output-prefix>
+            <span
+                class="show-by-description"
+            >
+                  {{ $t('contracts.show_by') }}:
+            </span>
+              </template>
+            </k-form-select>
           </div>
         </div>
 
@@ -530,7 +547,7 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
+// import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
@@ -557,7 +574,7 @@ export default {
     BasePlusIcon,
     CurrencyChart,
     BaseEditIcon,
-    BaseDownIcon,
+    // BaseDownIcon,
     BaseLoading,
     BaseButton,
     BaseModal,
@@ -940,7 +957,11 @@ export default {
       this.getPaymentHistory()
     },
     changePaymentsShowingLimit() {
-      this.getPaymentHistory()
+      const {params, pagination} = this.paymentHistory
+      if (params.limit !== pagination.perPage) {
+        this.paymentHistory.params.page = 1
+        this.getPaymentHistory()
+      }
     },
     swipeSchedulePage(page) {
       this.paymentSchedule.params.page = page
