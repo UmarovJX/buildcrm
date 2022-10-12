@@ -140,7 +140,7 @@ export default {
   },
 
   created() {
-    localStorage.getItem('auth__access__token') && this.CheckLogin();
+    localStorage.getItem('auth__access__token') && this.checkLogin();
   },
 
   methods: {
@@ -198,18 +198,19 @@ export default {
       })
     },
 
-    CheckLogin() {
-      // let vm = this;
-      // api.authV1.getMe().then(() => {
-      //   //this.items = response.data;
-      //   vm.$router.push({name: "home"});
-      // })
-      // .catch(() => {
-      // localStorage.clear();
-      // });
+    async checkLogin() {
+      try {
+        const {data: me} = await api.authV1.getMe()
+        me && await this.$router.push({
+          name: 'home'
+        })
+      } catch (e) {
+        this.toasted(e)
+      }
     },
-  },
-};
+
+  }
+}
 </script>
 
 <style scoped lang="scss">
