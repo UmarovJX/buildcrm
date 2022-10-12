@@ -58,11 +58,17 @@
                 class="mt-3 validation__provider"
             >
               <label for="select-managers"> {{ $t('manager') }} </label>
-              <b-form-select
+              <!--              <b-form-select-->
+              <!--                  id="select-managers"-->
+              <!--                  v-model="form.managerId"-->
+              <!--                  :options="managersOption"-->
+              <!--              ></b-form-select>-->
+              <k-form-select
                   id="select-managers"
-                  v-model="form.managerId"
+                  :label="false"
                   :options="managersOption"
-              ></b-form-select>
+                  v-model="form.managerId"
+              />
               <span class="error__provider">
                 {{ errors[0] }}
               </span>
@@ -124,11 +130,13 @@
 
 <script>
 import api from "@/services/api";
+import {KFormSelect} from "@/components/ui-components/form-select";
 // import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: "BranchFormContent",
   components: {
+    KFormSelect
     // BaseButton
   },
   props: {
