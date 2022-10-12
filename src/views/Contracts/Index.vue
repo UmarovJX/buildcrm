@@ -151,7 +151,11 @@
             @change="limitChanged"
         >
           <template #output-prefix>
-            <span class="show-by-description">{{ $t('contracts.show_by') }}:</span>
+            <span
+                class="show-by-description"
+            >
+                  {{ $t('contracts.show_by') }}:
+            </span>
           </template>
         </k-form-select>
       </div>

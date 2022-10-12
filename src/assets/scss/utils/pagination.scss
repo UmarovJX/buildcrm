@@ -1,10 +1,12 @@
 ::v-deep .pagination__vue {
   display: flex;
+  justify-content: space-between;
   margin-top: 2rem;
 
   ul.container {
     list-style-type: none;
     display: flex;
+    width: auto;
     padding: 0;
     margin: 0;
 
