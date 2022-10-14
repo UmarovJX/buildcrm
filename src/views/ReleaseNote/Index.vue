@@ -41,7 +41,9 @@
                         </div>
                         <div class="col-12">
                             <b-tabs card class="custom-tab">
-                                <div class="bottom__line"></div>
+                                <template #tabs-start>
+                                    <div class="bottom__line"></div>
+                                </template>
                                 <b-tab title="На русском" active>
                                     <div class="release-note__block-item">
                                         <p>{{ $t("release_note.new") }} (UZ)</p>

@@ -22,6 +22,9 @@ export default {
     remove_apartment: `Kvartirani o'chirish`,
     hide_menu: "Menuni yashirish",
     component: 'komponent',
+    import: 'Import',
+    found: 'Topildi',
+    not_found: 'Topilmadi',
     roles_permission: {
         activate_all: 'Hammasini faollashtirish',
         placeholder_uz: "O'zbek tilida",
@@ -209,6 +212,7 @@ export default {
     edited: 'tahrirlandi',
     upload_logo: "Logotipni yuklash",
     loading: 'Iltimos kuting...',
+    recheck: "Tekshirish ",
     add: "Qo'shish",
     delete: "O'chirish",
     action: "Xarakat",
@@ -257,7 +261,7 @@ export default {
     table_months_payment: "Oylik to'lovlar jadvali",
     duration: 'Davomiyligi',
     more_info: "Batafsil ma'lumot",
-    payment_type: "To'lov sharti",
+    payment_type: "To'lov turi",
     created_at: "Yaratilgan vaqti",
     reservation: 'Band qilish',
     free_of_charge: "Boshlang'ich to'lovsiz",
@@ -891,7 +895,15 @@ export default {
         client_name: "mijoz ismi", // asd
         client_number: "mijoz raqami", // asd
         client_type: "mijoz turi", // asd
-
+        import_debtors: 'Qarzlar importi',
+        import_text: 'Qarzlarni import qilish uchun faylni .xls yoki .csv formatida yuklang',
+        file_field: 'Fayl maydoni',
+        property: "Xususiyat",
+        file: 'Fayldagi maydon',
+        contract_file: "Fayldagi shartnoma",
+        contract_system: "Tizimdagi shartnoma",
+        alias_system: "Tizimdagi shartnoma taxallusi",
+        import_leave: "Ma'lumotlarni yoqotishingiz mumkin. Chiqishni xoxlaysizmi?",
     },
 
     backup: {
@@ -1145,6 +1157,7 @@ export default {
     cashier: {
         title: "G'aznachilar",
     },
+
 
     settings: {
         title: "Sozlamalar",

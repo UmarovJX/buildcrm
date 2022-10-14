@@ -31,7 +31,7 @@ export default {
     objects: new Objects.ObjectsV1Crm(),
     objectsV2: new Objects.ObjectsV2(),
     debtors: new Debtors.DebtorsV1(),
-    debtorsV2: new Debtors.DebtorsV1(),
+    debtorsV2: new Debtors.DebtorsV2(),
     contract: new Contract.Contract(),
     contractV2: new Contract.ContractV2(),
     branches: new Branches(),

@@ -33,6 +33,7 @@ import Companies from "./modules/companies";
 import Contracts from "./modules/contract";
 import Debtors from "./modules/debtors";
 import Settings from "./modules/settings";
+import DebtorsImport from "./modules/debtors-import";
 import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
 import checkout from "@/store/modules/Checkout"
@@ -74,6 +75,7 @@ export default new Vuex.Store({
         Contracts,
         Debtors,
         Settings,
+        DebtorsImport,
         Promo
     },
 })

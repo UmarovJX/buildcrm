@@ -52,7 +52,6 @@
       <!--   PAYMENT ADDITION MODAL   -->
       <base-modal
           ref="payment-addition-modal"
-          :wrapper-style="{overflowY:'auto'}"
       >
         <template #header>
           <!--   GO BACK     -->

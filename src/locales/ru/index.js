@@ -29,6 +29,9 @@ export default {
     not_selected: "Не выбранный",
     hide_menu: "Скрыть меню",
     component: 'компонент',
+    import: 'Импорт',
+    found: 'Найденные',
+    not_found: 'Не найденные',
     roles_permission: {
         activate_all: 'Активировать все',
         placeholder_uz: "На Узбекском",
@@ -893,7 +896,8 @@ export default {
     },
 
     debtors: {
-        title: "Должники", overdue: "Просроченные", // asd
+        title: "Должники",
+        overdue: "Просроченные", // asd
         familiars: "Знакомые", // asd
         new_title: "Задолжники",
         collapsed_new_title: "З",
@@ -901,6 +905,15 @@ export default {
         client_name: "имя клиента", // asd
         client_number: "номер телефона", // asd
         client_type: "тип клиента", // asd
+        import_debtors: 'Импорт долгов',
+        import_text: 'Загрузите файл в формате .xls или .csv для импорта долгов',
+        file_field: 'Поля файла',
+        property: "Свойство",
+        file: 'Поле в файле',
+        contract_file: "Договор в файле",
+        contract_system: "Договор в системе",
+        alias_system: "Псевдоним контракта в системе",
+        import_leave: "Вы можете потерять данные. Вы хотите выйти?",
     },
 
     backup: {

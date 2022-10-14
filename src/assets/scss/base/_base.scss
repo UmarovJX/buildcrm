@@ -348,8 +348,8 @@ main {
   border-radius: 0 0 0 56px;
 
   @include mq("desktop", max) {
-    margin: 0rem;
-    padding: 1rem;
+    margin: 0;
+    padding: 2rem;
   }
 }
 

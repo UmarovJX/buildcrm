@@ -29,6 +29,8 @@ class DebtorsV1 extends Core {
     createMonthlyPayment(id, body) {
         return this.post(`debtors/${id}`, body)
     }
+
+
 }
 
 class DebtorsV2 extends Core {
@@ -43,6 +45,32 @@ class DebtorsV2 extends Core {
     getMoreDataAboutDebt(uuid) {
         return this.get(`debtors/${uuid}`)
     }
+
+    checkImportDebtors(body) {
+        return this.post(`debtors/import`, body)
+    }
+
+    searchContract(params) {
+        return this.get('/debtors/import', {params})
+    }
+
+
+    createAliases(body) {
+        return this.post('debtors/import/alias', body)
+    }
+
+    updateAliases(body) {
+        return this.put('debtors/import/alias', body)
+    }
+
+    viewImportList(body) {
+        return this.post('debtors/import/contracts', body)
+    }
+
+    activatePayments(body) {
+        return this.post('debtors/import/payments', body)
+    }
+
 
 }
 

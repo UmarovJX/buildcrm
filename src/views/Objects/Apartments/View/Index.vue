@@ -76,7 +76,9 @@
         <!--  END HEADER NAVIGATION  -->
 
         <b-tabs @activate-tab="tabChange" v-model="tabIndex" card class="custom-tab">
-            <div class="bottom__line"></div>
+            <template #tabs-start>
+                <div class="bottom__line"></div>
+            </template>
             <b-tab title="Оформление">
                 <!--   PRICE CONTENT     -->
             </b-tab>

@@ -15,14 +15,18 @@
                 :type-of-view="typeOfView"
                 @change-date="changeCalendarDate"
             />
-            <BaseSearchInput
-                v-if="showSearchContent"
-                class="base-search-input mr-2"
-                :placeholder="`${ $t('contract_number_or_full_name') }`"
-                @trigger-input="filterBySearchContent"
-            />
-            <div class="d-flex align-items-center">
-                <base-button class="mr-2" @click="openFilterContent" :text="$t('contracts.filter')">
+            <div>
+                <BaseSearchInput
+                    v-if="showSearchContent"
+                    class="base-search-input"
+                    style="min-width: 25rem"
+                    :placeholder="`${ $t('contract_number_or_full_name') }`"
+                    @trigger-input="filterBySearchContent"
+                />
+            </div>
+
+            <div class="d-flex align-items-center" style="gap:.5rem">
+                <base-button @click="openFilterContent" :text="$t('contracts.filter')">
                     <template #left-icon>
                         <base-filter-icon fill="var(--violet-600)"/>
                     </template>
@@ -34,6 +38,11 @@
                     :options="viewTypes"
                     @select="changeTypeOfView"
                 />
+                <base-button @click="openImportModal" design="violet-gradient" :text="$t('debtors.import_debtors')">
+                    <template #left-icon>
+                        <base-arrow-down-icon fill="white"/>
+                    </template>
+                </base-button>
             </div>
         </div>
 
@@ -92,10 +101,12 @@ import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
 import api from "@/services/api";
+import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 
 export default {
     name: "FilterContent",
     components: {
+        BaseArrowDownIcon,
         BaseSearchInput,
         BaseRightModal,
         BaseDatePicker,
@@ -202,6 +213,9 @@ export default {
         this.fetchObjectsOption()
     },
     methods: {
+        openImportModal() {
+            this.$emit('import-excel')
+        },
         inputFilterObject(selectOption) {
             if (selectOption.length) {
                 this.filter.object_id = selectOption.map(option => parseInt(option.value))

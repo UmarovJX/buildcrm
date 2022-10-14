@@ -77,8 +77,6 @@
         </div>
 
         <b-table
-            sticky-header
-            borderless
             responsive
             :items="getDebtors"
             :fields="fields"

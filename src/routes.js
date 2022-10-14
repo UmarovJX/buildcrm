@@ -49,6 +49,7 @@ import Checkout from "@/views/Checkout";
 import ApartmentContract from '@/views/Objects/Apartments/View/ContractTab'
 import ApartmentCommentTab from "@/views/Objects/Apartments/View/CommentTab";
 import ReleaseNote from "@/views/ReleaseNote/Index";
+import ImportDebtorsList from "@/views/Debtors/ImportDebtorsList";
 
 /*  CONTRACT VIEW COMPONENTS */
 import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
@@ -187,12 +188,21 @@ const routes = [
             },
 
 
-            //start
             {
                 /* DEBTORS */
                 name: "debtors",
                 path: "/debtors",
                 component: Debtors,
+                meta: {
+                    requiresAuth: "debtors",
+                },
+            },
+
+            {
+                /* DEBTORS */
+                name: "debtors-import",
+                path: "/debtors-import",
+                component: ImportDebtorsList,
                 meta: {
                     requiresAuth: "debtors",
                 },
