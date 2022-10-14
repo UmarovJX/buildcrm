@@ -44,3 +44,4 @@ export default {
     apartmentsV2: new Apartments.ApartmentsV2(),
     accountants: new Accountants(),
 }
+

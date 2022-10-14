@@ -172,6 +172,11 @@ export default {
       return this.$slots.hasOwnProperty('placeholder')
     },
     hasOutputSlot() {
+      /*
+      *
+      * axios.get('/slides')
+      *
+      * */
       return this.$slots.hasOwnProperty('output')
     },
     selectList() {

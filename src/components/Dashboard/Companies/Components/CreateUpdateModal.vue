@@ -15,7 +15,14 @@
             :placeholder="$t('companies.type')"
             v-model="company.type_id"
             class="mb-3"
-        />
+
+        >
+          <template #placeholder>
+            <div>
+              djskdjsk
+            </div>
+          </template>
+        </k-form-select>
 
         <!--        <b-form-group-->
         <!--            class="mb-3 select_input select_custom"-->

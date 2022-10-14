@@ -22,23 +22,23 @@
     </app-header>
 
     <div>
-      <div class="go__back__button">
-        <button
-            class="btn-back d-block"
-            @click="goBackToLastStep"
-        >
-          <i class="fal fa-arrow-left mr-2"></i>
-          <span>{{ $t('go_back') }}</span>
-        </button>
-      </div>
-      <div class="countdown-timer" draggable="true">
-        <flip-countdown
-            :deadline="expiry_at"
-            :showDays="false"
-            :showHours="false"
-            @timeElapsed="timeElapsedHandler"
-        ></flip-countdown>
-      </div>
+      <!--      <div class="go__back__button">-->
+      <!--        <button-->
+      <!--            class="btn-back d-block"-->
+      <!--            @click="goBackToLastStep"-->
+      <!--        >-->
+      <!--          <i class="fal fa-arrow-left mr-2"></i>-->
+      <!--          <span>{{ $t('go_back') }}</span>-->
+      <!--        </button>-->
+      <!--      </div>-->
+      <!--      <div class="countdown-timer" draggable="true">-->
+      <!--        <flip-countdown-->
+      <!--            :deadline="expiry_at"-->
+      <!--            :showDays="false"-->
+      <!--            :showHours="false"-->
+      <!--            @timeElapsed="timeElapsedHandler"-->
+      <!--        ></flip-countdown>-->
+      <!--      </div>-->
 
       <base-bread-crumb
           :bread-crumbs="breadCrumbs"
@@ -315,7 +315,7 @@
 // import VueNumeric from "vue-numeric";
 // import QuickViewApartments from "./Components/QuickViewApartments";
 import {mapActions, mapGetters} from "vuex";
-import FlipCountdown from "vue2-flip-countdown";
+// import FlipCountdown from "vue2-flip-countdown";
 import SuccessAgree from "./Components/SuccessAgree";
 import ClientInputConfirm from "./Components/ClientInputConfirm";
 import MonthlyPayments from "./Contract/MonthlyPayments";
@@ -346,7 +346,7 @@ export default {
   name: "ConfirmApartment",
   components: {
     BaseValidationBottomWarning,
-    FlipCountdown,
+    // FlipCountdown,
     ClientInputConfirm,
     SuccessAgree,
     MonthlyPayments,
@@ -878,8 +878,6 @@ export default {
       // this.$emit('changeApartments', this.apartments)
       editedCreditMonths(this.apartments, this.contract)
     }
-
-
   }
 }
 </script>
