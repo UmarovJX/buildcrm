@@ -31,13 +31,18 @@
                         <base-filter-icon fill="var(--violet-600)"/>
                     </template>
                 </base-button>
-                <bootstrap-select
-                    ref="client-type-select"
-                    class="client-type"
-                    :default-value="defaultTypeOfView"
+                <k-form-select
+                    :value="defaultTypeOfView"
                     :options="viewTypes"
-                    @select="changeTypeOfView"
+                    @change="changeTypeOfView"
                 />
+<!--                <bootstrap-select-->
+<!--                    ref="client-type-select"-->
+<!--                    class="client-type"-->
+<!--                    :default-value="defaultTypeOfView"-->
+<!--                    :options="viewTypes"-->
+<!--                    @select="changeTypeOfView"-->
+<!--                />-->
                 <base-button @click="openImportModal" design="violet-gradient" :text="$t('debtors.import_debtors')">
                     <template #left-icon>
                         <base-arrow-down-icon fill="white"/>
@@ -54,14 +59,13 @@
             @show="setFilterProperties"
         >
             <div class="filter-modal-content">
-                <base-multiselect
-                    :default-values="filter.object_id"
-                    :options="objectOptions"
-                    :placeholder="`${ $t('contracts.object_name') }`"
-                    track-by="value"
-                    label="text"
+                <k-form-select
                     class="mb-4"
-                    @input="inputFilterObject"
+                    v-model="filter.object_id"
+                    :multiple="true"
+                    :options="objectOptions"
+                    :placeholder="$t('contracts.object_name')"
+                    @change="inputFilterObject"
                 />
                 <base-date-picker
                     ref="filter-date-picker"
@@ -79,11 +83,16 @@
                     :default-to="filter.price_to"
                     @input="setFilterPrice"
                 />
-                <bootstrap-select
-                    :class="{ 'client-type-selection' : !filter.client_type }"
+                <!--        <bootstrap-select-->
+                <!--            :class="{ 'client-type-selection' : !filter.client_type }"-->
+                <!--            :options="clientTypes"-->
+                <!--            :default-value="filter.client_type"-->
+                <!--            @select="(newValue) => filter.client_type = newValue"-->
+                <!--        />-->
+                <k-form-select
                     :options="clientTypes"
-                    :default-value="filter.client_type"
-                    @select="(newValue) => filter.client_type = newValue"
+                    :placeholder="$t('client_type')"
+                    v-model="filter.client_type"
                 />
             </div>
         </base-right-modal>
@@ -95,11 +104,11 @@ import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import InputPriceFromTo from "@/components/Elements/Inputs/InputPriceFromTo";
-import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
+// import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
 import CalendarNavigation from "@/components/Debtors/Elements/CalendarNavigation";
-import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
+import {KFormSelect} from "@/components/ui-components/form-select";
 import api from "@/services/api";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 
@@ -111,11 +120,11 @@ export default {
         BaseRightModal,
         BaseDatePicker,
         InputPriceFromTo,
-        BootstrapSelect,
+        // BootstrapSelect,
         CalendarNavigation,
-        BaseMultiselect,
         BaseButton,
         BaseFilterIcon,
+        KFormSelect
     },
     props: {
         defaultTypeOfView: {
@@ -216,10 +225,10 @@ export default {
         openImportModal() {
             this.$emit('import-excel')
         },
-        inputFilterObject(selectOption) {
-            if (selectOption.length) {
-                this.filter.object_id = selectOption.map(option => parseInt(option.value))
-            }
+        inputFilterObject() {
+            // if (selectOption.length) {
+            //   this.filter.object_id = selectOption.map(option => parseInt(option.value))
+            // }
         },
         async fetchObjectsOption() {
             await api.contractV2.fetchObjectsOption()

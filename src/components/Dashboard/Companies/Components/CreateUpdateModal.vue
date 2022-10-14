@@ -8,20 +8,36 @@
   >
     <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
       <form ref="form" @submit.prevent="handleSubmit(submitForm)">
-          <b-form-group
-              class="mb-3 select_input select_custom"
-          >
-            <base-select
-                id="type"
-                :label="true"
-                :label-for="$t('companies.type')"
-                :no-placeholder="true"
-                :placeholder="$t('companies.type')"
-                :name="$t('companies.type')"
-                @change="company.type_id = $event"
-                :options="typeOptions"
-            />
-          </b-form-group>
+        <k-form-select
+            id="select-managers"
+            :label="true"
+            :options="typeOptions"
+            :placeholder="$t('companies.type')"
+            v-model="company.type_id"
+            class="mb-3"
+
+        >
+          <template #placeholder>
+            <div>
+              djskdjsk
+            </div>
+          </template>
+        </k-form-select>
+
+        <!--        <b-form-group-->
+        <!--            class="mb-3 select_input select_custom"-->
+        <!--        >-->
+        <!--          <base-select-->
+        <!--              id="type"-->
+        <!--              :label="true"-->
+        <!--              :label-for="$t('companies.type')"-->
+        <!--              :no-placeholder="true"-->
+        <!--              :placeholder="`${$t('companies.type')}`"-->
+        <!--              :name="`${ $t('companies.type') }`"-->
+        <!--              @change="company.type_id = $event"-->
+        <!--              :options="typeOptions"-->
+        <!--          />-->
+        <!--        </b-form-group>-->
 
         <ValidationProvider
             v-for="{label,labelFor,bind,mask,rules, type, placeholder} in providerSchema"
@@ -62,14 +78,16 @@
 import api from "@/services/api";
 import "vue2-datepicker/index.css";
 import BaseInput from "@/components/Reusable/BaseInput";
-import BaseSelect from "@/components/Reusable/BaseSelect";
+// import BaseSelect from "@/components/Reusable/BaseSelect";
+import {KFormSelect} from "@/components/ui-components/form-select";
 
 export default {
   name: 'CreationCompanyModal',
   components: {
     // BaseMultiselect,
     BaseInput,
-    BaseSelect
+    // BaseSelect,
+    KFormSelect
   },
   emits: ['updated-company', 'created-new-company'],
   props: {

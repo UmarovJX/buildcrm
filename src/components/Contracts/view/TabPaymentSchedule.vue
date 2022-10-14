@@ -268,18 +268,35 @@
           </vue-paginate>
 
           <!--  Show By Select    -->
-          <div class="show__by">
-        <span class="show__by__content">
-          <span class="description">{{ $t('contracts.show_by') }}:</span>
-          <b-form-select
-              @input="changePaymentsShowingLimit"
-              v-model="paymentHistory.params.limit"
-              :options="showByOptions"
-          ></b-form-select>
-          <span class="arrow__down">
-            <base-down-icon/>
-          </span>
-        </span>
+          <!--          <div class="show__by">-->
+          <!--            <span class="show__by__content">-->
+          <!--              <span class="description">{{ $t('contracts.show_by') }}:</span>-->
+          <!--              <b-form-select-->
+          <!--                  @input="changePaymentsShowingLimit"-->
+          <!--                  v-model="paymentHistory.params.limit"-->
+          <!--                  :options="showByOptions"-->
+          <!--              ></b-form-select>-->
+          <!--              <span class="arrow__down">-->
+          <!--                <base-down-icon/>-->
+          <!--              </span>-->
+          <!--            </span>-->
+          <!--          </div>-->
+
+          <div class="show-by">
+            <k-form-select
+                :label="false"
+                :options="showByOptions"
+                v-model="paymentHistory.params.limit"
+                @change="changePaymentsShowingLimit"
+            >
+              <template #output-prefix>
+            <span
+                class="show-by-description"
+            >
+                  {{ $t('contracts.show_by') }}:
+            </span>
+              </template>
+            </k-form-select>
           </div>
         </div>
 
@@ -405,27 +422,49 @@
         </vue-paginate>
 
         <!--  Show By Select    -->
-        <div class="show__by">
-        <span class="show__by__content">
-          <span class="description">{{ $t('contracts.show_by') }}:</span>
-          <b-form-select
-              @input="changeScheduleShowingLimit"
-              v-model="paymentSchedule.params.limit"
+        <!--        <div class="show__by">-->
+        <!--          <span class="show__by__content">-->
+        <!--            <span class="description">{{ $t('contracts.show_by') }}:</span>-->
+        <!--            <b-form-select-->
+        <!--                @input="changeScheduleShowingLimit"-->
+        <!--                v-model="paymentSchedule.params.limit"-->
+        <!--                :options="showByOptions"-->
+        <!--            ></b-form-select>-->
+        <!--            <span class="arrow__down">-->
+        <!--              <base-down-icon/>-->
+        <!--            </span>-->
+        <!--          </span>-->
+        <!--        </div>-->
+
+        <div class="show-by">
+          <k-form-select
+              :label="false"
               :options="showByOptions"
-          ></b-form-select>
-          <span class="arrow__down">
-            <base-down-icon/>
-          </span>
-        </span>
+              v-model="paymentSchedule.params.limit"
+              @change="changeScheduleShowingLimit"
+          >
+            <template #output-prefix>
+            <span
+                class="show-by-description"
+            >
+                  {{ $t('contracts.show_by') }}:
+            </span>
+            </template>
+          </k-form-select>
         </div>
       </div>
 
       <!--  PAYMENT SCHEDULE LOADING    -->
-      <base-loading v-if="paymentSchedule.appLoading"/>
+      <base-loading
+          v-if="paymentSchedule.appLoading"
+      />
     </div>
 
     <!--  IMPORT PAYMENTS MODAL  -->
-    <import-payments-modal ref="import-payments" :contract="order"/>
+    <import-payments-modal
+        ref="import-payments"
+        :contract="order"
+    />
 
     <!--  MODIFY PAYMENT TRANSACTION  -->
     <modify-payment-transaction
@@ -487,7 +526,11 @@
               spinner-variant="primary"
               class="d-inline-block w-100"
           >
-            <base-button @click="exchangeToMonthlyPayment" text="ОК" class="violet-gradient w-100"/>
+            <base-button
+                @click="exchangeToMonthlyPayment"
+                text="ОК"
+                class="violet-gradient w-100"
+            />
           </b-overlay>
         </div>
       </template>
@@ -503,7 +546,7 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
+// import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
@@ -530,7 +573,7 @@ export default {
     BasePlusIcon,
     CurrencyChart,
     BaseEditIcon,
-    BaseDownIcon,
+    // BaseDownIcon,
     BaseLoading,
     BaseButton,
     BaseModal,
@@ -913,15 +956,22 @@ export default {
       this.getPaymentHistory()
     },
     changePaymentsShowingLimit() {
-      this.getPaymentHistory()
+      const {params, pagination} = this.paymentHistory
+      if (params.limit !== pagination.perPage) {
+        this.paymentHistory.params.page = 1
+        this.getPaymentHistory()
+      }
     },
     swipeSchedulePage(page) {
       this.paymentSchedule.params.page = page
       this.getPaymentSchedule()
     },
     changeScheduleShowingLimit() {
-      this.paymentSchedule.params.page = 1
-      this.getPaymentSchedule()
+      const {params, pagination} = this.paymentSchedule
+      if (params.limit !== pagination.perPage) {
+        this.paymentSchedule.params.page = 1
+        this.getPaymentSchedule()
+      }
     },
     openPaymentAdditionModal() {
       this.$refs['payment-addition-modal'].openModal()

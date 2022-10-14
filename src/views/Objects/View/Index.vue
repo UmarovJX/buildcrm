@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <app-header>
       <template #header-breadcrumb>
         <div v-if="finishLoading && objectName.length" class="navigation__content">
@@ -112,6 +111,7 @@
     </base-modal>
 
     <component
+        ref="object-child"
         :loading="getLoading"
         :plans="plans"
         :plan-load="planLoading"
@@ -425,6 +425,10 @@ export default {
   },
   methods: {
     async fetchNecessary() {
+      if (this.currentTab === 'ObjectTable') {
+        await this.$refs['object-child'].fetchContractList()
+      }
+
       if (ApartmentsPermission.getApartmentsPermission('filter')) {
         await this.fetchFilterFields()
         await this.getGridOptimizationItems()

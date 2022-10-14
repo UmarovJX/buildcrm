@@ -241,7 +241,7 @@ export default {
     category: 'Категория',
     full: 'Полный',
     monthly: 'Ежемесячно',
-    month: 'месяцев',
+    month: 'Месяцев',
     months: 'Месяцы',
     months_to: 'месяцев по',
     table_months_payment: 'Таблица ежемесячных платежей',

@@ -127,8 +127,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-
 .user__account__icons {
     fill: var(--dark);
 }

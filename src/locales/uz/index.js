@@ -255,7 +255,7 @@ export default {
     category: 'Kategoriya',
     full: "To'liqligicha",
     monthly: "Oylik",
-    month: 'oy',
+    month: 'Oy',
     months: 'Oylar',
     months_to: 'oygacha',
     table_months_payment: "Oylik to'lovlar jadvali",
