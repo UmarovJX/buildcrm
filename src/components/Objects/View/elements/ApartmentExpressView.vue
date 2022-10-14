@@ -15,23 +15,23 @@
       <section v-if="hasApartment && !appLoading">
         <!--  HEAD    -->
         <div class="head d-flex justify-content-between pdf-item">
-            <span class="d-flex justify-content-center align-items-center">
-              <span
-                  @click="hideApartmentSidebar"
-                  class="close__button d-flex justify-content-center align-items-center"
-              >
-                <base-arrow-left-icon :width="32" :height="32"/>
-              </span>
-              <span class="section__title">
-                {{ sidebarApartment.object.name }} , {{ sidebarApartment.block.name }}
-              </span>
+          <span class="d-flex justify-content-center align-items-center">
+            <span
+                @click="hideApartmentSidebar"
+                class="close__button d-flex justify-content-center align-items-center"
+            >
+              <base-arrow-left-icon :width="32" :height="32"/>
             </span>
+            <span class="section__title">
+              {{ sidebarApartment.object.name }} , {{ sidebarApartment.block.name }}
+            </span>
+          </span>
           <span
               class="apartment__status d-flex justify-content-center align-items-center"
               :class="`status-${status}`"
           >
               {{ $t(`apartments.status.${status}`) }}
-            </span>
+          </span>
         </div>
 
         <!--  MAIN    -->
@@ -450,6 +450,8 @@ export default {
     },
     updateContent() {
       this.$emit('update-content')
+      this.fetchSidebarItem()
+      this.getComments()
     },
     async cancelReservation() {
       this.appLoading = true
