@@ -184,7 +184,7 @@ import {
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 import AppHeader from "@/components/Header/AppHeader";
-import {isObject} from "@/util/inspect";
+import {isObject, isPrimitive} from "@/util/inspect";
 
 export default {
   name: "Contracts",
@@ -394,6 +394,7 @@ export default {
       if (query.hasOwnProperty('page')) {
         delete query.page
       }
+
       this.replaceRouter({...query, status})
     },
     changeCurrentPage(page) {
@@ -402,11 +403,14 @@ export default {
       this.replaceRouter({...this.query, page})
     },
     changeFetchLimit() {
-      const query = {
+      const {query} = this
+      const isNotUpdate = query.limit.toString() === this.showByValue.toString()
+      if (isPrimitive(query.limit) && isNotUpdate) return
+      const localQuery = {
         ...this.query, page: 1
       }
       const limit = this.showByValue
-      this.replaceRouter({...query, limit})
+      this.replaceRouter({...localQuery, limit})
     },
     // setSearchValue(search) {
     //   const hasSearchQuery = this.query.hasOwnProperty('search')
