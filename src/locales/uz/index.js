@@ -235,6 +235,7 @@ export default {
     recontract_download: 'Qayta rasmiylashtirilgan shartnomani yuklash',
     yes: "Ha",
     no: "Yo'q",
+    id: "Id",
     image: "Surat",
     address: "Manzil", // 'settings': 'Настройки',
     no_data: "Ma'lumotlar yo'q",
@@ -1077,6 +1078,16 @@ export default {
             add_file: "Fayl qo'shish",
             add_audio: "Audio qo'shish",
         }
+    },
+
+    release_note: {
+        add_release_note: "Reliz yozuvlarini qo'shish",
+        release_note: "Relizlar qaydlari",
+        version_number: "Versiya raqami",
+        texts: "Matnlar",
+        new: "Yangi",
+        published: "Nashr qilingan",
+        comment: "Siz har doim versiya raqamini bosish orqali sozlamalarda nashr yozuvlarini topishingiz mumkin."
     },
 
     sweetAlert: {

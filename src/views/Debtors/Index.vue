@@ -4,6 +4,13 @@
             <template #header-title>
                 {{ $t('debtors.title') }}
             </template>
+            <template #header-actions>
+                <base-button @click="openImportModal" design="violet-gradient" :text="$t('debtors.import_debtors')">
+                    <template #left-icon>
+                        <base-arrow-down-icon fill="white"/>
+                    </template>
+                </base-button>
+            </template>
         </app-header>
 
         <!--  FILTER CONTENT  -->
@@ -17,7 +24,6 @@
             @go-to-today="showCurrentDay"
             @reset-filter-fields="disableFilter"
             @sort-by-search="sortBySearchField"
-            @import-excel="openImportModal"
         />
 
         <!--  TABLE UI  -->
@@ -220,10 +226,12 @@ import BaseStarIcon from "@/components/icons/BaseStarIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import AppHeader from "@/components/Header/AppHeader";
 import ImportDebtorsModal from "@/components/Debtors/ImportDebtorsModal";
+import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 
 export default {
     name: "Debtors",
     components: {
+        BaseArrowDownIcon,
         AppHeader,
         BaseStarIcon,
         BaseLoading,

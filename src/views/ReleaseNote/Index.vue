@@ -1,13 +1,32 @@
 <template>
     <div>
-      <app-header>
-        <template #header-title>
-          Release Note
-        </template>
-      </app-header>
-        <base-button class="mb-4" @click="openReleaseModal" text="add release note"/>
-        <base-button class="mb-4" @click="getUpdateRelease" text="update release note"/>
-        <base-button @click="openReleaseNote" text="about release note"/>
+        <app-header>
+            <template #header-title>
+                Release Note
+            </template>
+            <template #header-actions>
+                <base-button
+                    v-if="true || createPermission"
+                    design="violet-gradient"
+                    :text="$t('add')"
+                    @click="openReleaseModal"
+                >
+                    <template #left-icon>
+                        <base-plus-icon fill="#fff"/>
+                    </template>
+                </base-button>
+            </template>
+        </app-header>
+
+
+        <!--        <base-button class="mb-4" @click="openReleaseModal" text="add release note"/>-->
+        <!--        <base-button @click="openReleaseNote" text="about release note"/>-->
+
+
+        <div class="d-flex align-items-center justify-content-end">
+
+        </div>
+
 
         <base-modal ref="create-modal" design="release-note">
             <template #header>
@@ -88,7 +107,7 @@
             <template #footer>
                 <div class="release-note-footer">
                     <base-button @click="closeReleaseModal" :text="`${ $t('cancel') }`"/>
-                    <base-button @click="recheckRelease" :text="`${ $t('recheck') }`"/>
+                    <base-button @click="viewRelease(selectVersion)" :text="`${ $t('recheck') }`"/>
                     <base-button
                         type="submit"
                         @click="createReleaseNote"
@@ -120,10 +139,10 @@
                             {{ $t('release_note.new') }}
                         </div>
                         <div>
-                            <p class="release-new" v-html="version.fixed['uz']"/>
+                            <p class="release-new" v-if="version&& version.fixed" v-html="version.fixed['uz'] || ''"/>
                         </div>
                         <div>
-                            <p class="release-new" v-html="version.fixed['ru']"/>
+                            <p class="release-new" v-if="version&& version.fixed" v-html="version.fixed['ru'] || ''"/>
                         </div>
                     </div>
                     <div class="release-info-main-block">
@@ -131,10 +150,10 @@
                                 $t('edited')
                             }}</span>
                         <div>
-                            <p class="release-edited" v-html="version.latest['uz']"/>
+                            <p class="release-edited" v-if="version&& version.latest" v-html="version.latest['uz']"/>
                         </div>
                         <div>
-                            <p class="release-edited" v-html="version.latest['ru']"/>
+                            <p class="release-edited" v-if="version&& version.latest" v-html="version.latest['ru']"/>
                         </div>
                     </div>
                 </div>
@@ -146,6 +165,109 @@
                 </div>
             </template>
         </base-modal>
+
+
+        <b-table
+            thead-tr-class="row__head__bottom-border"
+            tbody-tr-class="row__body__bottom-border"
+            class="table__list mt-3"
+            ref="contracts-table"
+            id="users-table"
+            borderless
+            responsive
+            show-empty
+            sort-icon-left
+            :busy="loading"
+            :items="versions"
+            :fields="fields"
+            :empty-text="$t('no_data')"
+        >
+
+            <template #table-busy>
+                <base-loading/>
+            </template>
+
+
+            <template #head()="data">
+                <span>{{ $t(data.label) }}</span>
+            </template>
+
+            <!-- INDEX COLUMN -->
+            <template #cell(id)="data">
+            <span>
+              {{ data.item.id }}
+            </span>
+            </template>
+
+
+            <template #cell(created_at)="data">
+            <span>
+              {{ formatDateWithDot(data.item.created_at) }}
+            </span>
+
+            </template>
+
+
+            <template #cell(actions)="data">
+                <div v-if="true || editPermission || deletePermission || viewPermission"
+                     class="actions">
+                     <span
+                         v-if="true|| viewPermission"
+                         class="icon eye__icon rounded-circle"
+                         @click="viewRelease(data.item.id)"
+                     >
+                         <base-eye-icon :width="18" :height="18" fill="#ffff"/>
+                    </span>
+                    <span
+                        v-if="true|| editPermission"
+                        class="icon edit__icon rounded-circle"
+                        @click="getUpdateRelease(data.item.id)"
+                    >
+                            <base-edit-icon :width="18" :height="18" fill="#ffff"/>
+                    </span>
+                    <span
+                        v-if="true || deletePermission"
+                        class="icon delete__icon rounded-circle"
+                        @click="deleteRelease(data.item.id)"
+                    >
+                            <base-delete-icon :width="18" :height="18" fill="#ffff"/>
+                    </span>
+                </div>
+
+            </template>
+        </b-table>
+
+
+        <div v-if="!loading && hasPagination && false" class="pagination__vue">
+            <!--   Pagination   -->
+            <vue-paginate
+                :page-count="pagination.total"
+                :value="pagination.current"
+                :container-class="'container'"
+                :page-class="'page-item'"
+                :page-link-class="'page-link'"
+                :next-class="'page-item'"
+                :prev-class="'page-item'"
+                :prev-link-class="'page-link'"
+                :next-link-class="'page-link'"
+                @change-page="changeCurrentPage"
+            >
+                <template #next-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-right-icon/>
+          </span>
+                </template>
+
+                <template #prev-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-left-icon/>
+          </span>
+                </template>
+            </vue-paginate>
+
+        </div>
+
+
     </div>
 </template>
 
@@ -158,11 +280,27 @@ import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
 import AppHeader from "@/components/Header/AppHeader";
 import {VueEditor} from 'vue2-editor'
 import api from "@/services/api";
+import BaseLoading from "@/components/Reusable/BaseLoading";
+import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import {formatDateWithDot, sortObjectValues} from "@/util/reusable";
+import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
+
 
 export default {
     name: "ReleaseNote",
     components: {
-      AppHeader,
+        BaseEyeIcon,
+        BaseArrowLeftIcon,
+        BaseArrowRightIcon,
+        BasePlusIcon,
+        BaseDeleteIcon,
+        BaseEditIcon,
+        BaseLoading,
+        AppHeader,
         BaseQuestionsIcon,
         BaseInput,
         BaseCloseIcon,
@@ -171,23 +309,53 @@ export default {
         VueEditor
     },
     data() {
-        const releaseNotes = [
-            {
-                text: "Xonsaroy CRM 2.4",
-                value: "Xonsaroy CRM 2.4",
-            },
-            {
-                text: "Xonsaroy CRM 1.4",
-                value: "Xonsaroy CRM 1.4",
-            },
-            {
-                text: "Xonsaroy CRM 0.4",
-                value: "Xonsaroy CRM 0.4",
-            },
-        ]
+        const showByOptions = []
+
+        for (let number = 10; number <= 50; number += 10) {
+            showByOptions.push({
+                value: number,
+                text: number
+            })
+        }
+
+        let {limit: showByValue} = this.$route.query
+
+        if (!showByValue) {
+            showByValue = 10
+        }
 
         return {
-            releaseNotes,
+            showByOptions,
+            showByValue,
+            versions: [],
+            loading: false,
+            pagination: {},
+            fields: [
+                {
+                    key: "id",
+                    label: "id",
+                },
+                {
+                    key: 'version',
+                    label: 'release_note.version_number',
+                },
+                {
+                    key: "created_at",
+                    label: "created_at",
+                    sortable: true,
+                },
+                {
+                    key: 'published',
+                    label: "release_note.published",
+                    formatter: (item) => {
+                        return item ? this.$t('yes') : this.$t('no')
+                    }
+                },
+                {
+                    key: "actions",
+                    label: "",
+                },
+            ],
             form: {
                 version: null,
                 latest: {
@@ -201,13 +369,43 @@ export default {
                 published: true
             },
             version: {},
-            modalPosition: 'create'
+            modalPosition: 'create',
+            selectVersion: null
         }
+    },
+    computed: {
+        hasPagination() {
+            return this.versions.length
+        },
+        query() {
+            return Object.assign({}, this.$route.query)
+        },
+    },
+    watch: {
+        '$route.query': {
+            handler: function () {
+                this.fetchUsers()
+            },
+            deep: true
+        },
     },
     async mounted() {
         await this.getReleaseModal()
+        await this.getReleaseNotes()
     },
     methods: {
+        formatDateWithDot,
+        async getReleaseNotes() {
+            const query = sortObjectValues(this.query)
+            this.loading = true
+            await api.settings.getVersionList(query).then((res) => {
+                this.versions = res.data
+            }).catch((error) => {
+                console.error(error, 'error');
+            }).finally(() => {
+                this.loading = false
+            })
+        },
         createReleaseNote() {
             let body = {...this.form}
             if (!(body.latest && body.latest.uz && body.latest.ru)) {
@@ -218,22 +416,23 @@ export default {
             }
             if (body.version) {
                 if (this.modalPosition === 'create') {
-                    api.settings.createVersion(body).then((res) => {
-                        console.log(res, 'res');
+                    api.settings.createVersion(body).then(() => {
+                        this.toasted('created', 'success')
                     }).catch((err) => {
                         return this.toastedWithErrorCode(err)
                     }).finally(() => {
                         this.$refs['create-modal'].closeModal()
                     })
                 } else {
-                    api.settings.updateVersion(28, body).then((res) => {
-                        console.log(res, 'res');
+                    api.settings.updateVersion(this.selectVersion, body).then(() => {
+                        this.toasted('updated', 'success')
                     }).catch((err) => {
                         return this.toastedWithErrorCode(err)
                     }).finally(() => {
                         this.$refs['create-modal'].closeModal()
                     })
                 }
+                this.getReleaseNotes()
             }
         },
         async getReleaseModal() {
@@ -243,14 +442,35 @@ export default {
                 return this.toastedWithErrorCode(err)
             })
         },
-        async getUpdateRelease() {
+        async getReleaseOne(id) {
+            await api.settings.getVersion(id).then((res) => {
+                this.version = res.data
+                this.$refs["view-modal"].openModal()
+            }).catch((err) => {
+                return this.toastedWithErrorCode(err)
+            })
+        },
+        async getUpdateRelease(id) {
             this.modalPosition = 'update'
-            await api.settings.getVersion(28).then((res) => {
+            this.selectVersion = id
+            await api.settings.getVersion(id).then((res) => {
                 this.form = res.data
             }).catch((err) => {
                 return this.toastedWithErrorCode(err)
             }).finally(() => {
                 this.$refs["create-modal"].openModal()
+            })
+        },
+
+        async deleteRelease(id) {
+            this.loading = true
+            await api.settings.deleteVersion(id).then((res) => {
+                this.form = res.data
+            }).catch((err) => {
+                return this.toastedWithErrorCode(err)
+            }).finally(() => {
+                this.getReleaseNotes()
+                this.loading = false
             })
         },
 
@@ -280,15 +500,27 @@ export default {
         closeReleaseNote() {
             this.$refs["view-modal"].closeModal()
         },
-        recheckRelease() {
-            this.$refs["view-modal"].openModal()
+        async viewRelease(id) {
+            await this.getReleaseOne(id);
         },
-        addRelease() {
-            this.$emit('add-release-note', this.form)
-            this.$refs["create-modal"].closeModal()
+
+        changeCurrentPage(page) {
+            const currentPage = this.query.page
+            if (page === currentPage) return
+            this.replaceRouter({...this.query, page})
         },
-        setFormProperty(property, value) {
-            this.form[property] = value
+        changeFetchLimit() {
+            const query = {
+                ...this.query, page: 1
+            }
+            const limit = this.showByValue
+            this.replaceRouter({...query, limit})
+        },
+
+
+        pushRouter(query) {
+            const sortQuery = sortObjectValues(query)
+            this.$router.push({query: sortQuery})
         },
     }
 }
@@ -453,6 +685,108 @@ p {
             color: #9CA3AF;
         }
     }
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    justify-content: flex-end;
+
+    .icon {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .eye__icon {
+        background-color: var(--teal-600);
+    }
+
+    .edit__icon {
+        background-color: var(--violet-600);
+    }
+
+    .delete__icon {
+        background-color: var(--red-600);
+    }
+}
+
+
+@import "@/assets/scss/utils/pagination";
+
+.search__content {
+    margin-top: 0;
+}
+
+
+::v-deep .row__head__bottom-border {
+    border-bottom: 2px solid var(--gray-200) !important;
+}
+
+::v-deep .row__body__bottom-border:not(:last-child) {
+    border-bottom: 2px solid var(--gray-200) !important;
+}
+
+
+::v-deep .table__list {
+    min-height: 250px;
+    max-height: none;
+
+    table {
+        color: var(--gray-600);
+
+        thead tr th {
+            font-family: CraftworkSans, serif;
+            font-weight: 900;
+            font-size: 14px;
+            line-height: 14px;
+            letter-spacing: 1px;
+            color: var(--gray-400) !important;
+            padding: 1.125rem 1rem;
+            vertical-align: middle;
+
+            //&.b-table-sort-icon-left {
+            //display: flex;
+            //align-items: center;
+            //}
+        }
+
+        td {
+            vertical-align: middle;
+        }
+    }
+
+
+    .table.b-table[aria-busy=true] {
+        opacity: 1 !important;
+    }
+}
+
+
+::v-deep .table.b-table > thead > tr > [aria-sort="none"],
+::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
+    background-position: right calc(2rem / 2) center !important;
+    //background-position: right !important;
+    padding-right: 20px;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
+    background-position: right calc(2rem / 2) center !important;
+    background-size: 20px;
+    background-image: url("../../assets/icons/icon-arrow-down.svg") !important;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=descending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
+    background-position: right calc(2rem / 2) center !important;
+    background-size: 20px;
+    background-image: url("../../assets/icons/icon-arrow-up.svg") !important;
 }
 
 

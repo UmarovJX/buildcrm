@@ -84,12 +84,12 @@ export default {
             updateDebtorsExcel: 'updateDebtorsExcel'
         }),
         downloadTemplate() {
-            api.contractV2.downloadContractTemplate()
+            api.debtorsV2.downloadDebtorsTemplate()
                 .then(response => {
                     const fileURL = window.URL.createObjectURL(new Blob([response.data]))
                     const fileLink = document.createElement('a')
                     fileLink.href = fileURL
-                    fileLink.setAttribute('download', 'contract_template.xlsx')
+                    fileLink.setAttribute('download', 'debtors_template.xlsx')
                     document.body.appendChild(fileLink)
                     fileLink.click()
                 })

@@ -18,6 +18,10 @@ class Settings extends Core {
         return this.get('versions')
     }
 
+    getVersionList(params){
+        return this.get('versions',{params})
+    }
+
     createVersion(body) {
         return this.post('versions', body)
     }

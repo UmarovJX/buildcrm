@@ -389,7 +389,7 @@ export default {
             return ContractsPermission.getContractsReissueCreatePermission() && this.order.reissue && this.order.reissue.re_order
         },
         editPermission() {
-            return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
+            return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract') && this.order.updating.can
         },
         hasConstructorOrder() {
             return Object.keys(this.order).length > 0
@@ -400,7 +400,7 @@ export default {
     },
     methods: {
         tabChange(currentTabs) {
-            console.log(currentTabs, 'current');
+            // console.log(currentTabs, 'current');
             const index = this.tabs.filter(item => item.id === currentTabs)
             this.$router.push({name: index[0].route})
         },
