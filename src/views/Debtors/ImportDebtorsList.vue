@@ -115,6 +115,48 @@
             </b-tabs>
         </div>
 
+
+        <base-modal ref="leave-modal" design="auto-height">
+            <template #header>
+                <div class="d-flex align-items-center" style="gap:1rem">
+                    <div>
+                        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.4"
+                                  d="M51.3346 27.9996C51.3346 40.8889 40.8883 51.3329 28.0013 51.3329C15.1143 51.3329 4.66797 40.8889 4.66797 27.9996C4.66797 15.1149 15.1143 4.66626 28.0013 4.66626C40.8883 4.66626 51.3346 15.1149 51.3346 27.9996"
+                                  fill="#EF4444"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M30.3081 29.5574C30.3081 30.7612 29.2661 31.7427 27.988 31.7427C26.71 31.7427 25.668 30.7612 25.668 29.5574V18.5185C25.668 17.3148 26.71 16.3333 27.988 16.3333C29.2661 16.3333 30.3081 17.3148 30.3081 18.5185V29.5574ZM25.6811 37.4814C25.6811 36.2776 26.7178 35.2961 27.9879 35.2961C29.2951 35.2961 30.3345 36.2776 30.3345 37.4814C30.3345 38.6852 29.2951 39.6667 28.0144 39.6667C26.7284 39.6667 25.6811 38.6852 25.6811 37.4814Z"
+                                  fill="#EF4444"/>
+                        </svg>
+                    </div>
+                    <div class="title">{{ $t('leave_import') }}</div>
+                </div>
+            </template>
+
+            <template #main>
+                <span v-html="$t('leave_import_text')"/>
+            </template>
+
+            <template #footer>
+                <div class="d-flex align-items-center" style="gap: 2rem">
+                    <base-button
+                        @click="cancelLeave"
+                        :fixed="true"
+                        :text="`${ $t('no_cancel') }`"
+                    >
+                    </base-button>
+                    <base-button
+                        @click="confirmLeave"
+                        :text="`${ $t('yes_delete') }`"
+                        :fixed="true"
+                        class="violet-gradient"
+                    >
+                    </base-button>
+                </div>
+            </template>
+        </base-modal>
+
+
     </div>
 </template>
 
@@ -130,6 +172,7 @@ import api from "@/services/api";
 import FirstStep from "@/views/Debtors/steps/FirstStep";
 import SecondStep from "@/views/Debtors/steps/SecondStep";
 import ThirdStep from "@/views/Debtors/steps/ThirdStep";
+import BaseModal from "@/components/Reusable/BaseModal";
 
 export default {
     name: "ImportDebtorsList",
@@ -142,13 +185,13 @@ export default {
         BaseRightIcon,
         BaseArrowRightIcon,
         AppHeader,
-        BaseButton
+        BaseButton,
+        BaseModal
     },
     beforeRouteLeave(to, from, next) {
-        const answer = window.confirm(
-            this.$t('debtors.import_leave')
-        );
-        if (answer) {
+        this.$refs['leave-modal'].openModal()
+        this.nextRoute = to.name
+        if (this.permissionLeave) {
             next();
         } else {
             next(false);
@@ -191,7 +234,9 @@ export default {
                 }
             ],
             listLoading: false,
-            resultDebtors: []
+            resultDebtors: [],
+            permissionLeave: false,
+            nextRoute: ''
         }
     },
     computed: {
@@ -209,13 +254,15 @@ export default {
             return ''
         }
     },
-
     methods: {
-        leaving() {
-            const answer = window.confirm(
-                this.$t('debtors.import_leave')
-            );
-            console.log(answer, 'leaving')
+        cancelLeave() {
+            this.permissionLeave = false
+            this.$refs['leave-modal'].closeModal()
+        },
+        confirmLeave() {
+            this.permissionLeave = true
+            this.$router.push({name: this.nextRoute})
+            this.$refs['leave-modal'].closeModal()
         },
         backNavigation() {
             this.$router.go(-1)

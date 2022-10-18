@@ -196,6 +196,12 @@ export default {
                 },
                 edit: false,
                 is_sold: false,
+                comments: {
+                    view: false,
+                    create: false,
+                    edit: false,
+                    delete: false
+                }
             },
             checkout: {
                 book: false,
@@ -246,6 +252,9 @@ export default {
                 ...crudPermission
             },
             companies: {
+                ...crudPermission
+            },
+            release_note: {
                 ...crudPermission
             },
             payment_account: {
@@ -550,6 +559,35 @@ export default {
                             refer: 'is_sold',
                             parent: 'apartments',
                         },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.apartments.comments_view',
+                            refer: 'comments.view',
+                            parent: 'apartments',
+                        },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.apartments.comments_create',
+                            refer: 'comments.create',
+                            parent: 'apartments',
+                        },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.apartments.comments_edit',
+                            refer: 'comments.edit',
+                            parent: 'apartments',
+                        },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.apartments.comments_delete',
+                            refer: 'comments.delete',
+                            parent: 'apartments',
+                        },
+
                     ],
                 },
                 {
@@ -875,6 +913,47 @@ export default {
                 },
                 {
                     id: uuid(),
+                    title: 'roles_permission.titles.release_note',
+                    active: false,
+                    parent: 'form',
+                    rows: [
+                        {
+                            ...row,
+                            label: 'roles_permission.activate_all',
+                            refer: 'all',
+                            parent: 'users',
+                        },
+                        {
+                            ...row,
+                            label: 'roles_permission.release_note.watch_notes',
+                            refer: 'view',
+                            parent: 'users',
+                        },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.release_note.create_note',
+                            refer: 'create',
+                            parent: 'users',
+                        },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.release_note.edit_note',
+                            refer: 'edit',
+                            parent: 'users',
+                        },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.release_note.delete_note',
+                            refer: 'delete',
+                            parent: 'users',
+                        }
+                    ],
+                },
+                {
+                    id: uuid(),
                     title: 'roles_permission.titles.roles',
                     active: false,
                     parent: 'form',
@@ -1146,6 +1225,7 @@ export default {
                         }
                         case 2 : {
                             const hasChild = pmTabParent.hasOwnProperty(one)
+
                             if (hasChild) {
                                 row.vBind = pmTabParent[one][two] ?? false
                             } else {
@@ -1156,6 +1236,7 @@ export default {
                         }
                         case 3 : {
                             const hasOne = pmTabParent.hasOwnProperty(one)
+
                             if (hasOne) {
                                 row.vBind = pmTabParent[one][two][three]
                             } else {
@@ -1164,7 +1245,6 @@ export default {
                             break
                         }
                         case 4 : {
-
                             row.vBind = pmTabParent[one][two][three][four]
                             break
                         }
@@ -1267,7 +1347,7 @@ export default {
                         this.getLoading = false;
                         this.toasted(response.data.message, "success")
 
-                        this.$router.push({name: "roles"})
+                        // this.$router.push({name: "roles"})
 
                         this.$swal(`${this.$t("sweetAlert.success_create_role")}`, "", "success")
                     })
