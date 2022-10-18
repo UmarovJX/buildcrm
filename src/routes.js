@@ -76,12 +76,6 @@ const routes = [
             {
                 path: '/experiment',
                 name: 'experiment',
-                component: () => import('@/views/experience')
-            },
-
-            {
-                path: '/experiment',
-                name: 'experiment',
                 component: Experiment
             },
 

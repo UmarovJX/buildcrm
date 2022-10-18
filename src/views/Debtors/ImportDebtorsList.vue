@@ -283,7 +283,6 @@ export default {
 
         },
         setDebtorsList(debtors) {
-            console.log(debtors, 'debtors');
             this.resultDebtors = debtors
             this.listLoading = true
             const body = {
