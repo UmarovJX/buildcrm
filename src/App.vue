@@ -127,3 +127,20 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+/*
+
+Style: Rounded;
+
+Fill: 1;
+
+Weight: 500;
+
+Grade: 0;
+
+Optical size: 24px;
+
+*/
+@import "https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,1,0";
+</style>
