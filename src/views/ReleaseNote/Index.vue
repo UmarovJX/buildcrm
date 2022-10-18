@@ -59,11 +59,11 @@
                             <h3 class="block-title">{{ $t("release_note.texts") }}</h3>
                         </div>
                         <div class="col-12">
-                            <b-tabs card class="custom-tab">
+                            <b-tabs card class="custom-tab mt-0">
                                 <template #tabs-start>
                                     <div class="bottom__line"></div>
                                 </template>
-                                <b-tab title="На русском" active>
+                                <b-tab title="O’zbekchada" active>
                                     <div class="release-note__block-item">
                                         <p>{{ $t("release_note.new") }} (UZ)</p>
                                         <vue-editor v-model="form.latest['uz']"></vue-editor>
@@ -81,7 +81,7 @@
                                                                     />-->
                                     </div>
                                 </b-tab>
-                                <b-tab title="O’zbekchada">
+                                <b-tab title="На русском">
                                     <div class="release-note__block-item">
                                         <p>{{ $t("release_note.new") }} (RU)</p>
                                         <vue-editor v-model="form.latest['ru']"></vue-editor>
