@@ -18,8 +18,8 @@ class Settings extends Core {
         return this.get('versions')
     }
 
-    getVersionList(params){
-        return this.get('versions',{params})
+    getVersionList(params) {
+        return this.get('versions', {params})
     }
 
     createVersion(body) {
@@ -43,7 +43,7 @@ class Settings extends Core {
     }
 
     confirmLastVersion() {
-        return this.post('versions/confirm')
+        return this.get('versions/confirm')
     }
 
 }
