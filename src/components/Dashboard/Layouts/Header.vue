@@ -229,6 +229,7 @@ export default {
         confirmRelease() {
             api.settings.confirmLastVersion().then(() => {
                 console.log('version confirmed')
+                this.nullMe()
             }).catch((error) => {
                 this.toastedWithErrorCode(error)
             }).finally(() => {
