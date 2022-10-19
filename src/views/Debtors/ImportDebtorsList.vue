@@ -279,7 +279,6 @@ export default {
             })
         },
         async changeTab() {
-            console.log('changeTab')
             if (this.tabIndex === 0) {
                 const typeFieldValidation = await this.$refs['first-step'].validateFirstStep()
 
@@ -324,7 +323,6 @@ export default {
                     this.stepTwoDisable = true
                 }
             } else if (this.tabIndex === 1) {
-                console.log('tabIndex = 1')
                 await this.$refs['second-step'].validateSecondStep()
             }
 
