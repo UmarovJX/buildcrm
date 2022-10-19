@@ -271,8 +271,8 @@ export default {
             const body = {
                 payments: this.resultDebtors
             }
-            await api.debtorsV2.activatePayments(body).then((res) => {
-                console.log(res, 'res');
+            await api.debtorsV2.activatePayments(body).then(() => {
+                this.permissionLeave = true
                 this.$router.push({name: 'debtors'})
             }).catch((err) => {
                 return err
