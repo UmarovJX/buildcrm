@@ -35,18 +35,11 @@
                         </label>
                     </a>
                 </b-dropdown-item>
-                <b-dropdown-item>
-                    <router-link
-                        v-if="settingsPermission"
-                        :to="{name:'user-settings'}"
-                    >
-                        {{ $t("settings.title") }}
-                    </router-link>
+                <b-dropdown-item v-if="settingsPermission" @click="openUserSetting">
+                    {{ $t("settings.title") }}
                 </b-dropdown-item>
-                <b-dropdown-item>
-                    <a @click="logout" href="#">
-                        {{ $t("logout") }}
-                    </a>
+                <b-dropdown-item @click="logout">
+                    {{ $t("logout") }}
                 </b-dropdown-item>
             </template>
         </app-dropdown>
@@ -121,6 +114,9 @@ export default {
             "nullableAuth",
             "nullMe",
         ]),
+        openUserSetting() {
+            this.$router.push({name: 'user-settings'})
+        },
         changeLocale() {
             if (this.locale === false) {
                 localStorage.locale = "ru";
