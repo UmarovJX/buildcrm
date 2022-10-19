@@ -132,29 +132,30 @@
                 <div class="release-info-main">
                     <div class="release-info-main-block">
                         <p class="release-info-main-block-release">{{ version.version }}</p>
-                        <p class="release-info-main-block-date">22 June, 2022</p>
+                        <p class="release-info-main-block-date">{{ dateFormat(version.created_at) }}</p>
                     </div>
-                    <div class="release-info-main-block">
+                    <div v-if="version && version.latest" class="release-info-main-block">
                         <div class="release-info-main-block-tag release-info-main-block-tag-new">
                             {{ $t('release_note.new') }}
                         </div>
                         <div>
-                            <p class="release-new" v-if="version&& version.fixed" v-html="version.fixed['uz'] || ''"/>
+                            <p class="release-edited" v-html="version.latest['uz']"/>
                         </div>
                         <div>
-                            <p class="release-new" v-if="version&& version.fixed" v-html="version.fixed['ru'] || ''"/>
+                            <p class="release-edited" v-html="version.latest['ru']"/>
                         </div>
                     </div>
-                    <div class="release-info-main-block">
-                        <span class="release-info-main-block-tag release-info-main-block-tag-edited">{{
-                                $t('edited')
-                            }}</span>
-                        <div>
-                            <p class="release-edited" v-if="version&& version.latest" v-html="version.latest['uz']"/>
+                    <div v-if="version&& version.fixed" class="release-info-main-block">
+                        <div class="release-info-main-block-tag release-info-main-block-tag-edited">
+                            {{ $t('edited') }}
                         </div>
                         <div>
-                            <p class="release-edited" v-if="version&& version.latest" v-html="version.latest['ru']"/>
+                            <p class="release-new" v-html="version.fixed['uz'] || ''"/>
                         </div>
+                        <div>
+                            <p class="release-new" v-html="version.fixed['ru'] || ''"/>
+                        </div>
+
                     </div>
                 </div>
             </template>
@@ -202,7 +203,7 @@
 
             <template #cell(created_at)="data">
             <span>
-              {{ formatDateWithDot(data.item.created_at) }}
+              {{ dateFormat(data.item.created_at) }}
             </span>
 
             </template>
@@ -282,7 +283,7 @@ import {VueEditor} from 'vue2-editor'
 import api from "@/services/api";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import {formatDateWithDot, sortObjectValues} from "@/util/reusable";
+import {sortObjectValues} from "@/util/reusable";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
@@ -394,7 +395,16 @@ export default {
         await this.getReleaseNotes()
     },
     methods: {
-        formatDateWithDot,
+        dateFormat(rawDate) {
+            const monthNames = ["january", "february", "march", "april", "may", "june",
+                "july", "august", "september", "october", "november", "december"
+            ];
+            const date = new Date(rawDate)
+            const day = date.getDate()
+            const month = this.$t(monthNames[date.getMonth()]).toLocaleLowerCase()
+            const year = date.getFullYear()
+            return `${day} ${month}, ${year}`
+        },
         async getReleaseNotes() {
             const query = sortObjectValues(this.query)
             this.loading = true

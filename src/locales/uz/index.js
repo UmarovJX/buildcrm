@@ -247,6 +247,8 @@ export default {
     leave_import: 'Importni tark etasizmi?',
     leave_import_text: "Haqiqatan ham importni bekor qilish va undan chiqishni xohlaysizmi? </br>" +
         "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
+    no_leave: "Yo'q, qolaman",
+    yes_leave: "Ha, chiqaman",
     yes: "Ha",
     no: "Yo'q",
     id: "Id",

@@ -142,12 +142,12 @@
                     <base-button
                         @click="cancelLeave"
                         :fixed="true"
-                        :text="`${ $t('no_cancel') }`"
+                        :text="`${ $t('no_leave') }`"
                     >
                     </base-button>
                     <base-button
                         @click="confirmLeave"
-                        :text="`${ $t('yes_delete') }`"
+                        :text="`${ $t('yes_leave') }`"
                         :fixed="true"
                         class="violet-gradient"
                     >
