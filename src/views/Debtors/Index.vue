@@ -5,9 +5,9 @@
                 {{ $t('debtors.title') }}
             </template>
             <template #header-actions>
-                <base-button @click="openImportModal" design="violet-gradient" :text="$t('debtors.import_debtors')">
+                <base-button @click="openImportModal" :text="$t('debtors.import_debtors')">
                     <template #left-icon>
-                        <base-arrow-down-icon fill="white"/>
+                        <base-arrow-down-icon fill="var(--violet-600)"/>
                     </template>
                 </base-button>
             </template>

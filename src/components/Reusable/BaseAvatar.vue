@@ -9,6 +9,7 @@
                         :src="imagePath"
                         :text="nameSnippet"
                         size="40px"
+                        class="d-flex"
                     ></b-avatar>
                     <div class="person">
                         <p class="full_name">

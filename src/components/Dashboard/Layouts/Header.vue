@@ -87,10 +87,7 @@
                             {{ $t('release_note.new') }}
                         </div>
                         <div>
-                            <p class="release-edited" v-html="version.latest['uz']"/>
-                        </div>
-                        <div>
-                            <p class="release-edited" v-html="version.latest['ru']"/>
+                            <p class="release-edited" v-html="checkLocale(version.latest)"/>
                         </div>
                     </div>
                     <div v-if="version&& version.fixed" class="release-info-main-block">
@@ -98,12 +95,8 @@
                             {{ $t('edited') }}
                         </div>
                         <div>
-                            <p class="release-new" v-html="version.fixed['uz'] || ''"/>
+                            <p class="release-new" v-html="checkLocale(version.fixed)"/>
                         </div>
-                        <div>
-                            <p class="release-new" v-html="version.fixed['ru'] || ''"/>
-                        </div>
-
                     </div>
                 </div>
             </template>
@@ -291,6 +284,17 @@ export default {
                 this.$root.$i18n.locale = "uz";
                 localeChanged()
             }
+        },
+
+        checkLocale(data) {
+            const {locale} = localStorage
+            if (data) {
+                if (locale === 'ru') {
+                    return data['ru']
+                }
+                return data['uz']
+            }
+            return ''
         },
 
         toggleCollapse() {
