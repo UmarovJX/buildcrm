@@ -107,7 +107,6 @@
             <template #footer>
                 <div class="release-note-footer">
                     <base-button @click="closeReleaseModal" :text="`${ $t('cancel') }`"/>
-                    <base-button @click="viewRelease(selectVersion)" :text="`${ $t('recheck') }`"/>
                     <base-button
                         type="submit"
                         @click="createReleaseNote"
@@ -416,7 +415,7 @@ export default {
                 this.loading = false
             })
         },
-        createReleaseNote() {
+        async createReleaseNote() {
             let body = {...this.form}
             if (!(body.latest && body.latest.uz && body.latest.ru)) {
                 delete body.latest
@@ -426,23 +425,25 @@ export default {
             }
             if (body.version) {
                 if (this.modalPosition === 'create') {
-                    api.settings.createVersion(body).then(() => {
+                    await api.settings.createVersion(body).then(() => {
                         this.toasted('created', 'success')
                     }).catch((err) => {
                         return this.toastedWithErrorCode(err)
                     }).finally(() => {
                         this.$refs['create-modal'].closeModal()
+                        this.getReleaseNotes()
                     })
                 } else {
-                    api.settings.updateVersion(this.selectVersion, body).then(() => {
+                    await api.settings.updateVersion(this.selectVersion, body).then(() => {
                         this.toasted('updated', 'success')
                     }).catch((err) => {
                         return this.toastedWithErrorCode(err)
                     }).finally(() => {
                         this.$refs['create-modal'].closeModal()
+                        this.getReleaseNotes()
                     })
                 }
-                this.getReleaseNotes()
+
             }
         },
         async getReleaseModal() {
