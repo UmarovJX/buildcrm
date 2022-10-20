@@ -48,6 +48,10 @@
     margin-bottom: 0;
   }
 
+  a .material-symbols-rounded {
+    margin-right: 18px;
+  }
+
 }
 
 .menu-toggle__icon {
@@ -73,6 +77,11 @@
   font-size: 16px;
   line-height: 18px;
   color: var(--gray-400);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 170px;
+
 }
 
 .menu-content {

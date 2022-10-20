@@ -1,10 +1,10 @@
 <template>
-  <span class="material-symbols-rounded">
+    <span class="material-symbols-rounded" :style="renderColor">
     <slot name="default"/>
     <template v-if="notHaveSlot">
-      {{ name }}
+        {{ name }}
     </template>
-  </span>
+    </span>
 </template>
 
 <script>
@@ -12,15 +12,19 @@ import {makeProp as p} from "@/util/props";
 import {PROP_TYPE_STRING} from "@/constants/props"
 
 export default {
-  name: "IconsGetter",
-  props: {
-    name: p(PROP_TYPE_STRING)
-  },
-  computed: {
-    notHaveSlot() {
-      return !this.$slots.hasOwnProperty('default')
+    name: "IconsGetter",
+    props: {
+        name: p(PROP_TYPE_STRING),
+        color: p(PROP_TYPE_STRING)
+    },
+    computed: {
+        notHaveSlot() {
+            return !this.$slots.hasOwnProperty('default')
+        },
+        renderColor() {
+            return this.color ? `color:${this.color}` : ''
+        }
     }
-  }
 }
 </script>
 

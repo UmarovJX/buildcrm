@@ -214,7 +214,6 @@ export default {
             },
             contracts: {
                 view: false,
-                create: false,
                 filter: false,
                 download: false,
                 cancel: false,
@@ -226,10 +225,14 @@ export default {
                 payments: {
                     create: false,
                     initial_type: {
-                        ...crudPermission
+                        create: false,
+                        edit: false,
+                        delete: false
                     },
                     monthly_type: {
-                        ...crudPermission
+                        create: false,
+                        edit: false,
+                        delete: false
                     },
                     import: false,
                     list: false
@@ -238,12 +241,7 @@ export default {
                     view: true,
                     create: true
                 },
-                comments: {
-                    view: false,
-                    create: false,
-                    delete: false,
-                    update: false
-                }
+
             },
             users: {
                 ...crudPermission
@@ -272,7 +270,8 @@ export default {
                 },
             },
             debtors: {
-                view: false
+                view: false,
+                // import: false
             },
         }
 
@@ -559,35 +558,30 @@ export default {
                             refer: 'is_sold',
                             parent: 'apartments',
                         },
-
                         {
                             ...row,
-                            label: 'roles_permission.apartments.comments_view',
+                            label: 'roles_permission.contracts.read_comments',
                             refer: 'comments.view',
                             parent: 'apartments',
                         },
-
                         {
                             ...row,
-                            label: 'roles_permission.apartments.comments_create',
+                            label: 'roles_permission.contracts.create_comments',
                             refer: 'comments.create',
                             parent: 'apartments',
                         },
-
                         {
                             ...row,
-                            label: 'roles_permission.apartments.comments_edit',
+                            label: 'roles_permission.contracts.update_comments',
                             refer: 'comments.edit',
                             parent: 'apartments',
                         },
-
                         {
                             ...row,
-                            label: 'roles_permission.apartments.comments_delete',
+                            label: 'roles_permission.contracts.delete_comments',
                             refer: 'comments.delete',
                             parent: 'apartments',
                         },
-
                     ],
                 },
                 {
@@ -672,31 +666,6 @@ export default {
                         },
                         {
                             ...row,
-                            label: 'roles_permission.contracts.create_comments',
-                            refer: 'comments.create',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.read_comments',
-                            refer: 'comments.view',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.update_comments',
-                            refer: 'comments.edit',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.delete_comments',
-                            refer: 'comments.delete',
-                            parent: 'contracts',
-                        },
-
-                        {
-                            ...row,
                             label: 'roles_permission.contracts.filter_deals',
                             refer: 'filter',
                             parent: 'contracts',
@@ -757,6 +726,22 @@ export default {
                           refer: 'delete',
                           parent: 'contracts',
                         },*/
+
+
+                        {
+                            ...row,
+                            label: 'roles_permission.contracts.uniformity',
+                            refer: 'uniformity',
+                            parent: 'contracts',
+                        },
+
+                        // {
+                        //   ...row,
+                        //   label: 'roles_permission.contracts.comments',
+                        //   refer: 'comments',
+                        //   parent: 'contracts',
+                        // },
+
                         {
                             ...row,
                             label: 'roles_permission.contracts.list',
@@ -850,24 +835,11 @@ export default {
 
                         {
                             ...row,
-                            label: 'roles_permission.contracts.uniformity',
-                            refer: 'uniformity',
-                            parent: 'contracts',
-                        },
-
-                        // {
-                        //   ...row,
-                        //   label: 'roles_permission.contracts.comments',
-                        //   refer: 'comments',
-                        //   parent: 'contracts',
-                        // },
-
-                        {
-                            ...row,
                             label: 'roles_permission.contracts.edit',
                             refer: 'edit',
                             parent: 'contracts',
                         },
+
                     ],
                 },
                 {
@@ -921,34 +893,34 @@ export default {
                             ...row,
                             label: 'roles_permission.activate_all',
                             refer: 'all',
-                            parent: 'users',
+                            parent: 'release_note',
                         },
                         {
                             ...row,
                             label: 'roles_permission.release_note.watch_notes',
                             refer: 'view',
-                            parent: 'users',
+                            parent: 'release_note',
                         },
 
                         {
                             ...row,
                             label: 'roles_permission.release_note.create_note',
                             refer: 'create',
-                            parent: 'users',
+                            parent: 'release_note',
                         },
 
                         {
                             ...row,
                             label: 'roles_permission.release_note.edit_note',
                             refer: 'edit',
-                            parent: 'users',
+                            parent: 'release_note',
                         },
 
                         {
                             ...row,
                             label: 'roles_permission.release_note.delete_note',
                             refer: 'delete',
-                            parent: 'users',
+                            parent: 'release_note',
                         }
                     ],
                 },
@@ -1204,10 +1176,13 @@ export default {
     },
     methods: {
         initPermissions() {
+            this.form = Object.assign({}, this.permissions, this.form)
+
             this.form = {
                 ...this.form,
                 ...this.permissions
             }
+
             this.name = this.updatingName
             this.permissionTabs = this.permissionTabs.map(pmTab => {
                 const rows = pmTab.rows.map(row => {
@@ -1220,14 +1195,14 @@ export default {
 
                     switch (hierarchyList.length) {
                         case 1 : {
-                            row.vBind = pmTabParent[one] ?? false
+                            row.vBind = !!pmTabParent[one]
                             break
                         }
                         case 2 : {
                             const hasChild = pmTabParent.hasOwnProperty(one)
 
                             if (hasChild) {
-                                row.vBind = pmTabParent[one][two] ?? false
+                                row.vBind = !!pmTabParent[one][two]
                             } else {
                                 row.vBind = false
                             }
@@ -1238,7 +1213,12 @@ export default {
                             const hasOne = pmTabParent.hasOwnProperty(one)
 
                             if (hasOne) {
-                                row.vBind = pmTabParent[one][two][three]
+                                const hasTwo = pmTabParent[one].hasOwnProperty(two)
+                                if (hasTwo) {
+                                    row.vBind = pmTabParent[one][two][three]
+                                }
+                                row.vBind = false
+
                             } else {
                                 row.vBind = false
                             }
@@ -1299,20 +1279,27 @@ export default {
                             break
                         }
                         case 2 : {
+                            console.log(pmTab.parent, 'pmTab.parent');
+                            console.log(row.parent, 'row.parent');
                             const hasChild = pmTabParent.hasOwnProperty(one)
                             if (hasChild) {
-                                row.vBind = pmTabParent[one][two] ?? false
+                                pmTabParent[one][two] = row.vBind
                             } else {
-                                row.vBind = false
+                                console.log(pmTabParent, one, two, pmTabParent[one], 'pmTabParent one two');
+                                pmTabParent[one][two] = false
                             }
                             break
                         }
                         case 3 : {
                             const hasOne = pmTabParent.hasOwnProperty(one)
                             if (hasOne) {
-                                row.vBind = pmTabParent[one][two][three]
+                                const hasTwo = pmTabParent[one].hasOwnProperty(two)
+                                if (hasTwo) {
+                                    pmTabParent[one][two][three] = row.vBind
+                                }
+                                pmTabParent[one][two][three] = false
                             } else {
-                                row.vBind = false
+                                pmTabParent[one][two][three] = false
                             }
                             break
                         }
