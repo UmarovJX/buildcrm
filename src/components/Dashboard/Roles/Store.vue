@@ -1279,13 +1279,10 @@ export default {
                             break
                         }
                         case 2 : {
-                            console.log(pmTab.parent, 'pmTab.parent');
-                            console.log(row.parent, 'row.parent');
                             const hasChild = pmTabParent.hasOwnProperty(one)
                             if (hasChild) {
                                 pmTabParent[one][two] = row.vBind
                             } else {
-                                console.log(pmTabParent, one, two, pmTabParent[one], 'pmTabParent one two');
                                 pmTabParent[one][two] = false
                             }
                             break
