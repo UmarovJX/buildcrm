@@ -27,11 +27,13 @@ export default {
     selected: "Выбранный",
     pointed: "Наведенный",
     not_selected: "Не выбранный",
-    hide_menu: "Скрыть меню",
+
     component: 'компонент',
     import: 'Импорт',
     found: 'Найденные',
     not_found: 'Не найденные',
+    pin_menu: 'Закрепить меню',
+    hide_menu: "Скрыть меню",
     roles_permission: {
         activate_all: 'Активировать все',
         placeholder_uz: "На Узбекском",

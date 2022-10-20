@@ -44,6 +44,9 @@
   justify-content: space-between;
   height: 100%;
   //min-height: 100vh;
+  ul {
+    margin-bottom: 0;
+  }
 
 }
 
@@ -64,12 +67,21 @@
   }
 }
 
+.menu-version {
+  font-family: CraftworkSans;
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 18px;
+  color: var(--gray-400);
+}
+
 .menu-content {
   display: flex;
   flex-direction: column;
   row-gap: .5rem;
   position: relative;
   padding: 0;
+  width: 100%;
 
   .menu__item {
     &:hover {
@@ -213,9 +225,10 @@
 
 .brand-logo {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
-  height: 72px;
+  align-items: center;
+  //height: 72px;
 
   img {
     object-position: top;

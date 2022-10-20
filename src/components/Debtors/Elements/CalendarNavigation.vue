@@ -179,10 +179,10 @@ export default {
 <style lang="scss" scoped>
 
 .navigation-content {
-    position: absolute;
     display: flex;
-    left: 50%;
-    transform: translateX(-50%);
+    //position: absolute;
+    //left: 50%;
+    //transform: translateX(-50%);
 }
 
 ::v-deep .navigation-date-picker {

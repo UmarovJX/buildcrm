@@ -417,8 +417,8 @@ export default {
             if (this.$i18n.locale === 'uz') {
                 language = 'lotin'
             }
-            const {first_name, second_name} = client
-            return this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
+            const {first_name, last_name, second_name} = client
+            return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
         },
         clientName(multiName, language) {
             const lastNameByLang = multiName[language]
@@ -428,7 +428,6 @@ export default {
                 const lastNameOtherLang = language === 'kirill' ? multiName['lotin'] : multiName['kirill']
                 if (lastNameOtherLang) return lastNameOtherLang
             }
-
             return ''
         },
         phonePrettier: (phone) => formatToPrice(phone),

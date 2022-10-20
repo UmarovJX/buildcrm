@@ -316,7 +316,7 @@ export default {
         return {
             order: {},
             showLoading: false,
-            activeTab: 0,
+            activeTab: 0 || 1,
             tabs: [
                 {
                     id: 0,
@@ -367,6 +367,14 @@ export default {
             get() {
                 const {name} = this.$route
                 const index = this.tabs.filter(item => item.route === name)
+                // let id = null
+                // this.tabs.forEach(item => {
+                //     if (item.id === index[0].id) {
+                //         id = item.id
+                //     } else {
+                //         id = this.tabs[0].id
+                //     }
+                // })
                 return index[0].id
             },
             set(value) {
@@ -511,12 +519,15 @@ export default {
         tabsConfiguration() {
             const {status, reissue} = this.order
             if (status === 'booked') {
-                this.tabs = this.tabs.filter(tab => tab.id !== 0)
+                this.tabs = this.tabs.filter(tab => {
+                    return tab.id !== 0 || tab.id !== 4
+                })
                 this.activeTab = this.tabs[0]
             }
             if (!(reissue?.view && this.reContractViewPermission)) {
                 this.tabs = this.tabs.filter(tab => tab.id !== 4)
             }
+
         },
         startLoading() {
             this.showLoading = true

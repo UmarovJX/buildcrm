@@ -20,11 +20,12 @@ export default {
     price_m2: "M2 uchun narx",
     other_price: 'Boshqa narx',
     remove_apartment: `Kvartirani o'chirish`,
-    hide_menu: "Menuni yashirish",
     component: 'komponent',
     import: 'Import',
     found: 'Topildi',
     not_found: 'Topilmadi',
+    pin_menu: "Menuni ko'rsatish",
+    hide_menu: "Menuni yashirish",
     roles_permission: {
         activate_all: 'Hammasini faollashtirish',
         placeholder_uz: "O'zbek tilida",
