@@ -152,7 +152,7 @@
                     <output-information
                         :price="true"
                         :property="`${ $t('contract_price') }`"
-                        :value="pricePrettier(debtorViewModalItem.amount)"
+                        :value="pricePrettier(debtorViewModalItem.order.total)"
                         class="mt-4 mb-4"
                     />
                     <!--   INITIAL PRICE     -->
@@ -319,7 +319,8 @@ export default {
                 appLoading: false,
                 order: {
                     installment_payment: null,
-                    installment_month: null
+                    installment_month: null,
+                    total: null,
                 },
                 client: {}
             },
@@ -441,9 +442,10 @@ export default {
         },
         getFullName(client) {
             if (client && Object.keys(client).length) {
-                const {first_name, last_name} = client
+
+                const {first_name, last_name, second_name} = client
                 const language = this.$i18n.locale === 'ru' ? 'kirill' : 'lotin'
-                return last_name[language] + ' ' + first_name[language]
+                return last_name[language] + ' ' + first_name[language] + ' ' + second_name[language]
             }
             return ''
         },

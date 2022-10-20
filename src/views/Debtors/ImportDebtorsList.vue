@@ -205,34 +205,7 @@ export default {
             stepThirdDisable: false,
             appLoading: false,
             importContracts: {},
-            resultList: [
-                {
-                    "uuid": "277a6359-5680-4a38-9b17-2c259b8b206c",
-                    "contract_number": "1SPI22YD",
-                    "client": {
-                        "uuid": "1c40b9db-a808-4db5-b6cb-a3427ca30488",
-                        "first_name": {
-                            "lotin": "Ulugbek",
-                            "kirill": "Улуғбек"
-                        },
-                        "last_name": {
-                            "lotin": "Tukhtaev",
-                            "kirill": "Тухтаев"
-                        },
-                        "second_name": {
-                            "lotin": "Turaxonovich",
-                            "kirill": "Турахонович"
-                        },
-                        "phone": 998901234567,
-                        "other_phone": 998903214567
-                    },
-                    "alias": {
-                        "uuid": "277a6359-5680-4a38-9b17-2c259b8b206c",
-                        "contract_number": "1SPI22YD",
-                        "alias": "1SPI22"
-                    }
-                }
-            ],
+            resultList: [],
             listLoading: false,
             resultDebtors: [],
             permissionLeave: false,
