@@ -406,19 +406,19 @@ export default {
         //   if (this.searchValue === search || search.length < 3) return
         //   this.searchValue = search
         // },
-        // getContractListBySearch() {
-        //   const {query, searchValue} = this
-        //   const hasSearchQuery = query.hasOwnProperty('search')
-        //   if (!hasSearchQuery) {
-        //     this.pushRouter({
-        //       search: searchValue
-        //     })
-        //     return
-        //   }
-        //
-        //   query.search = searchValue
-        //   this.pushRouter(query)
-        // },
+        getContractListBySearch() {
+            const {query, searchValue} = this
+            const hasSearchQuery = query.hasOwnProperty('search')
+            if (!hasSearchQuery) {
+                this.pushRouter({
+                    search: searchValue
+                })
+                return
+            }
+
+            query.search = searchValue
+            this.pushRouter(query)
+        },
         async fetchContractList() {
             const query = sortObjectValues(this.query)
 

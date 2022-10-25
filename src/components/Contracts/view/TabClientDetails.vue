@@ -140,15 +140,17 @@ export default {
             const {first_name, last_name, second_name} = client
             return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
         },
-        clientName(multiName, language) {
-            const lastNameByLang = multiName[language]
-            if (lastNameByLang) {
-                return lastNameByLang
-            } else {
-                const lastNameOtherLang = language === 'kirill' ? multiName['lotin'] : multiName['kirill']
-                if (lastNameOtherLang) return lastNameOtherLang
-            }
 
+        clientName(multiName, language) {
+            if (multiName) {
+                const lastNameByLang = multiName[language]
+                if (lastNameByLang) {
+                    return lastNameByLang
+                } else {
+                    const lastNameOtherLang = language === 'kirill' ? multiName['lotin'] : multiName['kirill']
+                    if (lastNameOtherLang) return lastNameOtherLang
+                }
+            }
             return ''
         },
         async changeClientType() {
