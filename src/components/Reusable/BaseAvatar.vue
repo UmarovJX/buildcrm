@@ -24,9 +24,8 @@
                 </div>
             </template>
             <template #list>
-                <b-dropdown-item style="touch-action: none">
-                    <a v-if="languagePermission"
-                       href="javascript:void(0)">
+                <b-dropdown-item v-if="languagePermission" style="touch-action: none">
+                    <a href="javascript:void(0)">
                         <label class="switch" @click="changeLocale">
                             <input type="checkbox" v-model="locale"/>
                             <div class="slider round">
