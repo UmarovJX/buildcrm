@@ -20,7 +20,7 @@
                     </base-button>
                 </template>
                 <template v-else>
-                    <base-button v-if="createCommentPermission" @click="openCreateModal"
+                    <base-button v-if="permissions && permissions.create" @click="openCreateModal"
                                  :text="`${ $t('contracts.add_note') }`">
                         <template #left-icon>
                             <BasePlusIcon fill="var(--violet-600)"/>
@@ -41,17 +41,17 @@
                             <app-dropdown
                                 :collapse-arrow="true"
                                 :position-right="true"
-                                v-if="deleteCommentPermission || editCommentPermission">
+                                v-if="permissions && (permissions.delete || permissions.edit)">
                                 <template #header>
                                     <BaseDotsIcon/>
                                 </template>
                                 <template #list>
-                                    <b-dropdown-item v-if="editCommentPermission" href="#"
+                                    <b-dropdown-item v-if="permissions && permissions.edit" href="#"
                                                      @click="openEditModal(comment)">
                                         <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
                                         {{ $t('edit') }}
                                     </b-dropdown-item>
-                                    <b-dropdown-item v-if="deleteCommentPermission" href="#"
+                                    <b-dropdown-item v-if="permissions && permissions.delete" href="#"
                                                      @click="warnBeforeDelete(comment.id)">
                                         <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
                                         {{ $t('delete') }}
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="expressView" class="d-flex justify-content-end">
+                <div v-if="expressView && permissions && permissions.create" class="d-flex justify-content-end">
                     <base-button @click="openCreateModal"
                                  :text="`${ $t('contracts.add_note') }`">
                         <template #left-icon>
@@ -138,7 +138,7 @@
                 <p class="comment-empty">
                     {{ $t('contracts.no_note') }}.
                 </p>
-                <div v-if="expressView" class="d-flex justify-content-end">
+                <div v-if="expressView  && permissions && permissions.create" class="d-flex justify-content-end">
                     <base-button @click="openCreateModal"
                                  :text="`${ $t('contracts.add_note') }`">
                         <template #left-icon>
@@ -283,11 +283,9 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-// import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import {KFormSelect} from "@/components/ui-components/form-select";
-import ContractsPermission from "@/permission/contract";
 import {sortInFirstRelationship, sortObjectValues} from "@/util/reusable";
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 
@@ -303,7 +301,6 @@ export default {
         BaseEditIcon,
         BaseArrowRightIcon,
         BaseArrowLeftIcon,
-        // BaseDownIcon,
         BaseCloseIcon,
         BaseModal,
     },
@@ -323,6 +320,10 @@ export default {
         commentLoading: {
             type: Boolean,
             default: false
+        },
+        permissions: {
+            type: Object,
+            required: true,
         }
     },
 
@@ -360,9 +361,7 @@ export default {
                 title: '',
             },
             loading: false,
-            createCommentPermission: ContractsPermission.getContractsCreateCommentPermission(),
-            editCommentPermission: ContractsPermission.getContractsEditCommentPermission(),
-            deleteCommentPermission: ContractsPermission.getContractsInitialDeletePermission(),
+
         }
     },
     watch: {

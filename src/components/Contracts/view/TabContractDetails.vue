@@ -1,7 +1,8 @@
 <template>
     <div>
 
-        <div v-if="uniformityPermission && compareDetails" class="compare__details">
+        <div v-if="uniformityPermission && compareDetails"
+             class="compare__details">
             <h3 class="compare__details-title">{{ $t('contract_compare.compare_title') }}</h3>
 
             <div class="row">
@@ -9,7 +10,7 @@
                     <div class="compare__details-item">
                         <div class="compare__details-item_card">
                             <label>{{ $t('contract_compare.course_usd') }}</label>
-                            <b-form-input v-if="compareDetails['currency']" disabled
+                            <b-form-input v-if="compareDetails.currency" disabled
                                           :value="pricePrettier(compareDetails['currency'].usd)"/>
                         </div>
                     </div>
@@ -32,7 +33,7 @@
                     <div class="compare__details-item">
                         <div class="compare__details-item_card">
                             <label>{{ $t('contract_compare.first_price') }}</label>
-                            <b-form-input v-if="compareDetails['prices']" disabled
+                            <b-form-input v-if="compareDetails.prices" disabled
                                           :value="pricePrettier(compareDetails['prices'].sale)"/>
                         </div>
                     </div>
@@ -41,7 +42,7 @@
                     <div class="compare__details-item">
                         <div class="compare__details-item_card">
                             <label>{{ $t('contract_compare.full_price') }}</label>
-                            <b-form-input v-if="compareDetails['prices']" disabled
+                            <b-form-input v-if="compareDetails.prices" disabled
                                           :value="pricePrettier(compareDetails['prices'].sold)"/>
                         </div>
                     </div>
@@ -117,7 +118,7 @@
                 <div class="d-flex">
                     <div class="client__details_info_card mr-5">
                         <label>{{ $t('agent') }}</label>
-                        <b-form-input disabled :value="companyDetails['full_name']"/>
+                        <b-form-input disabled :value="companyDetails.full_name"/>
                     </div>
                     <div class="client__details_info_card">
                         <label>{{ $t('contract_price') }}</label>
@@ -172,11 +173,10 @@ import {formatDateWithDot, formatToPrice} from "@/util/reusable";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
-
 import ContractComments from "@/components/Contracts/view/ContractComments";
 
 export default {
-    name: "TabClientDetails",
+    name: "TabContractDetails",
     components: {
         ContractComments
     },
@@ -186,15 +186,29 @@ export default {
             required: true
         }
     },
-    emits: ['start-loading', 'finish-loading'],
     data() {
         return {
-            companyDetails: {},
-            otherDetails: {},
+            companyDetails: {
+                company_name: null,
+                full_name: null,
+                inn: null,
+                mfo: null,
+                payment_account: null
+            },
+            otherDetails: {
+                contract: null,
+                contract_date: null,
+                created_by: null,
+                id: null,
+                status: null,
+                transaction_price: null,
+            },
             compareDetails: {},
-            viewCommentPermission: ContractsPermission.getContractsViewCommentPermission(),
+            viewCommentPermission: ContractsPermission.getContractsViewCommentPermission()
         }
     },
+    emits: ['start-loading', 'finish-loading'],
+
     async created() {
         await this.fetchContractDetails()
         if (this.uniformityPermission) {
@@ -229,9 +243,9 @@ export default {
             this.startLoading()
             const {id} = this.$route.params
             await api.contractV2.fetchContractDetails(id)
-                .then(response => {
+                .then((response) => {
                     this.companyDetails = response.data['company_details']
-                    this.otherDetails = response.data['other_details']
+                    this.otherDetails = response.data.other_details
                 })
                 .catch((error) => {
                     this.toastedWithErrorCode(error)

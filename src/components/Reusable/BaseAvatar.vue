@@ -132,8 +132,10 @@ export default {
             }
         },
         logout() {
-            localStorage.removeItem('auth__access__token')
-            localStorage.removeItem('auth__refresh__token')
+            localStorage.clear();
+            sessionStorage.clear();
+            this.nullableAuth();
+            this.nullMe();
             this.$router.push({name: "login"})
         },
     }

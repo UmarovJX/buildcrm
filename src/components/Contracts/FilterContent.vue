@@ -117,7 +117,6 @@ export default {
       await api.contractV2.fetchActivityLogFilterFields(id)
           .then((response) => {
             this.filterFields = response.data
-            console.log(this.filterFields);
           }).catch((err) => {
             this.toastedWithErrorCode(err)
           }).finally(() => {

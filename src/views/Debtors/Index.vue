@@ -431,7 +431,7 @@ export default {
             }
             return ''
         },
-        phonePrettier: (phone) => formatToPrice(phone),
+        phonePrettier: (phone) => phonePrettier(phone),
         pricePrettier: (price) => formatToPrice(price),
         formatDateWithDot,
         subtractResult(a, b) {

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import {formatDateWithDot} from "@/util/reusable";
+import {formatDateWithDot, formatToPrice, phonePrettier} from "@/util/reusable";
 
 export default {
     name: "ThirdStep",
@@ -75,11 +75,13 @@ export default {
                 },
                 {
                     key: 'client.phone',
-                    label: 'phone'
+                    label: 'phone',
+                    formatter: (phone) => phonePrettier(phone)
                 },
                 {
                     key: 'data.amount',
-                    label: 'contracts.view.sum'
+                    label: 'contracts.view.sum',
+                    formatter: (amount) => (formatToPrice(amount) + ' ' + this.$t('ye'))
                 },
                 {
                     key: 'payment_type',
@@ -109,7 +111,6 @@ export default {
             return ''
         },
         dateFormat(date) {
-            console.log(date, 'date');
             return formatDateWithDot(date)
         },
         getPaymentType(type) {
@@ -149,8 +150,11 @@ export default {
                 case "manual":
                     msg = "Ручной создано";
                     break;
-                default:
+                case "initial":
                     msg = "Первоначальный взнос";
+                    break;
+                default:
+                    msg = type;
                     break;
             }
 

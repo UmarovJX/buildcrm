@@ -259,18 +259,20 @@
 
                 <!--  Show By Select    -->
                 <div class="show__by">
-        <span class="show__by__content">
-          <span class="description">{{ $t('contracts.show_by') }}:</span>
-          <b-form-select
-              @input="limitChanged"
-              v-model="showByValue"
-              :options="showByOptions"
-          ></b-form-select>
-          <span class="arrow__down">
-            <base-down-icon/>
-          </span>
-        </span>
+                    <k-form-select
+                        :label="false"
+                        :options="showByOptions"
+                        v-model="showByValue"
+                        @change="limitChanged"
+                    >
+                        <template #output-prefix>
+                        <span class="show-by-description">
+                            {{ $t('contracts.show_by') }}:
+                        </span>
+                        </template>
+                    </k-form-select>
                 </div>
+
             </div>
 
             <!--      <div>-->
@@ -383,7 +385,6 @@
 import api from "@/services/api"
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import {isPrimitiveValue, sortObjectValues} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import {mapGetters} from "vuex";
@@ -402,6 +403,7 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
+import {KFormSelect} from "@/components/ui-components/form-select";
 
 export default {
     name: 'ObjectTable',
@@ -410,7 +412,7 @@ export default {
         BaseCheckbox,
         BaseArrowRightIcon,
         BaseArrowLeftIcon,
-        BaseDownIcon,
+        KFormSelect,
         BaseLoading,
         BaseModal,
         BaseInput,
@@ -703,7 +705,7 @@ export default {
                 ...this.query, page: 1
             }
             const limit = this.showByValue
-            this.replaceRouter({...query, limit})
+            this.pushRouter({...query, limit})
         },
         replaceRouter(query) {
             const sortQuery = sortObjectValues(query)

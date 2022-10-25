@@ -108,7 +108,7 @@ export default class ContractsPermission extends Permission {
     }
 
     static getContractsEditCommentPermission() {
-        return this.getContractsPermission('comments.update')
+        return this.getContractsPermission('comments.edit')
     }
 
     static getContractsDeleteCommentPermission() {

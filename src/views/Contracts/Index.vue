@@ -131,19 +131,6 @@
 
             <!--  Show By Select    -->
             <div class="show__by">
-                <!--        <span class="show__by__content">-->
-                <!--          <span class="description">{{ $t('contracts.show_by') }}:</span>-->
-                <!--          <b-form-select-->
-                <!--              @input="limitChanged"-->
-                <!--              v-model="showByValue"-->
-                <!--              :options="showByOptions"-->
-                <!--          ></b-form-select>-->
-
-                <!--          <span class="arrow__down">  -->
-                <!--            <base-down-icon/>-->
-                <!--          </span>-->
-                <!--        </span>-->
-
                 <k-form-select
                     :label="false"
                     :options="showByOptions"
@@ -151,11 +138,9 @@
                     @change="limitChanged"
                 >
                     <template #output-prefix>
-            <span
-                class="show-by-description"
-            >
-                  {{ $t('contracts.show_by') }}:
-            </span>
+                        <span class="show-by-description">
+                            {{ $t('contracts.show_by') }}:
+                        </span>
                     </template>
                 </k-form-select>
             </div>
@@ -404,7 +389,7 @@ export default {
         },
         changeFetchLimit() {
             const {query} = this
-            const isNotUpdate = query.limit.toString() === this.showByValue.toString()
+            const isNotUpdate = query.limit?.toString() === this.showByValue.toString()
             if (isPrimitive(query.limit) && isNotUpdate) return
             const localQuery = {
                 ...this.query, page: 1

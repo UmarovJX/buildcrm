@@ -241,6 +241,12 @@ export default {
                     view: true,
                     create: true
                 },
+                comments: {
+                    view: false,
+                    create: false,
+                    edit: false,
+                    delete: false
+                }
 
             },
             users: {
@@ -560,25 +566,25 @@ export default {
                         },
                         {
                             ...row,
-                            label: 'roles_permission.contracts.read_comments',
+                            label: 'roles_permission.apartments.read_comments',
                             refer: 'comments.view',
                             parent: 'apartments',
                         },
                         {
                             ...row,
-                            label: 'roles_permission.contracts.create_comments',
+                            label: 'roles_permission.apartments.create_comments',
                             refer: 'comments.create',
                             parent: 'apartments',
                         },
                         {
                             ...row,
-                            label: 'roles_permission.contracts.update_comments',
+                            label: 'roles_permission.apartments.update_comments',
                             refer: 'comments.edit',
                             parent: 'apartments',
                         },
                         {
                             ...row,
-                            label: 'roles_permission.contracts.delete_comments',
+                            label: 'roles_permission.apartments.delete_comments',
                             refer: 'comments.delete',
                             parent: 'apartments',
                         },
@@ -735,12 +741,6 @@ export default {
                             parent: 'contracts',
                         },
 
-                        // {
-                        //   ...row,
-                        //   label: 'roles_permission.contracts.comments',
-                        //   refer: 'comments',
-                        //   parent: 'contracts',
-                        // },
 
                         {
                             ...row,
@@ -837,6 +837,31 @@ export default {
                             ...row,
                             label: 'roles_permission.contracts.edit',
                             refer: 'edit',
+                            parent: 'contracts',
+                        },
+
+                        {
+                            ...row,
+                            label: 'roles_permission.contracts.read_comments',
+                            refer: 'comments.view',
+                            parent: 'contracts',
+                        },
+                        {
+                            ...row,
+                            label: 'roles_permission.contracts.create_comments',
+                            refer: 'comments.create',
+                            parent: 'contracts',
+                        },
+                        {
+                            ...row,
+                            label: 'roles_permission.contracts.update_comments',
+                            refer: 'comments.edit',
+                            parent: 'contracts',
+                        },
+                        {
+                            ...row,
+                            label: 'roles_permission.contracts.delete_comments',
+                            refer: 'comments.delete',
                             parent: 'contracts',
                         },
 
@@ -1215,10 +1240,10 @@ export default {
                             if (hasOne) {
                                 const hasTwo = pmTabParent[one].hasOwnProperty(two)
                                 if (hasTwo) {
-                                    row.vBind = pmTabParent[one][two][three]
+                                    row.vBind = !!pmTabParent[one][two][three]
+                                } else {
+                                    row.vBind = false
                                 }
-                                row.vBind = false
-
                             } else {
                                 row.vBind = false
                             }
@@ -1293,8 +1318,9 @@ export default {
                                 const hasTwo = pmTabParent[one].hasOwnProperty(two)
                                 if (hasTwo) {
                                     pmTabParent[one][two][three] = row.vBind
+                                } else {
+                                    pmTabParent[one][two][three] = false
                                 }
-                                pmTabParent[one][two][three] = false
                             } else {
                                 pmTabParent[one][two][three] = false
                             }

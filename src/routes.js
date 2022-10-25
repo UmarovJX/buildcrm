@@ -272,7 +272,7 @@ const routes = [
                         path: "comment",
                         component: ApartmentCommentTab,
                         meta: {
-                            requiresAuth: "apartments",
+                            requiresAuth: "apartments.comments",
                         },
                     }
                 ]

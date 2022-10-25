@@ -121,16 +121,11 @@ export default {
         getContractNumbers() {
             const contractFieldName = this.fileFields[0].type
             let debtorsSheets = this.getDebtorsSheets
-            console.log(contractFieldName, 'contractFieldName');
             let contractsList = []
             if (debtorsSheets.rows && debtorsSheets.rows.length) {
                 debtorsSheets.rows.slice(0, 1)
-                console.log(debtorsSheets.rows, 'excelSheets');
                 debtorsSheets.rows.map(item => {
-                    console.log(item, 'item');
                     for (const [key, value] of Object.entries(item)) {
-                        console.log(key, 'key');
-                        console.log(value, 'value');
                         if (key === contractFieldName) {
                             contractsList = [...contractsList, value]
                         }

@@ -268,6 +268,7 @@ export default {
         },
         Logout() {
             localStorage.clear();
+            sessionStorage.clear();
             this.nullableAuth();
             this.nullMe();
             this.$router.push({name: "login"});
