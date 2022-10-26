@@ -636,8 +636,11 @@ router.beforeEach(async (to, from, next) => {
         } else {
             next()
         }
-    } else
+    } else {
+        Permission.clearUserPermission()
         return next({name: 'login'})
+    }
+
 })
 
 export default router

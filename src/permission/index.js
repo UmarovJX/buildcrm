@@ -10,6 +10,11 @@ export default class Permission {
         return this.user
     }
 
+    static clearUserPermission() {
+        this.user = null
+        this.permission = null
+    }
+
     static getUserPermission(property) {
         const splitProperty = property.split('.')
         const [one, two] = splitProperty

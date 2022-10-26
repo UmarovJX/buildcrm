@@ -197,7 +197,18 @@ export default {
             next(false);
         }
     },
-
+    created() {
+        console.log(performance.navigation, 'this.performance');
+        window.onbeforeunload = function (e) {
+            e = e || window.event;
+            //old browsers
+            if (e) {
+                e.returnValue = 'Changes you made may not be saved';
+            }
+            //safari, chrome(chrome ignores text)
+            return 'Changes you made may not be saved';
+        };
+    },
     data() {
         return {
             tabIndex: 0,

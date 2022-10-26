@@ -51,6 +51,7 @@ import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 import {localeChanged} from "vee-validate";
 import GeneralPermission from "@/permission/general";
 import {mapActions} from "vuex";
+import Permission from "@/permission";
 
 export default {
     name: "BaseAvatar",
@@ -135,6 +136,7 @@ export default {
             sessionStorage.clear();
             this.nullableAuth();
             this.nullMe();
+            Permission.clearUserPermission()
             this.$router.push({name: "login"})
         },
     }
