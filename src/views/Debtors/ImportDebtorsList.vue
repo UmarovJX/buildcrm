@@ -240,17 +240,6 @@ export default {
         backNavigation() {
             this.$router.go(-1)
         },
-        async submitConcludeDebtors() {
-            const body = {
-                payments: this.resultDebtors
-            }
-            await api.debtorsV2.activatePayments(body).then(() => {
-                this.permissionLeave = true
-                this.$router.push({name: 'debtors'})
-            }).catch((err) => {
-                return err
-            })
-        },
         async changeTab() {
             if (this.tabIndex === 0) {
                 const typeFieldValidation = await this.$refs['first-step'].validateFirstStep()
@@ -315,7 +304,19 @@ export default {
             }).finally(() => {
                 this.listLoading = false
             })
-        }
+        },
+        async submitConcludeDebtors() {
+            const body = {
+                payments: this.resultDebtors
+            }
+            await api.debtorsV2.activatePayments(body).then(() => {
+                this.permissionLeave = true
+                this.$store.dispatch('notify/openNotify', {type: 'success', duration: 3000})
+                this.$router.push({name: 'debtors'})
+            }).catch((err) => {
+                return err
+            })
+        },
     },
 }
 </script>

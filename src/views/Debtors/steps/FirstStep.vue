@@ -28,7 +28,7 @@
                         v-slot="{ errors }"
                         rules="required"
                         class="cell"
-                        :name="`$t('${data.item.field}')`"
+                        :name="$t(`${data.item.field}`)"
                     >
                         <k-form-select class="w-100"
                                        v-model="data.item.type"
