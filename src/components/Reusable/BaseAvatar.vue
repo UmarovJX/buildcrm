@@ -24,13 +24,13 @@
                 </div>
             </template>
             <template #list>
-                <b-dropdown-item v-if="languagePermission" style="touch-action: none">
+                <b-dropdown-item class="lang-block" v-if="languagePermission" style="touch-action: none">
                     <a href="javascript:void(0)">
                         <label class="switch" @click="changeLocale">
                             <input type="checkbox" v-model="locale"/>
                             <div class="slider round">
-                                <span>Ру</span>
-                                <span>Uz</span>
+                                <span>Русский</span>
+                                <span>O’zbekcha</span>
                             </div>
                         </label>
                     </a>
@@ -86,7 +86,7 @@ export default {
             && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
         return {
             settingsPermission,
-            locale: null,
+            locale: false,
             languagePermission: GeneralPermission.getLanguagePermission(),
         }
     },
@@ -120,13 +120,15 @@ export default {
         },
         changeLocale() {
             if (this.locale === false) {
+                localStorage.setItem('locale', 'ru')
                 localStorage.locale = "ru";
-                this.$root.$i18n.locale = "ru";
+                this.$i18n.locale = "ru";
                 this.locale = true
                 localeChanged()
             } else {
+                localStorage.setItem('locale', 'uz')
                 localStorage.locale = "uz";
-                this.$root.$i18n.locale = "uz";
+                this.$i18n.locale = "uz";
                 this.locale = false
                 localeChanged()
             }
@@ -239,6 +241,12 @@ export default {
     .notArrow .b-dropdown .btn:not(.dropdown-item),
     .notArrow .btn-secondary:not(.dropdown-item) {
         border-radius: 2rem !important;
+    }
+}
+
+::v-deep .lang-block {
+    .dropdown-item {
+        padding: 0 !important;
     }
 }
 </style>
