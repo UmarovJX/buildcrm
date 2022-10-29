@@ -7,39 +7,37 @@
     </div>
     <base-numeric-input
         v-if=" type === 'number'"
-        :currency="currency"
+        v-model="inputModel"
         :minus="false"
         :value="null"
         :disabled="disable"
-        currency-symbol-position="suffix"
-        separator="space"
+        :currency="currency"
         :placeholder="placeholder"
-        ref="base-input"
         :field-style="inputFieldStyle"
-        @input="triggerNumberEvent"
+        ref="base-input"
+        separator="space"
+        currency-symbol-position="suffix"
     />
     <input
         v-else-if="mask !== ''"
-        v-model="searchInput"
         :type="type"
+        v-model="inputModel"
+        ref="base-input"
+        id="base-input-mask"
         v-mask="mask"
         :disabled="disable"
-        id="base-input-mask"
-        ref="base-input"
         :style="inputFieldStyle"
         :placeholder="placeholder"
-        @input="triggerInputEvent"
     />
     <input
         v-else
-        v-model="searchInput"
         :type="type"
+        v-model="inputModel"
         :disabled="disable"
         id="base-input"
         ref="base-input"
         :style="inputFieldStyle"
         :placeholder="placeholder"
-        @input="triggerInputEvent"
     />
 
     <span
@@ -54,19 +52,28 @@
 
 <script>
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import {debounce} from "@/util/reusable";
+import {isUndefinedOrNullOrEmpty} from "@/util/inspect";
 
 const cssDefaultProperty = {
   type: String,
   default: ''
 }
+
 export default {
   name: "BaseInput",
+
   components: {
     BaseTimesCircleIcon,
     BaseNumericInput: () => import('@/components/Reusable/BaseNumericInput')
   },
-  emits: ['input', 'trigger-input', 'search-by-filter', 'replace-router'],
+
+  model: {
+    prop: 'value',
+    event: 'input'
+  },
+
+  emits: ['input'],
+
   props: {
     placeholder: {
       type: String,
@@ -110,21 +117,17 @@ export default {
     marginLeft: cssDefaultProperty,
     marginRight: cssDefaultProperty
   },
+
   data() {
+    let inputModel = this.value
+
     return {
-      debounceInput: this.value,
-      showClearIcon: false,
+      inputModel,
+      showClearIcon: !isUndefinedOrNullOrEmpty(inputModel),
     }
   },
+
   computed: {
-    searchInput: {
-      get() {
-        return this.value
-      },
-      set(val) {
-        this.$emit('input', val)
-      }
-    },
     inputFieldStyle() {
       const {
         margin,
@@ -152,41 +155,31 @@ export default {
       }
     }
   },
+
   watch: {
-    searchInput: debounce(function (newValue) {
-      this.debounceInput = newValue
-    }, 350),
-    debounceInput() {
-      setTimeout(() => {
-        this.focusOnSearchInput()
-      }, 100)
-      if (this.type === 'text' || this.type === 'search') {
-        this.toggleClearIcon()
-        this.triggerInputEvent()
-      }
+    inputModel() {
+      this.emitValue()
+      this.toggleClearButton()
     },
-  },
-  mounted() {
-    if (this.searchInput?.length) {
-      this.toggleClearIcon()
+    value(valueUpdateByParent) {
+      if (valueUpdateByParent !== this.inputModel) {
+        this.inputModel = valueUpdateByParent
+      }
     }
   },
+
   methods: {
-    focusOnSearchInput() {
-      this.$refs['base-input'].focus()
+    toggleClearButton() {
+      this.showClearIcon = !isUndefinedOrNullOrEmpty(this.inputModel)
     },
     clearSearchInput() {
-      this.searchInput = ''
+      this.effectModel('')
     },
-    toggleClearIcon() {
-      this.showClearIcon = !!this.searchInput.length
+    effectModel(value) {
+      this.inputModel = value
     },
-    triggerInputEvent() {
-      this.$emit('trigger-input', this.debounceInput)
-    },
-    triggerNumberEvent($event) {
-      this.debounceInput = $event
-      this.$emit('trigger-input', this.debounceInput)
+    emitValue() {
+      this.$emit('input', this.inputModel)
     }
   },
 }

@@ -33,21 +33,21 @@
               {{ scope.emptyText }}
             </span>
                 </template>
-                <!--        <template #head(check)="{item}" class="p-0">-->
-                <!--          <span>-->
-                <!--            <base-checkbox-->
-                <!--                :checked="checkAll"-->
-                <!--                @input="chooseAllApartment"-->
-                <!--            />-->
-                <!--          </span>-->
-                <!--        </template>-->
+                <template #head(check)="{item}" class="p-0">
+                  <span>
+                    <base-checkbox
+                        :checked="checkAll"
+                        @input="chooseAllApartment"
+                    />
+                  </span>
+                </template>
                 <template #cell(check)="data" class="p-0">
-          <span v-if="data.item.is_sold && data.item.order.status === 'available'">
-            <base-checkbox
-                :checked="data.item.checked"
-                @input="activateApartment(data,$event)"
-            />
-          </span>
+                  <span v-if="data.item.is_sold && data.item.order.status === 'available'">
+                    <base-checkbox
+                        :checked="data.item.checked"
+                        @input="activateApartment(data,$event)"
+                    />
+                  </span>
                 </template>
                 <template #cell(number)="data" class="p-0">
                     <div class="d-flex position-relative">
@@ -455,10 +455,10 @@ export default {
             check_all: false,
             chosen: 0,
             fields: [
-                // {
-                //   key: "check",
-                //   item: BaseCheckbox,
-                // },
+                {
+                  key: "check",
+                  // item: BaseCheckbox,
+                },
                 {
                     key: "number",
                     label: this.$t('object.sort.number_flat'),

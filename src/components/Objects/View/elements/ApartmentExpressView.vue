@@ -420,7 +420,7 @@ export default {
         if (data) {
           const objectId = data.apartments[0].object.id
           await this.$router.push({
-            name: 'confirm-apartment',
+            name: 'experiment',
             params: {
               id: data.uuid,
               object: objectId

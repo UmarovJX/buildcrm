@@ -1,0 +1,43 @@
+::v-deep .app-tabs-content {
+  &-header {
+    display: flex;
+    align-items: center !important;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    margin-bottom: 2rem;
+    border-top: 6px solid var(--gray-100);
+    border-bottom: 6px solid var(--gray-100);
+    padding: 20px 3rem;
+
+    .nav-item {
+      min-width: max-content;
+
+      .nav-link {
+        padding: 8px 6px;
+      }
+
+      .active {
+        background-color: transparent;
+
+        .app-tab-title-number {
+          background-color: var(--violet-600);
+          color: white;
+        }
+
+        p {
+          color: var(--violet-600);
+        }
+      }
+
+      &:last-child {
+        width: 100%;
+
+        .nav-link {
+          display: flex;
+          //justify-content: flex-end;
+        }
+      }
+
+    }
+  }
+}

@@ -7,14 +7,19 @@
     <slot name="option-left"/>
     <slot name="default"/>
     <span v-if="absentDefaultSlot">
-      {{ inlineOption[textField] }}
+      <span v-if="bilingual">{{ $t(inlineOption[textField]) }}</span>
+      <span v-else>{{ inlineOption[textField] }}</span>
     </span>
     <slot name="option-right"/>
     <span
         v-if="showActiveCheckIcon"
         class="option-check-icon"
     >
-      <base-check-icon fill="#7C3AED" :width="20" :height="20"/>
+      <base-check-icon
+          fill="#7C3AED"
+          :width="20"
+          :height="20"
+      />
     </span>
   </li>
 </template>
@@ -52,6 +57,7 @@ export default {
       textField,
       valueField,
       checked: false,
+      bilingual: this.$parent.bilingual ?? false
     }
   },
 

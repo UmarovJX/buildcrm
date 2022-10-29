@@ -565,9 +565,10 @@
 
 .b-sidebar.b-sidebar-right {
   background-color: var(--background-color-nav) !important;
-  * {
-    color: var(--link);
-  }
+  color:var(--link);
+  //* {
+  //  color: var(--link);
+  //}
   @include mq("tablet", max) {
     width: 100% !important;
   }

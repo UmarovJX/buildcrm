@@ -7,6 +7,7 @@
     <div
         @click="toggleOptionList"
         class="k-form-select-header"
+        :class="{'select-validation-failed':error}"
     >
       <div
           class="k-form-select-header-content"
@@ -35,7 +36,8 @@
             <slot name="output"/>
             <template v-if="!hasOutputSlot">
               <slot name="output-prefix"/>
-              {{ selectList.value }}
+              <span v-if="bilingual">{{ $t(selectList.value) }}</span>
+              <span v-else>{{ selectList.value }}</span>
               <slot name="output-suffix"/>
             </template>
           </div>
@@ -101,6 +103,7 @@ export default {
   props: {
     id: p(PROP_TYPE_STRING),
     name: p(PROP_TYPE_STRING),
+    bilingual: p(PROP_TYPE_BOOLEAN, false),
     required: p(PROP_TYPE_BOOLEAN, false),
     disabled: p(PROP_TYPE_BOOLEAN, false),
     multiple: p(PROP_TYPE_BOOLEAN, false),
@@ -112,9 +115,10 @@ export default {
     optionClass: p(PROP_TYPE_OBJECT_STRING, {}),
     placeholder: p(PROP_TYPE_STRING, undefined),
     label: p(PROP_TYPE_BOOLEAN, true),
+    error: p(PROP_TYPE_BOOLEAN, false),
     getter: p(PROP_TYPE_STRING, 'value', (vGetter) => {
       return ['full', 'text', 'value'].includes(vGetter)
-    })
+    }),
   },
 
   data() {
@@ -172,11 +176,6 @@ export default {
       return this.$slots.hasOwnProperty('placeholder')
     },
     hasOutputSlot() {
-      /*
-      *
-      * axios.get('/slides')
-      *
-      * */
       return this.$slots.hasOwnProperty('output')
     },
     selectList() {
@@ -232,8 +231,7 @@ export default {
       const _dValue = this.$attrs.value ?? this.value
       const typeArray = isArray(_dValue)
       const typeObject = isObject(_dValue)
-      if (isUndefinedOrNull(_dValue))
-        return
+      if (isUndefinedOrNull(_dValue)) return
       if (this.multiple) {
         if (typeArray) {
           const isContainObjects = _dValue.every(v => isObject(v))
@@ -261,7 +259,8 @@ export default {
             this.selected = _dValue[0]
           }
         } else if (typeObject) {
-          this.selected = _dValue
+          const majorValue = _dValue[valueField]
+          this.selected = this.findOption(majorValue).option ?? _dValue
         } else if (isPrimitive(_dValue)) {
           this.selected = {}
           const _fChild = this.findOption(_dValue)

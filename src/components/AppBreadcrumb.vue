@@ -92,12 +92,13 @@ export default {
     },
     pageInfo: {
       type: [Object, String],
-      required: true
+      default: null
     },
   },
   computed: {
     title() {
       const {pageInfo} = this
+      if (!pageInfo) return null
       const {title: pageTitle} = pageInfo
 
       if (typeof pageInfo === 'string') {
@@ -201,6 +202,8 @@ export default {
   }
 
   &-page-title {
+    display: flex;
+    column-gap: 0.5rem;
     font-size: 24px;
     font-weight: 900;
     color: var(--gray-600);

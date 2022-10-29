@@ -21,7 +21,6 @@
         </div>
       </template>
     </app-header>
-
     <!--  Header Navigation  -->
     <!--        <div v-if="finishLoading && objectName.length" class="navigation__content justify-content-between">-->
     <!--            <div class="d-flex align-items-center">-->
@@ -136,6 +135,7 @@
         :plan-id="planView.item.id"
         @hide-plan-sidebar-view="hidePlanSidebarView"
     />
+
   </div>
 </template>
 
@@ -426,7 +426,7 @@ export default {
   methods: {
     async fetchNecessary() {
       if (this.currentTab === 'ObjectTable') {
-        await this.$refs['object-child'].fetchContractList()
+        await this.$refs['object-child']?.fetchContractList()
       }
 
       if (ApartmentsPermission.getApartmentsPermission('filter')) {

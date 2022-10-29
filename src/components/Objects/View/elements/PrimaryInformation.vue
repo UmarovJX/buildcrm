@@ -178,22 +178,22 @@ export default {
         return {
             /* SLIDER OPTION */
             swiperOption: {
-                slidesPerView: 1,
-                spaceBetween: 0,
-                direction: 'horizontal',
-                pagination: {
-                    el: '.swiper-pagination',
-                    type: 'bullets',
-                    clickable: true
-                },
-                paginationClickable: true,
-                draggable: true,
-                loop: false,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                }
+            slidesPerView: 1,
+            spaceBetween: 0,
+            direction: 'horizontal',
+            pagination: {
+              el: '.swiper-pagination',
+              type: 'bullets',
+              clickable: true
             },
+            paginationClickable: true,
+            draggable: true,
+            loop: false,
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            }
+          },
         }
     },
     mounted() {
@@ -237,7 +237,6 @@ export default {
 }
 </script>
 
-
 <style lang="sass" scoped>
 ::v-deep .main__content
     .slider__image
@@ -245,9 +244,6 @@ export default {
 
 ::v-deep .slider-content
     margin: 1rem
-    //margin-left: 1rem
-    //margin-right: 1rem
-    //margin-bottom: 1rem
 
     .swiper-container
         display: flex

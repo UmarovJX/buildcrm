@@ -5,9 +5,9 @@
       <slot name="left-icon"/>
       <slot name="property"/>
       <span
-        v-if="!hasPropertySlot"
-        class="d-block property"
-    >
+          v-if="!hasPropertySlot"
+          class="d-block property"
+      >
         {{ localProperty }}
       </span>
     </div>
@@ -39,7 +39,7 @@ export default {
     },
     value: {
       type: [String, Number],
-      required: true
+      default: ''
     },
     translate: {
       type: Boolean,
@@ -83,7 +83,9 @@ export default {
   border: 3px solid var(--gray-200);
   border-radius: 2rem;
   background-color: white;
-  padding: 1rem 1.75rem;
+  //padding: 1rem 1.75rem;
+  padding-left: 1.75rem;
+  padding-right: 1rem;
   font-family: CraftworkSans, serif;
 
   .property {
@@ -99,18 +101,22 @@ export default {
     color: var(--gray-600) !important;
     line-height: 22px;
   }
+
   .info-row {
     gap: 16px;
+
     &-icon {
       background: #EDE9FE;
       border-radius: 50%;
       padding: 0 5px 3px;
     }
+
     &-icon:nth-child(2) {
       background: #7C3AED;
       padding: 2px 5px 5px;
     }
   }
+
   .info-row:first-child {
     gap: 12px;
   }

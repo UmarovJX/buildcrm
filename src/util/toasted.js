@@ -5,10 +5,11 @@ export default {
         },
 
         toastedWithErrorCode(error) {
+            console.error('toastedWithErrorCode', error)
             if (!error.response) {
-                this.toasted("Error: Network Error", "error");
+                this.toasted(`Error: ${error}`, "error");
             } else {
-                const status = error.response.status
+                const status = error?.response?.status
                 const message = error.response.data.message
 
                 /* CLIENT AND SERVER ERROR */

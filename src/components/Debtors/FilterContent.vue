@@ -104,7 +104,7 @@ import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseRightModal from "@/components/Reusable/BaseRightModal";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import InputPriceFromTo from "@/components/Elements/Inputs/InputPriceFromTo";
-// import BootstrapSelect from "@/components/Elements/Selects/BootstrapSelect";
+// import BootstrapSelect from "@/components/elements/Selects/BootstrapSelect";
 import CalendarNavigation from "@/components/Debtors/Elements/CalendarNavigation";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFilterIcon from "@/components/icons/BaseFilterIcon";

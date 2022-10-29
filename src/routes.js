@@ -41,7 +41,7 @@ import ContractView from "@/views/Contracts/View/Index"
 import ApartmentView from '@/views/Objects/Apartments/View/Index'
 import ObjectsView from '@/views/Objects/View/Index'
 import Debtors from "@/views/Debtors/Index"
-import Experiment from "@/views/Experiment";
+import Experiment from "@/views/Experiment/Index";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 import Documentation from "@/views/Documentation/documentation";
@@ -74,7 +74,7 @@ const routes = [
             },
 
             {
-                path: '/experiment',
+                path: '/Experiment/:object/apartment/:id/order',
                 name: 'experiment',
                 component: Experiment
             },

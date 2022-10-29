@@ -1,11 +1,11 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 
+const {ymd, nextMonthYmd} = dateProperties('', 'string')
 export default {
     initializeState(state, context) {
         const {
             uuid,
-            discount,
             expiry_at,
             created_by,
             apartments,
@@ -13,12 +13,9 @@ export default {
         } = context
         state.uuid = uuid
         state.order = context
-        state.discount = discount
         state.expiry_at = expiry_at
         state.created_by = created_by
         state.contract_number = contract_number
-        state.calc.prepayment = discount.prepay
-        state.calc.monthly_payment_period = apartments[0].object.credit_month
         state.apartments = apartments.map(apartment => {
             return {
                 ...apartment,
@@ -28,24 +25,36 @@ export default {
                     plan: apartment.plan,
                     area: apartment.plan.area,
                     total_discount: 0,
-                    discount_per_m2: 0
+                    discount_per_m2: 0,
+                    prepay: 0,
+                    monthly_payment_period: 20,
+                    first_payment_date: ymd,
+                    payment_date: nextMonthYmd,
+                    monthly_payment: 0,
+                    discount: null,
+                    contract_date: ymd,
+                    base_price: 0,
+                    initial_price: 0,
+                    remainder: 0,
+                    total: 0,
+                    other_price: false,
                 }
             }
         })
     },
-    setDiscount(state, discount) {
-        state.discount = discount
+    setDiscount(state, {discount, idx}) {
+        state.apartments[idx].discount = discount
     },
-    setPrepay(state, discount) {
-        if (!state.edit.discount) {
-            state.calc.prepay = discount.prepay
+    setPrepay(state, {discount, idx}) {
+        if (!state.apartments[idx].edit.discount) {
+            state.apartments[idx].calc.prepay = discount.prepay
         }
     },
-    editState(state, editField) {
-        state.edit[editField] = true
+    editState(state, {editField, idx}) {
+        state.apartments[idx].edit[editField] = true
     },
-    deactivateState(state, editField) {
-        state.edit[editField] = false
+    deactivateState(state, {editField,idx}) {
+        state.apartments[idx].edit[editField] = false
     },
     updateApartmentCalc(state, item) {
         const {id, price, price_m2, total_discount, discount_per_m2} = item

@@ -37,12 +37,14 @@ import DebtorsImport from "./modules/debtors-import";
 import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
 import checkout from "@/store/modules/Checkout"
+import Experiment from "@/store/modules/Experiment";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
         Loading,
+        Experiment,
         Features,
         managers,
         managers_info,

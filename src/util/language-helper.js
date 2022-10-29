@@ -1,86 +1,4 @@
-const cyrillicCollection = [
-    "Ё",
-    "Й",
-    "Ц",
-    "У",
-    "К",
-    "Е",
-    "Н",
-    "Г",
-    "Ш",
-    "Щ",
-    "З",
-    "Х",
-    "Ъ",
-    "ё",
-    "й",
-    "ц",
-    "у",
-    "к",
-    "е",
-    "н",
-    "г",
-    "ш",
-    "щ",
-    "з",
-    "х",
-    "ъ",
-    "Ф",
-    "Ы",
-    "В",
-    "А",
-    "П",
-    "Р",
-    "О",
-    "Л",
-    "Д",
-    "Ж",
-    "Э",
-    "ф",
-    "ы",
-    "в",
-    "а",
-    "п",
-    "р",
-    "о",
-    "л",
-    "д",
-    "ж",
-    "э",
-    "Я",
-    "Ч",
-    "С",
-    "М",
-    "И",
-    "Т",
-    "Ь",
-    "Б",
-    "Ю",
-    "я",
-    "ч",
-    "с",
-    "м",
-    "и",
-    "т",
-    "ь",
-    "б",
-    "ю"
-]
-
-console.log(cyrillicCollection)
-
-
-function symbolIsCyrillic(event) {
-    return event
-        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
-        .replace(/(\..*?)\..*/g, "$1");
-}
-
-function symbolIsLatin(event) {
-    return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
-}
-
-function symbolCyrillicToLatin(word) {
+export function symbolCyrillicToLatin(word) {
     symbolIsCyrillic(word)
 
     let result = '';
@@ -155,6 +73,7 @@ function symbolCyrillicToLatin(word) {
 
 
     for (let i in word) {
+
         if (word.hasOwnProperty(i)) {
             if (A[word[i]] === undefined) {
                 result += word[i];
@@ -164,10 +83,11 @@ function symbolCyrillicToLatin(word) {
         }
     }
 
+
     return result;
 }
 
-function symbolLatinToCyrillic(word) {
+export function symbolLatinToCyrillic(word) {
     word = symbolIsLatin(word);
 
     let result = '';
@@ -275,11 +195,16 @@ function symbolLatinToCyrillic(word) {
             }
         }
     }
+
     return result;
 }
 
-export default {
-    symbolIsCyrillic,
-    symbolCyrillicToLatin,
-    symbolLatinToCyrillic,
+export function symbolIsCyrillic(event) {
+    return event
+        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
+        .replace(/(\..*?)\..*/g, "$1");
+}
+
+export function symbolIsLatin(event) {
+    return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
 }
