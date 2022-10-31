@@ -1,25 +1,30 @@
 <template>
-  <div>
-    <app-header
-        :page="headerItems.page"
-        :page-info="headerItems.pageInfo"
-        :breadcrumbs="headerItems.breadcrumbs"
-    >
-      <template #header-right>
-        <div
-            v-if="expiry_at"
-            :class="flexCenter"
-            class="checkout-timer background-violet-gradient mr-2"
-        >
-          <CountDown
-              :deadline="expiry_at"
-              :showDays="false"
-              :showHours="false"
-              @timeElapsed="expiredConfirm"
-          />
-        </div>
-      </template>
-    </app-header>
+    <div>
+        <app-header>
+            <template #header-breadcrumb>
+                <app-breadcrumb
+                    :page="headerItems.page"
+                    :page-info="headerItems.pageInfo"
+                    :breadcrumbs="headerItems.breadcrumbs"
+                />
+            </template>
+            <template v-if="expiry_at" #header-actions>
+
+                <div
+
+                    :class="flexCenter"
+                    class="checkout-timer background-violet-gradient mr-2"
+                >
+                    <CountDown
+                        :deadline="expiry_at"
+                        :showDays="false"
+                        :showHours="false"
+                        @timeElapsed="expiredConfirm"
+                    />
+                </div>
+            </template>
+
+        </app-header>
 
     <k-loading-wrapper :loading="appLoading">
       <div class="app-checkout-main">
@@ -87,7 +92,7 @@ import {KLoadingWrapper} from "@/components/ui-components/loading";
 import {KIcon} from "@/components/ui-components/material-icons";
 import BaseButton from "@/components/Reusable/BaseButton";
 import CountDown from "@/components/Reusable/CountDown";
-import AppHeader from "@/components/AppHeader";
+import AppHeader from "@/components/Header/AppHeader";
 import TabTitle from "@/views/Experiment/elements/TabTitle";
 import ChClientDetails from "@/views/Experiment/components/ChClientDetails";
 import ChApartmentsOverview from "@/views/Experiment/components/ChApartmentsOverview";
@@ -96,11 +101,12 @@ import ChReview from "@/views/Experiment/components/ChReview";
 import {headerItems} from "@/views/Experiment/helper/headerComputed";
 import api from "@/services/api";
 import {mapActions, mapState} from "vuex";
+import AppBreadcrumb from "@/components/AppBreadcrumb";
 
 export default {
   name: "Index",
   components: {
-    KLoadingWrapper,
+    AppBreadcrumb,KLoadingWrapper,
     KIcon,
     BaseButton,
     CountDown,
