@@ -212,7 +212,7 @@ export default {
     installment: "Bo'lib to'lash rejasi",
     prepayment: "Oldindan to'lov",
     discount_per_m: 'Chegirma M',
-    discount_per_m2: 'm2 uchun chegirma',
+    discount_per_m2: 'M2 uchun chegirma',
     enter_discount: "To'lov turini tanlang",
     address_office: 'Toshkent shahri, Yunusobod tumani, Yangi shahar ko‘chasi, 64A-uy',
     motto: 'Orzular sari ishonchli qadam!',

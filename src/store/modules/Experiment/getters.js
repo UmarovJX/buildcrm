@@ -1,4 +1,4 @@
-import {isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {isString, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 
 export default {
@@ -21,7 +21,12 @@ export default {
     isDiscountOtherType: (state, gts) => (idx) => gts.getApm({idx}).calc.discount.id === 'other',
     getPrepay: (state, gts) => (idx) => gts.getApm({idx}).calc.prepay,
     getMonth: (state, gts) => (idx) => gts.getApm({idx}).calc.monthly_payment_period,
-    discount:(state,gts) => ({idx,discountId}) => gts.getApm({idx}).discounts.find(dsc => dsc.id === discountId),
+    discount: (state, gts) => ({idx, discountId}) => {
+        if (isString(discountId) && discountId === 'other') {
+            return state.schema.otherDiscount
+        }
+        return gts.getApm({idx}).discounts.find(dsc => dsc.id === discountId)
+    },
     getBasePrice: (state, gts) => (idx) => gts.getApm({idx}).price,
     getInitialPayments: (state, gts) => (idx) => gts.getApm({idx}).calc.initial_payments,
     getCreditMonths: (state, gts) => (idx) => gts.getApm({idx}).calc.credit_months,

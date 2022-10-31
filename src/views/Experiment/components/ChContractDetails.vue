@@ -6,9 +6,9 @@
         <template #value>
           <div class="d-flex align-items-center" style="column-gap: 1rem">
             <span>{{ contractNumber }}</span>
-            <span class="edit-icon-wrapper">
-            <k-icon name="edit" size="13.5" class="color-white"/>
-          </span>
+            <span @click="openEditNumberModal" class="edit-icon-wrapper">
+              <k-icon name="edit" size="13.5" class="color-white"/>
+            </span>
           </div>
         </template>
       </output-information>
@@ -21,6 +21,39 @@
           :icon-fill="datePickerIconFill"
       />
     </div>
+
+    <base-modal ref="edit-contract-number" design="auto-height">
+      <template #header>
+        <span class="d-flex align-items-center justify-content-between">
+          <!--    TITLE      -->
+          <span class="title">{{ $t('apartments.agree.number') }}</span>
+          <!--   CLOSE    -->
+          <span class="go__back" @click="closeEditNumberModal">
+            <BaseCloseIcon :width="56" :height="56"/>
+          </span>
+        </span>
+      </template>
+
+      <template #main>
+        <div>
+          <base-input
+              :label="true"
+              class="w-100"
+              padding-left="2px !important"
+              v-model="newContractNumber"
+              :placeholder="`${ $t('apartments.agree.number') }`"
+          />
+        </div>
+      </template>
+      <template #footer>
+        <base-button
+            @click="setNewContractNumber"
+            :disabled="!changedContractNumber"
+            class="violet-gradient w-100"
+            :text="`${ $t('apply') }`"
+        />
+      </template>
+    </base-modal>
   </div>
 </template>
 
@@ -31,7 +64,12 @@ import {PROP_TYPE_OBJECT} from "@/constants/props";
 import SectionTitle from "@/views/Experiment/elements/SectionTitle";
 import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+import BaseModal from "@/components/Reusable/BaseModal";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BaseInput from "@/components/Reusable/BaseInput";
+import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import {KIcon} from "@/components/ui-components/material-icons";
+import {mapState} from "vuex";
 
 export default {
   name: "ChContractDetails",
@@ -39,6 +77,10 @@ export default {
     SectionTitle,
     OutputInformation,
     BaseDatePicker,
+    BaseModal,
+    BaseButton,
+    BaseInput,
+    BaseCloseIcon,
     KIcon
   },
   props: {
@@ -47,10 +89,42 @@ export default {
   data() {
     return {
       contractDate: null,
-      contractNumber: 'J45TKL076',
-      datePickerIconFill: 'var(--violet-600)'
+      datePickerIconFill: 'var(--violet-600)',
+      changedContractNumber: false,
+      newContractNumber: '',
+      contractNumber: ''
     }
   },
+  computed: {
+    ...mapState('Experiment', {
+      stateContractNumber: 'contract_number'
+    })
+  },
+  watch: {
+    newContractNumber(value) {
+      this.changedContractNumber = !!(value && value.length && !(value === this.contractNumber))
+      if (this.changedContractNumber) {
+        this.$emit('change-contract-number', value)
+      }
+    }
+  },
+  mounted() {
+    this.contractNumber = this.stateContractNumber
+  },
+  methods: {
+    closeEditNumberModal() {
+      this.$refs['edit-contract-number'].closeModal()
+      this.changedContractNumber = false
+    },
+    setNewContractNumber() {
+      this.contractNumber = this.newContractNumber
+      this.closeEditNumberModal()
+    },
+    openEditNumberModal() {
+      this.newContractNumber = this.contractNumber
+      this.$refs['edit-contract-number'].openModal()
+    },
+  }
 }
 </script>
 
@@ -68,5 +142,6 @@ export default {
   background-color: var(--violet-600);
   border-radius: 50%;
   cursor: pointer;
+  user-select: none;
 }
 </style>

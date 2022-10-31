@@ -2,28 +2,28 @@
   <div class="ch-payment-result">
     <div class="ch-payment-information">
       <span class="gray-400">{{ $t('starting_price') }}</span>
-      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.base_price) }} сум</span>
+      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.base_price, 2) }} сум</span>
 
       <span class="gray-400">{{ $t('price_m') }}<sup>2</sup></span>
-      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.price_m2) }} сум</span>
+      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.price_m2, 2) }} сум</span>
 
       <span class="gray-400">{{ $t('contracts.view.initial_fee') }}</span>
-      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.initial_price) }} сум</span>
+      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.initial_price, 2) }} сум</span>
 
       <span class="gray-400">{{ $t('remainder') }}</span>
-      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.remainder) }} сум</span>
+      <span class="ch-price-cell gray-400">{{ prettier(apm.calc.remainder, 2) }} сум</span>
 
       <span class="teal-500">{{ $t('total_discount') }}</span>
-      <span class="ch-price-cell teal-500">{{ prettier(apm.calc.total_discount) }} сум</span>
+      <span class="ch-price-cell teal-500">{{ prettier(apm.calc.total_discount, 2) }} сум</span>
 
       <span class="teal-500">{{ $t('discount_per_m') }}<sup>2</sup></span>
-      <span class="ch-price-cell teal-500">{{ prettier(apm.calc.discount_per_m2) }} сум</span>
+      <span class="ch-price-cell teal-500">{{ prettier(apm.calc.discount_per_m2, 2) }} сум</span>
     </div>
     <div class="ch-border-dashed"></div>
     <div class="ch-total-price">
       <span class="violet-500 ch-price-total-cell">{{ $t('total') }}</span>
       <span class="ch-price-cell violet-700 ch-price-total-cell ch-price-total">
-        {{ prettier(apm.calc.total) }} сум
+        {{ prettier(apm.calc.total, 2) }} сум
       </span>
     </div>
   </div>
