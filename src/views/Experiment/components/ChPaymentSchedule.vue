@@ -190,11 +190,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions('checkout', {
-      addNewPaymentSchedule: 'addNewPaymentSchedule',
-      editPaymentSchedule: 'editPaymentSchedule',
-      deletePaymentSchedule: 'deletePaymentSchedule'
-    }),
+    ...mapActions('Experiment', [
+      'addNewPaymentSchedule',
+      'editPaymentSchedule',
+      'deletePaymentSchedule',
+    ]),
     formatDate: formatDateWithDot,
     editSelectedPayment(payment) {
       const {ymd} = dateProperties(payment.month, 'string')
@@ -212,16 +212,19 @@ export default {
       this.$refs['edit-payment-schedule'].closeModal()
     },
     addPayment(payment) {
-      this.addNewPaymentSchedule(payment)
+      this.addNewPaymentSchedule({apmId: this.apartment.id, payment})
     },
     deletePayment(payment) {
-      this.deletePaymentSchedule(payment)
+      this.deletePaymentSchedule({apmId: this.apartment.id, payment})
     },
     editPayment() {
       const {time} = dateProperties(this.editContext.month, 'string')
       this.editPaymentSchedule({
-        ...this.editContext,
-        month: time,
+        apmId: this.apartment.id,
+        payment: {
+          ...this.editContext,
+          month: time,
+        }
       })
       this.closeEditModal()
     }

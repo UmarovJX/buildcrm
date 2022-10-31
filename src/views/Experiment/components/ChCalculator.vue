@@ -1,5 +1,8 @@
 <template>
-  <div class="ch-calculator-wrapper">
+  <div
+      class="ch-calculator-wrapper"
+      :class="{'ch-another-price-content':showAnotherPriceFields}"
+  >
     <!--? PAYMENT OPTION SELECT  -->
     <validation-provider
         v-slot="{ errors }"
@@ -17,6 +20,48 @@
           @change="changeDiscount"
       />
     </validation-provider>
+
+    <!--! START OF ANOTHER PRICE FIELDS -->
+    <!--? STARTING PRICE  -->
+    <validation-provider
+        v-if="showAnotherPriceFields"
+        v-slot="{ errors }"
+        rules="required"
+        :name="`${ $t('starting_price') }`"
+        class="cw-starting-price"
+    >
+      <k-form-input
+          type="number"
+          v-model="paymentDetails.starting_price"
+          :label="true"
+          :precision="2"
+          :error="!!errors[0]"
+          :placeholder="`${ $t('starting_price') }`"
+          class="w-100"
+          @input="updateIndividualPrice('starting_price')"
+      />
+    </validation-provider>
+
+    <!--? PRICE PER M2 -->
+    <validation-provider
+        v-if="showAnotherPriceFields"
+        v-slot="{ errors }"
+        rules="required"
+        :name="`${ $t('price_m2') }`"
+        class="cw-price-m2"
+    >
+      <k-form-input
+          type="number"
+          v-model="paymentDetails.price_m2"
+          :label="true"
+          :precision="2"
+          :error="!!errors[0]"
+          :placeholder="`${ $t('price_m2') }`"
+          class="w-100"
+          @input="updateIndividualPrice('price_m2')"
+      />
+    </validation-provider>
+    <!--! END OF ANOTHER PRICE FIELDS -->
 
     <!--? INSTALLMENT PLAN  -->
     <validation-provider
@@ -38,6 +83,7 @@
 
     <!--? PREPAYMENT  -->
     <validation-provider
+        v-show="!showAnotherPriceFields"
         v-slot="{ errors }"
         rules="required"
         :name="`${ $t('prepayment') }`"
@@ -65,6 +111,7 @@
           type="number"
           v-model="paymentDetails.initial_price"
           :label="true"
+          :precision="2"
           :error="!!errors[0]"
           :placeholder="`${ $t('payments.initial_fee') }`"
           class="w-100"
@@ -75,7 +122,6 @@
     <!--? TOTAL_DISCOUNT  -->
     <validation-provider
         v-slot="{ errors }"
-        rules="required"
         :name="`${ $t('total_discount') }`"
         class="cw-total-discount"
     >
@@ -83,6 +129,7 @@
           type="number"
           v-model="paymentDetails.total_discount"
           :label="true"
+          :precision="2"
           :error="!!errors[0]"
           :placeholder="`${ $t('total_discount') }`"
           class="w-100"
@@ -93,7 +140,6 @@
     <!--? DISCOUNT_PER_M2  -->
     <validation-provider
         v-slot="{ errors }"
-        rules="required"
         :name="`${ $t('discount_per_m2') }`"
         class="cw-discount-per-m2"
     >
@@ -101,6 +147,7 @@
           type="number"
           v-model="paymentDetails.discount_per_m2"
           :label="true"
+          :precision="2"
           :error="!!errors[0]"
           :placeholder="`${ $t('discount_per_m2') }`"
           class="w-100"
@@ -179,7 +226,8 @@ export default {
       total_discount,
       discount_per_m2,
       first_payment_date,
-      payment_date
+      payment_date,
+      other
     } = this.apartment.calc
 
     return {
@@ -192,11 +240,14 @@ export default {
         total_discount,
         discount_per_m2,
         first_payment_date,
-        payment_date
+        payment_date,
+        price_m2: other.price_m2,
+        starting_price: other.starting_price,
       }
     }
   },
   computed: {
+    ...mapGetters('Experiment', ['getApm', 'apartmentArea', 'findApmIdx']),
     paymentOptions() {
       if (hasChild(this.apartment)) {
         const discounts = this.apartment.discounts.map((discount, index) => {
@@ -225,7 +276,17 @@ export default {
       }
       return []
     },
-    ...mapGetters('Experiment', ['getApm'])
+    showAnotherPriceFields() {
+      return this.paymentDetails.discount === 'other'
+    }
+  },
+
+  watch: {
+    'apartment.calc.monthly_payment_period'(mthPymPeriod) {
+      if (this.paymentDetails.monthly_payment_period !== mthPymPeriod) {
+        this.paymentDetails.monthly_payment_period = mthPymPeriod
+      }
+    }
   },
 
   methods: {
@@ -236,7 +297,8 @@ export default {
       'editInitialPrice',
       'updateDiscount',
       'updateFirstPaymentDate',
-      'updatePaymentDate'
+      'updatePaymentDate',
+      'setIndividualPrice',
     ]),
     getCalc() {
       return this.getApm({uuid: this.apartment.id}).calc
@@ -250,7 +312,8 @@ export default {
         total_discount,
         discount_per_m2,
         first_payment_date,
-        payment_date
+        payment_date,
+        other
       } = this.getCalc()
 
       this.paymentDetails = {
@@ -261,7 +324,9 @@ export default {
         total_discount,
         discount_per_m2,
         first_payment_date,
-        payment_date
+        payment_date,
+        price_m2: other.price_m2,
+        starting_price: other.starting_price
       }
     },
     changeDiscount(discountId) {
@@ -342,7 +407,28 @@ export default {
           payment_date
         })
       }
-    }
+    },
+    updateIndividualPrice(from = 'starting_price') {
+      const index = this.findApmIdx(this.apartment.id)
+      const {price_m2, starting_price} = this.paymentDetails
+      if (from === 'price_m2') {
+        if (this.apartment.price_m2 !== price_m2) {
+          this.setIndividualPrice({
+            index,
+            price_m2,
+            starting_price: fmd(price_m2 * this.apartmentArea(index)),
+          })
+        }
+      } else {
+        if (this.apartment.price !== starting_price) {
+          this.setIndividualPrice({
+            index,
+            price_m2: fmd(starting_price / this.apartmentArea(index)),
+            starting_price,
+          })
+        }
+      }
+    },
   }
 }
 </script>
@@ -359,6 +445,23 @@ export default {
     "cv-cell-8 cv-cell-8";
   gap: 1rem;
 
+  &.ch-another-price-content {
+    grid-template-areas:
+    "cv-cell-1 cv-cell-1"
+    "cv-st-price cv-price-m2"
+    "cv-cell-2 cv-cell-4"
+    "cv-cell-5 cv-cell-6"
+    "cv-cell-7 cv-cell-7"
+    "cv-cell-8 cv-cell-8";
+  }
+
+  .cw-starting-price {
+    grid-area: cv-st-price;
+  }
+
+  .cw-price-m2 {
+    grid-area: cv-price-m2;
+  }
 
   .cw-payment-option {
     grid-area: cv-cell-1;

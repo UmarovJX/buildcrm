@@ -24,6 +24,10 @@ const schema = {
         other_price: false,
         credit_months: [],
         initial_payments: [],
+        other: {
+            price_m2: 0,
+            starting_price: 0,
+        }
     },
     edit: {
         initial_price: false,
@@ -32,6 +36,14 @@ const schema = {
         discount: false,
         monthly: false
     },
+    otherDiscount: {
+        value: 'other',
+        type: 'percent',
+        currency: null,
+        amount: 0,
+        id: 'other',
+        prepay: 30
+    }
 }
 
 export default {

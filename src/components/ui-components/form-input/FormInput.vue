@@ -14,6 +14,7 @@
         :currency="currency"
         :placeholder="placeholder"
         :field-style="inputFieldStyle"
+        :precision="precision"
         ref="base-input"
         separator="space"
         currency-symbol-position="suffix"
@@ -77,6 +78,10 @@ export default {
   props: {
     placeholder: {
       type: String,
+    },
+    precision: {
+      type: Number,
+      default: 0
     },
     value: {
       type: [String, Number, Array],
