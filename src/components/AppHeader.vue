@@ -99,7 +99,7 @@ export default {
   }
 
   &-page-content {
-    margin-left: 1rem;
+    //margin-left: 1rem;
   }
 
   &-page-title {
