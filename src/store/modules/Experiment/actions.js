@@ -34,7 +34,7 @@ export default {
         const discount = gts.discount({idx, discountId})
         commit('updateApartment', {
             idx, apm: {discount},
-            edit: {prepay: false},
+            edit: {prepay: false, initial_price: false},
             calc: {discount, prepay: discount.prepay}
         })
 
@@ -252,6 +252,11 @@ export default {
             })
         }
 
+        if (payment.type === 'initial') {
+            commit('setInitialResult', gts.initiallyTotal(idx))
+            commit('setRemainAmount', gts.getTotal(idx) - gts.initiallyTotal(idx))
+        }
+
         dispatch('rerenderApm', {idx})
     },
     reInitCalc({getters: gts, dispatch}, {payment, idx}) {
@@ -397,12 +402,15 @@ export default {
     },
     setIndividualPrice({getters: gts, commit, dispatch}, {index, apmId, starting_price, price_m2}) {
         const idx = index ?? gts.findApmIdx(apmId)
-        commit('updateApartment', {idx, calc: {other: {starting_price, price_m2}}})
+        commit('updateApartment', {
+            idx,
+            calc: {
+                other: {starting_price, price_m2}
+            },
+        })
 
+        dispatch('rerenderApm', {idx})
         dispatch('initialPaymentsSetter', {index: idx})
         dispatch('monthlyPaymentsSetter', {index: idx})
-        commit('reset')
-
-        console.log('total', gts.getTotal(idx), gts.initiallyTotal(idx))
     }
 }

@@ -56,7 +56,7 @@ export default {
             return apartment.price
         } else {
             if (gts.isDiscountOtherType(idx)) {
-                return apartment.calc.price
+                return apartment.calc.other.starting_price
             }
             return apartment.price * (1 + gts.discountAmount(idx) / 100)
         }
@@ -86,7 +86,7 @@ export default {
     getInitialPrice: (state, gts) => (idx) => {
         const apartment = gts.getApm({idx})
 
-        if (apartment.edit.initial_price) {
+        if (apartment.edit.initial_price && gts.getMonth(idx)) {
             if (apartment.calc.initial_price.toString() === '') {
                 return 0
             }
