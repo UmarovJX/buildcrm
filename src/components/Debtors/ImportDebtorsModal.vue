@@ -47,7 +47,7 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import readExcelFile from 'read-excel-file'
 import {mapMutations} from "vuex";
-import api from "@/services/api";
+// import api from "@/services/api";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import DebtorsFileUploader from "@/components/Reusable/DebtorsFileUploader";
 
@@ -77,22 +77,19 @@ export default {
                 return Math.round(kilobyte) + ' КБ'
             }
             return 0
-        }
+        },
+
     },
     methods: {
         ...mapMutations({
             updateDebtorsExcel: 'updateDebtorsExcel'
         }),
         downloadTemplate() {
-            api.contractV2.downloadContractTemplate()
-                .then(response => {
-                    const fileURL = window.URL.createObjectURL(new Blob([response.data]))
-                    const fileLink = document.createElement('a')
-                    fileLink.href = fileURL
-                    fileLink.setAttribute('download', 'contract_template.xlsx')
-                    document.body.appendChild(fileLink)
-                    fileLink.click()
-                })
+            const fileURL = process.env.VUE_APP_URL_V2 + '/debtors/template'
+            const fileLink = document.createElement('a')
+            fileLink.href = fileURL
+            document.body.appendChild(fileLink)
+            fileLink.click()
         },
         openModal() {
             this.$refs['base-modal'].openModal()
@@ -120,7 +117,6 @@ export default {
                     return loopPackage
                 })
                 sortRows.unshift(head)
-                console.log(sortRows, 'sortRows');
                 this.updateDebtorsExcel({
                     rows: sortRows,
                     file: this.excelFile

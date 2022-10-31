@@ -10,8 +10,19 @@ export default class Permission {
         return this.user
     }
 
+    static clearUserPermission() {
+        this.user = null
+        this.permission = null
+    }
+
     static getUserPermission(property) {
-        return this.permission[property]
+        const splitProperty = property.split('.')
+        const [one, two] = splitProperty
+        if (splitProperty.length > 1) {
+            return this.permission[one][two] ?? false
+        } else {
+            return this.permission[one] ?? false
+        }
     }
 
     static hasAdminRole() {

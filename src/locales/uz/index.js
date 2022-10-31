@@ -42,11 +42,12 @@ export default {
     price_m2: "M2 uchun narx",
     other_price: 'Boshqa narx',
     remove_apartment: `Kvartirani o'chirish`,
-    hide_menu: "Menuni yashirish",
     component: 'komponent',
     import: 'Import',
     found: 'Topildi',
     not_found: 'Topilmadi',
+    pin_menu: "Menuni ko'rsatish",
+    hide_menu: "Menuni yashirish",
     roles_permission: {
         activate_all: 'Hammasini faollashtirish',
         placeholder_uz: "O'zbek tilida",
@@ -65,7 +66,8 @@ export default {
             debtors: 'Qarzdorlar',
             companies: 'Kompaniyalar',
             payment_account: 'Hisob',
-            branches: 'Filiallar'
+            branches: 'Filiallar',
+            release_note: 'Reliz qaydlar',
 
         },
         general: {
@@ -106,7 +108,11 @@ export default {
             change_list_apartments: 'Xonadonlar jadvalini ko\'rish huquqi',
             list_apartments1: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 1.0 dan foydalanish huquqi',
             list_apartments2: 'Xonadonlar ro\'yxatini o\'zgartirish uchun shaxmatka 2.0 dan foydalanish huquqi',
-            using_layouts: 'Xonadonlar ro\'yxatini o\'zgartirish uchun xonadon rejasidan foydalanish huquqi'
+            using_layouts: 'Xonadonlar ro\'yxatini o\'zgartirish uchun xonadon rejasidan foydalanish huquqi',
+            read_comments: "Izohlarni ko'rish huquqi",
+            create_comments: "Izohni yaratish huquqi",
+            update_comments: "Izohni tahrirlash huquqi",
+            delete_comments: "Izohni o'chirish huquqi",
         },
         execution: {
             book_apartment: 'Xonadonni bron qilish huquqi (bitta obyekt sahifasi)',
@@ -146,16 +152,22 @@ export default {
             comments: 'Shartnomalarga izoh yozish huquqi',
             edit: 'Shartnomalarni tahrirlash huquqi',
             full_access: 'Barchasiga ruxsat berish',
-            update_comments: 'Izohlarni tahrirlash huquqi',
-            delete_comments: 'Izohlarni o\'chirish huquqi',
-            create_comments: 'Izohlarni yaratish huquqi',
-            read_comments: 'Izohlarni ko\'rish huquqi',
+            read_comments: "Izohlarni ko'rish huquqi",
+            create_comments: "Izohni yaratish huquqi",
+            update_comments: "Izohni tahrirlash huquqi",
+            delete_comments: "Izohni o'chirish huquqi",
         },
         users: {
             watch_users: 'Foydalanuvchilarni ko\'rish huquqi',
             create_user: 'Foydalanuvchilarni yaratish huquqi',
             edit_user: 'Foydalanuchilarni tahrirlash huquqi',
             delete_user: 'Foydalanuvchilarni o\'chirish huquqi'
+        },
+        release_note: {
+            watch_notes: "Reliz qaydlarini ko'rish huquqi",
+            create_note: "Reliz qaydini yaratish huquqi",
+            edit_note: "Reliz qaydini tahrirlash huquqi",
+            delete_note: "Reliz qaydini o'chirish huquqi",
         },
         roles: {
             watch_roles: 'Rollar ro\'xatini ko\'rish huquqi',
@@ -256,8 +268,14 @@ export default {
     recontract_details: 'Qayta rasmiylashtirish tafsilotlari',
     contract_log: 'Faoliyat jurnali',
     recontract_download: 'Qayta rasmiylashtirilgan shartnomani yuklash',
+    leave_import: 'Importni tark etasizmi?',
+    leave_import_text: "Haqiqatan ham importni bekor qilish va undan chiqishni xohlaysizmi? </br>" +
+        "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
+    no_leave: "Yo'q, qolaman",
+    yes_leave: "Ha, chiqaman",
     yes: "Ha",
     no: "Yo'q",
+    id: "Id",
     image: "Surat",
     address: "Manzil", // 'settings': 'Настройки',
     no_data: "Ma'lumotlar yo'q",
@@ -1100,6 +1118,16 @@ export default {
             add_file: "Fayl qo'shish",
             add_audio: "Audio qo'shish",
         }
+    },
+
+    release_note: {
+        add_release_note: "Reliz yozuvlarini qo'shish",
+        release_note: "Relizlar qaydlari",
+        version_number: "Versiya raqami",
+        texts: "Matnlar",
+        new: "Yangi",
+        published: "Nashr qilingan",
+        comment: "Siz har doim versiya raqamini bosish orqali sozlamalarda nashr yozuvlarini topishingiz mumkin."
     },
 
     sweetAlert: {

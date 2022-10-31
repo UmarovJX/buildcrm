@@ -403,7 +403,7 @@
                     @CloseAgree="CloseAgree"
                 ></agree-modal>
 
-                <success-agree :contract="contract"></success-agree>
+                <success-agree :contract="contract" :uuid="contract.id"></success-agree>
             </div>
         </div>
         <apartments-booking-modal @set-client-data="bookSelectedApartments"/>
@@ -646,7 +646,7 @@ export default {
     },
 
     methods: {
-        ...mapActions([, "fetchReserveClient"]),
+        ...mapActions(["fetchReserveClient"]),
         ...mapMutations(['updateSpecificApartment']),
         bookSelectedApartments(client) {
             const {values: apartments} = this.selected

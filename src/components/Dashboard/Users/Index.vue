@@ -16,7 +16,7 @@
                 class="ml-4"
             >
                 <template #left-icon>
-                    <i class="fal fa-plus mr-2"></i>
+                    <base-plus-icon fill="#fff"/>
                 </template>
             </base-button>
         </div>
@@ -207,10 +207,12 @@ import BaseDownIcon from "@/components/icons/BaseArrowDownIcon";
 import {mapGetters} from "vuex";
 import UsersPermission from "@/permission/users"
 import AppHeader from "@/components/Header/AppHeader";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
 
 export default {
     name: 'UsersPage',
     components: {
+        BasePlusIcon,
         AppHeader,
         BaseSearchInput,
         BaseLoading,

@@ -1,54 +1,44 @@
 <template>
-    <div class="notification-bar" :class="[value.type,value.visible?'':'d-none']">
+    <div class="notification-bar" :class="[xNotify.type,xNotify.visible?'':'d-none']">
         <p>
-            {{ value.message }}
+            {{ $t(`${xNotify.message}`) }}
         </p>
     </div>
 </template>
 
 <script>
+import {mapState} from "vuex";
 
 export default {
     name: "ErrorNotification",
-    props: {
-        value: {
-            type: Object,
-            default: () => {
-                return {
-                    type: 'success',
-                    message: 'Успешно',
-                    visible: false
-                }
-            }
-        },
-    },
+    // props: {
+    //     value: {
+    //         type: Object,
+    //         default: () => {
+    //             return {
+    //                 type: 'success',
+    //                 message: 'successfully',
+    //                 visible: false
+    //             }
+    //         }
+    //     },
+    // },
     data() {
         return {
             timeoutId: null
         }
     },
-    watch: {
-        'value.visible'() {
-            this.filterDebounce()
-        }
+    computed: {
+        ...mapState('notify', {
+            xNotify: 'xNotify'
+        })
     },
-
-    methods: {
-        filterDebounce(debounceDuration = 3000) {
-            if (this.timeoutId !== null) {
-                clearTimeout(this.timeoutId)
-            }
-            this.timeoutId = setTimeout(() => {
-                return this.$emit('close-bar')
-            }, debounceDuration)
-        },
-    }
-
 }
 </script>
 
 
 <style lang="scss" scoped>
+
 .notification-bar {
     position: fixed;
     top: 0;

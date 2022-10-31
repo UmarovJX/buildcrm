@@ -111,7 +111,7 @@
             </template>
 
             <template #cell(client)="data">
-                {{ data.value.first_name }} {{ data.value.last_name }}
+                    {{ data.value.first_name }} {{ data.value.last_name }}
                 {{ data.value.second_name }}
             </template>
 

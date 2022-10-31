@@ -272,7 +272,7 @@ const routes = [
                         path: "comment",
                         component: ApartmentCommentTab,
                         meta: {
-                            requiresAuth: "apartments",
+                            requiresAuth: "apartments.comments",
                         },
                     }
                 ]
@@ -636,8 +636,11 @@ router.beforeEach(async (to, from, next) => {
         } else {
             next()
         }
-    } else
+    } else {
+        Permission.clearUserPermission()
         return next({name: 'login'})
+    }
+
 })
 
 export default router

@@ -123,22 +123,25 @@
         <!--            @get-new-content="changeTabOrder"-->
         <!--        />-->
 
+        <template v-show="!showLoading">
 
-        <b-tabs v-model="tabIndex" card class="custom-tab">
-            <div class="bottom__line"></div>
-            <b-tab v-for="tab in tabs" :key="tab.route" @click="tabChange(tab.id)" :title="tab.title">
-                <!--   PRICE CONTENT     -->
-            </b-tab>
-        </b-tabs>
+            <b-tabs v-model="tabIndex" card class="custom-tab">
+                <div class="bottom__line"></div>
+                <b-tab v-for="tab in tabs" :key="tab.route" @click="tabChange(tab.id)" :title="tab.title">
+                    <!--   PRICE CONTENT     -->
+                </b-tab>
+            </b-tabs>
 
-        <router-view
-            :order="order"
-            :has-constructor-order="hasConstructorOrder"
-            v-show="!showLoading"
-            @start-loading="startLoading"
-            @finish-loading="finishLoading"
-            @refresh-details="refreshDetails"
-        />
+            <router-view
+                v-show="!showLoading"
+                :order="order"
+                :has-constructor-order="hasConstructorOrder"
+                @start-loading="startLoading"
+                @finish-loading="finishLoading"
+                @refresh-details="refreshDetails"
+            />
+
+        </template>
 
 
         <!--        <component-->
@@ -366,8 +369,12 @@ export default {
         tabIndex: {
             get() {
                 const {name} = this.$route
-                const index = this.tabs.filter(item => item.route === name)
-                return index[0].id
+                const index = this.tabs.findIndex(item => item.route === name)
+                if (index !== -1) {
+                    return index
+                } else {
+                    return 0
+                }
             },
             set(value) {
                 return value
@@ -389,7 +396,7 @@ export default {
             return ContractsPermission.getContractsReissueCreatePermission() && this.order.reissue && this.order.reissue.re_order
         },
         editPermission() {
-            return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract')
+            return ContractsPermission.getContractsEditPermission() && (this.order.status === 'sold' || this.order.status === 'contract') && this.order.updating.can
         },
         hasConstructorOrder() {
             return Object.keys(this.order).length > 0
@@ -398,9 +405,22 @@ export default {
     async created() {
         await this.fetchContractData()
     },
+    mounted() {
+
+    },
+    watch: {
+        '$route': {
+            deep: true,
+            handler(value) {
+                const findItem = this.tabs.findIndex(item => item.route === 'contracts-view')
+                if (findItem === -1 && value.name === 'contracts-view') {
+                    return this.$router.push({name: 'contracts'})
+                }
+            }
+        }
+    },
     methods: {
         tabChange(currentTabs) {
-            console.log(currentTabs, 'current');
             const index = this.tabs.filter(item => item.id === currentTabs)
             this.$router.push({name: index[0].route})
         },
@@ -511,12 +531,16 @@ export default {
         tabsConfiguration() {
             const {status, reissue} = this.order
             if (status === 'booked') {
-                this.tabs = this.tabs.filter(tab => tab.id !== 0)
+                this.tabs = this.tabs.filter(tab => {
+                    return tab.id !== 0 && tab.id !== 4
+                })
                 this.activeTab = this.tabs[0]
+                this.tabChange(this.activeTab.id)
             }
             if (!(reissue?.view && this.reContractViewPermission)) {
                 this.tabs = this.tabs.filter(tab => tab.id !== 4)
             }
+
         },
         startLoading() {
             this.showLoading = true
@@ -525,7 +549,7 @@ export default {
             this.showLoading = false
         },
         backNavigation() {
-            this.$router.go(-1)
+            this.$router.push({name: 'contracts'})
         },
         refreshDetails() {
             this.fetchContractData()

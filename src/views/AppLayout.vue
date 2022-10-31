@@ -5,8 +5,9 @@
             :theme="theme"
         />
         <main v-if="showHeaderContent" class="main-content">
+            <ErrorNotification/>
             <div class="app-content">
-                <router-view />
+                <router-view/>
             </div>
         </main>
         <template v-else>
@@ -17,8 +18,12 @@
 
 <script>
 
+import ErrorNotification from "@/components/Reusable/ErrorNotification";
+
+
 export default {
     name: "AppLayout",
+    components: {ErrorNotification},
     props: {
         theme: {
             type: String,
@@ -41,6 +46,5 @@ export default {
             immediate: true
         },
     },
-
 }
 </script>

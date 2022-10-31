@@ -54,7 +54,6 @@ class DebtorsV2 extends Core {
         return this.get('/debtors/import', {params})
     }
 
-
     createAliases(body) {
         return this.post('debtors/import/alias', body)
     }
@@ -69,6 +68,10 @@ class DebtorsV2 extends Core {
 
     activatePayments(body) {
         return this.post('debtors/import/payments', body)
+    } 
+
+    downloadDebtorsTemplate(){
+        return this.get('debtors/template')
     }
 
 

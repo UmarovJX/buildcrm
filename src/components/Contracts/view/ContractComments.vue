@@ -284,7 +284,7 @@ export default {
             contractId: this.$route.params.id,
             createCommentPermission: ContractsPermission.getContractsCreateCommentPermission(),
             editCommentPermission: ContractsPermission.getContractsEditCommentPermission(),
-            deleteCommentPermission: ContractsPermission.getContractsInitialDeletePermission(),
+            deleteCommentPermission: ContractsPermission.getContractsDeleteCommentPermission(),
         }
     },
     computed: {

@@ -396,6 +396,7 @@ export default {
             background-color: var(--gray-100)
 
         .nav-item
+            z-index: 2
             .active
                 .custom-title
                     color: var(--violet-600)

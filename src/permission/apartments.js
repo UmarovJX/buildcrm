@@ -49,4 +49,20 @@ export default class ApartmentsPermission extends Permission {
     static getApartmentFilterPermission() {
         return this.getApartmentsPermission('filter')
     }
+
+    static getApartmentCommentsViewPermission() {
+        return this.getApartmentsPermission('comments.view')
+    }
+
+    static getApartmentCommentsCreatePermission() {
+        return this.getApartmentsPermission('comments.create')
+    }
+
+    static getApartmentCommentsEditPermission() {
+        return this.getApartmentsPermission('comments.edit')
+    }
+
+    static getApartmentCommentsDeletePermission() {
+        return this.getApartmentsPermission('comments.delete')
+    }
 }

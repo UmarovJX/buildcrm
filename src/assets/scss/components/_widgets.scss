@@ -9,7 +9,7 @@
   border-radius: 50%;
   background-color: var(--background-color-dropdown);
   box-shadow: 0.5px 1px 0px rgba(5, 8, 9, 0.1),
-    0px 5px 9px 1px rgba(5, 8, 9, 0.1);
+  0px 5px 9px 1px rgba(5, 8, 9, 0.1);
   border: unset;
 }
 
@@ -136,8 +136,9 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 90px;
-  height: 35px;
+  width: 256px;
+  height: 56px;
+  max-height: 56px;
   margin-bottom: 0 !important;
   /* Rounded sliders */
 }
@@ -153,16 +154,17 @@
   top: 7px;
 }
 
+
 .switch span:nth-of-type(1) {
-  left: 27%;
-  z-index: 1;
+  top: .25rem;
+  left: calc(100% - 4px);
   -webkit-transform: translateX(-100%);
   transform: translateX(-100%);
 }
 
 .switch span:nth-of-type(2) {
-  right: 30%;
-  z-index: -1;
+  top: .25rem;
+  right: calc(100% - 4px);
   -webkit-transform: translateX(100%);
   transform: translateX(100%);
 }
@@ -178,58 +180,74 @@
   box-shadow: 0 0 1px #fff;
 }
 
+
 .switch .slider {
+  height: 56px;
+  padding: 4px;
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 10px;
-  background-color: var(---background-color);
-  box-shadow: inset 0px 1px 2.91px 0.09px rgba(0, 0, 0, 0.2);
-  transition: 0.4s ease-in;
-}
-
-.switch .slider:before {
-  position: absolute;
-  content: "";
-  right: 3px;
-  bottom: 5px;
-  z-index: 111;
+  inset: 0 0 0 0;
+  //border-radius: 10px;
   //background-color: var(---background-color);
+  //box-shadow: inset 0px 1px 2.91px 0.09px rgba(0, 0, 0, 0.2);
   transition: 0.4s ease-in;
-  border-radius: 2px;
-  background-color: var(--background-color-nav);
-  box-shadow: 0px 1px 4.75px 0.25px rgba(0, 0, 0, 0.2);
-  width: 50px;
-  height: 25px;
-  background-image: url("../img/four-square.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 14px 14px;
 }
 
-.switch input:checked + .slider:before {
-  background-color: var(--background-color-nav);
-  transform: translateX(-33px);
+
+.switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gray-100);
+  border-radius: 16px;
+  gap: .25rem;
+  padding: .25rem;
+
+  span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    width: 122px;
+    padding: 12px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: var(--gray-600);
+
+  }
+
+  & input {
+    &:checked + .slider {
+      & > span:nth-of-type(1) {
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+      }
+
+      & > span:nth-of-type(2) {
+        background: transparent;
+        box-shadow: none;
+      }
+    }
+
+    & + .slider {
+      & > span:nth-of-type(2) {
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+      }
+
+      & > span:nth-of-type(1) {
+        background: transparent;
+        box-shadow: none;
+      }
+    }
+  }
 }
 
-.switch input:checked + .slider > span:nth-of-type(1) {
-  z-index: -1;
-}
-
-.switch input:checked + .slider > span:nth-of-type(2) {
-  z-index: 1;
-}
-
-.switch .slider.round {
-  border-radius: 10px;
-}
-
-.switch .slider.round:before {
-  border-radius: 8px;
-}
 
 .type-plane {
   color: #a5acc1;
@@ -565,10 +583,11 @@
 
 .b-sidebar.b-sidebar-right {
   background-color: var(--background-color-nav) !important;
-  color:var(--link);
-  //* {
-  //  color: var(--link);
-  //}
+
+  * {
+    color: var(--link);
+  }
+
   @include mq("tablet", max) {
     width: 100% !important;
   }
@@ -593,6 +612,7 @@
       color: #333 !important;
     }
   }
+
   .card {
     color: var(--link);
   }
@@ -606,6 +626,7 @@
 
 .swal2-popup {
   background-color: var(--background-color-nav);
+
   * {
     color: var(--link);
   }
@@ -619,6 +640,7 @@
 .status-bar {
   flex: 0 0 auto;
 }
+
 .content {
   display: flex;
   align-items: center;
@@ -636,6 +658,7 @@
     height: 45px;
     background: rgb(232, 48, 48);
   }
+
   &.connected {
     height: 45px;
     background: #42b983;
@@ -645,7 +668,9 @@
 .banner .vue-ui-icon {
   margin-right: 16px;
 }
+
 .vue-ui-icon.medium {
   width: 18px;
   height: 18px;
 }
+

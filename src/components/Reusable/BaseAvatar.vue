@@ -9,6 +9,7 @@
                         :src="imagePath"
                         :text="nameSnippet"
                         size="40px"
+                        class="d-flex"
                     ></b-avatar>
                     <div class="person">
                         <p class="full_name">
@@ -23,30 +24,22 @@
                 </div>
             </template>
             <template #list>
-                <b-dropdown-item style="touch-action: none">
-                    <a v-if="languagePermission"
-                       href="javascript:void(0)">
+                <b-dropdown-item class="lang-block" v-if="languagePermission" style="touch-action: none">
+                    <a href="javascript:void(0)">
                         <label class="switch" @click="changeLocale">
                             <input type="checkbox" v-model="locale"/>
                             <div class="slider round">
-                                <span>Ру</span>
-                                <span>Uz</span>
+                                <span>Русский</span>
+                                <span>O’zbekcha</span>
                             </div>
                         </label>
                     </a>
                 </b-dropdown-item>
-                <b-dropdown-item>
-                    <router-link
-                        v-if="settingsPermission"
-                        :to="{name:'user-settings'}"
-                    >
-                        {{ $t("settings.title") }}
-                    </router-link>
+                <b-dropdown-item v-if="settingsPermission" @click="openUserSetting">
+                    {{ $t("settings.title") }}
                 </b-dropdown-item>
-                <b-dropdown-item>
-                    <a @click="logout" href="#">
-                        {{ $t("logout") }}
-                    </a>
+                <b-dropdown-item @click="logout">
+                    {{ $t("logout") }}
                 </b-dropdown-item>
             </template>
         </app-dropdown>
@@ -58,6 +51,7 @@ import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 import {localeChanged} from "vee-validate";
 import GeneralPermission from "@/permission/general";
 import {mapActions} from "vuex";
+import Permission from "@/permission";
 
 export default {
     name: "BaseAvatar",
@@ -92,7 +86,7 @@ export default {
             && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
         return {
             settingsPermission,
-            locale: null,
+            locale: false,
             languagePermission: GeneralPermission.getLanguagePermission(),
         }
     },
@@ -121,22 +115,30 @@ export default {
             "nullableAuth",
             "nullMe",
         ]),
+        openUserSetting() {
+            this.$router.push({name: 'user-settings'})
+        },
         changeLocale() {
             if (this.locale === false) {
+                localStorage.setItem('locale', 'ru')
                 localStorage.locale = "ru";
-                this.$root.$i18n.locale = "ru";
+                this.$i18n.locale = "ru";
                 this.locale = true
                 localeChanged()
             } else {
+                localStorage.setItem('locale', 'uz')
                 localStorage.locale = "uz";
-                this.$root.$i18n.locale = "uz";
+                this.$i18n.locale = "uz";
                 this.locale = false
                 localeChanged()
             }
         },
         logout() {
-            localStorage.removeItem('auth__access__token')
-            localStorage.removeItem('auth__refresh__token')
+            localStorage.clear();
+            sessionStorage.clear();
+            this.nullableAuth();
+            this.nullMe();
+            Permission.clearUserPermission()
             this.$router.push({name: "login"})
         },
     }
@@ -239,6 +241,12 @@ export default {
     .notArrow .b-dropdown .btn:not(.dropdown-item),
     .notArrow .btn-secondary:not(.dropdown-item) {
         border-radius: 2rem !important;
+    }
+}
+
+::v-deep .lang-block {
+    .dropdown-item {
+        padding: 0 !important;
     }
 }
 </style>

@@ -36,6 +36,7 @@ import Settings from "./modules/settings";
 import DebtorsImport from "./modules/debtors-import";
 import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
+import notify from "@/store/modules/Notification/index"
 import checkout from "@/store/modules/Checkout"
 import Experiment from "@/store/modules/Experiment";
 
@@ -51,6 +52,7 @@ export default new Vuex.Store({
         checkout,
         accountants,
         accountants_info,
+        notify,
 
         cashiers,
         cashiers_info,
@@ -78,6 +80,6 @@ export default new Vuex.Store({
         Debtors,
         Settings,
         DebtorsImport,
-        Promo
+        Promo,
     },
 })

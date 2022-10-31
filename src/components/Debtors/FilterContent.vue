@@ -43,11 +43,7 @@
 <!--                    :options="viewTypes"-->
 <!--                    @select="changeTypeOfView"-->
 <!--                />-->
-                <base-button @click="openImportModal" design="violet-gradient" :text="$t('debtors.import_debtors')">
-                    <template #left-icon>
-                        <base-arrow-down-icon fill="white"/>
-                    </template>
-                </base-button>
+
             </div>
         </div>
 
@@ -110,12 +106,12 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
 import {KFormSelect} from "@/components/ui-components/form-select";
 import api from "@/services/api";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
+// import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 
 export default {
     name: "FilterContent",
     components: {
-        BaseArrowDownIcon,
+        // BaseArrowDownIcon,
         BaseSearchInput,
         BaseRightModal,
         BaseDatePicker,
@@ -222,9 +218,9 @@ export default {
         this.fetchObjectsOption()
     },
     methods: {
-        openImportModal() {
-            this.$emit('import-excel')
-        },
+        // openImportModal() {
+        //     this.$emit('import-excel')
+        // },
         inputFilterObject() {
             // if (selectOption.length) {
             //   this.filter.object_id = selectOption.map(option => parseInt(option.value))

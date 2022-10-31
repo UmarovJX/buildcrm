@@ -82,7 +82,6 @@ export default {
             updateDebtorsExcel: 'updateDebtorsExcel'
         }),
         triggerUploadEvent() {
-            console.log(this.$refs['file-input'], 'this.$refs[\'file-input\']');
             this.excelFile = this.$refs['file-input'].files[0]
             readExcelFile(this.excelFile).then((rows) => {
                 const head = rows[0]

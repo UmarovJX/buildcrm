@@ -4,6 +4,13 @@
             <template #header-title>
                 {{ $t('debtors.title') }}
             </template>
+            <template #header-actions>
+                <base-button @click="openImportModal" :text="$t('debtors.import_debtors')">
+                    <template #left-icon>
+                        <base-arrow-down-icon fill="var(--violet-600)"/>
+                    </template>
+                </base-button>
+            </template>
         </app-header>
 
         <!--  FILTER CONTENT  -->
@@ -17,7 +24,6 @@
             @go-to-today="showCurrentDay"
             @reset-filter-fields="disableFilter"
             @sort-by-search="sortBySearchField"
-            @import-excel="openImportModal"
         />
 
         <!--  TABLE UI  -->
@@ -146,7 +152,7 @@
                     <output-information
                         :price="true"
                         :property="`${ $t('contract_price') }`"
-                        :value="pricePrettier(debtorViewModalItem.amount)"
+                        :value="pricePrettier(debtorViewModalItem.order.total)"
                         class="mt-4 mb-4"
                     />
                     <!--   INITIAL PRICE     -->
@@ -220,10 +226,12 @@ import BaseStarIcon from "@/components/icons/BaseStarIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import AppHeader from "@/components/Header/AppHeader";
 import ImportDebtorsModal from "@/components/Debtors/ImportDebtorsModal";
+import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 
 export default {
     name: "Debtors",
     components: {
+        BaseArrowDownIcon,
         AppHeader,
         BaseStarIcon,
         BaseLoading,
@@ -311,7 +319,8 @@ export default {
                 appLoading: false,
                 order: {
                     installment_payment: null,
-                    installment_month: null
+                    installment_month: null,
+                    total: null,
                 },
                 client: {}
             },
@@ -409,8 +418,8 @@ export default {
             if (this.$i18n.locale === 'uz') {
                 language = 'lotin'
             }
-            const {first_name, second_name} = client
-            return this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
+            const {first_name, last_name, second_name} = client
+            return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
         },
         clientName(multiName, language) {
             const lastNameByLang = multiName[language]
@@ -420,10 +429,9 @@ export default {
                 const lastNameOtherLang = language === 'kirill' ? multiName['lotin'] : multiName['kirill']
                 if (lastNameOtherLang) return lastNameOtherLang
             }
-
             return ''
         },
-        phonePrettier: (phone) => formatToPrice(phone),
+        phonePrettier: (phone) => phonePrettier(phone),
         pricePrettier: (price) => formatToPrice(price),
         formatDateWithDot,
         subtractResult(a, b) {
@@ -434,9 +442,10 @@ export default {
         },
         getFullName(client) {
             if (client && Object.keys(client).length) {
-                const {first_name, last_name} = client
+
+                const {first_name, last_name, second_name} = client
                 const language = this.$i18n.locale === 'ru' ? 'kirill' : 'lotin'
-                return last_name[language] + ' ' + first_name[language]
+                return last_name[language] + ' ' + first_name[language] + ' ' + second_name[language]
             }
             return ''
         },

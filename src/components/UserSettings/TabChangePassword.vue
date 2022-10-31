@@ -225,7 +225,6 @@ export default {
     },
     methods: {
         checkArray(value) {
-            console.log(value.isArray, 'value.isArray');
             return value.isArray
         },
         checkPassword(password) {
