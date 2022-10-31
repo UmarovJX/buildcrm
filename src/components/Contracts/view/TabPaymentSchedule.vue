@@ -1215,7 +1215,7 @@ export default {
 
 /* PAYMENT HISTORY */
 .payments__history {
-  border-top: 6px solid var(--gray-100);
+  //border-top: 6px solid var(--gray-100);
   border-bottom: 6px solid var(--gray-100);
   padding-top: 2rem;
   padding-bottom: 2rem;

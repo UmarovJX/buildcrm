@@ -1,10 +1,10 @@
 <template>
-  <div class="ch-apartment-overview">
-    <ch-apartment-characters :apartment="apartment"/>
-    <ch-contract-details :apartment="apartment"/>
-    <ch-payment-details :apartment="apartment"/>
-    <ch-payment-schedule :apartment="apartment"/>
-  </div>
+    <div class="ch-apartment-overview">
+        <ch-apartment-characters :apartment="apartment"/>
+        <ch-contract-details :apartment="apartment"/>
+        <ch-payment-details :apartment="apartment"/>
+        <ch-payment-schedule :apartment="apartment"/>
+    </div>
 </template>
 
 <script>
@@ -17,23 +17,24 @@ import ChPaymentDetails from "@/views/Experiment/components/ChPaymentDetails";
 import ChPaymentSchedule from "@/views/Experiment/components/ChPaymentSchedule";
 
 export default {
-  name: 'ChApartmentDetails',
-  components: {
-    ChApartmentCharacters,
-    ChContractDetails,
-    ChPaymentDetails,
-    ChPaymentSchedule
-  },
-  props: {
-    apartment: p(PROP_TYPE_OBJECT, {})
-  },
+    name: 'ChApartmentDetails',
+    components: {
+        ChApartmentCharacters,
+        ChContractDetails,
+        ChPaymentDetails,
+        ChPaymentSchedule
+    },
+    props: {
+        apartment: p(PROP_TYPE_OBJECT, {})
+    },
 }
 </script>
 
 <style lang="scss" scoped>
 .ch-apartment-overview {
-  display: grid;
-  grid-template-columns: 1fr;
-  row-gap: 3rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 3rem;
+    padding-top: 2rem;
 }
 </style>
