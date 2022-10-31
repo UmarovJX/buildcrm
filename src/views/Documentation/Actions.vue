@@ -2,6 +2,11 @@
     <div>
         <!--  BASE ACTION LIST-->
         <div class="item">
+            <p>BaseInput {{ $t('component') }}</p>
+            <BaseInput placeholder="number" type="number" v-model="number" :counter="true" :label="true"
+                       class="component" v-b-tooltip title="src/components/Reusable/BaseInput.vue"/>
+        </div>
+        <div class="item">
             <p>BaseActionList {{ $t('component') }}</p>
             <BaseActionList :position-right="false">
                 <template #header>
@@ -181,6 +186,7 @@ export default {
     data() {
         return {
             options: ["item1", "item2", "item3", "item4", "item5", "etc."],
+            number: 0
         }
     },
     methods: {

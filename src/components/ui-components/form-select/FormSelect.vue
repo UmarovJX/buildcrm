@@ -174,7 +174,6 @@ export default {
         hasOutputSlot() {
             /*
             *
-            * axios.get('/slides')
             *
             * */
             return this.$slots.hasOwnProperty('output')

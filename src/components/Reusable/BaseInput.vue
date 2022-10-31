@@ -5,8 +5,19 @@
         {{ placeholder }}
       </span>
         </div>
+        <input
+            v-if="counter"
+            v-model="searchInput"
+            :type="type"
+            :disabled="disable"
+            id="base-input"
+            ref="base-input"
+            :placeholder="placeholder"
+            @input="triggerInputEvent"
+        />
+
         <base-numeric-input
-            v-if=" type === 'number'"
+            v-else-if="type === 'number'"
             :currency="currency"
             :minus="false"
             :value="null"
@@ -29,6 +40,7 @@
             :placeholder="placeholder"
             @input="triggerInputEvent"
         />
+
         <input
             v-else
             v-model="searchInput"
@@ -48,12 +60,26 @@
         >
         <base-times-circle-icon/>
       </span>
+        <div
+            v-if="counter"
+            class="spin__icon"
+        >
+            <div @click="increment">
+                <base-up-icon/>
+            </div>
+            <div @click="decrement">
+                <base-down-icon/>
+            </div>
+
+        </div>
     </div>
 </template>
 
 <script>
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import {debounce} from "@/util/reusable";
+import BaseUpIcon from "@/components/icons/BaseUpIcon";
+import BaseDownIcon from "@/components/icons/BaseDownIcon";
 
 const cssDefaultProperty = {
     type: String,
@@ -62,6 +88,8 @@ const cssDefaultProperty = {
 export default {
     name: "BaseInput",
     components: {
+        BaseUpIcon,
+        BaseDownIcon,
         BaseTimesCircleIcon,
         BaseNumericInput: () => import('@/components/Reusable/BaseNumericInput')
     },
@@ -77,6 +105,10 @@ export default {
         type: {
             type: String,
             default: () => 'text'
+        },
+        counter: {
+            type: Boolean,
+            default: () => false
         },
         label: {
             type: Boolean,
@@ -186,6 +218,19 @@ export default {
         triggerNumberEvent($event) {
             this.debounceInput = $event
             this.$emit('trigger-input', this.debounceInput)
+        },
+        increment() {
+            // const myArray = this.searchInput.split(/([0-9]+)/)
+            // console.log(myArray, 'myArray before');
+            // myArray.filter(item => item !== '')
+            // console.log(myArray, 'myArray after');
+            this.searchInput++
+        },
+        decrement() {
+            if (this.searchInput > 0) {
+                this.searchInput--
+            }
+
         }
     },
 }
@@ -297,6 +342,12 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     color: var(--gray-600);
 }
 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 ::-webkit-calendar-picker-indicator {
     position: absolute;
     top: 60%;
@@ -314,4 +365,15 @@ input[type="date"]::-webkit-datetime-edit-year-field {
         width: 60%;
     }
 }
+
+.spin__icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
 </style>

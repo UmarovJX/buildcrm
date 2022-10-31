@@ -327,7 +327,8 @@ export default {
             border-radius: 1rem 1rem 0 0
             background-color: var(--gray-100)
 
-        //.nav-item
+        .nav-item
+            z-index: 2
 
         .nav-link
             display: flex
