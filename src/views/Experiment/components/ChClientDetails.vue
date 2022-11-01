@@ -32,7 +32,7 @@
           rules="required|min:9"
           :name="`${ $t('passport_series_example') }`"
       >
-        <k-form-input
+        <x-form-input
             :label="true"
             class="w-100"
             mask="AA#######"
@@ -48,7 +48,7 @@
           rules="required|min:3"
           :name="`${ $t('place_of_issue__of_passport_id') }`"
       >
-        <k-form-input
+        <x-form-input
             :label="true"
             type="text"
             class="w-100"
@@ -98,7 +98,7 @@
           rules="required|min:1"
           v-slot="{ errors }"
       >
-        <k-form-input
+        <x-form-input
             :label="true"
             class="w-100"
             :error="!!errors[0]"
@@ -114,7 +114,7 @@
           rules="required|min:1"
           v-slot="{ errors }"
       >
-        <k-form-input
+        <x-form-input
             class="w-100"
             :label="true"
             :error="!!errors[0]"
@@ -130,7 +130,7 @@
           rules="required|min:1"
           v-slot="{ errors }"
       >
-        <k-form-input
+        <x-form-input
             class="w-100"
             :label="true"
             :error="!!errors[0]"
@@ -146,7 +146,7 @@
           rules="required|min:1"
           v-slot="{ errors }"
       >
-        <k-form-input
+        <x-form-input
             class="w-100"
             :label="true"
             :error="!!errors[0]"
@@ -162,7 +162,7 @@
           rules="required|min:1"
           v-slot="{ errors }"
       >
-        <k-form-input
+        <x-form-input
             class="w-100"
             :label="true"
             :error="!!errors[0]"
@@ -178,7 +178,7 @@
           rules="required|min:1"
           v-slot="{ errors }"
       >
-        <k-form-input
+        <x-form-input
             class="w-100"
             :label="true"
             :error="!!errors[0]"
@@ -211,7 +211,7 @@
           rules="required|min:12"
           v-slot="{ errors }"
       >
-        <k-form-input
+        <x-form-input
             class="w-100"
             :label="true"
             :error="!!errors[0]"
@@ -222,7 +222,7 @@
       </validation-provider>
 
       <!--? CLIENT_EMAIL  -->
-      <k-form-input
+      <x-form-input
           class="w-100"
           :label="true"
           type="email"
@@ -231,7 +231,7 @@
       />
 
       <!--? CLIENT_ADDITIONAL_PHONE  -->
-      <k-form-input
+      <x-form-input
           class="w-100"
           :label="true"
           v-model="personalData.other_phone"
@@ -240,7 +240,7 @@
       />
 
       <!--? CLIENT_ADDITIONAL_EMAIL  -->
-      <k-form-input
+      <x-form-input
           class="w-100"
           :label="true"
           v-model="personalData.other_email"
@@ -253,7 +253,7 @@
           :key="extraPhone.value + idx"
           class="extra-phones-wrapper"
       >
-        <k-form-input
+        <x-form-input
             :label="true"
             class="w-100"
             mask="+### ## ### ## ##"
@@ -264,7 +264,7 @@
             @click="removePhoneField(extraPhone)"
             class="remove-extra-phone-btn"
         >
-          <k-icon name="remove" class="gray-400"/>
+          <x-icon name="remove" class="gray-400"/>
         </base-button>
       </div>
 
@@ -276,7 +276,7 @@
           @click="createExtraPhoneField"
       >
         <template #left-icon>
-          <k-icon name="add" class="violet-600"/>
+          <x-icon name="add" class="violet-600"/>
         </template>
       </base-button>
     </div>
@@ -285,8 +285,8 @@
 
 <script>
 import {KFormSelect} from "@/components/ui-components/form-select";
-import {KFormInput} from "@/components/ui-components/form-input";
-import {KIcon} from "@/components/ui-components/material-icons";
+import {XFormInput} from "@/components/ui-components/form-input";
+import {XIcon} from "@/components/ui-components/material-icons";
 import SectionTitle from "@/views/Experiment/elements/SectionTitle";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BaseButton from "@/components/Reusable/BaseButton";
@@ -298,9 +298,9 @@ import {
 export default {
   name: "CheckoutClientDetails",
   components: {
-    KIcon,
+    XIcon,
     KFormSelect,
-    KFormInput,
+    XFormInput,
     SectionTitle,
     BaseDatePicker,
     BaseButton,

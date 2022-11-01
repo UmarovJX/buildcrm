@@ -780,8 +780,8 @@ export default {
                 background-color: transparent;
 
                 .app-tab-title-number {
-                    background-color: var(--violet-600);
-                    color: white;
+                    background-color: var(--violet-100);
+                    color: var(--violet-600);
                 }
 
                 p {

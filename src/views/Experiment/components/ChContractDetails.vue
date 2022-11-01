@@ -7,7 +7,7 @@
           <div class="d-flex align-items-center" style="column-gap: 1rem">
             <span>{{ contractNumber }}</span>
             <span @click="openEditNumberModal" class="edit-icon-wrapper">
-              <k-icon name="edit" size="13.5" class="color-white"/>
+              <x-icon name="edit" size="13.5" class="color-white"/>
             </span>
           </div>
         </template>
@@ -68,7 +68,7 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import {KIcon} from "@/components/ui-components/material-icons";
+import {XIcon} from "@/components/ui-components/material-icons";
 import {mapState} from "vuex";
 
 export default {
@@ -81,7 +81,7 @@ export default {
     BaseButton,
     BaseInput,
     BaseCloseIcon,
-    KIcon
+    XIcon
   },
   props: {
     apartment: p(PROP_TYPE_OBJECT, {})

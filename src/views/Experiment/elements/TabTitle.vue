@@ -6,20 +6,20 @@
     <slot name="default"/>
     <!--  ?BASE RIGHT ICON  -->
     <span v-if="showRightIcon" :class="flexCenter" class="app-tab-title-right-icon">
-      <k-icon name="chevron_right" class="gray-400"/>
+      <x-icon name="chevron_right" class="gray-400"/>
     </span>
   </div>
 </template>
 
 <script>
-import {KIcon} from "@/components/ui-components/material-icons";
+import {XIcon} from "@/components/ui-components/material-icons";
 import {makeProp as p} from "@/util/props";
 import {PROP_TYPE_BOOLEAN, PROP_TYPE_NUMBER_STRING, PROP_TYPE_STRING} from "@/constants/props";
 
 export default {
   name: "TabTitle",
   components: {
-    KIcon
+    XIcon
   },
   props: {
     step: p(PROP_TYPE_NUMBER_STRING, 1),

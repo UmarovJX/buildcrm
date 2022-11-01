@@ -75,7 +75,7 @@
                     @click="moveToNextForm"
                 >
                   <template #right-icon>
-                    <k-icon name="keyboard_arrow_right" class="color-white"/>
+                    <x-icon name="keyboard_arrow_right" class="color-white"/>
                   </template>
                 </base-button>
               </div>
@@ -89,7 +89,7 @@
 
 <script>
 import {KLoadingWrapper} from "@/components/ui-components/loading";
-import {KIcon} from "@/components/ui-components/material-icons";
+import {XIcon} from "@/components/ui-components/material-icons";
 import BaseButton from "@/components/Reusable/BaseButton";
 import CountDown from "@/components/Reusable/CountDown";
 import AppHeader from "@/components/Header/AppHeader";
@@ -107,7 +107,7 @@ export default {
   name: "Index",
   components: {
     AppBreadcrumb,KLoadingWrapper,
-    KIcon,
+    XIcon,
     BaseButton,
     CountDown,
     AppHeader,

@@ -1,17 +1,16 @@
 <template>
-  <div
-      ref="k-form-select"
-      class="k-form-select"
-      v-click-outside="closeOptionList"
-  >
     <div
-        @click="toggleOptionList"
-        class="k-form-select-header"
-        :class="{'select-validation-failed':error}"
+        ref="k-form-select"
+        class="k-form-select"
+        v-click-outside="closeOptionList"
     >
-      <div
-          class="k-form-select-header-content"
-          :class="{
+        <div
+            @click="toggleOptionList"
+            class="k-form-select-header"
+        >
+            <div
+                class="k-form-select-header-content"
+                :class="{
             'k-content-flex':selectList
           }"
             >
@@ -150,64 +149,64 @@ export default {
                 return !this.selected.length
             }
 
-      return !this.selected
-    },
-    showLabel() {
-      const {multiple, selectList, selected} = this
-      if (!this.label) return false
-      if (multiple) {
-        return selectList.value.length
-      } else {
-        return !isNull(selected)
-      }
-    },
-    localePlaceholder() {
-      const {placeholder} = this
-      if (placeholder) {
-        return placeholder
-      } else {
-        return this.$t('please_select')
-      }
-    },
-    hasPlaceholderSlot() {
-      return this.$slots.hasOwnProperty('placeholder')
-    },
-    hasOutputSlot() {
-      /*
-      *
-      * axios.get('/slides')
-      *
-      * */
-      return this.$slots.hasOwnProperty('output')
-    },
-    selectList() {
-      if (this.multiple) {
-        if (this.selected.length) {
-          return {
-            show: true,
-            value: this.selected
-          }
-        } else {
-          return {
-            show: false,
-            value: []
-          }
+            return !this.selected
+        },
+        showLabel() {
+            const {multiple, selectList, selected} = this
+            if (!this.label) return false
+            if (multiple) {
+                return selectList.value.length
+            } else {
+                return !isNull(selected)
+            }
+        },
+        localePlaceholder() {
+            const {placeholder} = this
+            if (placeholder) {
+                return placeholder
+            } else {
+                return this.$t('please_select')
+            }
+        },
+        hasPlaceholderSlot() {
+            return this.$slots.hasOwnProperty('placeholder')
+        },
+        hasOutputSlot() {
+            /*
+            *
+            * axios.get('/slides')
+            *
+            * */
+            return this.$slots.hasOwnProperty('output')
+        },
+        selectList() {
+            if (this.multiple) {
+                if (this.selected.length) {
+                    return {
+                        show: true,
+                        value: this.selected
+                    }
+                } else {
+                    return {
+                        show: false,
+                        value: []
+                    }
+                }
+            } else {
+                const {selected, textField} = this
+                if (selected) {
+                    return {
+                        show: true,
+                        value: selected[textField]
+                    }
+                }
+                return {
+                    show: false,
+                    value: [],
+                }
+            }
         }
-      } else {
-        const {selected, textField} = this
-        if (selected) {
-          return {
-            show: true,
-            value: selected[textField]
-          }
-        }
-        return {
-          show: false,
-          value: [],
-        }
-      }
-    }
-  },
+    },
 
     watch: {
         selected() {
@@ -220,85 +219,85 @@ export default {
         this.findOutputPosition()
     },
 
-  methods: {
-    findOutputPosition() {
-      const windowHeight = window.innerHeight
-      const formSelectRect = this.$refs['k-form-select'].getBoundingClientRect()
-      const {height: optionsTotalHeight} = this.$refs['k-form-options-wrapper'].getBoundingClientRect()
-      const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom
-      this.showBottomToTop = distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight
-    },
-    lunch() {
-      const {textField, valueField} = this
-      const _dValue = this.$attrs.value ?? this.value
-      const typeArray = isArray(_dValue)
-      const typeObject = isObject(_dValue)
-      if (isUndefinedOrNull(_dValue))
-        return
-      if (this.multiple) {
-        if (typeArray) {
-          const isContainObjects = _dValue.every(v => isObject(v))
-          const isContainPrimitives = _dValue.every(v => isPrimitive(v))
-          if (isContainObjects) {
-            this.selected = [..._dValue]
-          } else if (isContainPrimitives) {
-            this.selected = _dValue.map(_vc => {
-              const _fChild = this.findOption(_vc)
-              if (isUndefinedOrNull(_fChild)) {
-                const c = {}
-                c[valueField] = _vc
-                c[textField] = _vc
-                return c
-              }
-              return _fChild.option
-            })
-          }
-        } else if (typeObject(_dValue)) {
-          this.selected.push(_dValue)
-        }
-      } else {
-        if (typeArray) {
-          if (_dValue.length) {
-            this.selected = _dValue[0]
-          }
-        } else if (typeObject) {
-          this.selected = _dValue
-        } else if (isPrimitive(_dValue)) {
-          this.selected = {}
-          const _fChild = this.findOption(_dValue)
-          if (isUndefinedOrNull(_fChild)) {
-            this.selected[this.textField] = _dValue
-            this.selected[this.valueField] = _dValue
-          } else {
-            this.selected = _fChild.option
-          }
-        }
-      }
-    },
-    handleChange() {
-      const {multiple, selected, valueField: vField} = this
-      if (multiple) {
-        if (!selected.length) {
-          this.$emit('change', null)
-        } else {
-          switch (this.getter) {
-            case 'value': {
-              const _cValue = selected.map(vSelect => vSelect[this.valueField])
-              this.$emit('change', _cValue)
-              break
+    methods: {
+        findOutputPosition() {
+            const windowHeight = window.innerHeight
+            const formSelectRect = this.$refs['k-form-select'].getBoundingClientRect()
+            const {height: optionsTotalHeight} = this.$refs['k-form-options-wrapper'].getBoundingClientRect()
+            const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom
+            this.showBottomToTop = distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight
+        },
+        lunch() {
+            const {textField, valueField} = this
+            const _dValue = this.$attrs.value ?? this.value
+            const typeArray = isArray(_dValue)
+            const typeObject = isObject(_dValue)
+            if (isUndefinedOrNull(_dValue))
+                return
+            if (this.multiple) {
+                if (typeArray) {
+                    const isContainObjects = _dValue.every(v => isObject(v))
+                    const isContainPrimitives = _dValue.every(v => isPrimitive(v))
+                    if (isContainObjects) {
+                        this.selected = [..._dValue]
+                    } else if (isContainPrimitives) {
+                        this.selected = _dValue.map(_vc => {
+                            const _fChild = this.findOption(_vc)
+                            if (isUndefinedOrNull(_fChild)) {
+                                const c = {}
+                                c[valueField] = _vc
+                                c[textField] = _vc
+                                return c
+                            }
+                            return _fChild.option
+                        })
+                    }
+                } else if (typeObject(_dValue)) {
+                    this.selected.push(_dValue)
+                }
+            } else {
+                if (typeArray) {
+                    if (_dValue.length) {
+                        this.selected = _dValue[0]
+                    }
+                } else if (typeObject) {
+                    this.selected = _dValue
+                } else if (isPrimitive(_dValue)) {
+                    this.selected = {}
+                    const _fChild = this.findOption(_dValue)
+                    if (isUndefinedOrNull(_fChild)) {
+                        this.selected[this.textField] = _dValue
+                        this.selected[this.valueField] = _dValue
+                    } else {
+                        this.selected = _fChild.option
+                    }
+                }
             }
-            case 'text': {
-              const _cText = selected.map(vSelect => vSelect[this.textField])
-              this.$emit('change', _cText)
-              break
+        },
+        handleChange() {
+            const {multiple, selected, valueField: vField} = this
+            if (multiple) {
+                if (!selected.length) {
+                    this.$emit('change', null)
+                } else {
+                    switch (this.getter) {
+                        case 'value': {
+                            const _cValue = selected.map(vSelect => vSelect[this.valueField])
+                            this.$emit('change', _cValue)
+                            break
+                        }
+                        case 'text': {
+                            const _cText = selected.map(vSelect => vSelect[this.textField])
+                            this.$emit('change', _cText)
+                            break
+                        }
+                        default: {
+                            this.$emit('change', selected)
+                        }
+                    }
+                }
+                return
             }
-            default: {
-              this.$emit('change', selected)
-            }
-          }
-        }
-        return
-      }
 
             if (isUndefinedOrNull(selected)) {
                 this.$emit('change', null)

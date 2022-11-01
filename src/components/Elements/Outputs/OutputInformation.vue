@@ -39,7 +39,7 @@ export default {
         },
         value: {
             type: [String, Number],
-            required: true
+            default: ''
         },
         translate: {
             type: Boolean,
@@ -83,7 +83,9 @@ export default {
     border: 3px solid var(--gray-200);
     border-radius: 2rem;
     background-color: white;
-    padding: 1rem 1.75rem;
+    //padding: 1rem 1.75rem;
+    padding-left: 1.75rem;
+    padding-right: 1rem;
     font-family: CraftworkSans, serif;
 
     .property {

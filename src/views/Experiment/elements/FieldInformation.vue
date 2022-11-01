@@ -3,7 +3,7 @@
     <span class="fdn-icon-left-wrapper" :style="iconLeftWrapperElStyle">
       <slot name="icon-left"/>
       <template v-if="!hasIconLeftSlot">
-        <k-icon :name="iconName" :style="{color:iconColor}" class="violet-600"/>
+        <x-icon :name="iconName" :style="{color:iconColor}" class="violet-600"/>
       </template>
     </span>
         <span class="fdn-info-wrapper">
@@ -27,12 +27,12 @@
 import {makeProp as p} from "@/util/props";
 import {PROP_TYPE_BOOLEAN, PROP_TYPE_NUMBER_STRING, PROP_TYPE_OBJECT, PROP_TYPE_STRING} from "@/constants/props";
 
-import {KIcon} from "@/components/ui-components/material-icons";
+import {XIcon} from "@/components/ui-components/material-icons";
 
 export default {
     name: "FieldInformation",
     components: {
-        KIcon
+        XIcon
     },
     props: {
         iconBg: p(PROP_TYPE_STRING, 'var(--violet-100)'),

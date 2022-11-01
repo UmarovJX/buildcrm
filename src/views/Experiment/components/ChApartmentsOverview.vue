@@ -1,7 +1,6 @@
 <template>
   <div class="position-relative">
-    <div>
-      <b-tabs class="custom-tab" nav-class="sticky-top">
+      <b-tabs class="custom-tab" :nav-wrapper-class="[upEvent?'sticky-top':'fixed-top sticky-top']">
         <div class="ch-bottom__line"></div>
         <b-tab
             v-for="(apartment) in gtsApartments"
@@ -13,8 +12,6 @@
           </div>
         </b-tab>
       </b-tabs>
-
-    </div>
   </div>
 </template>
 

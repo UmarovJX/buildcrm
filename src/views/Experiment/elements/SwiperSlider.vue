@@ -34,7 +34,7 @@
           slot="button-prev"
           class="swiper-button-prev swiper-button d-flex justify-content-center align-items-center"
       >
-        <k-icon name="chevron_left" class="gray-600"/>
+        <x-icon name="chevron_left" class="gray-600"/>
       </div>
 
       <!--     BUTTON NEXT       -->
@@ -42,7 +42,7 @@
           slot="button-next"
           class="swiper-button-next swiper-button d-flex justify-content-center align-items-center"
       >
-        <k-icon name="chevron_right" class="gray-600"/>
+        <x-icon name="chevron_right" class="gray-600"/>
       </div>
     </div>
   </div>
@@ -55,7 +55,7 @@ import {Fancybox} from "@fancyapps/ui";
 import {directive as swiperDirective} from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
-import {KIcon} from "@/components/ui-components/material-icons";
+import {XIcon} from "@/components/ui-components/material-icons";
 
 const swiperDefaultOption = {
   slidesPerView: 1,
@@ -78,7 +78,7 @@ const swiperDefaultOption = {
 export default {
   name: "SwiperSlider",
   components: {
-    KIcon
+    XIcon
   },
   props: {
     swiperOption: p(PROP_TYPE_OBJECT, swiperDefaultOption),
