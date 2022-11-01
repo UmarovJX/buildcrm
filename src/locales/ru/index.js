@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Главная",
     },
+    client_information: 'Информация о клиенте',
     payment_date: "Дата ежемесячного платежа",
     first_payment_date: "Дата первого платежа",
     payment_details_2: 'Детали платежа',
@@ -43,7 +44,7 @@ export default {
     apartment_detail: 'Детали квартир',
     apartment_details: 'Детали квартиры',
     payment_details: 'Детали платежей',
-    price_m:'Цена за М',
+    price_m: 'Цена за М',
     price_m2: "Цена за M2",
     other_price: 'Другая цена',
     remove_apartment: 'Убрать квартиру',

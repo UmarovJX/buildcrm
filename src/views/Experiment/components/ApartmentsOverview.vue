@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import ChApartmentDetails from "@/views/Experiment/components/ChApartmentDetails";
+import ChApartmentDetails from "@/views/Experiment/components/ApartmentDetails";
 import {mapGetters} from "vuex";
 
 export default {
@@ -34,13 +34,7 @@ export default {
     },
     mounted() {
         window.onwheel = e => {
-            if (e.deltaY >= 0) {
-                this.upEvent = false
-                // Scrolling Down with mouse
-            } else {
-                this.upEvent = true
-                // Scrolling Up with mouse
-            }
+            this.upEvent = e.deltaY < 0;
         }
     },
     methods: {

@@ -17,8 +17,8 @@
 <script>
 import SectionTitle from "@/views/Experiment/elements/SectionTitle";
 import {mapGetters} from "vuex";
-import ChPaymentResult from "@/views/Experiment/components/ChPaymentResult";
-import ChPlanDetails from "@/views/Experiment/components/ChPlanDetails";
+import ChPaymentResult from "@/views/Experiment/components/PaymentResult";
+import ChPlanDetails from "@/views/Experiment/components/PlanDetails";
 
 export default {
     name: "ChReviewApartment",

@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+    client_information: "Mijoz haqida ma'lumot",
     payment_date: "To'lov sanasi",
     first_payment_date: "Birinchi to'lov sanasi",
     payment_details_2: "To'lov tafsilotlari",

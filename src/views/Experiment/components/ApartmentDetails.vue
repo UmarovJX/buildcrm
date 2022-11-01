@@ -11,10 +11,10 @@
 import {makeProp as p} from "@/util/props";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
 
-import ChContractDetails from "@/views/Experiment/components/ChContractDetails";
-import ChApartmentCharacters from "@/views/Experiment/components/ChApartmentCharacters";
-import ChPaymentDetails from "@/views/Experiment/components/ChPaymentDetails";
-import ChPaymentSchedule from "@/views/Experiment/components/ChPaymentSchedule";
+import ChContractDetails from "@/views/Experiment/components/ContractDetails";
+import ChApartmentCharacters from "@/views/Experiment/components/ApartmentCharacters";
+import ChPaymentDetails from "@/views/Experiment/components/PaymentDetails";
+import ChPaymentSchedule from "@/views/Experiment/components/PaymentSchedule";
 
 export default {
     name: 'ChApartmentDetails',

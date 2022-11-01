@@ -11,8 +11,8 @@ import {makeProp as p} from "@/util/props";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
 
 import SectionTitle from "@/views/Experiment/elements/SectionTitle";
-import ChCalculator from "@/views/Experiment/components/ChCalculator";
-import ChPaymentResult from "@/views/Experiment/components/ChPaymentResult";
+import ChCalculator from "@/views/Experiment/components/Calculator";
+import ChPaymentResult from "@/views/Experiment/components/PaymentResult";
 import {mapGetters} from "vuex";
 
 export default {
