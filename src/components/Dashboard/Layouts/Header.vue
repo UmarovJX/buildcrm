@@ -14,26 +14,7 @@
             @mouseover="menuExpanded = true"
             @mouseleave="menuExpanded = false"
         >
-            <div class="menu h-auto">
-                <ul class="menu-content" :class="[isActive?'toggle-open':'toggle-close']">
-                    <li class="menu__item" @click="toggleCollapse">
-                        <a
-                        >
-                            <x-icon v-if="isActive" name="menu" color="var(--gray-400)"/>
-                            <x-icon v-else name="menu_open" color="var(--gray-400)"/>
-                            <div class="menu-version">
-                                <template v-if="isActive">
-                                    {{ $t('pin_menu') }}
-                                </template>
-                                <template v-else>
-                                    {{ $t('hide_menu') }}
-                                </template>
-                            </div>
 
-                        </a>
-                    </li>
-                </ul>
-            </div>
             <div class="brand-logo">
                 <router-link
                     :to="{name:'home'}"
@@ -66,19 +47,40 @@
                     </li>
 
                 </ul>
-                <ul v-if="version.version" class="menu-content">
-                    <li class="menu__item" @click="openVersionModal">
-                        <a class="inactive-link">
-                            <x-icon name="Info" color="var(--gray-400)"/>
-                            <div class="menu__item-body">
-                                <div class="menu-version">
-                                    Версия {{ version.version }}
-                                </div>
-                            </div>
 
-                        </a>
-                    </li>
-                </ul>
+                <div class="menu h-auto">
+                    <ul class="menu-content" :class="[isActive?'toggle-open':'toggle-close']">
+                        <li class="menu__item" @click="toggleCollapse">
+                            <a
+                            >
+                                <x-icon v-if="isActive" name="menu" color="var(--gray-400)"/>
+                                <x-icon v-else name="menu_open" color="var(--gray-400)"/>
+                                <div class="menu-version">
+                                    <template v-if="isActive">
+                                        {{ $t('pin_menu') }}
+                                    </template>
+                                    <template v-else>
+                                        {{ $t('hide_menu') }}
+                                    </template>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--                <ul v-if="version.version" class="menu-content">-->
+                <!--                    <li class="menu__item" @click="openVersionModal">-->
+                <!--                        <a class="inactive-link">-->
+                <!--                            <x-icon name="Info" color="var(&#45;&#45;gray-400)"/>-->
+                <!--                            <div class="menu__item-body">-->
+                <!--                                <div class="menu-version">-->
+                <!--                                    Версия {{ version.version }}-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+
+                <!--                        </a>-->
+                <!--                    </li>-->
+                <!--                </ul>-->
             </div>
         </div>
 

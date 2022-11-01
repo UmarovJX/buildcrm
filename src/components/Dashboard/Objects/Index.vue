@@ -276,6 +276,7 @@ export default {
     flex-wrap: wrap;
     gap: 24px;
     //row-gap: 24px;
+    margin-right: -24px;
 
     .card {
         //border-radius: 1rem;

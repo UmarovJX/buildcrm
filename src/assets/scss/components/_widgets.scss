@@ -585,7 +585,7 @@
   background-color: var(--background-color-nav) !important;
 
   * {
-    color: var(--link);
+    //color: var(--link);
   }
 
   @include mq("tablet", max) {
