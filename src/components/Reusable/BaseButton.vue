@@ -1,14 +1,14 @@
 <template>
-  <button
-      @click="triggerEvent"
-      :type="type"
-      :disabled="disabled"
-      class="base__button"
-      :class="[design,
+    <button
+        @click="triggerEvent"
+        :type="type"
+        :disabled="disabled"
+        class="base__button"
+        :class="[design,
         {'disabled':disabled},
         {'loading':loading},
         {'fixed':fixed}]"
-  >
+    >
     <span v-if="loading" class="loading-item">
         <div class="loading__content">
             <span class="loading__content-main">
@@ -23,149 +23,151 @@
             </span>
         </div>
     </span>
-    <span v-if="hasLeftSlot" class="left__icon">
+        <span v-if="hasLeftSlot" class="left__icon">
       <slot name="left-icon"/>
     </span>
-    <slot name="default"></slot>
-    <span v-if="hasNotDefaultSlot && text" class="text">
+        <slot name="default"></slot>
+        <span v-if="hasNotDefaultSlot && text" class="text">
       <span v-if="bilingual">{{ $t(text) }}</span>
       <span v-else>{{ text }}</span>
     </span>
-    <span v-if="hasRightSlot" class="right__icon">
+        <span v-if="hasRightSlot" class="right__icon">
       <slot name="right-icon"/>
     </span>
-  </button>
+    </button>
 </template>
 
 <script>
 
 export default {
-  name: "BaseButton",
-  components: {},
-  props: {
-    text: {
-      type: String,
-      default: () => ('Button')
+    name: "BaseButton",
+    components: {},
+    props: {
+        text: {
+            type: String,
+            default: () => ('Button')
+        },
+        design: {
+            type: String,
+            default: () => ('')
+        },
+        size: {
+            type: String,
+            default: () => 'lg'
+        },
+        type: {
+            type: String,
+            default: () => 'button'
+        },
+        disabled: {
+            type: Boolean,
+            default: () => false
+        },
+        loading: {
+            type: Boolean,
+            default: () => false
+        },
+        fixed: {
+            type: Boolean,
+            default: () => false
+        },
+        bilingual: {
+            type: Boolean,
+            default: () => false
+        }
     },
-    design: {
-      type: String,
-      default: () => ('')
+    emits: ['click'],
+    data() {
+        return {
+            loadingColor: {
+                fill: '',
+                stroke: ''
+            }
+        }
     },
-    size: {
-      type: String,
-      default: () => 'lg'
+    computed: {
+        hasLeftSlot() {
+            return this.$slots.hasOwnProperty('left-icon')
+        },
+        hasRightSlot() {
+            return this.$slots.hasOwnProperty('right-icon')
+        },
+        hasNotDefaultSlot() {
+            return !this.$slots.hasOwnProperty('default')
+        }
     },
-    type: {
-      type: String,
-      default: () => 'button'
+    mounted() {
+        this.loadingColorRender()
     },
-    disabled: {
-      type: Boolean,
-      default: () => false
-    },
-    loading: {
-      type: Boolean,
-      default: () => false
-    },
-    fixed: {
-      type: Boolean,
-      default: () => false
-    },
-    bilingual: {
-      type: Boolean,
-      default: () => false
+    methods: {
+        loadingColorRender() {
+            switch (this.design) {
+                case 'violet-gradient':
+                    this.loadingColor = {
+                        fill: 'var(--violet-700)',
+                        stroke: 'var(--white)'
+                    }
+                    break;
+                default:
+                    this.loadingColor = {
+                        fill: 'var(--gray-200)',
+                        stroke: 'var(--violet-600)'
+                    }
+            }
+        },
+        triggerEvent() {
+            if (!this.loading) {
+                this.$emit('click')
+            }
+        }
     }
-  },
-  emits: ['click'],
-  data() {
-    return {
-      loadingColor: {
-        fill: '',
-        stroke: ''
-      }
-    }
-  },
-  computed: {
-    hasLeftSlot() {
-      return this.$slots.hasOwnProperty('left-icon')
-    },
-    hasRightSlot() {
-      return this.$slots.hasOwnProperty('right-icon')
-    },
-    hasNotDefaultSlot() {
-      return !this.$slots.hasOwnProperty('default')
-    }
-  },
-  mounted() {
-    this.loadingColorRender()
-  },
-  methods: {
-    loadingColorRender() {
-      switch (this.design) {
-        case 'violet-gradient':
-          this.loadingColor = {
-            fill: 'var(--violet-700)',
-            stroke: 'var(--white)'
-          }
-          break;
-        default:
-          this.loadingColor = {
-            fill: 'var(--gray-200)',
-            stroke: 'var(--violet-600)'
-          }
-      }
-    },
-    triggerEvent() {
-      if (!this.loading) {
-        this.$emit('click')
-      }
-    }
-  }
 }
 </script>
 
 <style lang="sass" scoped>
 .base__button
-  font-family: Inter, serif
-  padding: 1rem 1.25rem
-  max-height: 56px
-  min-width: fit-content
-  border-radius: 2rem
-  color: var(--gray-600)
-  font-size: 1rem
-  line-height: 22px
-  font-weight: 600
-  border: none
-  outline: none
-  display: flex
-  justify-content: center
-  align-items: center
-  cursor: pointer
-  background: var(--gray-100)
-  transition: all .3s linear
-
-  &.fixed
-    width: 100%
-
-  .text
-    color: inherit
     font-family: Inter, serif
-
-  .left__icon
-    display: flex
-    margin-right: 1rem
-
-  .right__icon
-    display: flex
-    margin-left: 1rem
-
-  &:hover
-    background: var(--gray-200)
+    padding: 1rem 1.25rem
+    max-height: 56px
+    min-width: fit-content
+    width: fit-content
+    border-radius: 2rem
     color: var(--gray-600)
-
-  &:disabled
+    font-size: 1rem
+    line-height: 22px
+    font-weight: 600
+    border: none
+    outline: none
+    display: flex
+    justify-content: center
+    align-items: center
+    cursor: pointer
     background: var(--gray-100)
-    color: var(--gray-400)
+    transition: all .3s linear
+
+
+    &.fixed
+        width: 100%
+
+    .text
+        color: inherit
+        font-family: Inter, serif
+
+    .left__icon
+        display: flex
+        margin-right: 1rem
+
+    .right__icon
+        display: flex
+        margin-left: 1rem
+
+    &:hover
+        background: var(--gray-200)
+        color: var(--gray-600)
+
+    &:disabled
+        background: var(--gray-100)
+        color: var(--gray-400)
 
 
 //.disabled
@@ -173,86 +175,86 @@ export default {
 //    color: var(--white) !important
 
 .transparent
-  background: transparent
-  color: var(--gray-600)
+    background: transparent
+    color: var(--gray-600)
 
-  &:hover
-    background: var(--gray-200)
+    &:hover
+        background: var(--gray-200)
 
-  &.disabled
-    background: transparent !important
-    color: var(--gray-400)
+    &.disabled
+        background: transparent !important
+        color: var(--gray-400)
 
 
 .violet
-  background: var(--violet-700)
-  color: var(--white) !important
-
-  &:hover
     background: var(--violet-700)
+    color: var(--white) !important
 
-  &.disabled
-    background: var(--gray-100)
-    color: var(--gray-400) !important
+    &:hover
+        background: var(--violet-700)
+
+    &.disabled
+        background: var(--gray-100)
+        color: var(--gray-400) !important
 
 .red
-  background: var(--red-600)
-  color: var(--white) !important
+    background: var(--red-600)
+    color: var(--white) !important
 
 .green
-  background: var(--teal-600)
-  color: var(--white) !important
+    background: var(--teal-600)
+    color: var(--white) !important
 
 
 .violet-gradient
-  background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
-  color: var(--white) !important
+    background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
+    color: var(--white) !important
 
-  &:hover
-    background: linear-gradient(88.25deg, var(--violet-700) 0%, var(--violet-700) 100%)
+    &:hover
+        background: linear-gradient(88.25deg, var(--violet-700) 0%, var(--violet-700) 100%)
 
-  &.disabled
-    background: var(--gray-100)
-    color: var(--gray-400) !important
+    &.disabled
+        background: var(--gray-100)
+        color: var(--gray-400) !important
 
 
 .loading
-  .text, .left__icon, .right__icon
-    opacity: 0
+    .text, .left__icon, .right__icon
+        opacity: 0
 
-  &-item
-    position: absolute
-    display: flex
-    align-items: center
-    z-index: 2
-    justify-content: center
+    &-item
+        position: absolute
+        display: flex
+        align-items: center
+        z-index: 2
+        justify-content: center
 
-  &:hover
-    background: var(--gray-100)
+    &:hover
+        background: var(--gray-100)
 
-  &.transparent-button:hover
-    background: transparent
+    &.transparent-button:hover
+        background: transparent
 
-  &.violet:hover
-    background: var(--violet-700)
+    &.violet:hover
+        background: var(--violet-700)
 
-  &.violet-gradient:hover
-    background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
+    &.violet-gradient:hover
+        background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%)
 
 
 .loading__content
-  display: flex
-  justify-content: center
-  align-items: center
-  min-height: 40rem
+    display: flex
+    justify-content: center
+    align-items: center
+    min-height: 40rem
 
-  &-main
-    animation: 1.5s spin infinite linear
+    &-main
+        animation: 1.5s spin infinite linear
 
 
 @keyframes spin
-  to
-    transform: rotate(360deg)
+    to
+        transform: rotate(360deg)
 
 
 </style>

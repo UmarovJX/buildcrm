@@ -16,6 +16,7 @@ export default {
     communication_language: 'Язык общения',
     place_of_issue__of_passport_id: 'Место выдачи паспорта или ID',
     passport_series_example: 'Серия и номер паспорта или ID (напр. AB1234567)',
+    fio_full: 'Фамилия имя отчество или среднее имя',
     nation: 'Гражданство',
     person_type: 'Субъект',
     preview: 'Предросмотр',

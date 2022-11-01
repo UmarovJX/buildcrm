@@ -26,7 +26,7 @@ export default {
         iconStyle() {
             let style = ''
             if (this.color) {
-                style = `color:${this.color}, fontSize: ${this.size}${this.sizeUnit}`
+                style = `color:${this.color}; fontSize: ${this.size}${this.sizeUnit}`
             } else {
                 style = `fontSize: ${this.size}${this.sizeUnit}`
             }
