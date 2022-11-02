@@ -94,9 +94,9 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import CountDown from "@/components/Reusable/CountDown";
 import AppHeader from "@/components/Header/AppHeader";
 import TabTitle from "@/views/Experiment/elements/TabTitle";
-import ChClientDetails from "@/views/Experiment/components/ChClientDetails";
-import ChApartmentsOverview from "@/views/Experiment/components/ChApartmentsOverview";
-import ChReview from "@/views/Experiment/components/ChReview";
+import ChClientDetails from "@/views/Experiment/components/ClientDetails";
+import ChApartmentsOverview from "@/views/Experiment/components/ApartmentsOverview";
+import ChReview from "@/views/Experiment/components/Review";
 
 import {headerItems} from "@/views/Experiment/helper/headerComputed";
 import api from "@/services/api";

@@ -43,6 +43,11 @@ const schema = {
         amount: 0,
         id: 'other',
         prepay: 30
+    },
+    client: {
+        legal_entity: {
+
+        }
     }
 }
 
