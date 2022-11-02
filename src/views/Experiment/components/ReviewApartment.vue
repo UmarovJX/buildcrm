@@ -57,7 +57,11 @@ export default {
         justify-content: space-between;
         align-items: center;
         padding: 3rem 0;
-        border-top: 6px dashed var(--gray-200);
+        //border-top: 6px dashed var(--gray-200);
+        background-image: linear-gradient(to right, var(--gray-200) 50%, rgba(255, 255, 255, 0) 0%);
+        background-position: top;
+        background-size: 32px 6px;
+        background-repeat: repeat-x;
 
         p {
             font-family: CraftworkSans, serif;
