@@ -601,12 +601,11 @@ export default {
 
   mounted() {
     this.getData()
-    this.fetchCurrency()
     this.fetchCompanies(this)
   },
 
   methods: {
-    ...mapActions(["fetchCurrency", "fetchCompanies"]),
+    ...mapActions(["fetchCompanies"]),
 
     async requestObject() {
       this.loading = true
