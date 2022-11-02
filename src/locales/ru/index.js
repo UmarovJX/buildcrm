@@ -21,6 +21,7 @@ export default {
     nation: 'Гражданство',
     person_type: 'Субъект',
     preview: 'Предросмотр',
+    next_apartment: 'Следующая квартира',
     physical_person: 'Физическое лицо',
     legal_entity: 'Юридическое лицо',
     clients_personal_data: 'Личные данные клиента',

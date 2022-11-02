@@ -23,6 +23,7 @@ export default {
     physical_person: 'Jismoniy shaxs',
     legal_entity: 'Yuridik shaxs',
     preview: "Ko'rib chiqish",
+    next_apartment: 'Keyingi kvartira',
     clients_personal_data: "Mijozning shaxsiy ma'lumotlari",
     please_select: 'Пожалуйста выберите',
     type: 'Turi',

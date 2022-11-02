@@ -58,6 +58,7 @@ export default {
         align-items: center;
         padding: 3rem 0;
         //border-top: 6px dashed var(--gray-200);
+        //dashed  border top
         background-image: linear-gradient(to right, var(--gray-200) 50%, rgba(255, 255, 255, 0) 0%);
         background-position: top;
         background-size: 32px 6px;

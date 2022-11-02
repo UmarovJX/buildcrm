@@ -1,28 +1,40 @@
 <template>
-  <div class="position-relative">
-      <b-tabs class="custom-tab" :nav-wrapper-class="[upEvent?'sticky-top':'fixed-top sticky-top']">
-        <div class="ch-bottom__line"></div>
-        <b-tab
-            v-for="(apartment) in gtsApartments"
-            :key="apartment.id"
-            :title="apnName(apartment.number)"
-        >
-          <div>
-            <ch-apartment-details :apartment="apartment"/>
-          </div>
-        </b-tab>
-      </b-tabs>
-  </div>
+    <div class="position-relative">
+        <b-tabs class="custom-tab" :nav-wrapper-class="[upEvent?'sticky-top':'fixed-top sticky-top']">
+            <div class="ch-bottom__line"></div>
+            <b-tab
+                v-for="(apartment) in gtsApartments"
+                :key="apartment.id"
+                :title="apnName(apartment.number)"
+            >
+                <div>
+                    <ch-apartment-details :apartment="apartment"/>
+                </div>
+            </b-tab>
+        </b-tabs>
+
+        <div v-if="hasNext" class="next-button">
+            <x-button
+                @click="nextApn"
+                class="b-shadow-3"
+                :text="$t('next_apartment')"
+                variant="secondary"
+                right-icon="arrow_forward"
+                color-icon="var(--gray-400)"/>
+        </div>
+    </div>
 </template>
 
 <script>
 import ChApartmentDetails from "@/views/Experiment/components/ApartmentDetails";
 import {mapGetters} from "vuex";
+import {XButton} from "@/components/ui-components/button";
 
 export default {
     name: "ChApartmentsOverview",
     components: {
-        ChApartmentDetails
+        ChApartmentDetails,
+        XButton
     },
     data() {
         return {
@@ -30,7 +42,10 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('Experiment', ['gtsApartments'])
+        ...mapGetters('Experiment', ['gtsApartments']),
+        hasNext() {
+            return this.gtsApartments.length > 0
+        }
     },
     mounted() {
         window.onwheel = e => {
@@ -40,6 +55,9 @@ export default {
     methods: {
         apnName(number) {
             return this.$t('apartment') + ' №' + number
+        },
+        nextApn() {
+            // change tab apartment
         }
     }
 }
@@ -103,5 +121,12 @@ export default {
             transition: all .3s linear;
         }
     }
+}
+
+.next-button {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    z-index: 2;
 }
 </style>
