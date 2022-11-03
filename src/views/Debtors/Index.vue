@@ -42,7 +42,7 @@
                 :sort-desc.sync="table.sortDesc"
                 @sort-changed="changeSortSituation"
                 @row-clicked="showDebtorViewModal"
-                class="table__list"
+                class="table__list mt-4"
                 thead-tr-class="row__head__bottom-border"
                 tbody-tr-class="row__body__bottom-border cursor-pointer"
             >

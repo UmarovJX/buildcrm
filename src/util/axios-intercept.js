@@ -14,6 +14,7 @@ function navigateToLoginPage() {
 }
 
 async function retryApiCall(config) {
+    console.log(config, 'retryApiCall');
     const access_token = getLocalVar('auth__access__token')
     const _axios = axios.create({
         baseURL: config.baseURL,
@@ -29,7 +30,8 @@ async function retryApiCall(config) {
     return await _axios({
         method: config.method,
         url: config.url,
-        data: data()
+        data: data(),
+        params: config.params
     })
         .then((response) => response)
         .catch(error => Promise.reject(error))
@@ -76,6 +78,7 @@ async function refreshToken() {
 }
 
 export function axiosRequestInterceptResponse(config) {
+    console.log(config, 'config');
     const access_token = getLocalVar('auth__access__token')
     const requestConfig = Object.assign({}, config)
     if (!config.headers['Authorization'] && config.url !== 'oauth/login') {
