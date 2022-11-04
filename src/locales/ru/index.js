@@ -2,6 +2,13 @@ export default {
     home: {
         title: "Главная",
     },
+    fields_not_filled_out_or_incorrectly: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
+    fax:'Факс',
+    legal_address: 'Юридический адрес',
+    ndc: 'НДС',
+    account_number: 'Номер счета',
+    bank: 'Банк',
+    company_name: 'Название фирмы',
     client_information: 'Информация о клиенте',
     payment_date: "Дата ежемесячного платежа",
     first_payment_date: "Дата первого платежа",

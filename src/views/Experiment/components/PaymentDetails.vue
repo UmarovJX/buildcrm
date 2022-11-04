@@ -13,7 +13,6 @@ import {PROP_TYPE_OBJECT} from "@/constants/props";
 import SectionTitle from "@/views/Experiment/elements/SectionTitle";
 import ChCalculator from "@/views/Experiment/components/Calculator";
 import ChPaymentResult from "@/views/Experiment/components/PaymentResult";
-import {mapGetters} from "vuex";
 
 export default {
   name: "ChPaymentDetails",
@@ -24,12 +23,6 @@ export default {
   },
   props: {
     apartment: p(PROP_TYPE_OBJECT, {}),
-  },
-  computed: {
-    ...mapGetters('Experiment', ['getApm']),
-  },
-  methods: {
-
   }
 }
 </script>

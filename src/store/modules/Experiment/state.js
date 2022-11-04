@@ -45,9 +45,7 @@ const schema = {
         prepay: 30
     },
     client: {
-        legal_entity: {
-
-        }
+        legal_entity: {}
     }
 }
 

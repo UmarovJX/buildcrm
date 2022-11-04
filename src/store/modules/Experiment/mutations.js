@@ -32,7 +32,8 @@ export default {
                         price_m2: apm.price_m2
                     }
                 },
-                edit: state.schema.edit
+                edit: state.schema.edit,
+                validate: {complete: false}
             }
         })
     },

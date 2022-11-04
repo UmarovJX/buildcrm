@@ -1,30 +1,28 @@
 <template>
-    <div>
-        <app-header>
-            <template #header-breadcrumb>
-                <app-breadcrumb
-                    :page="headerItems.page"
-                    :page-info="headerItems.pageInfo"
-                    :breadcrumbs="headerItems.breadcrumbs"
-                />
-            </template>
-            <template v-if="expiry_at" #header-actions>
+  <div>
+    <app-header>
+      <template #header-breadcrumb>
+        <app-breadcrumb
+            :page="headerItems.page"
+            :page-info="headerItems.pageInfo"
+            :breadcrumbs="headerItems.breadcrumbs"
+        />
+      </template>
+      <template v-if="expiry_at" #header-actions>
+        <div
 
-                <div
-
-                    :class="flexCenter"
-                    class="checkout-timer background-violet-gradient mr-2"
-                >
-                    <CountDown
-                        :deadline="expiry_at"
-                        :showDays="false"
-                        :showHours="false"
-                        @timeElapsed="expiredConfirm"
-                    />
-                </div>
-            </template>
-
-        </app-header>
+            :class="flexCenter"
+            class="checkout-timer background-violet-gradient mr-2"
+        >
+          <CountDown
+              :deadline="expiry_at"
+              :showDays="false"
+              :showHours="false"
+              @timeElapsed="expiredConfirm"
+          />
+        </div>
+      </template>
+    </app-header>
 
     <k-loading-wrapper :loading="appLoading">
       <div class="app-checkout-main">
@@ -103,10 +101,12 @@ import api from "@/services/api";
 import {mapActions, mapState} from "vuex";
 import AppBreadcrumb from "@/components/AppBreadcrumb";
 
+import EventBus from "@/util/event-bus";
+
 export default {
   name: "Index",
   components: {
-    AppBreadcrumb,KLoadingWrapper,
+    AppBreadcrumb, KLoadingWrapper,
     XIcon,
     BaseButton,
     CountDown,
@@ -120,7 +120,7 @@ export default {
   data() {
     return {
       appLoading: false,
-      stepStateIdx: 1
+      stepStateIdx: 0
     }
   },
 
@@ -153,6 +153,7 @@ export default {
 
   methods: {
     ...mapActions('Experiment', ['setup']),
+    ...mapActions('notify', ['openNotify']),
     async init() {
       try {
         const orderId = this.$route.params.id
@@ -224,20 +225,28 @@ export default {
     },
 
     async firstStepReadyToNext() {
-      return await this.$refs['client-details-observer'].validateFields()
+      const vld = await this.$refs['client-details-observer'].validateFields()
+      if (!vld) {
+        this.openNotify({
+          type: 'error',
+          message: this.$t('fields_not_filled_out_or_incorrectly')
+        })
+      }
+      return vld
+    },
+
+    secondStepReadyToNext() {
+      EventBus.$emit('validateCalculator')
     },
 
     async moveToNextForm() {
       switch (this.stepStateIdx) {
         case 1: {
-          this.changeStepState(2)
+          this.secondStepReadyToNext() && this.changeStepState(2)
           break
         }
         default: {
-          const firstStepVld = await this.firstStepReadyToNext()
-          if (firstStepVld) {
-            this.changeStepState(1)
-          }
+          await this.firstStepReadyToNext() && this.changeStepState(1)
           break
         }
       }

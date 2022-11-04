@@ -412,5 +412,10 @@ export default {
         dispatch('rerenderApm', {idx})
         dispatch('initialPaymentsSetter', {index: idx})
         dispatch('monthlyPaymentsSetter', {index: idx})
+    },
+    updateValidationState({getters: gts, commit}, {index, apmId, complete}) {
+        const idx = index ?? gts.findApmIdx(apmId)
+        commit('updateApartment', {idx, validate: {complete}})
+        commit('reset')
     }
 }

@@ -48,6 +48,7 @@
 
                 </ul>
 
+
                 <div class="menu h-auto">
                     <ul class="menu-content" :class="[isActive?'toggle-open':'toggle-close']">
                         <li class="menu__item" @click="toggleCollapse">
@@ -132,9 +133,9 @@
 import {localeChanged} from 'vee-validate'
 import {mapActions, mapGetters, mapMutations} from "vuex";
 // import ThemeButton from "@/components/ThemeButton.vue";
+// import BaseAvatar from "@/components/Reusable/BaseAvatar";
 import GeneralPermission from "@/permission/general";
 import api from "@/services/api";
-// import BaseAvatar from "@/components/Reusable/BaseAvatar";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
