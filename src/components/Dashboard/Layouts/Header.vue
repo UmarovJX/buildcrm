@@ -174,7 +174,7 @@ export default {
         }
     },
     async created() {
-        await Promise.allSettled([this.fetchMenus(), this.fetchCurrency()])
+        await Promise.allSettled([this.fetchMenus()])
         this.locale = localStorage.locale !== "uz"
         await this.getLastVersion()
         this.getVersion()

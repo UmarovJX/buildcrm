@@ -458,8 +458,8 @@ export default {
             chosen: 0,
             fields: [
                 {
-                  key: "check",
-                  // item: BaseCheckbox,
+                    key: "check",
+                    // item: BaseCheckbox,
                 },
                 {
                     key: "number",
@@ -926,6 +926,14 @@ export default {
 
 .search__content {
     margin-top: 0;
+}
+
+
+.apartment-list-filter {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 70vh;
 }
 
 ::v-deep .row__head__bottom-border {

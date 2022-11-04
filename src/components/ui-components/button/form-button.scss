@@ -1,0 +1,138 @@
+// style for default
+.x-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 17px 1.25rem;
+  max-height: 56px;
+  min-width: fit-content;
+  width: fit-content;
+  border-radius: 2rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(88.25deg, var(--violet-600) 0%, #818CF8 100%);
+
+  .left-icon {
+    display: flex;
+    margin-right: .5rem;
+  }
+
+  .text {
+    font: 600 1rem/22px Inter, serif;
+    color: inherit;
+    margin-bottom: 0;
+  }
+
+  .right-icon {
+    display: flex;
+    margin-left: .5rem;
+  }
+
+
+  &.fixed {
+    width: 100%;
+  }
+}
+
+
+// style for primary
+.primary,
+.Primary {
+  background: linear-gradient(88.25deg, var(--violet-600) 0%, #818CF8 100%);
+  color: var(--white);
+
+  &:hover {
+    background: var(--violet-700) !important;
+  }
+
+
+  &:active {
+    background: var(--violet-900) !important;
+  }
+}
+
+
+// style for secondary
+.secondary,
+.Secondary {
+  background: var(--gray-100);
+  color: var(--gray-600);
+
+  &:hover {
+    background: var(--gray-200) !important;
+  }
+
+  &:active {
+    background: var(--gray-300) !important;
+  }
+}
+
+
+// style for tertiary
+.tertiary,
+.Tertiary {
+  background: transparent;
+  color: var(--gray-600);
+
+  &:hover {
+    background: var(--gray-200) !important;
+  }
+
+  &:active {
+    background: var(--gray-300) !important;
+  }
+}
+
+
+// style for disabled
+.disabled {
+  &.x-button {
+    background: var(--gray-100) !important;
+    color: var(--gray-400) !important;
+  }
+
+  &.tertiary, &.Tertiary {
+    background: transparent !important;
+    color: var(--gray-400) !important;
+  }
+}
+
+
+// style for loading
+.loading {
+  &.x-button {
+    background: var(--gray-100) !important;
+    color: var(--gray-400) !important;
+  }
+
+  &.tertiary, &.Tertiary {
+    background: transparent !important;
+    color: var(--gray-400) !important;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    z-index: 2;
+    justify-content: center;
+    margin-left: .5rem;
+  }
+
+  &__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-main {
+      animation: 1.5s spin infinite linear
+    }
+  }
+}
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

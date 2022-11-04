@@ -601,7 +601,6 @@ export default {
       blocks: [],
     });
 
-    this.fetchCurrency(this);
     this.fetchCompanies(this);
   },
 
