@@ -2,8 +2,9 @@ export default {
     home: {
         title: "Главная",
     },
+    final_total_price: 'Итоговая общая цена',
     fields_not_filled_out_or_incorrectly: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
-    fax:'Факс',
+    fax: 'Факс',
     legal_address: 'Юридический адрес',
     ndc: 'НДС',
     account_number: 'Номер счета',

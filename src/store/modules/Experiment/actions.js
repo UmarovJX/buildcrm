@@ -53,8 +53,10 @@ export default {
 
         dispatch('initialPaymentsSetter', {index: apmIndex})
         dispatch('monthlyPaymentsSetter', {index: apmIndex})
-        dispatch('rerenderApm', {idx: apmIndex})
+        dispatch('recalculateApmPrices', apmIndex)
+        // dispatch('rerenderApm', {idx: apmIndex})
     },
+
     editPrepay({getters: gts, commit, dispatch}, {apmId, prepay}) {
         const apmIndex = gts.findApmIdx(apmId)
         commit('updateApartment', {
@@ -146,30 +148,31 @@ export default {
     },
     monthlyPaymentsSetter({state, getters: gts, dispatch}, {index, uuid}) {
         const idx = index ?? gts.findApmIdx(uuid)
-        if (gts.getMonthlyPaymentAmount(idx) && gts.getPrepay(idx) !== 100) {
+        const monthlyPaymentAmount = gts.getMonthlyPaymentAmount(idx)
+        if (monthlyPaymentAmount && gts.getPrepay(idx) !== 100) {
             const {payment_date, monthly_payment_period} = state.apartments[idx].calc
             let today = payment_date ? new Date(payment_date) : new Date()
             const {year: todayYear, month: todayMonth, dayOfMonth: todayDate} = dateProperties(today)
             const lastDateOfCurrentMonth = (new Date(todayYear, todayMonth + 1, 0)).getDate()
             let calculateByLastDay = todayDate === lastDateOfCurrentMonth
             dispatch('monthlySetter', {idx, credit_months: []})
-
+            let dCredit = {
+                amount: fmd(monthlyPaymentAmount),
+                edit: false,
+                edited: false,
+                month: today,
+                type: 'monthly'
+            }
             if (monthly_payment_period > 0) {
                 for (let i = 0; i < monthly_payment_period; i++) {
-                    const creditMonth = {
-                        amount: fmd(gts.getMonthlyPaymentAmount(idx)),
-                        edit: false,
-                        edited: false,
-                        month: today,
-                        type: 'monthly'
-                    }
                     const lastDayOfMonth = new Date(todayYear, todayMonth + i + 1, 0)
                     if (i === 0) {
-                        creditMonth.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth())
+                        dCredit.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth())
                     } else {
-                        creditMonth.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth() + 1)
+                        dCredit.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth() + 1)
                     }
-                    dispatch('monthlyAdditionSetter', {idx, payment: creditMonth})
+                    state.apartments[idx].calc.credit_months.push(dCredit)
+                    // dispatch('monthlyAdditionSetter', {idx, payment: creditMonth})
                 }
             }
         } else {
@@ -413,9 +416,9 @@ export default {
         dispatch('initialPaymentsSetter', {index: idx})
         dispatch('monthlyPaymentsSetter', {index: idx})
     },
-    updateValidationState({getters: gts, commit}, {index, apmId, complete}) {
+    updateValidationState({getters: gts, commit}, {index, apmId, validate}) {
         const idx = index ?? gts.findApmIdx(apmId)
-        commit('updateApartment', {idx, validate: {complete}})
+        commit('updateApartment', {idx, validate})
         commit('reset')
     }
 }

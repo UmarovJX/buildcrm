@@ -49,7 +49,7 @@
               <tab-title :step="2" :content="$t('apartment_detail')"/>
             </template>
 
-            <ch-apartments-overview/>
+            <ch-apartments-overview ref="apartments-overview"/>
           </b-tab>
           <!--   ?END OF SECOND TAB   -->
 
@@ -98,10 +98,9 @@ import ChReview from "@/views/Experiment/components/Review";
 
 import {headerItems} from "@/views/Experiment/helper/headerComputed";
 import api from "@/services/api";
-import {mapActions, mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import AppBreadcrumb from "@/components/AppBreadcrumb";
 
-import EventBus from "@/util/event-bus";
 
 export default {
   name: "Index",
@@ -152,6 +151,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations('Experiment', ['reset']),
     ...mapActions('Experiment', ['setup']),
     ...mapActions('notify', ['openNotify']),
     async init() {
@@ -235,14 +235,38 @@ export default {
       return vld
     },
 
-    secondStepReadyToNext() {
-      EventBus.$emit('validateCalculator')
+    async secondStepReadyToNext() {
+      let {
+        isTheLastStep,
+        completeFields,
+        checkValidation,
+        isCurrentFullFilled,
+        changeApmTabIndex,
+      } = this.$refs['apartments-overview']
+
+      const vR = await completeFields()
+
+      if (!vR) {
+        this.openNotify({
+          type: 'error',
+          message: this.$t('fields_not_filled_out_or_incorrectly')
+        })
+      }
+
+      if (isTheLastStep) {
+        return vR
+      } else if (await checkValidation() && isCurrentFullFilled()) {
+        changeApmTabIndex()
+      }
+
+      this.reset()
+      return false
     },
 
     async moveToNextForm() {
       switch (this.stepStateIdx) {
         case 1: {
-          this.secondStepReadyToNext() && this.changeStepState(2)
+          await this.secondStepReadyToNext() && this.changeStepState(2)
           break
         }
         default: {

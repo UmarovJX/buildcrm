@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+    final_total_price: 'Yakuniy umumiy narx',
     fields_not_filled_out_or_incorrectly: "Qizil rang bilan belgilangan maydonlar to'ldirilmagan yoki noto'g'ri to'ldirilgan",
     fax: 'Faks',
     legal_address: 'Yuridik manzil',

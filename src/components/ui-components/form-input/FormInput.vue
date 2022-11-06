@@ -18,6 +18,7 @@
         ref="base-input"
         separator="space"
         currency-symbol-position="suffix"
+        @blur="$emit('blur',$event)"
     />
     <input
         v-else-if="mask !== ''"
@@ -29,6 +30,8 @@
         :disabled="disable"
         :style="inputFieldStyle"
         :placeholder="placeholder"
+        :autocomplete="autocomplete"
+        @blur="$emit('blur',$event)"
     />
     <input
         v-else
@@ -39,6 +42,7 @@
         ref="base-input"
         :style="inputFieldStyle"
         :placeholder="placeholder"
+        @blur="$emit('blur',$event)"
     />
 
     <span
@@ -73,7 +77,7 @@ export default {
     event: 'input'
   },
 
-  emits: ['input'],
+  emits: ['input', 'blur'],
 
   props: {
     placeholder: {
@@ -110,6 +114,10 @@ export default {
     disable: {
       type: Boolean,
       default: () => false
+    },
+    autocomplete: {
+      type: String,
+      default: 'on'
     },
     margin: cssDefaultProperty,
     padding: cssDefaultProperty,

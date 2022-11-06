@@ -28,7 +28,7 @@
     <validation-provider
         v-if="showAnotherPriceFields"
         v-slot="{ errors }"
-        rules="required"
+        rules="required|min_value:1"
         :name="`${ $t('starting_price') }`"
         class="cw-starting-price"
     >
@@ -48,7 +48,7 @@
     <validation-provider
         v-if="showAnotherPriceFields"
         v-slot="{ errors }"
-        rules="required"
+        rules="required|min_value:1"
         :name="`${ $t('price_m2') }`"
         class="cw-price-m2"
     >
@@ -68,17 +68,19 @@
     <!--? INSTALLMENT PLAN  -->
     <validation-provider
         v-slot="{ errors }"
-        rules="required"
+        rules="required|min_value:1"
         :name="`${ $t('installment') }`"
         class="cw-monthly-payment"
     >
       <x-form-input
-          type="number"
+          type="text"
           v-model="paymentDetails.monthly_payment_period"
           :label="true"
+          mask="##"
           :error="!!errors[0]"
           :placeholder="`${ $t('installment') }`"
           class="w-100"
+          autocomplete="off"
           @input="updateMonthlyPaymentPeriod"
       />
     </validation-provider>
@@ -87,7 +89,7 @@
     <validation-provider
         v-show="!showAnotherPriceFields"
         v-slot="{ errors }"
-        rules="required"
+        rules="required|min_value:1"
         :name="`${ $t('prepayment') }`"
         class="cw-prepayment"
     >
@@ -105,7 +107,7 @@
     <!--? INITIAL_FEE  -->
     <validation-provider
         v-slot="{ errors }"
-        rules="required"
+        rules="required|min_value:1"
         :name="`${ $t('payments.initial_fee') }`"
         class="cw-initial-fee"
     >
@@ -208,7 +210,6 @@ import {XFormInput} from "@/components/ui-components/form-input";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {mapActions, mapGetters} from "vuex";
 
-import EventBus from "@/util/event-bus";
 
 export default {
   name: "ChCalculator",
@@ -235,7 +236,7 @@ export default {
 
     return {
       datePickerIconFill: 'var(--violet-600)',
-      calcRef: 'calculator-observer-' + this.apartment.id,
+      calcRef: 'ch-calculator-' + this.apartment.id,
       paymentDetails: {
         monthly_payment_period,
         discount: discount.id,
@@ -296,9 +297,6 @@ export default {
       },
       deep: true
     }
-  },
-  async mounted() {
-    EventBus.$on('validateCalculator', this.abra)
   },
   methods: {
     ...mapActions('Experiment', [
@@ -442,14 +440,20 @@ export default {
       }
       this.refreshFieldsValue()
     },
-    abra() {
-      console.log('abra')
-    },
     async checkValidation() {
-      this.updateValidationState({
-        apmId: this.apartment.id,
-        complete: await this.$refs[this.calcRef].validate()
-      })
+      await this.validate()
+          .then(() => {
+            this.updateValidationState({
+              apmId: this.apartment.id,
+              validate: this.getValidationFlags()
+            })
+          })
+    },
+    async validate() {
+      return await this.$refs[this.calcRef].validate()
+    },
+    getValidationFlags() {
+      return this.$refs[this.calcRef].flags
     }
   }
 }

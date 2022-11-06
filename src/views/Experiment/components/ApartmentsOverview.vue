@@ -1,43 +1,106 @@
 <template>
   <div class="position-relative">
     <b-tabs
+        v-model="overviewApmTabIndex"
         class="custom-tab"
         :nav-wrapper-class="[{'fixed-top':!upEvent}, 'sticky-top']"
+        :active-nav-item-class="navItemActiveClass"
     >
       <div class="ch-bottom__line"></div>
       <b-tab
-          v-for="(apartment) in gtsApartments"
+          v-for="(apartment) in apartments"
           :key="apartment.id"
-          :title="apnName(apartment.number)"
       >
+        <template #title>
+          <span
+              class="ch-v-status-wrapper"
+              :class="{'red-600':makeRedTitle(apartment.validate)}"
+          >
+            <span>{{ apnName(apartment.number) }}</span>
+            <template v-if="showVStatus(apartment.validate)">
+              <span v-if="apartment.validate.valid">
+                <x-circular-background>
+                  <x-icon name="check_circle" class="violet-600"/>
+                </x-circular-background>
+              </span>
+              <span v-else>
+                <x-circular-background bg-color="var(--red-100)">
+                  <x-icon name="error" class="red-600"/>
+                </x-circular-background>
+              </span>
+            </template>
+
+          </span>
+        </template>
         <div>
-          <ch-apartment-details :apartment="apartment"/>
+          <div class="ch-apartment-overview">
+            <ch-apartment-characters :apartment="apartment"/>
+            <ch-contract-details :apartment="apartment"/>
+            <div class="ch-payment-details">
+              <section-title :bilingual="true" title="payment_details_2" class="pd-title"/>
+              <ch-calculator
+                  :ref="`ch-calculator-${apartment.id}`"
+                  :apartment="apartment"
+                  class="pd-calculator"
+              />
+              <ch-payment-result :apm="apartment" class="pd-payment-result"/>
+            </div>
+            <ch-payment-schedule :apartment="apartment"/>
+          </div>
         </div>
       </b-tab>
     </b-tabs>
-<!--    <ch-apartment-details-->
-<!--        v-else-->
-<!--        :apartment="gtsApartments[0]"-->
-<!--    />-->
   </div>
 </template>
 
 <script>
-import ChApartmentDetails from "@/views/Experiment/components/ApartmentDetails";
-import {mapGetters} from "vuex";
+import {hasOwnProperty} from "@/util/object";
+import {mapGetters, mapMutations} from "vuex";
+import ChContractDetails from "@/views/Experiment/components/ContractDetails";
+import ChApartmentCharacters from "@/views/Experiment/components/ApartmentCharacters";
+import ChPaymentSchedule from "@/views/Experiment/components/PaymentSchedule";
+import SectionTitle from "@/views/Experiment/elements/SectionTitle";
+import ChCalculator from "@/views/Experiment/components/Calculator";
+import ChPaymentResult from "@/views/Experiment/components/PaymentResult";
+import {XIcon} from "@/components/ui-components/material-icons";
+import {XCircularBackground} from "@/components/ui-components/circular-background";
+import {isObject} from "@/util/inspect";
 
 export default {
   name: "ChApartmentsOverview",
   components: {
-    ChApartmentDetails
+    ChContractDetails,
+    ChApartmentCharacters,
+    ChPaymentSchedule,
+    SectionTitle,
+    ChCalculator,
+    ChPaymentResult,
+    XIcon,
+    XCircularBackground,
   },
   data() {
     return {
       upEvent: false,
+      overviewApmTabIndex: 0
     }
   },
   computed: {
-    ...mapGetters('Experiment', ['gtsApartments'])
+    ...mapGetters('Experiment', {
+      apartments: 'gtsApartments',
+      findApmIdx: 'findApmIdx'
+    }),
+    navItemActiveClass() {
+      if (this.apartments.length && isObject(this.apartments[this.overviewApmTabIndex]) && hasOwnProperty(this.apartments[this.overviewApmTabIndex], 'validate')) {
+        const {changed, touched, valid, dirty} = this.apartments[this.overviewApmTabIndex].validate
+        return {
+          'nav-active-state-error': (changed || (dirty && touched)) && !valid
+        }
+      }
+      return {}
+    },
+    isTheLastStep() {
+      return this.overviewApmTabIndex === this.apartments.length - 1
+    }
   },
   mounted() {
     window.onwheel = e => {
@@ -45,9 +108,35 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('Experiment', ['updateApartment', 'reset']),
     apnName(number) {
       return this.$t('apartment') + ' №' + number
-    }
+    },
+    async completeFields() {
+      const collection = []
+      for (let i = 0; i < this.apartments.length; i++) {
+        const ref = `ch-calculator-` + this.apartments[i].id
+        this.updateApartment({
+          idx: this.findApmIdx(this.apartments[i].id),
+          validate: {...this.$refs[ref][0].getValidationFlags()}
+        })
+        collection.push(await this.checkValidation(i))
+      }
+      this.reset()
+      return collection.every(c => c)
+    },
+    async checkValidation(idx) {
+      const ref = `ch-calculator-` + this.apartments[idx ?? this.overviewApmTabIndex].id
+      return await this.$refs[ref][0].validate()
+    },
+    changeApmTabIndex(count = 1) {
+      this.overviewApmTabIndex += count
+    },
+    isCurrentFullFilled() {
+      return this.apartments[this.overviewApmTabIndex].validate.valid
+    },
+    showVStatus: (v) => v.changed && (v.dirty || v.touched),
+    makeRedTitle: (v) => (v.changed || (v.dirty && v.touched)) && !v.valid,
   }
 }
 </script>
@@ -110,5 +199,48 @@ export default {
       transition: all .3s linear;
     }
   }
+}
+
+.ch-apartment-overview {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 3rem;
+  padding-top: 2rem;
+}
+
+.ch-payment-details {
+  display: grid;
+  grid-template-areas:
+   "pdt pdt"
+   "pdc pdpr";
+  gap: 2rem;
+
+  .pd-title {
+    grid-area: pdt;
+  }
+
+  .pd-calculator {
+    grid-area: pdc;
+  }
+
+  .pd-payment-result {
+    grid-area: pdpr;
+    align-self: start;
+  }
+}
+
+.ch-v-status-wrapper {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+}
+
+.icon-circle-wrapper {
+  padding: 0.5rem;
+  background-color: var(--violet-100);
+}
+
+::v-deep .custom-tab .nav-tabs .nav-link.active.nav-active-state-error:after {
+  background-color: var(--red-600);
 }
 </style>

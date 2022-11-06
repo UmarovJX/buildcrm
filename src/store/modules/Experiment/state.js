@@ -44,9 +44,23 @@ const schema = {
         id: 'other',
         prepay: 30
     },
-    client: {
-        legal_entity: {}
+    client: {legal_entity: {}},
+    validate: {
+        changed: false,
+        dirty: true,
+        failed: false,
+        invalid: false,
+        passed: false,
+        pending: false,
+        pristine: false,
+        required: false,
+        touched: false,
+        untouched: true,
+        valid: true,
+        validated: false,
     }
+
+
 }
 
 export default {
