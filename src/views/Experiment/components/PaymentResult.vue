@@ -8,6 +8,7 @@
                 <span class="gray-400">{{ $t('price_m') }}<sup>2</sup></span>
                 <span class="ch-price-cell gray-400">{{ prettier(apm.calc.price_m2, 2) }} сум</span>
             </template>
+
             <span class="gray-400">{{ $t('contracts.view.initial_fee') }}</span>
             <span class="ch-price-cell gray-400">{{ prettier(apm.calc.initial_price, 2) }} сум</span>
 
@@ -21,7 +22,6 @@
                 <span class="teal-500">{{ $t('discount_per_m') }}<sup>2</sup></span>
                 <span class="ch-price-cell teal-500">{{ prettier(apm.calc.discount_per_m2, 2) }} сум</span>
             </template>
-
         </div>
         <div class="ch-border-dashed"></div>
         <div class="ch-total-price">

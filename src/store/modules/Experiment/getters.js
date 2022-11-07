@@ -149,4 +149,5 @@ export default {
         calc.total_discount = gts.getDiscount(idx)
         return calc
     },
+    totalForAll: (state, gts) => gts.gtsApartments.reduce((a, b) => a + b.calc.total, 0)
 }
