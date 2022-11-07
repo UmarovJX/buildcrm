@@ -42,6 +42,7 @@
                   :ref="`ch-calculator-${apartment.id}`"
                   :apartment="apartment"
                   class="pd-calculator"
+                  @set-v-flags="changeVFlags(apartment.id,$event)"
               />
               <ch-payment-result :apm="apartment" class="pd-payment-result"/>
             </div>
@@ -50,14 +51,14 @@
         </div>
       </b-tab>
     </b-tabs>
-    <div v-if="hasNext" class="next-button">
+    <div class="next-button">
       <x-button
-          @click="nextApn"
+          @click="navigateToNext"
           class="b-shadow-3"
-          :text="$t('next_apartment')"
-          variant="secondary"
           right-icon="arrow_forward"
-          color-icon="var(--gray-400)"/>
+          :variant="showNavigateToNextBtn ? 'primary' : 'secondary'"
+          :text="isTheLastStep ? $t('preview') : $t('next_apartment')"
+          :color-icon="showNavigateToNextBtn ? 'white' : 'var(--gray-400)'"/>
     </div>
   </div>
 </template>
@@ -89,10 +90,12 @@ export default {
     XCircularBackground,
     XButton
   },
+  emits: ['go-review'],
   data() {
     return {
       upEvent: false,
-      overviewApmTabIndex: 0
+      overviewApmTabIndex: 0,
+      showNavigateToNextBtn: false
     }
   },
   computed: {
@@ -101,7 +104,10 @@ export default {
       findApmIdx: 'findApmIdx'
     }),
     navItemActiveClass() {
-      if (this.apartments.length && isObject(this.apartments[this.overviewApmTabIndex]) && hasOwnProperty(this.apartments[this.overviewApmTabIndex], 'validate')) {
+      if (
+          this.apartments.length && isObject(this.apartments[this.overviewApmTabIndex])
+          && hasOwnProperty(this.apartments[this.overviewApmTabIndex], 'validate')
+      ) {
         const {changed, touched, valid, dirty} = this.apartments[this.overviewApmTabIndex].validate
         return {
           'nav-active-state-error': (changed || (dirty && touched)) && !valid
@@ -111,20 +117,19 @@ export default {
     },
     isTheLastStep() {
       return this.overviewApmTabIndex === this.apartments.length - 1
-    }
+    },
   },
   mounted() {
     window.onwheel = e => {
       this.upEvent = e.deltaY < 0;
     }
+
+    this.showNavigateToNextBtn = this.apartments[this.overviewApmTabIndex].validate.valid
   },
   methods: {
     ...mapMutations('Experiment', ['updateApartment', 'reset']),
     apnName(number) {
       return this.$t('apartment') + ' №' + number
-    },
-    nextApn() {
-      // change tab apartment
     },
     async completeFields() {
       const collection = []
@@ -148,6 +153,21 @@ export default {
     },
     isCurrentFullFilled() {
       return this.apartments[this.overviewApmTabIndex].validate.valid
+    },
+    navigateToNext() {
+      if (this.showNavigateToNextBtn) {
+        if (this.isTheLastStep) {
+          this.$emit('go-review')
+        } else {
+          this.changeApmTabIndex()
+        }
+      }
+    },
+    changeVFlags(apmId, flags) {
+      const isCurrentApm = this.apartments[this.overviewApmTabIndex].id === apmId
+      if (isCurrentApm) {
+        this.showNavigateToNextBtn = flags.valid
+      }
     },
     showVStatus: (v) => v.changed && (v.dirty || v.touched),
     makeRedTitle: (v) => (v.changed || (v.dirty && v.touched)) && !v.valid,
@@ -259,9 +279,9 @@ export default {
 }
 
 .next-button {
-    position: fixed;
-    bottom: 3rem;
-    right: 3rem;
-    z-index: 2;
+  position: fixed;
+  bottom: 3rem;
+  right: 3rem;
+  z-index: 2;
 }
 </style>

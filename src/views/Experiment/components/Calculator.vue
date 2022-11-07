@@ -221,6 +221,7 @@ export default {
   props: {
     apartment: p(PROP_TYPE_OBJECT, {})
   },
+  emits: ['set-v-flags'],
   data() {
     const {
       monthly_payment_period,
@@ -447,6 +448,7 @@ export default {
               apmId: this.apartment.id,
               validate: this.getValidationFlags()
             })
+            this.$emit('set-v-flags', this.getValidationFlags())
           })
     },
     async validate() {

@@ -49,7 +49,7 @@
               <tab-title :step="2" :content="$t('apartment_detail')"/>
             </template>
 
-            <ch-apartments-overview ref="apartments-overview"/>
+            <ch-apartments-overview @go-review="showReviewSection" ref="apartments-overview"/>
           </b-tab>
           <!--   ?END OF SECOND TAB   -->
 
@@ -123,8 +123,8 @@ export default {
     }
   },
 
-  created() {
-    this.init()
+  async created() {
+    await this.init()
   },
 
   computed: {
@@ -156,6 +156,7 @@ export default {
     ...mapActions('notify', ['openNotify']),
     async init() {
       try {
+        this.startLoading()
         const orderId = this.$route.params.id
         const {data} = await api.orders.fetchHoldOrder(orderId)
         if (data) {
@@ -172,6 +173,8 @@ export default {
       } catch (e) {
         this.toastedWithErrorCode(e)
         this.redirect(e)
+      } finally {
+        this.finishLoading()
       }
     },
 
@@ -274,7 +277,12 @@ export default {
           break
         }
       }
+    },
+
+    showReviewSection() {
+      this.changeStepState(2)
     }
+
   }
 }
 </script>
