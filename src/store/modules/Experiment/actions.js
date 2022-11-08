@@ -420,5 +420,16 @@ export default {
         const idx = index ?? gts.findApmIdx(apmId)
         commit('updateApartment', {idx, validate})
         commit('reset')
+    },
+    removeApartment({state, getters: gts}, {index, apmId}) {
+        const idx = index ?? gts.findApmIdx(apmId)
+        state.trashStorage.push({idx, a: state.apartments[idx]})
+        state.apartments.splice(idx, 1)
+    },
+    returnRemovedApartments({state}) {
+        state.trashStorage.forEach(({idx, a}) => {
+            state.apartments.splice(idx, 0, a)
+        })
+        state.trashStorage = []
     }
 }

@@ -2,6 +2,7 @@ import {isString, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 
 export default {
+    trashCount: (state) => state.trashStorage.length,
     gtsApartments: (state) => state.apartments,
     getApm: (state, gts) => ({idx = undefined, uuid = undefined}) => {
         if (isUndefinedOrNullOrEmpty(idx)) {

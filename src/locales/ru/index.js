@@ -2,6 +2,8 @@ export default {
     home: {
         title: "Главная",
     },
+    return_all_apartments: 'Вернуть все квартиры',
+    cleaned_apartments: 'Убранные квартиры',
     final_total_price: 'Итоговая общая цена',
     fields_not_filled_out_or_incorrectly: 'Поля, выделенные красным цветом, не заполнены или заполнены неправильно',
     fax: 'Факс',

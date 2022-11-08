@@ -2,6 +2,8 @@ export default {
     home: {
         title: "Asosiy",
     },
+    return_all_apartments: "Barcha xonadonlarni qaytarish",
+    cleaned_apartments: "O'chirilgan xonadonlar",
     final_total_price: 'Yakuniy umumiy narx',
     fields_not_filled_out_or_incorrectly: "Qizil rang bilan belgilangan maydonlar to'ldirilmagan yoki noto'g'ri to'ldirilgan",
     fax: 'Faks',

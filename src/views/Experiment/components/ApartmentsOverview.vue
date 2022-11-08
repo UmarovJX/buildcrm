@@ -1,6 +1,7 @@
 <template>
   <div class="position-relative">
     <b-tabs
+        v-if="apartments.length > 1"
         v-model="overviewApmTabIndex"
         class="custom-tab"
         :nav-wrapper-class="[{'fixed-top':!upEvent}, 'sticky-top']"
@@ -51,13 +52,31 @@
         </div>
       </b-tab>
     </b-tabs>
-    <div class="next-button">
+
+    <div class="ch-apartment-overview ch-single-apartment-overview" v-else>
+      <ch-apartment-characters :apartment="apartments[0]"/>
+      <ch-contract-details :apartment="apartments[0]"/>
+      <div class="ch-payment-details">
+        <section-title :bilingual="true" title="payment_details_2" class="pd-title"/>
+        <ch-calculator
+            :ref="`ch-calculator-${apartments[0].id}`"
+            :apartment="apartments[0]"
+            class="pd-calculator"
+            @set-v-flags="changeVFlags(apartments[0].id,$event)"
+        />
+        <ch-payment-result :apm="apartments[0]" class="pd-payment-result"/>
+      </div>
+      <ch-payment-schedule :apartment="apartments[0]"/>
+    </div>
+
+
+    <div v-if="!isTheLastStep" class="next-button">
       <x-button
           @click="navigateToNext"
           class="b-shadow-3"
           right-icon="arrow_forward"
           :variant="showNavigateToNextBtn ? 'primary' : 'secondary'"
-          :text="isTheLastStep ? $t('preview') : $t('next_apartment')"
+          :text="$t('next_apartment')"
           :color-icon="showNavigateToNextBtn ? 'white' : 'var(--gray-400)'"/>
     </div>
   </div>
@@ -283,5 +302,9 @@ export default {
   bottom: 3rem;
   right: 3rem;
   z-index: 2;
+}
+
+.ch-single-apartment-overview {
+  padding-top: 0 !important;
 }
 </style>

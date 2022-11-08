@@ -15,7 +15,7 @@
       <div class="apn-result__item" v-for="apartment in apartments" :key="apartment.id">
         <section-title :bilingual="true" :title="$t('apartment')+' '+apartment.number" class="km-b-2"/>
         <div class="apn-result__item-content">
-          <ch-plan-details :apartment="apartment" :remove="true"/>
+          <ch-plan-details :apartment="apartment" :remove="apartments.length > 1"/>
           <ch-payment-result :apm="apartment" :result="true" class="pd-payment-result"/>
         </div>
       </div>
@@ -24,6 +24,14 @@
         <p>{{ prettier(totalForAll) }} сум</p>
       </div>
     </div>
+
+    <x-bottom-clipboard v-if="trashCount">
+      <p>{{ $t('cleaned_apartments') }} : {{ trashCount }}</p>
+      <x-button
+          :text="$t('return_all_apartments')"
+          @click="returnRemovedApartments"
+      />
+    </x-bottom-clipboard>
   </div>
 </template>
 
@@ -32,8 +40,10 @@ import SectionTitle from "@/views/Experiment/elements/SectionTitle";
 import ChPaymentResult from "@/views/Experiment/components/PaymentResult";
 import ChPlanDetails from "@/views/Experiment/components/PlanDetails";
 import FieldInformation from "@/views/Experiment/elements/FieldInformation";
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {formatToPrice} from "@/util/reusable";
+import {XBottomClipboard} from "@/components/ui-components/bottom-clipboard";
+import {XButton} from "@/components/ui-components/button";
 
 export default {
   name: "ChReviewSide",
@@ -42,6 +52,8 @@ export default {
     ChPaymentResult,
     ChPlanDetails,
     FieldInformation,
+    XBottomClipboard,
+    XButton
   },
   data() {
     const clientDetails = [
@@ -104,10 +116,14 @@ export default {
     ...mapGetters('Experiment', {
       apartments: 'gtsApartments',
       totalForAll: 'totalForAll',
+      trashCount: 'trashCount'
     })
   },
   methods: {
-    prettier: formatToPrice
+    prettier: formatToPrice,
+    ...mapActions('Experiment', {
+      returnRemovedApartments: 'returnRemovedApartments'
+    })
   }
 }
 </script>
