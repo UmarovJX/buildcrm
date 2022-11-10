@@ -32,8 +32,9 @@
                             :class="$route.name === item.action ? 'active-link' : 'inactive-link'"
                         >
                             <!--                    <div class="menu__img"></div>-->
-                            <i :class="item.icon" class="menu-item__icon"></i>
-
+                            <!--                            <i :class="item.icon" class="menu-item__icon"></i>-->
+                            <x-icon :name="item.icon"
+                                    :color="$route.name === item.action?'var(--white)': 'var(--gray-400)'"/>
                             <div class="menu__item-body">
                                 <div class="menu__name">
                                     {{ $t(item.action + ".title") }}

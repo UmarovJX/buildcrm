@@ -2,7 +2,7 @@
     <div>
         <app-header>
             <template #header-title>
-                Release Note
+                {{ $t('release_note.release_note') }}
             </template>
             <template #header-actions>
                 <base-button
@@ -17,10 +17,6 @@
                 </base-button>
             </template>
         </app-header>
-
-
-        <!--        <base-button class="mb-4" @click="openReleaseModal" text="add release note"/>-->
-        <!--        <base-button @click="openReleaseNote" text="about release note"/>-->
 
 
         <div class="d-flex align-items-center justify-content-end">
@@ -67,36 +63,20 @@
                                     <div class="release-note__block-item">
                                         <p>{{ $t("release_note.new") }} (UZ)</p>
                                         <vue-editor v-model="form.latest['uz']"></vue-editor>
-                                        <!--                            <base-input-->
-                                        <!--                                v-model="form.latest['uz']"-->
-                                        <!--                                :placeholder="`${ $t('text') }`"-->
-                                        <!--                            />-->
                                     </div>
                                     <div class="release-note__block-item">
                                         <p>{{ $t("edited") }} (UZ)</p>
                                         <vue-editor v-model="form.fixed['uz']"></vue-editor>
-                                        <!--                            <base-input
-                                                                        v-model="form.fixed['uz']"
-                                                                        :placeholder="`${ $t('text') }`"
-                                                                    />-->
                                     </div>
                                 </b-tab>
                                 <b-tab title="На русском">
                                     <div class="release-note__block-item">
                                         <p>{{ $t("release_note.new") }} (RU)</p>
                                         <vue-editor v-model="form.latest['ru']"></vue-editor>
-                                        <!--                            <base-input-->
-                                        <!--                                v-model="form.latest['ru']"-->
-                                        <!--                                :placeholder="`${ $t('text') }`"-->
-                                        <!--                            />-->
                                     </div>
                                     <div class="release-note__block-item">
                                         <p>{{ $t("edited") }} (RU)</p>
                                         <vue-editor v-model="form.fixed['ru']"></vue-editor>
-                                        <!--                            <base-input-->
-                                        <!--                                v-model="form.fixed['ru']"-->
-                                        <!--                                :placeholder="`${ $t('text') }`"-->
-                                        <!--                            />-->
                                     </div>
                                 </b-tab>
                             </b-tabs>
