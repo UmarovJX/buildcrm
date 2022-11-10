@@ -32,16 +32,18 @@ export default {
                         price_m2: apm.price_m2
                     }
                 },
-                edit: state.schema.edit
+                edit: state.schema.edit,
+                validate: state.schema.validate
             }
         })
     },
-    updateApartment(state, {idx, apm, calc, edit}) {
+    updateApartment(state, {idx, apm, calc, edit, validate}) {
         state.apartments[idx] = {
             ...state.apartments[idx],
             ...apm,
             edit: {...state.apartments[idx].edit, ...edit},
-            calc: {...state.apartments[idx].calc, ...calc}
+            calc: {...state.apartments[idx].calc, ...calc},
+            validate: {...state.apartments[idx].validate, ...validate}
         }
     },
     sortPaymentSchedule(state, {type, idx}) {

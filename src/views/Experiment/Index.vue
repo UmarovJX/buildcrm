@@ -1,30 +1,28 @@
 <template>
-    <div>
-        <app-header>
-            <template #header-breadcrumb>
-                <app-breadcrumb
-                    :page="headerItems.page"
-                    :page-info="headerItems.pageInfo"
-                    :breadcrumbs="headerItems.breadcrumbs"
-                />
-            </template>
-            <template v-if="expiry_at" #header-actions>
+  <div>
+    <app-header>
+      <template #header-breadcrumb>
+        <app-breadcrumb
+            :page="headerItems.page"
+            :page-info="headerItems.pageInfo"
+            :breadcrumbs="headerItems.breadcrumbs"
+        />
+      </template>
+      <template v-if="expiry_at" #header-actions>
+        <div
 
-                <div
-
-                    :class="flexCenter"
-                    class="checkout-timer background-violet-gradient mr-2"
-                >
-                    <CountDown
-                        :deadline="expiry_at"
-                        :showDays="false"
-                        :showHours="false"
-                        @timeElapsed="expiredConfirm"
-                    />
-                </div>
-            </template>
-
-        </app-header>
+            :class="flexCenter"
+            class="checkout-timer background-violet-gradient mr-2"
+        >
+          <CountDown
+              :deadline="expiry_at"
+              :showDays="false"
+              :showHours="false"
+              @timeElapsed="expiredConfirm"
+          />
+        </div>
+      </template>
+    </app-header>
 
     <k-loading-wrapper :loading="appLoading">
       <div class="app-checkout-main">
@@ -51,7 +49,7 @@
               <tab-title :step="2" :content="$t('apartment_detail')"/>
             </template>
 
-            <ch-apartments-overview/>
+            <ch-apartments-overview @go-review="showReviewSection" ref="apartments-overview"/>
           </b-tab>
           <!--   ?END OF SECOND TAB   -->
 
@@ -100,13 +98,14 @@ import ChReview from "@/views/Experiment/components/Review";
 
 import {headerItems} from "@/views/Experiment/helper/headerComputed";
 import api from "@/services/api";
-import {mapActions, mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import AppBreadcrumb from "@/components/AppBreadcrumb";
+
 
 export default {
   name: "Index",
   components: {
-    AppBreadcrumb,KLoadingWrapper,
+    AppBreadcrumb, KLoadingWrapper,
     XIcon,
     BaseButton,
     CountDown,
@@ -120,12 +119,12 @@ export default {
   data() {
     return {
       appLoading: false,
-      stepStateIdx: 1
+      stepStateIdx: 0
     }
   },
 
-  created() {
-    this.init()
+  async created() {
+    await this.init()
   },
 
   computed: {
@@ -152,9 +151,12 @@ export default {
   },
 
   methods: {
+    ...mapMutations('Experiment', ['reset']),
     ...mapActions('Experiment', ['setup']),
+    ...mapActions('notify', ['openNotify']),
     async init() {
       try {
+        this.startLoading()
         const orderId = this.$route.params.id
         const {data} = await api.orders.fetchHoldOrder(orderId)
         if (data) {
@@ -171,6 +173,8 @@ export default {
       } catch (e) {
         this.toastedWithErrorCode(e)
         this.redirect(e)
+      } finally {
+        this.finishLoading()
       }
     },
 
@@ -224,24 +228,61 @@ export default {
     },
 
     async firstStepReadyToNext() {
-      return await this.$refs['client-details-observer'].validateFields()
+      const vld = await this.$refs['client-details-observer'].validateFields()
+      if (!vld) {
+        this.openNotify({
+          type: 'error',
+          message: this.$t('fields_not_filled_out_or_incorrectly')
+        })
+      }
+      return vld
+    },
+
+    async secondStepReadyToNext() {
+      let {
+        isTheLastStep,
+        completeFields,
+        checkValidation,
+        isCurrentFullFilled,
+        changeApmTabIndex,
+      } = this.$refs['apartments-overview']
+
+      const vR = await completeFields()
+
+      if (!vR) {
+        this.openNotify({
+          type: 'error',
+          message: this.$t('fields_not_filled_out_or_incorrectly')
+        })
+      }
+
+      if (isTheLastStep) {
+        return vR
+      } else if (await checkValidation() && isCurrentFullFilled()) {
+        changeApmTabIndex()
+      }
+
+      this.reset()
+      return false
     },
 
     async moveToNextForm() {
       switch (this.stepStateIdx) {
         case 1: {
-          this.changeStepState(2)
+          await this.secondStepReadyToNext() && this.changeStepState(2)
           break
         }
         default: {
-          const firstStepVld = await this.firstStepReadyToNext()
-          if (firstStepVld) {
-            this.changeStepState(1)
-          }
+          await this.firstStepReadyToNext() && this.changeStepState(1)
           break
         }
       }
+    },
+
+    showReviewSection() {
+      this.changeStepState(2)
     }
+
   }
 }
 </script>
@@ -269,5 +310,4 @@ export default {
     padding: 13px 16px;
   }
 }
-
 </style>
