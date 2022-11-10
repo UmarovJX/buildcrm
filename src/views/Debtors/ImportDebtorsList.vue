@@ -387,7 +387,32 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        font-size: 14px;
+        line-height: 20px;
+        border-radius: 50%;
+        margin-right: .5rem;
+        color: var(--gray-400);
+        background-color: var(--gray-100);
     }
+
+    &-content {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        line-height: 22px;
+        margin-bottom: 0;
+        color: var(--gray-400);
+    }
+
+
+    &-right-icon {
+        display: flex;
+        align-items: center;
+        margin-left: 12px;
+    }
+
 }
 
 .navigation__content {
