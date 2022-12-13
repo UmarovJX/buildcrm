@@ -116,6 +116,7 @@
 import api from "@/services/api";
 import {v4 as uuid} from 'uuid';
 import AppHeader from "@/components/Header/AppHeader";
+import {isObject} from "@/util/inspect";
 
 export default {
     name: 'Roles',
@@ -188,6 +189,12 @@ export default {
             apartments: {
                 view: false,
                 filter: false,
+                comments: {
+                    view: false,
+                    create: false,
+                    edit: false,
+                    delete: false
+                },
                 lists: {
                     list: false,
                     grid: false,
@@ -196,12 +203,6 @@ export default {
                 },
                 edit: false,
                 is_sold: false,
-                comments: {
-                    view: false,
-                    create: false,
-                    edit: false,
-                    delete: false
-                }
             },
             checkout: {
                 book: false,
@@ -1201,12 +1202,42 @@ export default {
     },
     methods: {
         initPermissions() {
-            this.form = Object.assign({}, this.permissions, this.form)
 
-            this.form = {
-                ...this.form,
-                ...this.permissions
-            }
+            // this.form = Object.assign({}, this.permissions, this.form)
+            //
+            // this.form = {
+            //     ...this.form,
+            //     ...this.permissions
+            // }
+
+            Object.entries(this.form).forEach(([parentKey, parentValue]) => {
+                Object.entries(parentValue).forEach(([key, value]) => {
+                    if (isObject(value)) {
+                        Object.entries(value).forEach(([childKey, childValue]) => {
+                            if (isObject(childValue)) {
+                                Object.entries(childValue).forEach(([subChildKey, subChildValue]) => {
+                                    if (isObject(subChildValue)) {
+                                        Object.entries(subChildValue).forEach(([lastChildKey, lastChildValue]) => {
+                                            if (isObject(lastChildValue)) {
+                                                this.form[parentKey][key][childKey][subChildKey][lastChildKey] = this.permissions[parentKey][key][childKey][subChildKey][lastChildKey]
+                                            } else {
+                                                return this.permissions[parentKey][key][childKey][subChildKey][lastChildKey] ? this.form[parentKey][key][childKey][subChildKey][lastChildKey] = true : this.form[parentKey][key][childKey][subChildKey][lastChildKey] = false
+                                            }
+                                        })
+                                    } else {
+                                        return this.permissions[parentKey][key][childKey]&&this.permissions[parentKey][key][childKey][subChildKey] ? this.form[parentKey][key][childKey][subChildKey] = true : this.form[parentKey][key][childKey][subChildKey] = false
+                                    }
+                                })
+                            } else {
+                                return this.permissions[parentKey][key] && this.permissions[parentKey][key][childKey] ? this.form[parentKey][key][childKey] = true : this.form[parentKey][key][childKey] = false
+                            }
+                        })
+                    } else {
+                        return this.permissions[parentKey] && this.permissions[parentKey][key] ? this.form[parentKey][key] = true : this.form[parentKey][key] = false
+                    }
+                })
+            })
+
 
             this.name = this.updatingName
             this.permissionTabs = this.permissionTabs.map(pmTab => {
@@ -1305,6 +1336,8 @@ export default {
                         }
                         case 2 : {
                             const hasChild = pmTabParent.hasOwnProperty(one)
+                            console.log(one, 'one');
+                            console.log(two, 'two');
                             if (hasChild) {
                                 pmTabParent[one][two] = row.vBind
                             } else {
@@ -1357,7 +1390,7 @@ export default {
                         this.getLoading = false;
                         this.toasted(response.data.message, "success")
 
-                        // this.$router.push({name: "roles"})
+                        this.$router.push({name: "roles"})
 
                         this.$swal(`${this.$t("sweetAlert.success_create_role")}`, "", "success")
                     })

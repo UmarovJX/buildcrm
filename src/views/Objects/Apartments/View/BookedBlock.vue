@@ -18,7 +18,7 @@
                 text="Добавить бронь в очереди"
                 left-icon="add"
                 color-icon="var(--violet-700)"
-                :disabled="true"
+                :disabled="false"
             />
             <b-tooltip
                 id="b-header__tooltip"

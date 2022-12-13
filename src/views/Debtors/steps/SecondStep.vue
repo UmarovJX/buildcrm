@@ -93,16 +93,27 @@
                             <ValidationProvider v-slot="{ errors }" rules="required" :name="$t('contracts.name')"
                                                 class="cell position-relative">
                                 <base-input
-                                    v-model="data.item.value.contract"
+                                    :value="data.item.value.contract"
                                     type="search"
-                                    @trigger-input="searchContract(data.item.value.contract)"
+                                    @trigger-input="searchContract(data.item)"
                                 />
-                                <div class="select-list" v-if="toggleList && data.item.value && options.length">
-                                    <div class="select-list__item" v-for="option in options" :key="option.uuid"
+                                {{ data.item.option.length }}
+                                <div class="select-list" v-if="toggleList && data.item.option.length">
+                                    <div class="select-list__item" v-for="option in data.item.option"
+                                         :key="option.uuid"
                                          @click="selectOptionSystem(data.item.key, option)">
                                         {{ option.contract_number }}
                                     </div>
                                 </div>
+
+                                <v-select
+                                    :options="data.item.option"
+                                    :filterable="false"
+                                    @open="toggleList"
+                                    @search="searchContract(data.item)"
+                                >
+                                </v-select>
+
                             </ValidationProvider>
                         </template>
 
@@ -188,12 +199,17 @@ export default {
     },
     methods: {
         selectOptionSystem(itemKey, option) {
-            this.notFoundItems.map((item, index) => {
+            console.log(itemKey, option, 'itemKey, option');
+            this.notFoundItems.forEach((item, index) => {
                 if (item.key === itemKey) {
-                    this.notFoundItems[index].value = {
-                        alias: item.key,
-                        uuid: option.uuid,
-                        contract: option.contract_number
+                    this.notFoundItems[index] = {
+                        key: item.key,
+                        option: [],
+                        value: {
+                            alias: item.key,
+                            uuid: option.uuid,
+                            contract: option.contract_number
+                        }
                     }
                 }
             })
@@ -213,6 +229,7 @@ export default {
             this.notFoundItems = this.importData.not_found.map((item) => {
                 return {
                     key: item,
+                    option: [],
                     value: {
                         alias: null,
                         contract: null,
@@ -221,13 +238,20 @@ export default {
                 }
             })
         },
-        searchContract(value) {
+        searchContract(item) {
+            const uuid = item.key
             const params = {
-                contract: value
+                contract: item.value.contract
             }
+            console.log(uuid, 'uuid');
             api.debtorsV2.searchContract(params).then((res) => {
                 this.toggleList = true
-                this.options = res.data
+                // this.options = res.data
+                this.notFoundItems.forEach((fItem, index) => {
+                    if (fItem && fItem.key === uuid) {
+                        this.notFoundItems[index].option = res.data
+                    }
+                })
             }).catch(err => {
                 return err
             })
@@ -247,53 +271,48 @@ export default {
             return contractsList
         },
         async validateSecondStep() {
-            const validate = await this.$refs['contract-validation'].validate()
-            if (validate) {
-                let createAliases = []
-                let updateAliases = []
-                let allList = []
+            let createAliases = []
+            let updateAliases = []
+            let allList = []
 
-                if (this.foundItems && this.foundItems.length) {
-                    this.foundItems.forEach((item) => {
-                        updateAliases = [...updateAliases, item.value]
-                    })
-                }
-                if (this.notFoundItems && this.notFoundItems.length) {
-                    this.notFoundItems.forEach((item) => {
-                        createAliases = [...createAliases, item.value]
-                    })
-                }
-
-
-                if (createAliases && createAliases.length) {
-                    const createBody = {
-                        aliases: createAliases
-                    }
-                    await api.debtorsV2.createAliases(createBody).then(() => {
-                        allList = [...allList, ...createAliases]
-                    }).catch((error) => {
-                        this.toastedWithErrorCode(error);
-                    })
-
-                }
-
-                allList = [...allList, ...updateAliases]
-
-                allList = allList.map(item => {
-                    return item
+            if (this.foundItems && this.foundItems.length) {
+                this.foundItems.forEach((item) => {
+                    updateAliases = [...updateAliases, item.value]
                 })
-
-
-                allList.forEach((item, index) => {
-                    this.debtorsSheet.forEach((sheet) => {
-                        if (item.alias === sheet.contract || item.contract === sheet.contract) {
-                            allList[`${index}`] = Object.assign(allList[`${index}`], sheet)
-                        }
-                    })
-                })
-
-                this.$emit('all-debtors', allList)
             }
+
+            if (this.notFoundItems && this.notFoundItems.length) {
+                this.notFoundItems.forEach((item) => {
+                    if (item.value && item.value.uuid) {
+                        createAliases = [...createAliases, item.value]
+                    }
+                })
+            }
+
+            if (createAliases && createAliases.length) {
+                const createBody = {
+                    aliases: createAliases
+                }
+                await api.debtorsV2.createAliases(createBody).then(() => {
+                    allList = [...allList, ...createAliases]
+                }).catch((error) => {
+                    this.toastedWithErrorCode(error);
+                })
+
+            }
+
+            allList = [...allList, ...updateAliases]
+
+            allList.forEach((item, index) => {
+                this.debtorsSheet.forEach((sheet) => {
+                    if (item.alias === sheet.contract || item.contract === sheet.contract) {
+                        allList[`${index}`] = Object.assign(allList[`${index}`], sheet)
+                    }
+                })
+
+            })
+
+            this.$emit('all-debtors', allList)
         },
         iTranslate(text) {
             return this.$t(`${text}`)
@@ -320,6 +339,8 @@ export default {
     height: 500px
     background-color: #fff
     overflow-y: auto
+    z-index: 3
+
 
     &__item
         display: flex
@@ -397,6 +418,7 @@ export default {
 
         .nav-item
             z-index: 2
+
             .active
                 .custom-title
                     color: var(--violet-600)

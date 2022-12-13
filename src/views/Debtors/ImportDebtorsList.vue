@@ -166,7 +166,6 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-// import KFormSelect from "@/components/ui-components/form-select/FormSelect";
 import {mapGetters} from "vuex";
 import api from "@/services/api";
 import FirstStep from "@/views/Debtors/steps/FirstStep";
@@ -180,7 +179,6 @@ export default {
         FirstStep,
         SecondStep,
         ThirdStep,
-        // KFormSelect,
         BaseArrowLeftIcon,
         BaseRightIcon,
         BaseArrowRightIcon,
@@ -301,6 +299,7 @@ export default {
 
         },
         setDebtorsList(debtors) {
+            console.log(debtors, 'debtors');
             this.resultDebtors = debtors
             this.listLoading = true
             const body = {

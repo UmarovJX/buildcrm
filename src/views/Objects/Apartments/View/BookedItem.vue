@@ -115,6 +115,7 @@ export default {
     border: 2px solid var(--gray-200);
     border-radius: 2rem;
 
+
     &__header {
         font-family: CraftworkSans, serif;
         font-weight: 900;
@@ -155,6 +156,12 @@ export default {
         p {
             color: var(--gray-600);
         }
+    }
+
+    &__footer {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
     }
 
 }

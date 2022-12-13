@@ -21,11 +21,16 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@/assets/scss/main.scss";
 
+import vSelect from "vue-select";
+
+Vue.component("v-select", vSelect);
+
 Vue.config.devtools = true;
 
 const sweetOptions = {
     confirmButtonColor: "#3085d6", cancelButtonColor: "#d33",
 };
+
 import {
     ValidationObserver, ValidationProvider, extend, localize,
 } from "vee-validate"
