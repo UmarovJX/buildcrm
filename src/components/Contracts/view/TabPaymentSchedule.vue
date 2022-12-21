@@ -17,9 +17,9 @@
                 <h3 class="title">
                     {{ $t('payments.payment_list') }}
                     <span class="total-payments">
-            || {{ $t('payments.payment_total') }}:
-            {{ totalPayment }} {{ $t('ye') }}
-          </span>
+                      || {{ $t('payments.payment_total') }}:
+                      {{ totalPayment }} {{ $t('ye') }}
+                    </span>
                 </h3>
                 <div class="d-flex">
                     <base-button
@@ -28,7 +28,7 @@
                         :text="$t('payments.payment_download')"
                         design="import__button"
                     >
-                        <template #left-icon>
+                      <template #left-icon>
               <span>
                 <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED"/>
               </span>

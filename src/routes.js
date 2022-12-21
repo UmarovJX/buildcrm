@@ -28,7 +28,7 @@ import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment.
 import EditApartment from "./components/Dashboard/Apartment/EditApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
-import Settings from "./components/Dashboard/Settings/Index";
+// import Settings from "./components/Dashboard/Settings/Index";
 import Promo from './components/Dashboard/Objects/Promo/Index'
 import UserSettings from "./views/UserSettings"
 import Branches from "@/views/Branches/BranchesPage";
@@ -58,6 +58,7 @@ import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
 import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
 import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
 import ActivityLog from "@/components/Contracts/view/ActivityLog";
+import Settings from "@/views/Settings/Index.vue"
 
 
 const routes = [

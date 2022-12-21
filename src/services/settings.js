@@ -61,7 +61,9 @@ class SettingsV2 extends Core {
         return this.get('currency')
     }
 
-
+    getClientTypes(){
+        return this.get('clients/types')
+    }
 }
 
 export default {Settings, SettingsV2}

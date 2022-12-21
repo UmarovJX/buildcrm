@@ -2,6 +2,10 @@ export default {
     home: {
         title: "Asosiy",
     },
+    normal_client:'Обычный клиент',
+    actions: 'Amallar',
+    title:'Ism',
+    client_types:'Mijoz turlari',
     return_all_apartments: "Barcha xonadonlarni qaytarish",
     cleaned_apartments: "O'chirilgan xonadonlar",
     final_total_price: 'Yakuniy umumiy narx',
