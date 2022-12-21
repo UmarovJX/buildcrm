@@ -1,7 +1,7 @@
 <template>
   <!--   IMAGE SLIDER     -->
   <div class="slider-content">
-    <div class="swiper swiper-container" v-swiper="swiperOption">
+    <div ref="swiper" class="swiper swiper-container" v-swiper="swiperOption">
       <!--     MAIN CONTENT OF SLIDE       -->
       <div class="swiper-wrapper">
         <div
@@ -82,7 +82,7 @@ export default {
   },
   props: {
     swiperOption: p(PROP_TYPE_OBJECT, swiperDefaultOption),
-    items: p(PROP_TYPE_ARRAY, [])
+    items: p(PROP_TYPE_ARRAY, []),
   },
   directives: {
     swiper: swiperDirective
@@ -101,7 +101,9 @@ export default {
     display: flex
     align-items: center
     justify-content: center
-    //height: 24rem
+    height: 100%
+    //max-height: 24rem
+    min-width: 300px
 
     .swiper-button
       width: 3rem

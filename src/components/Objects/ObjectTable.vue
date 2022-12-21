@@ -29,9 +29,9 @@
                 </template>
 
                 <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">
-              {{ scope.emptyText }}
-            </span>
+                  <span class="d-flex justify-content-center align-items-center">
+                    {{ scope.emptyText }}
+                  </span>
                 </template>
                 <template #head(check)="{item}" class="p-0">
                   <span>
@@ -91,7 +91,7 @@
                       decimalSeparator: ",",
                   })
               }}
-          {{ $t("ye") }}
+            {{ $t("ye") }}
           </span>
                 </template>
 
@@ -187,12 +187,12 @@
                                 <!--  Подробная информация  -->
                                 <router-link
                                     :to="{
-                        name: 'apartment-view',
-                        params: {
-                          object: $route.params.object,
-                          id: data.item.id
-                        }
-                    }"
+                                      name: 'apartment-view',
+                                      params: {
+                                        object: $route.params.object,
+                                        id: data.item.id
+                                      }
+                                }"
                                     :class="'dropdown-item dropdown-item--inside'"
                                 >
                                     <i class="far fa-eye"></i>
@@ -245,15 +245,15 @@
                     @change-page="changeCurrentPage"
                 >
                     <template #next-content>
-          <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-right-icon/>
-          </span>
+                      <span class="d-flex align-items-center justify-content-center">
+                        <base-arrow-right-icon/>
+                      </span>
                     </template>
 
                     <template #prev-content>
-          <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-left-icon/>
-          </span>
+                      <span class="d-flex align-items-center justify-content-center">
+                        <base-arrow-left-icon/>
+                      </span>
                     </template>
                 </vue-paginate>
 

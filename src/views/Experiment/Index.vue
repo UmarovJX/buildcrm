@@ -1,30 +1,30 @@
 <template>
   <div>
-    <app-header>
-      <template #header-breadcrumb>
-        <app-breadcrumb
-            :page="headerItems.page"
-            :page-info="headerItems.pageInfo"
-            :breadcrumbs="headerItems.breadcrumbs"
-        />
-      </template>
-      <template v-if="expiry_at" #header-actions>
-        <div
-
-            :class="flexCenter"
-            class="checkout-timer background-violet-gradient mr-2"
-        >
-          <CountDown
-              :deadline="expiry_at"
-              :showDays="false"
-              :showHours="false"
-              @timeElapsed="expiredConfirm"
-          />
-        </div>
-      </template>
-    </app-header>
-
     <k-loading-wrapper :loading="appLoading">
+      <app-header>
+        <template #header-breadcrumb>
+          <app-breadcrumb
+              :page="headerItems.page"
+              :page-info="headerItems.pageInfo"
+              :breadcrumbs="headerItems.breadcrumbs"
+          />
+        </template>
+        <template v-if="expiry_at" #header-actions>
+          <div
+
+              :class="flexCenter"
+              class="checkout-timer background-violet-gradient mr-2"
+          >
+            <CountDown
+                :deadline="expiry_at"
+                :showDays="false"
+                :showHours="false"
+                @timeElapsed="expiredConfirm"
+            />
+          </div>
+        </template>
+      </app-header>
+
       <div class="app-checkout-main">
         <b-tabs
             pills
@@ -49,14 +49,21 @@
               <tab-title :step="2" :content="$t('apartment_detail')"/>
             </template>
 
-            <ch-apartments-overview @go-review="showReviewSection" ref="apartments-overview"/>
+            <ch-apartments-overview
+                ref="apartments-overview"
+                @go-review="showReviewSection"
+            />
           </b-tab>
           <!--   ?END OF SECOND TAB   -->
 
           <!--   ?THIRD TAB 3  -->
           <b-tab :disabled="isStepThirdDisable">
             <template #title>
-              <tab-title :step="3" :show-right-icon="false" :content="$t('preview')"/>
+              <tab-title
+                  :step="3"
+                  :content="$t('preview')"
+                  :show-right-icon="false"
+              />
             </template>
 
             <ch-review/>
@@ -82,6 +89,12 @@
         </b-tabs>
       </div>
     </k-loading-wrapper>
+
+    <x-modal-center>
+      <template #header>
+        Header
+      </template>
+    </x-modal-center>
   </div>
 </template>
 
@@ -95,11 +108,12 @@ import TabTitle from "@/views/Experiment/elements/TabTitle";
 import ChClientDetails from "@/views/Experiment/components/ClientDetails";
 import ChApartmentsOverview from "@/views/Experiment/components/ApartmentsOverview";
 import ChReview from "@/views/Experiment/components/Review";
+import AppBreadcrumb from "@/components/AppBreadcrumb";
+import {XModalCenter} from "@/components/ui-components/modal-center";
 
-import {headerItems} from "@/views/Experiment/helper/headerComputed";
 import api from "@/services/api";
 import {mapActions, mapMutations, mapState} from "vuex";
-import AppBreadcrumb from "@/components/AppBreadcrumb";
+import {headerItems} from "@/views/Experiment/helper/headerComputed";
 
 
 export default {
@@ -113,18 +127,23 @@ export default {
     TabTitle,
     ChClientDetails,
     ChApartmentsOverview,
-    ChReview
+    ChReview,
+    XModalCenter
   },
 
   data() {
     return {
       appLoading: false,
-      stepStateIdx: 0
+      stepStateIdx: 0,
     }
   },
 
   async created() {
     await this.init()
+  },
+
+  mounted() {
+    this.$refs['comment-modal'].openModal()
   },
 
   computed: {
@@ -158,14 +177,13 @@ export default {
       try {
         this.startLoading()
         const orderId = this.$route.params.id
-        const {data} = await api.orders.fetchHoldOrder(orderId)
+        const {data} = await api.orders.fetchCheckoutData(orderId)
         if (data) {
           const context = {
             order: data,
             uuid: data.uuid,
             expiry_at: data.expiry_at,
-            apartments: data.apartments,
-            contract_number: data.contract_number,
+            orders: data.orders,
           }
           this.setup(context)
           this.startCounter()
