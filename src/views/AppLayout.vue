@@ -1,19 +1,22 @@
 <template>
-    <div>
-        <header-block
-            v-if="showHeaderContent"
-            :theme="theme"
-        />
-        <main v-if="showHeaderContent" class="main-content">
-            <ErrorNotification/>
-            <div class="app-content">
-                <router-view/>
-            </div>
-        </main>
-        <template v-else>
-            <router-view/>
-        </template>
-    </div>
+  <div>
+    <header-block
+      v-if="showHeaderContent"
+      :theme="theme"
+    />
+    <main
+      v-if="showHeaderContent"
+      class="main-content"
+    >
+      <ErrorNotification />
+      <div class="app-content">
+        <router-view />
+      </div>
+    </main>
+    <template v-else>
+      <router-view />
+    </template>
+  </div>
 </template>
 
 <script>

@@ -6,9 +6,7 @@
       </template>
     </app-header>
 
-    <settings-client-types/>
-
-
+    <settings-client-types />
   </div>
 </template>
 

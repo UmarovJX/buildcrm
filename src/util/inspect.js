@@ -45,7 +45,8 @@ export const isDate = value => value instanceof Date
 
 export const isEvent = value => value instanceof Event
 
-const File = window.File ?? class File extends Object {}
+const File = window.File ?? class File extends Object {
+}
 
 export const isFile = value => value instanceof File
 
@@ -53,3 +54,8 @@ export const isRegExp = value => toRawType(value) === 'RegExp'
 
 export const isPromise = value =>
     !isUndefinedOrNull(value) && isFunction(value.then) && isFunction(value.catch)
+
+
+export const isEmptyObject = (obj) => obj
+    && Object.keys(obj).length === 0
+    && Object.getPrototypeOf(obj) === Object.prototype

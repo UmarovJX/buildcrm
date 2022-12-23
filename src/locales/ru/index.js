@@ -2,6 +2,10 @@ export default {
   home: {
     title: 'Главная',
   },
+  placeholder_uz: 'На Узбекском',
+  placeholder_ru: 'На Русском',
+  has_the_powers_of_vip:'Имеет полномочия V.I.P.',
+  add_type:'Добавить тип',
   normal_client:'Oddiy mijoz',
   actions: 'Действия',
   title:'Название',

@@ -33,7 +33,7 @@
             <p v-if="!hasSlot.body">{{ bd.body }}</p>
           </div>
 
-          <div class="x-modal-footer">
+          <div class="x-modal-footer" :class="footerClass">
             <!--?      FOOTER SLOT        -->
             <slot name="footer"/>
 
@@ -41,10 +41,11 @@
             <slot name="button-cancel"/>
 
             <x-button
-                v-if="hasSlot.buttonCancel"
+                v-if="!(hasSlot.footer &&hasSlot.buttonCancel)"
                 :variant="cancelButtonTheme"
                 :text="bd.cancelButtonText"
                 :loading="cancelButtonLoading"
+                :class="cancelButtonClass"
                 @click="$emit('cancel')"
             />
 
@@ -52,10 +53,11 @@
             <slot name="button-apply"/>
 
             <x-button
-                v-if="!hasSlot.buttonApply"
+                v-if="!(hasSlot.footer && hasSlot.buttonApply)"
                 :variant="applyButtonTheme"
                 :text="bd.applyButtonText"
                 :loading="applyButtonLoading"
+                :class="applyButtonClass"
                 @click="$emit('apply')"
             />
           </div>
@@ -67,7 +69,7 @@
 
 <script>
 import {makeProp} from "@/util/props";
-import {PROP_TYPE_BOOLEAN, PROP_TYPE_STRING} from "@/constants/props";
+import {PROP_TYPE_ARRAY_OBJECT_STRING, PROP_TYPE_BOOLEAN, PROP_TYPE_STRING} from "@/constants/props";
 import {XIcon} from "@/components/ui-components/material-icons";
 import {XButton} from "@/components/ui-components/button";
 import {XCircularBackground} from "@/components/ui-components/circular-background";
@@ -90,6 +92,9 @@ export default {
     cancelButtonLoading: makeProp(PROP_TYPE_BOOLEAN, false),
     bilingual: makeProp(PROP_TYPE_BOOLEAN, false),
     showCloseButton: makeProp(PROP_TYPE_BOOLEAN, true),
+    footerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING,''),
+    applyButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING,''),
+    cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING,'')
   },
   emits: ['apply', 'cancel', 'close'],
   computed: {

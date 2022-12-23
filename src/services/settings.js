@@ -61,8 +61,24 @@ class SettingsV2 extends Core {
         return this.get('currency')
     }
 
-    getClientTypes(){
+    getClientTypes() {
         return this.get('clients/types')
+    }
+
+    createClientType(body) {
+        return this.post('clients/types', body)
+    }
+
+    deleteClientType(typeId) {
+        return this.delete(`clients/types/${typeId}`)
+    }
+
+    getClientTypeById(typeId) {
+        return this.get(`clients/types/${typeId}`)
+    }
+
+    updateClientType(typeId, body) {
+        return this.put(`clients/types/${typeId}`, body)
     }
 }
 
