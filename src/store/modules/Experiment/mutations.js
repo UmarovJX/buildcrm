@@ -1,5 +1,6 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
+import id from "vue2-datepicker/locale/es/id";
 
 export default {
     initOtherProperties(state, context) {
@@ -7,29 +8,31 @@ export default {
             uuid,
             expiry_at,
             created_by,
-            contract_number,
         } = context
         state.uuid = uuid
         state.order = context
         state.expiry_at = expiry_at
         state.created_by = created_by
-        state.contract_number = contract_number
     },
-    initApartments(state, {apartments}) {
-        state.apartments = apartments.map(apm => {
-            const discount = apm.discounts[0]
+    initApartments(state, {orders}) {
+        state.apartments = orders.map(({status, contract_number, apartment, uuid}) => {
+            const discount = apartment.discounts[0]
             return {
-                ...apm,
+                status,
+                contract_number,
+                order_uuid: uuid,
+                id: apartment.uuid,
+                ...apartment,
                 calc: {
                     ...state.schema.calc,
-                    price: apm.price,
-                    price_m2: apm.price_m2,
-                    plan: apm.plan,
+                    price: apartment.price,
+                    price_m2: apartment.price_m2,
+                    plan: apartment.plan,
                     discount,
                     prepay: discount.prepay,
                     other: {
-                        starting_price: apm.price,
-                        price_m2: apm.price_m2
+                        starting_price: apartment.price,
+                        price_m2: apartment.price_m2
                     }
                 },
                 edit: state.schema.edit,
@@ -96,4 +99,11 @@ export default {
             }
         }
     },
+    setClientData(state, clientData) {
+        state.clientData = clientData
+    },
+    updateContractNumber(state, {idx, contractNumber}) {
+        state.apartments[idx].contract_number = contractNumber
+        state.apartments[idx].edit.contract_number = true
+    }
 }

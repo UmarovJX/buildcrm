@@ -137,7 +137,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label class="d-block" for="second_name_lotin"
-                >{{ $t("apartments.agree.second_name") }} (lotin)</label
+                >{{ $t("apartments.agree.middle_name") }} (lotin)</label
                 >
                 <input
                     id="second_name_lotin"
@@ -191,7 +191,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label class="d-block" for="second_name_kirill"
-                >{{ $t("apartments.agree.second_name") }} (kirill)</label
+                >{{ $t("apartments.agree.middle_name") }} (kirill)</label
                 >
                 <input
                     id="second_namev"
@@ -1198,7 +1198,7 @@ export default {
                 lotin: null,
                 kirill: null
               },
-              second_name: res.second_name ?? {
+              middle_name: res.second_name ?? {
                 lotin: null,
                 kirill: null
               },

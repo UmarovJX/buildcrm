@@ -36,7 +36,7 @@
 
         <div class="modal__content-main">
           <div class="filter__inputs">
-            <k-form-select
+            <x-form-select
                 value-field="id"
                 text-field="name"
                 getter="full"
@@ -87,7 +87,7 @@
 
             <!--     Apartment Price     -->
             <div class="filter__apartment__price">
-              <k-form-select
+              <x-form-select
                   v-model="currency"
                   :label="false"
                   :options="currencyOptions"
@@ -117,7 +117,7 @@
             </div>
 
             <!--   Client Type     -->
-            <k-form-select
+            <x-form-select
                 class="mt-4"
                 v-model="filter.client_type"
                 :options="clientTypeOptions"
@@ -171,7 +171,7 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 // import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import "vue2-datepicker/index.css";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {debounce, isPrimitiveValue, sortInFirstRelationship, sortObjectValues} from "@/util/reusable";
@@ -180,7 +180,7 @@ import api from "@/services/api";
 export default {
   name: "SearchBarContent",
   components: {
-    KFormSelect,
+    XFormSelect: XFormSelect,
     BaseFilterIcon,
     BaseArrowLeftIcon,
     BaseNumericInput,

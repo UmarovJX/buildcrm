@@ -1,16 +1,16 @@
 <template>
   <div
-      ref="k-form-select"
-      class="k-form-select"
+      ref="x-form-select"
+      class="x-form-select"
       v-click-outside="closeOptionList"
   >
     <div
         @click="toggleOptionList"
-        class="k-form-select-header"
+        class="x-form-select-header"
         :class="{'select-validation-failed':error}"
     >
       <div
-          class="k-form-select-header-content"
+          class="x-form-select-header-content"
           :class="{
             'k-content-flex':selectList
           }"
@@ -44,24 +44,24 @@
         </div>
       </div>
       <span
-          class="k-form-select-icon"
-          :class="{'k-form-select-icon-open':open}"
+          class="x-form-select-icon"
+          :class="{'x-form-select-icon-open':open}"
       >
         <base-down-icon/>
       </span>
     </div>
     <div
         ref="k-form-options-wrapper"
-        class="k-form-select-main"
+        class="x-form-select-main"
         :style="optionWrapperStyle"
-        :class="{'k-form-select-position-top':showBottomToTop}"
+        :class="{'x-form-select-position-top':showBottomToTop}"
     >
       <ul
-          class="k-form-select-options"
+          class="x-form-select-options"
       >
-        <k-form-select-option
+        <x-form-select-option
             v-for="(option,index) in options"
-            :key="`k-form-select-option-${index}`"
+            :key="`x-form-select-option-${index}`"
             :option="option"
         />
         <slot name="default"/>
@@ -74,7 +74,7 @@
 import {makeProp as p} from "@/util/props";
 import clickOutside from '@/directives/click-outside'
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
-import KFormSelectOption from "@/components/ui-components/form-select/FormSelectOption";
+import XFormSelectOption from "@/components/ui-components/form-select/FormSelectOption";
 import {KChipInputGroup} from "@/components/ui-components/chip-input-group";
 import {
   PROP_TYPE_ARRAY,
@@ -86,11 +86,11 @@ import {
 import {isArray, isNull, isObject, isPrimitive, isUndefinedOrNull} from "@/util/inspect";
 
 export default {
-  name: "KFormSelect",
+  name: "XFormSelect",
   components: {
     BaseDownIcon,
     KChipInputGroup,
-    KFormSelectOption
+    XFormSelectOption
   },
   directives: {
     clickOutside
@@ -120,7 +120,6 @@ export default {
       return ['full', 'text', 'value'].includes(vGetter)
     }),
   },
-
   data() {
     let selected = this.multiple ? [] : null
     return {
@@ -130,7 +129,6 @@ export default {
       formOptionsWrapperHeight: 0
     }
   },
-
   computed: {
     optionWrapperStyle() {
       if (!this.open) {
@@ -206,22 +204,25 @@ export default {
       }
     }
   },
-
   watch: {
     selected() {
       this.handleChange()
+    },
+    value(latestValue) {
+      if (!this.selected || this.selected.value !== latestValue) {
+        this.lunch()
+        this.findOutputPosition()
+      }
     }
   },
-
   mounted() {
     this.lunch()
     this.findOutputPosition()
   },
-
   methods: {
     findOutputPosition() {
       const windowHeight = window.innerHeight
-      const formSelectRect = this.$refs['k-form-select'].getBoundingClientRect()
+      const formSelectRect = this.$refs['x-form-select'].getBoundingClientRect()
       const {height: optionsTotalHeight} = this.$refs['k-form-options-wrapper'].getBoundingClientRect()
       const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom
       this.showBottomToTop = distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight
@@ -231,7 +232,11 @@ export default {
       const _dValue = this.$attrs.value ?? this.value
       const typeArray = isArray(_dValue)
       const typeObject = isObject(_dValue)
-      if (isUndefinedOrNull(_dValue)) return
+      if (isUndefinedOrNull(_dValue)) {
+        this.selected = null
+        this.inactiveAllOption()
+        return
+      }
       if (this.multiple) {
         if (typeArray) {
           const isContainObjects = _dValue.every(v => isObject(v))
@@ -269,6 +274,7 @@ export default {
             this.selected[this.valueField] = _dValue
           } else {
             this.selected = _fChild.option
+            _fChild.makeActive()
           }
         }
       }
@@ -388,7 +394,9 @@ export default {
     findOption(optionValue) {
       const {valueField: vField} = this
       return this.$children
-          .find(_ch => _ch.$el.tagName.toLocaleLowerCase() === 'li' && _ch.option[vField] === optionValue)
+          .find(_ch => {
+            return _ch.$el.tagName.toLocaleLowerCase() === 'li' && _ch.option[vField] === optionValue
+          })
     },
     getOptionIndex(_value) {
       return this.$children
@@ -404,7 +412,7 @@ export default {
         }
       })
     },
-    inactiveAllOption(_cValue) {
+    inactiveAllOption(_cValue = undefined) {
       this.$children.forEach((ch, idx) => {
         const isOption = ch.$el.tagName.toLocaleLowerCase() === 'li'
         if (isOption && ch.option[this.valueField] !== _cValue) {

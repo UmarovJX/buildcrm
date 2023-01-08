@@ -172,7 +172,7 @@
         <!--            :options="currencyOptions"-->
         <!--            class="inline price__currency"-->
         <!--        />-->
-        <k-form-select
+        <x-form-select
             :label="false"
             v-model="currency"
             :options="currencyOptions"
@@ -259,7 +259,7 @@ import BaseChessPlan from "@/components/icons/BaseChessPlan";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import {clearObjectProperties} from "@/util/reusable";
 import {sortInFirstRelationship} from "@/util/reusable";
 import {sessionStorageGetItem} from "@/util/storage";
@@ -270,7 +270,7 @@ import ApartmentsPermission from "@/permission/apartments";
 export default {
   name: "ObjectSort",
   components: {
-    KFormSelect,
+    XFormSelect: XFormSelect,
     BaseChessOne,
     BaseChessTwo,
     BaseDetailsIcon,
@@ -350,7 +350,7 @@ export default {
     },
   },
   watch: {
-    appLoading(finishLoading) {
+    appLoading(finishFetching) {
       finishLoading && this.setRouteQuery()
     },
     currentTab(val) {

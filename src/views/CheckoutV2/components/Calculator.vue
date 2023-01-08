@@ -12,7 +12,7 @@
         :name="`${ $t('enter_discount') }`"
         class="cw-payment-option"
     >
-      <k-form-select
+      <x-form-select
           :bilingual="true"
           :error="!!errors[0]"
           :options="paymentOptions"
@@ -205,7 +205,7 @@ import {makeProp as p} from "@/util/props";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
 
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import {XFormInput} from "@/components/ui-components/form-input";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {mapActions, mapGetters} from "vuex";
@@ -214,7 +214,7 @@ import {mapActions, mapGetters} from "vuex";
 export default {
   name: "ChCalculator",
   components: {
-    KFormSelect,
+    XFormSelect: XFormSelect,
     XFormInput,
     BaseDatePicker
   },

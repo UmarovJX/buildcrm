@@ -53,7 +53,7 @@
                         label-cols="4"
                         label-cols-lg="2"
                         :label="$t('user.second_name')"
-                        label-for="second_name"
+                        label-for="middle_name"
                     >
                         <b-form-input
                             id="second_name"

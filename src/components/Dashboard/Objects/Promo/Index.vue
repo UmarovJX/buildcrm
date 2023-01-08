@@ -50,7 +50,7 @@
         @error-on-creation="errorOnCreation"
     />
 
-    <!--  Loading Content  -->
+    <!--  XLoadingWrapper Content  -->
     <base-loading-content :loading="loading"/>
   </div>
 </template>

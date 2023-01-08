@@ -4,7 +4,7 @@ export async function orderApartment(ids) {
     try {
         const {data} = await api.orders.holdOrder(ids)
         if (data) {
-            const objectId = data.apartments[0].object.id
+            // const objectId = data.orders[0].apartment.object.id
             // await this.$router.push({
             //     name: 'confirm-apartment',
             //     params: {
@@ -13,10 +13,10 @@ export async function orderApartment(ids) {
             //     }
             // })
             await this.$router.push({
-                name: 'experiment',
+                name: 'checkout_v2',
                 params: {
                     id: data.uuid,
-                    object: objectId
+                    object: data.orders[0].apartment.object.id
                 }
             })
             // await this.$router.push({

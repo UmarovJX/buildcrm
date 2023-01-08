@@ -1,5 +1,7 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
+import {formatDateWithDot} from "@/util/reusable";
+import {runConsoleLog} from "@/util/console.util";
 
 export default {
     setup({dispatch}, context) {
@@ -171,7 +173,7 @@ export default {
                     } else {
                         dCredit.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth() + 1)
                     }
-                    state.apartments[idx].calc.credit_months.push(dCredit)
+                    state.apartments[idx].calc.credit_months.push({...dCredit})
                     // dispatch('monthlyAdditionSetter', {idx, payment: creditMonth})
                 }
             }
@@ -183,7 +185,10 @@ export default {
         state.apartments[idx].calc.credit_months = credit_months
     },
     monthlyAdditionSetter({state}, {idx, payment}) {
-        state.apartments[idx].calc.credit_months.push(payment)
+        state.apartments[idx].calc.credit_months.push({
+            ...payment,
+            month: formatDateWithDot(new Date(payment.month))
+        })
     },
     creditMonthsSetter({getters: gts, dispatch}, {uuid}) {
         const idx = gts.findApmIdx(uuid)
@@ -423,6 +428,7 @@ export default {
     },
     removeApartment({state, getters: gts}, {index, apmId}) {
         const idx = index ?? gts.findApmIdx(apmId)
+        runConsoleLog('idx', idx, undefined)
         state.trashStorage.push({idx, a: state.apartments[idx]})
         state.apartments.splice(idx, 1)
     },
@@ -431,5 +437,9 @@ export default {
             state.apartments.splice(idx, 0, a)
         })
         state.trashStorage = []
+    },
+    changeContractNumber({getters: gts, commit}, {index, apmId, contractNumber}) {
+        const idx = index ?? gts.findApmIdx(apmId)
+        commit('updateContractNumber', {idx, contractNumber})
     }
 }

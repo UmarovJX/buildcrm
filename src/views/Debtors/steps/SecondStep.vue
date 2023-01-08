@@ -127,7 +127,7 @@
 </template>
 
 <script>
-// import KFormSelect from "@/components/ui-components/form-select/FormSelect";
+// import XFormSelect from "@/components/ui-components/form-select/FormSelect";
 import api from "@/services/api";
 import BaseInput from "@/components/Reusable/BaseInput";
 import {mapGetters} from "vuex";
@@ -136,7 +136,7 @@ export default {
     name: "SecondStep",
     components: {
         BaseInput,
-        // KFormSelect,
+        // XFormSelect,
     },
     props: {
         importData: {

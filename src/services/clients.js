@@ -45,6 +45,12 @@ class ClientsV2 extends Core {
         return this.get(`clients?field=${contextField}`)
     }
 
+    getClientBySearch({params} = {params: {}}) {
+        return this.get(`clients`, {
+            params
+        })
+    }
+
     fetchClients(page) {
         return this.get(`api/clients?page=${page}`)
     }

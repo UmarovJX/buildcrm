@@ -31,7 +31,7 @@
                         <base-filter-icon fill="var(--violet-600)"/>
                     </template>
                 </base-button>
-                <k-form-select
+                <x-form-select
                     :value="defaultTypeOfView"
                     :options="viewTypes"
                     @change="changeTypeOfView"
@@ -55,7 +55,7 @@
             @show="setFilterProperties"
         >
             <div class="filter-modal-content">
-                <k-form-select
+                <x-form-select
                     class="mb-4"
                     v-model="filter.object_id"
                     :multiple="true"
@@ -85,7 +85,7 @@
                 <!--            :default-value="filter.client_type"-->
                 <!--            @select="(newValue) => filter.client_type = newValue"-->
                 <!--        />-->
-                <k-form-select
+                <x-form-select
                     :options="clientTypes"
                     :placeholder="$t('client_type')"
                     v-model="filter.client_type"
@@ -104,7 +104,7 @@ import InputPriceFromTo from "@/components/Elements/Inputs/InputPriceFromTo";
 import CalendarNavigation from "@/components/Debtors/Elements/CalendarNavigation";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import api from "@/services/api";
 // import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 
@@ -120,7 +120,7 @@ export default {
         CalendarNavigation,
         BaseButton,
         BaseFilterIcon,
-        KFormSelect
+        XFormSelect: XFormSelect
     },
     props: {
         defaultTypeOfView: {

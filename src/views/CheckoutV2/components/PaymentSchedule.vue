@@ -40,7 +40,7 @@
         <div class="action-buttons">
           <BaseButton
               v-if="parseInt(data.index) > 0"
-              text=''
+              text=""
               class="violet rounded-circle"
               @click="editSelectedPayment(data.item)"
           >
@@ -50,7 +50,7 @@
           </BaseButton>
           <BaseButton
               v-if="parseInt(data.index) > 0"
-              text=''
+              text=""
               class="red rounded-circle"
               @click="deletePayment(data.item)"
           >
@@ -59,7 +59,7 @@
             </template>
           </BaseButton>
           <BaseButton
-              text=''
+              text=""
               class="green rounded-circle"
               @click="addPayment(data.item)"
           >

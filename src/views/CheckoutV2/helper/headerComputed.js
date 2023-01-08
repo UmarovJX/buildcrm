@@ -1,5 +1,5 @@
 export function headerItems() {
-    const {apartments} = this.order
+    const {apartments} = this
     const h = {
         pageInfo: {
             title: '',

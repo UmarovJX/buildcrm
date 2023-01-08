@@ -149,8 +149,8 @@
         <!--            :order="order"-->
         <!--            :has-constructor-order="hasConstructorOrder"-->
         <!--            v-show="!showLoading"-->
-        <!--            @start-loading="startLoading"-->
-        <!--            @finish-loading="finishLoading"-->
+        <!--            @start-loading="startFetching"-->
+        <!--            @finish-loading="finishFetching"-->
         <!--            @refresh-details="refreshDetails"-->
         <!--        >-->
         <!--        </component>-->

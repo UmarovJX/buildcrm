@@ -28,7 +28,7 @@ import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment.
 import EditApartment from "./components/Dashboard/Apartment/EditApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
-import Settings from "./components/Dashboard/Settings/Index";
+// import Settings from "./components/Dashboard/Settings/Index";
 import Promo from './components/Dashboard/Objects/Promo/Index'
 import UserSettings from "./views/UserSettings"
 import Branches from "@/views/Branches/BranchesPage";
@@ -41,7 +41,7 @@ import ContractView from "@/views/Contracts/View/Index"
 import ApartmentView from '@/views/Objects/Apartments/View/Index'
 import ObjectsView from '@/views/Objects/View/Index'
 import Debtors from "@/views/Debtors/Index"
-import Experiment from "@/views/Experiment/Index";
+import CheckoutV2 from "@/views/CheckoutV2/Index";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 import Documentation from "@/views/Documentation/documentation";
@@ -50,6 +50,7 @@ import ApartmentContract from '@/views/Objects/Apartments/View/ContractTab'
 import ApartmentCommentTab from "@/views/Objects/Apartments/View/CommentTab";
 import ReleaseNote from "@/views/ReleaseNote/Index";
 import ImportDebtorsList from "@/views/Debtors/ImportDebtorsList";
+import CheckoutContractReview from "@/views/CheckoutV2/views/CheckoutContractReview.vue";
 
 /*  CONTRACT VIEW COMPONENTS */
 import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
@@ -58,6 +59,7 @@ import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
 import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
 import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
 import ActivityLog from "@/components/Contracts/view/ActivityLog";
+import Settings from "@/views/Settings/Index.vue"
 
 
 const routes = [
@@ -74,9 +76,15 @@ const routes = [
             },
 
             {
-                path: '/Experiment/:object/apartment/:id/order',
-                name: 'experiment',
-                component: Experiment
+                path: '/checkout_v2/:object/apartment/:id/order',
+                name: 'checkout_v2',
+                component: CheckoutV2
+            },
+
+            {
+                path: '/review/:object/contract/review/:ids',
+                name: 'checkout-contract-review',
+                component: CheckoutContractReview
             },
 
             {
@@ -166,7 +174,6 @@ const routes = [
                 },
             },
 
-
             {
                 /* SETTINGS */
                 name: "settings",
@@ -180,7 +187,6 @@ const routes = [
                 name: 'user-settings',
                 component: UserSettings
             },
-
 
             {
                 /* DEBTORS */
@@ -358,7 +364,6 @@ const routes = [
 
             {
                 /* CONTRACTS VIEW */
-                // name: "contracts-view",
                 path: "/contracts/:id",
                 component: ContractView,
                 meta: {

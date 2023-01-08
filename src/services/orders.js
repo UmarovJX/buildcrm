@@ -1,13 +1,13 @@
-import {axiosV1CRM} from '@/services/core/base'
+import {axiosV1CRM, axiosV2} from '@/services/core/base'
 import Core from '@/services/core/index'
 
-class Orders extends Core {
+class OrdersV1 extends Core {
     constructor(axios = axiosV1CRM) {
         super(axios);
     }
 
     holdOrder(apartments) {
-        return this.post('orders/hold', {apartments})
+        return this.post('checkout', {apartments})
     }
 
     deactivateOrderHold(id) {
@@ -49,6 +49,24 @@ class Orders extends Core {
     fetchHoldOrder(orderId) {
         return this.get(`orders/${orderId}/hold`)
     }
+
+    fetchCheckoutData(uuid) {
+        return this.get(`checkout/${uuid}`)
+    }
 }
 
-export default Orders
+
+class OrdersV2 extends Core {
+    constructor(axios = axiosV2) {
+        super(axios);
+    }
+
+    fetchCheckoutData(uuid) {
+        return this.get(`checkout/${uuid}`)
+    }
+}
+
+export default {
+    OrdersV1,
+    OrdersV2,
+}

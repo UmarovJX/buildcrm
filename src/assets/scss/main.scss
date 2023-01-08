@@ -4,6 +4,7 @@
 
 @import "abstracts/placeholders";
 
+@import "base/material-symbol-icon";
 @import "base/fonts";
 @import "base/animations";
 @import "base/base";
@@ -13,6 +14,8 @@
 @import "base/shadow";
 @import "base/font-utils";
 @import "base/margins";
+@import "base/flexbox";
+@import "base/font-size";
 
 @import "layout/navigation";
 @import "layout/header";
@@ -35,3 +38,4 @@
 @import "colors/color";
 @import "colors/design-colors";
 
+@import "utils/border_utils";

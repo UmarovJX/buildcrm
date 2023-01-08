@@ -30,7 +30,6 @@
                 </x-circular-background>
               </span>
             </template>
-
           </span>
         </template>
         <div>
@@ -77,7 +76,8 @@
           right-icon="arrow_forward"
           :variant="showNavigateToNextBtn ? 'primary' : 'secondary'"
           :text="$t('next_apartment')"
-          :color-icon="showNavigateToNextBtn ? 'white' : 'var(--gray-400)'"/>
+          :color-icon="showNavigateToNextBtn ? 'white' : 'var(--gray-400)'"
+      />
     </div>
   </div>
 </template>
@@ -85,12 +85,12 @@
 <script>
 import {hasOwnProperty} from "@/util/object";
 import {mapGetters, mapMutations} from "vuex";
-import ChContractDetails from "@/views/Experiment/components/ContractDetails";
-import ChApartmentCharacters from "@/views/Experiment/components/ApartmentCharacters";
-import ChPaymentSchedule from "@/views/Experiment/components/PaymentSchedule";
-import SectionTitle from "@/views/Experiment/elements/SectionTitle";
-import ChCalculator from "@/views/Experiment/components/Calculator";
-import ChPaymentResult from "@/views/Experiment/components/PaymentResult";
+import ChContractDetails from "@/views/CheckoutV2/components/ContractDetails";
+import ChApartmentCharacters from "@/views/CheckoutV2/components/ApartmentCharacters";
+import ChPaymentSchedule from "@/views/CheckoutV2/components/PaymentSchedule";
+import SectionTitle from "@/views/CheckoutV2/elements/SectionTitle";
+import ChCalculator from "@/views/CheckoutV2/components/Calculator";
+import ChPaymentResult from "@/views/CheckoutV2/components/PaymentResult";
 import {XIcon} from "@/components/ui-components/material-icons";
 import {XCircularBackground} from "@/components/ui-components/circular-background";
 import {isObject} from "@/util/inspect";
@@ -127,9 +127,11 @@ export default {
           this.apartments.length && isObject(this.apartments[this.overviewApmTabIndex])
           && hasOwnProperty(this.apartments[this.overviewApmTabIndex], 'validate')
       ) {
-        const {changed, touched, valid, dirty} = this.apartments[this.overviewApmTabIndex].validate
-        return {
-          'nav-active-state-error': (changed || (dirty && touched)) && !valid
+        if (this.apartments[this.overviewApmTabIndex]?.validate) {
+          const {changed, touched, valid, dirty} = this.apartments[this.overviewApmTabIndex].validate
+          return {
+            'nav-active-state-error': (changed || (dirty && touched)) && !valid
+          }
         }
       }
       return {}
@@ -142,7 +144,6 @@ export default {
     window.onwheel = e => {
       this.upEvent = e.deltaY < 0;
     }
-
     this.showNavigateToNextBtn = this.apartments[this.overviewApmTabIndex].validate.valid
   },
   methods: {
@@ -154,9 +155,15 @@ export default {
       const collection = []
       for (let i = 0; i < this.apartments.length; i++) {
         const ref = `ch-calculator-` + this.apartments[i].id
+        let validate
+        if (this.apartments.length > 1) {
+          validate = this.$refs[ref][0].getValidationFlags()
+        } else {
+          validate = this.$refs[ref].getValidationFlags()
+        }
         this.updateApartment({
           idx: this.findApmIdx(this.apartments[i].id),
-          validate: {...this.$refs[ref][0].getValidationFlags()}
+          validate: {...validate}
         })
         collection.push(await this.checkValidation(i))
       }
@@ -165,6 +172,9 @@ export default {
     },
     async checkValidation(idx) {
       const ref = `ch-calculator-` + this.apartments[idx ?? this.overviewApmTabIndex].id
+      if (this.apartments.length === 1) {
+        return await this.$refs[ref].validate()
+      }
       return await this.$refs[ref][0].validate()
     },
     changeApmTabIndex(count = 1) {

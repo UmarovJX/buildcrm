@@ -1,0 +1,55 @@
+.x-modal-mask {
+  position: fixed;
+  z-index: 9900;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(156, 163, 175, 0.32);
+  backdrop-filter: blur(8px);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
+.x-modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.x-modal-container {
+  height: fit-content;
+  width: fit-content;
+  min-width: 380px;
+  min-height: 256px;
+  margin: 0 auto;
+  padding: 3rem;
+  background-color: #fff;
+  border-radius: 3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.x-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 2rem;
+}
+
+.x-modal-body {
+}
+
+
+.x-modal-enter {
+  opacity: 0;
+}
+
+.x-modal-leave-active {
+  opacity: 0;
+}
+
+.x-modal-enter .x-modal-container,
+.x-modal-leave-active .x-modal-container {
+  transform: scale(1.1);
+}

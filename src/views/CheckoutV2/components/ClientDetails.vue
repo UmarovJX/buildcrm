@@ -4,12 +4,19 @@
     <section-title title="clients_personal_data" :bilingual="true" class="km-b-2"/>
     <div class="clients-data-wrapper">
       <!--? CLIENT_PERSON_TYPE  -->
-      <k-form-select
-          :placeholder="$t('person_type')"
-          :options="clientTypeOptions"
-          :bilingual="true"
-          v-model="personalData.client_type"
-      />
+      <validation-provider
+          v-slot="{ errors }"
+          rules="required"
+          :name="`${ $t('person_type') }`"
+      >
+        <x-form-select
+            :bilingual="true"
+            :error="!!errors[0]"
+            :placeholder="$t('person_type')"
+            :options="subjectOptions"
+            v-model="personalData.subject"
+        />
+      </validation-provider>
 
       <!--!  START OF THE LEGAL ENTITY FIELDS    -->
       <template v-if="showLegalEntityFields">
@@ -111,22 +118,7 @@
       </template>
       <!--!  END OF THE LEGAL ENTITY FIELDS    -->
 
-      <template v-else>
-        <!--? CLIENT_NATION  -->
-        <validation-provider
-            v-slot="{ errors }"
-            rules="required"
-            :name="`${ $t('nation') }`"
-        >
-          <k-form-select
-              :bilingual="true"
-              :error="!!errors[0]"
-              :options="nationOptions"
-              :placeholder="$t('nation')"
-              v-model="personalData.nation"
-          />
-        </validation-provider>
-
+      <template v-if="!showLegalEntityFields">
         <!--? CLIENT_PASSPORT_ID  -->
         <validation-provider
             v-slot="{ errors }"
@@ -138,8 +130,24 @@
               class="w-100"
               mask="AA#######"
               :error="!!errors[0]"
-              v-model="personalData.passport_series"
               :placeholder="`${ $t('passport_series_example') }`"
+              v-model="personalData.passport_series"
+              @input="clientDebounce"
+          />
+        </validation-provider>
+
+        <!--? CLIENT_NATION  -->
+        <validation-provider
+            v-slot="{ errors }"
+            rules="required"
+            :name="`${ $t('nation') }`"
+        >
+          <x-form-select
+              :bilingual="true"
+              :error="!!errors[0]"
+              :options="countriesList"
+              :placeholder="$t('nation')"
+              v-model="personalData.country_id"
           />
         </validation-provider>
 
@@ -219,7 +227,7 @@
               class="w-100"
               :label="true"
               :error="!!errors[0]"
-              v-model="personalData.last_name.latin"
+              v-model="personalData.last_name.lotin"
               @input="translateCyrillic('last_name', $event)"
               :placeholder="`${ $t('last_name') } (${ $t('latin_shortcut') }.)`"
           />
@@ -267,7 +275,7 @@
               class="w-100"
               :label="true"
               :error="!!errors[0]"
-              v-model="personalData.second_name.kirill"
+              v-model="personalData.middle_name.kirill"
               @input="translateLatin('second_name', $event)"
               :placeholder="`${ $t('second_name') } (${ $t('cyrillic_shortcut') }.)`"
           />
@@ -283,25 +291,40 @@
               class="w-100"
               :label="true"
               :error="!!errors[0]"
-              v-model="personalData.second_name.lotin"
+              v-model="personalData.middle_name.lotin"
               @input="translateCyrillic('second_name', $event)"
               :placeholder="`${ $t('second_name') } (${ $t('latin_shortcut') }.)`"
           />
         </validation-provider>
-
-        <!--? CLIENT_COMMUNICATION_LANGUAGE  -->
-        <validation-provider
-            :name="`${ $t('language') }`"
-            rules="required"
-            v-slot="{ errors }"
-        >
-          <k-form-select
-              v-model="personalData.language"
-              :options="languageOptions"
-              :placeholder="`${ $t('communication_language') }`"
-          />
-        </validation-provider>
       </template>
+
+      <!--? CLIENT_TYPE  -->
+      <validation-provider
+          v-slot="{ errors }"
+          rules="required"
+          :name="`${ $t('client_type') }`"
+      >
+        <x-form-select
+            :bilingual="true"
+            :error="!!errors[0]"
+            :options="clientTypeOptions"
+            :placeholder="$t('client_type')"
+            v-model="personalData.client_type_id"
+        />
+      </validation-provider>
+
+      <!--? CLIENT_COMMUNICATION_LANGUAGE  -->
+      <validation-provider
+          :name="`${ $t('language') }`"
+          rules="required"
+          v-slot="{ errors }"
+      >
+        <x-form-select
+            v-model="personalData.language"
+            :options="languageOptions"
+            :placeholder="`${ $t('communication_language') }`"
+        />
+      </validation-provider>
     </div>
 
     <!--! CLIENT_CONTACT_DETAILS  -->
@@ -392,7 +415,7 @@
       <!--? CLIENT_EXTRA_PHONES_FIELD  -->
       <div
           v-for="(extraPhone,idx) in personalData.extra_phones"
-          :key="extraPhone.value + idx"
+          :key="extraPhone + idx"
           class="extra-phones-wrapper"
       >
         <x-form-input
@@ -426,22 +449,24 @@
 </template>
 
 <script>
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import {XFormInput} from "@/components/ui-components/form-input";
 import {XIcon} from "@/components/ui-components/material-icons";
-import SectionTitle from "@/views/Experiment/elements/SectionTitle";
+import SectionTitle from "@/views/CheckoutV2/elements/SectionTitle";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BaseButton from "@/components/Reusable/BaseButton";
 import {
   symbolLatinToCyrillic,
   symbolCyrillicToLatin
 } from "@/util/language-helper"
+import api from "@/services/api";
+import {formatDateToYMD} from "@/util/calendar";
 
 export default {
   name: "CheckoutClientDetails",
   components: {
     XIcon,
-    KFormSelect,
+    XFormSelect: XFormSelect,
     XFormInput,
     SectionTitle,
     BaseDatePicker,
@@ -449,32 +474,38 @@ export default {
   },
 
   data() {
-    return {
-      personalData: {
-        client_type: 1,
-        nation: null,
-        passport_series: null,
-        place_of_issue: null,
-        date_of_issue: null,
-        birth_day: null,
-        phone: null,
-        other_phone: null,
-        email: null,
-        other_email: null,
-        language: 'uz',
-        first_name: {kirill: null, latin: null},
-        last_name: {kirill: null, latin: null},
-        second_name: {kirill: null, latin: null},
-        extra_phones: [],
-        legal_entity: {
-          company_name: null, bank: null, account_number: null,
-          mfo: null, inn: null, ndc: null,
-          legal_address: null, fax: null
-        }
+    const emptyClientProperties = {
+      subject: 1,
+      passport_series: null,
+      place_of_issue: null,
+      date_of_issue: null,
+      birth_day: null,
+      phone: null,
+      other_phone: null,
+      email: null,
+      other_email: null,
+      language: 'uz',
+      first_name: {kirill: null, lotin: null},
+      last_name: {kirill: null, lotin: null},
+      middle_name: {kirill: null, lotin: null},
+      extra_phones: [],
+      legal_entity: {
+        company_name: null, bank: null, account_number: null,
+        mfo: null, inn: null, ndc: null,
+        legal_address: null, fax: null
       },
+      client_type_id: null,
+      country_id: null
+    }
+
+    return {
+      autoFill: false,
+      countriesList: [],
+      clientTypesList: [],
+      emptyClientProperties,
+      personalData: {...emptyClientProperties},
       languageOptions: [{text: 'UZ', value: 'uz'}, {text: 'RU', value: 'ru'}],
-      clientTypeOptions: [{text: 'physical_person', value: 1}, {text: 'legal_entity', value: 2}],
-      nationOptions: [{text: 'uzbek', value: 1}, {text: 'english', value: 2}],
+      subjectOptions: [{text: 'physical_person', value: 1}, {text: 'legal_entity', value: 2}],
       datePickerIconFill: 'var(--violet-600)',
       timeoutId: null,
     }
@@ -482,11 +513,100 @@ export default {
 
   computed: {
     showLegalEntityFields() {
-      return this.personalData.client_type === 2
+      return this.personalData.subject === 2
+    },
+    clientTypeOptions() {
+      return this.clientTypesList.map(({name, id}) => ({
+        text: name[this.$i18n.locale],
+        value: id
+      }))
     }
   },
 
+  async created() {
+    await this.getCountriesList()
+    await this.getClientTypesList()
+  },
+
   methods: {
+    clientDebounce() {
+      if (this.personalData.passport_series) {
+        if (this.timeoutId !== null) {
+          clearTimeout(this.timeoutId)
+        }
+        this.timeoutId = setTimeout(() => {
+          this.getClientByPassport()
+        }, 500)
+      } else {
+        if (this.autoFill) {
+          this.resetClientContext()
+          this.turnedOffAutoFill()
+        }
+      }
+    },
+    turnedOnAutoFill() {
+      this.autoFill = true
+    },
+    turnedOffAutoFill() {
+      this.autoFill = false
+    },
+    async getClientByPassport() {
+      if (this.personalData.passport_series.length === 9) {
+        try {
+          const {data} = await api.clientsV2.getClientBySearch({
+            params: {
+              field: this.personalData.passport_series,
+              subject: 'physical'
+            }
+          })
+          this.autoFillFieldsByPassportSeries(data)
+          this.turnedOnAutoFill()
+        } catch (e) {
+          this.resetClientContext()
+          this.turnedOffAutoFill()
+        }
+      }
+    },
+    autoFillFieldsByPassportSeries(data) {
+      this.personalData.country_id = data.attributes.country.id
+      this.personalData.place_of_issue = data.attributes.passport_issued_by
+      this.personalData.date_of_issue = formatDateToYMD(data.attributes.passport_issued_date)
+      this.personalData.birth_day = formatDateToYMD(data.attributes.date_of_birth)
+      this.personalData.email = data.email
+      this.personalData.other_email = data.additional_email
+      this.personalData.language = data.language.toLowerCase()
+      this.personalData.first_name = data.attributes.first_name
+      this.personalData.last_name = data.attributes.last_name
+      this.personalData.middle_name = data.attributes.middle_name
+      this.personalData.client_type_id = data.client_type.id
+      this.personalData.country_id = data.attributes.country.id
+
+      const {phones} = data
+
+      if (phones.length > 0 && phones[0].phone.length > 9) {
+        this.personalData.phone = phones[0].phone
+      }
+
+      if (phones.length > 1 && phones[1].phone.length > 9) {
+        this.personalData.other_phone = phones[1].phone
+      }
+
+      if (phones.length > 2) {
+        for (let i = 2; i < phones.length; i++) {
+          if (phones[i].phone.length > 9) {
+            this.personalData.extra_phones.push(phones[i].phone)
+          }
+        }
+      }
+    },
+
+    resetClientContext() {
+      this.personalData = {
+        ...this.emptyClientProperties,
+        subject: this.personalData.subject,
+        passport_series: this.personalData.passport_series
+      }
+    },
     translateLatin(type, event) {
       if (this.timeoutId !== null) {
         clearTimeout(this.timeoutId)
@@ -504,8 +624,8 @@ export default {
             }
             break;
           case 'second_name':
-            if (!this.personalData.second_name.lotin) {
-              this.personalData.second_name.lotin = symbolCyrillicToLatin(event);
+            if (!this.personalData.middle_name.lotin) {
+              this.personalData.middle_name.lotin = symbolCyrillicToLatin(event);
             }
             break;
         }
@@ -529,8 +649,8 @@ export default {
             }
             break;
           case 'second_name':
-            if (!this.personalData.second_name.kirill) {
-              this.personalData.second_name.kirill = symbolLatinToCyrillic(event);
+            if (!this.personalData.middle_name.kirill) {
+              this.personalData.middle_name.kirill = symbolLatinToCyrillic(event);
             }
             break;
         }
@@ -546,8 +666,73 @@ export default {
     removePhoneField({idx: rIdx}) {
       this.personalData.extra_phones = this.personalData.extra_phones.filter(({idx}) => idx !== rIdx)
     },
+    getObserverFlags() {
+      return this.$refs['clients-data-observer'].flags
+    },
     async validateFields() {
       return await this.$refs['clients-data-observer'].validate()
+    },
+    async getCountriesList() {
+      try {
+        const {data: countriesList} = await api.settingsV2.fetchCountries()
+        this.countriesList = countriesList.map(cty => (
+            {
+              value: cty.id,
+              text: cty.name.uz,
+            }
+        ))
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      }
+    },
+    async getClientTypesList() {
+      try {
+        const {data: clientTypesList} = await api.settingsV2.getClientTypes()
+        this.clientTypesList = clientTypesList
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      }
+    },
+    sendForm() {
+      const p = this.personalData
+      const common = {
+        email: p.email,
+        language: p.language,
+        client_type_id: p.client_type_id,
+        additional_email: p.other_email,
+        phones: [p.phone, ...p.extra_phones].map(tel => ({id: null, phone: tel})),
+      }
+      if (p.subject === 1) {
+        return {
+          subject: 'physical',
+          ...common,
+          attributes: {
+            first_name: p.first_name,
+            last_name: p.last_name,
+            middle_name: p.middle_name,
+            date_of_birth: p.birth_day,
+            passport_issued_date: p.date_of_issue,
+            passport_issued_by: p.place_of_issue,
+            passport_series: p.passport_series,
+            country_id: p.country_id,
+          }
+        }
+      } else {
+        return {
+          subject: 'legal',
+          ...common,
+          attributes: {
+            name: p.legal_entity.company_name,
+            payment_number: p.legal_entity.account_number,
+            bank_name: p.legal_entity.bank,
+            mfo: p.legal_entity.mfo,
+            inn: p.legal_entity.inn,
+            nds: p.legal_entity.ndc,
+            legal_address: p.legal_entity.legal_address,
+            fax: p.legal_entity.fax
+          }
+        }
+      }
     }
   }
 }

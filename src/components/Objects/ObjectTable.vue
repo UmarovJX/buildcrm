@@ -29,9 +29,9 @@
                 </template>
 
                 <template #empty="scope" class="text-center">
-            <span class="d-flex justify-content-center align-items-center">
-              {{ scope.emptyText }}
-            </span>
+                  <span class="d-flex justify-content-center align-items-center">
+                    {{ scope.emptyText }}
+                  </span>
                 </template>
                 <template #head(check)="{item}" class="p-0">
                   <span>
@@ -91,7 +91,7 @@
                       decimalSeparator: ",",
                   })
               }}
-          {{ $t("ye") }}
+            {{ $t("ye") }}
           </span>
                 </template>
 
@@ -187,12 +187,12 @@
                                 <!--  Подробная информация  -->
                                 <router-link
                                     :to="{
-                        name: 'apartment-view',
-                        params: {
-                          object: $route.params.object,
-                          id: data.item.id
-                        }
-                    }"
+                                      name: 'apartment-view',
+                                      params: {
+                                        object: $route.params.object,
+                                        id: data.item.id
+                                      }
+                                }"
                                     :class="'dropdown-item dropdown-item--inside'"
                                 >
                                     <i class="far fa-eye"></i>
@@ -245,21 +245,21 @@
                     @change-page="changeCurrentPage"
                 >
                     <template #next-content>
-          <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-right-icon/>
-          </span>
+                      <span class="d-flex align-items-center justify-content-center">
+                        <base-arrow-right-icon/>
+                      </span>
                     </template>
 
                     <template #prev-content>
-          <span class="d-flex align-items-center justify-content-center">
-            <base-arrow-left-icon/>
-          </span>
+                      <span class="d-flex align-items-center justify-content-center">
+                        <base-arrow-left-icon/>
+                      </span>
                     </template>
                 </vue-paginate>
 
                 <!--  Show By Select    -->
                 <div class="show__by">
-                    <k-form-select
+                    <x-form-select
                         :label="false"
                         :options="showByOptions"
                         v-model="showByValue"
@@ -270,7 +270,7 @@
                             {{ $t('contracts.show_by') }}:
                         </span>
                         </template>
-                    </k-form-select>
+                    </x-form-select>
                 </div>
 
             </div>
@@ -403,7 +403,7 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 
 export default {
     name: 'ObjectTable',
@@ -412,7 +412,7 @@ export default {
         BaseCheckbox,
         BaseArrowRightIcon,
         BaseArrowLeftIcon,
-        KFormSelect,
+        XFormSelect: XFormSelect,
         BaseLoading,
         BaseModal,
         BaseInput,
@@ -921,13 +921,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "@/assets/scss/utils/pagination.scss";
+@import "@/assets/scss/utils/b-table-redesign.scss";
 
-@import "@/assets/scss/utils/pagination";
+::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
+  background-size: 20px;
+  background-position: right calc(2rem / 6) center !important;
+  background-image: url('../../assets/icons/icon-arrow-down.svg') !important;
+}
+
+::v-deep .table.b-table > thead > tr > [aria-sort=descending],
+::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
+  background-size: 20px;
+  background-position: right calc(2rem / 6) center !important;
+  background-image: url('../../assets/icons/icon-arrow-down.svg') !important;
+}
 
 .search__content {
     margin-top: 0;
 }
-
 
 .apartment-list-filter {
     display: flex;
@@ -936,125 +949,10 @@ export default {
     min-height: 70vh;
 }
 
-::v-deep .row__head__bottom-border {
-    border-bottom: 2px solid var(--gray-200) !important;
-
-    th:first-child {
-        input {
-            width: 1rem;
-            height: 1rem;
-        }
-    }
-}
-
-::v-deep .row__body__bottom-border:not(:last-child) {
-    border-bottom: 2px solid var(--gray-200) !important;
-}
-
-
-::v-deep .table__list {
-    min-height: 250px;
-    max-height: none;
-
-    table {
-        color: var(--gray-600);
-
-        thead tr th {
-            font-family: CraftworkSans, serif;
-            font-weight: 900;
-            font-size: 12px;
-            line-height: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--gray-400) !important;
-            padding: 1.125rem 1rem;
-            vertical-align: middle;
-        }
-
-        thead tr th:first-child {
-            padding-left: 0.75rem;
-        }
-
-        td {
-            font-family: Inter, sans-serif;
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 22px;
-            color: var(--gray-600);
-            vertical-align: middle;
-        }
-    }
-
-
-    .table.b-table[aria-busy=true] {
-        opacity: 1 !important;
-    }
-
-
-    .yellow, .teal, .gray, .blue, .disable {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 9px;
-        border-radius: 24px;
-        min-width: max-content;
-    }
-
-    .yellow {
-        color: var(--yellow-600);
-        background-color: var(--yellow-100);
-    }
-
-    .teal {
-        color: var(--teal-600);
-        background-color: var(--teal-100);
-    }
-
-    .blue {
-        color: var(--light-blue-600);
-        background-color: var(--light-blue-100);
-    }
-
-    .gray {
-        color: var(--red-600);
-        background-color: var(--red-100);
-    }
-
-    .disable {
-        color: var(--gray-400);
-        background-color: var(--gray-100);
-        min-width: max-content;
-    }
-
-}
-
-
-::v-deep .table.b-table > thead > tr > [aria-sort="none"],
-::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
-    background-position: right calc(2rem / 5) center !important;
-    //background-position: right !important;
-    padding-right: 20px;
-}
-
-::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
-::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
-    background-position: right calc(2rem / 6) center !important;
-    background-size: 20px;
-    background-image: url("../../assets/icons/icon-arrow-down.svg") !important;
-}
-
-::v-deep .table.b-table > thead > tr > [aria-sort=descending],
-::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
-    background-position: right calc(2rem / 6) center !important;
-    background-size: 20px;
-    background-image: url("../../assets/icons/icon-arrow-up.svg") !important;
-}
-
 .apartments__lock {
     position: absolute;
     left: 0;
     top: 25%;
     transform: translateY(-30%);
 }
-
 </style>

@@ -16,7 +16,8 @@
                     class="d-flex align-items-center cursor-pointer"
                 >
                   <base-circle-wrapper
-                      class="d-flex justify-content-center align-items-center edit-icon-wrapper">
+                      class="d-flex justify-content-center align-items-center edit-icon-wrapper"
+                  >
                     <base-edit-icon :width="13.5" :height="13.5" fill="#fff"/>
                   </base-circle-wrapper>
                 </span>
@@ -379,6 +380,7 @@ export default {
     },
     clientDebounce() {
       if (this.client.passport_series) {
+        console.log(this.client.passport_series)
         if (this.timeoutId !== null) {
           clearTimeout(this.timeoutId)
         }
@@ -398,23 +400,27 @@ export default {
     turnedOffAutoFill() {
       this.autoFill = false
     },
-    getClientByPassport() {
-      if (this.client.passport_series.length === 9)
-        api.clientsV2.fetchClientData(this.client.passport_series)
+    async getClientByPassport() {
+      if (this.client.passport_series.length === 9) {
+        await api.clientsV2.getClientBySearch({
+          field: this.client.passport_series
+        })
             .then(response => {
-              const newClient = response.data
-              this.client = {
-                ...newClient,
-                friends: 'false',
-                contract_date: this.client.contract_date
-              }
-              this.turnedOnAutoFill()
+              console.log(response.data)
+              // const newClient = response.data
+              // this.client = {
+              //   ...newClient,
+              //   friends: 'false',
+              //   contract_date: this.client.contract_date
+              // }
+              // this.turnedOnAutoFill()
             })
             .catch((error) => {
               this.resetClientContext()
               this.toastedWithErrorCode(error);
               this.turnedOffAutoFill()
             })
+      }
     },
     resetClientContext() {
       this.client =

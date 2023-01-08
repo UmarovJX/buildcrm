@@ -120,7 +120,7 @@
 
                     <!--  Show By Select    -->
                     <div class="show__by">
-                        <k-form-select
+                        <x-form-select
                             :label="false"
                             :options="showByOptions"
                             v-model="showByValue"
@@ -129,7 +129,7 @@
                             <template #output-prefix>
                                 <span class="show-by-description">{{ $t('contracts.show_by') }}:</span>
                             </template>
-                        </k-form-select>
+                        </x-form-select>
                     </div>
                 </div>
             </div>
@@ -285,14 +285,14 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import api from "@/services/api";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import {sortInFirstRelationship, sortObjectValues} from "@/util/reusable";
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 
 export default {
     name: "ApartmentComments",
     components: {
-        KFormSelect,
+        XFormSelect: XFormSelect,
         AppDropdown,
         BaseDeleteIcon,
         BaseButton,

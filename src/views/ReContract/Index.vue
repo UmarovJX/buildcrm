@@ -169,7 +169,7 @@
                         <div class="col-6">
                             <div class="assignee-item">
                                 <div class="client__details_info_card">
-                                    <label>{{ $t('user.second_name') }}</label>
+                                    <label>{{ $t('user.middle_name') }}</label>
                                     <b-form-input disabled :value="nameDivide(oldClient.second_name)"/>
                                 </div>
                             </div>
@@ -669,7 +669,7 @@ export default {
                                 lotin: null,
                                 kirill: null,
                             },
-                            second_name: data.second_name ?? {
+                            middle_name: data.second_name ?? {
                                 lotin: null,
                                 kirill: null,
                             },

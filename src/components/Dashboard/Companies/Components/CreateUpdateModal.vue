@@ -8,7 +8,7 @@
   >
     <ValidationObserver ref="validation-observer" v-slot="{ handleSubmit }">
       <form ref="form" @submit.prevent="handleSubmit(submitForm)">
-        <k-form-select
+        <x-form-select
             id="select-managers"
             :label="true"
             :options="typeOptions"
@@ -22,7 +22,7 @@
               djskdjsk
             </div>
           </template>
-        </k-form-select>
+        </x-form-select>
 
         <!--        <b-form-group-->
         <!--            class="mb-3 select_input select_custom"-->
@@ -79,7 +79,7 @@ import api from "@/services/api";
 import "vue2-datepicker/index.css";
 import BaseInput from "@/components/Reusable/BaseInput";
 // import BaseSelect from "@/components/Reusable/BaseSelect";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 
 export default {
   name: 'CreationCompanyModal',
@@ -87,7 +87,7 @@ export default {
     // BaseMultiselect,
     BaseInput,
     // BaseSelect,
-    KFormSelect
+    XFormSelect: XFormSelect
   },
   emits: ['updated-company', 'created-new-company'],
   props: {
@@ -266,7 +266,7 @@ export default {
         name: null,
         phone: null,
         last_name: null,
-        second_name: null,
+        middle_name: null,
         other_phone: null,
         first_name: null,
         address: null,
