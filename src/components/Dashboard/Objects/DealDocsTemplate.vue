@@ -73,7 +73,7 @@
     <!--  Instructions Modal  -->
     <instructions-modal/>
 
-    <!--  Loading Content  -->
+    <!--  XLoadingWrapper Content  -->
     <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
       <template #overlay>
         <div class="d-flex justify-content-center w-100">

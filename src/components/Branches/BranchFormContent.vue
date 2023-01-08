@@ -63,7 +63,7 @@
               <!--                  v-model="form.managerId"-->
               <!--                  :options="managersOption"-->
               <!--              ></b-form-select>-->
-              <k-form-select
+              <x-form-select
                   id="select-managers"
                   :label="false"
                   :options="managersOption"
@@ -130,13 +130,13 @@
 
 <script>
 import api from "@/services/api";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 // import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: "BranchFormContent",
   components: {
-    KFormSelect
+    XFormSelect: XFormSelect
     // BaseButton
   },
   props: {

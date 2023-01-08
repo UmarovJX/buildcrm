@@ -30,7 +30,7 @@
                         class="cell"
                         :name="$t(`${data.item.field}`)"
                     >
-                        <k-form-select class="w-100"
+                        <x-form-select class="w-100"
                                        v-model="data.item.type"
                                        :options="options"
                                        :placeholder="iTranslate(data.item.field)"
@@ -46,13 +46,13 @@
 </template>
 
 <script>
-import KFormSelect from "@/components/ui-components/form-select/FormSelect";
+import XFormSelect from "@/components/ui-components/form-select/FormSelect";
 import {mapGetters} from "vuex";
 
 export default {
     name: "FirstStep",
     components: {
-        KFormSelect,
+        XFormSelect,
     },
     data() {
         return {

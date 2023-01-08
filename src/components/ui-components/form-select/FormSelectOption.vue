@@ -37,7 +37,7 @@ import {makeProp as p} from "@/util/props";
 import {isUndefinedOrNull, isObject, isString, isArray, isPrimitive} from '@/util/inspect'
 
 export default {
-  name: "KFormSelectOption",
+  name: "XFormSelectOption",
 
   components: {
     BaseCheckIcon

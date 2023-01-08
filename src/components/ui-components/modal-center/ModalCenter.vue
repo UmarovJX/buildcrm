@@ -92,9 +92,9 @@ export default {
     cancelButtonLoading: makeProp(PROP_TYPE_BOOLEAN, false),
     bilingual: makeProp(PROP_TYPE_BOOLEAN, false),
     showCloseButton: makeProp(PROP_TYPE_BOOLEAN, true),
-    footerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING,''),
-    applyButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING,''),
-    cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING,'')
+    footerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    applyButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, '')
   },
   emits: ['apply', 'cancel', 'close'],
   computed: {

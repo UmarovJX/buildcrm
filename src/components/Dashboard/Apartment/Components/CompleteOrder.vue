@@ -881,7 +881,7 @@ export default {
             lotin: null,
             kirill: null,
           },
-          second_name: data.second_name ?? {
+          middle_name: data.second_name ?? {
             lotin: null,
             kirill: null,
           },
@@ -919,7 +919,7 @@ export default {
           first_name: data.first_name,
           birth_day: data.birth_day,
           last_name: data.last_name,
-          second_name: data.second_name,
+          middle_name: data.second_name,
           passport_series: data.passport_series,
           issued_by_whom: data.issued_by_whom,
           language: data.language,
@@ -1342,7 +1342,7 @@ export default {
               lotin: null,
               kirill: null,
             },
-            second_name: data.second_name ?? {
+            middle_name: data.second_name ?? {
               lotin: null,
               kirill: null,
             },

@@ -44,7 +44,7 @@
 
             <!--  Show By Select    -->
             <div class="show__by">
-                <k-form-select
+                <x-form-select
                     :label="false"
                     :options="showByOptions"
                     v-model="showByValue"
@@ -55,7 +55,7 @@
                             {{ $t('contracts.show_by') }}:
                         </span>
                     </template>
-                </k-form-select>
+                </x-form-select>
             </div>
         </div>
     </div>
@@ -65,7 +65,7 @@
 // import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 
 export default {
     name: "BasePagination",
@@ -73,7 +73,7 @@ export default {
         // BaseDownIcon,
         BaseArrowLeftIcon,
         BaseArrowRightIcon,
-        KFormSelect
+        XFormSelect: XFormSelect
     },
     props: {
         defaultCountView: {

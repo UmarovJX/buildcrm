@@ -80,6 +80,26 @@ class SettingsV2 extends Core {
     updateClientType(typeId, body) {
         return this.put(`clients/types/${typeId}`, body)
     }
+
+    fetchCountries() {
+        return this.get('clients/countries')
+    }
+
+    getAllCountries({params} = {params: {}}) {
+        return this.get('https://restcountries.com/v3.1/all', {params})
+    }
+
+    createNewCountry(body) {
+        return this.post('clients/countries', body)
+    }
+
+    removeCountryFromDb(ctyId) {
+        return this.delete(`clients/countries/${ctyId}`)
+    }
+
+    updateCountryData(countryId, body) {
+        return this.put(`clients/countries/${countryId}`, body)
+    }
 }
 
 export default {Settings, SettingsV2}

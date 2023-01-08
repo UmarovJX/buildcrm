@@ -12,7 +12,9 @@
       @apply="submitClientType"
   >
     <template #header>
-      <h3 class="x-font-size-36px font-craftworksans color-gray-600">{{ $t('client_types') }}</h3>
+      <h3 class="x-font-size-36px font-craftworksans color-gray-600">
+        {{ $t('client_types') }}
+      </h3>
     </template>
 
     <template #body>
@@ -104,11 +106,11 @@ import {XSquareBackground} from "@/components/ui-components/square-background";
 import {XIcon} from "@/components/ui-components/material-icons";
 import {XFormInput} from "@/components/ui-components/form-input";
 import {XButton} from "@/components/ui-components/button";
+import api from "@/services/api";
+import {PROP_TYPE_OBJECT, PROP_TYPE_STRING} from "@/constants/props";
 import {symbolLatinToCyrillic} from "@/util/language-helper";
 import {debounce} from "@/util/reusable";
-import api from "@/services/api";
 import {makeProp} from "@/util/props";
-import {PROP_TYPE_OBJECT, PROP_TYPE_STRING} from "@/constants/props";
 import {isEmptyObject} from "@/util/inspect";
 
 export default {

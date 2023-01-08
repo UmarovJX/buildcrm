@@ -241,7 +241,7 @@ export default {
             phone: data.company.phone,
             first_name: data.company.first_name,
             last_name: data.company.last_name,
-            second_name: data.company.second_name,
+            middle_name: data.company.second_name,
             type: data.company.type.name.kr,
           },
 
@@ -250,7 +250,7 @@ export default {
             first_name: data.client.first_name,
             birth_day: data.client.birth_day,
             last_name: data.client.last_name,
-            second_name: data.client.second_name,
+            middle_name: data.client.second_name,
             passport_series: data.client.passport_series,
             issued_by_whom: data.client.issued_by_whom,
             language: data.client.language,

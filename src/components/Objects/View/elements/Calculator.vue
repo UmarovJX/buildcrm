@@ -15,7 +15,7 @@
         <!--            :placeholder="`${ $t('payment_discount') }`"-->
         <!--        ></base-select>-->
 
-        <k-form-select
+        <x-form-select
             :value="discount.id"
             :options="paymentOption"
             :placeholder="$t('payment_discount')"
@@ -158,7 +158,7 @@
 import {formatToPrice} from "@/util/reusable";
 // import BaseSelect from "@/components/Reusable/BaseSelect";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import {mapGetters} from "vuex";
 import CheckoutPermission from "@/permission/checkout";
 
@@ -166,7 +166,7 @@ export default {
   name: "Calculator",
   components: {
     // BaseSelect,
-    KFormSelect,
+    XFormSelect: XFormSelect,
     BasePriceInput
   },
   props: {

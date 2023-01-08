@@ -43,16 +43,16 @@
                 <div class="d-flex">
                     <div class="client__details_info_card mr-5" style="padding-right: 0;">
                         <label for="client_type">{{ $t('client_type') }}</label>
-                        <k-form-select
+                        <x-form-select
                             v-if="permissionClientType"
                             :label="false"
                             :value="client.friends"
                             :disabled="!(permissionClientType)"
                             @change="changeClientType"
                         >
-                            <k-form-select-option :option="{value:false,text:$t('unfamiliar')}"/>
-                            <k-form-select-option :option="{value:true,text:$t('familiar')}"/>
-                        </k-form-select>
+                            <x-form-select-option :option="{value:false,text:$t('unfamiliar')}"/>
+                            <x-form-select-option :option="{value:true,text:$t('familiar')}"/>
+                        </x-form-select>
                     </div>
                     <div class="client__details_info_card">
                         <label for="date_of_issue">{{ $t('given_date') }}</label>
@@ -69,13 +69,13 @@ import {formatDateWithDot, phonePrettier} from "@/util/reusable";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
-import {KFormSelect, KFormSelectOption} from "@/components/ui-components/form-select";
+import {XFormSelect, XFormSelectOption} from "@/components/ui-components/form-select";
 
 export default {
     name: "TabClientDetails",
     components: {
-        KFormSelect,
-        KFormSelectOption
+        XFormSelect: XFormSelect,
+        XFormSelectOption: XFormSelectOption
     },
     props: {
         order: {

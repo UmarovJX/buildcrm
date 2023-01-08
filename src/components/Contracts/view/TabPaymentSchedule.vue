@@ -82,7 +82,7 @@
                                 class="content__form__select"
                                 :class="{'warning__border':validationWarnings.type}"
                             >
-                                <k-form-select
+                                <x-form-select
                                     class="w-100"
                                     v-model="appendPayment.type"
                                     :options="paymentTypeOptionsForCreate"
@@ -137,7 +137,7 @@
                                 class="content__form__select"
                                 :class="{'warning__border':validationWarnings.payment_type}"
                             >
-                                <k-form-select
+                                <x-form-select
                                     class="w-100"
                                     v-model="appendPayment.payment_type"
                                     :options="paymentMethodOptions"
@@ -285,7 +285,7 @@
                     <!--          </div>-->
 
                     <div class="show-by">
-                        <k-form-select
+                        <x-form-select
                             :label="false"
                             :options="showByOptions"
                             v-model="paymentHistory.params.limit"
@@ -298,7 +298,7 @@
                   {{ $t('contracts.show_by') }}:
             </span>
                             </template>
-                        </k-form-select>
+                        </x-form-select>
                     </div>
                 </div>
 
@@ -439,7 +439,7 @@
                 <!--        </div>-->
 
                 <div class="show-by">
-                    <k-form-select
+                    <x-form-select
                         :label="false"
                         :options="showByOptions"
                         v-model="paymentSchedule.params.limit"
@@ -452,7 +452,7 @@
                   {{ $t('contracts.show_by') }}:
             </span>
                         </template>
-                    </k-form-select>
+                    </x-form-select>
                 </div>
             </div>
 
@@ -555,7 +555,7 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
@@ -566,7 +566,7 @@ export default {
     components: {
         ModifyPaymentTransaction,
         ImportPaymentsModal,
-        KFormSelect,
+        XFormSelect: XFormSelect,
         BasePriceInput,
         BaseArrowRightIcon,
         BaseArrowDownIcon,
@@ -908,7 +908,7 @@ export default {
             } else {
                 // await Promise.any([this.getPaymentSchedule()])
                 //     .finally(() => {
-                //       this.finishLoading()
+                //       this.finishFetching()
                 //     })
             }
         },
@@ -1354,7 +1354,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 
         }
 
-        ::v-deep .k-form-select-main .k-form-select-options {
+        ::v-deep .x-form-select-main .x-form-select-options {
             max-height: 200px !important;
         }
 

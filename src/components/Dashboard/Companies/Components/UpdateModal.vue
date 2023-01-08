@@ -75,7 +75,7 @@
 
         <b-form-group
           :label="$t('companies.second_name')"
-          label-for="second_name"
+          label-for="middle_name"
         >
           <b-form-input
             id="second_name"

@@ -61,7 +61,7 @@
 import {makeProp as p} from "@/util/props";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
 
-import SectionTitle from "@/views/Experiment/elements/SectionTitle";
+import SectionTitle from "@/views/CheckoutV2/elements/SectionTitle";
 import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BaseModal from "@/components/Reusable/BaseModal";
@@ -69,7 +69,8 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import {XIcon} from "@/components/ui-components/material-icons";
-import {mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
+import {formatDateToYMD} from "@/util/calendar";
 
 export default {
   name: "ChContractDetails",
@@ -88,7 +89,7 @@ export default {
   },
   data() {
     return {
-      contractDate: null,
+      contractDate: formatDateToYMD(),
       datePickerIconFill: 'var(--violet-600)',
       changedContractNumber: false,
       newContractNumber: '',
@@ -104,14 +105,18 @@ export default {
     newContractNumber(value) {
       this.changedContractNumber = !!(value && value.length && !(value === this.contractNumber))
       if (this.changedContractNumber) {
-        this.$emit('change-contract-number', value)
+        this.changeContractNumber({
+          apmId: this.apartment.id,
+          contractNumber: value
+        })
       }
     }
   },
   mounted() {
-    this.contractNumber = this.stateContractNumber
+    this.contractNumber = this.apartment.contract_number
   },
   methods: {
+    ...mapActions('Experiment', ['changeContractNumber']),
     closeEditNumberModal() {
       this.$refs['edit-contract-number'].closeModal()
       this.changedContractNumber = false

@@ -259,7 +259,7 @@
 
                 <!--  Show By Select    -->
                 <div class="show__by">
-                    <k-form-select
+                    <x-form-select
                         :label="false"
                         :options="showByOptions"
                         v-model="showByValue"
@@ -270,7 +270,7 @@
                             {{ $t('contracts.show_by') }}:
                         </span>
                         </template>
-                    </k-form-select>
+                    </x-form-select>
                 </div>
 
             </div>
@@ -403,7 +403,7 @@ import BaseModal from "@/components/Reusable/BaseModal";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import {KFormSelect} from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 
 export default {
     name: 'ObjectTable',
@@ -412,7 +412,7 @@ export default {
         BaseCheckbox,
         BaseArrowRightIcon,
         BaseArrowLeftIcon,
-        KFormSelect,
+        XFormSelect: XFormSelect,
         BaseLoading,
         BaseModal,
         BaseInput,

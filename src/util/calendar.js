@@ -1,3 +1,6 @@
+import {isString} from "@/util/inspect";
+import da from "vue2-datepicker/locale/es/da";
+
 export const monthsNameList = [
     'january',
     'february',
@@ -66,7 +69,10 @@ export function dateProperties(point, type = 'date') {
     }
 }
 
-export function formatDateToYMD(date) {
+export function formatDateToYMD(date = new Date()) {
+    if (isString(date)) {
+        date = new Date(date)
+    }
     let d = date.getDate()
     let m = date.getMonth() + 1
     let y = date.getFullYear()

@@ -1,5 +1,6 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
+import id from "vue2-datepicker/locale/es/id";
 
 export default {
     initOtherProperties(state, context) {
@@ -14,11 +15,12 @@ export default {
         state.created_by = created_by
     },
     initApartments(state, {orders}) {
-        state.apartments = orders.map(({status, contract_number, apartment}) => {
+        state.apartments = orders.map(({status, contract_number, apartment, uuid}) => {
             const discount = apartment.discounts[0]
             return {
                 status,
                 contract_number,
+                order_uuid: uuid,
                 id: apartment.uuid,
                 ...apartment,
                 calc: {
@@ -97,4 +99,11 @@ export default {
             }
         }
     },
+    setClientData(state, clientData) {
+        state.clientData = clientData
+    },
+    updateContractNumber(state, {idx, contractNumber}) {
+        state.apartments[idx].contract_number = contractNumber
+        state.apartments[idx].edit.contract_number = true
+    }
 }

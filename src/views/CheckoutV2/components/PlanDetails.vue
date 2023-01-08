@@ -1,11 +1,17 @@
 <template>
   <div class="apartment-details-content">
     <div class="apd-overview-titles">
-      <span class="apd-section-name gray-600">Object</span>
+      <span class="apd-section-name gray-600">
+        {{ apartment.object.name }}
+      </span>
       <span class="apd-section-slash gray-400">/</span>
-      <span class="apd-section-name gray-600">Building</span>
+      <span class="apd-section-name gray-600">
+        {{ apartment.building.name }}
+      </span>
       <span class="apd-section-slash gray-400">/</span>
-      <span class="apd-section-name gray-600">Block</span>
+      <span class="apd-section-name gray-600">
+        {{ apartment.block.name }}
+      </span>
     </div>
     <div class="apd-information">
       <field-information
@@ -62,20 +68,20 @@
       </field-information>
     </div>
 
-    <base-button
-        v-if="remove"
-        :text="`${ $t('remove_apartment') }`"
-        @click="removeApartment({apmId:apartment.id})"
-    >
-      <template #left-icon>
-        <x-icon name="remove" color="var(--violet-600)"></x-icon>
-      </template>
-    </base-button>
+    <!--    <base-button-->
+    <!--        v-if="remove"-->
+    <!--        :text="`${ $t('remove_apartment') }`"-->
+    <!--        @click="removeApartment({apmId:apartment.id})"-->
+    <!--    >-->
+    <!--      <template #left-icon>-->
+    <!--        <x-icon name="remove" color="var(&#45;&#45;violet-600)"></x-icon>-->
+    <!--      </template>-->
+    <!--    </base-button>-->
   </div>
 </template>
 
 <script>
-import FieldInformation from "@/views/Experiment/elements/FieldInformation";
+import FieldInformation from "@/views/CheckoutV2/elements/FieldInformation";
 import {hasChild} from "@/util/object";
 import {makeProp as p} from "@/util/props";
 import {PROP_TYPE_BOOLEAN, PROP_TYPE_OBJECT} from "@/constants/props";

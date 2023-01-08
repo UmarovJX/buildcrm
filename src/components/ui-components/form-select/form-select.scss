@@ -1,4 +1,4 @@
-.k-form-select {
+.x-form-select {
   font-family: Inter, sans-serif;
   position: relative;
 
@@ -54,12 +54,12 @@
     z-index: 20;
 
 
-    &.k-form-select-position-top {
+    &.x-form-select-position-top {
       top: auto;
       bottom: 100%;
     }
 
-    .k-form-select-options {
+    .x-form-select-options {
       max-height: 360px;
       overflow-y: auto;
       padding: 0;
@@ -80,7 +80,7 @@
     }
   }
 
-  .k-form-select-icon {
+  .x-form-select-icon {
     //position: absolute;
     //top: 50%;
     //right: 20px;

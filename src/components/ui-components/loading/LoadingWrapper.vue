@@ -1,7 +1,9 @@
 <template>
   <div>
     <animation-frame v-show="loading"/>
-    <slot name="default" v-if="!loading"/>
+    <div v-show="!loading">
+      <slot name="default"/>
+    </div>
   </div>
 </template>
 

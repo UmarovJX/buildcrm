@@ -17,9 +17,9 @@
 import {makeProp as p} from "@/util/props";
 import {hasChild} from "@/util/object";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
-import SwiperSlider from "@/views/Experiment/elements/SwiperSlider";
-import SectionTitle from "@/views/Experiment/elements/SectionTitle";
-import ChPlanDetails from "@/views/Experiment/components/PlanDetails";
+import SwiperSlider from "@/views/CheckoutV2/elements/SwiperSlider";
+import SectionTitle from "@/views/CheckoutV2/elements/SectionTitle";
+import ChPlanDetails from "@/views/CheckoutV2/components/PlanDetails";
 
 export default {
   name: "ChApartmentDetails",

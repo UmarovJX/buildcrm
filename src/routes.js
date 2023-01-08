@@ -41,7 +41,7 @@ import ContractView from "@/views/Contracts/View/Index"
 import ApartmentView from '@/views/Objects/Apartments/View/Index'
 import ObjectsView from '@/views/Objects/View/Index'
 import Debtors from "@/views/Debtors/Index"
-import Experiment from "@/views/Experiment/Index";
+import CheckoutV2 from "@/views/CheckoutV2/Index";
 import ReContract from "@/views/ReContract/Index"
 import AppLayout from "@/views/AppLayout";
 import Documentation from "@/views/Documentation/documentation";
@@ -50,6 +50,7 @@ import ApartmentContract from '@/views/Objects/Apartments/View/ContractTab'
 import ApartmentCommentTab from "@/views/Objects/Apartments/View/CommentTab";
 import ReleaseNote from "@/views/ReleaseNote/Index";
 import ImportDebtorsList from "@/views/Debtors/ImportDebtorsList";
+import CheckoutContractReview from "@/views/CheckoutV2/views/CheckoutContractReview.vue";
 
 /*  CONTRACT VIEW COMPONENTS */
 import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
@@ -75,9 +76,15 @@ const routes = [
             },
 
             {
-                path: '/Experiment/:object/apartment/:id/order',
-                name: 'experiment',
-                component: Experiment
+                path: '/checkout_v2/:object/apartment/:id/order',
+                name: 'checkout_v2',
+                component: CheckoutV2
+            },
+
+            {
+                path: '/review/:object/contract/review/:ids',
+                name: 'checkout-contract-review',
+                component: CheckoutContractReview
             },
 
             {
@@ -167,7 +174,6 @@ const routes = [
                 },
             },
 
-
             {
                 /* SETTINGS */
                 name: "settings",
@@ -181,7 +187,6 @@ const routes = [
                 name: 'user-settings',
                 component: UserSettings
             },
-
 
             {
                 /* DEBTORS */
@@ -359,7 +364,6 @@ const routes = [
 
             {
                 /* CONTRACTS VIEW */
-                // name: "contracts-view",
                 path: "/contracts/:id",
                 component: ContractView,
                 meta: {

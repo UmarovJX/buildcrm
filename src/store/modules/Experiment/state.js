@@ -34,7 +34,8 @@ const schema = {
         monthly_payment_period: false,
         prepay: false,
         discount: false,
-        monthly: false
+        monthly: false,
+        contract_number: false
     },
     otherDiscount: {
         value: 'other',
@@ -59,8 +60,6 @@ const schema = {
         valid: true,
         validated: false,
     }
-
-
 }
 
 export default {
@@ -72,5 +71,6 @@ export default {
     uuid: null,
     order: {},
     comment: '',
-    trashStorage: []
+    trashStorage: [],
+    clientData: {}
 }

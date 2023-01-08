@@ -1,13 +1,15 @@
 <template>
-  <div class="app-settings-client-type">
-    <!-- TODO: CLIENT TYPES TABLE   -->
+  <div class="settings-countries">
+    <!-- TODO:SETTINGS COUNTRIES   -->
     <div class="d-flex justify-content-between">
-      <h3 class="x-font-size-1p5 font-craftworksans color-gray-400">{{ $t('client_types') }}</h3>
+      <h3 class="x-font-size-1p5 font-craftworksans color-gray-400">
+        {{ $t('priority_countries') }}
+      </h3>
       <x-button
           variant="secondary"
-          text="add_type"
+          text="add_country"
           :bilingual="true"
-          @click="createClientType"
+          @click="openCreatingModal"
       >
         <template #left-icon>
           <x-icon name="add" class="violet-600"/>
@@ -26,9 +28,9 @@
         show-empty
         responsive
         sort-icon-left
-        :items="clientTypes.items"
-        :fields="clientTypeFields"
-        :busy="clientTypes.loading"
+        :items="countries.items"
+        :fields="countryFields"
+        :busy="countries.busy"
         :empty-text="$t('no_data')"
     >
       <template #table-busy>
@@ -44,87 +46,69 @@
         </span>
       </template>
 
-      <template #cell(icon)="{ item }">
-        <x-icon :name="item.icon" class="gray-400"/>
-      </template>
-
-      <template #cell(is_vip)="{ item }">
-        <span v-if="item['is_vip']" class="border-radius-2 background-violet-100 violet-600 vip-status">V.I.P</span>
-        <span v-else>{{ $t('normal_client') }}</span>
-      </template>
-
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
-          <x-circular-background @click="editClientType(item.id)" class="bg-violet-600">
+          <x-circular-background @click="editCountries(item)" class="bg-violet-600">
             <x-icon name="edit" class="color-white"/>
           </x-circular-background>
 
-          <x-circular-background @click="deleteClientType(item.id)" class="bg-red-600">
+          <x-circular-background @click="deleteCountries(item.id)" class="bg-red-600">
             <x-icon name="delete" class="color-white"/>
           </x-circular-background>
         </div>
       </template>
     </b-table>
 
-    <settings-create-client
-        v-if="shopCreateModal"
+    <settings-create-country
+        v-if="showCreateCountryModal"
         :engagement-type="engagementType"
+        :countries="countries.items"
         :edit-item="editStorage"
-        @close-creating-modal="closeCreatingClientTypeModal"
-        @client-type-created="clientTypeCreated"
+        @close-creating-country="closeCreatingModal"
+        @added-new-country="newCountryCreated"
     />
   </div>
 </template>
 
 <script>
-import BaseCheckbox from "@/components/Reusable/BaseCheckbox.vue";
-import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import {XButton} from "@/components/ui-components/button";
 import {XIcon} from "@/components/ui-components/material-icons";
 import {XCircularBackground} from "@/components/ui-components/circular-background";
-import {XHorizontalDivider} from "@/components/ui-components/horizontal-divider";
-import SettingsCreateClient from "@/views/Settings/components/SettingsCreateClient.vue";
-import BaseModal from "@/components/Reusable/BaseModal.vue";
+import SettingsCreateCountry from "@/views/Settings/components/SettingsCreateCountry.vue";
+import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import api from "@/services/api";
 
 export default {
-  name: 'SettingsClientTypes',
+  name: "SettingsCountries",
   components: {
-    BaseCheckbox,
-    BaseLoading,
     XButton,
     XIcon,
+    BaseLoading,
     XCircularBackground,
-    BaseModal,
-    SettingsCreateClient,
-    XHorizontalDivider
+    SettingsCreateCountry
   },
   data() {
     return {
       engagementType: 'create',
-      shopCreateModal: false,
+      showCreateCountryModal: false,
       editStorage: {},
-      clientTypes: {
+      countries: {
         items: [],
-        loading: false
-      },
+        busy: false
+      }
     }
   },
   computed: {
-    clientTypeFields() {
+    countryFields() {
       return [
         {
-          key: "icon",
-          label: ""
-        },
-        {
           key: "name",
-          label: this.$t('title'),
+          label: this.$t('country'),
           formatter: (name) => name[this.$i18n.locale]
         },
         {
-          key: "is_vip",
-          label: 'V.I.P',
+          key: "code",
+          label: this.$t('country_code'),
         },
         {
           key: "actions",
@@ -132,67 +116,67 @@ export default {
           class: "float-right"
         },
       ]
-    },
+    }
   },
   created() {
-    this.fetchClientTypes()
+    this.getCountries()
   },
   methods: {
-    createClientType() {
-      this.setEngagementType('create')
-      this.openCreatingClientTypeModal()
-    },
-    async fetchClientTypes() {
-      try {
-        const {data: items} = await api.settingsV2.getClientTypes()
-        this.clientTypes.items = items
-      } catch (e) {
-        this.toastedWithErrorCode(e)
-      }
-    },
     setEngagementType(eType) {
       if (['create', 'edit'].includes(eType)) {
         this.engagementType = eType
       }
     },
-    openCreatingClientTypeModal() {
-      this.shopCreateModal = true
+    editCountries(item) {
+      this.setEngagementType('edit')
+      this.editStorage = item
+      this.openCreatingModal()
     },
-    closeCreatingClientTypeModal() {
-      this.shopCreateModal = false
-    },
-    clientTypeCreated() {
-      this.closeCreatingClientTypeModal()
-      this.fetchClientTypes()
-    },
-    async deleteClientType(typeId) {
+    async deleteCountries(ctyId) {
       try {
-        await api.settingsV2.deleteClientType(typeId)
-        await this.fetchClientTypes()
+        this.startAppLoading()
+        await api.settingsV2.removeCountryFromDb(ctyId)
+        await this.getCountries()
       } catch (e) {
-        this.toastedWithErrorCode(e)
+        this.toastedWithErrorCode()
+      } finally {
+        this.finishAppLoading()
       }
     },
-    async editClientType(typeId) {
+    startAppLoading() {
+      this.countries.busy = true
+    },
+    finishAppLoading() {
+      this.countries.busy = false
+    },
+    async getCountries() {
       try {
-        const {data} = await api.settingsV2.getClientTypeById(typeId)
-        this.editStorage = data
-        this.setEngagementType('edit')
-        this.openCreatingClientTypeModal()
+        this.startAppLoading()
+        const {data} = await api.settingsV2.fetchCountries()
+        this.countries.items = data
       } catch (e) {
         this.toastedWithErrorCode(e)
+      } finally {
+        this.finishAppLoading()
       }
-    }
+    },
+    openCreatingModal() {
+      this.showCreateCountryModal = true
+    },
+    closeCreatingModal() {
+      this.showCreateCountryModal = false
+    },
+    newCountryCreated() {
+      this.setEngagementType('create')
+      this.closeCreatingModal()
+      this.getCountries()
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/utils/b-table-redesign.scss";
-
-.app-settings-client-type {
-  font-family: Inter, sans-serif;
-}
 
 ::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
 ::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
@@ -208,7 +192,7 @@ export default {
   background-image: url('../../../assets/icons/icon-arrow-down.svg') !important;
 }
 
-.vip-status {
-  padding: 12px 48px;
+.settings-countries {
+  padding-top: 2rem;
 }
 </style>

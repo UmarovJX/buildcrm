@@ -46,7 +46,7 @@
     />
 
     <span
-        v-if="showClearIcon && !disable"
+        v-show="showClearIcon && !disable"
         class="clear__icon"
         @click="clearSearchInput"
     >
@@ -257,6 +257,11 @@ export default {
     &::placeholder {
       font-weight: 600;
       color: var(--gray-400);
+    }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:focus {
+      transition: background-color 600000s 0s, color 600000s 0s;
     }
   }
 
