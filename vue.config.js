@@ -1,9 +1,9 @@
 module.exports = {
+    chainWebpack: config => config.resolve.symlinks(false),
+    runtimeCompiler: true,
 
-  runtimeCompiler: true,
-
-  css: {
-    sourceMap: true
-  }
+    css: {
+        sourceMap: true
+    }
 }
 

@@ -92,28 +92,15 @@
                         <template #cell(value)="data">
                             <ValidationProvider v-slot="{ errors }" rules="required" :name="$t('contracts.name')"
                                                 class="cell position-relative">
-                                <base-input
-                                    :value="data.item.value.contract"
-                                    type="search"
-                                    @trigger-input="searchContract(data.item)"
-                                />
-                                {{ data.item.option.length }}
-                                <div class="select-list" v-if="toggleList && data.item.option.length">
-                                    <div class="select-list__item" v-for="option in data.item.option"
-                                         :key="option.uuid"
-                                         @click="selectOptionSystem(data.item.key, option)">
-                                        {{ option.contract_number }}
-                                    </div>
-                                </div>
-
                                 <v-select
                                     :options="data.item.option"
                                     :filterable="false"
-                                    @open="toggleList"
+                                    label="contract"
+                                    v-model="data.item.value.contract"
+                                    @open="openListId = data.item.key"
                                     @search="searchContract(data.item)"
-                                >
-                                </v-select>
-
+                                    @input="selectOptionSystem(data.item.key,$event)"
+                                />
                             </ValidationProvider>
                         </template>
 
@@ -131,6 +118,9 @@
 import api from "@/services/api";
 import BaseInput from "@/components/Reusable/BaseInput";
 import {mapGetters} from "vuex";
+
+import 'vue-select/dist/vue-select.css';
+
 
 export default {
     name: "SecondStep",
@@ -178,8 +168,11 @@ export default {
             ],
             options: [],
             tabIndex: 0,
-            toggleList: false,
-            listForCreate: []
+            openListId: null,
+            selected: null,
+            listForCreate: [],
+            allList: []
+
         }
     },
     computed: {
@@ -199,7 +192,6 @@ export default {
     },
     methods: {
         selectOptionSystem(itemKey, option) {
-            console.log(itemKey, option, 'itemKey, option');
             this.notFoundItems.forEach((item, index) => {
                 if (item.key === itemKey) {
                     this.notFoundItems[index] = {
@@ -208,12 +200,12 @@ export default {
                         value: {
                             alias: item.key,
                             uuid: option.uuid,
-                            contract: option.contract_number
+                            contract: option.contract
                         }
                     }
                 }
             })
-            this.toggleList = false
+            this.openListId = null
         },
         setupOptions() {
             this.foundItems = this.importData.found.map((item) => {
@@ -243,13 +235,18 @@ export default {
             const params = {
                 contract: item.value.contract
             }
-            console.log(uuid, 'uuid');
             api.debtorsV2.searchContract(params).then((res) => {
-                this.toggleList = true
-                // this.options = res.data
+                this.openListId = uuid
                 this.notFoundItems.forEach((fItem, index) => {
                     if (fItem && fItem.key === uuid) {
-                        this.notFoundItems[index].option = res.data
+                        this.notFoundItems[index].option = res.data.map((item) => {
+                                return {
+                                    alias: item.alias || null,
+                                    contract: item.contract_number || null,
+                                    uuid: item.uuid || null
+                                }
+                            }
+                        )
                     }
                 })
             }).catch(err => {
@@ -273,7 +270,7 @@ export default {
         async validateSecondStep() {
             let createAliases = []
             let updateAliases = []
-            let allList = []
+            let {allList} = this
 
             if (this.foundItems && this.foundItems.length) {
                 this.foundItems.forEach((item) => {
@@ -303,6 +300,7 @@ export default {
 
             allList = [...allList, ...updateAliases]
 
+
             allList.forEach((item, index) => {
                 this.debtorsSheet.forEach((sheet) => {
                     if (item.alias === sheet.contract || item.contract === sheet.contract) {
@@ -312,7 +310,7 @@ export default {
 
             })
 
-            this.$emit('all-debtors', allList)
+            await this.$emit('all-debtors', allList)
         },
         iTranslate(text) {
             return this.$t(`${text}`)
@@ -325,10 +323,27 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+::root
+    --vs-dropdown-bg: var(--gray-100)
+    --vs-dropdown-option-padding: 12px 20px
+
 
 .error__provider
     color: red
     font-size: 12px
+
+
+::v-deep
+    .vs__selected
+        margin: 0
+        padding: 0
+
+    .vs__dropdown-toggle
+        height: 3.5rem
+        padding: 13px 20px 13px 1.25rem
+        border: 0.25rem solid transparent
+        border-radius: 2rem
+        background-color: var(--gray-100)
 
 
 .select-list

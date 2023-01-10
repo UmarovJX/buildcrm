@@ -78,12 +78,12 @@ export default {
                     default: 'comment'
                 },
                 {
-                    field: 'payment_type',
+                    field: 'contracts.view.payment_type',
                     type: null,
                     default: 'payment_type'
                 },
                 {
-                    field: 'contracts.view.payment_type',
+                    field: 'contracts.view.type',
                     type: null,
                     default: 'type'
                 }
@@ -131,22 +131,26 @@ export default {
 
             if (debtorsSheets.rows && debtorsSheets.rows.length) {
                 debtorsSheets = debtorsSheets.rows.slice(1)
-                debtorsSheets.map((item, index) => {
+                console.log(debtorsSheets, 'debtorsSheets');
+                if (true) {
+                    debtorsSheets.map((item, index) => {
 
-                    Object.entries(item).forEach(([key, value]) => {
-                        if (key === contractFieldName || key === 'contract') {
-                            contractsList = [...contractsList, value]
-                        }
+                        Object.entries(item).forEach(([key, value]) => {
+                            if (key === contractFieldName || key === 'contract') {
+                                contractsList = [...contractsList, value]
+                            }
+                        })
+
+                        this.fileFields.forEach((field) => {
+                            if (debtorsSheets[index][`${field.default}`]) {
+                                debtorsSheets[index][`${field.default}`] = debtorsSheets[index][`${field.type}`]
+                                // delete debtorsSheets[index][`${field.type}`]
+                            }
+                        })
+
                     })
+                }
 
-                    this.fileFields.forEach((field) => {
-                        if (debtorsSheets[index][`${field.default}`]) {
-                            debtorsSheets[index][`${field.default}`] = debtorsSheets[index][`${field.type}`]
-                            delete debtorsSheets[index][`${field.type}`]
-                        }
-                    })
-
-                })
             }
             return contractsList
         },
