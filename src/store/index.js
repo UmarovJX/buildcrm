@@ -38,14 +38,14 @@ import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
 import notify from "@/store/modules/Notification/index"
 import checkout from "@/store/modules/Checkout"
-import Experiment from "@/store/modules/Experiment";
+import CheckoutV2 from "@/store/modules/CheckoutV2";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
         Loading,
-        Experiment,
+        CheckoutV2,
         Features,
         managers,
         managers_info,

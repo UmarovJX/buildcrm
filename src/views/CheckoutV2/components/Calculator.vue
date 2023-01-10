@@ -253,7 +253,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Experiment', ['getApm', 'apartmentArea', 'findApmIdx']),
+    ...mapGetters('CheckoutV2', ['getApm', 'apartmentArea', 'findApmIdx']),
     paymentOptions() {
       if (hasChild(this.apartment)) {
         const discounts = this.apartment.discounts.map((discount, index) => {
@@ -300,7 +300,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Experiment', [
+    ...mapActions('CheckoutV2', [
       'updateApmDiscount',
       'setMonthlyPaymentPeriod',
       'editPrepay',

@@ -37,6 +37,7 @@
             <template v-if="!hasOutputSlot">
               <slot name="output-prefix"/>
               <span v-if="bilingual">{{ $t(selectList.value) }}</span>
+              <span v-else-if="multilingual">{{ getValueByCurrentLang(selectList.value) }}</span>
               <span v-else>{{ selectList.value }}</span>
               <slot name="output-suffix"/>
             </template>
@@ -119,6 +120,7 @@ export default {
     getter: p(PROP_TYPE_STRING, 'value', (vGetter) => {
       return ['full', 'text', 'value'].includes(vGetter)
     }),
+    multilingual: p(PROP_TYPE_BOOLEAN, false),
   },
   data() {
     let selected = this.multiple ? [] : null
@@ -178,7 +180,7 @@ export default {
     },
     selectList() {
       if (this.multiple) {
-        if (this.selected.length) {
+        if (this.selected?.length) {
           return {
             show: true,
             value: this.selected
@@ -209,7 +211,7 @@ export default {
       this.handleChange()
     },
     value(latestValue) {
-      if (!this.selected || this.selected.value !== latestValue) {
+      if (!this.multiple && (!this.selected || this.selected.value !== latestValue)) {
         this.lunch()
         this.findOutputPosition()
       }
@@ -282,7 +284,7 @@ export default {
     handleChange() {
       const {multiple, selected, valueField: vField} = this
       if (multiple) {
-        if (!selected.length) {
+        if (!selected?.length) {
           this.$emit('change', null)
         } else {
           switch (this.getter) {
@@ -335,6 +337,9 @@ export default {
       } else {
         if (this.multiple) {
           const option = this.generateOps(value, text)
+          if (isUndefinedOrNull(this.selected)) {
+            this.selected = []
+          }
           this.selected.push(option)
         } else {
           this.selected = this.generateOps(value, text)
@@ -432,7 +437,13 @@ export default {
       }
       this.inactiveOption(_value)
       this.selected = this.selected.filter(_c => _c[vField] !== _value)
-    }
+    },
+    getValueByCurrentLang(value) {
+      if (value.hasOwnProperty(this.$i18n.locale)) {
+        return value[this.$i18n.locale]
+      }
+      return value
+    },
   }
 }
 </script>

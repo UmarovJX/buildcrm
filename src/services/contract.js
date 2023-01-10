@@ -78,8 +78,10 @@ class ContractV2 extends Core {
         return this.get('contracts/' + id + '/payments', {params})
     }
 
-    toggleClientType(id) {
-        return this.put('contracts/' + id + '/client')
+    toggleClientType(contractId, clientTypeId) {
+        return this.put('contracts/' + contractId + '/client', {
+            client_type_id: clientTypeId
+        })
     }
 
     appendPayment(id, body) {

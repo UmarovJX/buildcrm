@@ -121,7 +121,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Experiment', {
+    ...mapActions('CheckoutV2', {
       removeApartment: 'removeApartment'
     })
   }

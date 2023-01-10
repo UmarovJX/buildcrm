@@ -8,6 +8,7 @@
     <slot name="default"/>
     <span v-if="absentDefaultSlot">
       <span v-if="bilingual">{{ $t(inlineOption[textField]) }}</span>
+      <span v-else-if="multilingual">{{ getMultilingualValue() }}</span>
       <span v-else>{{ inlineOption[textField] }}</span>
     </span>
     <slot name="option-right"/>
@@ -57,7 +58,8 @@ export default {
       textField,
       valueField,
       checked: false,
-      bilingual: this.$parent.bilingual ?? false
+      bilingual: this.$parent.bilingual ?? false,
+      multilingual: this.$parent.multilingual ?? false
     }
   },
 
@@ -154,7 +156,14 @@ export default {
     },
     makeInactive() {
       this.checked = false
-    }
+    },
+    getMultilingualValue() {
+      const v = this.inlineOption[this.textField]
+      if (v.hasOwnProperty(this.$i18n.locale)) {
+        return v[this.$i18n.locale]
+      }
+      return v
+    },
   }
 }
 </script>

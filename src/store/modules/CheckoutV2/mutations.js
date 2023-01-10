@@ -3,6 +3,14 @@ import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 import id from "vue2-datepicker/locale/es/id";
 
 export default {
+    setFunctionType(state, route) {
+        const pathUnits = route.path.split('/')
+        if (pathUnits[pathUnits.length - 1] === 'update') {
+            state.componentFunction = state.functionTypesList[1]
+        } else {
+            state.componentFunction = state.functionTypesList[0]
+        }
+    },
     initOtherProperties(state, context) {
         const {
             uuid,
@@ -105,5 +113,31 @@ export default {
     updateContractNumber(state, {idx, contractNumber}) {
         state.apartments[idx].contract_number = contractNumber
         state.apartments[idx].edit.contract_number = true
+    },
+    setUpdateApartments(state, {
+        apartments, status, contract_number, orderId, discount
+    }) {
+        state.apartments = apartments.map((apartment) => {
+            return {
+                status,
+                contract_number,
+                order_uuid: orderId,
+                ...apartment,
+                calc: {
+                    ...state.schema.calc,
+                    price: apartment.price,
+                    price_m2: apartment.price_m2,
+                    plan: apartment.plan,
+                    discount,
+                    prepay: discount.prepay,
+                    other: {
+                        starting_price: apartment.price,
+                        price_m2: apartment.price_m2
+                    }
+                },
+                edit: state.schema.edit,
+                validate: state.schema.validate
+            }
+        })
     }
 }
