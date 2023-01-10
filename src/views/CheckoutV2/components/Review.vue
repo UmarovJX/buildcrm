@@ -66,10 +66,10 @@ export default {
     return {}
   },
   computed: {
-    ...mapState('Experiment', {
+    ...mapState('CheckoutV2', {
       clientInfo: 'clientData'
     }),
-    ...mapGetters('Experiment', {
+    ...mapGetters('CheckoutV2', {
       apartments: 'gtsApartments',
       totalForAll: 'totalForAll',
       trashCount: 'trashCount'
@@ -160,7 +160,7 @@ export default {
   },
   methods: {
     prettier: formatToPrice,
-    ...mapActions('Experiment', {
+    ...mapActions('CheckoutV2', {
       returnRemovedApartments: 'returnRemovedApartments'
     })
   }

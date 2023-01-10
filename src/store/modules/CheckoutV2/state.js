@@ -72,5 +72,10 @@ export default {
     order: {},
     comment: '',
     trashStorage: [],
-    clientData: {}
+    clientData: {},
+    componentFunction: 'create',
+    functionTypesList: {
+        0: 'create',
+        1: 'update'
+    }
 }

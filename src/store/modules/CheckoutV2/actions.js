@@ -441,5 +441,14 @@ export default {
     changeContractNumber({getters: gts, commit}, {index, apmId, contractNumber}) {
         const idx = index ?? gts.findApmIdx(apmId)
         commit('updateContractNumber', {idx, contractNumber})
+    },
+    setScheduleUpdateMode({dispatch, commit}, {
+        apartments, schedule, payments_details
+    }) {
+
+        dispatch('updateApmDiscount', {
+            apmId: apartments[0].id,
+            discountId: payments_details.discount.id
+        })
     }
 }

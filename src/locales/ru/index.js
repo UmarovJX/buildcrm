@@ -2,6 +2,9 @@ export default {
     home: {
         title: 'Главная',
     },
+    yes_cancel: 'Да, отменить',
+    checkout_warning_before_cancel: 'Вы уверены, что хотите отменить оформление?',
+    this_action_cannot_be_undone: 'Данное действие нельзя отменить.',
     to_all_contracts: 'Ко всем договорам',
     download_all_contract: 'Скачать все договоры',
     contract_completed_successfully: 'Оформление договора прошло успешно',

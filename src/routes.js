@@ -3,6 +3,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 const originalPush = VueRouter.prototype.push;
+
 VueRouter.prototype.push = function push(location) {
     return originalPush.call(this, location).catch((err) => err)
 }
@@ -85,6 +86,12 @@ const routes = [
                 path: '/review/:object/contract/review/:ids',
                 name: 'checkout-contract-review',
                 component: CheckoutContractReview
+            },
+
+            {
+                path: '/checkout_v2/:object/apartment/:id/update',
+                name: 'checkout_v2_update',
+                component: CheckoutV2
             },
 
             {
@@ -293,6 +300,7 @@ const routes = [
                     requiresAuth: "apartments",
                 },
             },
+
             {
                 /* CONFIRM APARTMENT*/
                 name: "edit-apartment",

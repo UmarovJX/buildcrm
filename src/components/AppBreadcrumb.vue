@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <div @click="$router.go(-1)" class="app-header-back-button d-flex justify-content-center align-items-center">
+    <div @click="backBtnHandler" class="app-header-back-button d-flex justify-content-center align-items-center">
       <base-left-icon :width="32" :height="32"/>
     </div>
     <div class="app-header-page-content">
@@ -44,6 +44,7 @@
 <script>
 import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
+import {isFunction} from "@/util/inspect";
 
 export default {
   name: "AppBreadcrumb",
@@ -52,6 +53,10 @@ export default {
     BaseLeftIcon
   },
   props: {
+    goBackMethod: {
+      type: Function,
+      default: undefined
+    },
     page: {
       type: [Object, String],
       required: true
@@ -139,6 +144,15 @@ export default {
       return this.$t(page)
     }
 
+  },
+  methods: {
+    backBtnHandler() {
+      if (isFunction(this.goBackMethod)) {
+        this.goBackMethod()
+      } else {
+        this.$router.go(-1)
+      }
+    }
   }
 }
 </script>

@@ -138,9 +138,9 @@
             @change="limitChanged"
         >
           <template #output-prefix>
-                        <span class="show-by-description">
-                            {{ $t('contracts.show_by') }}:
-                        </span>
+            <span class="show-by-description">
+                {{ $t('contracts.show_by') }}:
+            </span>
           </template>
         </x-form-select>
       </div>
@@ -168,7 +168,7 @@ import {
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 import AppHeader from "@/components/Header/AppHeader";
-import {isObject, isPrimitive} from "@/util/inspect";
+import {isObject, isPrimitive, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 
 export default {
   name: "Contracts",
@@ -336,12 +336,17 @@ export default {
           })
     },
     getClientName(client) {
+      if (!isUndefinedOrNullOrEmpty(client.attributes)) {
+        return ''
+      }
       let language = 'kirill'
       if (this.$i18n.locale === 'uz') {
         language = 'lotin'
       }
-      const {last_name, first_name, second_name} = client
-      return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
+      const {first_name, last_name, middle_name} = client.attributes ?? client
+      return this.clientName(last_name, language) +
+          ' ' + this.clientName(first_name, language) +
+          ' ' + this.clientName(middle_name, language)
     },
     contractView({id}, index, event) {
       const clickedDownloadBtn = event.target.classList.contains('download__icon')

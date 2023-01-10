@@ -2,6 +2,9 @@ export default {
     home: {
         title: "Asosiy",
     },
+    yes_cancel: "Xa, bekor qilish",
+    checkout_warning_before_cancel: 'Rasmiylashtirishni bekor qilishni xohlashingizga ishonchingiz komilmi?',
+    this_action_cannot_be_undone: 'Ushbu harakatni bekor qilib bo\'lmaydi.',
     to_all_contracts: 'Barcha shartnomalarga',
     download_all_contract: 'Barcha shartnomalarni yuklab olish',
     contract_completed_successfully: 'Shartnoma muvaffaqiyatli yakunlandi',

@@ -10,6 +10,10 @@ class OrdersV1 extends Core {
         return this.post('checkout', {apartments})
     }
 
+    deleteOrderHold(uuid) {
+        return this.delete(`checkout/${uuid}`)
+    }
+
     deactivateOrderHold(id) {
         return this.delete(`orders/${id}/hold`)
     }

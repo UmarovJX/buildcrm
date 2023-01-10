@@ -18,6 +18,7 @@
             <slot name="header-right"/>
 
             <x-circular-background
+                v-if="showExitButton"
                 class="cursor-pointer"
                 bg-color="var(--gray-100)"
                 @click="$emit('close')"
@@ -94,7 +95,8 @@ export default {
     showCloseButton: makeProp(PROP_TYPE_BOOLEAN, true),
     footerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
     applyButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
-    cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, '')
+    cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
+    showExitButton: makeProp(PROP_TYPE_BOOLEAN, true)
   },
   emits: ['apply', 'cancel', 'close'],
   computed: {

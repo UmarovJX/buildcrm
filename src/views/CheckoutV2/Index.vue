@@ -6,6 +6,7 @@
             :page="headerItems.page"
             :page-info="headerItems.pageInfo"
             :breadcrumbs="headerItems.breadcrumbs"
+            :go-back-method="deactivateOrder"
         />
       </template>
       <template v-if="expiry_at" #header-actions>
@@ -90,6 +91,7 @@
       </b-tabs>
     </div>
 
+    <!--  COMMENT MODAL  -->
     <x-modal-center
         v-if="comment.showModal"
         :bilingual="true"
@@ -131,6 +133,40 @@
         </div>
       </template>
     </x-modal-center>
+
+    <!--  WARNING MODAL BEFORE LEAVE  -->
+    <x-modal-center
+        v-if="showWarningModal"
+        :bilingual="true"
+        :show-exit-button="false"
+        apply-button-class="w-100"
+        cancel-button-class="w-100"
+        cancel-button-text="no_cancel"
+        apply-button-text="yes_cancel"
+        footer-class="d-flex justify-content-between x-gap-1"
+        :apply-button-loading="isSubmitting"
+        @close="hideWarningModal"
+        @cancel="hideWarningModal"
+        @apply="expiredConfirm"
+    >
+      <template #header>
+        <h3 class="x-font-size-36px font-craftworksans color-gray-600 d-flex align-items-center ">
+          <x-circular-background class="bg-red-300 mr-2">
+            <x-icon name="priority_high" class="red-500"/>
+          </x-circular-background>
+          <div>
+            {{ $t('create_agree_apartments') }}
+          </div>
+        </h3>
+      </template>
+
+      <template #body>
+        <div class="warning-before-cancel-wrapper">
+          <p class="mb-0"> {{ $t('checkout_warning_before_cancel') }} </p>
+          <p class="mb-0"> {{ $t('this_action_cannot_be_undone') }} </p>
+        </div>
+      </template>
+    </x-modal-center>
   </div>
 </template>
 
@@ -147,7 +183,8 @@ import AppBreadcrumb from "@/components/AppBreadcrumb";
 import {XModalCenter} from "@/components/ui-components/modal-center";
 import {XFormInput} from "@/components/ui-components/form-input";
 import {XLoadingWrapper} from "@/components/ui-components/loading"
-import {mapActions, mapMutations, mapState} from "vuex";
+import {XCircularBackground} from "@/components/ui-components/circular-background";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import api from "@/services/api";
 import {checkoutV1} from "@/services/checkout";
 import {dateProperties} from "@/util/calendar";
@@ -167,7 +204,8 @@ export default {
     ChApartmentsOverview,
     ChReview,
     XModalCenter,
-    XFormInput
+    XFormInput,
+    XCircularBackground
   },
 
   data() {
@@ -177,6 +215,7 @@ export default {
         showModal: false,
         applyButtonLoading: false
       },
+      showWarningModal: false,
       isFetching: false,
       isSubmitting: false,
       stepStateIdx: 1,
@@ -197,16 +236,22 @@ export default {
   },
 
   async created() {
-    await this.init()
+    this.setFunctionType(this.$route)
+
+    if (this.isUpdateMode) {
+      await this.fetchUpdateClientData()
+    } else {
+      await this.init()
+    }
   },
 
   mounted() {
-    this.permissionToNavigate('second')
-    this.permissionToNavigate('third')
+    // this.permissionToNavigate('second')
+    // this.permissionToNavigate('third')
   },
 
   computed: {
-    ...mapState('Experiment', [
+    ...mapState('CheckoutV2', [
       'apartments',
       'created_by',
       'contract_number',
@@ -215,7 +260,12 @@ export default {
       'order',
       'comment',
       'trashStorage',
-      'clientData'
+      'clientData',
+      'componentFunction'
+    ]),
+    ...mapGetters('CheckoutV2', [
+      'isCreateMode',
+      'isUpdateMode'
     ]),
     headerItems,
     flexCenter() {
@@ -224,8 +274,13 @@ export default {
   },
 
   methods: {
-    ...mapMutations('Experiment', ['reset', 'setClientData']),
-    ...mapActions('Experiment', ['setup']),
+    ...mapMutations('CheckoutV2', [
+      'reset',
+      'setClientData',
+      'setFunctionType',
+      'setScheduleUpdateMode'
+    ]),
+    ...mapActions('CheckoutV2', ['setup']),
     ...mapActions('notify', ['openNotify']),
     async init() {
       try {
@@ -297,21 +352,22 @@ export default {
 
     async expiredConfirm() {
       try {
-        this.startFetching()
-        const {data} = api.orders.deactivateOrderHold(this.order.uuid)
+        this.startSubmitting()
+        await api.orders.deleteOrderHold(this.order.uuid)
+            .then(() => {
+              this.$router.push({
+                name: "apartments",
+                params: {
+                  object: this.$route.params.object
+                }
+              })
+            })
             .catch(() => this.redirect())
-
-        data && await this.$router.push({
-          name: "apartments",
-          params: {
-            object: this.$route.params.object
-          }
-        })
       } catch (error) {
         this.redirect()
         this.toastedWithErrorCode(error)
       } finally {
-        this.finishFetching()
+        this.finishSubmitting()
       }
     },
 
@@ -568,7 +624,40 @@ export default {
 
     openCommentModal() {
       this.comment.showModal = true
-    }
+    },
+
+    deactivateOrder() {
+      this.openWarningModal()
+    },
+
+    hideWarningModal() {
+      this.closeWarningModal()
+    },
+
+    openWarningModal() {
+      this.showWarningModal = true
+    },
+
+    closeWarningModal() {
+      this.showWarningModal = false
+    },
+
+    async fetchUpdateClientData() {
+      try {
+        const {data} = await api.contractV2.getUpdateContractView(this.$route.params.id)
+        this.setScheduleUpdateMode({
+          apartments: data.apartments,
+          schedule: data.schedule,
+          payments_details: data.payments_details
+        })
+        console.log('data', data)
+      } catch (e) {
+        await this.openNotify({
+          type: 'error',
+          message: e.response.data.message ?? e.message
+        })
+      }
+    },
   }
 }
 </script>
@@ -605,5 +694,11 @@ export default {
   &-comment {
     margin-bottom: 1rem;
   }
+}
+
+.warning-before-cancel-wrapper {
+  margin: 3.5rem 0;
+  color: var(--gray-600);
+  font-family: Inter, sans-serif;
 }
 </style>

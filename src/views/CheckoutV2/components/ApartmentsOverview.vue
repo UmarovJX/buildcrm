@@ -118,7 +118,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Experiment', {
+    ...mapGetters('CheckoutV2', {
       apartments: 'gtsApartments',
       findApmIdx: 'findApmIdx'
     }),
@@ -147,7 +147,7 @@ export default {
     this.showNavigateToNextBtn = this.apartments[this.overviewApmTabIndex].validate.valid
   },
   methods: {
-    ...mapMutations('Experiment', ['updateApartment', 'reset']),
+    ...mapMutations('CheckoutV2', ['updateApartment', 'reset']),
     apnName(number) {
       return this.$t('apartment') + ' №' + number
     },

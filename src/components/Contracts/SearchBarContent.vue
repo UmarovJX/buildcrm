@@ -63,14 +63,17 @@
               >
                 <template #delete-content>
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                       xmlns="http://www.w3.org/2000/svg">
+                       xmlns="http://www.w3.org/2000/svg"
+                  >
                     <circle cx="10" cy="10" r="10" fill="#9CA3AF"/>
                     <path d="M13.125 6.875L6.875 13.125" stroke="white" stroke-width="2"
                           stroke-linecap="round"
-                          stroke-linejoin="round"/>
+                          stroke-linejoin="round"
+                    />
                     <path d="M6.875 6.875L13.125 13.125" stroke="white" stroke-width="2"
                           stroke-linecap="round"
-                          stroke-linejoin="round"/>
+                          stroke-linejoin="round"
+                    />
                   </svg>
                 </template>
               </base-form-tag-input>
@@ -119,13 +122,14 @@
             <!--   Client Type     -->
             <x-form-select
                 class="mt-4"
-                v-model="filter.client_type"
+                v-model="filter.client_type_id"
                 :options="clientTypeOptions"
                 :placeholder="$t('contracts.client_type')"
+                :multilingual="true"
             />
 
             <!--              <b-form-select-->
-            <!--                  v-model="filter.client_type"-->
+            <!--                  v-model="filter.client_type_id"-->
             <!--                  :options="clientTypeOptions"-->
             <!--                  class="inline"-->
             <!--              >-->
@@ -135,7 +139,7 @@
             <!--                      disabled-->
             <!--                  >-->
             <!--                    <span class="disabled__option">-->
-            <!--                      {{ $t('contracts.client_type') }}-->
+            <!--                      {{ $t('contracts.client_type_id') }}-->
             <!--                    </span>-->
             <!--                  </b-form-select-option>-->
             <!--                </template>-->
@@ -176,6 +180,7 @@ import "vue2-datepicker/index.css";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {debounce, isPrimitiveValue, sortInFirstRelationship, sortObjectValues} from "@/util/reusable";
 import api from "@/services/api";
+import {isUndefinedOrNullOrEmpty} from "@/util/inspect";
 
 export default {
   name: "SearchBarContent",
@@ -197,7 +202,7 @@ export default {
         object_id: null,
         contract_number: null,
         date: [],
-        client_type: null,
+        client_type_id: null,
         contract_price: null,
         price_to: null,
         price_from: null,
@@ -253,10 +258,10 @@ export default {
           .then((response) => {
             const {objects, 'client-types': clientTypes} = response.data
             this.objectOptions = objects
-            for (let [key, value] of Object.entries(clientTypes)) {
+            for (let [idx, client] of Object.entries(clientTypes)) {
               this.clientTypeOptions.push({
-                value: key,
-                text: value
+                value: client.id,
+                text: client.name
               })
             }
           })
@@ -365,7 +370,13 @@ export default {
           continue
         }
 
-        if (query) this.filter[property] = query
+        if (query && property === 'client_type_id') {
+          if (!isUndefinedOrNullOrEmpty(query)) {
+            this.filter[property] = parseInt(query)
+          }
+        } else {
+          if (query) this.filter[property] = query
+        }
       }
     }
   }

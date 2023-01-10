@@ -97,7 +97,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('Experiment', {
+    ...mapState('CheckoutV2', {
       stateContractNumber: 'contract_number'
     })
   },
@@ -116,7 +116,7 @@ export default {
     this.contractNumber = this.apartment.contract_number
   },
   methods: {
-    ...mapActions('Experiment', ['changeContractNumber']),
+    ...mapActions('CheckoutV2', ['changeContractNumber']),
     closeEditNumberModal() {
       this.$refs['edit-contract-number'].closeModal()
       this.changedContractNumber = false
