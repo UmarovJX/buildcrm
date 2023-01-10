@@ -323,10 +323,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-::root
-    --vs-dropdown-bg: var(--gray-100)
-    --vs-dropdown-option-padding: 12px 20px
-
 
 .error__provider
     color: red
@@ -337,6 +333,33 @@ export default {
     .vs__selected
         margin: 0
         padding: 0
+
+    .vs__dropdown-menu
+        background-color: var(--gray-100) !important
+        border: 1px solid #E5E7EB
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08)
+        width: 100%
+        border-radius: 24px
+        padding: .5rem
+
+
+    .vs__dropdown-option--selected,
+    .vs__dropdown-option--highlight
+        background-color: var(--violet-100)
+        color: var(--violet-600) !important
+
+    .vs__dropdown-option
+        padding: 1rem
+        border-radius: 1rem
+        color: var(--gray-600)
+
+        &:active
+            background-color: var(--violet-100)
+            color: var(--violet-600)
+
+        &:hover
+            background-color: var(--violet-100)
+            color: var(--violet-600)
 
     .vs__dropdown-toggle
         height: 3.5rem
