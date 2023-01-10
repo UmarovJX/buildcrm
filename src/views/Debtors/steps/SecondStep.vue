@@ -98,7 +98,7 @@
                                     label="contract"
                                     v-model="data.item.value.contract"
                                     @open="openListId = data.item.key"
-                                    @search="searchContract(data.item)"
+                                    @search="searchContract(data.item,$event)"
                                     @input="selectOptionSystem(data.item.key,$event)"
                                 />
                             </ValidationProvider>
@@ -230,10 +230,11 @@ export default {
                 }
             })
         },
-        searchContract(item) {
+        searchContract(item, search) {
+            // console.log(search, 'search');
             const uuid = item.key
             const params = {
-                contract: item.value.contract
+                contract: search
             }
             api.debtorsV2.searchContract(params).then((res) => {
                 this.openListId = uuid
