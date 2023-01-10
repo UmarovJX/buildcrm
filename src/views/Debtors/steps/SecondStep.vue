@@ -323,9 +323,27 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+::root
+    --vs-dropdown-bg: var(--gray-100)
+    --vs-dropdown-option-padding: 12px 20px
+
+
 .error__provider
     color: red
     font-size: 12px
+
+
+::v-deep
+    .vs__selected
+        margin: 0
+        padding: 0
+
+    .vs__dropdown-toggle
+        height: 3.5rem
+        padding: 13px 20px 13px 1.25rem
+        border: 0.25rem solid transparent
+        border-radius: 2rem
+        background-color: var(--gray-100)
 
 
 .select-list
