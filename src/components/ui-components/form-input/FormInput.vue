@@ -1,5 +1,12 @@
 <template>
-  <div class="base-input" :class="{'error':error,'label':value && label}">
+  <div
+      class="base-input gray-300"
+      :class="{
+        'error':error,
+        'label':value && label,
+        'disable-input':disable
+      }"
+  >
     <div v-if="value && label" class="input-label">
       <span>
         {{ placeholder }}
@@ -19,6 +26,7 @@
         separator="space"
         currency-symbol-position="suffix"
         @blur="$emit('blur',$event)"
+        @focus="$emit('focus',$event)"
     />
     <input
         v-else-if="mask !== ''"
@@ -27,22 +35,25 @@
         ref="base-input"
         id="base-input-mask"
         v-mask="mask"
-        :disabled="disable"
         :style="inputFieldStyle"
         :placeholder="placeholder"
         :autocomplete="autocomplete"
         @blur="$emit('blur',$event)"
+        @focus="$emit('focus',$event)"
+        :disabled="disable"
+
     />
     <input
         v-else
         :type="type"
         v-model="inputModel"
-        :disabled="disable"
         id="base-input"
         ref="base-input"
         :style="inputFieldStyle"
         :placeholder="placeholder"
         @blur="$emit('blur',$event)"
+        @focus="$emit('focus',$event)"
+        :disabled="disable"
     />
 
     <span
@@ -77,7 +88,7 @@ export default {
     event: 'input'
   },
 
-  emits: ['input', 'blur'],
+  emits: ['input', 'blur', 'focus'],
 
   props: {
     placeholder: {
@@ -170,9 +181,12 @@ export default {
   },
 
   watch: {
-    inputModel() {
-      this.emitValue()
-      this.toggleClearButton()
+    inputModel: {
+      handler() {
+        this.emitValue()
+        this.toggleClearButton()
+      },
+      immediate: false
     },
     value(valueUpdateByParent) {
       if (valueUpdateByParent !== this.inputModel) {
@@ -267,10 +281,6 @@ export default {
 
   &:hover {
     background-color: var(--gray-200);
-
-    input {
-      background-color: var(--gray-200) !important;
-    }
   }
 
   &-icon {
@@ -279,6 +289,16 @@ export default {
     cursor: pointer;
   }
 
+}
+
+.disable-input {
+  background-color: var(--gray-300) !important;
+
+  &:focus-within,
+  input,
+  input:hover {
+    background-color: var(--gray-300);
+  }
 }
 
 .clear__icon {

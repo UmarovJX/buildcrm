@@ -2,8 +2,149 @@ import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 import {formatDateWithDot} from "@/util/reusable";
 import {runConsoleLog} from "@/util/console.util";
+import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
 
 export default {
+    initEditItems({state, getters: gts, commit, dispatch}, data) {
+        try {
+            const {payments_details} = data
+
+            if (data.status === 'sold') {
+                state.apartments = data.apartments.map(apm => ({
+                    ...apm,
+                    status: data.status,
+                    contract_number: data.contract_number,
+                    contract_date: data.contract_date,
+                    order_uuid: data.id,
+                    uuid: apm.id,
+                    calc: {
+                        ...state.schema.calc,
+                        first_payment_date: data.first_payment_date,
+                        payment_date: data.payment_date,
+                        price: apm.price,
+                        price_m2: apm.price_m2,
+                        plan: apm.plan,
+                        contract_number: data.contract_number,
+                        contract_date: data.contract_date,
+                        discount: apm.discounts[0],
+                        prepay: apm.discounts[0].prepay,
+                        other: {
+                            starting_price: apm.price,
+                            price_m2: apm.price_m2
+                        }
+                    }
+                }))
+                return
+            }
+
+            state.apartments = data.apartments.map((apartment) => {
+                const discount = apartment.discounts.find(d => {
+                    return d.id === data['payments_details'].discount.id
+                }) ?? apartment.discounts[0]
+
+                return {
+                    status: data.status,
+                    contract_number: data.contract_number,
+                    contract_date: data.contract_date,
+                    order_uuid: data.id,
+                    uuid: apartment.id,
+                    ...apartment,
+                    calc: {
+                        ...state.schema.calc,
+                        first_payment_date: data.first_payment_date,
+                        payment_date: data.payment_date,
+                        price: apartment.price,
+                        price_m2: apartment.price_m2,
+                        plan: apartment.plan,
+                        month: payments_details.month,
+                        contract_number: data.contract_number,
+                        contract_date: data.contract_date,
+                        monthly_payment_period: payments_details.month,
+                        discount,
+                        prepay: discount.prepay,
+                        other: {
+                            starting_price: apartment.price,
+                            price_m2: apartment.price_m2
+                        }
+                    },
+                    edit: state.schema.edit,
+                    validate: state.schema.validate
+                }
+            })
+
+            dispatch('changeFirstAttempt', {
+                apmId: data.apartments[0].id,
+                firstAttempt: true
+            })
+
+            for (let i = 0; i < state.apartments.length; i++) {
+                const apm = state.apartments[i]
+                const {uuid} = apm
+                const idx = gts.findApmIdx(uuid)
+
+                const initial = {
+                    price: 0,
+                    payments_schedule: []
+                }
+
+                const credit = {
+                    price: 0,
+                    payments_schedule: []
+                }
+
+                for (let j = 0; j < data.schedule.initial_payment.length; j++) {
+                    const p = data.schedule.initial_payment[j]
+                    initial.payments_schedule.push({
+                        type: 'initial',
+                        amount: fmd(p.amount),
+                        month: p.date,
+                        edit: p.edited,
+                        edited: p.edited
+                    })
+                    initial.price += p.amount
+                }
+
+                for (let m = 0; m < data.schedule.monthly.length; m++) {
+                    const p = data.schedule.monthly[m]
+                    credit.payments_schedule.push({
+                        type: 'monthly',
+                        amount: fmd(p.amount),
+                        month: p.date,
+                        edit: p.edited,
+                        edited: p.edited
+                    })
+                    credit.price += p.amount
+                }
+
+                dispatch('initialSetter', {idx, initial_payments: initial.payments_schedule})
+                dispatch('monthlySetter', {idx, credit_months: credit.payments_schedule})
+
+                const calc = {}
+                calc.total = payments_details.total
+                calc.initial_price = payments_details.initial_payment
+                calc.remainder = calc.total - calc.initial_price
+                calc.base_price = fmd(gts.getBasePrice(idx))
+
+                state.apartments[i].edit.initial_price = true
+                state.apartments[i].edit.monthly = true
+                state.apartments[i].edit.discount = true
+
+                if (isNotUndefinedNullEmptyZero(apm.calc.month)) {
+                    calc.monthly_payment = credit.price / apm.calc.month
+                    state.apartments[i].edit.monthly_payment_period = true
+                }
+
+                if (isNotUndefinedNullEmptyZero(data.discount_amount)) {
+                    calc.total_discount = data.discount_amount ?? 0
+                    calc.discount_per_m2 = calc.total_discount / state.apartments[i].plan.area
+                }
+
+                state.apartments[i].calc = {...state.apartments[i].calc, ...calc}
+            }
+        } catch (e) {
+            console.error(e)
+        }
+    },
     setup({dispatch}, context) {
         dispatch('initValues', context)
         dispatch('calcApmPrices')
@@ -39,7 +180,6 @@ export default {
             edit: {prepay: false, initial_price: false},
             calc: {discount, prepay: discount.prepay}
         })
-
         dispatch('rerenderApm', {idx})
         dispatch('initialPaymentsSetter', {index: idx})
         dispatch('monthlyPaymentsSetter', {index: idx})
@@ -56,9 +196,8 @@ export default {
         dispatch('initialPaymentsSetter', {index: apmIndex})
         dispatch('monthlyPaymentsSetter', {index: apmIndex})
         dispatch('recalculateApmPrices', apmIndex)
-        // dispatch('rerenderApm', {idx: apmIndex})
+        dispatch('rerenderApm', {idx: apmIndex})
     },
-
     editPrepay({getters: gts, commit, dispatch}, {apmId, prepay}) {
         const apmIndex = gts.findApmIdx(apmId)
         commit('updateApartment', {
@@ -260,11 +399,6 @@ export default {
             })
         }
 
-        if (payment.type === 'initial') {
-            commit('setInitialResult', gts.initiallyTotal(idx))
-            commit('setRemainAmount', gts.getTotal(idx) - gts.initiallyTotal(idx))
-        }
-
         dispatch('rerenderApm', {idx})
     },
     reInitCalc({getters: gts, dispatch}, {payment, idx}) {
@@ -442,13 +576,13 @@ export default {
         const idx = index ?? gts.findApmIdx(apmId)
         commit('updateContractNumber', {idx, contractNumber})
     },
-    setScheduleUpdateMode({dispatch, commit}, {
-        apartments, schedule, payments_details
-    }) {
-
-        dispatch('updateApmDiscount', {
-            apmId: apartments[0].id,
-            discountId: payments_details.discount.id
-        })
+    updateApmContractDate({state, getters: gts,}, {apmId, contractDate}) {
+        let idx = gts.findApmIdx(apmId)
+        state.apartments[idx].calc.contract_date = contractDate
+    },
+    changeFirstAttempt({state, getters: gts}, {apmId, firstAttempt}) {
+        let idx = gts.findApmIdx(apmId)
+        state.apartments[idx].edit.first_attempt = firstAttempt
     }
 }
+

@@ -52,7 +52,7 @@
         </template>
 
         <template #cell(client)="tableItems">
-          <span v-if="tableItems.item.order.friends">
+          <span v-if="tableItems.item.order.friends && isNotUndefinedNullEmptyZero(tableItems.item.client.attributes)">
             <span class="friend">
               <BaseStarIcon fill="#7C3AED"/>
             </span>
@@ -65,6 +65,10 @@
               {{ getClientName(tableItems.item.client) }}
             </span>
           </span>
+        </template>
+
+        <template #cell(client_phone)="tableItems">
+          {{ getClientMajorPhone(tableItems.item.client.phones) }}
         </template>
 
         <!--  SHOW EMPTY MESSAGE WHEN CONTENT NOT FOUND   -->
@@ -133,13 +137,13 @@
           <!--  CLIENT INFORMATION      -->
           <output-information
               :property="`${ $t('client') }`"
-              :value="getFullName(debtorViewModalItem.client)"
+              :value="getClientName(debtorViewModalItem.client)"
               class="mt-4 mb-4"
           />
           <!--    PHONE NUMBER    -->
           <output-information
               :property="`${ $t('phone') }`"
-              :value="phonePrettier(debtorViewModalItem.client.phone)"
+              :value="getClientMajorPhone(phonePrettier(debtorViewModalItem.client))"
               class="mt-4 mb-4"
           />
           <!--   CLIENT TYPE     -->
@@ -197,7 +201,7 @@
 
       <template #modal-footer>
         <base-button
-            :text="$t('go_to_contract')"
+            :text="`${ $t('go_to_contract') }`"
             :fixed="true"
             @click="$router.push({ name: 'contracts-view', params:{ id:debtorViewModalItem.order.uuid } })"
         />
@@ -206,8 +210,6 @@
 
 
     <import-debtors-modal ref="import-debtors"/>
-
-
   </div>
 </template>
 
@@ -227,7 +229,9 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import AppHeader from "@/components/Header/AppHeader";
 import ImportDebtorsModal from "@/components/Debtors/ImportDebtorsModal";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
-import {isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {isNotUndefinedNullEmptyZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {hasOwnProperty} from "@/util/object";
+import {runConsoleLog} from "@/util/console.util";
 
 export default {
   name: "Debtors",
@@ -350,9 +354,8 @@ export default {
           sortable: true
         },
         {
-          key: "client.phone",
+          key: "client_phone",
           label: this.$t("contracts.table.phone_number"),
-          formatter: (phone) => phonePrettier(phone)
         },
         {
           key: "amount",
@@ -416,8 +419,32 @@ export default {
     this.initDebtorUi()
   },
   methods: {
+    isNotUndefinedNullEmptyZero,
     openImportModal() {
       this.$refs['import-debtors'].openModal()
+    },
+    getClientMajorPhone(client) {
+      if (hasOwnProperty(client, 'phones')) {
+        let {phones} = client
+        if (!phones.length) {
+          return ''
+        }
+
+        phones = phones.filter(p => {
+          return isNotUndefinedNullEmptyZero(p.phone)
+              && p.phone.toString().length > 3
+        })
+
+        if (phones.length > 0) {
+          return this.phonePrettier(phones[0].phone)
+        }
+      }
+
+      if (hasOwnProperty(client, 'phone')) {
+        return this.phonePrettier(client.phone)
+      }
+
+      return ''
     },
     getClientName(client) {
       let language = 'kirill'
@@ -426,14 +453,25 @@ export default {
         language = 'lotin'
       }
 
-      if (client.attributes) {
-        const {first_name, last_name, second_name} = client.attributes
-        return this.clientName(last_name, language) +
-            ' ' + this.clientName(first_name, language) +
-            ' ' + this.clientName(second_name, language)
+      if (isUndefinedOrNullOrEmpty(client.attributes)) {
+        if (hasOwnProperty(client, 'first_name')) {
+          const {first_name, last_name, second_name} = client
+          return this.clientName(last_name, language) +
+              ' ' + this.clientName(first_name, language) +
+              ' ' + this.clientName(second_name, language)
+        }
+        return ''
       }
+
+      const {first_name, last_name, middle_name} = client.attributes
+      return this.clientName(last_name, language) +
+          ' ' + this.clientName(first_name, language) +
+          ' ' + this.clientName(middle_name, language)
     },
     clientName(multiName, language) {
+      if(!isNotUndefinedNullEmptyZero(multiName)){
+       return ''
+      }
       const lastNameByLang = multiName[language]
       if (lastNameByLang) {
         return lastNameByLang

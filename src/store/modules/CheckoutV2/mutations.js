@@ -27,6 +27,7 @@ export default {
             const discount = apartment.discounts[0]
             return {
                 status,
+                contract_date: new Date(),
                 contract_number,
                 order_uuid: uuid,
                 id: apartment.uuid,
@@ -114,30 +115,4 @@ export default {
         state.apartments[idx].contract_number = contractNumber
         state.apartments[idx].edit.contract_number = true
     },
-    setUpdateApartments(state, {
-        apartments, status, contract_number, orderId, discount
-    }) {
-        state.apartments = apartments.map((apartment) => {
-            return {
-                status,
-                contract_number,
-                order_uuid: orderId,
-                ...apartment,
-                calc: {
-                    ...state.schema.calc,
-                    price: apartment.price,
-                    price_m2: apartment.price_m2,
-                    plan: apartment.plan,
-                    discount,
-                    prepay: discount.prepay,
-                    other: {
-                        starting_price: apartment.price,
-                        price_m2: apartment.price_m2
-                    }
-                },
-                edit: state.schema.edit,
-                validate: state.schema.validate
-            }
-        })
-    }
 }

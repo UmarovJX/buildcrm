@@ -141,7 +141,7 @@
             <template #footer>
                 <div class="release-info-footer">
                     <BaseQuestionsIcon :height="20" :width="20"/>
-                    <p>{{ $t('release_note.comment') }}</p>
+                    <p>{{ $t('release_note.userComment') }}</p>
                 </div>
             </template>
         </base-modal>

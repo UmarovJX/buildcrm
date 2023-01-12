@@ -89,7 +89,7 @@ export default {
   },
   data() {
     return {
-      contractDate: formatDateToYMD(),
+      contractDate: formatDateToYMD(this.apartment.calc.contract_date),
       datePickerIconFill: 'var(--violet-600)',
       changedContractNumber: false,
       newContractNumber: '',
@@ -110,13 +110,19 @@ export default {
           contractNumber: value
         })
       }
+    },
+    contractDate(ltsValue) {
+      this.updateApmContractDate({
+        apmId: this.apartment.id,
+        contractDate: ltsValue
+      })
     }
   },
   mounted() {
     this.contractNumber = this.apartment.contract_number
   },
   methods: {
-    ...mapActions('CheckoutV2', ['changeContractNumber']),
+    ...mapActions('CheckoutV2', ['changeContractNumber', 'updateApmContractDate']),
     closeEditNumberModal() {
       this.$refs['edit-contract-number'].closeModal()
       this.changedContractNumber = false

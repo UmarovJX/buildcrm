@@ -56,7 +56,7 @@
 
       <!--   Phone Number   -->
       <template #cell(phone)="data">
-        <span class="phone-col">{{ formattingPhone(data.item.client.phone) }}</span>
+        <span class="phone-col">{{ getClientMajorPhone(data.item.client.phones) }}</span>
       </template>
 
       <!--   Date   -->
@@ -168,7 +168,8 @@ import {
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 import AppHeader from "@/components/Header/AppHeader";
-import {isObject, isPrimitive, isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {isNotUndefinedNullEmptyZero, isObject, isPrimitive, isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import it from "vue2-datepicker/locale/es/it";
 
 export default {
   name: "Contracts",
@@ -320,6 +321,20 @@ export default {
     limitChanged() {
       this.changeFetchLimit()
     },
+    getClientMajorPhone(phones) {
+      if (!phones.length) {
+        return ''
+      }
+
+      phones = phones.filter(p => {
+        return isNotUndefinedNullEmptyZero(p.phone)
+            && p.phone.toString().length > 3
+      })
+
+      if (phones.length > 0) {
+        return this.formattingPhone(phones[0].phone)
+      }
+    },
     downloadContractLink(id) {
       api.contract.downloadContract(id)
           .then(({data, headers}) => {
@@ -336,10 +351,12 @@ export default {
           })
     },
     getClientName(client) {
-      if (!isUndefinedOrNullOrEmpty(client.attributes)) {
+      if (isUndefinedOrNullOrEmpty(client.attributes)) {
         return ''
       }
+
       let language = 'kirill'
+
       if (this.$i18n.locale === 'uz') {
         language = 'lotin'
       }

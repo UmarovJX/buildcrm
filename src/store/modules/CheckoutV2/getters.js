@@ -1,11 +1,25 @@
 import {isString, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
+import {runConsoleLog} from "@/util/console.util";
 
 export default {
     isCreateMode: (state) => state.componentFunction === 'create',
     isUpdateMode: (state) => state.componentFunction === 'update',
+    getUpdateStatus: (state, gts) => {
+        if (gts.apartmentsLength) {
+            return gts.isUpdateMode && state.apartments[0]?.status
+        }
+        return false
+    },
+    gtsEditFirstAttempt: (state, gts) => {
+        if (gts.apartmentsLength) {
+            return gts.isUpdateMode && state.apartments[0]?.edit?.first_attempt
+        }
+        return false
+    },
     trashCount: (state) => state.trashStorage.length,
     gtsApartments: (state) => state.apartments,
+    apartmentsLength: (state) => state.apartments.length,
     getApm: (state, gts) => ({idx = undefined, uuid = undefined}) => {
         if (isUndefinedOrNullOrEmpty(idx)) {
             if (isUndefinedOrNullOrEmpty(uuid)) {
@@ -61,6 +75,7 @@ export default {
             if (gts.isDiscountOtherType(idx)) {
                 return apartment.calc.other.starting_price
             }
+            runConsoleLog(gts.discountAmount(idx))
             return apartment.price * (1 + gts.discountAmount(idx) / 100)
         }
     },
@@ -94,6 +109,10 @@ export default {
                 return 0
             }
             return apartment.calc.initial_price
+        }
+
+        if (apartment.calc.prepay === 0) {
+            return 0
         }
 
         if (!gts.getMonth(idx)) {
@@ -141,9 +160,11 @@ export default {
         }
         return gts.getTotal(idx) - gts.getInitialPrice(idx)
     },
-    getTotal: (state, gts) => (idx) => gts.getPrice(idx) - gts.getDiscount(idx),
+    getTotal: (state, gts) => (idx) => {
+        return gts.getPrice(idx) - gts.getDiscount(idx)
+    },
     calcProperties: (state, gts) => (idx) => {
-        const calc = gts.gtsApartments[idx].calc
+        const calc = {...gts.gtsApartments[idx].calc}
         calc.total = fmd(gts.getTotal(idx))
         calc.monthly_payment = fmd(gts.getMonthlyPaymentAmount(idx))
         calc.initial_price = fmd(gts.getInitialPrice(idx))

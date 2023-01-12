@@ -59,3 +59,9 @@ export const isPromise = value =>
 export const isEmptyObject = (obj) => obj
     && Object.keys(obj).length === 0
     && Object.getPrototypeOf(obj) === Object.prototype
+
+
+export const isZero = (v) => v === 0
+export const isNotZero = (v) => !isZero(v)
+
+export const isNotUndefinedNullEmptyZero = (v) => !isUndefinedOrNullOrEmpty(v) && isNotZero(v)

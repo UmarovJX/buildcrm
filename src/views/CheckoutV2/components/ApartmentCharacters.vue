@@ -15,7 +15,7 @@
 
 <script>
 import {makeProp as p} from "@/util/props";
-import {hasChild} from "@/util/object";
+import {hasChild, hasOwnProperty} from "@/util/object";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
 import SwiperSlider from "@/views/CheckoutV2/elements/SwiperSlider";
 import SectionTitle from "@/views/CheckoutV2/elements/SectionTitle";
@@ -44,7 +44,12 @@ export default {
   computed: {
     swiperItems() {
       if (this.apartment && hasChild(this.apartment)) {
-        return this.apartment.plan.images.map(img => ({image: img}))
+        const {plan} = this.apartment
+        if (hasOwnProperty(plan, 'images')) {
+          return this.apartment.plan.images.map(img => ({image: img}))
+        } else if (hasOwnProperty(plan, 'image')) {
+          return this.apartment.plan.image.map(img => ({image: img}))
+        }
       }
       return []
     },

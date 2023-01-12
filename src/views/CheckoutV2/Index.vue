@@ -9,7 +9,7 @@
             :go-back-method="deactivateOrder"
         />
       </template>
-      <template v-if="expiry_at" #header-actions>
+      <template v-if="isCreateMode && expiry_at" #header-actions>
         <div
             :class="flexCenter"
             class="checkout-timer background-violet-gradient mr-2"
@@ -93,7 +93,7 @@
 
     <!--  COMMENT MODAL  -->
     <x-modal-center
-        v-if="comment.showModal"
+        v-if="userComment.showModal"
         :bilingual="true"
         cancel-button-text="cancel"
         apply-button-class="w-100"
@@ -116,20 +116,12 @@
           <div class="ch-comment-body-comment">
             {{ $t('comment_required_to_complete') }}
           </div>
-          <validation-provider
-              ref="commentInputProvider"
-              :name="`${ $t('commentary')} }`"
-              rules="required|min:3"
-              v-slot="{ errors }"
-          >
-            <x-form-input
-                class="w-100"
-                :label="true"
-                :error="!!errors[0]"
-                v-model="comment.vBind"
-                :placeholder="`${ $t('commentary') }`"
-            />
-          </validation-provider>
+          <x-form-input
+              class="w-100"
+              :label="true"
+              v-model="userComment.vBind"
+              :placeholder="`${ $t('commentary') }`"
+          />
         </div>
       </template>
     </x-modal-center>
@@ -154,9 +146,9 @@
           <x-circular-background class="bg-red-300 mr-2">
             <x-icon name="priority_high" class="red-500"/>
           </x-circular-background>
-          <div>
+          <span class="d-block">
             {{ $t('create_agree_apartments') }}
-          </div>
+          </span>
         </h3>
       </template>
 
@@ -189,6 +181,7 @@ import api from "@/services/api";
 import {checkoutV1} from "@/services/checkout";
 import {dateProperties} from "@/util/calendar";
 import {headerItems} from "@/views/CheckoutV2/helper/headerComputed";
+import {NOTIFY} from "@/constants/names";
 
 export default {
   name: "Index",
@@ -210,7 +203,7 @@ export default {
 
   data() {
     return {
-      comment: {
+      userComment: {
         vBind: '',
         showModal: false,
         applyButtonLoading: false
@@ -245,17 +238,11 @@ export default {
     }
   },
 
-  mounted() {
-    // this.permissionToNavigate('second')
-    // this.permissionToNavigate('third')
-  },
-
   computed: {
     ...mapState('CheckoutV2', [
       'apartments',
       'created_by',
       'contract_number',
-      'expiry_at',
       'uuid',
       'order',
       'comment',
@@ -265,7 +252,8 @@ export default {
     ]),
     ...mapGetters('CheckoutV2', [
       'isCreateMode',
-      'isUpdateMode'
+      'isUpdateMode',
+      'getUpdateStatus'
     ]),
     headerItems,
     flexCenter() {
@@ -278,9 +266,12 @@ export default {
       'reset',
       'setClientData',
       'setFunctionType',
-      'setScheduleUpdateMode'
     ]),
-    ...mapActions('CheckoutV2', ['setup']),
+    ...mapActions('CheckoutV2', [
+      'setup',
+      'initEditItems',
+      'changeFirstAttempt'
+    ]),
     ...mapActions('notify', ['openNotify']),
     async init() {
       try {
@@ -297,6 +288,7 @@ export default {
           this.expiry_at = data.expiry_at
           await this.setup(context)
           this.startCounter()
+          this.turnOnValidation()
         }
       } catch (e) {
         this.toastedWithErrorCode(e)
@@ -445,17 +437,62 @@ export default {
       return false
     },
 
+    async submitOnUpdate() {
+      try {
+        const {order_uuid} = this.apartments[0]
+        if (this.getUpdateStatus === 'contract') {
+          this.handleActionTracker({
+            step: 'second',
+            condition: true
+          })
+          this.permissionToNavigate('second')
+          this.$nextTick(() => this.changeStepState(1))
+        } else if (this.getUpdateStatus === 'sold') {
+          this.startSubmitting()
+          await api.contractV2
+              .orderUpdate(
+                  order_uuid,
+                  {
+                    client_id: this.clientData.id
+                  }
+              )
+              .then(async () => {
+                await this.$router.push({
+                  name: "contracts-view",
+                  params: {id: this.$route.params.id},
+                })
+
+                await this.openNotify({
+                  type: NOTIFY.type.success,
+                  message: this.$t('changes_successfully_saved'),
+                  duration: 6000
+                })
+              })
+              .finally(() => this.finishSubmitting())
+        }
+      } catch (e) {
+        await this.openNotify({
+          type: 'error',
+          message: e.response.data.message ?? e.message
+        })
+      }
+    },
+
     async moveToNextForm() {
       switch (this.stepStateIdx) {
         case 0: {
           const isFirstStepReady = await this.firstStepReadyToNext()
           if (isFirstStepReady) {
-            this.handleActionTracker({
-              step: 'second',
-              condition: true
-            })
-            this.permissionToNavigate('second')
-            this.$nextTick(() => this.changeStepState(1))
+            if (this.isUpdateMode) {
+              await this.submitOnUpdate()
+            } else {
+              this.handleActionTracker({
+                step: 'second',
+                condition: true
+              })
+              this.permissionToNavigate('second')
+              this.$nextTick(() => this.changeStepState(1))
+            }
           } else {
             this.handleActionTracker({
               step: 'second',
@@ -488,70 +525,98 @@ export default {
     },
 
     generateOrdersBody() {
-      return this.apartments.map(a => {
-        const orderCtx = {
-          uuid: a.order_uuid,
-          discount_id: a.calc.discount.id,
-          months: parseInt(a.calc.monthly_payment_period),
-          first_payment_date: a.calc.first_payment_date,
-          payment_date: a.calc.payment_date,
-          contract_date: a.calc.contract_date,
-          discount_amount: a.calc.discount_per_m2 * a.calc.plan.area,
-          comment: this.comment.vBind
-        }
-
-        if (a.edit.monthly) {
-          orderCtx.monthly = []
-          for (let i = 0; i < a.calc.credit_months.length; i++) {
-            const p = a.calc.credit_months[i]
-            const {ymd} = dateProperties(p.month, 'string')
-            orderCtx.monthly.push({
-              date: ymd,
-              amount: p.amount,
-              edited: (+p.edit).toString()
-            })
+      try {
+        return this.apartments.map(a => {
+          const orderCtx = {
+            uuid: a.order_uuid,
+            discount_id: a.calc.discount.id,
+            months: parseInt(a.calc.monthly_payment_period),
+            first_payment_date: a.calc.first_payment_date,
+            payment_date: a.calc.payment_date,
+            contract_date: a.calc.contract_date,
+            discount_amount: a.calc.total_discount,
+            comment: this.userComment.vBind
           }
-        }
 
-        if (a.calc.initial_payments.length > 1 || a.edit.initial_price) {
-          orderCtx.initial_payments = []
-          for (let i = 0; i < a.calc.initial_payments.length; i++) {
-            const p = a.calc.initial_payments[i]
-            const {ymd} = dateProperties(p.month, 'string')
-            orderCtx.initial_payments.push({
-              date: ymd,
-              amount: p.amount,
-              edited: (+p.edit).toString()
-            })
+          if (a.edit.contract_number) {
+            orderCtx.contract_number = a.contract_number
           }
-        }
 
-        if (a.edit.prepay) {
-          orderCtx.prepay_edited = a.calc.prepay
-        }
-
-        if (a.calc.discount.id === 'other') {
-          orderCtx.apartments = [
-            {
-              id: a.id,
-              price: a.calc.price
+          const hasEditOnMonthly = a.calc.credit_months.some(crd => crd.edit)
+          if (a.edit.monthly && hasEditOnMonthly) {
+            orderCtx.monthly = []
+            for (let i = 0; i < a.calc.credit_months.length; i++) {
+              const p = a.calc.credit_months[i]
+              const {ymd} = dateProperties(p.month, 'string')
+              orderCtx.monthly.push({
+                date: ymd,
+                amount: p.amount,
+                edited: (+p.edit).toString()
+              })
             }
-          ]
-        }
+          }
+          const hasEditOnInitial = a.calc.initial_payments.some(initial => initial.edit)
+          if (hasEditOnInitial || a.calc.initial_payments.length > 1 || a.edit.initial_price) {
+            orderCtx.initial_payments = []
+            for (let i = 0; i < a.calc.initial_payments.length; i++) {
+              const p = a.calc.initial_payments[i]
+              const {ymd} = dateProperties(p.month, 'string')
+              orderCtx.initial_payments.push({
+                date: ymd,
+                amount: p.amount,
+                edited: (+p.edit).toString()
+              })
+            }
+          }
 
-        if (a.edit.contract_number) {
-          orderCtx.contract_number = a.contract_number
-        }
+          if (a.edit.prepay) {
+            orderCtx.prepay_edited = a.calc.prepay
+          }
 
-        return orderCtx
-      })
+          if (a.calc.discount.id === 'other') {
+            orderCtx.apartments = [
+              {
+                id: a.id,
+                price: a.calc.price
+              }
+            ]
+          }
+
+          if (a.edit.contract_number) {
+            orderCtx.contract_number = a.contract_number
+          }
+
+          return orderCtx
+        })
+      } catch (e) {
+        console.error(e)
+      }
     },
 
     async authenticateApartments() {
-      const {valid} = await this.$refs.commentInputProvider.validate()
-      if (valid) {
-        try {
-          this.startSubmitting()
+      try {
+        this.startSubmitting()
+        if (this.isUpdateMode && this.getUpdateStatus === 'contract') {
+          await api.contractV2.contractOrderUpdate(this.apartments[0].order_uuid, {
+            ...this.generateOrdersBody()[0],
+            client_id: this.clientData.id
+          }).then(() => {
+
+            this.$router.push({
+              name: 'contracts-view',
+              params: {
+                id: this.$route.params.id,
+              }
+            })
+
+            this.openNotify({
+              type: NOTIFY.type.success,
+              message: this.$t('changes_successfully_saved'),
+              duration: 6000
+            })
+
+          })
+        } else {
           const {data} = await checkoutV1.authenticateApartments({
             uuid: this.$route.params.id,
             body: {
@@ -567,15 +632,15 @@ export default {
               ids: data.map(contract => contract.contract_number).join(',')
             }
           })
-        } catch (e) {
-          this.closeCommentModal()
-          await this.openNotify({
-            type: 'error',
-            message: e.response.data.message
-          })
-        } finally {
-          this.finishSubmitting()
         }
+      } catch (e) {
+        this.closeCommentModal()
+        await this.openNotify({
+          type: NOTIFY.type.error,
+          message: e.response.data.message
+        })
+      } finally {
+        this.finishSubmitting()
       }
     },
 
@@ -618,12 +683,12 @@ export default {
     },
 
     closeCommentModal() {
-      this.comment.showModal = false
-      this.comment.vBind = ''
+      this.userComment.showModal = false
+      this.userComment.vBind = ''
     },
 
     openCommentModal() {
-      this.comment.showModal = true
+      this.userComment.showModal = true
     },
 
     deactivateOrder() {
@@ -644,20 +709,31 @@ export default {
 
     async fetchUpdateClientData() {
       try {
+        this.startFetching()
         const {data} = await api.contractV2.getUpdateContractView(this.$route.params.id)
-        this.setScheduleUpdateMode({
-          apartments: data.apartments,
-          schedule: data.schedule,
-          payments_details: data.payments_details
-        })
-        console.log('data', data)
+        this.initEditItems(data)
+        this.$refs['client-details-observer']
+            .fillFormInUpdateMode({
+              client: data.client
+            })
+
+        if (this.getUpdateStatus === 'contract') {
+          this.turnOnValidation()
+        }
       } catch (e) {
         await this.openNotify({
           type: 'error',
           message: e.response.data.message ?? e.message
         })
+      } finally {
+        this.finishFetching()
       }
     },
+
+    turnOnValidation() {
+      this.permissionToNavigate('second')
+      this.permissionToNavigate('third')
+    }
   }
 }
 </script>

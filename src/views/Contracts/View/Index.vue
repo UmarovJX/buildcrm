@@ -184,7 +184,7 @@
         <span class="warning__before__delete-main mb-2">
           {{ $t('contracts.warn_before_delete_contract') }}
         </span>
-        <validation-observer ref="comment">
+        <validation-observer ref="userComment">
           <ValidationProvider
               :name="`${ $t('contracts.comment') }`"
               rules="required|min:3"
@@ -194,12 +194,12 @@
             <b-form-group
                 class="delete-comment__title"
                 :label="$t('contracts.comment_delete_contract')"
-                label-for="comment"
+                label-for="userComment"
                 desclass="mb-0"
             >
               <b-form-textarea
                   class="delete-comment"
-                  ref="comment-area"
+                  ref="userComment-area"
                   v-model="deleteComment"
               />
             </b-form-group>
@@ -307,12 +307,14 @@ import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
-import {mapGetters} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import BaseWarningIcon from "@/components/icons/BaseWarningIcon";
 import ContractsPermission from "@/permission/contract";
 import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
 import AppHeader from "@/components/Header/AppHeader";
+import {hasOwnProperty} from "@/util/object";
+import {isEmptyObject} from "@/util/inspect";
 
 export default {
   name: "ContractView",
@@ -417,9 +419,6 @@ export default {
   async created() {
     await this.fetchContractData()
   },
-  mounted() {
-
-  },
   watch: {
     '$route': {
       deep: true,
@@ -432,6 +431,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('notify', ['openNotify']),
     tabChange(currentTabs) {
       const index = this.tabs.filter(item => item.id === currentTabs)
       this.$router.push({name: index[0].route})

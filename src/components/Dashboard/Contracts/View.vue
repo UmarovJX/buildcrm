@@ -406,7 +406,7 @@
                     </th>
 
                     <th>
-                      {{ $t('contracts.view.comment') }}
+                      {{ $t('contracts.view.userComment') }}
                     </th>
 
                     <th>
@@ -599,7 +599,7 @@
 v-if="order.comments.length > 0" class="timeline"
 >
                   <li
-                    v-for="(comment, index) in order.comments"
+                    v-for="(userComment, index) in order.comments"
                     :key="index"
                     class="timeline-inverted"
                   >
@@ -631,10 +631,10 @@ v-html="comment.comment"
 />
 
                       <small
-                        >Пользователь: {{ comment.user.first_name }}
-                        {{ comment.user.last_name }} | Дата:
+                        >Пользователь: {{ userComment.user.first_name }}
+                        {{ userComment.user.last_name }} | Дата:
                         {{
-                          comment.created_at | moment('HH:mm, DD.MM.YYYY')
+                          userComment.created_at | moment('HH:mm, DD.MM.YYYY')
                         }}</small
                       >
                     </div>
@@ -661,7 +661,7 @@ v-html="comment.comment"
                   class="collapse mt-2"
                 >
                   <form @submit.stop.prevent="saveComment">
-                    <label>{{ $t('contracts.view.comment') }}</label>
+                    <label>{{ $t('contracts.view.userComment') }}</label>
                     <textarea
                       id=""
                       v-model="comment"
@@ -1134,8 +1134,8 @@ export default {
             html:
               '<label for="date-payment" class="float-left mt-3">Дата следующей оплаты</label>' +
               '<input id="date-payment" type="date" placeholder="Дата оплаты" value="" required class="form-control mt-2">' +
-              '<label for="comment" class="float-left mt-3">Комментария</label>' +
-              '<textarea id="comment" class="form-control" rows="3"></textarea>',
+              '<label for="userComment" class="float-left mt-3">Комментария</label>' +
+              '<textarea id="userComment" class="form-control" rows="3"></textarea>',
 
             confirmButtonText: this.$t('sweetAlert.debtors.yes'),
 

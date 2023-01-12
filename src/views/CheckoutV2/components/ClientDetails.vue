@@ -305,9 +305,12 @@
           :name="`${ $t('client_type') }`"
       >
         <x-form-select
-            :bilingual="true"
+            v-if="clientTypesList.length"
             :error="!!errors[0]"
-            :options="clientTypeOptions"
+            :options="clientTypesList"
+            :multilingual="true"
+            value-field="id"
+            text-field="name"
             :placeholder="$t('client_type')"
             v-model="personalData.client_type_id"
         />
@@ -333,7 +336,7 @@
       <!--? CLIENT_PHONE  -->
       <validation-provider
           :name="`${ $t('phone') }`"
-          rules="required|min:12"
+          rules="required|min:4"
           v-slot="{ errors }"
       >
         <x-form-input
@@ -461,6 +464,8 @@ import {
 } from "@/util/language-helper"
 import api from "@/services/api";
 import {formatDateToYMD} from "@/util/calendar";
+import {mapGetters} from "vuex";
+import {isNotUndefinedNullEmptyZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 
 export default {
   name: "CheckoutClientDetails",
@@ -512,6 +517,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters('CheckoutV2', [
+      'isUpdateMode'
+    ]),
     showLegalEntityFields() {
       return this.personalData.subject === 2
     },
@@ -581,21 +589,28 @@ export default {
       this.personalData.client_type_id = data.client_type.id
       this.personalData.country_id = data.attributes.country.id
 
-      const {phones} = data
+      let {phones} = data
 
-      if (phones.length > 0 && phones[0].phone.length > 9) {
+      phones = phones.filter(p => {
+        return isNotUndefinedNullEmptyZero(p.phone)
+            && p.phone.toString().length > 3
+      })
+
+
+      if (phones.length > 0) {
         this.personalData.phone = phones[0].phone
       }
 
-      if (phones.length > 1 && phones[1].phone.length > 9) {
+      if (phones.length > 1) {
         this.personalData.other_phone = phones[1].phone
       }
 
       if (phones.length > 2) {
         for (let i = 2; i < phones.length; i++) {
-          if (phones[i].phone.length > 9) {
-            this.personalData.extra_phones.push(phones[i].phone)
-          }
+          this.personalData.extra_phones.push({
+            idx: phones[i].id,
+            value: phones[i].phone
+          })
         }
       }
     },
@@ -693,14 +708,34 @@ export default {
         this.toastedWithErrorCode(e)
       }
     },
+    isPhysicalClient: (clientSubject) => clientSubject === 'physical',
+    isLegalClient: (clientSubject) => clientSubject === 'legal',
     sendForm() {
       const p = this.personalData
+
+      const phones = p.extra_phones.map(({idx, value}) => {
+        if (isNotUndefinedNullEmptyZero(idx)) {
+          return {
+            id: idx,
+            phone: value
+          }
+        }
+
+        return {
+          id: null,
+          phone: value
+        }
+      })
+
+      phones.unshift({id: null, phone: p.other_phone})
+      phones.unshift({id: null, phone: p.phone})
+
       const common = {
+        phones,
         email: p.email,
         language: p.language,
         client_type_id: p.client_type_id,
         additional_email: p.other_email,
-        phones: [p.phone, ...p.extra_phones].map(tel => ({id: null, phone: tel})),
       }
       if (p.subject === 1) {
         return {
@@ -732,6 +767,25 @@ export default {
             fax: p.legal_entity.fax
           }
         }
+      }
+    },
+    fillFormInUpdateMode({client}) {
+      if (this.isPhysicalClient(client.subject)) {
+        this.personalData.subject = 1
+        this.personalData.passport_series = client.attributes.passport_series
+        this.autoFillFieldsByPassportSeries(client)
+      }
+
+      if (this.isLegalClient(client.subject)) {
+        this.personalData.subject = 2
+        this.personalData.legal_entity.company_name = client.attributes.name
+        this.personalData.legal_entity.bank = client.attributes.bank_name
+        this.personalData.legal_entity.account_number = client.attributes.payment_number
+        this.personalData.legal_entity.mfo = client.attributes.mfo
+        this.personalData.legal_entity.inn = client.attributes.inn
+        this.personalData.legal_entity.ndc = client.attributes.nds
+        this.personalData.legal_entity.legal_address = client.attributes.legal_address
+        this.personalData.legal_entity.fax = client.attributes.fax
       }
     }
   }
