@@ -60,7 +60,9 @@ import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
 import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
 import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
 import ActivityLog from "@/components/Contracts/view/ActivityLog";
-import Settings from "@/views/Settings/Index.vue"
+import Settings from "@/views/Settings/Index";
+import FastPlanList from "@/views/Objects/FastPlan/List";
+import AddDrawing from "@/views/Objects/FastPlan/AddDrawing.vue";
 
 
 const routes = [
@@ -439,6 +441,36 @@ const routes = [
                 }
             },
 
+            {
+                /* FAST PLAN */
+                name: "fast_plan",
+                path: "object/:object/fast/layouts",
+                component: FastPlanList,
+                meta: {
+                    requiresAuth: "plans",
+                },
+            },
+
+            {
+                /* FAST PLAN */
+                name: "fast_plan_add",
+                path: "object/:object/fast/layouts/add",
+                component: AddDrawing,
+                meta: {
+                    requiresAuth: "plans",
+                },
+            },
+
+            {
+                /* FAST PLAN */
+                name: "fast_plan_apartments",
+                path: "object/:object/fast/layouts/add/:plan/apartments",
+                component: ChooseApartments,
+                meta: {
+                    requiresAuth: "plans",
+                },
+            },
+
 
             {
                 /* TYPE PLAN */
@@ -619,6 +651,7 @@ const router = new VueRouter({
 
 let user = null
 import Permission from "@/permission";
+import ChooseApartments from "@/components/Dashboard/TypePlan/ChooseApartments.vue";
 
 router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')
@@ -627,25 +660,25 @@ router.beforeEach(async (to, from, next) => {
     if (login) {
         if (!Permission.user) {
             return await api.authV1.getMe()
-                .then((response) => {
-                    user = response.data.user
-                    Permission.initializeUser(response.data)
-                })
-                .finally(() => {
-                    const {requiresAuth} = to.meta
-                    if (requiresAuth) {
-                        const perm = Permission.getUserPermission(requiresAuth)
-                        if (user.role === 1 || (perm && perm.view)) {
-                            return next()
-                        } else {
-                            return next({
-                                name: "not_found",
-                            })
-                        }
-                    } else {
-                        return next()
-                    }
-                })
+                 .then((response) => {
+                     user = response.data.user
+                     Permission.initializeUser(response.data)
+                 })
+                 .finally(() => {
+                     const {requiresAuth} = to.meta
+                     if (requiresAuth) {
+                         const perm = Permission.getUserPermission(requiresAuth)
+                         if (user.role === 1 || (perm && perm.view)) {
+                             return next()
+                         } else {
+                             return next({
+                                 name: "not_found",
+                             })
+                         }
+                     } else {
+                         return next()
+                     }
+                 })
         } else {
             next()
         }

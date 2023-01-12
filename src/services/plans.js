@@ -30,6 +30,11 @@ class Plans extends Core {
         return this.put(`objects/${objectId}/plans/${planId}`, body)
     }
 
+
+    fastPlanList(objectId) {
+        return this.get(`objects/${objectId}/drawings`)
+    }
+
 }
 
 export default Plans

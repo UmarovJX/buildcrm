@@ -1,8 +1,13 @@
 <template>
     <div>
         <app-header>
-            <template #header-title>
-                {{ $t('type_plan.plan') }}
+            <template #header-breadcrumb>
+                <app-breadcrumb
+                    :page="header.page"
+                    :page-info="header.pageInfo"
+                    :breadcrumbs="header.breadcrumbs"
+                    :go-back-method="backObject"
+                />
             </template>
         </app-header>
 
@@ -10,24 +15,15 @@
         <div class="search__content">
             <!--  Search Content  -->
             <base-search-input
-                class="base-search-input w-50 mr-2"
-                :placeholder="`${ $t('objects.create.plan.search') }`"
+                class="base-search-input w-100"
+                :placeholder="`${ $t('objects.create.fast_plan.search') }`"
             />
 
-            <div class="d-flex x-gap-1">
-                <x-button
-                    @click="showDrawingList"
-                    :text="$t('objects.create.fast_plan.name')"
-                    left-icon="activity_zone"
-                />
-                <x-button
-                    @click="showAddModal"
-                    :text="$t('objects.create.plan.add')"
-                    variant="secondary"
-                    left-icon="add"
-                    color-icon="var(--violet-600)"
-                />
-            </div>
+            <x-button
+                @click="showAddModal"
+                :text="$t('objects.create.fast_plan.add')"
+                left-icon="add"
+            />
 
         </div>
 
@@ -41,7 +37,7 @@
                     show-empty
                     borderless
                     responsive
-                    :items="getPlan.plans"
+                    :items="fastList"
                     :empty-text="$t('no_data')"
                     :fields="fields"
                     :busy="showLoading"
@@ -110,8 +106,10 @@
 
 
                     </template>
+
                 </b-table>
             </div>
+
             <delete-has-apartment
                 ref="delete-plan-modal"
                 :plan-list="deletePlan.plans"
@@ -120,10 +118,7 @@
                 @close-delete-modal="closeDeletePlanModal"
             />
 
-            <create-modal
-                ref="create-update"
-                @update-list="updateList"
-                :plan="sendPlan"/>
+            <create-modal ref="create-update"/>
 
         </div>
 
@@ -137,7 +132,7 @@ import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import {mapGetters, mapActions} from "vuex";
 import api from "@/services/api";
-import CreateModal from "@/components/Dashboard/TypePlan/Components/CreateModal";
+import CreateModal from "@/views/Objects/FastPlan/CreateModal.vue";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseEditIcon from "@/components/icons/BaseEditIcon"
 import DeleteHasApartment from "@/components/Dashboard/TypePlan/DeleteHasApartment";
@@ -147,9 +142,10 @@ import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import BaseLoadingContent from "@/components/BaseLoadingContent";
 import AppHeader from "@/components/Header/AppHeader";
 import {XButton} from "@/components/ui-components/button";
+import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
 
 export default {
-    name: 'TypePlanList',
+    name: 'FastPlanList',
     components: {
         BaseLoadingContent,
         BaseDeleteIcon,
@@ -159,45 +155,79 @@ export default {
         BaseEditIcon,
         DeleteHasApartment,
         AppHeader,
+        AppBreadcrumb,
         XButton
     },
     data() {
+        const header = {
+            pageInfo: {
+                title: this.$t('objects.create.fast_plan.name'),
+                titleHighlight: ''
+            },
+            page: {
+                type: 'multi_language',
+                path: 'objects.create.fast_plan.name'
+            },
+            breadcrumbs: [
+                {
+                    content: {
+                        type: 'multi_language',
+                        path: 'objects.title'
+                    },
+                    route: {
+                        name: 'objects',
+                        path: '/objects'
+                    }
+                },
+                {
+                    // content: {
+                    //     type: "multi_language",
+                    //     path: 'objects.create.plan.fast_plan'
+                    // },
+                    content: {
+                        type: "string",
+                        path: 'Sayram'
+                    },
+                    route: {
+                        name: 'objects',
+                        path: '/objects'
+                    }
+                },
+                {
+                    content: {
+                        type: "multi_language",
+                        path: 'objects.create.plan.name'
+                    },
+                    route: {
+                        name: 'objects',
+                        path: '/objects'
+                    }
+                },
+            ],
+        }
         return {
+            header,
             editPermission: PlansPermission.getPlansEditPermission(),
             deletePermission: PlansPermission.getPlansDeletePermission(),
             showLoading: false,
             manager: {},
             manager_id: null,
-            header: {
-                modalProperties: {
-                    position: 'create',
-                    title: this.$t('add')
-                },
-            },
             fields: [
                 {
                     key: "image",
                     label: this.$t('type_plan.image'),
                 },
                 {
-                    key: "plan",
+                    key: "name",
                     label: this.$t('type_plan.name'),
                 },
                 {
-                    key: "area",
-                    label: this.$t('type_plan.area'),
-                },
-                {
-                    key: "balcony_area",
-                    label: this.$t('type_plan.balcony'),
-                },
-                {
-                    key: "apartments_count",
-                    label: this.$t("apartments_count")
+                    key: "plan",
+                    label: this.$t('type_plan.connect_plan'),
                 },
                 {
                     key: "actions",
-                    label: "",
+                    label: this.$t('type_plan.actions'),
                 },
             ],
             deletePlan: {
@@ -207,17 +237,35 @@ export default {
             },
             sendPlan: {},
             loading: false,
+
+
+            //last
+            fastList: [],
         }
     },
     computed: {
-        ...mapGetters(["getPlan", "getLoading", "getPermission"]),
+        ...mapGetters(["getLoading", "getPermission"]),
     },
     mounted() {
-        this.fetchPlans(this);
+        this.fetchFastPlans();
         Fancybox.bind("[data-fancybox]");
     },
     methods: {
         ...mapActions(["fetchPlans"]),
+        async fetchFastPlans() {
+            await api.plans.fastPlanList(1)
+                .then((res) => {
+                    console.log(res.data, 'fastList');
+                    this.fastList = res.data
+                })
+                .catch((error) => error.response)
+                .finally(() => {
+                    this.showLoading = false
+                })
+        },
+        backObject() {
+            this.$route.push({name: 'objects'})
+        },
         imagePath(item) {
             if (item && item.images[0]) return item.images[0].path
             return null
@@ -262,11 +310,7 @@ export default {
             this.loading = false
         },
         showAddModal() {
-            this.$refs['create-update'].openPlanModal()
-        },
-        showDrawingList() {
-            const objectId = this.$route.params.id
-            this.$router.push({name: 'fast_plan', params: {object: objectId}})
+            this.$refs['create-update'].openModal()
         },
         successfullyDeletePlan() {
             this.closeDeletePlanModal()
@@ -290,39 +334,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.label {
-    color: #7C3AED;
-    margin-right: 3px;
-    font-weight: 500;
-}
-
-.fal {
-    font-weight: 500;
-}
-
-.text {
-    font-weight: 600;
-}
-
-.button {
-    height: auto;
-    background-color: #7C3AED;
-    width: auto;
-    padding: 8px;
-
-    ::v-deep span {
-        margin-left: 0 !important;
-    }
-}
-
-.actions {
-    display: flex;
-    gap: 16px;
-}
 
 .search__content {
     display: flex;
-    flex-wrap: wrap;
+    //flex-wrap: wrap;
     justify-content: space-between;
     gap: 1rem;
 }
