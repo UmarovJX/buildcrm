@@ -188,27 +188,26 @@ export default {
         BaseButton,
         BaseModal
     },
-    // beforeRouteLeave(to, from, next) {
-    //     this.$refs['leave-modal'].openModal()
-    //     this.nextRoute = to.name
-    //     if (this.permissionLeave) {
-    //         next();
-    //     } else {
-    //         next(false);
-    //     }
-    // },
-    // created() {
-    //     // console.log(performance.navigation, 'this.performance');
-    //     window.onbeforeunload = function (e) {
-    //         e = e || window.event;
-    //         //old browsers
-    //         if (e) {
-    //             e.returnValue = 'Changes you made may not be saved';
-    //         }
-    //         //safari, chrome(chrome ignores text)
-    //         return 'Changes you made may not be saved';
-    //     };
-    // },
+    beforeRouteLeave(to, from, next) {
+        this.$refs['leave-modal'].openModal()
+        this.nextRoute = to.name
+        if (this.permissionLeave) {
+            next();
+        } else {
+            next(false);
+        }
+    },
+    created() {
+        window.onbeforeunload = function (e) {
+            e = e || window.event;
+            //old browsers
+            if (e) {
+                e.returnValue = 'Changes you made may not be saved';
+            }
+            //safari, chrome(chrome ignores text)
+            return 'Changes you made may not be saved';
+        };
+    },
     data() {
         return {
             tabIndex: 0,

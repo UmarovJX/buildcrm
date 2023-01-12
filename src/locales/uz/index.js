@@ -306,7 +306,7 @@ export default {
     recontract_download: 'Qayta rasmiylashtirilgan shartnomani yuklash',
     leave_import: 'Importni tark etasizmi?',
     leave_import_text: "Haqiqatan ham importni bekor qilish va undan chiqishni xohlaysizmi? </br>" +
-        "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
+         "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
     no_leave: "Yo'q, qolaman",
     yes_leave: "Ha, chiqaman",
     yes: "Ha",
@@ -338,7 +338,7 @@ export default {
     table_months_payment: "Oylik to'lovlar jadvali",
     duration: 'Davomiyligi',
     more_info: "Batafsil ma'lumot",
-    payment_type: "To'lov turi",
+    payment_type: "To'lov usuli",
     created_at: "Yaratilgan vaqti",
     reservation: 'Band qilish',
     free_of_charge: "Boshlang'ich to'lovsiz",
@@ -607,7 +607,7 @@ export default {
         no_note: "Hozircha hech qanday eslatma yo'q",
         delete_note: 'Eslatmani o\'chirish',
         note_delete_confirmation: 'Eslatmani o\'chirishga qaroringiz qattiymi?\n' +
-            'Quydagi buyruqni bekor qilishni ilojisi yo\'q.',
+             'Quydagi buyruqni bekor qilishni ilojisi yo\'q.',
         edit_note: 'Eslatmani tahrirlash',
         note_text: 'Eslatma matni',
         individual: 'individual',
