@@ -27,10 +27,13 @@
                                 .png
                             </template>
                         </span>
-                        <span class="d-flex flex-column ml-3">
-            <span>{{ image.name }}</span>
-            <span class="mt-1">{{ size }}</span>
-          </span>
+                        <span v-if="!(typeof image === 'string')" class="d-flex flex-column ml-3">
+                            <span>{{ image.name }}</span>
+                            <span class="mt-1">{{ size }}</span>
+                          </span>
+                        <div v-else class="d-flex ml-3  align-items-center">
+                            <span>Link</span>
+                        </div>
                     </div>
 
                     <div class="edit__content">
@@ -67,6 +70,15 @@
                 >
             </div>
 
+            <div class="mt-4">
+                <x-form-input
+                    class="w-100"
+                    v-model="name"
+                    placeholder="Nomi"
+                    :fixed="true"
+                    @input="triggerNameEvent"
+                />
+            </div>
 
         </template>
 
@@ -95,12 +107,13 @@
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import readExcelFile from 'read-excel-file'
-import {mapMutations} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 // import api from "@/services/api";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import DebtorsFileUploader from "@/components/Reusable/DebtorsFileUploader";
 
 import {XIcon} from "@/components/ui-components/material-icons";
+import {XFormInput} from "@/components/ui-components/form-input";
 
 export default {
     name: "CreateModal",
@@ -110,14 +123,17 @@ export default {
         DebtorsFileUploader,
         BaseButton,
         XIcon,
+        XFormInput,
     },
     data() {
         return {
             buttonLoading: false,
-            image: null
+            // image: null,
+            // name: null
         }
     },
     computed: {
+        ...mapGetters(['getFastPlanImage', 'getFastPlanName']),
         size() {
             if (this.image) {
                 const kilobyte = this.image.size / 1024
@@ -128,11 +144,28 @@ export default {
             }
             return 0
         },
+        image: {
+            set(value) {
+                return this.$store.commit('updateFastPlanImage', value)
+            },
+            get() {
+                return this.getFastPlanImage
+            }
+        },
+        name: {
+            set(value) {
+                return this.$store.commit('updateFastPlanName', value)
+            },
+            get() {
+                return this.getFastPlanName
+            }
+        }
 
     },
     methods: {
         ...mapMutations({
-            updateFastPlan: 'updateFastPlanImage'
+            updateFastPlanImage: 'updateFastPlanImage',
+            updateFastPlanName: 'updateFastPlanName'
         }),
         openModal() {
             this.$refs['base-modal'].openModal()
@@ -141,16 +174,18 @@ export default {
             this.$refs['base-modal'].closeModal()
         },
         importUploadImage() {
-            if (this.image) {
+            if (this.image && this.name) {
                 this.$router.push({
                     name: 'fast_plan_add',
                 })
             }
         },
+        triggerNameEvent(event) {
+            this.updateFastPlanName(event)
+        },
         triggerUploadEvent() {
             this.image = this.$refs['file-input'].files[0]
-            console.log(this.image, '(num * 100) / 100');
-            this.updateFastPlan(this.image)
+            this.updateFastPlanImage(this.image)
         }
     }
 }

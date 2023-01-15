@@ -651,7 +651,7 @@ const router = new VueRouter({
 
 let user = null
 import Permission from "@/permission";
-import ChooseApartments from "@/components/Dashboard/TypePlan/ChooseApartments.vue";
+import ChooseApartments from "@/views/Objects/FastPlan/ChooseApartments.vue";
 
 router.beforeEach(async (to, from, next) => {
     const login = localStorage.getItem('auth__access__token')

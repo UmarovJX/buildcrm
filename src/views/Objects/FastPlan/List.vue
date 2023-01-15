@@ -20,7 +20,7 @@
             />
 
             <x-button
-                @click="showAddModal"
+                @click="createPlan"
                 :text="$t('objects.create.fast_plan.add')"
                 left-icon="add"
             />
@@ -48,14 +48,7 @@
                         </div>
                     </template>
                     <template #table-busy>
-                        <div class="d-flex justify-content-center w-100">
-                            <div class="lds-ellipsis">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-                        </div>
+                        <base-loading/>
                     </template>
 
                     <template #cell(plan)="data">
@@ -75,33 +68,20 @@
                         />
                     </template>
 
-                    <template #cell(balcony_area)="data">
-                        {{ data.item.balcony ? data.item.balcony_area + " м²" : $t("no") }}
+                    <template #cell(apartments_count)="data">
+                        {{ data.item.apartments_count }}
                     </template>
 
                     <template #cell(actions)="data">
-                        <div v-if="editPermission || deletePermission"
-                             class="actions">
-                            <BaseButton
-                                v-if="editPermission"
-                                class="button rounded-circle"
-                                text=''
-                                @click="edit(data.item)"
-                            >
-                                <template #right-icon>
-                                    <BaseEditIcon fill="#ffff"/>
-                                </template>
-                            </BaseButton>
-                            <BaseButton
-                                v-if="deletePermission"
-                                class="bg-danger button rounded-circle"
-                                text=''
-                                @click="deleteTypePlan(data.item)"
-                            >
-                                <template #right-icon>
-                                    <BaseDeleteIcon fill="#ffff"/>
-                                </template>
-                            </BaseButton>
+                        <div class="actions">
+                            <x-circular-background size="small" @click="editPlan(data.item)"
+                                                   class="bg-violet-600">
+                                <x-icon name="edit" class="color-white"/>
+                            </x-circular-background>
+                            <x-circular-background size="small" @click="deletePlanFunction(data.item.id)"
+                                                   class="bg-red-600">
+                                <x-icon name="delete" class="color-white"/>
+                            </x-circular-background>
                         </div>
 
 
@@ -109,14 +89,6 @@
 
                 </b-table>
             </div>
-
-            <delete-has-apartment
-                ref="delete-plan-modal"
-                :plan-list="deletePlan.plans"
-                :remove-plan="deletePlan.removePlan"
-                @successfully-updated="successfullyDeletePlan"
-                @close-delete-modal="closeDeletePlanModal"
-            />
 
             <create-modal ref="create-update"/>
 
@@ -130,7 +102,7 @@
 <script>
 import {Fancybox} from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
-import {mapGetters, mapActions} from "vuex";
+import {mapGetters, mapActions, mapMutations} from "vuex";
 import api from "@/services/api";
 import CreateModal from "@/views/Objects/FastPlan/CreateModal.vue";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
@@ -143,10 +115,14 @@ import BaseLoadingContent from "@/components/BaseLoadingContent";
 import AppHeader from "@/components/Header/AppHeader";
 import {XButton} from "@/components/ui-components/button";
 import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
+import {XCircularBackground} from "@/components/ui-components/circular-background";
+import {XIcon} from "@/components/ui-components/material-icons";
+import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 
 export default {
     name: 'FastPlanList',
     components: {
+        BaseLoading,
         BaseLoadingContent,
         BaseDeleteIcon,
         CreateModal,
@@ -156,7 +132,9 @@ export default {
         DeleteHasApartment,
         AppHeader,
         AppBreadcrumb,
-        XButton
+        XButton,
+        XCircularBackground,
+        XIcon
     },
     data() {
         const header = {
@@ -176,42 +154,36 @@ export default {
                     },
                     route: {
                         name: 'objects',
-                        path: '/objects'
                     }
                 },
-                {
-                    // content: {
-                    //     type: "multi_language",
-                    //     path: 'objects.create.plan.fast_plan'
-                    // },
-                    content: {
-                        type: "string",
-                        path: 'Sayram'
-                    },
-                    route: {
-                        name: 'objects',
-                        path: '/objects'
-                    }
-                },
+                // {
+                //     content: {
+                //         type: "string",
+                //         path: 'Sayram'
+                //     },
+                //     route: {
+                //         name: 'objects',
+                //         path: '/objects'
+                //     }
+                // },
                 {
                     content: {
                         type: "multi_language",
                         path: 'objects.create.plan.name'
                     },
                     route: {
-                        name: 'objects',
-                        path: '/objects'
+                        name: 'type-plan-view',
+                        params: {
+                            id: this.$route.params.object
+                        },
+
                     }
                 },
             ],
         }
         return {
             header,
-            editPermission: PlansPermission.getPlansEditPermission(),
-            deletePermission: PlansPermission.getPlansDeletePermission(),
             showLoading: false,
-            manager: {},
-            manager_id: null,
             fields: [
                 {
                     key: "image",
@@ -222,7 +194,7 @@ export default {
                     label: this.$t('type_plan.name'),
                 },
                 {
-                    key: "plan",
+                    key: "apartments_count",
                     label: this.$t('type_plan.connect_plan'),
                 },
                 {
@@ -230,14 +202,8 @@ export default {
                     label: this.$t('type_plan.actions'),
                 },
             ],
-            deletePlan: {
-                plans: [],
-                message: '',
-                removePlan: {}
-            },
             sendPlan: {},
             loading: false,
-
 
             //last
             fastList: [],
@@ -251,9 +217,14 @@ export default {
         Fancybox.bind("[data-fancybox]");
     },
     methods: {
-        ...mapActions(["fetchPlans"]),
+        ...mapMutations[{
+            updateFastPlanImage: 'updateFastPlanImage',
+            updateFastPlanName: 'updateFastPlanName'
+        }],
         async fetchFastPlans() {
-            await api.plans.fastPlanList(1)
+            this.showLoading = true
+            const objectId = this.$route.params.object
+            await api.plans.fastPlanList(objectId)
                 .then((res) => {
                     console.log(res.data, 'fastList');
                     this.fastList = res.data
@@ -264,76 +235,61 @@ export default {
                 })
         },
         backObject() {
-            this.$route.push({name: 'objects'})
+            const {object} = this.$route.params
+            this.$router.push({name: 'type-plan-view', params: {id: object}})
         },
         imagePath(item) {
-            if (item && item.images[0]) return item.images[0].path
+            if (item && item.image) return item.image
             return null
         },
-        async deleteTypePlan(item) {
-            const objectId = this.$route.params.id
-            const {apartments_count, id: planId} = item
-            if (apartments_count) {
-                this.showLoading = true
-                const response = await api.plans.deletePlanWhenHasApartment(objectId, planId)
-                    .then(() => ({}))
-                    .catch((error) => error.response)
-                    .finally(() => {
-                        this.showLoading = false
-                    })
+        async deletePlanFunction(id) {
+            const objectId = this.$route.params.object
+            this.showLoading = true
+            return await api.plans.deleteFastPlan(objectId, id)
+                .then(() => {
+                    this.$swal(this.$t("sweetAlert.deleted"), "", "success")
+                    this.fetchFastPlans()
+                })
+                .catch(() => {
+                    this.$swal(this.$t("error"), "", "error")
+                })
+                .finally(() => {
+                    this.showLoading = false
+                })
 
-                const hadResponse = Object.keys(response).length
-                if (hadResponse) {
-                    const {plans, message} = response.data
-                    this.deletePlan.plans = plans
-                    this.deletePlan.message = message
-                    this.deletePlan.removePlan = item
-                    this.$bvModal.show('delete-plan-modal')
-                }
-            } else {
-                this.showLoading = true
-                api.plans.deletePlan(objectId, planId)
-                    .then(() => {
-                        this.successfullyDeletePlan()
-                    })
-                    .catch((error) => {
-                        this.toastedWithErrorCode(error)
-                    })
-                    .finally(() => {
-                        this.showLoading = false
-                    })
-            }
         },
         async updateList() {
             this.loading = true
-            await this.fetchPlans(this);
+            await this.fetchFastPlans();
             this.loading = false
         },
         showAddModal() {
             this.$refs['create-update'].openModal()
         },
-        successfullyDeletePlan() {
-            this.closeDeletePlanModal()
-            const message = `${this.$t("sweetAlert.deleted")}`
-            this.$swal(message, "", "success")
-            this.fetchPlans(this)
+        createPlan() {
+            this.$store.commit('updateFastPlanImage', null)
+            this.$store.commit('updateFastPlanName', null)
+            this.$store.commit('updateFastPlanId', null)
+            this.showAddModal()
         },
-        closeDeletePlanModal() {
-            this.$bvModal.hide('delete-plan-modal')
-        },
-        edit(item) {
-            // this.$router.push({
-            //     name: "type-plan-edit",
-            //     params: {object: this.getPlan.id, id: id},
-            // })
-            this.sendPlan = item
-            this.$refs['create-update'].openPlanModal()
+        editPlan(item) {
+            this.$store.commit('updateFastPlanImage', item.image)
+            this.$store.commit('updateFastPlanName', item.name)
+            this.$store.commit('updateFastPlanId', item.id)
+            this.showAddModal()
         },
     },
 }
 </script>
 
 <style lang="scss" scoped>
+
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
 
 .search__content {
     display: flex;

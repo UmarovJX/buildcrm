@@ -30,9 +30,20 @@ class Plans extends Core {
         return this.put(`objects/${objectId}/plans/${planId}`, body)
     }
 
-
     fastPlanList(objectId) {
         return this.get(`objects/${objectId}/drawings`)
+    }
+
+    createFastPlan(objectId, body) {
+        return this.post(`objects/${objectId}/drawings`, body)
+    }
+
+    updateFastPlan(objectId, drawingId, body) {
+        return this.post(`objects/${objectId}/drawings/${drawingId}/update`, body)
+    }
+
+    deleteFastPlan(objectId, drawingId) {
+        return this.delete(`objects/${objectId}/drawings/${drawingId}`)
     }
 
 }

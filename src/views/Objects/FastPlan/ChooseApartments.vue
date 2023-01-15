@@ -86,7 +86,6 @@
             :selectable="selectable"
             select-mode="single"
         >
-
             <template #table-busy>
                 <base-loading/>
             </template>
@@ -96,6 +95,7 @@
                     {{ scope.emptyText }}
                   </span>
             </template>
+
             <template #head(check)="{item}" class="p-0">
                   <span>
                     <base-checkbox
@@ -104,6 +104,14 @@
                     />
                   </span>
             </template>
+
+            <template #cell(check)="data" class="p-0">
+                <base-checkbox
+                    :checked="data.item.checked"
+                    @input="activateApartment(data,$event)"
+                />
+            </template>
+
             <template #cell(number)="data" class="p-0">
                 <span>{{ data.item.number }}</span>
             </template>
@@ -111,7 +119,6 @@
             <template #cell(area)="data">
                 <span v-if="data.item.plan"> {{ data.item.plan.area }} м² </span>
             </template>
-
 
         </b-table>
 
@@ -164,6 +171,7 @@
         <BaseCheckboxModal
             :chosen="checkedApartments.length"
             @go-to-contract="makeContract"
+            btn-text="Добавить планировку"
         />
 
 
@@ -175,17 +183,19 @@
 import {isPrimitiveValue, sortObjectValues} from "@/util/reusable";
 import api from "@/services/api";
 import BaseCheckboxModal from "@/components/Reusable/BaseCheckboxModal.vue";
-import BaseCheckbox from "@/components/Reusable/BaseCheckbox";
+import BaseCheckbox from "@/components/Reusable/BaseCheckbox.vue";
 import {XFormSelect} from "@/components/ui-components/form-select";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon.vue";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon.vue";
 import BaseRightModal from "@/components/Reusable/BaseRightModal.vue";
 import {isUndefinedOrNullOrEmpty} from "@/util/inspect";
 import router from "@/routes";
 import AppHeader from "@/components/Header/AppHeader.vue";
 import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput.vue";
-import BaseFilterButton from "@/components/Elements/BaseFilterButton";
+import BaseFilterButton from "@/components/Elements/BaseFilterButton.vue";
+import BaseLoading from "@/components/Reusable/BaseLoading.vue";
+import {mapGetters} from "vuex";
 
 export default {
     name: "ChooseApartments",
@@ -199,7 +209,8 @@ export default {
         BaseRightModal,
         AppHeader,
         AppBreadcrumb,
-        BaseFilterButton
+        BaseFilterButton,
+        BaseLoading,
     },
     data() {
         const showByOptions = []
@@ -225,7 +236,7 @@ export default {
             },
             page: {
                 type: 'multi_language',
-                path: 'objects.create.fast_plan.add'
+                path: 'objects.create.fast_plan.select_room'
             },
             breadcrumbs: [
                 {
@@ -239,13 +250,9 @@ export default {
                     }
                 },
                 {
-                    // content: {
-                    //     type: "multi_language",
-                    //     path: 'objects.create.plan.fast_plan'
-                    // },
                     content: {
                         type: "string",
-                        path: 'Sayram'
+                        path: ''
                     },
                     route: {
                         name: 'objects',
@@ -258,8 +265,10 @@ export default {
                         path: 'objects.create.plan.name'
                     },
                     route: {
-                        name: 'objects',
-                        path: '/objects'
+                        name: 'type-plan-view',
+                        params: {
+                            id: this.$route.params.object
+                        },
                     }
                 },
                 {
@@ -268,8 +277,22 @@ export default {
                         path: 'objects.create.fast_plan.name'
                     },
                     route: {
-                        name: 'objects',
-                        path: '/objects'
+                        name: 'fast_plan',
+                        params: {
+                            object: this.$route.params.object
+                        },
+                    }
+                },
+                {
+                    content: {
+                        type: 'multi_language',
+                        path: 'objects.create.fast_plan.add_plan'
+                    },
+                    route: {
+                        name: 'fast_plan_add',
+                        params: {
+                            object: this.$route.params.object
+                        },
                     }
                 },
             ],
@@ -338,7 +361,6 @@ export default {
                 entrance: [],
                 room: []
             },
-
             filterOptions: {
                 floor: [],
                 entrance: [],
@@ -351,8 +373,25 @@ export default {
         this.filter = this.query
         this.currentPage = Number(this.filter.page);
         await this.fetchContractList()
+
+        window.onbeforeunload = function (e) {
+            e = e || window.event;
+            //old browsers
+            if (e) {
+                e.returnValue = 'Changes you made may not be saved';
+            }
+            //safari, chrome(chrome ignores text)
+            return 'Changes you made may not be saved';
+        };
+
+    },
+    mounted() {
+        if (!(this.getFastPlanImage && this.getFastPlanName)) {
+            this.$router.push({name: 'fast_plan', params: {object: this.$route.params.object}})
+        }
     },
     computed: {
+        ...mapGetters(['getFastPlanImage', 'getFastPlanName', 'getFastPlanId']),
         checkedApartments() {
             return this.checkoutList.filter(ch => ch.checked)
         },
@@ -382,8 +421,51 @@ export default {
         async makeContract() {
             const ids = this.checkoutList.map(ch => ch.id)
             this.startLoading()
-            await this.orderApartment(ids)
+            await this.createDrawing(ids)
             await this.finishLoading()
+        },
+        async createDrawing(ids) {
+            const objectId = this.$route.params.object
+            const body = new FormData()
+            body.append('name', this.getFastPlanName)
+            if (!(typeof this.getFastPlanImage === 'string')) {
+                body.append('image', this.getFastPlanImage)
+            }
+            body.append('plan_id', this.$route.params.plan)
+            ids.forEach((id, index) => {
+                body.append(`apartments[${index}]`, id)
+            })
+
+            if (!this.getFastPlanId) {
+                await api.plans.createFastPlan(objectId, body)
+                    .then(() => {
+                        this.$router.push(
+                            {
+                                name: 'fast_plan',
+                                params: {
+                                    object: objectId
+                                }
+                            })
+                    })
+                    .error((err) => {
+                        return err
+                    })
+            } else {
+                await api.plans.updateFastPlan(objectId, this.getFastPlanId, body)
+                    .then(() => {
+                        this.$router.push(
+                            {
+                                name: 'fast_plan',
+                                params: {
+                                    object: objectId
+                                }
+                            })
+                    })
+                    .error((err) => {
+                        return err
+                    })
+            }
+
         },
         startLoading() {
             this.showLoading = true
@@ -418,7 +500,7 @@ export default {
             this.apartments.forEach(a => {
                 const index = this.checkoutList.findIndex(ch => ch.id === a.id)
                 if (a.checked) {
-                    if (index === -1 && a.is_sold && a.order.status === 'available') {
+                    if (index === -1) {
                         this.checkoutList.push({checked, id: a.id, page: current})
                     }
                 } else {
@@ -458,6 +540,7 @@ export default {
                 .then((response) => {
                     this.$emit('counter', response.data.counts)
                     this.pagination = response.data.pagination
+                    this.header.breadcrumbs[1].content.path = response.data?.items[0]?.object?.name
                     this.showByValue = response.data.pagination.perPage
                     this.apartments = response.data.items.map((item) => {
                         const isChecked = this.checkoutList.find(ch => ch.id === item.id)

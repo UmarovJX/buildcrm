@@ -22,7 +22,7 @@
                     show-empty
                     borderless
                     responsive
-                    :items="fastList"
+                    :items="planList"
                     :empty-text="$t('no_data')"
                     :fields="fields"
                     :busy="showLoading"
@@ -43,6 +43,10 @@
                         </div>
                     </template>
 
+                    <template #table-busy>
+                        <base-loading/>
+                    </template>
+
                     <template #cell(plan)="data">
                         {{ data.item.name }}
                     </template>
@@ -60,55 +64,20 @@
                         />
                     </template>
 
-                    <template #cell(balcony_area)="data">
-                        {{ data.item.balcony ? data.item.balcony_area + " м²" : $t("no") }}
-                    </template>
-
                     <template #cell(actions)="data">
-                        <div v-if="editPermission || deletePermission"
-                             class="actions">
-                            <BaseButton
-                                v-if="editPermission"
-                                class="button rounded-circle"
-                                text=''
-                                @click="edit(data.item)"
-                            >
-                                <template #right-icon>
-                                    <BaseEditIcon fill="#ffff"/>
-                                </template>
-                            </BaseButton>
-                            <BaseButton
-                                v-if="deletePermission"
-                                class="bg-danger button rounded-circle"
-                                text=''
-                                @click="deleteTypePlan(data.item)"
-                            >
-                                <template #right-icon>
-                                    <BaseDeleteIcon fill="#ffff"/>
-                                </template>
-                            </BaseButton>
+                        <div class="d-flex justify-content-end">
+                            <x-circular-background size="small" @click="connectPlan(data.item.id)"
+                                                   class="bg-yellow-600">
+                                <x-icon name="link" class="color-white"/>
+                            </x-circular-background>
                         </div>
-
 
                     </template>
 
                 </b-table>
             </div>
 
-            <delete-has-apartment
-                ref="delete-plan-modal"
-                :plan-list="deletePlan.plans"
-                :remove-plan="deletePlan.removePlan"
-                @successfully-updated="successfullyDeletePlan"
-                @close-delete-modal="closeDeletePlanModal"
-            />
-
-            <create-modal ref="create-update"/>
-
         </div>
-
-        <b-button
-            @click="$router.push({name:'fast_plan_apartments',params:{object:$route.params.object,plan:1}})">redirect</b-button>
 
     </div>
 </template>
@@ -129,10 +98,14 @@ import BaseLoadingContent from "@/components/BaseLoadingContent";
 import AppHeader from "@/components/Header/AppHeader";
 import {XButton} from "@/components/ui-components/button";
 import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
+import {XCircularBackground} from "@/components/ui-components/circular-background";
+import {XIcon} from "@/components/ui-components/material-icons";
+import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 
 export default {
     name: 'AddDrawing',
     components: {
+        BaseLoading,
         BaseLoadingContent,
         BaseDeleteIcon,
         CreateModal,
@@ -142,67 +115,68 @@ export default {
         DeleteHasApartment,
         AppHeader,
         AppBreadcrumb,
-        XButton
+        XButton,
+        XIcon,
+        XCircularBackground
     },
     data() {
-        const header = {
-            pageInfo: {
-                title: this.$t('objects.create.choose_plan'),
-                titleHighlight: ''
-            },
-            page: {
-                type: 'multi_language',
-                path: 'objects.create.fast_plan.add'
-            },
-            breadcrumbs: [
-                {
-                    content: {
-                        type: 'multi_language',
-                        path: 'objects.title'
-                    },
-                    route: {
-                        name: 'objects',
-                        path: '/objects'
-                    }
-                },
-                {
-                    // content: {
-                    //     type: "multi_language",
-                    //     path: 'objects.create.plan.fast_plan'
-                    // },
-                    content: {
-                        type: "string",
-                        path: 'Sayram'
-                    },
-                    route: {
-                        name: 'objects',
-                        path: '/objects'
-                    }
-                },
-                {
-                    content: {
-                        type: "multi_language",
-                        path: 'objects.create.plan.name'
-                    },
-                    route: {
-                        name: 'objects',
-                        path: '/objects'
-                    }
-                },
-                {
-                    content: {
-                        type: "multi_language",
-                        path: 'objects.create.fast_plan.name'
-                    },
-                    route: {
-                        name: 'objects',
-                        path: '/objects'
-                    }
-                },
-            ],
-        }
         return {
-            header,
+            header: {
+                pageInfo: {
+                    title: this.$t('objects.create.choose_plan'),
+                    titleHighlight: ''
+                },
+                page: {
+                    type: 'multi_language',
+                    path: 'objects.create.fast_plan.add_plan'
+                },
+                breadcrumbs: [
+                    {
+                        content: {
+                            type: 'multi_language',
+                            path: 'objects.title'
+                        },
+                        route: {
+                            name: 'objects'
+                        }
+                    },
+                    {
+                        content: {
+                            type: "string",
+                            path: '',
+                        },
+                        route: {
+                            name: 'objects',
+                            path: '/objects'
+                        }
+                    },
+                    {
+                        content: {
+                            type: "multi_language",
+                            path: 'objects.create.plan.name'
+                        },
+                        route: {
+                            name: 'type-plan-view',
+                            params: {
+                                id: this.$route.params.object
+                            },
+                        }
+                    },
+                    {
+                        content: {
+                            type: "multi_language",
+                            path: 'objects.create.fast_plan.name'
+                        },
+                        route: {
+                            name: 'fast_plan',
+                            params: {
+                                object: this.$route.params.object
+                            },
+                        }
+                    },
+                ],
+            },
+            objectName: '',
             editPermission: PlansPermission.getPlansEditPermission(),
             deletePermission: PlansPermission.getPlansDeletePermission(),
             showLoading: false,
@@ -228,6 +202,7 @@ export default {
                 {
                     key: "actions",
                     label: this.$t('type_plan.actions'),
+                    class: 'text-right'
                 },
             ],
             deletePlan: {
@@ -238,25 +213,39 @@ export default {
             sendPlan: {},
             loading: false,
 
-
             //last
-            fastList: [],
+            planList: [],
         }
     },
     computed: {
-        ...mapGetters(["getLoading", "getPermission"]),
+        ...mapGetters(["getPermission", 'getFastPlanImage', 'getFastPlanName']),
     },
-    mounted() {
-        this.fetchFastPlans();
+    created() {
+        window.onbeforeunload = function (e) {
+            e = e || window.event;
+            //old browsers
+            if (e) {
+                e.returnValue = 'Changes you made may not be saved';
+            }
+            //safari, chrome(chrome ignores text)
+            return 'Changes you made may not be saved';
+        };
+    },
+    async mounted() {
+        await this.fetchFastPlans()
         Fancybox.bind("[data-fancybox]");
+        if (!(this.getFastPlanImage && this.getFastPlanName)) {
+            this.$router.push({name: 'fast_plan', params: {object: this.$route.params.object}})
+        }
     },
     methods: {
         ...mapActions(["fetchPlans"]),
         async fetchFastPlans() {
-            await api.plans.fastPlanList(1)
+            const objectId = this.$route.params.object
+            await api.objects.getObjectPlans(objectId)
                 .then((res) => {
-                    console.log(res.data, 'fastList');
-                    this.fastList = res.data
+                    this.header.breadcrumbs[1].content.path = res.data.name
+                    this.planList = res.data.plans
                 })
                 .catch((error) => error.response)
                 .finally(() => {
@@ -270,64 +259,19 @@ export default {
             if (item && item.images[0]) return item.images[0].path
             return null
         },
-        async deleteTypePlan(item) {
-            const objectId = this.$route.params.id
-            const {apartments_count, id: planId} = item
-            if (apartments_count) {
-                this.showLoading = true
-                const response = await api.plans.deletePlanWhenHasApartment(objectId, planId)
-                    .then(() => ({}))
-                    .catch((error) => error.response)
-                    .finally(() => {
-                        this.showLoading = false
-                    })
-
-                const hadResponse = Object.keys(response).length
-                if (hadResponse) {
-                    const {plans, message} = response.data
-                    this.deletePlan.plans = plans
-                    this.deletePlan.message = message
-                    this.deletePlan.removePlan = item
-                    this.$bvModal.show('delete-plan-modal')
-                }
-            } else {
-                this.showLoading = true
-                api.plans.deletePlan(objectId, planId)
-                    .then(() => {
-                        this.successfullyDeletePlan()
-                    })
-                    .catch((error) => {
-                        this.toastedWithErrorCode(error)
-                    })
-                    .finally(() => {
-                        this.showLoading = false
-                    })
-            }
-        },
-        async updateList() {
-            this.loading = true
-            await this.fetchPlans(this);
-            this.loading = false
+        connectPlan(id) {
+            const object = this.$route.params.object
+            this.$router.push(
+                {
+                    name: 'fast_plan_apartments',
+                    params: {
+                        object,
+                        plan: id
+                    }
+                })
         },
         showAddModal() {
             this.$refs['create-update'].openModal()
-        },
-        successfullyDeletePlan() {
-            this.closeDeletePlanModal()
-            const message = `${this.$t("sweetAlert.deleted")}`
-            this.$swal(message, "", "success")
-            this.fetchPlans(this)
-        },
-        closeDeletePlanModal() {
-            this.$bvModal.hide('delete-plan-modal')
-        },
-        edit(item) {
-            // this.$router.push({
-            //     name: "type-plan-edit",
-            //     params: {object: this.getPlan.id, id: id},
-            // })
-            this.sendPlan = item
-            this.$refs['create-update'].openPlanModal()
         },
     },
 }
