@@ -112,6 +112,7 @@
                     </template>
                 </b-table>
             </div>
+
             <delete-has-apartment
                 ref="delete-plan-modal"
                 :plan-list="deletePlan.plans"
@@ -123,6 +124,7 @@
             <create-modal
                 ref="create-update"
                 @update-list="updateList"
+                @clear-field="clearModal"
                 :plan="sendPlan"/>
 
         </div>
@@ -205,7 +207,13 @@ export default {
                 message: '',
                 removePlan: {}
             },
-            sendPlan: {},
+            sendPlan: {
+                name: null,
+                area: null,
+                balcony_area: null,
+                images: [],
+                plan_id: null,
+            },
             loading: false,
         }
     },
@@ -221,6 +229,15 @@ export default {
         imagePath(item) {
             if (item && item.images[0]) return item.images[0].path
             return null
+        },
+        clearModal() {
+            this.sendPlan = {
+                name: null,
+                area: null,
+                balcony_area: null,
+                images: [],
+                plan_id: null,
+            }
         },
         async deleteTypePlan(item) {
             const objectId = this.$route.params.id

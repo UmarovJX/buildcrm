@@ -370,8 +370,6 @@ export default {
     },
 
     async created() {
-        this.filter = this.query
-        this.currentPage = Number(this.filter.page);
         await this.fetchContractList()
 
         window.onbeforeunload = function (e) {
@@ -517,26 +515,11 @@ export default {
 
         async fetchContractList() {
             this.showLoading = true
-            let query = sortObjectValues(this.query)
-            const queryArrayFareList = [
-                'area',
-                'rooms',
-                'floors',
-                'number',
-            ]
 
-            const queryPair = Object.entries(query)
-            queryPair.forEach(([key, value]) => {
-                const isNotPrimitive = queryArrayFareList.includes(key)
-                const valueFare = isPrimitiveValue(value)
-                if (isNotPrimitive && valueFare) {
-                    query[key] = [value]
-                }
-            })
 
             const {object} = this.$route.params
             this.checkAll = false
-            await api.objectsV2.fetchObjectApartments(object, query)
+            await api.objectsV2.fetchObjectApartments(object, this.query)
                 .then((response) => {
                     this.$emit('counter', response.data.counts)
                     this.pagination = response.data.pagination
@@ -567,7 +550,7 @@ export default {
 
         changeFetchLimit() {
             const query = {
-                ...this.query, page: 1
+                ...this.query, page: this.query.page || 1
             }
             const limit = this.showByValue
             this.pushRouter({...query, limit})
@@ -598,7 +581,7 @@ export default {
             this.$router.push({
                 name: "apartments",
                 params: this.$route.params.object,
-                query: this.filter,
+                query: this.query,
             }).then(() => {
                 const element = document.getElementById("my-table");
                 element.scrollIntoView();

@@ -8,7 +8,7 @@
                         {{ $t('objects.create.plan.add_image') }}
                     </p>
                     <!--   CLOSE    -->
-                    <div class="go__back" @click="closePlanModal">
+                    <div class="go__back" @click="cancel">
                         <BaseCloseIcon :width="56" :height="56"/>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                                 <img :src="createImage(img)" alt="img">
                             </div>
                         </div>
-                        <div v-if="planData.images.length<12" class="col-3">
+                        <div v-if="planData.images && planData.images.length<12" class="col-3">
                             <div class="uploader">
                                 <image-uploader :multiple="true" @upload-image="setImage"/>
                             </div>
@@ -185,7 +185,7 @@ export default {
         },
         deleteImg(img, index) {
             if (!(img.path instanceof File)) {
-                const objectId = this.plan?.object?.id
+                const objectId = this.$route.params.id
                 const planId = this.plan?.id
                 api.plans.deletePlanImage(objectId, planId, img.id).then(() => {
                     this.planData.images.splice(index, 1)
@@ -216,7 +216,7 @@ export default {
         },
         renderPositionImage() {
             let images = this.planData.images
-            const objectId = this.plan.object.id
+            const objectId = this.$route.params.id
             const planId = this.plan.id
             let oldImages = []
             let newImages = []
@@ -279,15 +279,24 @@ export default {
         },
         async handleSubmit() {
             const valid = await this.$refs['form'].validate()
-            const objectId = this.plan.object.id
+            const objectId = this.$route.params.id
             const planId = this.plan.id
+            console.log(objectId, 'objectId');
+            console.log(planId, 'planId');
             if (valid && this.planData.images.length) {
                 this.renderPositionImage()
                 const form = this.renderFormData(this.planData)
-                await api.plans.changePlan(objectId, planId, form).then(() => {
-                    this.closePlanModal()
-                    this.$emit('update-list')
-                })
+                if (!planId) {
+                    await api.plans.createPlan(objectId, form).then(() => {
+                        this.closePlanModal()
+                        this.$emit('update-list')
+                    })
+                } else {
+                    await api.plans.updatePlan(objectId, planId, form).then(() => {
+                        this.closePlanModal()
+                        this.$emit('update-list')
+                    })
+                }
             } else {
                 this.$swal({
                     title: this.$t('error'),
@@ -308,7 +317,12 @@ export default {
             this.handleSubmit()
         },
         cancel() {
+            this.planData.images = []
             this.closePlanModal()
+            // setTimeout(() => {
+                this.$emit('clear-field')
+            // }, 1000)
+
         }
     },
 }

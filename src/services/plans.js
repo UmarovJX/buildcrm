@@ -22,12 +22,12 @@ class Plans extends Core {
         return this.put(`objects/${objectId}/plans/${planId}/images`, body)
     }
 
-    changePlan(objectId, planId, body) {
-        return this.post(`objects/${objectId}/plans/${planId}`, body)
+    createPlan(objectId,  body) {
+        return this.post(`objects/${objectId}/plans`, body)
     }
 
     updatePlan(objectId, planId, body) {
-        return this.put(`objects/${objectId}/plans/${planId}`, body)
+        return this.post(`objects/${objectId}/plans/${planId}`, body)
     }
 
     fastPlanList(objectId) {

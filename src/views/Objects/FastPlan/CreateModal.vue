@@ -52,7 +52,7 @@
                 <!--   FILE NOT UPLOAD YET     -->
                 <span v-else class="d-flex justify-content-center align-items-center">
           <span class="arrow__down">
-              <x-icon name="arrow_downward" :size="56" color="var(--gray-400)"/>
+               <base-arrow-down-icon :width="56" :height="56" fill="#9CA3AF"/>
           </span>
           <span class="max-width-16">
             {{ $t('payments.drag_file') }}
@@ -74,7 +74,7 @@
                 <x-form-input
                     class="w-100"
                     v-model="name"
-                    placeholder="Nomi"
+                    :placeholder="$t('objects.create.name')"
                     :fixed="true"
                     @input="triggerNameEvent"
                 />
@@ -114,10 +114,12 @@ import DebtorsFileUploader from "@/components/Reusable/DebtorsFileUploader";
 
 import {XIcon} from "@/components/ui-components/material-icons";
 import {XFormInput} from "@/components/ui-components/form-input";
+import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon.vue";
 
 export default {
     name: "CreateModal",
     components: {
+        BaseArrowDownIcon,
         BaseCloseIcon,
         BaseModal,
         DebtorsFileUploader,
