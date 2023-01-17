@@ -23,7 +23,7 @@
     >
       <!--   Phone Number   -->
       <template #cell(phone)="data">
-        <span class="phone-col">{{ formattingPhone(data.item.client.phone) }}</span>
+        <span class="phone-col">{{ getClientMajorPhone(data.item.client.phones) }}</span>
       </template>
 
       <!--   Date   -->
@@ -119,7 +119,7 @@ import {XIcon} from "@/components/ui-components/material-icons";
 import {XButton} from "@/components/ui-components/button";
 import {mapActions} from "vuex";
 import api from "@/services/api";
-import {isObject} from "@/util/inspect";
+import {isNotUndefinedNullEmptyZero, isObject} from "@/util/inspect";
 import ContractsPermission from "@/permission/contract";
 import {formatDateWithDot, formatToPrice, phonePrettier} from "@/util/reusable";
 
@@ -191,6 +191,18 @@ export default {
   methods: {
     ...mapActions('notify', ['openNotify']),
     formattingPhone: (phone) => phonePrettier(phone),
+    getClientMajorPhone(phones) {
+      phones = phones.filter(p => {
+        return isNotUndefinedNullEmptyZero(p.phone)
+            && p.phone.toString().length > 3
+      })
+
+      if (phones.length > 0) {
+        return this.formattingPhone(phones[0].phone)
+      }
+
+      return ''
+    },
     dateReverser: (time) => formatDateWithDot(time),
     checkNotification() {
       if (this.$route.query.hasOwnProperty('success')) {
@@ -248,7 +260,7 @@ export default {
       if (this.$i18n.locale === 'uz') {
         language = 'lotin'
       }
-      const {last_name, first_name, second_name} = client
+      const {last_name, first_name, second_name} = client.attributes
       return this.clientName(last_name, language) + ' ' + this.clientName(first_name, language) + ' ' + this.clientName(second_name, language)
     },
     contractView({id}, index, event) {

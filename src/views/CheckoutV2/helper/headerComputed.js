@@ -1,5 +1,8 @@
+import {runConsoleLog} from "@/util/console.util";
+
 export function headerItems() {
     const {apartments} = this
+
     const h = {
         pageInfo: {
             title: '',
@@ -23,7 +26,7 @@ export function headerItems() {
         ],
     }
 
-    if (!apartments) {
+    if (!apartments.length) {
         return h
     }
 
@@ -36,6 +39,7 @@ export function headerItems() {
     }, '')
 
     const {object} = apartments[0]
+
     if (object) {
         h.breadcrumbs.push({
             content: {
@@ -65,11 +69,18 @@ export function headerItems() {
         })
     }
 
-
-    h.pageInfo = {
-        title: this.$t('apartment_make_contract'),
-        titleHighlight:  apmTitles
+    if (this.isCreateMode) {
+        h.pageInfo = {
+            title: this.$t('apartment_make_contract'),
+            titleHighlight: apmTitles
+        }
+    } else {
+        h.pageInfo = {
+            title: this.$t('edit_apartment'),
+            titleHighlight: apmTitles
+        }
     }
+
 
     return h
 }

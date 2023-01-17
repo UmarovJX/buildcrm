@@ -2,6 +2,8 @@ export default {
     home: {
         title: "Asosiy",
     },
+    edit_apartment: 'Xonadonni tahrirlash',
+    changes_successfully_saved: 'Изменения успешно сохранены.',
     yes_cancel: "Xa, bekor qilish",
     checkout_warning_before_cancel: 'Rasmiylashtirishni bekor qilishni xohlashingizga ishonchingiz komilmi?',
     this_action_cannot_be_undone: 'Ushbu harakatni bekor qilib bo\'lmaydi.',

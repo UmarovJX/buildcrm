@@ -52,7 +52,7 @@
       </b-tab>
     </b-tabs>
 
-    <div class="ch-apartment-overview ch-single-apartment-overview" v-else>
+    <div class="ch-apartment-overview ch-single-apartment-overview" v-else-if="apartments.length === 1">
       <ch-apartment-characters :apartment="apartments[0]"/>
       <ch-contract-details :apartment="apartments[0]"/>
       <div class="ch-payment-details">
@@ -144,7 +144,7 @@ export default {
     window.onwheel = e => {
       this.upEvent = e.deltaY < 0;
     }
-    this.showNavigateToNextBtn = this.apartments[this.overviewApmTabIndex].validate.valid
+    this.showNavigateToNextBtn = this.apartments[this.overviewApmTabIndex]?.validate?.valid
   },
   methods: {
     ...mapMutations('CheckoutV2', ['updateApartment', 'reset']),

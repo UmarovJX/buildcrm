@@ -17,10 +17,10 @@
             </div>
 
             <div v-if="hasComment" class="comments-body">
-                <div v-for="comment in comments" class="comment" :key="comment.id">
+                <div v-for="userComment in comments" class="comment" :key="comment.id">
                     <div class="comment-content">
                         <div class="comment-text">
-                            <p>{{ comment.comment }}</p>
+                            <p>{{ userComment.comment }}</p>
                         </div>
                         <div class="comment-action">
                             <app-dropdown :position-right="true"
@@ -51,17 +51,17 @@
                                 <img v-else :src="require('@/assets/img/no_avatar.png')" alt="">
                             </div>
                             <h5 class="name">
-                                {{ fullName(comment.user) }}
+                                {{ fullName(userComment.user) }}
                                 <span class="name-dot">
                 ·
               </span>
                                 <span class="name-rank">
-                {{ checkLocales(comment.user.role.name) }}
+                {{ checkLocales(userComment.user.role.name) }}
               </span>
                             </h5>
                         </div>
                         <div class="comment-date">
-                            <p class="date">{{ dateFormat(comment) }}</p>
+                            <p class="date">{{ dateFormat(userComment) }}</p>
                         </div>
                     </div>
                 </div>
@@ -145,7 +145,7 @@
                     </h5>
                     <ValidationProvider
                         :name="$t('objects.create.tariff.type_name')"
-                        ref="comment-area"
+                        ref="userComment-area"
                         rules="required|min:2"
                         v-slot="{ errors }"
                         class="w-100"

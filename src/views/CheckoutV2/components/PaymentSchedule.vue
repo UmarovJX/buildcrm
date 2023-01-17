@@ -194,9 +194,12 @@ export default {
       'addNewPaymentSchedule',
       'editPaymentSchedule',
       'deletePaymentSchedule',
+      'changeFirstAttempt'
     ]),
     formatDate: formatDateWithDot,
     editSelectedPayment(payment) {
+      this.disableFirstAttempt()
+
       const {ymd} = dateProperties(payment.month, 'string')
       this.editContext = {
         ...payment,
@@ -212,12 +215,15 @@ export default {
       this.$refs['edit-payment-schedule'].closeModal()
     },
     addPayment(payment) {
+      this.disableFirstAttempt()
       this.addNewPaymentSchedule({apmId: this.apartment.id, payment})
     },
     deletePayment(payment) {
+      this.disableFirstAttempt()
       this.deletePaymentSchedule({apmId: this.apartment.id, payment})
     },
     editPayment() {
+      this.disableFirstAttempt()
       const {time} = dateProperties(this.editContext.month, 'string')
       this.editPaymentSchedule({
         apmId: this.apartment.id,
@@ -227,6 +233,12 @@ export default {
         }
       })
       this.closeEditModal()
+    },
+    disableFirstAttempt() {
+      this.changeFirstAttempt({
+        apmId: this.apartment.id,
+        firstAttempt: false
+      })
     }
   }
 }

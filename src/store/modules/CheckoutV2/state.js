@@ -35,7 +35,8 @@ const schema = {
         prepay: false,
         discount: false,
         monthly: false,
-        contract_number: false
+        contract_number: false,
+        first_attempt: false
     },
     otherDiscount: {
         value: 'other',

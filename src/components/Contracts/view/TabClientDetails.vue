@@ -21,7 +21,7 @@
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
             <label for="phone">{{ $t('phone') }} ({{ $t('main') }})</label>
-            <b-form-input disabled :value="formattingPhone(client.phones[0].phone)" id="phone"/>
+            <b-form-input disabled :value="getClientMajorPhone(client.phones)" id="phone"/>
           </div>
           <div class="client__details_info_card">
             <label for="series">{{ $t('series') }}</label>
@@ -79,7 +79,7 @@ import api from "@/services/api";
 import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 import {XFormSelect, XFormSelectOption} from "@/components/ui-components/form-select";
-import {isNull, isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {isNotUndefinedNullEmptyZero, isNull, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 
 export default {
   name: "TabClientDetails",
@@ -119,6 +119,20 @@ export default {
   },
   methods: {
     datePrettier: (time) => formatDateWithDot(time),
+    getClientMajorPhone(phones) {
+      if (!phones.length) {
+        return ''
+      }
+
+      phones = phones.filter(p => {
+        return isNotUndefinedNullEmptyZero(p.phone)
+            && p.phone.toString().length > 3
+      })
+
+      if (phones.length > 0) {
+        return this.formattingPhone(phones[0].phone)
+      }
+    },
     async getClientInformation() {
       this.startLoading()
       await api.contractV2.fetchClientInfo(this.contractId)

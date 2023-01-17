@@ -2,6 +2,8 @@ export default {
     home: {
         title: 'Главная',
     },
+    edit_apartment: 'Редактировать квартиру',
+    changes_successfully_saved: 'Изменения успешно сохранены.',
     yes_cancel: 'Да, отменить',
     checkout_warning_before_cancel: 'Вы уверены, что хотите отменить оформление?',
     this_action_cannot_be_undone: 'Данное действие нельзя отменить.',

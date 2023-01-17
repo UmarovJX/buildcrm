@@ -215,7 +215,7 @@ export default {
         this.lunch()
         this.findOutputPosition()
       }
-    }
+    },
   },
   mounted() {
     this.lunch()

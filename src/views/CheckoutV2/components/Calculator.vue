@@ -3,10 +3,14 @@
       tag="div"
       :ref="calcRef"
       class="ch-calculator-wrapper"
-      :class="{'ch-another-price-content':showAnotherPriceFields}"
+      :class="{
+        'ch-another-price-content': showAnotherPriceFields,
+        'ch-when-no-initial': paymentDetails.prepay === 0,
+      }"
   >
     <!--? PAYMENT OPTION SELECT  -->
     <validation-provider
+        v-if="paymentOptions.length"
         v-slot="{ errors }"
         rules="required"
         :name="`${ $t('enter_discount') }`"
@@ -41,6 +45,7 @@
           :placeholder="`${ $t('starting_price') }`"
           class="w-100"
           @input="updateIndividualPrice('starting_price')"
+          @focus="focusOnFieldHandler('starting_price')"
       />
     </validation-provider>
 
@@ -61,14 +66,16 @@
           :placeholder="`${ $t('price_m2') }`"
           class="w-100"
           @input="updateIndividualPrice('price_m2')"
+          @focus="focusOnFieldHandler('price_m2')"
       />
     </validation-provider>
     <!--! END OF ANOTHER PRICE FIELDS -->
 
     <!--? INSTALLMENT PLAN  -->
     <validation-provider
+        v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
-        rules="required|min_value:1"
+        rules="required|min_value:0"
         :name="`${ $t('installment') }`"
         class="cw-monthly-payment"
     >
@@ -79,15 +86,17 @@
           mask="##"
           :error="!!errors[0]"
           :placeholder="`${ $t('installment') }`"
+          :disable="allowToShowFullPayment"
           class="w-100"
           autocomplete="off"
           @input="updateMonthlyPaymentPeriod"
+          @focus="focusOnFieldHandler('monthly_payment_period')"
       />
     </validation-provider>
 
     <!--? PREPAYMENT  -->
     <validation-provider
-        v-show="!showAnotherPriceFields"
+        v-if="!showAnotherPriceFields && allowToShowPrepay"
         v-slot="{ errors }"
         rules="required|min_value:1"
         :name="`${ $t('prepayment') }`"
@@ -101,11 +110,13 @@
           :placeholder="`${ $t('prepayment') }`"
           class="w-100"
           @input="editPrepayHandler"
+          @focus="focusOnFieldHandler('prepay')"
       />
     </validation-provider>
 
     <!--? INITIAL_FEE  -->
     <validation-provider
+        v-if="!showAnotherPriceFields && allowToShowInitialPrice"
         v-slot="{ errors }"
         rules="required|min_value:1"
         :name="`${ $t('payments.initial_fee') }`"
@@ -120,11 +131,13 @@
           :placeholder="`${ $t('payments.initial_fee') }`"
           class="w-100"
           @input="editInitialPriceHandler"
+          @focus="focusOnFieldHandler('initial_price')"
       />
     </validation-provider>
 
     <!--? TOTAL_DISCOUNT  -->
     <validation-provider
+        v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
         :name="`${ $t('total_discount') }`"
         class="cw-total-discount"
@@ -138,11 +151,13 @@
           :placeholder="`${ $t('total_discount') }`"
           class="w-100"
           @input="addDiscount"
+          @focus="focusOnFieldHandler('total_discount')"
       />
     </validation-provider>
 
     <!--? DISCOUNT_PER_M2  -->
     <validation-provider
+        v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
         :name="`${ $t('discount_per_m2') }`"
         class="cw-discount-per-m2"
@@ -156,6 +171,7 @@
           :placeholder="`${ $t('discount_per_m2') }`"
           class="w-100"
           @input="addDiscountEachSquare"
+          @focus="focusOnFieldHandler('discount_per_m2')"
       />
     </validation-provider>
 
@@ -209,6 +225,8 @@ import {XFormSelect} from "@/components/ui-components/form-select";
 import {XFormInput} from "@/components/ui-components/form-input";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {mapActions, mapGetters} from "vuex";
+import discount from "@/components/Dashboard/Apartment/Components/Discount.vue";
+import {runConsoleLog} from "@/util/console.util";
 
 
 export default {
@@ -253,7 +271,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('CheckoutV2', ['getApm', 'apartmentArea', 'findApmIdx']),
+    ...mapGetters('CheckoutV2', ['getApm', 'apartmentArea', 'findApmIdx', 'gtsEditFirstAttempt']),
     paymentOptions() {
       if (hasChild(this.apartment)) {
         const discounts = this.apartment.discounts.map((discount, index) => {
@@ -283,23 +301,39 @@ export default {
       return []
     },
     showAnotherPriceFields() {
-      return this.paymentDetails?.discount === 'other'
+      return this.paymentDetails.discount === 'other'
+    },
+    allowToShowPrepay() {
+      return this.paymentDetails.prepay !== 0
+    },
+    allowToShowInitialPrice() {
+      return this.paymentDetails.prepay !== 0
+    },
+    allowToShowFullPayment() {
+      return this.paymentDetails.prepay === 100
     }
   },
   watch: {
-    'apartment.calc.monthly_payment_period'(mthPymPeriod) {
-      if (this.paymentDetails.monthly_payment_period !== mthPymPeriod) {
-        this.paymentDetails.monthly_payment_period = mthPymPeriod
-      }
+    'apartment.calc.monthly_payment_period': {
+      handler(mthPymPeriod) {
+        if (this.paymentDetails.monthly_payment_period !== mthPymPeriod) {
+          this.paymentDetails.monthly_payment_period = mthPymPeriod
+        }
+      },
+      immediate: false
     },
     paymentDetails: {
       handler() {
         this.checkValidation()
       },
-      deep: true
+      deep: true,
+      immediate: false
     }
   },
   methods: {
+    discount() {
+      return discount
+    },
     ...mapActions('CheckoutV2', [
       'updateApmDiscount',
       'setMonthlyPaymentPeriod',
@@ -309,8 +343,15 @@ export default {
       'updateFirstPaymentDate',
       'updatePaymentDate',
       'setIndividualPrice',
-      'updateValidationState'
+      'updateValidationState',
+      'changeFirstAttempt'
     ]),
+    focusOnFieldHandler() {
+      this.changeFirstAttempt({
+        apmId: this.apartment.id,
+        firstAttempt: false
+      })
+    },
     getCalc() {
       return this.getApm({uuid: this.apartment.id}).calc
     },
@@ -326,6 +367,7 @@ export default {
         payment_date,
         other
       } = this.getCalc()
+
 
       this.paymentDetails = {
         monthly_payment_period,
@@ -343,6 +385,11 @@ export default {
     changeDiscount(discountId) {
       const {calc, id: apmId} = this.apartment
       if (calc.discount.id !== discountId) {
+        this.changeFirstAttempt({
+          apmId,
+          firstAttempt: false
+        })
+
         this.updateApmDiscount({
           apmId,
           discountId
@@ -351,15 +398,24 @@ export default {
       }
     },
     updateMonthlyPaymentPeriod(monthly_payment_period) {
-      if (this.getCalc().monthly_payment_period !== monthly_payment_period) {
+      if (this.gtsEditFirstAttempt) {
+        return
+      }
+      const m = monthly_payment_period.toString().trim()
+      const lts = this.getCalc().monthly_payment_period.toString().trim()
+      if (m !== lts && m !== '') {
         this.setMonthlyPaymentPeriod({
           apmId: this.apartment.id,
-          monthly_payment_period
+          monthly_payment_period: parseInt(m)
         })
         this.refreshFieldsValue()
       }
     },
     editPrepayHandler(prepay) {
+      if (this.gtsEditFirstAttempt) {
+        return
+      }
+
       if (this.getCalc().prepay !== prepay) {
         this.editPrepay({
           apmId: this.apartment.id,
@@ -369,6 +425,10 @@ export default {
       }
     },
     editInitialPriceHandler(initial_price) {
+      if (this.gtsEditFirstAttempt) {
+        return
+      }
+
       if (this.getCalc().initial_price !== initial_price) {
         this.editInitialPrice({
           apmId: this.apartment.id,
@@ -378,6 +438,9 @@ export default {
       }
     },
     addDiscount(total_discount) {
+      if (this.gtsEditFirstAttempt) {
+        return
+      }
       if (this.getCalc().total_discount !== total_discount) {
         const discount_per_m2 = fmd(total_discount / this.getCalc().plan.area)
         this.updateDiscountMtd({
@@ -387,6 +450,9 @@ export default {
       }
     },
     addDiscountEachSquare(discount_per_m2) {
+      if (this.gtsEditFirstAttempt) {
+        return
+      }
       if (this.getCalc().discount_per_m2 !== discount_per_m2) {
         const total_discount = fmd(discount_per_m2 * this.getCalc().plan.area)
         this.updateDiscountMtd({
@@ -420,6 +486,9 @@ export default {
       }
     },
     updateIndividualPrice(from = 'starting_price') {
+      if (this.gtsEditFirstAttempt) {
+        return
+      }
       const index = this.findApmIdx(this.apartment.id)
       const {price_m2, starting_price} = this.paymentDetails
       if (from === 'price_m2') {
@@ -472,15 +541,32 @@ export default {
     "cv-cell-7 cv-cell-7"
     "cv-cell-8 cv-cell-8";
   gap: 1rem;
+  height: fit-content;
 
   &.ch-another-price-content {
     grid-template-areas:
-    "cv-cell-1 cv-cell-1"
-    "cv-st-price cv-price-m2"
-    "cv-cell-2 cv-cell-4"
-    "cv-cell-5 cv-cell-6"
-    "cv-cell-7 cv-cell-7"
-    "cv-cell-8 cv-cell-8";
+      "cv-cell-1 cv-cell-1"
+      "cv-st-price cv-price-m2"
+      "cv-cell-7 cv-cell-7"
+      "cv-cell-8 cv-cell-8";
+  }
+
+  //&.ch-when-full-payment {
+  //  grid-template-areas:
+  //    "cv-cell-1 cv-cell-1"
+  //    "cv-cell-3 cv-cell-4"
+  //    "cv-cell-5 cv-cell-6"
+  //    "cv-cell-7 cv-cell-7"
+  //    "cv-cell-8 cv-cell-8";
+  //}
+
+  &.ch-when-no-initial {
+    grid-template-areas:
+      "cv-cell-1 cv-cell-1"
+      "cv-cell-3 cv-cell-4"
+      "cv-cell-5 cv-cell-6"
+      "cv-cell-7 cv-cell-7"
+      "cv-cell-8 cv-cell-8";
   }
 
   .cw-starting-price {
