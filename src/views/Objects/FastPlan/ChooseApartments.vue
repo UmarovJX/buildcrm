@@ -372,6 +372,7 @@ export default {
     async created() {
         await this.fetchContractList()
 
+
         window.onbeforeunload = function (e) {
             e = e || window.event;
             //old browsers
