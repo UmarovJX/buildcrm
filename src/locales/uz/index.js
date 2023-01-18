@@ -951,6 +951,7 @@ export default {
     type_plan: {
         title: "Xonadon rejalari",
         image: "Ko'rinishi",
+        connect_plan: "Bog'langan reja",
         name: "Nomlanishi",
         area: "Maydoni",
         balcony: "Balkon",
@@ -1076,6 +1077,14 @@ export default {
                 add: 'Xonadon rejasini qo\'shish',
                 search: 'Xonadon rejasi nomi',
                 add_image: 'Rasm qo\'shish',
+            },
+            fast_plan:{
+                name: 'Joylashtirish chizmalari',
+                add: 'Chizma rejasini qo\'shing',
+                add_plan: 'Chizma qo\'shing',
+                select_room: 'Kvartirani tanlang',
+                search:  'Fayl nomi yoki tegishli reja',
+                import_text: 'Tuzilish chizmasi uchun .pdf yoki .png faylni yuklang'
             },
 
             apartments: "Xonadonlar",

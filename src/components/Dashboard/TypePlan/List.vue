@@ -14,11 +14,21 @@
                 :placeholder="`${ $t('objects.create.plan.search') }`"
             />
 
-            <BaseButton @click="showAddModal" class="text" :text="$t('objects.create.plan.add')">
-                <template #left-icon>
-                    <i class="fal fa-plus color-gray-900"></i>
-                </template>
-            </BaseButton>
+            <div class="d-flex x-gap-1">
+                <x-button
+                    @click="showDrawingList"
+                    :text="$t('objects.create.fast_plan.name')"
+                    left-icon="activity_zone"
+                />
+                <x-button
+                    @click="showAddModal"
+                    :text="$t('objects.create.plan.add')"
+                    variant="secondary"
+                    left-icon="add"
+                    color-icon="var(--violet-600)"
+                />
+            </div>
+
         </div>
 
         <div>
@@ -102,6 +112,7 @@
                     </template>
                 </b-table>
             </div>
+
             <delete-has-apartment
                 ref="delete-plan-modal"
                 :plan-list="deletePlan.plans"
@@ -113,6 +124,7 @@
             <create-modal
                 ref="create-update"
                 @update-list="updateList"
+                @clear-field="clearModal"
                 :plan="sendPlan"/>
 
         </div>
@@ -136,6 +148,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
 import BaseLoadingContent from "@/components/BaseLoadingContent";
 import AppHeader from "@/components/Header/AppHeader";
+import {XButton} from "@/components/ui-components/button";
 
 export default {
     name: 'TypePlanList',
@@ -147,7 +160,8 @@ export default {
         BaseButton,
         BaseEditIcon,
         DeleteHasApartment,
-        AppHeader
+        AppHeader,
+        XButton
     },
     data() {
         return {
@@ -193,7 +207,13 @@ export default {
                 message: '',
                 removePlan: {}
             },
-            sendPlan: {},
+            sendPlan: {
+                name: null,
+                area: null,
+                balcony_area: null,
+                images: [],
+                plan_id: null,
+            },
             loading: false,
         }
     },
@@ -209,6 +229,15 @@ export default {
         imagePath(item) {
             if (item && item.images[0]) return item.images[0].path
             return null
+        },
+        clearModal() {
+            this.sendPlan = {
+                name: null,
+                area: null,
+                balcony_area: null,
+                images: [],
+                plan_id: null,
+            }
         },
         async deleteTypePlan(item) {
             const objectId = this.$route.params.id
@@ -251,6 +280,10 @@ export default {
         },
         showAddModal() {
             this.$refs['create-update'].openPlanModal()
+        },
+        showDrawingList() {
+            const objectId = this.$route.params.id
+            this.$router.push({name: 'fast_plan', params: {object: objectId}})
         },
         successfullyDeletePlan() {
             this.closeDeletePlanModal()
@@ -308,6 +341,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 1rem;
 }
 
 ::v-deep .row__head__bottom-border {

@@ -165,7 +165,7 @@ export default {
   font-family: Inter, sans-serif;
   display: flex;
   align-items: center;
-  justify-content: center;
+  //justify-content: center;
   column-gap: .25rem;
 
   &-link {

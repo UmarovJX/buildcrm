@@ -9,7 +9,7 @@
         <base-button
             @click="makeContract"
             design="violet400"
-            :text="`${$t('create_agree_apartments')}`"
+            :text="`${btnText}`|| `${$t('create_agree_apartments')}`"
         />
     </div>
 </template>
@@ -28,6 +28,10 @@ export default {
         chosen: {
             type: Number,
             default: 0
+        },
+        btnText: {
+            type: String,
+            default: ''
         }
     },
     emits: ['go-to-contract'],

@@ -921,6 +921,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 @import "@/assets/scss/utils/pagination.scss";
 @import "@/assets/scss/utils/b-table-redesign.scss";
 

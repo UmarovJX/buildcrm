@@ -34,6 +34,7 @@ import Contracts from "./modules/contract";
 import Debtors from "./modules/debtors";
 import Settings from "./modules/settings";
 import DebtorsImport from "./modules/debtors-import";
+import FastPlan from "./modules/fast-plan";
 import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
 import notify from "@/store/modules/Notification/index"
@@ -80,6 +81,7 @@ export default new Vuex.Store({
         Debtors,
         Settings,
         DebtorsImport,
+        FastPlan,
         Promo,
     },
 })

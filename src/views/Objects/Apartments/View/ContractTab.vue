@@ -687,8 +687,8 @@ input[type="number"]
         display: none
 
     &-row
-    .property
-        text-transform: none
+        .property
+            text-transform: none
 
 
 .peculiarities

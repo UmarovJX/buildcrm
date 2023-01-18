@@ -10,7 +10,6 @@ export default {
 
     mutations: {
         updateDebtors(state, debtors) {
-            console.log(debtors, 'debtors update');
             state.debtors = debtors;
         },
 
@@ -19,7 +18,6 @@ export default {
         },
 
         updateDebtorsExcel(state, debtorsExcelSheets) {
-            console.log(debtorsExcelSheets, 'debtorsExcelSheets update');
             state.debtorsExcelSheets = debtorsExcelSheets
         }
     },
