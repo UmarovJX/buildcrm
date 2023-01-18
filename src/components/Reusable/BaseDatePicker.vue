@@ -10,6 +10,7 @@
         type="date"
         :value-type="valueType"
         :format="format"
+        lang="en"
         :placeholder="placeholder"
         v-model="dateValue"
         class="date-picker"
@@ -36,6 +37,7 @@
 import "vue2-datepicker/index.css";
 import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
 import DatePicker from "vue2-datepicker";
+import 'vue2-datepicker/locale/en';
 
 export default {
   name: "BaseDatePicker",

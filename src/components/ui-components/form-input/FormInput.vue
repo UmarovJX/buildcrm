@@ -22,6 +22,8 @@
         :placeholder="placeholder"
         :field-style="inputFieldStyle"
         :precision="precision"
+        :max="max"
+        :min="min"
         ref="base-input"
         separator="space"
         currency-symbol-position="suffix"
@@ -129,6 +131,23 @@ export default {
     autocomplete: {
       type: String,
       default: 'on'
+    },
+    /**
+     * Maximum value allowed.
+     */
+    max: {
+      type: Number,
+      default: Number.MAX_SAFE_INTEGER || 9007199254740991,
+      required: false,
+    },
+
+    /**
+     * Minimum value allowed.
+     */
+    min: {
+      type: Number,
+      default: Number.MIN_SAFE_INTEGER || -9007199254740991,
+      required: false
     },
     margin: cssDefaultProperty,
     padding: cssDefaultProperty,

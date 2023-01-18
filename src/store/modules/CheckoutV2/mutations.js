@@ -115,4 +115,10 @@ export default {
         state.apartments[idx].contract_number = contractNumber
         state.apartments[idx].edit.contract_number = true
     },
+    setCountryList(state, countries) {
+        state.countryList = countries
+    },
+    setClientTypeList(state, clientTypes) {
+        state.clientTypeList = clientTypes
+    }
 }

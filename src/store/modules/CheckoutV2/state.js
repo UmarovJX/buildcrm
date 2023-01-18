@@ -60,11 +60,13 @@ const schema = {
         untouched: true,
         valid: true,
         validated: false,
-    }
+    },
 }
 
 export default {
     schema,
+    countryList: [],
+    clientTypeList: [],
     apartments: [],
     created_by: null,
     contract_number: null,

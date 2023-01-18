@@ -61,7 +61,7 @@ import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
 import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
 import ActivityLog from "@/components/Contracts/view/ActivityLog";
 import Settings from "@/views/Settings/Index.vue"
-
+import Editor from "@/views/Editor.vue";
 
 const routes = [
     {
@@ -75,6 +75,14 @@ const routes = [
                 name: "home",
                 component: Dashboard,
             },
+
+            {
+                /* HOME */
+                path: "/editor",
+                name: "editor",
+                component: Editor,
+            },
+
 
             {
                 path: '/checkout_v2/:object/apartment/:id/order',

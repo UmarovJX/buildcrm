@@ -5,7 +5,7 @@
       class="ch-calculator-wrapper"
       :class="{
         'ch-another-price-content': showAnotherPriceFields,
-        'ch-when-no-initial': paymentDetails.prepay === 0,
+        'ch-when-no-initial': paymentDetails.prepay === 0
       }"
   >
     <!--? PAYMENT OPTION SELECT  -->
@@ -73,7 +73,6 @@
 
     <!--? INSTALLMENT PLAN  -->
     <validation-provider
-        v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
         rules="required|min_value:0"
         :name="`${ $t('installment') }`"
@@ -106,6 +105,7 @@
           type="number"
           v-model="paymentDetails.prepay"
           :label="true"
+          :max="100"
           :error="!!errors[0]"
           :placeholder="`${ $t('prepayment') }`"
           class="w-100"
@@ -130,6 +130,7 @@
           :error="!!errors[0]"
           :placeholder="`${ $t('payments.initial_fee') }`"
           class="w-100"
+          :disable="disableInitialPrice"
           @input="editInitialPriceHandler"
           @focus="focusOnFieldHandler('initial_price')"
       />
@@ -304,12 +305,16 @@ export default {
       return this.paymentDetails.discount === 'other'
     },
     allowToShowPrepay() {
-      return this.paymentDetails.prepay !== 0
+      // return this.paymentDetails.prepay !== 0
+      return true
     },
     allowToShowInitialPrice() {
       return this.paymentDetails.prepay !== 0
     },
     allowToShowFullPayment() {
+      return this.paymentDetails.prepay === 100
+    },
+    disableInitialPrice() {
       return this.paymentDetails.prepay === 100
     }
   },
@@ -546,6 +551,7 @@ export default {
   &.ch-another-price-content {
     grid-template-areas:
       "cv-cell-1 cv-cell-1"
+      "cv-cell-2 cv-cell-2"
       "cv-st-price cv-price-m2"
       "cv-cell-7 cv-cell-7"
       "cv-cell-8 cv-cell-8";
@@ -563,7 +569,8 @@ export default {
   &.ch-when-no-initial {
     grid-template-areas:
       "cv-cell-1 cv-cell-1"
-      "cv-cell-3 cv-cell-4"
+      "cv-cell-2 cv-cell-2"
+      "cv-cell-3 cv-cell-3"
       "cv-cell-5 cv-cell-6"
       "cv-cell-7 cv-cell-7"
       "cv-cell-8 cv-cell-8";

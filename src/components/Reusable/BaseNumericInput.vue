@@ -21,6 +21,7 @@
 
 <script>
 import accounting from 'accounting-js'
+import {runConsoleLog} from "@/util/console.util";
 
 export default {
   name: 'VueNumeric',
@@ -181,7 +182,7 @@ export default {
 
   data: () => ({
     amount: '',
-    startTyping: false
+    startTyping: false,
   }),
 
   computed: {
@@ -402,7 +403,12 @@ export default {
     onInputHandler() {
       // this.process(this.amountNumber)
       const output = this.unformat(this.amount)
-      this.$emit('input', output)
+      const beforeNext = (this.amount - this.amount % 10) / 10
+      if (output > this.max) {
+        this.amount = this.format(beforeNext)
+      }
+
+      this.$emit('input', this.unformat(this.amount))
     },
 
     /**
