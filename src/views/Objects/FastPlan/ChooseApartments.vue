@@ -40,24 +40,24 @@
                         class="mb-4"
                         v-model="filter.floor"
                         :multiple="true"
-                        :options="filterOptions.floor"
-                        :placeholder="$t('contracts.object_name')"
+                        :options="filterOptions.floors"
+                        :placeholder="$t('apartments.list.floor')"
                         @change="inputFilterObject"
                     />
                     <x-form-select
                         class="mb-4"
-                        v-model="filter.floor"
+                        v-model="filter.area"
                         :multiple="true"
-                        :options="filterOptions.entrance"
-                        :placeholder="$t('contracts.object_name')"
+                        :options="filterOptions.area"
+                        :placeholder="$t('apartments.list.area')"
                         @change="inputFilterObject"
                     />
                     <x-form-select
                         class="mb-4"
                         v-model="filter.room"
                         :multiple="true"
-                        :options="filterOptions.entrance"
-                        :placeholder="$t('contracts.object_name')"
+                        :options="filterOptions.rooms"
+                        :placeholder="$t('apartments.list.rooms')"
                         @change="inputFilterObject"
                     />
                 </div>
@@ -82,7 +82,6 @@
             :sort-by="sortBy"
             :sort-desc="sortDesc"
             :empty-text="$t('no_data')"
-            @sort-changed="sortingChanged"
             :selectable="selectable"
             select-mode="single"
         >
@@ -358,20 +357,20 @@ export default {
             checkAll: false,
             filter: {
                 floor: [],
-                entrance: [],
-                room: []
+                area: [],
+                room: [],
             },
             filterOptions: {
-                floor: [],
-                entrance: [],
-                room: []
+                floors: [],
+                area: [],
+                rooms: []
             },
         }
     },
 
     async created() {
         await this.fetchContractList()
-
+        await this.getFilterFields()
 
         window.onbeforeunload = function (e) {
             e = e || window.event;
@@ -515,6 +514,22 @@ export default {
         async fetchContractList() {
             this.showLoading = true
 
+            let query = sortObjectValues(this.query)
+            const queryArrayFareList = [
+                'area',
+                'rooms',
+                'floors',
+            ]
+
+            const queryPair = Object.entries(query)
+            queryPair.forEach(([key, value]) => {
+                const isNotPrimitive = queryArrayFareList.includes(key)
+                const valueFare = isPrimitiveValue(value)
+                if (isNotPrimitive && valueFare) {
+                    query[key] = [value]
+                }
+            })
+
 
             const {object} = this.$route.params
             this.checkAll = false
@@ -547,6 +562,32 @@ export default {
                 })
         },
 
+
+        async getFilterFields() {
+            const {object} = this.$route.params
+
+            await api.objectsV2.fetchObjectFields(object)
+                .then((res) => {
+                    this.filterOptions = res.data
+                    delete this.filterOptions['blocks']
+                    Object.entries(this.filterOptions).forEach(([key, value]) => {
+                        if (value) {
+                            value.forEach((ch, index) => {
+                                if (ch && ch !== 'null') {
+                                    this.filterOptions[key][index] = {value: ch, text: ch}
+                                }
+                            })
+                        }
+                    })
+                }).catch((err) => {
+                    this.toastedWithErrorCode(err)
+                })
+                .finally(() => {
+                    this.showLoading = false
+                })
+        },
+
+
         changeFetchLimit() {
             const query = {
                 ...this.query, page: this.query.page || 1
@@ -571,50 +612,29 @@ export default {
             this.replaceRouter({...this.query, page})
         },
 
-        sortingChanged(val) {
-            this.showLoading = true
-            this.filter.filtered = true;
-            this.filter.sort_by = val.sortBy;
-            this.filter.order_by = val.sortDesc ? "desc" : "asc";
 
-            this.$router.push({
-                name: "apartments",
-                params: this.$route.params.object,
-                query: this.query,
-            }).then(() => {
-                const element = document.getElementById("my-table");
-                element.scrollIntoView();
-            });
-
+        async filteredForm() {
+            // Object.entries(this.filter).forEach(([keyField, value]) => {
+            //     if (value && value.length) {
+            //         value.forEach((item) => {
+            //             if (item) {
+            //                 this.query[keyField] = item
+            //             }
+            //         })
+            //     }
+            // })
         },
 
-        // async filteredForm(event) {
-        //     this.filter = event;
-        //     this.selected.view = false;
-        //     this.selected.values = [];
-        //     this.selectable = true;
-        //     this.scrollActive = true;
-        //     this.page = 1;
-        //     this.filter.page = 1;
-        //     this.currentPage = this.filter.page;
-        //
-        //     await this.$router.push({
-        //         name: "apartments",
-        //         query: this.filter,
-        //     });
-        // },
-
         filterItems() {
+            this.filteredForm()
             this.replaceRouter()
-            this.$emit('sort-items', this.filter)
         },
 
         resetFilterFields() {
-            this.filter.type = null
-            this.filter.action = null
-            this.filter.user = null
-            this.query = this.filter
-            this.$emit('reset-filter-fields')
+            // this.filter.type = null
+            // this.filter.action = null
+            // this.filter.user = null
+            // this.query = this.filter
         },
 
         setFilterProperties() {
