@@ -64,6 +64,7 @@ import Settings from "@/views/Settings/Index";
 import FastPlanList from "@/views/Objects/FastPlan/List";
 import AddDrawing from "@/views/Objects/FastPlan/AddDrawing.vue";
 
+import Editor from "@/views/Editor.vue";
 
 const routes = [
     {
@@ -77,6 +78,14 @@ const routes = [
                 name: "home",
                 component: Dashboard,
             },
+
+            {
+                /* HOME */
+                path: "/editor",
+                name: "editor",
+                component: Editor,
+            },
+
 
             {
                 path: '/checkout_v2/:object/apartment/:id/order',

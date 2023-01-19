@@ -122,13 +122,12 @@
         <!--? CLIENT_PASSPORT_ID  -->
         <validation-provider
             v-slot="{ errors }"
-            rules="required|min:9"
+            rules="required|min:5"
             :name="`${ $t('passport_series_example') }`"
         >
           <x-form-input
               :label="true"
               class="w-100"
-              mask="AA#######"
               :error="!!errors[0]"
               :placeholder="`${ $t('passport_series_example') }`"
               v-model="personalData.passport_series"
@@ -464,8 +463,9 @@ import {
 } from "@/util/language-helper"
 import api from "@/services/api";
 import {formatDateToYMD} from "@/util/calendar";
-import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import {isNotUndefinedNullEmptyZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {runConsoleLog} from "../../../util/console.util";
 
 export default {
   name: "CheckoutClientDetails",
@@ -537,6 +537,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations('CheckoutV2', ['setCountryList', 'setClientTypeList']),
     clientDebounce() {
       if (this.personalData.passport_series) {
         if (this.timeoutId !== null) {
@@ -619,7 +620,8 @@ export default {
       this.personalData = {
         ...this.emptyClientProperties,
         subject: this.personalData.subject,
-        passport_series: this.personalData.passport_series
+        passport_series: this.personalData.passport_series,
+        extra_phones: []
       }
     },
     translateLatin(type, event) {
@@ -690,6 +692,7 @@ export default {
     async getCountriesList() {
       try {
         const {data: countriesList} = await api.settingsV2.fetchCountries()
+        this.setCountryList(countriesList)
         this.countriesList = countriesList.map(cty => (
             {
               value: cty.id,
@@ -703,6 +706,7 @@ export default {
     async getClientTypesList() {
       try {
         const {data: clientTypesList} = await api.settingsV2.getClientTypes()
+        this.setClientTypeList(clientTypesList)
         this.clientTypesList = clientTypesList
       } catch (e) {
         this.toastedWithErrorCode(e)

@@ -123,6 +123,8 @@ export default {
             case 'fixed':
             case 'promo':
             case 'addition': {
+                runConsoleLog(gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx))
+                runConsoleLog(gts.getPrepay(idx))
                 return gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
             }
             case 'other': {
@@ -169,7 +171,7 @@ export default {
         calc.monthly_payment = fmd(gts.getMonthlyPaymentAmount(idx))
         calc.initial_price = fmd(gts.getInitialPrice(idx))
         calc.remainder = fmd(gts.getRemainPrice(idx))
-        calc.base_price = fmd(gts.getBasePrice(idx))
+        calc.base_price = fmd(gts.getPrice(idx))
         calc.total_discount = gts.getDiscount(idx)
         return calc
     },

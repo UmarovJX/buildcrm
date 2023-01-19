@@ -85,6 +85,7 @@ import {
   PROP_TYPE_ARRAY_OBJECT_NUMBER_STRING
 } from "@/constants/props";
 import {isArray, isNull, isObject, isPrimitive, isUndefinedOrNull} from "@/util/inspect";
+import {runConsoleLog} from "@/util/console.util";
 
 export default {
   name: "XFormSelect",
@@ -276,6 +277,7 @@ export default {
             this.selected[this.valueField] = _dValue
           } else {
             this.selected = _fChild.option
+            this.inactiveAllOption()
             _fChild.makeActive()
           }
         }

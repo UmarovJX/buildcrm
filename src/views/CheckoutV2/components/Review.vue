@@ -67,7 +67,9 @@ export default {
   },
   computed: {
     ...mapState('CheckoutV2', {
-      clientInfo: 'clientData'
+      clientInfo: 'clientData',
+      clientTypeList: 'clientTypeList',
+      countryList: 'countryList'
     }),
     ...mapGetters('CheckoutV2', {
       apartments: 'gtsApartments',
@@ -92,6 +94,8 @@ export default {
 
         const fullName = `${name.l} ${name.f} ${name.m}`
 
+        const country = this.countryList.find(cty => cty.id === this.clientInfo.attributes.country_id)
+
         const details = [
           {
             title: 'person_type',
@@ -100,7 +104,7 @@ export default {
           },
           {
             title: 'nation',
-            content: this.clientInfo.attributes.country_id,
+            content: country.name[locale],
             icon: 'flag',
           },
           {

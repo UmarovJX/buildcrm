@@ -123,7 +123,7 @@ export default {
                 calc.total = payments_details.total
                 calc.initial_price = payments_details.initial_payment
                 calc.remainder = calc.total - calc.initial_price
-                calc.base_price = fmd(gts.getBasePrice(idx))
+                calc.base_price = fmd(gts.getPrice(idx))
 
                 state.apartments[i].edit.initial_price = true
                 state.apartments[i].edit.monthly = true
@@ -326,7 +326,7 @@ export default {
     monthlyAdditionSetter({state}, {idx, payment}) {
         state.apartments[idx].calc.credit_months.push({
             ...payment,
-            month: formatDateWithDot(new Date(payment.month))
+            month: payment.month
         })
     },
     creditMonthsSetter({getters: gts, dispatch}, {uuid}) {
@@ -480,7 +480,10 @@ export default {
         dispatch('reInitCalc', {idx, payment})
 
         if (type === 'monthly') {
-            commit('setMonth', gts.getCreditMonths(idx).length)
+            commit('setMonth', {
+                idx,
+                monthly_payment_period: gts.getCreditMonths(idx).length
+            })
         }
 
         if (type === 'initial') {
