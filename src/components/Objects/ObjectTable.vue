@@ -702,7 +702,7 @@ export default {
         },
         changeFetchLimit() {
             const query = {
-                ...this.query, page: 1
+                ...this.query, page: this.query.page || 1
             }
             const limit = this.showByValue
             this.pushRouter({...query, limit})

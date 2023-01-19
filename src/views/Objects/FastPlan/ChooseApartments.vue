@@ -170,7 +170,7 @@
 
         <BaseCheckboxModal
             :chosen="checkedApartments.length"
-            @go-to-contract="makeContract"
+            @go-to-contract="createDrawing"
             btn-text="Добавить планировку"
         />
 
@@ -417,13 +417,7 @@ export default {
         backPlan() {
             this.$router.go(-1)
         },
-        async makeContract() {
-            const ids = this.checkoutList.map(ch => ch.id)
-            this.startLoading()
-            await this.createDrawing(ids)
-            await this.finishLoading()
-        },
-        async createDrawing(ids) {
+        async createDrawing() {
             const objectId = this.$route.params.object
             const body = new FormData()
             body.append('name', this.getFastPlanName)
@@ -431,8 +425,8 @@ export default {
                 body.append('image', this.getFastPlanImage)
             }
             body.append('plan_id', this.$route.params.plan)
-            ids.forEach((id, index) => {
-                body.append(`apartments[${index}]`, id)
+            this.checkoutList.forEach((item, index) => {
+                body.append(`apartments[${index}]`, item.id)
             })
 
             if (!this.getFastPlanId) {
@@ -445,8 +439,10 @@ export default {
                                     object: objectId
                                 }
                             })
+                        this.$store.dispatch('notify/openNotify', {type: 'success', duration: 3000})
                     })
-                    .error((err) => {
+                    .catch((err) => {
+                        this.$store.dispatch('notify/openNotify', {type: 'error', duration: 3000})
                         return err
                     })
             } else {
@@ -459,8 +455,10 @@ export default {
                                     object: objectId
                                 }
                             })
+                        this.$store.dispatch('notify/openNotify', {type: 'success', duration: 3000})
                     })
-                    .error((err) => {
+                    .catch((err) => {
+                        this.$store.dispatch('notify/openNotify', {type: 'error', duration: 3000})
                         return err
                     })
             }
