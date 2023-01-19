@@ -97,7 +97,7 @@
     <validation-provider
         v-if="!showAnotherPriceFields && allowToShowPrepay"
         v-slot="{ errors }"
-        rules="required|min_value:1"
+        rules="required|min_value:0"
         :name="`${ $t('prepayment') }`"
         class="cw-prepayment"
     >
@@ -116,7 +116,7 @@
 
     <!--? INITIAL_FEE  -->
     <validation-provider
-        v-if="!showAnotherPriceFields && allowToShowInitialPrice"
+        v-if="allowToShowInitialPrice"
         v-slot="{ errors }"
         rules="required|min_value:1"
         :name="`${ $t('payments.initial_fee') }`"
@@ -551,7 +551,7 @@ export default {
   &.ch-another-price-content {
     grid-template-areas:
       "cv-cell-1 cv-cell-1"
-      "cv-cell-2 cv-cell-2"
+      "cv-cell-2 cv-cell-4"
       "cv-st-price cv-price-m2"
       "cv-cell-7 cv-cell-7"
       "cv-cell-8 cv-cell-8";
