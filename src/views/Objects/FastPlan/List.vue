@@ -198,7 +198,7 @@ export default {
                 },
                 {
                     key: "apartments_count",
-                    label: this.$t('type_plan.connect_plan'),
+                    label: this.$t('objects.create.count_apartments'),
                 },
                 {
                     key: "actions",

@@ -192,8 +192,8 @@ export default {
                     label: this.$t('type_plan.plan'),
                 },
                 {
-                    key: "rooming",
-                    label: this.$t('type_plan.rooming'),
+                    key: "apartments_count",
+                    label: this.$t('objects.create.count_apartments'),
                 },
                 {
                     key: "area",
