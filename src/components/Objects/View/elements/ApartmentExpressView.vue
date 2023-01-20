@@ -41,7 +41,7 @@
             @for-print="getCalc"
         />
 
-        <ApartmentComments
+        <apartment-comments
             v-if="apartmentCommentsPermission.view"
             :comments-data="commentsData"
             @update-comments="getComments"
