@@ -22,7 +22,7 @@ class Plans extends Core {
         return this.put(`objects/${objectId}/plans/${planId}/images`, body)
     }
 
-    createPlan(objectId,  body) {
+    createPlan(objectId, body) {
         return this.post(`objects/${objectId}/plans`, body)
     }
 
@@ -30,8 +30,8 @@ class Plans extends Core {
         return this.post(`objects/${objectId}/plans/${planId}`, body)
     }
 
-    fastPlanList(objectId) {
-        return this.get(`objects/${objectId}/drawings`)
+    fastPlanList(objectId, params) {
+        return this.get(`objects/${objectId}/drawings`, {params})
     }
 
     createFastPlan(objectId, body) {

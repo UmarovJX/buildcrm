@@ -1081,6 +1081,7 @@ export default {
             fast_plan:{
                 name: 'Joylashtirish chizmalari',
                 add: 'Chizma rejasini qo\'shing',
+                choose_apartments: 'Tegishli kvartirani tanlang',
                 add_plan: 'Chizma qo\'shing',
                 select_room: 'Kvartirani tanlang',
                 search:  'Fayl nomi yoki tegishli reja',

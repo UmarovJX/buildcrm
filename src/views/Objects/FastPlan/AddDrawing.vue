@@ -253,7 +253,8 @@ export default {
                 })
         },
         backDrawing() {
-            this.$route.push({name: 'objects'})
+            const {object} = this.$route.params
+            this.$router.push({name: 'fast_plan', params: {object}})
         },
         imagePath(item) {
             if (item && item.images[0]) return item.images[0].path

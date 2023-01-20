@@ -16,6 +16,8 @@
             <!--  Search Content  -->
             <base-search-input
                 class="base-search-input w-100"
+                :value="searchPlan"
+                @trigger-input="searchByPlan"
                 :placeholder="`${ $t('objects.create.fast_plan.search') }`"
             />
 
@@ -118,6 +120,7 @@ import AppBreadcrumb from "@/components/AppBreadcrumb.vue";
 import {XCircularBackground} from "@/components/ui-components/circular-background";
 import {XIcon} from "@/components/ui-components/material-icons";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
+import {sortObjectValues} from "@/util/reusable";
 
 export default {
     name: 'FastPlanList',
@@ -206,11 +209,25 @@ export default {
             loading: false,
 
             //last
+            searchPlan: '',
             fastList: [],
         }
     },
     computed: {
         ...mapGetters(["getLoading", "getPermission"]),
+        query() {
+            return Object.assign({}, this.$route.query)
+        },
+    },
+    watch: {
+        '$route.query': {
+            handler(value) {
+                if (value) {
+                    this.fetchFastPlans()
+                }
+            },
+            deep: true,
+        },
     },
     mounted() {
         this.fetchFastPlans();
@@ -224,7 +241,7 @@ export default {
         async fetchFastPlans() {
             this.showLoading = true
             const objectId = this.$route.params.object
-            await api.plans.fastPlanList(objectId)
+            await api.plans.fastPlanList(objectId, this.query)
                 .then((res) => {
                     this.fastList = res.data
                 })
@@ -232,6 +249,15 @@ export default {
                 .finally(() => {
                     this.showLoading = false
                 })
+        },
+        searchByPlan(event) {
+            this.searchPlan = event
+            event ? this.query['search'] = event : delete this.query['search']
+            this.pushRouter(this.query)
+        },
+        pushRouter(query) {
+            const sortQuery = sortObjectValues(query)
+            this.$router.push({query: sortQuery})
         },
         backObject() {
             const {object} = this.$route.params
