@@ -1,6 +1,6 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
-import id from "vue2-datepicker/locale/es/id";
+import {setAppropriateCreditMonth} from "@/util/checkout";
 
 export default {
     setFunctionType(state, route) {
@@ -23,25 +23,26 @@ export default {
         state.created_by = created_by
     },
     initApartments(state, {orders}) {
-        state.apartments = orders.map(({status, contract_number, apartment, uuid}) => {
-            const discount = apartment.discounts[0]
+        state.apartments = orders.map(({status, contract_number, apartment: apm, uuid}) => {
+            const discount = apm.discounts[0]
             return {
                 status,
                 contract_date: new Date(),
                 contract_number,
                 order_uuid: uuid,
-                id: apartment.uuid,
-                ...apartment,
+                id: apm.uuid,
+                ...apm,
                 calc: {
                     ...state.schema.calc,
-                    price: apartment.price,
-                    price_m2: apartment.price_m2,
-                    plan: apartment.plan,
+                    price: apm.price,
+                    price_m2: apm.price_m2,
+                    plan: apm.plan,
                     discount,
+                    monthly_payment_period: setAppropriateCreditMonth(state, apm, discount),
                     prepay: discount.prepay,
                     other: {
-                        starting_price: apartment.price,
-                        price_m2: apartment.price_m2
+                        starting_price: apm.price,
+                        price_m2: apm.price_m2
                     }
                 },
                 edit: state.schema.edit,

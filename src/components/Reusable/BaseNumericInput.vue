@@ -243,7 +243,7 @@ export default {
      */
     valueNumber(newValue) {
       if (newValue === 0) {
-        this.amount = null
+        this.amount = '0'
       } else if (this.$refs.numeric !== document.activeElement) {
         this.amount = this.format(newValue)
       }

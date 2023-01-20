@@ -5,7 +5,6 @@
       class="ch-calculator-wrapper"
       :class="{
         'ch-another-price-content': showAnotherPriceFields,
-        'ch-when-no-initial': paymentDetails.prepay === 0
       }"
   >
     <!--? PAYMENT OPTION SELECT  -->
@@ -95,7 +94,7 @@
 
     <!--? PREPAYMENT  -->
     <validation-provider
-        v-if="!showAnotherPriceFields && allowToShowPrepay"
+        v-if="allowToShowPrepay"
         v-slot="{ errors }"
         rules="required|min_value:0"
         :name="`${ $t('prepayment') }`"
@@ -118,7 +117,7 @@
     <validation-provider
         v-if="allowToShowInitialPrice"
         v-slot="{ errors }"
-        rules="required|min_value:1"
+        rules="required|min_value:0"
         :name="`${ $t('payments.initial_fee') }`"
         class="cw-initial-fee"
     >
@@ -309,7 +308,8 @@ export default {
       return true
     },
     allowToShowInitialPrice() {
-      return this.paymentDetails.prepay !== 0
+      // return this.paymentDetails.prepay !== 0
+      return true
     },
     allowToShowFullPayment() {
       return this.paymentDetails.prepay === 100
@@ -551,10 +551,18 @@ export default {
   &.ch-another-price-content {
     grid-template-areas:
       "cv-cell-1 cv-cell-1"
-      "cv-cell-2 cv-cell-4"
+      "cv-cell-2 cv-cell-2"
+      "cv-cell-3 cv-cell-4"
       "cv-st-price cv-price-m2"
       "cv-cell-7 cv-cell-7"
       "cv-cell-8 cv-cell-8";
+
+    //"cv-cell-1 cv-cell-1"
+    //"cv-cell-2 cv-cell-2"
+    //"cv-cell-3 cv-cell-4"
+    //"cv-cell-5 cv-cell-6"
+    //"cv-cell-7 cv-cell-7"
+    //"cv-cell-8 cv-cell-8";
   }
 
   //&.ch-when-full-payment {

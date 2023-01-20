@@ -52,7 +52,7 @@
               <b-dropdown-item
                   v-if="editPermission"
                   :to="{
-                    name:'checkout_v2_update',
+                    name:'checkout-v2-update',
                     params:{
                       id:$route.params.id,
                       object:order.object.id
@@ -220,7 +220,7 @@
           </base-button>
           <base-button
               :fixed="true"
-              @click="deleteContact"
+              @click="deleteContract"
               :text="`${ $t('yes_delete') }`"
               design="violet-gradient"
           >
@@ -494,8 +494,9 @@ export default {
       // deleteComment
       this.$refs['payment-deletion-warning'].closeModal()
     },
-    async deleteContact() {
-      if (this.$refs['comment'].flags.valid) {
+    async deleteContract() {
+      const isValid = await this.$refs.userComment.validate()
+      if (isValid) {
         const {id} = this.$route.params
         const body = {
           comment: this.deleteComment

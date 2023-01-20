@@ -1,8 +1,8 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
-import {formatDateWithDot} from "@/util/reusable";
 import {runConsoleLog} from "@/util/console.util";
 import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
+import {setAppropriateCreditMonth} from "@/util/checkout";
 
 export default {
     initEditItems({state, getters: gts, commit, dispatch}, data) {
@@ -10,30 +10,35 @@ export default {
             const {payments_details} = data
 
             if (data.status === 'sold') {
-                state.apartments = data.apartments.map(apm => ({
-                    ...apm,
-                    status: data.status,
-                    contract_number: data.contract_number,
-                    contract_date: data.contract_date,
-                    order_uuid: data.id,
-                    uuid: apm.id,
-                    calc: {
-                        ...state.schema.calc,
-                        first_payment_date: data.first_payment_date,
-                        payment_date: data.payment_date,
-                        price: apm.price,
-                        price_m2: apm.price_m2,
-                        plan: apm.plan,
+                state.apartments = data.apartments.map(apm => {
+                    const discount = apm.discounts[0]
+
+                    return {
+                        ...apm,
+                        status: data.status,
                         contract_number: data.contract_number,
                         contract_date: data.contract_date,
-                        discount: apm.discounts[0],
-                        prepay: apm.discounts[0].prepay,
-                        other: {
-                            starting_price: apm.price,
-                            price_m2: apm.price_m2
+                        order_uuid: data.id,
+                        uuid: apm.id,
+                        calc: {
+                            ...state.schema.calc,
+                            first_payment_date: data.first_payment_date,
+                            payment_date: data.payment_date,
+                            price: apm.price,
+                            price_m2: apm.price_m2,
+                            plan: apm.plan,
+                            contract_number: data.contract_number,
+                            contract_date: data.contract_date,
+                            discount: apm.discounts[0],
+                            prepay: apm.discounts[0].prepay,
+                            monthly_payment_period: setAppropriateCreditMonth(state, apm, discount),
+                            other: {
+                                starting_price: apm.price,
+                                price_m2: apm.price_m2
+                            }
                         }
                     }
-                }))
+                })
                 return
             }
 
@@ -62,6 +67,7 @@ export default {
                         monthly_payment_period: payments_details.month,
                         discount,
                         prepay: discount.prepay,
+
                         other: {
                             starting_price: apartment.price,
                             price_m2: apartment.price_m2

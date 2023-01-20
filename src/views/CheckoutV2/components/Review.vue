@@ -81,8 +81,51 @@ export default {
         return []
       }
 
+      let details = []
+
       if (this.clientInfo.subject === 'legal') {
-        return []
+        details = [
+          {
+            title: 'person_type',
+            content: 'legal_entity',
+            icon: 'business_center',
+          },
+          {
+            title: 'bank',
+            content: this.clientInfo.attributes.bank_name,
+            icon: 'account_balance',
+          },
+          {
+            title: 'account_number',
+            content: this.clientInfo.attributes.payment_number,
+            icon: 'account_balance_wallet',
+          },
+          {
+            title: 'mfo',
+            content: this.clientInfo.attributes.mfo,
+            icon: 'numbers',
+          },
+          {
+            title: 'inn',
+            content: this.clientInfo.attributes.inn,
+            icon: 'numbers',
+          },
+          {
+            title: 'ndc',
+            content: this.clientInfo.attributes.nds,
+            icon: 'numbers',
+          },
+          {
+            title: 'fax',
+            content: this.clientInfo.attributes.fax,
+            icon: 'fax',
+          },
+          {
+            title: 'legal_address',
+            content: this.clientInfo.attributes.legal_address,
+            icon: 'location_on',
+          }
+        ]
       } else {
         const {locale} = this.$i18n
         const typography = locale === 'uz' ? 'lotin' : 'kirill'
@@ -96,7 +139,7 @@ export default {
 
         const country = this.countryList.find(cty => cty.id === this.clientInfo.attributes.country_id)
 
-        const details = [
+        details = [
           {
             title: 'person_type',
             content: 'physical_person',
@@ -133,33 +176,33 @@ export default {
             icon: 'call',
           }
         ]
-
-        if (this.clientInfo.phones.length > 1) {
-          details.push({
-            title: 'additional_phone_number',
-            content: this.clientInfo.phones[1].phone,
-            icon: 'call'
-          })
-        }
-
-        if (this.clientInfo?.email !== '') {
-          details.push({
-            title: 'email',
-            content: this.clientInfo.email,
-            icon: 'mail',
-          })
-        }
-
-        if (this.clientInfo?.additional_email !== '') {
-          details.push({
-            title: 'additional_email',
-            content: this.clientInfo.additional_email,
-            icon: 'mail',
-          })
-        }
-
-        return details
       }
+
+      if (this.clientInfo.phones.length > 1) {
+        details.push({
+          title: 'additional_phone_number',
+          content: this.clientInfo.phones[1].phone,
+          icon: 'call'
+        })
+      }
+
+      if (this.clientInfo?.email !== '') {
+        details.push({
+          title: 'email',
+          content: this.clientInfo.email,
+          icon: 'mail',
+        })
+      }
+
+      if (this.clientInfo?.additional_email !== '') {
+        details.push({
+          title: 'additional_email',
+          content: this.clientInfo.additional_email,
+          icon: 'mail',
+        })
+      }
+
+      return details
     }
   },
   methods: {

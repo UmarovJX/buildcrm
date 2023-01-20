@@ -13,7 +13,7 @@ export async function orderApartment(ids) {
             //     }
             // })
             await this.$router.push({
-                name: 'checkout_v2',
+                name: 'checkout-v2',
                 params: {
                     id: data.uuid,
                     object: data.orders[0].apartment.object.id

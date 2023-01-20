@@ -109,7 +109,24 @@
             ></b-form-radio-group>
           </b-form-group>
         </div>
+
+        <!--  DOCUMENT LANGUAGE  -->
+        <div class="d-flex justify-content-end mt-4">
+          <b-form-group
+              v-slot="{ ariaDescribedby }"
+          >
+            <b-form-radio-group
+                size="lg"
+                id="radio-group-subject-type"
+                v-model="form.document_type"
+                :options="subjectTypes"
+                :aria-describedby="ariaDescribedby"
+                name="radio-options-subject-type"
+            ></b-form-radio-group>
+          </b-form-group>
+        </div>
       </form>
+
     </ValidationObserver>
     <!--  MODAL FOOTER    -->
     <template #modal-footer="{ ok, cancel, hide }">
@@ -157,7 +174,8 @@ export default {
         type: null,
         language: 'uz',
         category: null,
-        main: 1
+        main: 1,
+        document_type: 'physical'
       },
       errors: [],
       categoryOptions: [
@@ -186,8 +204,14 @@ export default {
 
       return option
     },
+    subjectTypes() {
+      return [
+        {value: 'physical', text: this.$t('physical_person')},
+        {value: 'legal', text: this.$t('legal_entity')},
+      ]
+    },
     showPaymentType() {
-      const notShow = ['reserve','reissue']
+      const notShow = ['reserve', 'reissue']
       const index = notShow.findIndex(ctyType => ctyType === this.form.category)
       return index === -1
     }

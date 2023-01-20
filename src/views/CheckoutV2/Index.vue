@@ -343,6 +343,11 @@ export default {
     },
 
     async expiredConfirm() {
+      if (this.isUpdateMode) {
+        this.$router.go(-1)
+        return
+      }
+
       try {
         this.startSubmitting()
         await api.orders.deleteOrderHold(this.order.uuid)

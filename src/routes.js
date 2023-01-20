@@ -88,8 +88,8 @@ const routes = [
 
 
             {
-                path: '/checkout_v2/:object/apartment/:id/order',
-                name: 'checkout_v2',
+                path: '/checkout-v2/:object/apartment/:id/order',
+                name: 'checkout-v2',
                 component: CheckoutV2
             },
 
@@ -100,8 +100,8 @@ const routes = [
             },
 
             {
-                path: '/checkout_v2/:object/apartment/:id/update',
-                name: 'checkout_v2_update',
+                path: '/checkout-v2/:object/apartment/:id/update',
+                name: 'checkout-v2-update',
                 component: CheckoutV2
             },
 
@@ -669,25 +669,25 @@ router.beforeEach(async (to, from, next) => {
     if (login) {
         if (!Permission.user) {
             return await api.authV1.getMe()
-                 .then((response) => {
-                     user = response.data.user
-                     Permission.initializeUser(response.data)
-                 })
-                 .finally(() => {
-                     const {requiresAuth} = to.meta
-                     if (requiresAuth) {
-                         const perm = Permission.getUserPermission(requiresAuth)
-                         if (user.role === 1 || (perm && perm.view)) {
-                             return next()
-                         } else {
-                             return next({
-                                 name: "not_found",
-                             })
-                         }
-                     } else {
-                         return next()
-                     }
-                 })
+                .then((response) => {
+                    user = response.data.user
+                    Permission.initializeUser(response.data)
+                })
+                .finally(() => {
+                    const {requiresAuth} = to.meta
+                    if (requiresAuth) {
+                        const perm = Permission.getUserPermission(requiresAuth)
+                        if (user.role === 1 || (perm && perm.view)) {
+                            return next()
+                        } else {
+                            return next({
+                                name: "not_found",
+                            })
+                        }
+                    } else {
+                        return next()
+                    }
+                })
         } else {
             next()
         }
