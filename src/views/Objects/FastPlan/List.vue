@@ -226,7 +226,6 @@ export default {
             const objectId = this.$route.params.object
             await api.plans.fastPlanList(objectId)
                 .then((res) => {
-                    console.log(res.data, 'fastList');
                     this.fastList = res.data
                 })
                 .catch((error) => error.response)

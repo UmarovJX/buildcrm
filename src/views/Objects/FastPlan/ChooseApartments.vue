@@ -38,26 +38,26 @@
                 <div class="filter-modal-content">
                     <x-form-select
                         class="mb-4"
-                        v-model="filter.floor"
+                        v-model="filter.floors"
                         :multiple="true"
-                        :options="filterOptions.floor"
-                        :placeholder="$t('contracts.object_name')"
+                        :options="filterOptions.floors"
+                        :placeholder="$t('apartments.list.floor')"
                         @change="inputFilterObject"
                     />
                     <x-form-select
                         class="mb-4"
-                        v-model="filter.floor"
+                        v-model="filter.area"
                         :multiple="true"
-                        :options="filterOptions.entrance"
-                        :placeholder="$t('contracts.object_name')"
+                        :options="filterOptions.area"
+                        :placeholder="$t('apartments.list.area')"
                         @change="inputFilterObject"
                     />
                     <x-form-select
                         class="mb-4"
-                        v-model="filter.room"
+                        v-model="filter.rooms"
                         :multiple="true"
-                        :options="filterOptions.entrance"
-                        :placeholder="$t('contracts.object_name')"
+                        :options="filterOptions.rooms"
+                        :placeholder="$t('apartments.list.rooms')"
                         @change="inputFilterObject"
                     />
                 </div>
@@ -82,7 +82,6 @@
             :sort-by="sortBy"
             :sort-desc="sortDesc"
             :empty-text="$t('no_data')"
-            @sort-changed="sortingChanged"
             :selectable="selectable"
             select-mode="single"
         >
@@ -170,7 +169,7 @@
 
         <BaseCheckboxModal
             :chosen="checkedApartments.length"
-            @go-to-contract="makeContract"
+            @go-to-contract="createDrawing"
             btn-text="Добавить планировку"
         />
 
@@ -357,21 +356,21 @@ export default {
             checkoutList: [],
             checkAll: false,
             filter: {
-                floor: [],
-                entrance: [],
-                room: []
+                floors: [],
+                area: [],
+                rooms: [],
             },
             filterOptions: {
-                floor: [],
-                entrance: [],
-                room: []
+                floors: [],
+                area: [],
+                rooms: []
             },
         }
     },
 
     async created() {
         await this.fetchContractList()
-
+        await this.getFilterFields()
 
         window.onbeforeunload = function (e) {
             e = e || window.event;
@@ -417,13 +416,7 @@ export default {
         backPlan() {
             this.$router.go(-1)
         },
-        async makeContract() {
-            const ids = this.checkoutList.map(ch => ch.id)
-            this.startLoading()
-            await this.createDrawing(ids)
-            await this.finishLoading()
-        },
-        async createDrawing(ids) {
+        async createDrawing() {
             const objectId = this.$route.params.object
             const body = new FormData()
             body.append('name', this.getFastPlanName)
@@ -431,8 +424,8 @@ export default {
                 body.append('image', this.getFastPlanImage)
             }
             body.append('plan_id', this.$route.params.plan)
-            ids.forEach((id, index) => {
-                body.append(`apartments[${index}]`, id)
+            this.checkoutList.forEach((item, index) => {
+                body.append(`apartments[${index}]`, item.id)
             })
 
             if (!this.getFastPlanId) {
@@ -445,8 +438,10 @@ export default {
                                     object: objectId
                                 }
                             })
+                        this.$store.dispatch('notify/openNotify', {type: 'success', duration: 3000})
                     })
-                    .error((err) => {
+                    .catch((err) => {
+                        this.$store.dispatch('notify/openNotify', {type: 'error', duration: 3000})
                         return err
                     })
             } else {
@@ -459,8 +454,10 @@ export default {
                                     object: objectId
                                 }
                             })
+                        this.$store.dispatch('notify/openNotify', {type: 'success', duration: 3000})
                     })
-                    .error((err) => {
+                    .catch((err) => {
+                        this.$store.dispatch('notify/openNotify', {type: 'error', duration: 3000})
                         return err
                     })
             }
@@ -517,7 +514,6 @@ export default {
         async fetchContractList() {
             this.showLoading = true
 
-
             const {object} = this.$route.params
             this.checkAll = false
             await api.objectsV2.fetchObjectApartments(object, this.query)
@@ -549,6 +545,32 @@ export default {
                 })
         },
 
+
+        async getFilterFields() {
+            const {object} = this.$route.params
+
+            await api.objectsV2.fetchObjectFields(object)
+                .then((res) => {
+                    this.filterOptions = res.data
+                    delete this.filterOptions['blocks']
+                    Object.entries(this.filterOptions).forEach(([key, value]) => {
+                        if (value) {
+                            value.forEach((ch, index) => {
+                                if (ch && ch !== 'null') {
+                                    this.filterOptions[key][index] = {value: ch, text: ch}
+                                }
+                            })
+                        }
+                    })
+                }).catch((err) => {
+                    this.toastedWithErrorCode(err)
+                })
+                .finally(() => {
+                    this.showLoading = false
+                })
+        },
+
+
         changeFetchLimit() {
             const query = {
                 ...this.query, page: this.query.page || 1
@@ -573,74 +595,45 @@ export default {
             this.replaceRouter({...this.query, page})
         },
 
-        sortingChanged(val) {
-            this.showLoading = true
-            this.filter.filtered = true;
-            this.filter.sort_by = val.sortBy;
-            this.filter.order_by = val.sortDesc ? "desc" : "asc";
 
-            this.$router.push({
-                name: "apartments",
-                params: this.$route.params.object,
-                query: this.query,
-            }).then(() => {
-                const element = document.getElementById("my-table");
-                element.scrollIntoView();
-            });
-
+        async filteredForm() {
+            Object.entries(this.filter).forEach(([keyField, value]) => {
+                this.query[keyField] = value
+            })
+            this.query['page'] = '1'
+            this.pushRouter(this.query)
         },
 
-        // async filteredForm(event) {
-        //     this.filter = event;
-        //     this.selected.view = false;
-        //     this.selected.values = [];
-        //     this.selectable = true;
-        //     this.scrollActive = true;
-        //     this.page = 1;
-        //     this.filter.page = 1;
-        //     this.currentPage = this.filter.page;
-        //
-        //     await this.$router.push({
-        //         name: "apartments",
-        //         query: this.filter,
-        //     });
-        // },
-
         filterItems() {
-            this.replaceRouter()
-            this.$emit('sort-items', this.filter)
+            this.filteredForm()
+            this.pushRouter()
         },
 
         resetFilterFields() {
-            this.filter.type = null
-            this.filter.action = null
-            this.filter.user = null
-            this.query = this.filter
-            this.$emit('reset-filter-fields')
+            this.filter.rooms = []
+            this.filter.area = []
+            this.filter.floors = []
+            this.pushRouter(this.filter)
         },
 
         setFilterProperties() {
-            this.filter.date = this.query.date
-            this.filter.price_to = this.query.price_to
-            this.filter.price_from = this.query.price_from
-            if (!isUndefinedOrNullOrEmpty(this.query.client_type)) {
-                this.filter.client_type = parseInt(this.query.client_type)
-            }
-            if (this.query.object_id) {
-                if (typeof this.query.object_id === 'string') {
-                    this.filter.object_id = [parseInt(this.query.object_id)]
-                } else {
-                    this.filter.object_id = this.query.object_id.map(objectId => parseInt(objectId))
-                }
-            }
+            this.filter.rooms = this.query.rooms
+            this.filter.area = this.query.area
+            this.filter.floors = this.query.floors
         },
 
         openFilterContent() {
             this.$refs['filter-modal'].show()
         },
 
-        filterBySearchContent() {
-
+        filterBySearchContent(event) {
+            if (event) {
+                this.query['search'] = event
+                this.pushRouter(this.query)
+            } else {
+                delete this.query['search']
+                this.pushRouter(this.query)
+            }
         },
 
         inputFilterObject() {
