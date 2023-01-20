@@ -31,7 +31,7 @@
     <validation-provider
         v-if="showAnotherPriceFields"
         v-slot="{ errors }"
-        rules="required|min_value:1"
+        rules="required|min_value:0"
         :name="`${ $t('starting_price') }`"
         class="cw-starting-price"
     >
@@ -40,6 +40,7 @@
           v-model="paymentDetails.starting_price"
           :label="true"
           :precision="2"
+          :currency-symbol="true"
           :error="!!errors[0]"
           :placeholder="`${ $t('starting_price') }`"
           class="w-100"
@@ -52,13 +53,14 @@
     <validation-provider
         v-if="showAnotherPriceFields"
         v-slot="{ errors }"
-        rules="required|min_value:1"
+        rules="required|min_value:0"
         :name="`${ $t('price_m2') }`"
         class="cw-price-m2"
     >
       <x-form-input
           type="number"
           v-model="paymentDetails.price_m2"
+          :currency-symbol="true"
           :label="true"
           :precision="2"
           :error="!!errors[0]"
@@ -78,10 +80,11 @@
         class="cw-monthly-payment"
     >
       <x-form-input
-          type="text"
+          type="number"
           v-model="paymentDetails.monthly_payment_period"
+          :currency="`${ $t('month_lowercase') }`"
           :label="true"
-          mask="##"
+          :max="36"
           :error="!!errors[0]"
           :placeholder="`${ $t('installment') }`"
           :disable="allowToShowFullPayment"
@@ -103,6 +106,7 @@
       <x-form-input
           type="number"
           v-model="paymentDetails.prepay"
+          currency="%"
           :label="true"
           :max="100"
           :error="!!errors[0]"
@@ -124,6 +128,7 @@
       <x-form-input
           type="number"
           v-model="paymentDetails.initial_price"
+          :currency-symbol="true"
           :label="true"
           :precision="2"
           :error="!!errors[0]"
@@ -139,12 +144,14 @@
     <validation-provider
         v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
+        rules="required|min_value:0"
         :name="`${ $t('total_discount') }`"
         class="cw-total-discount"
     >
       <x-form-input
           type="number"
           v-model="paymentDetails.total_discount"
+          :currency-symbol="true"
           :label="true"
           :precision="2"
           :error="!!errors[0]"
@@ -161,10 +168,12 @@
         v-slot="{ errors }"
         :name="`${ $t('discount_per_m2') }`"
         class="cw-discount-per-m2"
+        rules="required|min_value:0"
     >
       <x-form-input
           type="number"
           v-model="paymentDetails.discount_per_m2"
+          :currency-symbol="true"
           :label="true"
           :precision="2"
           :error="!!errors[0]"
@@ -223,10 +232,10 @@ import {PROP_TYPE_OBJECT} from "@/constants/props";
 
 import {XFormSelect} from "@/components/ui-components/form-select";
 import {XFormInput} from "@/components/ui-components/form-input";
+import {XIcon} from "@/components/ui-components/material-icons";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import {mapActions, mapGetters} from "vuex";
 import discount from "@/components/Dashboard/Apartment/Components/Discount.vue";
-import {runConsoleLog} from "@/util/console.util";
 
 
 export default {
@@ -234,7 +243,8 @@ export default {
   components: {
     XFormSelect: XFormSelect,
     XFormInput,
-    BaseDatePicker
+    BaseDatePicker,
+    XIcon
   },
   props: {
     apartment: p(PROP_TYPE_OBJECT, {})

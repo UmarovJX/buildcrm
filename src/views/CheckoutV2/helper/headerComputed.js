@@ -1,4 +1,3 @@
-import {runConsoleLog} from "@/util/console.util";
 
 export function headerItems() {
     const {apartments} = this

@@ -231,7 +231,6 @@ import ImportDebtorsModal from "@/components/Debtors/ImportDebtorsModal";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 import {isNotUndefinedNullEmptyZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 import {hasOwnProperty} from "@/util/object";
-import {runConsoleLog} from "@/util/console.util";
 
 export default {
   name: "Debtors",

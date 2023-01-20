@@ -1,6 +1,5 @@
 import {isString, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
-import {runConsoleLog} from "@/util/console.util";
 
 export default {
     isCreateMode: (state) => state.componentFunction === 'create',
@@ -75,7 +74,6 @@ export default {
             if (gts.isDiscountOtherType(idx)) {
                 return apartment.calc.other.starting_price
             }
-            runConsoleLog(gts.discountAmount(idx))
             return apartment.price * (1 + gts.discountAmount(idx) / 100)
         }
     },
@@ -123,8 +121,6 @@ export default {
             case 'fixed':
             case 'promo':
             case 'addition': {
-                runConsoleLog(gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx))
-                runConsoleLog(gts.getPrepay(idx))
                 return gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
             }
             case 'other': {
@@ -173,6 +169,11 @@ export default {
         calc.remainder = fmd(gts.getRemainPrice(idx))
         calc.base_price = fmd(gts.getPrice(idx))
         calc.total_discount = gts.getDiscount(idx)
+        if (calc.discount.id === 'other') {
+            calc.price_m2 = gts.gtsApartments[idx].price_m2
+        } else {
+            calc.price_m2 = calc.discount.amount
+        }
         return calc
     },
     totalForAll: (state, gts) => gts.gtsApartments.reduce((a, b) => a + b.calc.total, 0)
