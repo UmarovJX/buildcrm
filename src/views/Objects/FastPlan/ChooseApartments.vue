@@ -18,9 +18,11 @@
             >
                 <base-search-input
                     class="base-search-input w-75"
-                    :placeholder="`${ $t('activity_type_full_name') }`"
+                    :placeholder="`${ $t('apartment_number') }`"
+                    :value="search"
                     @trigger-input="filterBySearchContent"
                 />
+
                 <div class="d-flex align-items-center">
                     <base-filter-button
                         class="base-filter-button"
@@ -230,7 +232,7 @@ export default {
 
         const header = {
             pageInfo: {
-                title: this.$t('objects.create.choose_plan'),
+                title: this.$t('objects.create.fast_plan.choose_apartments'),
                 titleHighlight: ''
             },
             page: {
@@ -355,6 +357,7 @@ export default {
             },
             checkoutList: [],
             checkAll: false,
+            search: null,
             filter: {
                 floors: [],
                 area: [],
@@ -372,6 +375,7 @@ export default {
         await this.fetchContractList()
         await this.getFilterFields()
 
+
         window.onbeforeunload = function (e) {
             e = e || window.event;
             //old browsers
@@ -386,6 +390,9 @@ export default {
     mounted() {
         if (!(this.getFastPlanImage && this.getFastPlanName)) {
             this.$router.push({name: 'fast_plan', params: {object: this.$route.params.object}})
+        }
+        if (this.query && this.query.number) {
+            this.search = this.query.number[0]
         }
     },
     computed: {
@@ -414,7 +421,8 @@ export default {
 
     methods: {
         backPlan() {
-            this.$router.go(-1)
+            const {object} = this.$route.params
+            this.$router.push({name: 'fast_plan_add', params: {object}})
         },
         async createDrawing() {
             const objectId = this.$route.params.object
@@ -620,6 +628,7 @@ export default {
             this.filter.rooms = this.query.rooms
             this.filter.area = this.query.area
             this.filter.floors = this.query.floors
+            this.filter.number = this.query.number
         },
 
         openFilterContent() {
@@ -627,13 +636,9 @@ export default {
         },
 
         filterBySearchContent(event) {
-            if (event) {
-                this.query['search'] = event
-                this.pushRouter(this.query)
-            } else {
-                delete this.query['search']
-                this.pushRouter(this.query)
-            }
+            this.search = event
+            event ? this.query['number'] = [event] : delete this.query['number']
+            this.pushRouter(this.query)
         },
 
         inputFilterObject() {
