@@ -106,7 +106,7 @@ export default {
             if (apartment.calc.initial_price.toString() === '') {
                 return 0
             }
-            return apartment.calc.initial_price
+            // return apartment.calc.initial_price
         }
 
         if (apartment.calc.prepay === 0) {
@@ -121,16 +121,20 @@ export default {
             case 'fixed':
             case 'promo':
             case 'addition': {
-                return gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
+                // return gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
+                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
             }
             case 'other': {
-                return gts.calculateTotalPriceByDefault(idx) - gts.getDiscount(idx)
+                // return gts.calculateTotalPriceByDefault(idx) - gts.getDiscount(idx)
+                return gts.getTotal(idx)
             }
             case 'percent': {
-                return gts.calculateTotalPriceByDefault(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
+                // return gts.calculateTotalPriceByDefault(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
+                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
             }
             default: {
-                return gts.calculateTotalPriceByDefault(idx) * gts.discountAmount(idx) / 100 - gts.getDiscount(gts)
+                // return gts.calculateTotalPriceByDefault(idx) * gts.discountAmount(idx) / 100 - gts.getDiscount(gts)
+                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
             }
         }
     },

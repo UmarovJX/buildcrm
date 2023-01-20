@@ -107,6 +107,7 @@
           type="number"
           v-model="paymentDetails.prepay"
           currency="%"
+          :precision="2"
           :label="true"
           :max="100"
           :error="!!errors[0]"
@@ -144,7 +145,6 @@
     <validation-provider
         v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
-        rules="required|min_value:0"
         :name="`${ $t('total_discount') }`"
         class="cw-total-discount"
     >
@@ -168,7 +168,6 @@
         v-slot="{ errors }"
         :name="`${ $t('discount_per_m2') }`"
         class="cw-discount-per-m2"
-        rules="required|min_value:0"
     >
       <x-form-input
           type="number"

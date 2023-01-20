@@ -198,9 +198,9 @@ export default {
             edit: {monthly_payment_period: true}
         })
 
+        dispatch('recalculateApmPrices', apmIndex)
         dispatch('initialPaymentsSetter', {index: apmIndex})
         dispatch('monthlyPaymentsSetter', {index: apmIndex})
-        dispatch('recalculateApmPrices', apmIndex)
         dispatch('rerenderApm', {idx: apmIndex})
     },
     editPrepay({getters: gts, commit, dispatch}, {apmId, prepay}) {
@@ -218,9 +218,10 @@ export default {
     editInitialPrice({getters: gts, commit, dispatch}, {apmId, initial_price}) {
         const apmIndex = gts.findApmIdx(apmId)
 
+        const prepay = fmd((initial_price / gts.getTotal(apmIndex)) * 100)
         commit('updateApartment', {
             idx: apmIndex,
-            calc: {initial_price},
+            calc: {initial_price, prepay},
             edit: {initial_price: true}
         })
 

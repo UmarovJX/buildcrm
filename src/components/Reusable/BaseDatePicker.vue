@@ -182,6 +182,7 @@ export default {
 
     ::v-deep .mx-input-wrapper {
       .mx-input {
+        font-family: Inter, sans-serif !important;
         box-shadow: none;
         border: .25rem solid transparent;
         font-size: 1rem;
@@ -196,6 +197,7 @@ export default {
         }
 
         &:focus-within {
+          font-family: Inter, sans-serif;
           border: 0.25rem solid var(--gray-200);
           background-color: var(--gray-100);
         }
@@ -203,7 +205,7 @@ export default {
         &::placeholder {
           background-color: transparent;
           color: var(--gray-400);
-          font-family: CraftworkSans, serif;
+          font-family: Inter, sans-serif;
         }
       }
 
