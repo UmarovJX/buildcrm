@@ -1,6 +1,5 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
-import {runConsoleLog} from "@/util/console.util";
 import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
 import {setAppropriateCreditMonth} from "@/util/checkout";
 
@@ -545,8 +544,13 @@ export default {
         }
 
         if (payment.type === 'initial') {
-            commit('setInitialResult', {idx, initial: gts.initiallyTotal(idx)})
-            commit('setRemainAmount', {idx, remainPrice: gts.getTotal - gts.initiallyTotal})
+            if (gts.getInitialPayments(idx).length === 1) {
+                commit('setInitialResult', {idx, initial: gts.getTotal(idx)})
+                dispatch('initialPaymentsSetter', {index: idx})
+            } else {
+                commit('setInitialResult', {idx, initial: gts.initiallyTotal(idx)})
+            }
+            commit('setRemainAmount', {idx, remainPrice: gts.getTotal(idx) - gts.initiallyTotal(idx)})
         }
 
         dispatch('rerenderApm', {idx})
@@ -571,7 +575,6 @@ export default {
     },
     removeApartment({state, getters: gts}, {index, apmId}) {
         const idx = index ?? gts.findApmIdx(apmId)
-        runConsoleLog('idx', idx, undefined)
         state.trashStorage.push({idx, a: state.apartments[idx]})
         state.apartments.splice(idx, 1)
     },

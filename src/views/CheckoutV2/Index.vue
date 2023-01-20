@@ -697,6 +697,9 @@ export default {
     },
 
     deactivateOrder() {
+      if (this.isUpdateMode) {
+        return this.$router.go(-1)
+      }
       this.openWarningModal()
     },
 

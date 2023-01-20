@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+    list_of_agreements: "Shartnomalar ro'yxati",
     edit_apartment: 'Xonadonni tahrirlash',
     changes_successfully_saved: 'Изменения успешно сохранены.',
     yes_cancel: "Xa, bekor qilish",
@@ -306,7 +307,7 @@ export default {
     recontract_download: 'Qayta rasmiylashtirilgan shartnomani yuklash',
     leave_import: 'Importni tark etasizmi?',
     leave_import_text: "Haqiqatan ham importni bekor qilish va undan chiqishni xohlaysizmi? </br>" +
-         "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
+        "Barcha qo'llaniladigan o'zgarishlar bekor qilinadi.",
     no_leave: "Yo'q, qolaman",
     yes_leave: "Ha, chiqaman",
     yes: "Ha",
@@ -333,6 +334,7 @@ export default {
     full: "To'liqligicha",
     monthly: "Oylik",
     month: 'Oy',
+    month_lowercase: 'oy',
     months: 'Oylar',
     months_to: 'oygacha',
     table_months_payment: "Oylik to'lovlar jadvali",
@@ -607,7 +609,7 @@ export default {
         no_note: "Hozircha hech qanday eslatma yo'q",
         delete_note: 'Eslatmani o\'chirish',
         note_delete_confirmation: 'Eslatmani o\'chirishga qaroringiz qattiymi?\n' +
-             'Quydagi buyruqni bekor qilishni ilojisi yo\'q.',
+            'Quydagi buyruqni bekor qilishni ilojisi yo\'q.',
         edit_note: 'Eslatmani tahrirlash',
         note_text: 'Eslatma matni',
         individual: 'individual',
@@ -1078,13 +1080,13 @@ export default {
                 search: 'Xonadon rejasi nomi',
                 add_image: 'Rasm qo\'shish',
             },
-            fast_plan:{
+            fast_plan: {
                 name: 'Joylashtirish chizmalari',
                 add: 'Chizma rejasini qo\'shing',
                 choose_apartments: 'Tegishli kvartirani tanlang',
                 add_plan: 'Chizma qo\'shing',
                 select_room: 'Kvartirani tanlang',
-                search:  'Fayl nomi yoki tegishli reja',
+                search: 'Fayl nomi yoki tegishli reja',
                 import_text: 'Tuzilish chizmasi uchun .pdf yoki .png faylni yuklang'
             },
 

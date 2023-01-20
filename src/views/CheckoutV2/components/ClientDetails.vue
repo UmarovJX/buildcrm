@@ -465,7 +465,6 @@ import api from "@/services/api";
 import {formatDateToYMD} from "@/util/calendar";
 import {mapGetters, mapMutations} from "vuex";
 import {isNotUndefinedNullEmptyZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
-import {runConsoleLog} from "../../../util/console.util";
 
 export default {
   name: "CheckoutClientDetails",

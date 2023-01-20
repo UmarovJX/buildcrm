@@ -3,11 +3,11 @@
       class="base-input gray-300"
       :class="{
         'error':error,
-        'label':value && label,
+        'label':!isUndefinedOrNullOrEmpty(value) && label,
         'disable-input':disable
       }"
   >
-    <div v-if="value && label" class="input-label">
+    <div v-if="!isUndefinedOrNullOrEmpty(value) && label" class="input-label">
       <span>
         {{ placeholder }}
       </span>
@@ -22,6 +22,7 @@
         :placeholder="placeholder"
         :field-style="inputFieldStyle"
         :precision="precision"
+        :currency-symbol="currencySymbol"
         :max="max"
         :min="min"
         ref="base-input"
@@ -70,7 +71,7 @@
 
 <script>
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import {isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {isUndefinedOrNullOrEmpty, isUndefinedOrNull} from "@/util/inspect";
 
 const cssDefaultProperty = {
   type: String,
@@ -149,6 +150,10 @@ export default {
       default: Number.MIN_SAFE_INTEGER || -9007199254740991,
       required: false
     },
+    currencySymbol: {
+      type: Boolean,
+      default: false
+    },
     margin: cssDefaultProperty,
     padding: cssDefaultProperty,
     paddingLeft: cssDefaultProperty,
@@ -158,7 +163,8 @@ export default {
     marginTop: cssDefaultProperty,
     marginBottom: cssDefaultProperty,
     marginLeft: cssDefaultProperty,
-    marginRight: cssDefaultProperty
+    marginRight: cssDefaultProperty,
+
   },
 
   data() {
@@ -215,6 +221,8 @@ export default {
   },
 
   methods: {
+    isUndefinedOrNullOrEmpty,
+    isUndefinedOrNull,
     toggleClearButton() {
       this.showClearIcon = !isUndefinedOrNullOrEmpty(this.inputModel)
     },
@@ -266,6 +274,7 @@ export default {
   align-items: flex-start;
   justify-content: center;
   position: relative;
+  font-family: Inter, serif;
 
   &.label {
     padding: 8px 20px 8px 1.25rem;
@@ -278,6 +287,7 @@ export default {
 
 
   input {
+    font-family: Inter, sans-serif !important;
     width: 100%;
     background-color: transparent;
     height: 100%;
@@ -290,11 +300,13 @@ export default {
     &::placeholder {
       font-weight: 600;
       color: var(--gray-400);
+      font-family: Inter, sans-serif !important;
     }
 
     &:-webkit-autofill,
     &:-webkit-autofill:focus {
       transition: background-color 600000s 0s, color 600000s 0s;
+      font-family: Inter, sans-serif !important;
     }
   }
 

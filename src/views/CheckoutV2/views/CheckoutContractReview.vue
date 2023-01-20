@@ -79,7 +79,7 @@
         class="d-flex justify-content-end align-items-center bottom-actions-wrapper"
     >
       <x-button
-          v-if="tableData.items.length"
+          v-if="tableData.items.length > 1"
           :bilingual="true"
           :loading="contractsDownloading"
           text="download_all_contract"
@@ -95,7 +95,7 @@
 
       <x-button
           :bilingual="true"
-          text="to_all_contracts"
+          text="list_of_agreements"
           variant="secondary"
           @click="goToContractsPage"
       >

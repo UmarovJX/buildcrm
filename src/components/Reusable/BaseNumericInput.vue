@@ -21,7 +21,7 @@
 
 <script>
 import accounting from 'accounting-js'
-import {runConsoleLog} from "@/util/console.util";
+import {isEmptyString, isNotUndefinedNullEmptyZero, isNotZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 
 export default {
   name: 'VueNumeric',
@@ -177,6 +177,11 @@ export default {
     fieldStyle: {
       type: Object,
       default: () => ({})
+    },
+
+    currencySymbol: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -186,6 +191,9 @@ export default {
   }),
 
   computed: {
+    locale() {
+      return this.$i18n.locale
+    },
     /**
      * Number type of formatted value.
      * @return {Number}
@@ -234,6 +242,9 @@ export default {
   },
 
   watch: {
+    locale() {
+      this.amount = this.format(this.valueNumber)
+    },
     amount() {
       this.startTyping && this.formatAmount()
     },
@@ -243,7 +254,7 @@ export default {
      */
     valueNumber(newValue) {
       if (newValue === 0) {
-        this.amount = '0'
+        this.amount = this.format(0)
       } else if (this.$refs.numeric !== document.activeElement) {
         this.amount = this.format(newValue)
       }
@@ -294,7 +305,7 @@ export default {
       if (parseFloat(this.format(this.valueNumber))) {
         this.amount = this.format(this.valueNumber)
       } else {
-        this.amount = ''
+        this.amount = this.format(0)
       }
 
       // In case of delayed props value.
@@ -367,9 +378,9 @@ export default {
       this.startTyping = false
       const unFormatAmount = this.unformat(this.amount)
       if (parseInt(this.format(unFormatAmount)) === 0) {
-        this.amount = null
+        this.amount = this.format(0)
       } else {
-        this.amount = this.format(unFormatAmount)
+        this.amount = this.format(unFormatAmount).toString().trim()
       }
     },
 
@@ -382,19 +393,26 @@ export default {
       this.startTyping = true
       const usd = `${this.$t('usd')}`
       const ye = `${this.$t('ye')}`
+      const currency = `${this.currency}`
 
       if (!this.amount) return
 
-      const symbolUsdIndex = this.amount.indexOf(usd)
-      const symbolSumIndex = this.amount.indexOf(ye)
+      const symbolCurrencyIndex = this.amount.indexOf(currency)
+      if (symbolCurrencyIndex !== -1 && !isEmptyString(this.currency.trim()) && isNotUndefinedNullEmptyZero(this.amount)) {
+        this.amount = this.amount.slice(0, symbolCurrencyIndex)
+      }
 
+      const symbolUsdIndex = this.amount.indexOf(usd)
       if (symbolUsdIndex !== -1) {
         this.amount = this.amount.slice(0, symbolUsdIndex)
       }
 
+      const symbolSumIndex = this.amount.indexOf(ye)
       if (symbolSumIndex !== -1) {
         this.amount = this.amount.slice(0, symbolSumIndex)
       }
+
+      this.amount = this.amount.toString().trim()
     },
 
     /**
@@ -438,8 +456,15 @@ export default {
      * @return {String}
      */
     format(value) {
+      let symbol
+
+      if (isEmptyString(this.currency.trim()) && this.currencySymbol) {
+        symbol = this.$t('ye')
+      } else {
+        symbol = this.currency
+      }
       return accounting.formatMoney(value, {
-        symbol: this.currency,
+        symbol,
         format: this.symbolPosition,
         precision: Number(this.precision),
         decimal: this.decimalSeparatorSymbol,
