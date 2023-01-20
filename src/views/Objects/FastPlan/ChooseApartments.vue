@@ -38,7 +38,7 @@
                 <div class="filter-modal-content">
                     <x-form-select
                         class="mb-4"
-                        v-model="filter.floor"
+                        v-model="filter.floors"
                         :multiple="true"
                         :options="filterOptions.floors"
                         :placeholder="$t('apartments.list.floor')"
@@ -54,7 +54,7 @@
                     />
                     <x-form-select
                         class="mb-4"
-                        v-model="filter.room"
+                        v-model="filter.rooms"
                         :multiple="true"
                         :options="filterOptions.rooms"
                         :placeholder="$t('apartments.list.rooms')"
@@ -356,9 +356,9 @@ export default {
             checkoutList: [],
             checkAll: false,
             filter: {
-                floor: [],
+                floors: [],
                 area: [],
-                room: [],
+                rooms: [],
             },
             filterOptions: {
                 floors: [],
@@ -514,23 +514,6 @@ export default {
         async fetchContractList() {
             this.showLoading = true
 
-            let query = sortObjectValues(this.query)
-            const queryArrayFareList = [
-                'area',
-                'rooms',
-                'floors',
-            ]
-
-            const queryPair = Object.entries(query)
-            queryPair.forEach(([key, value]) => {
-                const isNotPrimitive = queryArrayFareList.includes(key)
-                const valueFare = isPrimitiveValue(value)
-                if (isNotPrimitive && valueFare) {
-                    query[key] = [value]
-                }
-            })
-
-
             const {object} = this.$route.params
             this.checkAll = false
             await api.objectsV2.fetchObjectApartments(object, this.query)
@@ -614,51 +597,43 @@ export default {
 
 
         async filteredForm() {
-            // Object.entries(this.filter).forEach(([keyField, value]) => {
-            //     if (value && value.length) {
-            //         value.forEach((item) => {
-            //             if (item) {
-            //                 this.query[keyField] = item
-            //             }
-            //         })
-            //     }
-            // })
+            Object.entries(this.filter).forEach(([keyField, value]) => {
+                this.query[keyField] = value
+            })
+            this.query['page'] = '1'
+            this.pushRouter(this.query)
         },
 
         filterItems() {
             this.filteredForm()
-            this.replaceRouter()
+            this.pushRouter()
         },
 
         resetFilterFields() {
-            // this.filter.type = null
-            // this.filter.action = null
-            // this.filter.user = null
-            // this.query = this.filter
+            this.filter.rooms = []
+            this.filter.area = []
+            this.filter.floors = []
+            this.pushRouter(this.filter)
         },
 
         setFilterProperties() {
-            this.filter.date = this.query.date
-            this.filter.price_to = this.query.price_to
-            this.filter.price_from = this.query.price_from
-            if (!isUndefinedOrNullOrEmpty(this.query.client_type)) {
-                this.filter.client_type = parseInt(this.query.client_type)
-            }
-            if (this.query.object_id) {
-                if (typeof this.query.object_id === 'string') {
-                    this.filter.object_id = [parseInt(this.query.object_id)]
-                } else {
-                    this.filter.object_id = this.query.object_id.map(objectId => parseInt(objectId))
-                }
-            }
+            this.filter.rooms = this.query.rooms
+            this.filter.area = this.query.area
+            this.filter.floors = this.query.floors
         },
 
         openFilterContent() {
             this.$refs['filter-modal'].show()
         },
 
-        filterBySearchContent() {
-
+        filterBySearchContent(event) {
+            if (event) {
+                this.query['search'] = event
+                this.pushRouter(this.query)
+            } else {
+                delete this.query['search']
+                this.pushRouter(this.query)
+            }
         },
 
         inputFilterObject() {
