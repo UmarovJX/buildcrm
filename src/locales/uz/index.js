@@ -580,6 +580,7 @@ export default {
         apply_filter: 'Qidirish',
         object_name: 'Obyektning nomi',
         client_type: 'Mijoz turi',
+        date_type: 'Vaqt turi',
         apartment_number: 'Xonadon raqami',
         agreement_date: 'Kelishuv sanasi',
         filter_title: 'Qidiruv filtrlari',

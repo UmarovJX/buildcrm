@@ -169,7 +169,6 @@ import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 import AppHeader from "@/components/Header/AppHeader";
 import {isNotUndefinedNullEmptyZero, isObject, isPrimitive, isUndefinedOrNullOrEmpty} from "@/util/inspect";
-import it from "vue2-datepicker/locale/es/it";
 
 export default {
   name: "Contracts",
