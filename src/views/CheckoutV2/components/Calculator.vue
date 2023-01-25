@@ -155,8 +155,9 @@
           :label="true"
           :precision="2"
           :error="!!errors[0]"
-          :placeholder="`${ $t('total_discount') }`"
           class="w-100"
+          :max="maxTotalDiscountAmount"
+          :placeholder="`${ $t('total_discount') }`"
           @input="addDiscount"
           @focus="focusOnFieldHandler('total_discount')"
       />
@@ -176,8 +177,9 @@
           :label="true"
           :precision="2"
           :error="!!errors[0]"
-          :placeholder="`${ $t('discount_per_m2') }`"
           class="w-100"
+          :max="maxDiscountEachSquare"
+          :placeholder="`${ $t('discount_per_m2') }`"
           @input="addDiscountEachSquare"
           @focus="focusOnFieldHandler('discount_per_m2')"
       />
@@ -227,20 +229,19 @@
 import {hasChild} from "@/util/object";
 import {makeProp as p} from "@/util/props";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
+import {mapActions, mapGetters} from "vuex";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
 
 import {XFormSelect} from "@/components/ui-components/form-select";
 import {XFormInput} from "@/components/ui-components/form-input";
 import {XIcon} from "@/components/ui-components/material-icons";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import {mapActions, mapGetters} from "vuex";
-import discount from "@/components/Dashboard/Apartment/Components/Discount.vue";
 
 
 export default {
   name: "ChCalculator",
   components: {
-    XFormSelect: XFormSelect,
+    XFormSelect,
     XFormInput,
     BaseDatePicker,
     XIcon
@@ -280,7 +281,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('CheckoutV2', ['getApm', 'apartmentArea', 'findApmIdx', 'gtsEditFirstAttempt']),
+    ...mapGetters('CheckoutV2', [
+      'getApm',
+      'apartmentArea',
+      'findApmIdx',
+      'gtsEditFirstAttempt',
+      'getPrice',
+      'findApmIdx',
+      'apartmentArea'
+    ]),
     paymentOptions() {
       if (hasChild(this.apartment)) {
         const discounts = this.apartment.discounts.map((discount, index) => {
@@ -325,6 +334,14 @@ export default {
     },
     disableInitialPrice() {
       return this.paymentDetails.prepay === 100
+    },
+    maxTotalDiscountAmount() {
+      const idx = this.findApmIdx(this.apartment.id)
+      return this.getPrice(idx)
+    },
+    maxDiscountEachSquare(){
+      const idx = this.findApmIdx(this.apartment.id)
+      return this.maxTotalDiscountAmount / this.apartmentArea(idx)
     }
   },
   watch: {

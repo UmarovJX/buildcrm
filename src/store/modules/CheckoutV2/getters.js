@@ -122,19 +122,19 @@ export default {
             case 'promo':
             case 'addition': {
                 // return gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
-                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
+                return gts.getPrice(idx) * gts.getPrepay(idx) / 100
             }
             case 'other': {
                 // return gts.calculateTotalPriceByDefault(idx) - gts.getDiscount(idx)
-                return gts.getTotal(idx)
+                return gts.getPrice(idx)
             }
             case 'percent': {
                 // return gts.calculateTotalPriceByDefault(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
-                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
+                return gts.getPrice(idx) * gts.getPrepay(idx) / 100
             }
             default: {
                 // return gts.calculateTotalPriceByDefault(idx) * gts.discountAmount(idx) / 100 - gts.getDiscount(gts)
-                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
+                return gts.getPrice(idx) * gts.getPrepay(idx) / 100
             }
         }
     },
@@ -167,6 +167,7 @@ export default {
     },
     calcProperties: (state, gts) => (idx) => {
         const calc = {...gts.gtsApartments[idx].calc}
+
         calc.total = fmd(gts.getTotal(idx))
         calc.monthly_payment = fmd(gts.getMonthlyPaymentAmount(idx))
         calc.initial_price = fmd(gts.getInitialPrice(idx))
