@@ -586,7 +586,7 @@ export default {
         object_name: 'Название объекта',
         apply_filter: 'Применить',
         client_type: 'Тип клиента',
-        date_type: 'Тип клиента',
+        date_type: 'Тип дата',
         reset_filter: 'Сбросить',
         agreement_date: 'Дата договора',
         apartment_number: 'Номер квартиры',
