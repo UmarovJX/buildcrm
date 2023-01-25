@@ -81,7 +81,7 @@
 
                         <div class="d-flex align-items-center x-gap-1 mt-3">
                             <base-date-picker
-                                style="width: 60%;"
+                                style="width: 55%;"
                                 :default-value="filter.date"
                                 :placeholder="`${$t('contracts.agreement_date')}`"
                                 @input="filter.date = $event"
@@ -91,7 +91,7 @@
                                 :options="dateTypeOptions"
                                 :placeholder="$t('contracts.date_type')"
                                 :multilingual="true"
-                                style="width: 40%;"
+                                style="width: 45%;"
                             />
                         </div>
 
@@ -265,7 +265,7 @@ export default {
         async fetchObjectsOption() {
             await api.contractV2.fetchObjectsOption()
                 .then((response) => {
-                    const {objects, 'client-types': clientTypes} = response.data
+                    const {objects, 'client-types': clientTypes, date_types} = response.data
                     this.objectOptions = objects
                     for (let [idx, client] of Object.entries(clientTypes)) {
                         this.clientTypeOptions.push({
@@ -273,6 +273,12 @@ export default {
                             text: client.name
                         })
                     }
+                    this.dateTypeOptions = date_types.map(item=>{
+                        return {
+                            value: item.type,
+                            text: item.name[localStorage.locale]
+                        }
+                    })
                 })
                 .catch((error) => {
                     this.toastedWithErrorCode(error)
