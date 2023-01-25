@@ -21,7 +21,7 @@
 
 <script>
 import accounting from 'accounting-js'
-import {isEmptyString, isNotUndefinedNullEmptyZero, isNotZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {isEmptyString, isNotUndefinedNullEmptyZero} from "@/util/inspect";
 
 export default {
   name: 'VueNumeric',
@@ -419,9 +419,17 @@ export default {
      * Handle input event.
      */
     onInputHandler() {
-      // this.process(this.amountNumber)
+      // const output = this.unformat(this.amount)
+      // const beforeNext = parseInt(((output - output % 10) / 10).toFixed(2))
+      // if (output > this.max) {
+      //   const k = parseFloat((this.unformat(beforeNext)).toFixed(2))
+      //   this.amount = this.format(k)
+      // }
+      //
+      // this.$emit('input', this.unformat(this.amount))
+
       const output = this.unformat(this.amount)
-      const beforeNext = (this.amount - this.amount % 10) / 10
+      const beforeNext = (output - output % 10) / 10
       if (output > this.max) {
         this.amount = this.format(beforeNext)
       }
