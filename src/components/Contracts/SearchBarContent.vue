@@ -209,7 +209,7 @@ export default {
                 object_id: null,
                 contract_number: null,
                 date: [],
-                date_type: '',
+                date_type: null,
                 client_type_id: null,
                 contract_price: null,
                 price_to: null,
