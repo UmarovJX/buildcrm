@@ -5,9 +5,11 @@ $primary-color: #7C3AED;
   .cell {
     &.active {
       border: solid 0 $primary-color;
-      border-radius: 0 10px 10px 0;
+      //border-radius: 0 10px 10px 0;
+      border-radius: 5px;
     }
     &.active:nth-child(2) {
-      border-radius: 10px 0 0 10px;
+      //border-radius: 10px 0 0 10px;
+      border-radius: 5px;
     }
 }
