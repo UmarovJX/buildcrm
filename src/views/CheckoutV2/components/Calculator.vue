@@ -143,7 +143,6 @@
 
     <!--? TOTAL_DISCOUNT  -->
     <validation-provider
-        v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
         :name="`${ $t('total_discount') }`"
         class="cw-total-discount"
@@ -165,7 +164,6 @@
 
     <!--? DISCOUNT_PER_M2  -->
     <validation-provider
-        v-if="!showAnotherPriceFields"
         v-slot="{ errors }"
         :name="`${ $t('discount_per_m2') }`"
         class="cw-discount-per-m2"
@@ -580,6 +578,7 @@ export default {
       "cv-cell-2 cv-cell-2"
       "cv-cell-3 cv-cell-4"
       "cv-st-price cv-price-m2"
+      "cv-cell-5 cv-cell-6"
       "cv-cell-7 cv-cell-7"
       "cv-cell-8 cv-cell-8";
 
