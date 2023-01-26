@@ -497,6 +497,8 @@ export default {
         on_payment: 'На оплате',
         closed: 'Закрыт',
         reorder: 'Переоформленные',
+        active: "Faol",
+        de_active: "O'chirilgan",
     },
 
     promo: {

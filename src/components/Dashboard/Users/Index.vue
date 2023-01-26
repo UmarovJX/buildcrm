@@ -6,7 +6,14 @@
             </template>
         </app-header>
 
-        <div class="d-flex align-items-center">
+        <!--  Tabs  -->
+        <base-filter-tabs-content
+            :filter-tab-list="filterTabList"
+            @get-new-content="fetchContentByStatus"
+        />
+
+
+        <div class="d-flex align-items-center mt-4 mb-4">
             <base-search-input class="w-100" :placeholder="$t('users.placeholder')" @trigger-input="setSearchValue"/>
             <base-button
                 v-if="createPermission"
@@ -208,6 +215,7 @@ import {mapGetters} from "vuex";
 import UsersPermission from "@/permission/users"
 import AppHeader from "@/components/Header/AppHeader";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 
 export default {
     name: 'UsersPage',
@@ -220,6 +228,7 @@ export default {
         BaseArrowLeftIcon,
         BaseArrowRightIcon,
         BaseDownIcon,
+        BaseFilterTabsContent,
         "create-modal": Create,
         "edit-modal": Edit,
     },
@@ -245,12 +254,29 @@ export default {
         if (!showByValue) {
             showByValue = 20
         }
+
+
+        const filterTabList = [
+            {
+                name: 'tab_status.active',
+                status: '',
+                counts: 0
+            },
+            {
+                name: 'tab_status.de_active',
+                status: 'deactivated',
+                counts: 0
+            },
+        ]
+
+
         return {
             createPermission: UsersPermission.getUsersCreatePermission(),
             editPermission: UsersPermission.getUsersEditPermission(),
             deletePermission: UsersPermission.getUsersDeletePermission(),
             searchValue,
             showByOptions,
+            filterTabList,
             filter: {},
             page: 1,
             currentPage: 1,
@@ -259,17 +285,12 @@ export default {
             editHistoryContext: {
                 id: 0
             },
-            header: {
-                headers: {
-                    Authorization: "Bearer " + localStorage.token,
-                },
-            },
             sortBy: "",
             sortDesc: false,
             fields: [
                 {
                     key: "id",
-                    label: "#",
+                    label: "id",
                 },
                 {
                     key: "first_name",
@@ -330,6 +351,7 @@ export default {
         query() {
             return Object.assign({}, this.$route.query)
         },
+
     },
 
     mounted() {
@@ -337,6 +359,14 @@ export default {
     },
 
     methods: {
+        fetchContentByStatus(status) {
+            const query = Object.assign({}, this.query)
+            if (query.hasOwnProperty('page')) {
+                delete query.page
+            }
+
+            this.replaceRouter({...query, status})
+        },
         phoneFormat(value) {
             return phonePrettier(value)
         },

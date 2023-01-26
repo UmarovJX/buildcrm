@@ -494,6 +494,8 @@ export default {
         on_payment: "To'lovda",
         closed: 'Yopilgan',
         reorder: 'Qayta rasmiylashtirilgan',
+        active: "Активный",
+        de_active: "Деактив",
     },
 
     promo: {
