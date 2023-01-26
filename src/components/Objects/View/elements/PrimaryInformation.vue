@@ -47,7 +47,7 @@
             <b-tab :title="$t('details')" active>
                 <!--   PRICE CONTENT     -->
                 <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
-           <span class="price__section-square-amount">
+           <span v-if="!apartment.object.is_hide_m2_price" class="price__section-square-amount">
             {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
           </span>
                     <span class="price__section-amount">{{ price }}</span>
@@ -63,7 +63,7 @@
 
                 <!--   PRICE CONTENT     -->
                 <div v-if="!statusSold" class="price__section d-flex justify-content-between align-items-center">
-           <span class="price__section-square-amount">
+           <span v-if="!apartment.object.is_hide_m2_price" class="price__section-square-amount">
             {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
           </span>
                     <span class="price__section-amount">{{ price }}</span>
@@ -361,6 +361,8 @@ export default {
     &-amount
         color: var(--gray-600) !important
         line-height: 28px
+        text-align: end
+        width: 100%
 
     &-square-amount
         color: var(--gray-500) !important

@@ -86,7 +86,7 @@
       </div>
 
       <!--      Price for meters square          -->
-      <div class="d-flex justify-content-between">
+      <div v-if="!apartment.object.is_hide_m2_price" class="d-flex justify-content-between">
         <span class="property d-block color-gray-400">
           {{ $t('selling_price') }} m<sup>2</sup>
         </span>
@@ -115,7 +115,7 @@
       </div>
 
       <!--       Monthly Payment          -->
-      <div v-if="discount.amount > 0" class="d-flex justify-content-between">
+      <div v-if="discount.amount > 0 && !apartment.object.is_hide_m2_price" class="d-flex justify-content-between">
         <span class="property d-block color-gray-400">
           {{ $t('monthly_pay') }}
         </span>

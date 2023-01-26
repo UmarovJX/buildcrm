@@ -117,6 +117,7 @@
             :plan-load="planLoading"
             :is="currentTab"
             :apartments="apartmentsByTabs"
+            :is-hide-price="isHidePrice"
             @counter="countGet"
             @show-express-sidebar="apartmentExpressReview"
             @show-plan-sidebar="planExpressReview"
@@ -134,6 +135,7 @@
         <plan-express-view
             :visible="planView.toggle"
             :plan-id="planView.item.id"
+            :is-hide-price="isHidePrice"
             @hide-plan-sidebar-view="hidePlanSidebarView"
         />
     </div>
@@ -239,6 +241,7 @@ export default {
             filter: [],
             filterFields: {},
             objectName: '',
+            isHidePrice: false,
             componentTabs: [
                 {
                     id: 4,
@@ -897,6 +900,8 @@ export default {
             await api.objectsV2.getObjectName(id)
                 .then((res) => {
                     this.objectName = res.data.name
+                    this.isHidePrice = res.data.is_hide_m2_price
+
                 }).catch((err) => {
                     return err
                 })

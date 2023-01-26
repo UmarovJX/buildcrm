@@ -44,8 +44,12 @@
                         </div>
 
                         <!--  MAIN    -->
-                        <plan-information class="pdf-item" v-if="visible" :plan="plan"
-                                          @open-express="apartmentExpressReview"/>
+                        <plan-information
+                            v-if="visible"
+                            class="pdf-item"
+                            :is-hide-price="isHidePrice"
+                            :plan="plan"
+                            @open-express="apartmentExpressReview"/>
 
                         <!--   ACTIONS     -->
                     </section>
@@ -94,6 +98,10 @@ export default {
         planId: {
             type: Number,
             default: () => null
+        },
+        isHidePrice: {
+            type: Boolean,
+            required: false,
         },
         visible: {
             type: Boolean,

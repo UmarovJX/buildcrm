@@ -17,7 +17,7 @@
                     <div class="card-content">
                         <div class="card-block">
                             <p class="card-block__title">{{ plan.area }} m<sup>2</sup></p>
-                            <p class="card-block__subtitle">{{ price(plan.price_m2) }} {{ $t('ye') }}/M<sup>2</sup></p>
+                            <p v-if="!isHidePrice" class="card-block__subtitle">{{ price(plan.price_m2) }} {{ $t('ye') }}/M<sup>2</sup></p>
                         </div>
                         <div class="card-block">
                             <p class="card-block__title">{{ plan.rooms }} {{ $t('object.flats') }}</p>
@@ -111,6 +111,10 @@ export default {
         planLoad: {
             type: Boolean,
             default: () => false
+        },
+        isHidePrice: {
+            type: Boolean,
+            required: false,
         },
         plans: {
             type: Array,

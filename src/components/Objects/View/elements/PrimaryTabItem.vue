@@ -143,6 +143,7 @@ export default {
     color: var(--gray-600) !important
     line-height: 28px
 
+
   &-square-amount
     color: var(--gray-500) !important
     font-size: 18px

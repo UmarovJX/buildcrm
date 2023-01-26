@@ -8,8 +8,7 @@
         <div class="object-cards">
             <template v-if="viewPermission"
             >
-                <!--                col-6 col-lg-4 col-xl-3-->
-                <div class=" card"
+                <div class="card"
                      v-for="(object, index) in getObjects"
                      :key="index"
                 >
@@ -113,7 +112,7 @@
                                 <p class="card-block__title">{{ object.floors_count }} {{
                                         $t('objects.view_level')
                                     }}</p>
-                                <p class="card-block__subtitle"
+                                <p v-if="!object.is_hide_m2_price" class="card-block__subtitle"
                                    v-html="$t('price_from_m2', {msg: `${priceFormat(object.apartment_price_m2)}`})"
                                 />
                             </div>

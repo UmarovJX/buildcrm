@@ -85,7 +85,7 @@
                         </div>
                         <div class="square-footer">
                           <p>{{ elem.plan.area }} m<sup>2</sup></p>
-                          <p v-if="elem.order.status !== 'sold'">
+                          <p v-if="elem.order.status !== 'sold' && !isHidePrice">
                             {{ price(elem.prices.price_m2) }} {{ $t('ye') }}/m<sup>2</sup>
                           </p>
                         </div>
@@ -134,6 +134,10 @@ export default {
         apartments: {
             type: Array,
             required: true,
+        },
+        isHidePrice: {
+            type: Boolean,
+            required: false,
         },
         loading: {
             type: Boolean,
