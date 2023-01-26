@@ -67,8 +67,7 @@
             <!--   Client LFP   -->
             <template #cell(client)="{ item }">
         <span class="d-flex">
-             <span>{{ getClientName(item.client) }}</span>
-            <div v-if="item.client.client_type.is_vip" class="d-flex align-items-center ml-1">
+            <div v-if="item.client.client_type.is_vip" class="d-flex align-items-center mr-1">
                 <x-square-background :id="'clientName'+item.id" class="bg-violet-100 cursor-pointer" padding="0.2">
                   <x-icon :name="item.client.client_type.icon" color="var(--violet-600)" size="18"/>
                 </x-square-background>
@@ -76,6 +75,7 @@
                     {{ checkLocales(item.client.client_type.name) }}
                 </b-tooltip>
             </div>
+             <span>{{ getClientName(item.client) }}</span>
         </span>
             </template>
 
