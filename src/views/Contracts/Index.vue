@@ -228,6 +228,11 @@ export default {
                 name: 'tab_status.closed',
                 status: 'closed',
                 counts: 0
+            },
+            {
+                name: 'tab_status.reorder',
+                status: 'reorder',
+                counts: 0
             }
         ]
 

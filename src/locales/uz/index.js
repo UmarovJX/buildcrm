@@ -492,7 +492,8 @@ export default {
         unavailable: "Mavjud emas",
         promo: 'Aksiya',
         on_payment: "To'lovda",
-        closed: 'Yopilgan'
+        closed: 'Yopilgan',
+        reorder: 'Qayta rasmiylashtirilgan',
     },
 
     promo: {

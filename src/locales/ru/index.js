@@ -496,6 +496,7 @@ export default {
         promo: 'Акция',
         on_payment: 'На оплате',
         closed: 'Закрыт',
+        reorder: 'Переоформленные',
     },
 
     promo: {
