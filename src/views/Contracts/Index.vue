@@ -75,7 +75,7 @@
                     {{ checkLocales(item.client.client_type.name) }}
                 </b-tooltip>
             </div>
-             <span>{{ getClientName(item.client) }}</span>
+            <span>{{ getClientName(item.client) }}</span>
         </span>
             </template>
 

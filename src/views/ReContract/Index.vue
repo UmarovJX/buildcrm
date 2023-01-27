@@ -1,5 +1,13 @@
 <template>
     <div>
+
+        <app-header>
+            <template #header-title>
+                {{ $t('re_contract') }}
+            </template>
+        </app-header>
+
+
         <b-tabs
             pills
             v-model="tabIndex"
@@ -25,27 +33,26 @@
                             <div class="assignee-header">
                                 <p class="assignee-header__title">Цедент</p>
                                 <span class="custom-tooltip" style="cursor: pointer" id="assignee-tooltip">
-                  <img
-                      :src="require('@/assets/icons/icon-questions__circle.svg')" alt="">
-                  <b-tooltip
-                      custom-class="custom-tooltip"
-                      target="assignee-tooltip"
-                      triggers="hover"
-                      variant="secondary"
-                  >
-                    Цедент – это участник договора цессии, который в рамках договора цессии уступает иному лицу свое право требования.
-                  </b-tooltip>
-                </span>
-
+                                  <img
+                                      :src="require('@/assets/icons/icon-questions__circle.svg')" alt="">
+                                  <b-tooltip
+                                      custom-class="custom-tooltip"
+                                      target="assignee-tooltip"
+                                      triggers="hover"
+                                      variant="secondary"
+                                  >
+                                    Цедент – это участник договора цессии, который в рамках договора цессии уступает иному лицу свое право требования.
+                                  </b-tooltip>
+                                </span>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="assignee-header">
                                 <p class="assignee-header__title">цессионарий</p>
                                 <span class="custom-tooltip" style="cursor: pointer" id="session-tooltip">
-                  <img
-                      :src="require('@/assets/icons/icon-questions__circle.svg')" alt="">
-                </span>
+                                  <img
+                                      :src="require('@/assets/icons/icon-questions__circle.svg')" alt="">
+                                </span>
                                 <b-tooltip
                                     style="width: 400px !important;"
                                     custom-class="custom-tooltip"
@@ -63,7 +70,7 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card ">
                                     <label>{{ $t('series') }}</label>
-                                    <b-form-input disabled :value="oldClient['passport_series']"/>
+                                    <b-form-input disabled :value="oldClient.attributes['passport_series']"/>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +89,7 @@
                                         class="client__details_info_card" :label="true"
                                         :placeholder="$t('series')"
                                         @input="fetchClientSeries"
-                                        v-model="newClient['passport_series']"
+                                        v-model="newClient.attributes['passport_series']"
                                     />
                                 </ValidationProvider>
                             </div>
@@ -93,7 +100,7 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card">
                                     <label>{{ $t('user.last_name') }}</label>
-                                    <b-form-input disabled :value="nameDivide(oldClient.last_name)"/>
+                                    <b-form-input disabled :value="nameDivide(oldClient.attributes.last_name)"/>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +115,7 @@
                                     <base-input :class="{'error' : errors[0]}" class="client__details_info_card mr-2"
                                                 :label="true"
                                                 :placeholder="`${$t('user.last_name') +' '+ $t('lotin_compress')}`"
-                                                v-model="newClient.second_name.lotin"
+                                                v-model="newClient.attributes.middle_name.lotin"
                                                 @input="translateCyrillic('second_name', $event)"/>
                                 </ValidationProvider>
                                 <ValidationProvider
@@ -120,7 +127,7 @@
                                     <base-input :class="{'error' : errors[0]}" class="client__details_info_card"
                                                 :label="true"
                                                 :placeholder="`${$t('user.last_name') +' '+ $t('cyrill_compress')}`"
-                                                v-model="newClient.second_name.kirill"
+                                                v-model="newClient.attributes.middle_name.kirill"
                                                 @input="translateLatin('second_name', $event)"/>
                                 </ValidationProvider>
 
@@ -132,7 +139,7 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card">
                                     <label>{{ $t('user.first_name') }}</label>
-                                    <b-form-input disabled :value="nameDivide(oldClient.first_name)"/>
+                                    <b-form-input disabled :value="nameDivide(oldClient.attributes.first_name)"/>
                                 </div>
                             </div>
                         </div>
@@ -147,7 +154,7 @@
                                     <base-input :class="{'error' : errors[0]}" class="client__details_info_card"
                                                 :label="true"
                                                 :placeholder="`${$t('user.first_name') +' '+ $t('lotin_compress')}`"
-                                                v-model="newClient.first_name.lotin"
+                                                v-model="newClient.attributes.first_name.lotin"
                                                 @input="translateCyrillic('first_name', $event)"/>
                                 </ValidationProvider>
                                 <ValidationProvider
@@ -159,7 +166,7 @@
                                     <base-input :class="{'error' : errors[0]}" class="client__details_info_card"
                                                 :label="true"
                                                 :placeholder="`${$t('user.first_name') +' '+ $t('cyrill_compress')}`"
-                                                v-model="newClient.first_name.kirill"
+                                                v-model="newClient.attributes.first_name.kirill"
                                                 @input="translateLatin('first_name', $event)"/>
                                 </ValidationProvider>
                             </div>
@@ -169,8 +176,8 @@
                         <div class="col-6">
                             <div class="assignee-item">
                                 <div class="client__details_info_card">
-                                    <label>{{ $t('user.middle_name') }}</label>
-                                    <b-form-input disabled :value="nameDivide(oldClient.second_name)"/>
+                                    <label>{{ $t('user.second_name') }}</label>
+                                    <b-form-input disabled :value="nameDivide(oldClient.attributes.middle_name)"/>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +192,7 @@
                                     <base-input :class="{'error' : errors[0]}" class="client__details_info_card mr-2"
                                                 :label="true"
                                                 :placeholder="`${$t('user.second_name') +' '+ $t('lotin_compress')}`"
-                                                v-model="newClient.last_name.lotin"
+                                                v-model="newClient.attributes.last_name.lotin"
                                                 @input="translateCyrillic('last_name', $event)"/>
                                 </ValidationProvider>
                                 <ValidationProvider
@@ -197,7 +204,7 @@
                                     <base-input :class="{'error' : errors[0]}" class="client__details_info_card"
                                                 :label="true"
                                                 :placeholder="`${$t('user.second_name') +' '+ $t('cyrill_compress')}`"
-                                                v-model="newClient.last_name.kirill"
+                                                v-model="newClient.attributes.last_name.kirill"
                                                 @input="translateLatin('last_name', $event)"/>
                                 </ValidationProvider>
                             </div>
@@ -209,7 +216,7 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card">
                                     <label>{{ $t('apartments.agree.issued_by_whom') }}</label>
-                                    <b-form-input disabled :value="oldClient['issued_by_whom']"/>
+                                    <b-form-input disabled :value="oldClient.attributes['passport_issued_by']"/>
                                 </div>
                             </div>
                         </div>
@@ -226,7 +233,7 @@
                                         class="client__details_info_card"
                                         :label="true"
                                         :placeholder="$t('apartments.agree.issued_by_whom')"
-                                        v-model="newClient['issued_by_whom']"/>
+                                        v-model="newClient.attributes['passport_issued_by']"/>
                                 </ValidationProvider>
                             </div>
                         </div>
@@ -236,7 +243,8 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card ">
                                     <label>{{ $t('apartments.agree.date_of_issue') }}</label>
-                                    <b-form-input disabled :value="oldClient['date_of_issue']"/>
+                                    <b-form-input disabled
+                                                  :value="checkDate(oldClient.attributes['passport_issued_date'])"/>
                                 </div>
                             </div>
                         </div>
@@ -251,9 +259,9 @@
                                     <base-date-picker
                                         class="data-picker"
                                         :range="false"
-                                        :default-value="newClient.date_of_issue"
+                                        :default-value="newClient.attributes.passport_issued_date"
                                         :placeholder="$t('apartments.agree.date_of_issue')"
-                                        v-model="newClient.date_of_issue"
+                                        v-model="newClient.attributes.passport_issued_date"
                                     />
                                     <span class="error__provider" v-if="errors[0]">
                       {{ errors[0] }}
@@ -267,7 +275,7 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card ">
                                     <label>{{ $t('birth_day') }}</label>
-                                    <b-form-input disabled :value="oldClient['birth_day']"/>
+                                    <b-form-input disabled :value="checkDate(oldClient.attributes['date_of_birth'])"/>
                                 </div>
                             </div>
                         </div>
@@ -282,13 +290,42 @@
                                     <base-date-picker
                                         class="data-picker"
                                         :range="false"
-                                        :default-value="newClient.birth_day"
+                                        :default-value="newClient.attributes.date_of_birth"
                                         :placeholder="$t('birth_day')"
-                                        v-model="newClient.birth_day"
+                                        v-model="newClient.attributes.date_of_birth"
                                     />
                                     <span class="error__provider" v-if="errors[0]">
-                      {{ errors[0] }}
-                    </span>
+                                      {{ errors[0] }}
+                                    </span>
+                                </ValidationProvider>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="assignee-item">
+                                <div class="client__details_info_card ">
+                                    <label>{{ $t('nation') }}</label>
+                                    <b-form-input disabled :value="checkCountry(oldClient.attributes.country)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="assignee-item">
+                                <ValidationProvider
+                                    rules="required"
+                                    class="cell"
+                                    :name="$t('nation')"
+                                    v-slot="{errors}"
+                                >
+                                    <x-form-select
+                                        class="select"
+                                        :error="!!errors[0]"
+                                        v-model="newClient.attributes.country_id"
+                                        :options="nationList"
+                                        :placeholder="$t('nation')"
+                                        :multilingual="true"
+                                    />
                                 </ValidationProvider>
                             </div>
                         </div>
@@ -298,7 +335,7 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card ">
                                     <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
-                                    <b-form-input disabled :value="phone(oldClient['phone'])"/>
+                                    <b-form-input disabled :value="phone(oldClient.phones[0].phone)"/>
                                 </div>
                             </div>
                         </div>
@@ -313,7 +350,7 @@
                                     <base-input :class="{'error' : errors[0]}" mask="+### ## ### ## ##" type="tel"
                                                 class="client__details_info_card" :label="true"
                                                 :placeholder="`${ $t('number')} (${$t('main_number')})`"
-                                                v-model="newClient['phone']"/>
+                                                v-model="newClient.phones[0].phone"/>
                                 </ValidationProvider>
                             </div>
                         </div>
@@ -323,7 +360,7 @@
                             <div class="assignee-item">
                                 <div class="client__details_info_card ">
                                     <label>{{ $t('number') }} ({{ $t('extra') }})</label>
-                                    <b-form-input disabled :value="phone(oldClient['other_phone'])"/>
+                                    <b-form-input disabled :value="phone(oldClient.phones[1].phone)"/>
                                 </div>
                             </div>
                         </div>
@@ -340,7 +377,7 @@
                                         type="tel" mask="+### ## ### ## ##"
                                         class="client__details_info_card" :label="true"
                                         :placeholder="`${ $t('number')} (${$t('extra')})`"
-                                        v-model="newClient['other_phone']"
+                                        v-model="newClient.phones[1].phone"
                                     />
                                 </ValidationProvider>
                             </div>
@@ -350,8 +387,8 @@
                         <div class="col-6">
                             <div class="assignee-item">
                                 <div class="client__details_info_card ">
-                                    <label>{{ $t('number') }} ({{ $t('extra') }})</label>
-                                    <b-form-input disabled :value="oldClient['language']"/>
+                                    <label>{{ $t('language') }} </label>
+                                    <b-form-input disabled :value="checkLang(oldClient['language'])"/>
                                 </div>
                             </div>
                         </div>
@@ -363,15 +400,44 @@
                                     :name="`${$t('reason_recontract')}`"
                                     v-slot="{errors}"
                                 >
-                                    <base-select
-                                        :class="{'error' : errors[0]}"
-                                        class="client__details_info_card"
-                                        @change="setFormProperty('language',$event)"
-                                        :noPlaceholder="true"
-                                        :placeholder="$t('clients.language')"
+                                    <x-form-select
+                                        class="select"
+                                        :error="!!errors[0]"
                                         v-model="newClient.language"
-                                        :label="true"
                                         :options="languages"
+                                        :placeholder="$t('clients.language')"
+                                    />
+                                </ValidationProvider>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="assignee-item">
+                                <div class="client__details_info_card ">
+                                    <label>{{ $t('client_type') }}</label>
+                                    <b-form-input disabled :value="checkClientType(oldClient.client_type)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="assignee-item">
+                                <ValidationProvider
+                                    rules="required"
+                                    class="cell"
+                                    :name="`${$t('client_type')}`"
+                                    v-slot="{errors}"
+                                >
+                                    <x-form-select
+                                        v-if="clientTypesList.length"
+                                        class="select"
+                                        :error="!!errors[0]"
+                                        value-field="id"
+                                        text-field="name"
+                                        :multilingual="true"
+                                        v-model="newClient.client_type_id"
+                                        :options="clientTypesList"
+                                        :placeholder="$t('client_type')"
                                     />
                                 </ValidationProvider>
                             </div>
@@ -445,53 +511,22 @@
                         <div class="col-6">
                             <div class="agree-item">
 
-                                <b-dropdown left>
-                                    <template v-if="contract.reorder_type_id" #button-content>
+                                <ValidationProvider
+                                    rules="required"
+                                    class="cell"
+                                    :name="`${$t('reason_recontract')}`"
+                                    v-slot="{errors}"
+                                >
+                                    <x-form-select
+                                        class="select"
+                                        :error="!!errors[0]"
+                                        v-model="contract.reorder_type_id"
+                                        :options="types"
+                                        :placeholder="$t('reason_recontract')"
+                                        :multilingual="true"
+                                    />
+                                </ValidationProvider>
 
-                                        <div class="input-block">
-                                            <span class="input-label">{{ $t('reason_recontract') }}</span>
-                                            <p v-for="type in types" :key="type.id" class="input-text">
-                                                <template v-if="type.id === contract.reorder_type_id">
-                                                    {{ checkLocales(type.name) }}
-                                                </template>
-                                            </p>
-                                        </div>
-
-                                    </template>
-                                    <template v-else #button-content>
-                                        <p class="default-label">
-                                            {{ $t('reason_recontract') }}
-                                        </p>
-                                    </template>
-                                    <b-dropdown-text href="#">
-
-                                        <!--                    <b-form-group v-slot="{ ariaDescribedby }">-->
-                                        <ValidationProvider
-                                            rules="required"
-                                            class="cell"
-                                            :name="`${$t('reason_recontract')}`"
-                                            v-slot="{errors}"
-                                        >
-                                            <!--                        <b-form-checkbox-group-->
-                                            <!--                            id="checkbox-group-2"-->
-                                            <!--                            v-model="contract.reorder_type_id"-->
-                                            <!--                            :aria-describedby="ariaDescribedby"-->
-                                            <!--                            name="flavour-2"-->
-                                            <!--                        >-->
-                                            <b-form-checkbox v-model="contract.reorder_type_id" v-for="option in types"
-                                                             :key="option.id"
-                                                             :value="option.id">
-                                                {{ checkLocales(option.name) }}
-                                            </b-form-checkbox>
-                                            <!--                        </b-form-checkbox-group>-->
-                                            <span class="error__provider" v-if="errors[0]">{{ errors[0] }}</span>
-
-                                        </ValidationProvider>
-
-                                        <!--                    </b-form-group>-->
-
-                                    </b-dropdown-text>
-                                </b-dropdown>
 
                             </div>
                         </div>
@@ -541,7 +576,9 @@ import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import api from "@/services/api";
-import {phonePrettier} from "@/util/reusable";
+import {formatDateWithDot, phonePrettier} from "@/util/reusable";
+import {XFormSelect} from "@/components/ui-components/form-select";
+import AppHeader from "@/components/Header/AppHeader.vue";
 
 export default {
     name: "ReContract",
@@ -552,6 +589,8 @@ export default {
         BaseArrowRightIcon,
         BaseDatePicker,
         BaseSelect,
+        XFormSelect,
+        AppHeader
     },
 
     data() {
@@ -560,26 +599,33 @@ export default {
             tabBtnText: 'next',
             oldClient: {},
             newClient: {
-                first_name: {
-                    lotin: '',
-                    kirill: '',
+                attributes: {
+                    first_name: {
+                        lotin: '',
+                        kirill: '',
+                    },
+                    middle_name: {
+                        lotin: '',
+                        kirill: '',
+                    },
+                    last_name: {
+                        lotin: '',
+                        kirill: '',
+                    },
+                    country_id: null,
+                    date_of_birth: null,
+                    passport_series: null,
+                    passport_issued_by: null,
+                    passport_issued_date: null,
                 },
-                second_name: {
-                    lotin: '',
-                    kirill: '',
-                },
-                last_name: {
-                    lotin: '',
-                    kirill: '',
-                },
-                passport_series: '',
-                issued_by_whom: '',
-                date_of_issue: '',
-                birth_day: '',
-                phone: null,
-                other_phone: null,
+                client_type_id: null,
+                email: '',
+                phones: [
+                    {id: null, phone: null},
+                    {id: null, phone: null}
+                ],
                 language: 'uz',
-                type_client: 'unknown',
+                subject: 'physical',
             },
             contract: {
                 date: null,
@@ -590,6 +636,8 @@ export default {
             client_id: '',
             order: {},
             types: [],
+            nationList: [],
+            clientTypesList: [],
             languages: [
                 {
                     value: 'uz',
@@ -605,8 +653,10 @@ export default {
         }
     },
 
-    async created() {
+    async mounted() {
         await this.fetchOldClient()
+        await this.getCountriesList()
+        await this.getClientTypesList()
         if (this.$route.params?.type) {
             this.contract.reorder_type_id = this.$route.params.type
         } else {
@@ -619,8 +669,55 @@ export default {
             this.contractBtn = false
         }
     },
+    computed: {
+        clientTypeOptions() {
+            return this.clientTypesList.map(({name, id}) => ({
+                text: name[this.$i18n.locale],
+                value: id
+            }))
+        }
+    },
 
     methods: {
+        async getClientTypesList() {
+            try {
+                const {data: clientTypesList} = await api.settingsV2.getClientTypes()
+                this.clientTypesList = clientTypesList
+            } catch (e) {
+                this.toastedWithErrorCode(e)
+            }
+        },
+        async getCountriesList() {
+            try {
+                const {data: countriesList} = await api.settingsV2.fetchCountries()
+                this.nationList = countriesList.map(cty => (
+                    {
+                        value: cty.id,
+                        text: cty.name.uz,
+                    }
+                ))
+            } catch (e) {
+                this.toastedWithErrorCode(e)
+            }
+        },
+        checkLang(item) {
+            let langName = null
+            this.languages.forEach(lang => {
+                if (lang.value === item) {
+                    langName = lang.text
+                }
+            })
+            return langName
+        },
+        checkDate(item) {
+            return formatDateWithDot(item)
+        },
+        checkClientType(item) {
+            return item.name[localStorage.locale]
+        },
+        checkCountry(item) {
+            return item.name[localStorage.locale]
+        },
         async validateClientForm() {
             const isValid = await this.$refs['client-form'].validate()
             if (isValid) {
@@ -661,25 +758,36 @@ export default {
                     if (data.id !== null) {
                         this.newClient = {
                             ...this.newClient,
-                            first_name: data.first_name ?? {
-                                lotin: null,
-                                kirill: null,
+                            attributes: {
+                                first_name: data.first_name ?? {
+                                    lotin: null,
+                                    kirill: null,
+                                },
+                                last_name: data.last_name ?? {
+                                    lotin: null,
+                                    kirill: null,
+                                },
+                                middle_name: data.middle_name ?? {
+                                    lotin: null,
+                                    kirill: null,
+                                },
+                                country_id: data.attributes.country,
+                                passport_issued_by: data.attributes.passport_issued_by,
+                                passport_issued_date: data.attributes.passport_issued_date,
+                                date_of_birth: data.attributes.date_of_birth,
+                                passport_series: data.attributes.passport_series,
                             },
-                            last_name: data.last_name ?? {
-                                lotin: null,
-                                kirill: null,
-                            },
-                            middle_name: data.second_name ?? {
-                                lotin: null,
-                                kirill: null,
-                            },
-                            passport_series: data.passport_series,
-                            issued_by_whom: data.issued_by_whom,
                             language: data.language,
-                            birth_day: data.birth_day,
-                            phone: this.phone(data.phone),
-                            other_phone: this.phone(data.other_phone),
-                            date_of_issue: data.date_of_issue,
+                            phones: [
+                                {
+                                    id: data.phones[0].id,
+                                    phone: this.phone(data.phones[0].phone),
+                                },
+                                {
+                                    id: data.phones[0].id,
+                                    phone: this.phone(data.phones[1].phone),
+                                },
+                            ],
                             discount: {id: null},
                         };
                     }
@@ -710,18 +818,18 @@ export default {
             this.timeoutId = setTimeout(() => {
                 switch (type) {
                     case 'first_name':
-                        if (!this.newClient.first_name.kirill) {
-                            this.newClient.first_name.kirill = this.symbolLatinToCyrillic(event);
+                        if (!this.newClient.attributes.first_name.kirill) {
+                            this.newClient.attributes.first_name.kirill = this.symbolLatinToCyrillic(event);
                         }
                         break;
                     case 'last_name':
-                        if (!this.newClient.last_name.kirill) {
-                            this.newClient.last_name.kirill = this.symbolLatinToCyrillic(event);
+                        if (!this.newClient.attributes.last_name.kirill) {
+                            this.newClient.attributes.last_name.kirill = this.symbolLatinToCyrillic(event);
                         }
                         break;
                     case 'second_name':
-                        if (!this.newClient.second_name.kirill) {
-                            this.newClient.second_name.kirill = this.symbolLatinToCyrillic(event);
+                        if (!this.newClient.attributes.second_name.kirill) {
+                            this.newClient.attributes.second_name.kirill = this.symbolLatinToCyrillic(event);
                         }
                         break;
                 }
@@ -735,18 +843,18 @@ export default {
             this.timeoutId = setTimeout(() => {
                 switch (type) {
                     case 'first_name':
-                        if (!this.newClient.first_name.lotin) {
-                            this.newClient.first_name.lotin = this.symbolCyrillicToLatin(event);
+                        if (!this.newClient.attributes.first_name.lotin) {
+                            this.newClient.attributes.first_name.lotin = this.symbolCyrillicToLatin(event);
                         }
                         break;
                     case 'last_name':
-                        if (!this.newClient.last_name.lotin) {
-                            this.newClient.last_name.lotin = this.symbolCyrillicToLatin(event);
+                        if (!this.newClient.attributes.last_name.lotin) {
+                            this.newClient.attributes.last_name.lotin = this.symbolCyrillicToLatin(event);
                         }
                         break;
                     case 'second_name':
-                        if (!this.newClient.second_name.lotin) {
-                            this.newClient.second_name.lotin = this.symbolCyrillicToLatin(event);
+                        if (!this.newClient.attributes.second_name.lotin) {
+                            this.newClient.attributes.second_name.lotin = this.symbolCyrillicToLatin(event);
                         }
                         break;
                 }
@@ -973,7 +1081,12 @@ export default {
             await api.contractV2.reOrderDetails(id).then(res => {
                 this.oldClient = res.data.client
                 this.order = res.data.order
-                this.types = res.data.types
+                this.types = res.data.types.map((item) => {
+                    return {
+                        value: item.id,
+                        text: item.name[localStorage.locale]
+                    }
+                })
             }).catch(err =>
                 err
             )
@@ -992,7 +1105,11 @@ export default {
             } else {
                 phone = this.newClient.phone
             }
-            const data = {...this.newClient, other_phone, phone}
+            const data = {
+                ...this.newClient,
+                other_phone,
+                phone,
+            }
 
             api.clientsV2.createClient(data).then((res) => {
                 this.client_id = res.data.id
@@ -1045,16 +1162,6 @@ export default {
             }
         },
 
-        setFormProperty(property, value) {
-            this.newClient[property] = value
-            // this.errors[property] = false
-
-        },
-
-        setContractProperty(property, value) {
-            this.contract[property] = value
-            this.errors[property] = false
-        },
     }
 }
 </script>
@@ -1195,6 +1302,10 @@ export default {
         //:last-child {
         //  border: none;
         //}
+        .select {
+            max-height: 56px;
+            margin: 1.25rem auto
+        }
 
         .data-picker {
             height: 56px;
@@ -1375,168 +1486,6 @@ export default {
     .price-to {
         width: 70%;
     }
-}
-
-::v-deep {
-
-    .b-dropdown {
-        width: 100%;
-    }
-
-
-    .b-dropdown .btn:not(.dropdown-item), .btn-secondary:not(.dropdown-item) {
-        font-family: Inter, sans-serif;
-        padding: 1rem 1rem 1rem 1.5rem !important;
-        height: 56px;
-        font-style: normal;
-        line-height: 22px !important;
-        border-radius: 2rem !important;
-        color: var(--gray-400) !important;
-        font-size: 1rem !important;
-        border: none !important;
-        outline: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        background-color: var(--gray-100) !important;
-        margin: 0 !important;
-
-        &:hover {
-            -webkit-box-shadow: 0 8px 25px -8px var(--gray-400) !important;
-            box-shadow: 0 8px 25px -8px var(--gray-400) !important;
-        }
-
-        .input-block {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .input-label {
-            font-weight: 900;
-            font-size: 8px;
-            line-height: 10px;
-            margin: 0 2px 0 0;
-            //margin-bottom: 2px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--gray-400);
-
-        }
-
-        .error {
-            border: .25rem solid var(--red-500) !important;
-        }
-
-        .input-text {
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 22px;
-            color: var(--gray-600);
-            margin: 0;
-            max-width: 300px;
-            overflow-x: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .default-label {
-            line-height: 22px;
-            font-size: 1rem;
-            color: var(--gray-400);
-            margin: 0;
-        }
-
-    }
-
-    .dropdown-toggle::after {
-        border: none;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        margin-left: 1rem;
-        background: url("../../assets/icons/icon-down.svg");
-        transition: all .2s ease-in-out;
-    }
-
-    .show .dropdown-toggle::after {
-        transform: rotate(-180deg);
-    }
-
-    .dropdown-menu {
-        border: 1px solid var(--gray-200);
-        box-sizing: border-box;
-        box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
-        border-radius: 24px;
-        padding: .5rem;
-        width: 100%;
-
-
-        .dropdown-item {
-            font-weight: 600 !important;
-            font-size: 16px !important;
-            line-height: 22px !important;
-            border-radius: 1rem;
-            padding: 12px 17px;
-            min-width: 256px;
-
-            &:hover {
-                background-color: var(--gray-200);
-            }
-        }
-
-    }
-
-
-    .b-dropdown-text {
-        min-width: 16rem;
-        padding: .5rem !important;
-
-        .form-group {
-            margin-bottom: 0;
-        }
-    }
-
-    .custom-control-label {
-        display: flex;
-        align-items: center;
-        padding-left: 2rem;
-        width: 100%;
-        height: 100%;
-
-        &:before, &:after {
-            top: 50%;
-            transform: translateY(-50%);
-            left: 0;
-        }
-    }
-
-    .custom-control-input:focus ~ .custom-control-label::before {
-        -webkit-box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
-        box-shadow: 0 0 0 0.2rem rgba(196, 181, 253, 5%);
-    }
-
-    .custom-control-input:checked ~ .custom-control-label::before {
-        border-color: var(--violet-600);
-        background-color: var(--violet-600);
-    }
-
-    .custom-checkbox {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding: .15rem .15rem .15rem 1rem;
-        height: 50px;
-        font-weight: 600;
-        border-radius: 1rem;
-        color: var(--gray-600);
-        font-size: 1rem;
-
-        &:hover {
-            background-color: var(--gray-200);
-        }
-    }
-
 }
 
 </style>
