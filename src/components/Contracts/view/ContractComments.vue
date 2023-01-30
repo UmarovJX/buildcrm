@@ -31,12 +31,12 @@
                                 </template>
                                 <template #list>
                                     <b-dropdown-item v-if="editCommentPermission" href="#"
-                                                     @click="openEditModal(comment)">
+                                                     @click="openEditModal(userComment)">
                                         <BaseEditIcon fill="var(--violet-600)" :width="20" :height="20"/>
                                         {{ $t('edit') }}
                                     </b-dropdown-item>
                                     <b-dropdown-item v-if="deleteCommentPermission" href="#"
-                                                     @click="warnBeforeDelete(comment.id)">
+                                                     @click="warnBeforeDelete(userComment.id)">
                                         <BaseDeleteIcon fill="var(--violet-600)" :width="20" :height="20"/>
                                         {{ $t('delete') }}
                                     </b-dropdown-item>
@@ -47,7 +47,7 @@
                     <div class="comment-footer">
                         <div class="comment-info">
                             <div class="avatar">
-                                <img v-if="comment.user.avatar" :src="comment.user.avatar" alt="">
+                                <img v-if="userComment.user.avatar" :src="userComment.user.avatar" alt="">
                                 <img v-else :src="require('@/assets/img/no_avatar.png')" alt="">
                             </div>
                             <h5 class="name">
@@ -392,33 +392,33 @@ export default {
                 })
         },
         async saveComment() {
-            await this.$refs['comment-area'].validate().then(async (res) => {
-                this.errors = res.errors
-                if (res.valid) {
-                    const data = {
-                        comment: this.comment
-                    }
-                    if (this.modalProperties.type === 'create') {
-                        await api.contractV2.addComment(this.contractId, data)
-                            .then(() => {
-                                this.toasted(`${this.$t('sweetAlert.success_create_comment')}`, "success");
-                            })
-                            .catch((err) => {
-                                this.toasted(err.message, "error");
-                            })
-                    } else {
-                        await api.contractV2.editComment(this.contractId, this.commentId, data)
-                            .then(() => {
-                                this.toasted(`${this.$t('sweetAlert.successfully_edited')}`, "success");
-                            })
-                            .catch((err) => {
-                                this.toasted(err.message, "error");
-                            })
-                    }
-                    this.closeCreateModal()
-                    await this.getComments()
+            const isValid = await this.$refs['userComment-area'].validate()
+            if (isValid.valid) {
+                const data = {
+                    comment: this.comment
                 }
-            })
+                if (this.modalProperties.type === 'create') {
+                    await api.contractV2.addComment(this.contractId, data)
+                        .then(() => {
+                            this.toasted(`${this.$t('sweetAlert.success_create_comment')}`, "success");
+                        })
+                        .catch((err) => {
+                            this.toasted(err.message, "error");
+                        })
+                } else {
+                    await api.contractV2.editComment(this.contractId, this.commentId, data)
+                        .then(() => {
+                            this.toasted(`${this.$t('sweetAlert.successfully_edited')}`, "success");
+                        })
+                        .catch((err) => {
+                            this.toasted(err.message, "error");
+                        })
+                }
+                this.closeCreateModal()
+                await this.getComments()
+            } else {
+                this.errors = isValid.errors
+            }
 
         },
 
