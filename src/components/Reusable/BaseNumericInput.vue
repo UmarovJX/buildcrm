@@ -322,6 +322,7 @@ export default {
   methods: {
     formatAmount() {
       let newValue = this.amount
+
       if (typeof this.amount === 'string') {
         newValue = this.amount?.replace('.', ',')
       }
@@ -352,11 +353,16 @@ export default {
         formattingValue = this.formatWithoutSeparator(unFormatWholeSide).slice(0, -1) + decimalSide
       }
 
+
       if (newValue !== formattingValue) {
         if (formattingValue === '0') {
           this.amount = null
         } else {
-          this.amount = formattingValue.replace('.', ',')
+          if (this.unformat(this.amount) === 0) {
+            this.amount = ''
+          } else {
+            this.amount = formattingValue.replace('.', ',')
+          }
         }
       }
     },

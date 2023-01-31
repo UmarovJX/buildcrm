@@ -84,7 +84,7 @@
           v-model="paymentDetails.monthly_payment_period"
           :currency="`${ $t('month_lowercase') }`"
           :label="true"
-          :max="36"
+          :max="360"
           :error="!!errors[0]"
           :placeholder="`${ $t('installment') }`"
           :disable="allowToShowFullPayment"
