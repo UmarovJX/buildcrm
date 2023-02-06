@@ -690,7 +690,7 @@ input[type="number"]
 
   &-row
     .property
-    text-transform: none
+        text-transform: none
 
 
 .peculiarities
