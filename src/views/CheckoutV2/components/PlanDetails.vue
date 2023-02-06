@@ -34,7 +34,7 @@
       />
       <field-information
           :bilingual="true"
-          :content="apartment.floor"
+          :content="apartment.block.floors"
           title="number_of_blocks"
           icon-name="domain"
       />
