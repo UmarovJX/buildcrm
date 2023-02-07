@@ -246,16 +246,16 @@ export default {
     color: var(--gray-400);
     width: 100%;
     display: flex;
-    //padding-left: 1rem;
+    padding-left: 1rem;
     margin-bottom: 6px;
 
     span {
         font-weight: 900;
         font-size: 8px;
-        //line-height: 8px;
+        line-height: 8px;
         position: absolute;
         left: 0;
-        top: 4px;
+        top: 0;
     }
 }
 
