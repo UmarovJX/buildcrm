@@ -218,7 +218,7 @@ export default {
     editInitialPrice({getters: gts, commit, dispatch}, {apmId, initial_price}) {
         const apmIndex = gts.findApmIdx(apmId)
 
-        const prepay = fmd((initial_price / gts.getTotal(apmIndex)) * 100)
+        const prepay = fmd((initial_price / gts.getTotal(apmIndex)) * 100, 10)
         commit('updateApartment', {
             idx: apmIndex,
             calc: {initial_price, prepay},

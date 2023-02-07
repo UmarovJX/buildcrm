@@ -360,9 +360,6 @@ export default {
     }
   },
   methods: {
-    discount() {
-      return discount
-    },
     ...mapActions('CheckoutV2', [
       'updateApmDiscount',
       'setMonthlyPaymentPeriod',

@@ -122,19 +122,19 @@ export default {
             case 'promo':
             case 'addition': {
                 // return gts.calculateTotalPriceByFixed(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
-                return gts.getPrice(idx) * gts.getPrepay(idx) / 100
+                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
             }
             case 'other': {
                 // return gts.calculateTotalPriceByDefault(idx) - gts.getDiscount(idx)
-                return gts.getPrice(idx)
+                return gts.getTotal(idx)
             }
             case 'percent': {
                 // return gts.calculateTotalPriceByDefault(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
-                return gts.getPrice(idx) * gts.getPrepay(idx) / 100
+                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
             }
             default: {
                 // return gts.calculateTotalPriceByDefault(idx) * gts.discountAmount(idx) / 100 - gts.getDiscount(gts)
-                return gts.getPrice(idx) * gts.getPrepay(idx) / 100
+                return gts.getTotal(idx) * gts.getPrepay(idx) / 100
             }
         }
     },
