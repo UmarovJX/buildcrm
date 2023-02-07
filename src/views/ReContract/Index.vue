@@ -1268,9 +1268,16 @@ export default {
     flex-direction: column;
     width: 100%;
 
-    ::v-deep .base-input input {
-        font-family: Inter, sans-serif;
-        font-weight: 700 !important;
+
+    ::v-deep .base-input {
+        input {
+            font-family: Inter, sans-serif;
+            font-weight: 700 !important;
+        }
+
+        .input-label span {
+            top: 6px !important;
+        }
     }
 
 
