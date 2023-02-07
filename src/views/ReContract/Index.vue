@@ -828,8 +828,8 @@ export default {
                         }
                         break;
                     case 'second_name':
-                        if (!this.newClient.attributes.second_name.kirill) {
-                            this.newClient.attributes.second_name.kirill = this.symbolLatinToCyrillic(event);
+                        if (!this.newClient.attributes.middle_name.kirill) {
+                            this.newClient.attributes.middle_name.kirill = this.symbolLatinToCyrillic(event);
                         }
                         break;
                 }
@@ -853,8 +853,8 @@ export default {
                         }
                         break;
                     case 'second_name':
-                        if (!this.newClient.attributes.second_name.lotin) {
-                            this.newClient.attributes.second_name.lotin = this.symbolCyrillicToLatin(event);
+                        if (!this.newClient.attributes.middle_name.lotin) {
+                            this.newClient.attributes.middle_name.lotin = this.symbolCyrillicToLatin(event);
                         }
                         break;
                 }
@@ -1268,6 +1268,12 @@ export default {
     flex-direction: column;
     width: 100%;
 
+    ::v-deep .base-input input {
+        font-family: Inter, sans-serif;
+        font-weight: 700 !important;
+    }
+
+
     &-header {
         display: flex;
         align-items: center;
@@ -1318,11 +1324,35 @@ export default {
 
         ::v-deep .base-calendar .date-picker .mx-input-wrapper .mx-input {
             height: 52px !important;
-            padding: .5rem .5rem .5rem 20px !important;
+            padding: .5rem .5rem .5rem 16px !important;
             width: 100%;
             font-weight: 700;
             font-size: 1rem;
             color: var(--gray-600);
+        }
+
+        ::v-deep .base-calendar {
+            .input-label {
+                font-family: CraftworkSans, serif;
+                position: absolute;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: var(--gray-400);
+                width: 100%;
+                display: flex;
+                padding-left: 1rem;
+                margin-bottom: 10px;
+                z-index: 3;
+
+                span {
+                    font-weight: 900;
+                    font-size: 8px;
+                    line-height: 10px;
+                    position: absolute;
+                    top: 6px;
+                    left: 20px;
+                }
+            }
         }
 
         .form-control:disabled {
@@ -1384,7 +1414,7 @@ export default {
                         padding-right: 4px;
                         font-size: 18px;
                         line-height: 22px;
-                        font-weight: 900;
+                        font-weight: 700;
                         color: var(--gray-600);
                     }
 
