@@ -323,6 +323,7 @@
       >
         <x-form-select
             v-model="personalData.language"
+            :error="!!errors[0]"
             :options="languageOptions"
             :placeholder="`${ $t('communication_language') }`"
         />
