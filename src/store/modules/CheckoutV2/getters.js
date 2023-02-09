@@ -151,9 +151,9 @@ export default {
         return gts.getMonthlyTotalPrice(idx) / gts.getMonth(idx)
     },
     getDiscount: (state, gts) => (idx) => {
-        if (gts.isDiscountOtherType(idx)) {
-            return 0
-        }
+        // if (gts.isDiscountOtherType(idx)) {
+        //     return 0
+        // }
         return gts.getApm({idx}).calc.total_discount
     },
     getRemainPrice: (state, gts) => (idx) => {
