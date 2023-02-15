@@ -2,6 +2,7 @@ export default {
     home: {
         title: 'Главная',
     },
+    company_type:'Тип компании',
     list_of_agreements: 'Список договоров',
     edit_apartment: 'Редактировать квартиру',
     changes_successfully_saved: 'Изменения успешно сохранены.',

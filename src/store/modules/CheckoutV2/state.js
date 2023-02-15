@@ -2,7 +2,7 @@ import {dateProperties} from "@/util/calendar";
 
 const {ymd, nextMonthYmd} = dateProperties('', 'string')
 
-const schema = {
+export const schema = {
     calc: {
         price: 0,
         price_m2: 0,

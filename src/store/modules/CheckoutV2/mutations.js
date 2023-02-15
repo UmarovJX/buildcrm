@@ -71,6 +71,7 @@ export default {
         state.apartments = [...state.apartments]
     },
     setInitialResult(state, {idx, initial}) {
+        state.apartments[idx].edit.initial_price = true
         state.apartments[idx].calc.initial_price = fmd(initial)
     },
     setRemainAmount(state, {idx, remainPrice}) {

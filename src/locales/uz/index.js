@@ -2,6 +2,7 @@ export default {
     home: {
         title: "Asosiy",
     },
+    company_type:'Kompaniya turi',
     list_of_agreements: "Shartnomalar ro'yxati",
     edit_apartment: 'Xonadonni tahrirlash',
     changes_successfully_saved: 'Изменения успешно сохранены.',

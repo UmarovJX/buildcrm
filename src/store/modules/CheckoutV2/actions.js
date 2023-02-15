@@ -2,6 +2,7 @@ import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
 import {setAppropriateCreditMonth} from "@/util/checkout";
+import {schema} from "@/store/modules/CheckoutV2/state";
 
 export default {
     initEditItems({state, getters: gts, commit, dispatch}, data) {
@@ -160,6 +161,18 @@ export default {
         commit('initOtherProperties', context)
         commit('initApartments', context)
     },
+    clearCheckoutState({state}) {
+        state.apartments = []
+        state.trashStorage = []
+        state.order = {}
+        state.countryList = []
+        state.clientData = {}
+        state.expiry_at = null
+        state.comment = ''
+        state.componentFunction = 'create'
+        state.contract_number = null
+        state.created_by = null
+    },
     calcApmPrices({state, getters: gts}) {
         state.apartments = state.apartments.map(apartment => {
             let idx = gts.findApmIdx(apartment.id)
@@ -215,8 +228,9 @@ export default {
         dispatch('monthlyPaymentsSetter', {index: apmIndex})
         dispatch('rerenderApm', {idx: apmIndex})
     },
-    editInitialPrice({getters: gts, commit, dispatch}, {apmId, initial_price}) {
+    editInitialPrice({getters: gts, commit, dispatch, state}, {apmId, initial_price}) {
         const apmIndex = gts.findApmIdx(apmId)
+
 
         const prepay = fmd((initial_price / gts.getTotal(apmIndex)) * 100, 10)
         commit('updateApartment', {
@@ -476,7 +490,7 @@ export default {
                     return initPm
                 })
     },
-    addNewPaymentSchedule({getters: gts, commit, dispatch}, {apmId, payment}) {
+    addNewPaymentSchedule({state, getters: gts, commit, dispatch}, {apmId, payment}) {
         const idx = gts.findApmIdx(apmId)
         const {type} = payment
         dispatch('addPaymentSchedule', {apmId, payment})
@@ -528,6 +542,7 @@ export default {
             } else {
                 dispatch('initialAdditionSetter', {idx, payment: {...schedule, amount: 0}})
             }
+
         } else {
             dispatch('monthlyAdditionSetter', {idx, payment: schedule})
         }

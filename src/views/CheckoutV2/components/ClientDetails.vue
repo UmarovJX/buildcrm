@@ -20,6 +20,41 @@
 
       <!--!  START OF THE LEGAL ENTITY FIELDS    -->
       <template v-if="showLegalEntityFields">
+
+        <!--? INN  -->
+        <validation-provider
+            v-slot="{ errors }"
+            rules="required|min:3"
+            :name="`${ $t('inn') }`"
+        >
+          <x-form-input
+              :label="true"
+              type="text"
+              class="w-100"
+              :placeholder="`${ $t('inn') }`"
+              :error="!!errors[0]"
+              v-model="personalData.legal_entity.inn"
+              @input="fetchLegalDadaByInn"
+          />
+        </validation-provider>
+
+        <!--? COMPANY_TYPE  -->
+        <validation-provider
+            v-slot="{ errors }"
+            rules="required"
+            :name="`${ $t('company_type') }`"
+        >
+          <x-form-select
+              v-if="companyTypeOptions.length"
+              :error="!!errors[0]"
+              :options="companyTypeOptions"
+              value-field="value"
+              text-field="text"
+              :placeholder="$t('company_type')"
+              v-model="personalData.company_type_id"
+          />
+        </validation-provider>
+
         <!--? COMPANY_NAME  -->
         <validation-provider
             v-slot="{ errors }"
@@ -36,7 +71,7 @@
           />
         </validation-provider>
 
-        <!--? COMPANY_NAME  -->
+        <!--? BANK  -->
         <validation-provider
             v-slot="{ errors }"
             rules="required|min:3"
@@ -81,22 +116,6 @@
               :error="!!errors[0]"
               v-model="personalData.legal_entity.mfo"
               :placeholder="`${ $t('mfo') }`"
-          />
-        </validation-provider>
-
-        <!--? INN  -->
-        <validation-provider
-            v-slot="{ errors }"
-            rules="required|min:3"
-            :name="`${ $t('inn') }`"
-        >
-          <x-form-input
-              :label="true"
-              type="text"
-              class="w-100"
-              :error="!!errors[0]"
-              v-model="personalData.legal_entity.inn"
-              :placeholder="`${ $t('inn') }`"
           />
         </validation-provider>
 
@@ -465,7 +484,7 @@ import {
 import api from "@/services/api";
 import {formatDateToYMD} from "@/util/calendar";
 import {mapGetters, mapMutations} from "vuex";
-import {isNotUndefinedNullEmptyZero, isUndefinedOrNullOrEmpty} from "@/util/inspect";
+import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
 
 export default {
   name: "CheckoutClientDetails",
@@ -500,10 +519,12 @@ export default {
         legal_address: null, fax: null
       },
       client_type_id: null,
+      company_type_id: null,
       country_id: null
     }
 
     return {
+      companyTypes: [],
       autoFill: false,
       countriesList: [],
       clientTypesList: [],
@@ -520,6 +541,14 @@ export default {
     ...mapGetters('CheckoutV2', [
       'isUpdateMode'
     ]),
+    companyTypeOptions() {
+      return this.companyTypes.map(({id, name}) => {
+        return {
+          value: id,
+          text: name[this.$i18n.locale]
+        }
+      })
+    },
     showLegalEntityFields() {
       return this.personalData.subject === 2
     },
@@ -534,6 +563,7 @@ export default {
   async created() {
     await this.getCountriesList()
     await this.getClientTypesList()
+    await this.fetchCompanyType()
   },
 
   methods: {
@@ -553,11 +583,66 @@ export default {
         }
       }
     },
+    fetchLegalDadaByInn() {
+      if (this.personalData.legal_entity.inn) {
+        if (this.timeoutId !== null) {
+          clearTimeout(this.timeoutId)
+        }
+        this.timeoutId = setTimeout(() => {
+          this.getLegalClientByInn()
+        }, 500)
+      } else {
+        if (this.autoFill) {
+          this.resetClientContext()
+          this.turnedOffAutoFill()
+        }
+      }
+    },
+    async fetchCompanyType() {
+      await api.companies.getCompanyType()
+          .then(response => {
+            this.companyTypes = response.data
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error)
+          })
+    },
     turnedOnAutoFill() {
       this.autoFill = true
     },
     turnedOffAutoFill() {
       this.autoFill = false
+    },
+    async getLegalClientByInn() {
+      if (this.personalData.legal_entity.inn.length > 3) {
+        try {
+          const {data} = await api.clientsV2.getClientBySearch({
+            params: {
+              field: this.personalData.legal_entity.inn,
+              subject: 'legal'
+            }
+          })
+          this.autoFillFieldsByInn(data)
+          this.turnedOnAutoFill()
+        } catch (e) {
+          this.resetClientContext()
+          this.turnedOffAutoFill()
+        }
+      }
+    },
+    autoFillFieldsByInn(data) {
+      this.personalData.legal_entity.fax = data.attributes.fax
+      this.personalData.legal_entity.mfo = data.attributes.mfo
+      this.personalData.legal_entity.ndc = data.attributes.nds
+      this.personalData.legal_entity.bank = data.attributes.bank_name
+      this.personalData.legal_entity.account_number = data.attributes.payment_number
+      this.personalData.legal_entity.legal_address = data.attributes.legal_address
+      this.personalData.legal_entity.company_name = data.attributes.name
+      this.personalData.company_type_id = data.attributes.company.id
+      this.personalData.email = data.email
+      this.personalData.other_email = data.additional_email
+      this.personalData.client_type_id = data.client_type.id
+      this.autoFillPhones(data.phones)
     },
     async getClientByPassport() {
       if (this.personalData.passport_series.length === 9) {
@@ -589,9 +674,10 @@ export default {
       this.personalData.middle_name = data.attributes.middle_name
       this.personalData.client_type_id = data.client_type.id
       this.personalData.country_id = data.attributes.country.id
+      this.autoFillPhones(data.phones)
+    },
 
-      let {phones} = data
-
+    autoFillPhones(phones) {
       phones = phones.filter(p => {
         return isNotUndefinedNullEmptyZero(p.phone)
             && p.phone.toString().length > 3
@@ -768,7 +854,8 @@ export default {
             inn: p.legal_entity.inn,
             nds: p.legal_entity.ndc,
             legal_address: p.legal_entity.legal_address,
-            fax: p.legal_entity.fax
+            fax: p.legal_entity.fax,
+            company_type_id: p.company_type_id
           }
         }
       }

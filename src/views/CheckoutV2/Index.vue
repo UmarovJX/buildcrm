@@ -200,7 +200,10 @@ export default {
     XFormInput,
     XCircularBackground
   },
-
+  beforeRouteLeave(to, from, next) {
+    this.clearCheckoutState()
+    return next()
+  },
   data() {
     return {
       userComment: {
@@ -270,7 +273,8 @@ export default {
     ...mapActions('CheckoutV2', [
       'setup',
       'initEditItems',
-      'changeFirstAttempt'
+      'changeFirstAttempt',
+      'clearCheckoutState'
     ]),
     ...mapActions('notify', ['openNotify']),
     async init() {
@@ -574,8 +578,8 @@ export default {
             }
           }
 
-          if (a.edit.prepay) {
-            orderCtx.prepay_edited = a.calc.prepay
+          if (a.edit.prepay || a.edit.initial_price) {
+            orderCtx.prepay_edited = true
           }
 
           if (a.calc.discount.id === 'other') {

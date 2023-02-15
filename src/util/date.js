@@ -128,3 +128,4 @@ export const constrainDate = (date, min = null, max = null) => {
   // Return a new `Date` object (or `null`)
   return date ? (date < min ? min : date > max ? max : date) : null
 }
+

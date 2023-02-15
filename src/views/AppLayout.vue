@@ -20,9 +20,7 @@
 </template>
 
 <script>
-
 import ErrorNotification from "@/components/Reusable/ErrorNotification";
-
 
 export default {
     name: "AppLayout",
