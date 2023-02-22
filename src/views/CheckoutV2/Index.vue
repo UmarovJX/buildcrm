@@ -565,7 +565,8 @@ export default {
             }
           }
           const hasEditOnInitial = a.calc.initial_payments.some(initial => initial.edit)
-          if (hasEditOnInitial || a.calc.initial_payments.length > 1 || a.edit.initial_price) {
+
+          if (hasEditOnInitial || a.calc.initial_payments.length > 1 || a.edit.initial_price || a.edit.prepay) {
             orderCtx.initial_payments = []
             for (let i = 0; i < a.calc.initial_payments.length; i++) {
               const p = a.calc.initial_payments[i]
