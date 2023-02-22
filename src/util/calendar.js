@@ -1,6 +1,4 @@
 import {isString} from "@/util/inspect";
-import da from "vue2-datepicker/locale/es/da";
-
 export const monthsNameList = [
     'january',
     'february',
