@@ -2,7 +2,6 @@ import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
 import {setAppropriateCreditMonth} from "@/util/checkout";
-import {schema} from "@/store/modules/CheckoutV2/state";
 
 export default {
     initEditItems({state, getters: gts, commit, dispatch}, data) {
@@ -20,6 +19,7 @@ export default {
                         contract_date: data.contract_date,
                         order_uuid: data.id,
                         uuid: apm.id,
+                        edit: state.schema.edit,
                         calc: {
                             ...state.schema.calc,
                             first_payment_date: data.first_payment_date,
@@ -204,16 +204,23 @@ export default {
     },
     setMonthlyPaymentPeriod({getters: gts, commit, dispatch}, {apmId, monthly_payment_period}) {
         const apmIndex = gts.findApmIdx(apmId)
-
         commit('updateApartment', {
             idx: apmIndex,
             calc: {monthly_payment_period},
-            edit: {monthly_payment_period: true}
+            edit: {monthly_payment_period: true, prepay: false, initial_price: false}
         })
+
 
         dispatch('recalculateApmPrices', apmIndex)
         dispatch('initialPaymentsSetter', {index: apmIndex})
         dispatch('monthlyPaymentsSetter', {index: apmIndex})
+
+        const prepay = fmd((gts.getInitialPrice(apmIndex) / gts.getTotal(apmIndex)) * 100, 10)
+        commit('updateApartment', {
+            idx: apmIndex,
+            calc: {prepay},
+        })
+
         dispatch('rerenderApm', {idx: apmIndex})
     },
     editPrepay({getters: gts, commit, dispatch}, {apmId, prepay}) {
@@ -221,7 +228,7 @@ export default {
         commit('updateApartment', {
             idx: apmIndex,
             calc: {prepay: prepay},
-            edit: {prepay: true}
+            edit: {prepay: true, initial_price: false}
         })
 
         dispatch('initialPaymentsSetter', {index: apmIndex})
@@ -243,12 +250,21 @@ export default {
         dispatch('monthlyPaymentsSetter', {index: apmIndex})
         dispatch('rerenderApm', {idx: apmIndex})
     },
+    turnInitialEditStateOn({getters: gts, state}, {apmId}) {
+        const apmIndex = gts.findApmIdx(apmId)
+        state.apartments[apmIndex].edit.first_payment = true
+    },
+    turnInitialEditStateOff({getters: gts, state}, {apmId}) {
+        const apmIndex = gts.findApmIdx(apmId)
+        state.apartments[apmIndex].edit.first_payment = false
+    },
     updateDiscount({getters: gts, commit, dispatch}, {apmId, discount_per_m2, total_discount}) {
         const apmIndex = gts.findApmIdx(apmId)
 
         commit('updateApartment', {
             idx: apmIndex,
             calc: {discount_per_m2, total_discount},
+            edit: {discount: true}
         })
 
         dispatch('initialPaymentsSetter', {index: apmIndex})

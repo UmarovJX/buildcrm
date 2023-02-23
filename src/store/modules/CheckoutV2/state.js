@@ -36,7 +36,8 @@ export const schema = {
         discount: false,
         monthly: false,
         contract_number: false,
-        first_attempt: false
+        first_attempt: false,
+        first_payment: false
     },
     otherDiscount: {
         value: 'other',

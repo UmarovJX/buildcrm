@@ -1,5 +1,6 @@
 import {isString, isUndefinedOrNullOrEmpty} from "@/util/inspect";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
+import id from "vue2-datepicker/locale/es/id";
 
 export default {
     isCreateMode: (state) => state.componentFunction === 'create',
@@ -102,18 +103,18 @@ export default {
     getInitialPrice: (state, gts) => (idx) => {
         const apartment = gts.getApm({idx})
 
-        if (apartment.edit.initial_price && gts.getMonth(idx)) {
+        if ((apartment.edit.initial_price || apartment.edit.first_payment) && gts.getMonth(idx)) {
             if (apartment.calc.initial_price.toString() === '') {
                 return 0
             }
-            // return apartment.calc.initial_price
+            return apartment.calc.initial_price
         }
 
         if (apartment.calc.prepay === 0) {
             return 0
         }
 
-        if (!gts.getMonth(idx)) {
+        if (!gts.getMonth(idx) && !apartment.edit.prepay) {
             return gts.getTotal(idx)
         }
 

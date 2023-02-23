@@ -75,9 +75,10 @@
     <!--? INSTALLMENT PLAN  -->
     <validation-provider
         v-slot="{ errors }"
-        rules="required|min_value:0"
+        :rules="paymentDetails.prepay < 100 ? 'required|min_value:1' :'required|min_value:0'"
         :name="`${ $t('installment') }`"
         class="cw-monthly-payment"
+
     >
       <x-form-input
           type="number"
@@ -158,7 +159,8 @@
           :max="maxTotalDiscountAmount"
           :placeholder="`${ $t('total_discount') }`"
           @input="addDiscount"
-          @focus="focusOnFieldHandler('total_discount')"
+          @focus="focusTotalDiscount"
+          @blur="blurTotalDiscount"
       />
     </validation-provider>
 
@@ -179,7 +181,8 @@
           :max="maxDiscountEachSquare"
           :placeholder="`${ $t('discount_per_m2') }`"
           @input="addDiscountEachSquare"
-          @focus="focusOnFieldHandler('discount_per_m2')"
+          @focus="focusDiscountEachSquare"
+          @blur="blurDiscountEachSquare"
       />
     </validation-provider>
 
@@ -227,7 +230,7 @@
 import {hasChild} from "@/util/object";
 import {makeProp as p} from "@/util/props";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import {PROP_TYPE_OBJECT} from "@/constants/props";
 
 import {XFormSelect} from "@/components/ui-components/form-select";
@@ -285,7 +288,6 @@ export default {
       'findApmIdx',
       'gtsEditFirstAttempt',
       'getPrice',
-      'findApmIdx',
       'apartmentArea'
     ]),
     paymentOptions() {
@@ -337,7 +339,7 @@ export default {
       const idx = this.findApmIdx(this.apartment.id)
       return this.getPrice(idx)
     },
-    maxDiscountEachSquare(){
+    maxDiscountEachSquare() {
       const idx = this.findApmIdx(this.apartment.id)
       return this.maxTotalDiscountAmount / this.apartmentArea(idx)
     }
@@ -370,8 +372,45 @@ export default {
       'updatePaymentDate',
       'setIndividualPrice',
       'updateValidationState',
-      'changeFirstAttempt'
+      'changeFirstAttempt',
+      'turnInitialEditStateOn',
+      'turnInitialEditStateOff'
     ]),
+    ...mapMutations('CheckoutV2', [
+      'updateApartment'
+    ]),
+    focusTotalDiscount() {
+      this.focusOnFieldHandler('total_discount')
+      this.disableInitialForChange()
+    },
+    focusDiscountEachSquare() {
+      this.focusOnFieldHandler('discount_per_m2')
+      this.disableInitialForChange()
+    },
+    blurTotalDiscount() {
+      this.changeEditForInitial()
+    },
+    blurDiscountEachSquare() {
+      this.changeEditForInitial()
+    },
+    disableInitialForChange() {
+      this.updateApartment({
+        idx: this.findApmIdx(this.apartment.id),
+        edit: {
+          initial_price: true,
+          prepay: true
+        }
+      })
+    },
+    changeEditForInitial() {
+      this.updateApartment({
+        idx: this.findApmIdx(this.apartment.id),
+        edit: {
+          initial_price: false,
+          prepay: false
+        }
+      })
+    },
     focusOnFieldHandler() {
       this.changeFirstAttempt({
         apmId: this.apartment.id,
@@ -416,6 +455,7 @@ export default {
           firstAttempt: false
         })
 
+
         this.updateApmDiscount({
           apmId,
           discountId
@@ -443,6 +483,9 @@ export default {
       }
 
       if (this.getCalc().prepay !== prepay) {
+        this.turnInitialEditStateOff({
+          apmId: this.apartment.id
+        })
         this.editPrepay({
           apmId: this.apartment.id,
           prepay
@@ -454,6 +497,10 @@ export default {
       if (this.gtsEditFirstAttempt) {
         return
       }
+
+      this.turnInitialEditStateOn({
+        apmId: this.apartment.id
+      })
 
       if (this.getCalc().initial_price !== initial_price) {
         this.editInitialPrice({

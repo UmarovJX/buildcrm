@@ -251,12 +251,13 @@ export default {
       'comment',
       'trashStorage',
       'clientData',
-      'componentFunction'
+      'componentFunction',
     ]),
     ...mapGetters('CheckoutV2', [
       'isCreateMode',
       'isUpdateMode',
-      'getUpdateStatus'
+      'getUpdateStatus',
+      'findApmIdx'
     ]),
     headerItems,
     flexCenter() {
@@ -535,7 +536,7 @@ export default {
 
     generateOrdersBody() {
       try {
-        return this.apartments.map(a => {
+        return this.apartments.map((a, idx) => {
           const orderCtx = {
             uuid: a.order_uuid,
             discount_id: a.calc.discount.id,
@@ -564,17 +565,18 @@ export default {
               })
             }
           }
-          const hasEditOnInitial = a.calc.initial_payments.some(initial => initial.edit)
 
-          if (hasEditOnInitial || a.calc.initial_payments.length > 1 || a.edit.initial_price || a.edit.prepay) {
+          const hasEditOnInitial = a.calc.initial_payments.some(initial => initial.edit)
+          if (a.edit.first_payment || hasEditOnInitial || a.calc.initial_payments.length > 1 || a.edit.initial_price || a.edit.prepay) {
             orderCtx.initial_payments = []
             for (let i = 0; i < a.calc.initial_payments.length; i++) {
               const p = a.calc.initial_payments[i]
               const {ymd} = dateProperties(p.month, 'string')
+              const isEdited = p.edit || a.edit.first_payment || a.edit.initial_price
               orderCtx.initial_payments.push({
                 date: ymd,
                 amount: p.amount,
-                edited: (+p.edit).toString()
+                edited: (+isEdited).toString()
               })
             }
           }
