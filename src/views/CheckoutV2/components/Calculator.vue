@@ -295,9 +295,9 @@ export default {
         const discounts = this.apartment.discounts.map((discount, index) => {
           let text = this.$t("apartments.view.variant")
           if (discount.type === 'promo') {
-            text += this.$t('promo.by_promo')
+            text += ` ${this.$t('promo.by_promo')}`
           }
-          text += ` ${index + 1} - ${discount.prepay}%`
+          text += `  ${index + 1} - ${discount.prepay}%`
           return {
             text,
             value: discount.id,
