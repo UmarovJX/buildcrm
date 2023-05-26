@@ -153,6 +153,10 @@ export default {
                 case "initial":
                     msg = "Первоначальный взнос";
                     break;
+
+                case "first_payment":
+                    msg = "1 взнос"
+                    break;
                 default:
                     msg = type;
                     break;
