@@ -69,7 +69,11 @@
               :import-data="importContracts"
               @all-debtors="setDebtorsList"
             />
-            <BasePagination :paginationCount="200" :paginationCurrent="4" />
+            <BasePagination 
+              :paginationCount="paginationCount"
+              :paginationCurrent="currentPagination" 
+              @change-page="paginate"
+            />
           </div>
         </b-tab>
 
@@ -178,13 +182,13 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 // import XFormSelect from "@/components/ui-components/form-select/FormSelect";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import api from "@/services/api";
 import FirstStep from "@/views/Debtors/steps/FirstStep";
 import SecondStep from "@/views/Debtors/steps/SecondStep";
 import ThirdStep from "@/views/Debtors/steps/ThirdStep";
 import BaseModal from "@/components/Reusable/BaseModal";
-import { TYPE, PAYMENT_TYPE } from "@/constants/names"
+import { TYPE, PAYMENT_TYPE, PAGINATION_COUNT } from "@/constants/names";
 import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 
 export default {
@@ -239,7 +243,11 @@ export default {
   computed: {
     ...mapGetters({
       getDebtorsSheets: "getDebtorsSheets",
+      currentPagination: "getCurrentPagination"
     }),
+    paginationCount() {
+      return Math.ceil((this.getDebtorsSheets.rows.length-1) / PAGINATION_COUNT)
+    },
     haveConstructorOrder() {
       return Object.keys(this.getDebtorsSheets).length > 0;
     },
@@ -252,6 +260,13 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      setCurrentPagination: 'SET_CURRENT_PAGINATION'
+    }),
+    paginate(page) {
+      this.setCurrentPagination(page)
+      this.getImportDebtorsContract()
+    },
     cancelLeave() {
       this.permissionLeave = false;
       this.$refs["leave-modal"].closeModal();
@@ -264,9 +279,8 @@ export default {
     backNavigation() {
       this.$router.go(-1);
     },
-    async changeTab() {
-      if (this.tabIndex === 0) {
-        const typeFieldValidation = await this.$refs[
+    async getImportDebtorsContract() {
+      const typeFieldValidation = await this.$refs[
           "first-step"
         ].validateFirstStep();
 
@@ -274,6 +288,7 @@ export default {
           const body = {
             contracts: this.$refs["first-step"].getContractNumbers(),
           };
+
           api.debtorsV2
             .checkImportDebtors(body)
             .then((res) => {
@@ -282,6 +297,7 @@ export default {
                 message: "Успешно",
                 type: "success",
               };
+              console.log('Response: ', res.data)
               this.importContracts = res.data;
               // this.foundContracts = res.data.found
               // this.notFoundContracts = res.data.not_found
@@ -314,6 +330,10 @@ export default {
           };
           this.stepTwoDisable = true;
         }
+    },
+    async changeTab() {
+      if (this.tabIndex === 0) {
+        this.getImportDebtorsContract();
       } else if (this.tabIndex === 1) {
         await this.$refs["second-step"].validateSecondStep();
       }

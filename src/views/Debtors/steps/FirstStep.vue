@@ -48,6 +48,7 @@
 <script>
 import XFormSelect from "@/components/ui-components/form-select/FormSelect";
 import { mapGetters } from "vuex";
+import { PAGINATION_COUNT } from "@/constants/names";
 
 export default {
   name: "FirstStep",
@@ -108,7 +109,13 @@ export default {
   computed: {
     ...mapGetters({
       getDebtorsSheets: "getDebtorsSheets",
+      getCurrentPagination: "getCurrentPagination"
     }),
+  },
+  watch: {
+    getCurrentPagination() {
+      this.getContractNumbers()
+    }
   },
   created() {
     this.setupOptions();
@@ -130,7 +137,9 @@ export default {
 
       if (debtorsSheets.rows && debtorsSheets.rows.length) {
         debtorsSheets = debtorsSheets.rows.slice(1);
-        debtorsSheets.map((item, index) => {
+        console.log(debtorsSheets)
+        console.log('DebtorsSheets: ', debtorsSheets.slice(PAGINATION_COUNT*this.getCurrentPagination,PAGINATION_COUNT*this.getCurrentPagination+PAGINATION_COUNT))
+        debtorsSheets.slice(PAGINATION_COUNT*this.getCurrentPagination,PAGINATION_COUNT*this.getCurrentPagination+PAGINATION_COUNT).map((item, index) => {
           Object.entries(item).forEach(([key, value]) => {
             if (key === contractFieldName || key === "contract") {
               contractsList = [...contractsList, value];

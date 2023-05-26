@@ -40,6 +40,7 @@ import Features from "@/store/modules/Features";
 import notify from "@/store/modules/Notification/index"
 import checkout from "@/store/modules/Checkout"
 import CheckoutV2 from "@/store/modules/CheckoutV2";
+import Pagination from "./modules/pagination";
 
 Vue.use(Vuex);
 
@@ -83,5 +84,6 @@ export default new Vuex.Store({
         DebtorsImport,
         FastPlan,
         Promo,
+        Pagination
     },
 })

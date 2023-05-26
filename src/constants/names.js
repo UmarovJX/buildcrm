@@ -22,3 +22,5 @@ export const PAYMENT_TYPE = {
     "Перерасчет": "Recalculation",
     "К Хуршидака": "Client_khurshidaka"
 }
+
+export const PAGINATION_COUNT = 2;

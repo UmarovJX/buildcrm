@@ -164,6 +164,12 @@ export default {
       allList: [],
     };
   },
+  watch: {
+    importData() {
+      console.log('Imported new one: ', this.importData)
+      this.setupOptions()
+    }
+  },
   computed: {
     ...mapGetters({
       getDebtorsSheets: "getDebtorsSheets",
@@ -220,6 +226,7 @@ export default {
       });
     },
     searchContract(item, search) {
+      console.log(this.importData)
       const uuid = item.key;
       const params = {
         contract: search,
