@@ -1,3 +1,62 @@
+<script>
+import { mapActions, mapGetters } from "vuex";
+
+export default {
+  data: () => ({
+    sms: {
+      login: null,
+      password: null,
+    },
+
+    header: {
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+      },
+    },
+  }),
+
+  mounted() {
+    this.fetchPlaymobile(this);
+  },
+
+  computed: mapGetters(["getPermission", "getMe", "getPlaymobile"]),
+
+  methods: {
+    ...mapActions(["fetchPlaymobile"]),
+
+    async SavePlayMobile() {
+      try {
+        const { status, data } = await this.axios.put(
+          process.env.VUE_APP_URL + "/v1/crm/settings/sms",
+          {
+            status: this.getPlaymobile.sms.status,
+            login: this.getPlaymobile.sms.login,
+            password: this.getPlaymobile.sms.password,
+          },
+          this.header
+        );
+
+        if (status === 202) this.toasted(data.message, "success");
+      } catch (error) {
+        if (!error.response) {
+          this.toasted("Error: Network Error", "error");
+        } else {
+          if (error.response.status === 403) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 401) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 500) {
+            this.toasted(error.response.data.message, "error");
+          } else {
+            this.toasted(error.response.data.message, "error");
+          }
+        }
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <div class="card">
@@ -51,64 +110,5 @@
     </div>
   </div>
 </template>
-
-<script>
-import {mapActions, mapGetters} from "vuex";
-
-export default {
-  data: () => ({
-    sms: {
-      login: null,
-      password: null,
-    },
-
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
-      },
-    },
-  }),
-
-  mounted() {
-    this.fetchPlaymobile(this);
-  },
-
-  computed: mapGetters(["getPermission", "getMe", "getPlaymobile"]),
-
-  methods: {
-    ...mapActions(["fetchPlaymobile"]),
-
-    async SavePlayMobile() {
-      try {
-        const {status, data} = await this.axios.put(
-          process.env.VUE_APP_URL + "/v1/crm/settings/sms",
-          {
-            status: this.getPlaymobile.sms.status,
-            login: this.getPlaymobile.sms.login,
-            password: this.getPlaymobile.sms.password,
-          },
-          this.header
-        );
-
-        if (status === 202) this.toasted(data.message, "success");
-      } catch (error) {
-        if (!error.response) {
-          this.toasted("Error: Network Error", "error");
-        } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
-        }
-      }
-    },
-  },
-};
-</script>
 
 <style scoped></style>

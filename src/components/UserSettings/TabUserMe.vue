@@ -1,164 +1,93 @@
-<template>
-  <div class="user__content">
-    <div class="avatar__content">
-      <div class="avatar__content-icon">
-        <template v-if="loadingProgress">
-          <svg
-              stroke-linecap="round"
-              :stroke-width="3"
-              :stroke-dashoffset="calcValue"
-              stroke="#3480eb"
-              class="progress__front" viewBox="0 0 100 100"
-          >
-            <circle cx="50" cy="50" r="45"></circle>
-          </svg>
-          <span class="progress__counter">{{ loadingProgress }} %</span>
-        </template>
-        <div class="upload__content">
-          <b-avatar
-              variant="primary"
-              :src="getUserAvatarUrl"
-              :text="getNameSnippet"
-              size="6rem"
-              class="avatar-wrapper"
-              :class="{'active-loading':loadingProgress}"
-          ></b-avatar>
-          <input type="file" accept="image/*" @change="compressImage" class="upload__avatar">
-        </div>
-      </div>
-
-      <div class="editor__content">
-        <div class="editor__content-buttons">
-          <div class="upload__content">
-            <b-button variant="primary" class="submit__button">Upload Photo</b-button>
-            <input ref="upload-image" type="file" accept="image/*" @change="compressImage" class="upload__avatar">
-          </div>
-          <!--          <b-button @click="removeAvatar" class="remove__button" variant="danger">Remove</b-button>-->
-        </div>
-      </div>
-    </div>
-    <ValidationObserver v-slot="{ handleSubmit }">
-      <form class="user__form" @submit.prevent="handleSubmit(submitUserInfo)">
-        <ValidationProvider
-            v-for="{type,name,rules,bind,placeholder,extraClass,id} in formSchema"
-            :key="name+rules"
-            :name="name"
-            :rules="rules"
-            v-slot="{ errors }"
-            :class="extraClass"
-        >
-          <label :for="id">{{ name }}</label>
-          <b-form-input
-              v-model="user[bind]"
-              :type="type"
-              :id="id"
-              :placeholder="placeholder"
-              disabled
-          >
-          </b-form-input>
-          <span class="error__provider">{{ errors[0] }}</span>
-        </ValidationProvider>
-
-        <!--        <div class="buttons">-->
-        <!--          <b-button type="submit" variant="outline-primary" class="submit__button">Сохранить изменения</b-button>-->
-        <!--          &lt;!&ndash;          <b-button type="button" variant="danger" class="remove__button">Remove</b-button>&ndash;&gt;-->
-        <!--        </div>-->
-      </form>
-    </ValidationObserver>
-    <base-loading-content :loading="loading"/>
-  </div>
-</template>
-
 <script>
 import api from "@/services/api";
 import Compressor from "compressorjs";
 import BaseLoadingContent from "@/components/BaseLoadingContent";
-import {mapActions} from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "UserSettings",
   components: {
-    BaseLoadingContent
+    BaseLoadingContent,
   },
   data() {
     return {
       formSchema: [
         {
-          id: 'username',
-          type: 'text',
-          name: this.$t('user.first_name'),
-          rules: 'required|alpha',
-          bind: 'first_name',
-          placeholder: this.$t('user.first_name'),
-          extraClass: 'validation__provider'
+          id: "username",
+          type: "text",
+          name: this.$t("user.first_name"),
+          rules: "required|alpha",
+          bind: "first_name",
+          placeholder: this.$t("user.first_name"),
+          extraClass: "validation__provider",
         },
         {
-          id: 'lastname',
-          type: 'text',
-          name: this.$t('user.last_name'),
-          rules: 'required|alpha',
-          bind: 'last_name',
-          placeholder: this.$t('user.last_name'),
-          extraClass: 'validation__provider'
+          id: "lastname",
+          type: "text",
+          name: this.$t("user.last_name"),
+          rules: "required|alpha",
+          bind: "last_name",
+          placeholder: this.$t("user.last_name"),
+          extraClass: "validation__provider",
         },
         {
-          id: 'secondName',
-          type: 'text',
-          name: this.$t('user.second_name'),
-          rules: 'required|alpha',
-          bind: 'second_name',
-          placeholder: this.$t('user.second_name'),
-          extraClass: 'validation__provider'
+          id: "secondName",
+          type: "text",
+          name: this.$t("user.second_name"),
+          rules: "required|alpha",
+          bind: "second_name",
+          placeholder: this.$t("user.second_name"),
+          extraClass: "validation__provider",
         },
         {
-          id: 'phoneNumber',
-          type: 'tel',
-          name: this.$t('user.phone_number'),
-          rules: 'required|digits:12',
-          bind: 'phone',
-          placeholder: this.$t('user.phone_number'),
-          extraClass: 'validation__provider'
+          id: "phoneNumber",
+          type: "tel",
+          name: this.$t("user.phone_number"),
+          rules: "required|digits:12",
+          bind: "phone",
+          placeholder: this.$t("user.phone_number"),
+          extraClass: "validation__provider",
         },
         {
-          id: 'email',
-          type: 'email',
-          name: this.$t('user.email'),
-          rules: 'required|email',
-          bind: 'email',
-          placeholder: this.$t('user.email'),
-          extraClass: 'validation__provider'
-        }
+          id: "email",
+          type: "email",
+          name: this.$t("user.email"),
+          rules: "required|email",
+          bind: "email",
+          placeholder: this.$t("user.email"),
+          extraClass: "validation__provider",
+        },
       ],
       user: {
-        avatar: '',
-        first_name: '',
-        last_name: '',
-        second_name: '',
-        phone: '',
-        email: ''
+        avatar: "",
+        first_name: "",
+        last_name: "",
+        second_name: "",
+        phone: "",
+        email: "",
       },
-      uploadImage: '',
-      backendAvatar: '',
+      uploadImage: "",
+      backendAvatar: "",
       loadingProgress: 0,
-      loading: false
-    }
+      loading: false,
+    };
   },
   async created() {
-    await this.initUserData()
+    await this.initUserData();
   },
   computed: {
     getUserAvatarUrl() {
       if (this.uploadImage) {
-        return this.uploadImage
+        return this.uploadImage;
       }
-      return this.user.avatar
+      return this.user.avatar;
     },
     getNameSnippet() {
-      const {first_name, last_name} = this.user
-      if (first_name !== '' && last_name !== '') {
-        return last_name[0] + first_name[0]
+      const { first_name, last_name } = this.user;
+      if (first_name !== "" && last_name !== "") {
+        return last_name[0] + first_name[0];
       }
-      return ''
+      return "";
     },
     calcValue() {
       return 283 - (283 * this.loadingProgress) / 100;
@@ -167,28 +96,29 @@ export default {
   watch: {
     loadingProgress(last) {
       if (last === 100) {
-        this.makeProgressDefault()
+        this.makeProgressDefault();
       }
-    }
+    },
   },
   methods: {
     ...mapActions({
-      updateUserData: 'setMe'
+      updateUserData: "setMe",
     }),
-    submitUserInfo() {
-
-    },
+    submitUserInfo() {},
     async initUserData() {
-      this.loading = true
-      await api.userV2.getUser().then(response => {
-        const user = response.data
-        this.user = {...this.user, ...user}
-      }).catch((error) => {
-        this.toastedWithErrorCode(error)
-      }).finally(() => {
-        this.loading = false
-      })
-
+      this.loading = true;
+      await api.userV2
+        .getUser()
+        .then((response) => {
+          const user = response.data;
+          this.user = { ...this.user, ...user };
+        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     compressImage(file) {
       const fileUpl = file.target.files ? file.target.files[0] : null;
@@ -205,47 +135,143 @@ export default {
             type: result.type,
             lastModified: Date.now(),
           });
-          this.uploadImage = URL.createObjectURL(this.backendAvatar)
-          this.uploadAvatar()
+          this.uploadImage = URL.createObjectURL(this.backendAvatar);
+          this.uploadAvatar();
         },
-      })
+      });
     },
     async removeAvatar() {
-      const form = new FormData()
-      form.append('avatar', 'null')
+      const form = new FormData();
+      form.append("avatar", "null");
 
-      await api.userV2.updateUserAvatar(form)
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
+      await api.userV2.updateUserAvatar(form).catch((error) => {
+        this.toastedWithErrorCode(error);
+      });
     },
     async uploadAvatar() {
-      const form = new FormData()
-      form.append('avatar', this.backendAvatar)
+      const form = new FormData();
+      form.append("avatar", this.backendAvatar);
 
       const config = {
         onUploadProgress: (progressEvent) => {
-          this.loadingProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        }
-      }
+          this.loadingProgress = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+        },
+      };
 
       // const _axios = axios.create({baseURL: process.env.VUE_APP_URL});
       // await _axios.post('users/me', form, config)
-      await api.userV2.updateUserAvatar(form, config)
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          }).finally(() => {
-            this.updateUserData(this, this.$route.path)
-          })
+      await api.userV2
+        .updateUserAvatar(form, config)
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        })
+        .finally(() => {
+          this.updateUserData(this, this.$route.path);
+        });
     },
     makeProgressDefault() {
       setTimeout(() => {
-        this.loadingProgress = 0
-      }, 1000)
-    }
-  }
-}
+        this.loadingProgress = 0;
+      }, 1000);
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="user__content">
+    <div class="avatar__content">
+      <div class="avatar__content-icon">
+        <template v-if="loadingProgress">
+          <svg
+            stroke-linecap="round"
+            :stroke-width="3"
+            :stroke-dashoffset="calcValue"
+            stroke="#3480eb"
+            class="progress__front"
+            viewBox="0 0 100 100"
+          >
+            <circle cx="50" cy="50" r="45"></circle>
+          </svg>
+          <span class="progress__counter">{{ loadingProgress }} %</span>
+        </template>
+        <div class="upload__content">
+          <b-avatar
+            variant="primary"
+            :src="getUserAvatarUrl"
+            :text="getNameSnippet"
+            size="6rem"
+            class="avatar-wrapper"
+            :class="{ 'active-loading': loadingProgress }"
+          ></b-avatar>
+          <input
+            type="file"
+            accept="image/*"
+            @change="compressImage"
+            class="upload__avatar"
+          />
+        </div>
+      </div>
+
+      <div class="editor__content">
+        <div class="editor__content-buttons">
+          <div class="upload__content">
+            <b-button variant="primary" class="submit__button"
+              >Upload Photo</b-button
+            >
+            <input
+              ref="upload-image"
+              type="file"
+              accept="image/*"
+              @change="compressImage"
+              class="upload__avatar"
+            />
+          </div>
+          <!--          <b-button @click="removeAvatar" class="remove__button" variant="danger">Remove</b-button>-->
+        </div>
+      </div>
+    </div>
+    <ValidationObserver v-slot="{ handleSubmit }">
+      <form class="user__form" @submit.prevent="handleSubmit(submitUserInfo)">
+        <ValidationProvider
+          v-for="{
+            type,
+            name,
+            rules,
+            bind,
+            placeholder,
+            extraClass,
+            id,
+          } in formSchema"
+          :key="name + rules"
+          :name="name"
+          :rules="rules"
+          v-slot="{ errors }"
+          :class="extraClass"
+        >
+          <label :for="id">{{ name }}</label>
+          <b-form-input
+            v-model="user[bind]"
+            :type="type"
+            :id="id"
+            :placeholder="placeholder"
+            disabled
+          >
+          </b-form-input>
+          <span class="error__provider">{{ errors[0] }}</span>
+        </ValidationProvider>
+
+        <!--        <div class="buttons">-->
+        <!--          <b-button type="submit" variant="outline-primary" class="submit__button">Сохранить изменения</b-button>-->
+        <!--          &lt;!&ndash;          <b-button type="button" variant="danger" class="remove__button">Remove</b-button>&ndash;&gt;-->
+        <!--        </div>-->
+      </form>
+    </ValidationObserver>
+    <base-loading-content :loading="loading" />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 button {
@@ -347,7 +373,7 @@ button {
 
 .active-loading {
   &::after {
-    content: '';
+    content: "";
     top: 0;
     left: 0;
     right: 0;

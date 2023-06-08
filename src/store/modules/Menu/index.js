@@ -1,31 +1,32 @@
 import api from "@/services/api";
 
 export default {
-    actions: {
-        async fetchMenu(ctx) {
-            await api.home.fetchMenu()
-                .then((response) => {
-                    ctx.commit("updateMenus", response.data);
-                })
-                .catch(() => {
-                    // localStorage.clear();
-                });
-        },
+  actions: {
+    async fetchMenu(ctx) {
+      await api.home
+        .fetchMenu()
+        .then((response) => {
+          ctx.commit("updateMenus", response.data);
+        })
+        .catch(() => {
+          // localStorage.clear();
+        });
     },
+  },
 
-    mutations: {
-        updateMenus(state, result) {
-            state.menus = result;
-        },
+  mutations: {
+    updateMenus(state, result) {
+      state.menus = result;
     },
+  },
 
-    state: {
-        menus: [],
-    },
+  state: {
+    menus: [],
+  },
 
-    getters: {
-        getMenus(state) {
-            return state.menus;
-        },
+  getters: {
+    getMenus(state) {
+      return state.menus;
     },
+  },
 };

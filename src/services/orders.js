@@ -1,76 +1,75 @@
-import {axiosV1CRM, axiosV2} from '@/services/core/base'
-import Core from '@/services/core/index'
+import { axiosV1CRM, axiosV2 } from "@/services/core/base";
+import Core from "@/services/core/index";
 
 class OrdersV1 extends Core {
-    constructor(axios = axiosV1CRM) {
-        super(axios);
-    }
+  constructor(axios = axiosV1CRM) {
+    super(axios);
+  }
 
-    holdOrder(apartments) {
-        return this.post('checkout', {apartments})
-    }
+  holdOrder(apartments) {
+    return this.post("checkout", { apartments });
+  }
 
-    deleteOrderHold(uuid) {
-        return this.delete(`checkout/${uuid}`)
-    }
+  deleteOrderHold(uuid) {
+    return this.delete(`checkout/${uuid}`);
+  }
 
-    deactivateOrderHold(id) {
-        return this.delete(`orders/${id}/hold`)
-    }
+  deactivateOrderHold(id) {
+    return this.delete(`orders/${id}/hold`);
+  }
 
-    fetchUnfinishedOrders() {
-        return this.get('orders/hold')
-    }
+  fetchUnfinishedOrders() {
+    return this.get("orders/hold");
+  }
 
-    fetchOrder(orderId) {
-        return this.get(`orders/${orderId}`)
-    }
+  fetchOrder(orderId) {
+    return this.get(`orders/${orderId}`);
+  }
 
-    reserveApartment(apartmentId, body) {
-        return this.post(`orders/${apartmentId}`, body)
-    }
+  reserveApartment(apartmentId, body) {
+    return this.post(`orders/${apartmentId}`, body);
+  }
 
-    orderMultipleApartment(body) {
-        return this.post('orders/multiple', body)
-    }
+  orderMultipleApartment(body) {
+    return this.post("orders/multiple", body);
+  }
 
-    deactivateReserveOrders(id) {
-        return this.delete(`orders/${id}/reserve`)
-    }
+  deactivateReserveOrders(id) {
+    return this.delete(`orders/${id}/reserve`);
+  }
 
-    ordersComment(orderId, comment) {
-        return this.post(`orders/${orderId}/comment`, {comment})
-    }
+  ordersComment(orderId, comment) {
+    return this.post(`orders/${orderId}/comment`, { comment });
+  }
 
-    changeClientType(id, body) {
-        return this.put(`orders/${id}/client`, body)
-    }
+  changeClientType(id, body) {
+    return this.put(`orders/${id}/client`, body);
+  }
 
-    fetchOrderClient(orderId) {
-        return this.get(`orders/${orderId}/client`)
-    }
+  fetchOrderClient(orderId) {
+    return this.get(`orders/${orderId}/client`);
+  }
 
-    fetchHoldOrder(orderId) {
-        return this.get(`orders/${orderId}/hold`)
-    }
+  fetchHoldOrder(orderId) {
+    return this.get(`orders/${orderId}/hold`);
+  }
 
-    fetchCheckoutData(uuid) {
-        return this.get(`checkout/${uuid}`)
-    }
+  fetchCheckoutData(uuid) {
+    return this.get(`checkout/${uuid}`);
+  }
 }
 
-
 class OrdersV2 extends Core {
-    constructor(axios = axiosV2) {
-        super(axios);
-    }
+  constructor(axios = axiosV2) {
+    super(axios);
+  }
 
-    fetchCheckoutData(uuid) {
-        return this.get(`checkout/${uuid}`)
-    }
+  fetchCheckoutData(uuid) {
+    return this.get(`checkout/${uuid}`);
+  }
 }
 
 export default {
-    OrdersV1,
-    OrdersV2,
-}
+  OrdersV1,
+  OrdersV2,
+};

@@ -1,51 +1,51 @@
-<template>
-  <b-form-select
-      class="bootstrap-select"
-      :options="options"
-      v-model="localValue"
-  >
-  </b-form-select>
-</template>
-
 <script>
 export default {
   name: "BootstrapSelect",
   props: {
     options: {
       type: Array,
-      required: true
+      required: true,
     },
     defaultValue: {
       type: [String, Number],
-      default: null
-    }
+      default: null,
+    },
   },
-  emits: ['select'],
+  emits: ["select"],
   data() {
     return {
-      localValue: null
-    }
+      localValue: null,
+    };
   },
   watch: {
     localValue: {
       handler(newLocalValue) {
-        this.$emit('select', newLocalValue)
+        this.$emit("select", newLocalValue);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
     if (this.defaultValue) {
-      this.localValue = this.defaultValue
+      this.localValue = this.defaultValue;
     }
   },
   methods: {
     setValue(newValue) {
-      this.localValue = newValue
-    }
-  }
-}
+      this.localValue = newValue;
+    },
+  },
+};
 </script>
+
+<template>
+  <b-form-select
+    class="bootstrap-select"
+    :options="options"
+    v-model="localValue"
+  >
+  </b-form-select>
+</template>
 
 <style lang="scss" scoped>
 .bootstrap-select {
@@ -54,7 +54,8 @@ export default {
   color: var(--gray-600);
   height: 56px;
   padding: 1rem 2.75rem 1rem 1.25rem;
-  background: var(--gray-100) url('../../../assets/icons/icon-down.svg') right 1rem center/24px 24px no-repeat;
+  background: var(--gray-100) url("../../../assets/icons/icon-down.svg") right
+    1rem center/24px 24px no-repeat;
 
   &:focus {
     background-color: var(--gray-100);

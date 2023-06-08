@@ -1,1408 +1,1440 @@
-<template>
-    <div>
-        <app-header>
-            <template #header-title>
-                {{ $t('roles.title') }}
-            </template>
-        </app-header>
-
-        <div
-            class="
-          d-flex
-          justify-content-between
-          align-items-center
-          flex-md-row flex-column
-          pb-3
-          pt-0
-          px-0
-          py-lg-3
-        "
-        >
-            <div
-                class="d-flex w-100 align-items-center flex-md-row flex-column mb-0"
-            >
-                <h1 class="title__big my-0">{{ $t("roles.title") }}</h1>
-                <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
-                    <li class="breadcrumb-item">
-                        <router-link :to="{name: 'home'}">
-                            <i class="far fa-home"></i>
-                        </router-link>
-                    </li>
-
-                    <li class="breadcrumb-item">
-                        <router-link :to="{name: 'roles'}">
-                            {{ $t("roles.title") }}
-                        </router-link>
-                    </li>
-                    <li class="breadcrumb-item active">
-                        {{ $t("edit") }}
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <b-tabs content-class="mt-3">
-                    <b-tab
-                        v-for="({title,active,rows,id},pmIndex) in permissionTabs"
-                        :key="id"
-                        :title="$t(title)"
-                        :active="active"
-                    >
-                        <table class="table">
-                            <tbody>
-                            <tr v-for="({
-                    label,width,
-                    refer,checkboxSwitch,
-                    checkboxActive,checkboxSize,inputActive,
-                    inputClass,inputPlaceholder,inputType},index) in rows" :key="index+label+id"
-                            >
-                                <td :width="width">
-                                    {{ $t(label) }}
-                                </td>
-                                <td v-if="checkboxActive">
-                                    <b-form-checkbox
-                                        :switch="checkboxSwitch"
-                                        :size="checkboxSize"
-                                        v-model="permissionTabs[pmIndex]['rows'][index].vBind"
-                                        @input="activeAllTabPermission(refer,pmIndex,index,$event)"
-                                    ></b-form-checkbox>
-                                </td>
-                                <td v-if="inputActive">
-                                    <input
-                                        :type="inputType"
-                                        :class="inputClass"
-                                        :placeholder="$t(inputPlaceholder)"
-                                        v-model="name[refer]"
-                                    >
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </b-tab>
-                </b-tabs>
-            </div>
-
-            <div class="card-footer d-flex">
-                <button class="btn btn-primary" @click="createNewRole">
-                    <i class="fas fa-save"></i> {{ $t("save") }}
-                </button>
-
-                <button class="btn btn-default" @click="$router.go(-1)">
-                    {{ $t("cancel") }}
-                </button>
-            </div>
-        </div>
-
-        <b-overlay :show="getLoading" no-wrap opacity="0.5">
-            <template #overlay>
-                <div class="d-flex justify-content-center w-100">
-                    <div class="lds-ellipsis">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div>
-            </template>
-        </b-overlay>
-
-    </div>
-</template>
-
 <script>
 import api from "@/services/api";
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from "uuid";
 import AppHeader from "@/components/Header/AppHeader";
-import {isObject} from "@/util/inspect";
+import { isObject } from "@/util/inspect";
 
 export default {
-    name: 'Roles',
-    components: {
-        AppHeader
+  name: "Roles",
+  components: {
+    AppHeader,
+  },
+  props: {
+    comeFrom: {
+      type: String,
+      default: "create",
     },
-    props: {
-        comeFrom: {
-            type: String,
-            default: 'create'
-        },
-        updatingName: {
-            type: Object,
-            default: () => ({
-                uz: '',
-                ru: ''
-            })
-        },
-        permissions: {
-            type: Object,
-            default: () => ({})
-        },
-        appLoading: {
-            type: String,
-            default: 'default'
-        }
+    updatingName: {
+      type: Object,
+      default: () => ({
+        uz: "",
+        ru: "",
+      }),
     },
-    emits: ['submit'],
-    data() {
-        const row = {
-            width: '50%',
-            inputActive: false,
-            inputType: 'text',
-            inputPlaceholder: '',
-            inputClass: 'form-control',
-            checkboxActive: true,
-            checkboxSize: 'lg',
-            checkboxSwitch: true,
-            vBind: false
-        }
+    permissions: {
+      type: Object,
+      default: () => ({}),
+    },
+    appLoading: {
+      type: String,
+      default: "default",
+    },
+  },
+  emits: ["submit"],
+  data() {
+    const row = {
+      width: "50%",
+      inputActive: false,
+      inputType: "text",
+      inputPlaceholder: "",
+      inputClass: "form-control",
+      checkboxActive: true,
+      checkboxSize: "lg",
+      checkboxSwitch: true,
+      vBind: false,
+    };
 
-        const crudPermission = {
-            view: false,
+    const crudPermission = {
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    };
+
+    const name = this.updatingName;
+
+    const form = {
+      general: {
+        currency: false,
+        theme: false,
+        language: false,
+        settings: false,
+        profile_settings: false,
+        password_settings: false,
+      },
+      objects: {
+        ...crudPermission,
+        upload_logo: false,
+      },
+      promos: {
+        ...crudPermission,
+      },
+      plans: {
+        ...crudPermission,
+      },
+      apartments: {
+        view: false,
+        filter: false,
+        comments: {
+          view: false,
+          create: false,
+          edit: false,
+          delete: false,
+        },
+        lists: {
+          list: false,
+          grid: false,
+          grid_sm: false,
+          plan: false,
+        },
+        edit: false,
+        is_sold: false,
+      },
+      checkout: {
+        book: false,
+        checkout: false,
+        mark_friends: false,
+        mark_price: false,
+        edit_date: false,
+        monthly_payment: false,
+        root: false,
+      },
+      contracts: {
+        view: false,
+        filter: false,
+        download: false,
+        cancel: false,
+        client_type: false,
+        root_branch: false,
+        root: false,
+        uniformity: false,
+        edit: true,
+        payments: {
+          create: false,
+          initial_type: {
             create: false,
             edit: false,
-            delete: false
-        }
+            delete: false,
+          },
+          monthly_type: {
+            create: false,
+            edit: false,
+            delete: false,
+          },
+          import: false,
+          list: false,
+        },
+        reissue: {
+          view: true,
+          create: true,
+        },
+        comments: {
+          view: false,
+          create: false,
+          edit: false,
+          delete: false,
+        },
+      },
+      users: {
+        ...crudPermission,
+      },
+      roles: {
+        ...crudPermission,
+      },
+      companies: {
+        ...crudPermission,
+      },
+      release_note: {
+        ...crudPermission,
+      },
+      payment_account: {
+        ...crudPermission,
+      },
+      branches: {
+        ...crudPermission,
+        templates: {
+          view: true,
+          create: true,
+          delete: true,
+          is_primary: true,
+          instruction: true,
+          download: true,
+        },
+      },
+      debtors: {
+        view: false,
+        // import: false
+      },
+    };
 
-        const name = this.updatingName
+    return {
+      form,
+      name,
+      permissionTabs: [
+        {
+          id: uuid(),
+          title: "general",
+          active: true,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "general",
+            },
 
-        const form = {
-            general: {
-                currency: false,
-                theme: false,
-                language: false,
-                settings: false,
-                profile_settings: false,
-                password_settings: false
+            {
+              ...row,
+              label: "roles_permission.general.role_name_ru",
+              refer: "ru",
+              parent: name,
+              inputActive: true,
+              inputPlaceholder: "roles_permission.placeholder_ru",
+              checkboxActive: false,
             },
-            objects: {
-                ...crudPermission,
-                upload_logo: false
-            },
-            promos: {
-                ...crudPermission
-            },
-            plans: {
-                ...crudPermission
-            },
-            apartments: {
-                view: false,
-                filter: false,
-                comments: {
-                    view: false,
-                    create: false,
-                    edit: false,
-                    delete: false
-                },
-                lists: {
-                    list: false,
-                    grid: false,
-                    grid_sm: false,
-                    plan: false
-                },
-                edit: false,
-                is_sold: false,
-            },
-            checkout: {
-                book: false,
-                checkout: false,
-                mark_friends: false,
-                mark_price: false,
-                edit_date: false,
-                monthly_payment: false,
-                root: false
-            },
-            contracts: {
-                view: false,
-                filter: false,
-                download: false,
-                cancel: false,
-                client_type: false,
-                root_branch: false,
-                root: false,
-                uniformity: false,
-                edit: true,
-                payments: {
-                    create: false,
-                    initial_type: {
-                        create: false,
-                        edit: false,
-                        delete: false
-                    },
-                    monthly_type: {
-                        create: false,
-                        edit: false,
-                        delete: false
-                    },
-                    import: false,
-                    list: false
-                },
-                reissue: {
-                    view: true,
-                    create: true
-                },
-                comments: {
-                    view: false,
-                    create: false,
-                    edit: false,
-                    delete: false
-                }
 
+            {
+              ...row,
+              label: "roles_permission.general.role_name_uz",
+              refer: "uz",
+              parent: name,
+              inputActive: true,
+              inputPlaceholder: "roles_permission.placeholder_uz",
+              checkboxActive: false,
             },
-            users: {
-                ...crudPermission
+
+            {
+              ...row,
+              label: "roles_permission.general.exchange_rates",
+              refer: "currency",
+              parent: "general",
             },
-            roles: {
-                ...crudPermission
+
+            {
+              ...row,
+              label: "roles_permission.general.theme",
+              refer: "theme",
+              parent: "general",
             },
-            companies: {
-                ...crudPermission
+
+            {
+              ...row,
+              label: "roles_permission.general.language",
+              refer: "language",
+              parent: "general",
             },
-            release_note: {
-                ...crudPermission
+
+            {
+              ...row,
+              label: "roles_permission.general.user_data",
+              refer: "settings",
+              parent: "general",
             },
-            payment_account: {
-                ...crudPermission
+
+            {
+              ...row,
+              label: "roles_permission.general.profile_settings",
+              refer: "profile_settings",
+              parent: "general",
             },
-            branches: {
-                ...crudPermission,
-                templates: {
-                    view: true,
-                    create: true,
-                    delete: true,
-                    is_primary: true,
-                    instruction: true,
-                    download: true
-                },
+
+            {
+              ...row,
+              label: "roles_permission.general.user_password",
+              refer: "password_settings",
+              parent: "general",
             },
-            debtors: {
-                view: false,
-                // import: false
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.objects",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "objects",
             },
-        }
-
-        return {
-            form,
-            name,
-            permissionTabs: [
-                {
-                    id: uuid(),
-                    title: 'general',
-                    active: true,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'general',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.role_name_ru',
-                            refer: 'ru',
-                            parent: name,
-                            inputActive: true,
-                            inputPlaceholder: 'roles_permission.placeholder_ru',
-                            checkboxActive: false,
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.role_name_uz',
-                            refer: 'uz',
-                            parent: name,
-                            inputActive: true,
-                            inputPlaceholder: 'roles_permission.placeholder_uz',
-                            checkboxActive: false,
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.exchange_rates',
-                            refer: 'currency',
-                            parent: 'general',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.theme',
-                            refer: 'theme',
-                            parent: 'general',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.language',
-                            refer: 'language',
-                            parent: 'general',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.user_data',
-                            refer: 'settings',
-                            parent: 'general',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.profile_settings',
-                            refer: 'profile_settings',
-                            parent: 'general',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.general.user_password',
-                            refer: 'password_settings',
-                            parent: 'general',
-                        },
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.objects',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'objects',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.objects.watch_objects',
-                            refer: 'view',
-                            parent: 'objects',
-                        },
-                        /*{
+            {
+              ...row,
+              label: "roles_permission.objects.watch_objects",
+              refer: "view",
+              parent: "objects",
+            },
+            /*{
                           ...row,
                           label: 'roles_permission.objects.show_object',
                           refer: 'show',
                           parent: 'objects',
                         },*/
-                        {
-                            ...row,
-                            label: 'roles_permission.objects.create_object',
-                            refer: 'create',
-                            parent: 'objects',
-                        },
+            {
+              ...row,
+              label: "roles_permission.objects.create_object",
+              refer: "create",
+              parent: "objects",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.objects.edit_object',
-                            refer: 'edit',
-                            parent: 'objects',
-                        },
+            {
+              ...row,
+              label: "roles_permission.objects.edit_object",
+              refer: "edit",
+              parent: "objects",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.objects.delete_object',
-                            refer: 'delete',
-                            parent: 'objects',
-                        },
+            {
+              ...row,
+              label: "roles_permission.objects.delete_object",
+              refer: "delete",
+              parent: "objects",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.objects.download_logo',
-                            refer: 'upload_logo',
-                            parent: 'objects',
-                        },
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.promos',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'promos',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.promos.watch_promos_page',
-                            refer: 'view',
-                            parent: 'promos',
-                        },
+            {
+              ...row,
+              label: "roles_permission.objects.download_logo",
+              refer: "upload_logo",
+              parent: "objects",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.promos",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "promos",
+            },
+            {
+              ...row,
+              label: "roles_permission.promos.watch_promos_page",
+              refer: "view",
+              parent: "promos",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.promos.create_promo',
-                            refer: 'create',
-                            parent: 'promos',
-                        },
+            {
+              ...row,
+              label: "roles_permission.promos.create_promo",
+              refer: "create",
+              parent: "promos",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.promos.edit_promo',
-                            refer: 'edit',
-                            parent: 'promos',
-                        },
+            {
+              ...row,
+              label: "roles_permission.promos.edit_promo",
+              refer: "edit",
+              parent: "promos",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.promos.delete_promo',
-                            refer: 'delete',
-                            parent: 'promos',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.layouts',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'plans',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.layouts.watch_layouts',
-                            refer: 'view',
-                            parent: 'plans',
-                        },
+            {
+              ...row,
+              label: "roles_permission.promos.delete_promo",
+              refer: "delete",
+              parent: "promos",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.layouts",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "plans",
+            },
+            {
+              ...row,
+              label: "roles_permission.layouts.watch_layouts",
+              refer: "view",
+              parent: "plans",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.layouts.create_layouts',
-                            refer: 'create',
-                            parent: 'plans',
-                        },
+            {
+              ...row,
+              label: "roles_permission.layouts.create_layouts",
+              refer: "create",
+              parent: "plans",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.layouts.edit_layouts',
-                            refer: 'edit',
-                            parent: 'plans',
-                        },
+            {
+              ...row,
+              label: "roles_permission.layouts.edit_layouts",
+              refer: "edit",
+              parent: "plans",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.layouts.delete_layouts',
-                            refer: 'delete',
-                            parent: 'plans',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.apartments',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.layouts.delete_layouts",
+              refer: "delete",
+              parent: "plans",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.apartments",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.change_list_apartments',
-                            refer: 'lists.list',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.change_list_apartments",
+              refer: "lists.list",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.list_apartments1',
-                            refer: 'lists.grid',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.list_apartments1",
+              refer: "lists.grid",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.list_apartments2',
-                            refer: 'lists.grid_sm',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.list_apartments2",
+              refer: "lists.grid_sm",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.using_layouts',
-                            refer: 'lists.plan',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.using_layouts",
+              refer: "lists.plan",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.watch_apartments',
-                            refer: 'view',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.watch_apartments",
+              refer: "view",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.filter_apartments',
-                            refer: 'filter',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.filter_apartments",
+              refer: "filter",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.edit_apartment',
-                            refer: 'edit',
-                            parent: 'apartments',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.edit_apartment",
+              refer: "edit",
+              parent: "apartments",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.status_apartment',
-                            refer: 'is_sold',
-                            parent: 'apartments',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.read_comments',
-                            refer: 'comments.view',
-                            parent: 'apartments',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.create_comments',
-                            refer: 'comments.create',
-                            parent: 'apartments',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.update_comments',
-                            refer: 'comments.edit',
-                            parent: 'apartments',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.apartments.delete_comments',
-                            refer: 'comments.delete',
-                            parent: 'apartments',
-                        },
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.execution',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'checkout',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.execution.book_apartment',
-                            refer: 'book',
-                            parent: 'checkout',
-                        },
+            {
+              ...row,
+              label: "roles_permission.apartments.status_apartment",
+              refer: "is_sold",
+              parent: "apartments",
+            },
+            {
+              ...row,
+              label: "roles_permission.apartments.read_comments",
+              refer: "comments.view",
+              parent: "apartments",
+            },
+            {
+              ...row,
+              label: "roles_permission.apartments.create_comments",
+              refer: "comments.create",
+              parent: "apartments",
+            },
+            {
+              ...row,
+              label: "roles_permission.apartments.update_comments",
+              refer: "comments.edit",
+              parent: "apartments",
+            },
+            {
+              ...row,
+              label: "roles_permission.apartments.delete_comments",
+              refer: "comments.delete",
+              parent: "apartments",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.execution",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "checkout",
+            },
+            {
+              ...row,
+              label: "roles_permission.execution.book_apartment",
+              refer: "book",
+              parent: "checkout",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.execution.decorate_apartment',
-                            refer: 'checkout',
-                            parent: 'checkout',
-                        },
+            {
+              ...row,
+              label: "roles_permission.execution.decorate_apartment",
+              refer: "checkout",
+              parent: "checkout",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.execution.tag_acquaintances',
-                            refer: 'mark_friends',
-                            parent: 'checkout',
-                        },
+            {
+              ...row,
+              label: "roles_permission.execution.tag_acquaintances",
+              refer: "mark_friends",
+              parent: "checkout",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.execution.change_payment',
-                            refer: 'mark_price',
-                            parent: 'checkout',
-                        },
+            {
+              ...row,
+              label: "roles_permission.execution.change_payment",
+              refer: "mark_price",
+              parent: "checkout",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.execution.edit_date',
-                            refer: 'edit_date',
-                            parent: 'checkout',
-                        },
+            {
+              ...row,
+              label: "roles_permission.execution.edit_date",
+              refer: "edit_date",
+              parent: "checkout",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.execution.change_monthly_payment',
-                            refer: 'monthly_payment',
-                            parent: 'checkout',
-                        },
+            {
+              ...row,
+              label: "roles_permission.execution.change_monthly_payment",
+              refer: "monthly_payment",
+              parent: "checkout",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.execution.full_access',
-                            refer: 'root',
-                            parent: 'checkout',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.contracts',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.watch_deals',
-                            refer: 'view',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.filter_deals',
-                            refer: 'filter',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.execution.full_access",
+              refer: "root",
+              parent: "checkout",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.contracts",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "contracts",
+            },
+            {
+              ...row,
+              label: "roles_permission.contracts.watch_deals",
+              refer: "view",
+              parent: "contracts",
+            },
+            {
+              ...row,
+              label: "roles_permission.contracts.filter_deals",
+              refer: "filter",
+              parent: "contracts",
+            },
 
-                        /*{
+            /*{
                           ...row,
                           label: 'roles_permission.contracts.watch_deal',
                           refer: 'show',
                           parent: 'contracts',
                         },*/
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.download_deal',
-                            refer: 'download',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.download_deal",
+              refer: "download",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.decline_deal',
-                            refer: 'cancel',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.decline_deal",
+              refer: "cancel",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.client_type',
-                            refer: 'client_type',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.client_type",
+              refer: "client_type",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.watch_branch_deals',
-                            refer: 'root_branch',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.watch_branch_deals",
+              refer: "root_branch",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.full_access',
-                            refer: 'root',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.full_access",
+              refer: "root",
+              parent: "contracts",
+            },
 
-                        /*{
+            /*{
                           ...row,
                           label: 'roles_permission.contracts.edit_payment',
                           refer: 'edit',
                           parent: 'contracts',
                         },*/
 
-                        /*{
+            /*{
                           ...row,
                           label: 'roles_permission.contracts.delete_payment',
                           refer: 'delete',
                           parent: 'contracts',
                         },*/
 
+            {
+              ...row,
+              label: "roles_permission.contracts.uniformity",
+              refer: "uniformity",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.uniformity',
-                            refer: 'uniformity',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.list",
+              refer: "payments.list",
+              parent: "contracts",
+            },
 
+            {
+              ...row,
+              label: "roles_permission.contracts.import",
+              refer: "payments.import",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.list',
-                            refer: 'payments.list',
-                            parent: 'contracts',
-                        },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.list',
+            //   refer: 'payments.list',
+            //   parent: 'contracts',
+            // },
+            //
+            // {
+            //   ...row,
+            //   label: 'roles_permission.contracts.import',
+            //   refer: 'payments.import',
+            //   parent: 'contracts',
+            // },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.import',
-                            refer: 'payments.import',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.add_payment",
+              refer: "payments.create",
+              parent: "contracts",
+            },
 
-                        // {
-                        //   ...row,
-                        //   label: 'roles_permission.contracts.list',
-                        //   refer: 'payments.list',
-                        //   parent: 'contracts',
-                        // },
-                        //
-                        // {
-                        //   ...row,
-                        //   label: 'roles_permission.contracts.import',
-                        //   refer: 'payments.import',
-                        //   parent: 'contracts',
-                        // },
+            {
+              ...row,
+              label: "roles_permission.contracts.create_type_payment",
+              refer: "payments.initial_type.create",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.add_payment',
-                            refer: 'payments.create',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.edit_type_payment",
+              refer: "payments.initial_type.edit",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.create_type_payment',
-                            refer: 'payments.initial_type.create',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.delete_type_payment",
+              refer: "payments.initial_type.delete",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.edit_type_payment',
-                            refer: 'payments.initial_type.edit',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.create_monthly_payment",
+              refer: "payments.monthly_type.create",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.delete_type_payment',
-                            refer: 'payments.initial_type.delete',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.edit_monthly_type",
+              refer: "payments.monthly_type.edit",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.create_monthly_payment',
-                            refer: 'payments.monthly_type.create',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.delete_monthly_type",
+              refer: "payments.monthly_type.delete",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.edit_monthly_type',
-                            refer: 'payments.monthly_type.edit',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.reissue_view",
+              refer: "reissue.view",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.delete_monthly_type',
-                            refer: 'payments.monthly_type.delete',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.reissue_create",
+              refer: "reissue.create",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.reissue_view',
-                            refer: 'reissue.view',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.edit",
+              refer: "edit",
+              parent: "contracts",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.reissue_create',
-                            refer: 'reissue.create',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.contracts.read_comments",
+              refer: "comments.view",
+              parent: "contracts",
+            },
+            {
+              ...row,
+              label: "roles_permission.contracts.create_comments",
+              refer: "comments.create",
+              parent: "contracts",
+            },
+            {
+              ...row,
+              label: "roles_permission.contracts.update_comments",
+              refer: "comments.edit",
+              parent: "contracts",
+            },
+            {
+              ...row,
+              label: "roles_permission.contracts.delete_comments",
+              refer: "comments.delete",
+              parent: "contracts",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.users",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "users",
+            },
+            {
+              ...row,
+              label: "roles_permission.users.watch_users",
+              refer: "view",
+              parent: "users",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.edit',
-                            refer: 'edit',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.users.create_user",
+              refer: "create",
+              parent: "users",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.read_comments',
-                            refer: 'comments.view',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.create_comments',
-                            refer: 'comments.create',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.update_comments',
-                            refer: 'comments.edit',
-                            parent: 'contracts',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.contracts.delete_comments',
-                            refer: 'comments.delete',
-                            parent: 'contracts',
-                        },
+            {
+              ...row,
+              label: "roles_permission.users.edit_user",
+              refer: "edit",
+              parent: "users",
+            },
 
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.users',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'users',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.users.watch_users',
-                            refer: 'view',
-                            parent: 'users',
-                        },
+            {
+              ...row,
+              label: "roles_permission.users.delete_user",
+              refer: "delete",
+              parent: "users",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.release_note",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "release_note",
+            },
+            {
+              ...row,
+              label: "roles_permission.release_note.watch_notes",
+              refer: "view",
+              parent: "release_note",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.users.create_user',
-                            refer: 'create',
-                            parent: 'users',
-                        },
+            {
+              ...row,
+              label: "roles_permission.release_note.create_note",
+              refer: "create",
+              parent: "release_note",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.users.edit_user',
-                            refer: 'edit',
-                            parent: 'users',
-                        },
+            {
+              ...row,
+              label: "roles_permission.release_note.edit_note",
+              refer: "edit",
+              parent: "release_note",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.users.delete_user',
-                            refer: 'delete',
-                            parent: 'users',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.release_note',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'release_note',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.release_note.watch_notes',
-                            refer: 'view',
-                            parent: 'release_note',
-                        },
+            {
+              ...row,
+              label: "roles_permission.release_note.delete_note",
+              refer: "delete",
+              parent: "release_note",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.roles",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "roles",
+            },
+            {
+              ...row,
+              label: "roles_permission.roles.watch_roles",
+              refer: "view",
+              parent: "roles",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.release_note.create_note',
-                            refer: 'create',
-                            parent: 'release_note',
-                        },
+            {
+              ...row,
+              label: "roles_permission.roles.add_roles",
+              refer: "create",
+              parent: "roles",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.release_note.edit_note',
-                            refer: 'edit',
-                            parent: 'release_note',
-                        },
+            {
+              ...row,
+              label: "roles_permission.roles.edit_roles",
+              refer: "edit",
+              parent: "roles",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.release_note.delete_note',
-                            refer: 'delete',
-                            parent: 'release_note',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.roles',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'roles',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.roles.watch_roles',
-                            refer: 'view',
-                            parent: 'roles',
-                        },
+            {
+              ...row,
+              label: "roles_permission.roles.delete_roles",
+              refer: "delete",
+              parent: "roles",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.debtors",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "debtors",
+            },
+            {
+              ...row,
+              label: "roles_permission.debtors.watch_debtors",
+              refer: "view",
+              parent: "debtors",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.companies",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "companies",
+            },
+            {
+              ...row,
+              label: "roles_permission.companies.watch_companies",
+              refer: "view",
+              parent: "companies",
+            },
+            // {
+            //   ...row,
+            //   label: 'roles_permission.companies.watch_company',
+            //   refer: 'show',
+            //   parent: 'companies',
+            // },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.roles.add_roles',
-                            refer: 'create',
-                            parent: 'roles',
-                        },
+            {
+              ...row,
+              label: "roles_permission.companies.create_company",
+              refer: "create",
+              parent: "companies",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.roles.edit_roles',
-                            refer: 'edit',
-                            parent: 'roles',
-                        },
+            {
+              ...row,
+              label: "roles_permission.companies.edit_companies",
+              refer: "edit",
+              parent: "companies",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.roles.delete_roles',
-                            refer: 'delete',
-                            parent: 'roles',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.debtors',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'debtors',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.debtors.watch_debtors',
-                            refer: 'view',
-                            parent: 'debtors',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.companies',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'companies',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.companies.watch_companies',
-                            refer: 'view',
-                            parent: 'companies',
-                        },
-                        // {
-                        //   ...row,
-                        //   label: 'roles_permission.companies.watch_company',
-                        //   refer: 'show',
-                        //   parent: 'companies',
-                        // },
+            {
+              ...row,
+              label: "roles_permission.companies.delete_company",
+              refer: "delete",
+              parent: "companies",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.payment_account",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "payment_account",
+            },
+            {
+              ...row,
+              label: "roles_permission.payment_account.access_payments_list",
+              refer: "view",
+              parent: "payment_account",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.companies.create_company',
-                            refer: 'create',
-                            parent: 'companies',
-                        },
+            {
+              ...row,
+              label: "roles_permission.payment_account.add_payment",
+              refer: "create",
+              parent: "payment_account",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.companies.edit_companies',
-                            refer: 'edit',
-                            parent: 'companies',
-                        },
+            {
+              ...row,
+              label: "roles_permission.payment_account.edit_payment",
+              refer: "edit",
+              parent: "payment_account",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.companies.delete_company',
-                            refer: 'delete',
-                            parent: 'companies',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.payment_account',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'payment_account',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.payment_account.access_payments_list',
-                            refer: 'view',
-                            parent: 'payment_account',
-                        },
+            {
+              ...row,
+              label: "roles_permission.payment_account.delete_payment",
+              refer: "delete",
+              parent: "payment_account",
+            },
+          ],
+        },
+        {
+          id: uuid(),
+          title: "roles_permission.titles.branches",
+          active: false,
+          parent: "form",
+          rows: [
+            {
+              ...row,
+              label: "roles_permission.activate_all",
+              refer: "all",
+              parent: "branches",
+            },
+            {
+              ...row,
+              label: "roles_permission.branches.watch_branches",
+              refer: "view",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.payment_account.add_payment',
-                            refer: 'create',
-                            parent: 'payment_account',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.add_branch",
+              refer: "create",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.payment_account.edit_payment',
-                            refer: 'edit',
-                            parent: 'payment_account',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.edit_branch",
+              refer: "edit",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.payment_account.delete_payment',
-                            refer: 'delete',
-                            parent: 'payment_account',
-                        }
-                    ],
-                },
-                {
-                    id: uuid(),
-                    title: 'roles_permission.titles.branches',
-                    active: false,
-                    parent: 'form',
-                    rows: [
-                        {
-                            ...row,
-                            label: 'roles_permission.activate_all',
-                            refer: 'all',
-                            parent: 'branches',
-                        },
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.watch_branches',
-                            refer: 'view',
-                            parent: 'branches',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.delete_branch",
+              refer: "delete",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.add_branch',
-                            refer: 'create',
-                            parent: 'branches',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.edit_branch',
-                            refer: 'edit',
-                            parent: 'branches',
-                        },
-
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.delete_branch',
-                            refer: 'delete',
-                            parent: 'branches',
-                        },
-
-                        /*{
+            /*{
                           ...row,
                           label: 'roles_permission.branches.watch_contract_template',
                           refer: 'contract_templates',
                           parent: 'branches',
                         },*/
 
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.watch_contract_template',
-                            refer: 'templates.view',
-                            parent: 'branches',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.watch_contract_template",
+              refer: "templates.view",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.create_contract_template',
-                            refer: 'templates.create',
-                            parent: 'branches',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.create_contract_template",
+              refer: "templates.create",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.delete_contract_template',
-                            refer: 'templates.delete',
-                            parent: 'branches',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.delete_contract_template",
+              refer: "templates.delete",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.make_main_branch_template',
-                            refer: 'templates.is_primary',
-                            parent: 'branches',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.make_main_branch_template",
+              refer: "templates.is_primary",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.template_instruction',
-                            refer: 'templates.instruction',
-                            parent: 'branches',
-                        },
+            {
+              ...row,
+              label: "roles_permission.branches.template_instruction",
+              refer: "templates.instruction",
+              parent: "branches",
+            },
 
-                        {
-                            ...row,
-                            label: 'roles_permission.branches.template_download',
-                            refer: 'templates.download',
-                            parent: 'branches',
+            {
+              ...row,
+              label: "roles_permission.branches.template_download",
+              refer: "templates.download",
+              parent: "branches",
+            },
+          ],
+        },
+      ],
+      getLoading: false,
+    };
+  },
+  watch: {
+    appLoading(loadingState) {
+      if (loadingState === "finished" && this.comeFrom === "update") {
+        this.initPermissions();
+      }
+    },
+  },
+  methods: {
+    initPermissions() {
+      // this.form = Object.assign({}, this.permissions, this.form)
+      //
+      // this.form = {
+      //     ...this.form,
+      //     ...this.permissions
+      // }
+
+      Object.entries(this.form).forEach(([parentKey, parentValue]) => {
+        Object.entries(parentValue).forEach(([key, value]) => {
+          if (isObject(value)) {
+            Object.entries(value).forEach(([childKey, childValue]) => {
+              if (isObject(childValue)) {
+                Object.entries(childValue).forEach(
+                  ([subChildKey, subChildValue]) => {
+                    if (isObject(subChildValue)) {
+                      Object.entries(subChildValue).forEach(
+                        ([lastChildKey, lastChildValue]) => {
+                          if (isObject(lastChildValue)) {
+                            this.form[parentKey][key][childKey][subChildKey][
+                              lastChildKey
+                            ] =
+                              this.permissions[parentKey][key][childKey][
+                                subChildKey
+                              ][lastChildKey];
+                          } else {
+                            return this.permissions[parentKey][key][childKey][
+                              subChildKey
+                            ][lastChildKey]
+                              ? (this.form[parentKey][key][childKey][
+                                  subChildKey
+                                ][lastChildKey] = true)
+                              : (this.form[parentKey][key][childKey][
+                                  subChildKey
+                                ][lastChildKey] = false);
+                          }
                         }
-                    ],
-                },
-            ],
-            getLoading: false,
-        }
-    },
-    watch: {
-        appLoading(loadingState) {
-            if (loadingState === 'finished' && this.comeFrom === 'update') {
-                this.initPermissions()
-            }
-        }
-    },
-    methods: {
-        initPermissions() {
-
-            // this.form = Object.assign({}, this.permissions, this.form)
-            //
-            // this.form = {
-            //     ...this.form,
-            //     ...this.permissions
-            // }
-
-            Object.entries(this.form).forEach(([parentKey, parentValue]) => {
-                Object.entries(parentValue).forEach(([key, value]) => {
-                    if (isObject(value)) {
-                        Object.entries(value).forEach(([childKey, childValue]) => {
-                            if (isObject(childValue)) {
-                                Object.entries(childValue).forEach(([subChildKey, subChildValue]) => {
-                                    if (isObject(subChildValue)) {
-                                        Object.entries(subChildValue).forEach(([lastChildKey, lastChildValue]) => {
-                                            if (isObject(lastChildValue)) {
-                                                this.form[parentKey][key][childKey][subChildKey][lastChildKey] = this.permissions[parentKey][key][childKey][subChildKey][lastChildKey]
-                                            } else {
-                                                return this.permissions[parentKey][key][childKey][subChildKey][lastChildKey] ? this.form[parentKey][key][childKey][subChildKey][lastChildKey] = true : this.form[parentKey][key][childKey][subChildKey][lastChildKey] = false
-                                            }
-                                        })
-                                    } else {
-                                        return this.permissions[parentKey][key][childKey]&&this.permissions[parentKey][key][childKey][subChildKey] ? this.form[parentKey][key][childKey][subChildKey] = true : this.form[parentKey][key][childKey][subChildKey] = false
-                                    }
-                                })
-                            } else {
-                                return this.permissions[parentKey][key] && this.permissions[parentKey][key][childKey] ? this.form[parentKey][key][childKey] = true : this.form[parentKey][key][childKey] = false
-                            }
-                        })
+                      );
                     } else {
-                        return this.permissions[parentKey] && this.permissions[parentKey][key] ? this.form[parentKey][key] = true : this.form[parentKey][key] = false
+                      return this.permissions[parentKey][key][childKey] &&
+                        this.permissions[parentKey][key][childKey][subChildKey]
+                        ? (this.form[parentKey][key][childKey][
+                            subChildKey
+                          ] = true)
+                        : (this.form[parentKey][key][childKey][
+                            subChildKey
+                          ] = false);
                     }
-                })
-            })
+                  }
+                );
+              } else {
+                return this.permissions[parentKey][key] &&
+                  this.permissions[parentKey][key][childKey]
+                  ? (this.form[parentKey][key][childKey] = true)
+                  : (this.form[parentKey][key][childKey] = false);
+              }
+            });
+          } else {
+            return this.permissions[parentKey] &&
+              this.permissions[parentKey][key]
+              ? (this.form[parentKey][key] = true)
+              : (this.form[parentKey][key] = false);
+          }
+        });
+      });
 
+      this.name = this.updatingName;
+      this.permissionTabs = this.permissionTabs.map((pmTab) => {
+        const rows = pmTab.rows.map((row) => {
+          if (row.refer === "ru" || row.refer === "uz") {
+            return row;
+          }
+          const pmTabParent = this[pmTab.parent][row.parent];
+          const hierarchyList = row.refer.split(".");
+          const [one, two, three, four, five] = hierarchyList;
 
-            this.name = this.updatingName
-            this.permissionTabs = this.permissionTabs.map(pmTab => {
-                const rows = pmTab.rows.map(row => {
-                    if (row.refer === 'ru' || row.refer === 'uz') {
-                        return row
-                    }
-                    const pmTabParent = this[pmTab.parent][row.parent]
-                    const hierarchyList = row.refer.split('.')
-                    const [one, two, three, four, five] = hierarchyList
-
-                    switch (hierarchyList.length) {
-                        case 1 : {
-                            row.vBind = !!pmTabParent[one]
-                            break
-                        }
-                        case 2 : {
-                            const hasChild = pmTabParent.hasOwnProperty(one)
-
-                            if (hasChild) {
-                                row.vBind = !!pmTabParent[one][two]
-                            } else {
-                                row.vBind = false
-                            }
-                            break
-
-                        }
-                        case 3 : {
-                            const hasOne = pmTabParent.hasOwnProperty(one)
-
-                            if (hasOne) {
-                                const hasTwo = pmTabParent[one].hasOwnProperty(two)
-                                if (hasTwo) {
-                                    row.vBind = !!pmTabParent[one][two][three]
-                                } else {
-                                    row.vBind = false
-                                }
-                            } else {
-                                row.vBind = false
-                            }
-                            break
-                        }
-                        case 4 : {
-                            row.vBind = pmTabParent[one][two][three][four]
-                            break
-                        }
-                        case 5 : {
-                            row.vBind = pmTabParent[one][two][three][four][five]
-                            break
-                        }
-                    }
-                    return row
-                })
-                const isAllActive = rows.every(row => {
-                    const overlookList = ['all', 'ru', 'uz']
-                    if (overlookList.includes(row.refer)) {
-                        return true
-                    }
-                    return row.vBind
-                })
-                if (isAllActive) {
-                    const indexOfAllSwitch = rows.findIndex(row => row.refer === 'all')
-                    if (indexOfAllSwitch !== -1) {
-                        rows[indexOfAllSwitch].vBind = true
-                    }
-                }
-                return {
-                    ...pmTab,
-                    rows
-                }
-            })
-        },
-        activeAllTabPermission(refer, pmIndex, index, value) {
-            if (refer === 'all') {
-                this.permissionTabs[pmIndex]['rows'] = this.permissionTabs[pmIndex]['rows'].map(row => {
-                    return {
-                        ...row,
-                        vBind: value
-                    }
-                })
+          switch (hierarchyList.length) {
+            case 1: {
+              row.vBind = !!pmTabParent[one];
+              break;
             }
-        },
-        generateRole() {
-            this.permissionTabs.forEach(pmTab => {
-                pmTab.rows.filter((row => {
-                    const overlookList = ['all', 'ru', 'uz']
-                    return !overlookList.includes(row.refer)
-                })).forEach(row => {
-                    const pmTabParent = this[pmTab.parent][row.parent]
-                    const hierarchyList = row.refer.split('.')
-                    const [one, two, three, four, five] = hierarchyList
-                    switch (hierarchyList.length) {
-                        case 1 : {
-                            pmTabParent[one] = row.vBind
-                            break
-                        }
-                        case 2 : {
-                            const hasChild = pmTabParent.hasOwnProperty(one)
-                            console.log(one, 'one');
-                            console.log(two, 'two');
-                            if (hasChild) {
-                                pmTabParent[one][two] = row.vBind
-                            } else {
-                                pmTabParent[one][two] = false
-                            }
-                            break
-                        }
-                        case 3 : {
-                            const hasOne = pmTabParent.hasOwnProperty(one)
-                            if (hasOne) {
-                                const hasTwo = pmTabParent[one].hasOwnProperty(two)
-                                if (hasTwo) {
-                                    pmTabParent[one][two][three] = row.vBind
-                                } else {
-                                    pmTabParent[one][two][three] = false
-                                }
-                            } else {
-                                pmTabParent[one][two][three] = false
-                            }
-                            break
-                        }
-                        case 4 : {
-                            pmTabParent[one][two][three][four] = row.vBind
-                            break
-                        }
-                        case 5 : {
-                            pmTabParent[one][two][three][four][five] = row.vBind
-                            break
-                        }
-                    }
-                })
-            })
-        },
-        createNewRole() {
-            this.generateRole()
-            if (this.comeFrom === 'update') {
-                this.$emit('submit', {
-                    name: this.name,
-                    permissions: this.form
-                })
-            } else {
-                this.getLoading = true
-                let data = {
-                    name: this.name,
-                    permissions: this.form,
-                }
+            case 2: {
+              const hasChild = pmTabParent.hasOwnProperty(one);
 
-                api.roles.createRole(data)
-                    .then((response) => {
-                        this.getLoading = false;
-                        this.toasted(response.data.message, "success")
-
-                        this.$router.push({name: "roles"})
-
-                        this.$swal(`${this.$t("sweetAlert.success_create_role")}`, "", "success")
-                    })
-                    .catch((error) => {
-                        this.toastedWithErrorCode(error)
-                    })
-                    .finally(() => {
-                        this.getLoading = false
-                    })
+              if (hasChild) {
+                row.vBind = !!pmTabParent[one][two];
+              } else {
+                row.vBind = false;
+              }
+              break;
             }
+            case 3: {
+              const hasOne = pmTabParent.hasOwnProperty(one);
+
+              if (hasOne) {
+                const hasTwo = pmTabParent[one].hasOwnProperty(two);
+                if (hasTwo) {
+                  row.vBind = !!pmTabParent[one][two][three];
+                } else {
+                  row.vBind = false;
+                }
+              } else {
+                row.vBind = false;
+              }
+              break;
+            }
+            case 4: {
+              row.vBind = pmTabParent[one][two][three][four];
+              break;
+            }
+            case 5: {
+              row.vBind = pmTabParent[one][two][three][four][five];
+              break;
+            }
+          }
+          return row;
+        });
+        const isAllActive = rows.every((row) => {
+          const overlookList = ["all", "ru", "uz"];
+          if (overlookList.includes(row.refer)) {
+            return true;
+          }
+          return row.vBind;
+        });
+        if (isAllActive) {
+          const indexOfAllSwitch = rows.findIndex((row) => row.refer === "all");
+          if (indexOfAllSwitch !== -1) {
+            rows[indexOfAllSwitch].vBind = true;
+          }
         }
-    }
-}
+        return {
+          ...pmTab,
+          rows,
+        };
+      });
+    },
+    activeAllTabPermission(refer, pmIndex, index, value) {
+      if (refer === "all") {
+        this.permissionTabs[pmIndex]["rows"] = this.permissionTabs[pmIndex][
+          "rows"
+        ].map((row) => {
+          return {
+            ...row,
+            vBind: value,
+          };
+        });
+      }
+    },
+    generateRole() {
+      this.permissionTabs.forEach((pmTab) => {
+        pmTab.rows
+          .filter((row) => {
+            const overlookList = ["all", "ru", "uz"];
+            return !overlookList.includes(row.refer);
+          })
+          .forEach((row) => {
+            const pmTabParent = this[pmTab.parent][row.parent];
+            const hierarchyList = row.refer.split(".");
+            const [one, two, three, four, five] = hierarchyList;
+            switch (hierarchyList.length) {
+              case 1: {
+                pmTabParent[one] = row.vBind;
+                break;
+              }
+              case 2: {
+                const hasChild = pmTabParent.hasOwnProperty(one);
+                console.log(one, "one");
+                console.log(two, "two");
+                if (hasChild) {
+                  pmTabParent[one][two] = row.vBind;
+                } else {
+                  pmTabParent[one][two] = false;
+                }
+                break;
+              }
+              case 3: {
+                const hasOne = pmTabParent.hasOwnProperty(one);
+                if (hasOne) {
+                  const hasTwo = pmTabParent[one].hasOwnProperty(two);
+                  if (hasTwo) {
+                    pmTabParent[one][two][three] = row.vBind;
+                  } else {
+                    pmTabParent[one][two][three] = false;
+                  }
+                } else {
+                  pmTabParent[one][two][three] = false;
+                }
+                break;
+              }
+              case 4: {
+                pmTabParent[one][two][three][four] = row.vBind;
+                break;
+              }
+              case 5: {
+                pmTabParent[one][two][three][four][five] = row.vBind;
+                break;
+              }
+            }
+          });
+      });
+    },
+    createNewRole() {
+      this.generateRole();
+      if (this.comeFrom === "update") {
+        this.$emit("submit", {
+          name: this.name,
+          permissions: this.form,
+        });
+      } else {
+        this.getLoading = true;
+        let data = {
+          name: this.name,
+          permissions: this.form,
+        };
+
+        api.roles
+          .createRole(data)
+          .then((response) => {
+            this.getLoading = false;
+            this.toasted(response.data.message, "success");
+
+            this.$router.push({ name: "roles" });
+
+            this.$swal(
+              `${this.$t("sweetAlert.success_create_role")}`,
+              "",
+              "success"
+            );
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error);
+          })
+          .finally(() => {
+            this.getLoading = false;
+          });
+      }
+    },
+  },
+};
 </script>
 
+<template>
+  <div>
+    <app-header>
+      <template #header-title>
+        {{ $t("roles.title") }}
+      </template>
+    </app-header>
+
+    <div
+      class="d-flex justify-content-between align-items-center flex-md-row flex-column pb-3 pt-0 px-0 py-lg-3"
+    >
+      <div class="d-flex w-100 align-items-center flex-md-row flex-column mb-0">
+        <h1 class="title__big my-0">{{ $t("roles.title") }}</h1>
+        <ul class="breadcrumb ml-md-4 ml-md-3 mb-0 mb-md-0">
+          <li class="breadcrumb-item">
+            <router-link :to="{ name: 'home' }">
+              <i class="far fa-home"></i>
+            </router-link>
+          </li>
+
+          <li class="breadcrumb-item">
+            <router-link :to="{ name: 'roles' }">
+              {{ $t("roles.title") }}
+            </router-link>
+          </li>
+          <li class="breadcrumb-item active">
+            {{ $t("edit") }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <b-tabs content-class="mt-3">
+          <b-tab
+            v-for="({ title, active, rows, id }, pmIndex) in permissionTabs"
+            :key="id"
+            :title="$t(title)"
+            :active="active"
+          >
+            <table class="table">
+              <tbody>
+                <tr
+                  v-for="(
+                    {
+                      label,
+                      width,
+                      refer,
+                      checkboxSwitch,
+                      checkboxActive,
+                      checkboxSize,
+                      inputActive,
+                      inputClass,
+                      inputPlaceholder,
+                      inputType,
+                    },
+                    index
+                  ) in rows"
+                  :key="index + label + id"
+                >
+                  <td :width="width">
+                    {{ $t(label) }}
+                  </td>
+                  <td v-if="checkboxActive">
+                    <b-form-checkbox
+                      :switch="checkboxSwitch"
+                      :size="checkboxSize"
+                      v-model="permissionTabs[pmIndex]['rows'][index].vBind"
+                      @input="
+                        activeAllTabPermission(refer, pmIndex, index, $event)
+                      "
+                    ></b-form-checkbox>
+                  </td>
+                  <td v-if="inputActive">
+                    <input
+                      :type="inputType"
+                      :class="inputClass"
+                      :placeholder="$t(inputPlaceholder)"
+                      v-model="name[refer]"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </b-tab>
+        </b-tabs>
+      </div>
+
+      <div class="card-footer d-flex">
+        <button class="btn btn-primary" @click="createNewRole">
+          <i class="fas fa-save"></i> {{ $t("save") }}
+        </button>
+
+        <button class="btn btn-default" @click="$router.go(-1)">
+          {{ $t("cancel") }}
+        </button>
+      </div>
+    </div>
+
+    <b-overlay :show="getLoading" no-wrap opacity="0.5">
+      <template #overlay>
+        <div class="d-flex justify-content-center w-100">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </b-overlay>
+  </div>
+</template>

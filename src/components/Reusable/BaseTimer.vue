@@ -1,9 +1,3 @@
-<template>
-  <div class="base-timer" :style="{background: background}">
-    <span class="base-timer-time">{{minute}} : {{second}}</span>
-  </div>
-</template>
-
 <script>
 export default {
   name: "BaseTimer",
@@ -12,19 +6,25 @@ export default {
     background: {
       type: String,
       required: false,
-      default: "#7C3AED"
+      default: "#7C3AED",
     },
     minute: {
       type: Number,
-      required: true
+      required: true,
     },
     second: {
       type: Number,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="base-timer" :style="{ background: background }">
+    <span class="base-timer-time">{{ minute }} : {{ second }}</span>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .base-timer {

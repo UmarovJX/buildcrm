@@ -1,21 +1,5 @@
-<template>
-  <div class="flip-clock">
-    <template v-for="data in timeData" v-show="show">
-            <span v-bind:key="data.label" :id="data.elementId" v-show="data.show">
-                <span>
-                    <span>{{ data.current | twoDigits }}</span>
-                    <span v-bind:data-value="data.current | twoDigits"></span>
-                    <span v-bind:data-value="data.previous | twoDigits"></span>
-                    <span v-bind:data-value="data.previous | twoDigits"></span>
-                    <span v-if="data.label==='Minutes'">:</span>
-                </span>
-            </span>
-    </template>
-  </div>
-</template>
-
 <script>
-import {v4 as generateId} from 'uuid'
+import { v4 as generateId } from "uuid";
 
 export default {
   name: "CountDown",
@@ -51,10 +35,10 @@ export default {
       required: false,
       default: function () {
         return {
-          days: 'Days',
-          hours: 'Hours',
-          minutes: 'Minutes',
-          seconds: 'Seconds',
+          days: "Days",
+          hours: "Hours",
+          minutes: "Minutes",
+          seconds: "Seconds",
         };
       },
     },
@@ -68,39 +52,40 @@ export default {
     },
   },
   data() {
-    const uuid = generateId()
+    const uuid = generateId();
     return {
       now: Math.trunc(new Date().getTime() / 1000),
       date: null,
       interval: null,
       diff: 0,
       show: false,
-      timeData: [{
-        current: 0,
-        previous: 0,
-        label: this.labels.days,
-        elementId: 'flip-card-days-' + uuid,
-        show: this.showDays,
-      },
+      timeData: [
+        {
+          current: 0,
+          previous: 0,
+          label: this.labels.days,
+          elementId: "flip-card-days-" + uuid,
+          show: this.showDays,
+        },
         {
           current: 0,
           previous: 0,
           label: this.labels.hours,
-          elementId: 'flip-card-hours-' + uuid,
+          elementId: "flip-card-hours-" + uuid,
           show: this.showHours,
         },
         {
           current: 0,
           previous: 0,
           label: this.labels.minutes,
-          elementId: 'flip-card-minutes-' + uuid,
+          elementId: "flip-card-minutes-" + uuid,
           show: this.showMinutes,
         },
         {
           current: 0,
           previous: 0,
           label: this.labels.seconds,
-          elementId: 'flip-card-seconds-' + uuid,
+          elementId: "flip-card-seconds-" + uuid,
           show: this.showSeconds,
         },
       ],
@@ -111,7 +96,7 @@ export default {
       throw new Error("Missing props 'deadline'");
     }
     const endTime = this.deadline;
-    this.date = Math.trunc(Date.parse(endTime.replace(/-/g, '/')) / 1000);
+    this.date = Math.trunc(Date.parse(endTime.replace(/-/g, "/")) / 1000);
     if (!this.date) {
       throw new Error("Invalid props value, correct the 'deadline'");
     }
@@ -141,7 +126,7 @@ export default {
   watch: {
     deadline: function () {
       const endTime = this.deadline;
-      this.date = Math.trunc(Date.parse(endTime.replace(/-/g, '/')) / 1000);
+      this.date = Math.trunc(Date.parse(endTime.replace(/-/g, "/")) / 1000);
       if (!this.date) {
         throw new Error("Invalid props value, correct the 'deadline'");
       }
@@ -157,7 +142,7 @@ export default {
     },
     diff(value) {
       if (value === 0) {
-        this.$emit('timeElapsed');
+        this.$emit("timeElapsed");
         this.updateAllCards();
       }
     },
@@ -165,7 +150,7 @@ export default {
   filters: {
     twoDigits(value) {
       if (value.toString().length <= 1) {
-        return '0' + value.toString();
+        return "0" + value.toString();
       }
       return value.toString();
     },
@@ -182,7 +167,7 @@ export default {
         return;
       }
 
-      if (window['requestAnimationFrame']) {
+      if (window["requestAnimationFrame"]) {
         this.frame = requestAnimationFrame(this.updateTime.bind(this));
       }
 
@@ -195,25 +180,25 @@ export default {
         d.current = val;
 
         if (el) {
-          el.classList.remove('flip');
+          el.classList.remove("flip");
           void el.offsetWidth;
-          el.classList.add('flip');
+          el.classList.add("flip");
         }
 
         if (idx === 0) {
-          const els = el.querySelectorAll('span b');
+          const els = el.querySelectorAll("span b");
           if (els) {
             for (let e of els) {
               const cls = e.classList[0];
               if (newValue / 1000 >= 1) {
-                if (!cls.includes('-4digits')) {
-                  const newCls = cls + '-4digits';
+                if (!cls.includes("-4digits")) {
+                  const newCls = cls + "-4digits";
                   e.classList.add(newCls);
                   e.classList.remove(cls);
                 }
               } else {
-                if (cls.includes('-4digits')) {
-                  const newCls = cls.replace('-4digits', '');
+                if (cls.includes("-4digits")) {
+                  const newCls = cls.replace("-4digits", "");
                   e.classList.add(newCls);
                   e.classList.remove(cls);
                 }
@@ -224,16 +209,32 @@ export default {
       }
     },
   },
-  beforeDestroy() {
-    if (window['cancelAnimationFrame']) {
+  beforeUnmount() {
+    if (window["cancelAnimationFrame"]) {
       cancelAnimationFrame(this.frame);
     }
   },
-  destroyed() {
+  unmounted() {
     clearInterval(this.interval);
   },
 };
 </script>
+
+<template>
+  <div class="flip-clock">
+    <template v-for="data in timeData" v-show="show">
+      <span v-bind:key="data.label" :id="data.elementId" v-show="data.show">
+        <span>
+          <span>{{ data.current | twoDigits }}</span>
+          <span v-bind:data-value="data.current | twoDigits"></span>
+          <span v-bind:data-value="data.previous | twoDigits"></span>
+          <span v-bind:data-value="data.previous | twoDigits"></span>
+          <span v-if="data.label === 'Minutes'">:</span>
+        </span>
+      </span>
+    </template>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .flip-clock {

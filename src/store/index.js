@@ -37,53 +37,53 @@ import DebtorsImport from "./modules/debtors-import";
 import FastPlan from "./modules/fast-plan";
 import Promo from "@/store/modules/Promo";
 import Features from "@/store/modules/Features";
-import notify from "@/store/modules/Notification/index"
-import checkout from "@/store/modules/Checkout"
+import notify from "@/store/modules/Notification/index";
+import checkout from "@/store/modules/Checkout";
 import CheckoutV2 from "@/store/modules/CheckoutV2";
 import Pagination from "./modules/pagination";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    modules: {
-        Loading,
-        CheckoutV2,
-        Features,
-        managers,
-        managers_info,
-        checkout,
-        accountants,
-        accountants_info,
-        notify,
+  modules: {
+    Loading,
+    CheckoutV2,
+    Features,
+    managers,
+    managers_info,
+    checkout,
+    accountants,
+    accountants_info,
+    notify,
 
-        cashiers,
-        cashiers_info,
+    cashiers,
+    cashiers_info,
 
-        auth,
-        me,
-        getAuth,
+    auth,
+    me,
+    getAuth,
 
-        menus,
-        objects,
-        objects_filter,
-        apartments,
+    menus,
+    objects,
+    objects_filter,
+    apartments,
 
-        typePlan,
-        clients,
+    typePlan,
+    clients,
 
-        ApartmentView,
-        ApartmentOrder,
-        Role,
+    ApartmentView,
+    ApartmentOrder,
+    Role,
 
-        HomeCount,
-        Currencies,
-        Companies,
-        Contracts,
-        Debtors,
-        Settings,
-        DebtorsImport,
-        FastPlan,
-        Promo,
-        Pagination
-    },
-})
+    HomeCount,
+    Currencies,
+    Companies,
+    Contracts,
+    Debtors,
+    Settings,
+    DebtorsImport,
+    FastPlan,
+    Promo,
+    Pagination,
+  },
+});

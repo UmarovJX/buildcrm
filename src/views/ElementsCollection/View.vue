@@ -1,15 +1,11 @@
-<template>
-<div>
-
-</div>
-</template>
-
 <script>
 export default {
-  name: "ElementsCollectionView"
-}
+  name: "ElementsCollectionView",
+};
 </script>
 
-<style scoped>
+<template>
+  <div></div>
+</template>
 
-</style>
+<style scoped></style>

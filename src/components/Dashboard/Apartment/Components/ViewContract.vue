@@ -1,3 +1,189 @@
+<script>
+// import Discount from './Discount'
+
+import api from "@/services/api";
+
+export default {
+  props: {
+    apartment: {},
+  },
+
+  components: {
+    // Discount
+  },
+
+  data: () => ({
+    step: 1,
+
+    order: {
+      id: null,
+
+      contract: null,
+      contract_path: null,
+      initial_payment: null,
+      payment_status: null,
+      status: "contract",
+      transaction_price: null,
+      contract_date: null,
+      payments: [],
+
+      companies: {
+        name: null,
+        payment_account: null,
+        inn: null,
+        mfo: null,
+        bank_name: null,
+        phone: null,
+        first_name: null,
+        last_name: null,
+        second_name: null,
+        type: null,
+      },
+
+      client: {
+        id: null,
+        first_name: "",
+        last_name: "",
+        second_name: "",
+        passport_series: "",
+        issued_by_whom: "",
+        birth_day: null,
+        language: "uz",
+        phone: "",
+        other_phone: null,
+        date_of_issue: null,
+        discount: { id: null },
+        edit: false,
+      },
+      getLoading: false,
+    },
+
+    error: false,
+    errors: [],
+
+    header: {
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+      },
+    },
+  }),
+
+  mounted() {
+    this.fetchOrder();
+  },
+
+  methods: {
+    async fetchOrder() {
+      this.getLoading = true;
+      try {
+        const { data } = await api.orders.fetchOrder(this.apartment.order.id);
+        this.step = 1;
+        this.order = {
+          id: data.id,
+          contract: data.contract,
+          contract_path: data.contract_path,
+          initial_payment: data.initial_payment,
+          payment_status: data.payment_status,
+          status: data.status,
+          transaction_price: data.transaction_price,
+          discount: data.discount,
+          contract_date: data.contract_date,
+          payments: data.payments,
+
+          companies: {
+            name: data.company.name,
+            payment_account: data.company.payment_account,
+            inn: data.company.inn,
+            mfo: data.company.mfo,
+            bank_name: data.company.bank_name.uz,
+            phone: data.company.phone,
+            first_name: data.company.first_name,
+            last_name: data.company.last_name,
+            middle_name: data.company.second_name,
+            type: data.company.type.name.kr,
+          },
+
+          client: {
+            id: data.client.id,
+            first_name: data.client.first_name,
+            birth_day: data.client.birth_day,
+            last_name: data.client.last_name,
+            middle_name: data.client.second_name,
+            passport_series: data.client.passport_series,
+            issued_by_whom: data.client.issued_by_whom,
+            language: data.client.language,
+            phone: data.client.phone,
+            other_phone: data.client.other_phone,
+            date_of_issue: data.client.date_of_issue,
+          },
+        };
+
+        this.getLoading = false;
+      } catch (error) {
+        this.getLoading = false;
+        if (!error.response) {
+          this.toasted("Error: Network Error", "error");
+        } else {
+          if (error.response.status === 403) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 401) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 500) {
+            this.toasted(error.response.data.message, "error");
+          } else {
+            this.toasted(error.response.data.message, "error");
+          }
+        }
+      }
+    },
+
+    removeBlock() {
+      this.$bvModal.hide("modal-contract-info");
+    },
+
+    getPrepay() {
+      let total_discount = this.getDiscount();
+
+      let total = this.apartment.price - total_discount;
+
+      return (this.client.discount.prepay_to * total) / 100;
+    },
+
+    getDiscount() {
+      return (this.client.discount.discount * this.apartment.price) / 100;
+    },
+
+    getMonth() {
+      return (this.getTotal() - this.getPrepay()) / this.month;
+    },
+
+    getDebt() {
+      return this.getTotal() - this.getPrepay();
+    },
+
+    getStatusPayment(payment) {
+      switch (payment.status) {
+        case "waiting":
+          return "Ожидает оплату";
+        case "paid":
+          return "Оплачено";
+        default:
+          return "Отказано";
+      }
+    },
+
+    getTotal() {
+      let total_discount = this.getDiscount();
+
+      // let total = price * area;
+      let total = this.apartment.price - total_discount;
+
+      return total;
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <b-modal
@@ -66,9 +252,7 @@
               </td>
             </tr>
             <tr class="heading">
-              <td colspan="3">
-                Первоначальный взнос
-              </td>
+              <td colspan="3">Первоначальный взнос</td>
             </tr>
             <tr class="details">
               <td colspan="3">
@@ -83,17 +267,11 @@
               </td>
             </tr>
             <tr class="heading">
-              <td>
-                Расписание для оплаты
-              </td>
+              <td>Расписание для оплаты</td>
 
-              <td class="text-center">
-                Статус
-              </td>
+              <td class="text-center">Статус</td>
 
-              <td>
-                Сумма
-              </td>
+              <td>Сумма</td>
             </tr>
 
             <tr v-for="(month, index) in order.payments" :key="index">
@@ -139,192 +317,6 @@
     </b-overlay>
   </div>
 </template>
-
-<script>
-// import Discount from './Discount'
-
-import api from "@/services/api";
-
-export default {
-  props: {
-    apartment: {},
-  },
-
-  components: {
-    // Discount
-  },
-
-  data: () => ({
-    step: 1,
-
-    order: {
-      id: null,
-
-      contract: null,
-      contract_path: null,
-      initial_payment: null,
-      payment_status: null,
-      status: "contract",
-      transaction_price: null,
-      contract_date: null,
-      payments: [],
-
-      companies: {
-        name: null,
-        payment_account: null,
-        inn: null,
-        mfo: null,
-        bank_name: null,
-        phone: null,
-        first_name: null,
-        last_name: null,
-        second_name: null,
-        type: null,
-      },
-
-      client: {
-        id: null,
-        first_name: "",
-        last_name: "",
-        second_name: "",
-        passport_series: "",
-        issued_by_whom: "",
-        birth_day: null,
-        language: "uz",
-        phone: "",
-        other_phone: null,
-        date_of_issue: null,
-        discount: {id: null},
-        edit: false,
-      },
-      getLoading: false,
-    },
-
-    error: false,
-    errors: [],
-
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
-      },
-    },
-  }),
-
-  mounted() {
-    this.fetchOrder();
-  },
-
-  methods: {
-    async fetchOrder() {
-      this.getLoading = true
-      try {
-        const {data} = await api.orders.fetchOrder(this.apartment.order.id)
-        this.step = 1;
-        this.order = {
-          id: data.id,
-          contract: data.contract,
-          contract_path: data.contract_path,
-          initial_payment: data.initial_payment,
-          payment_status: data.payment_status,
-          status: data.status,
-          transaction_price: data.transaction_price,
-          discount: data.discount,
-          contract_date: data.contract_date,
-          payments: data.payments,
-
-          companies: {
-            name: data.company.name,
-            payment_account: data.company.payment_account,
-            inn: data.company.inn,
-            mfo: data.company.mfo,
-            bank_name: data.company.bank_name.uz,
-            phone: data.company.phone,
-            first_name: data.company.first_name,
-            last_name: data.company.last_name,
-            middle_name: data.company.second_name,
-            type: data.company.type.name.kr,
-          },
-
-          client: {
-            id: data.client.id,
-            first_name: data.client.first_name,
-            birth_day: data.client.birth_day,
-            last_name: data.client.last_name,
-            middle_name: data.client.second_name,
-            passport_series: data.client.passport_series,
-            issued_by_whom: data.client.issued_by_whom,
-            language: data.client.language,
-            phone: data.client.phone,
-            other_phone: data.client.other_phone,
-            date_of_issue: data.client.date_of_issue,
-          },
-        };
-
-        this.getLoading = false
-      } catch (error) {
-        this.getLoading = false
-        if (!error.response) {
-          this.toasted("Error: Network Error", "error");
-        } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
-        }
-      }
-    },
-
-    removeBlock() {
-      this.$bvModal.hide("modal-contract-info");
-    },
-
-    getPrepay() {
-      let total_discount = this.getDiscount();
-
-      let total = this.apartment.price - total_discount;
-
-      return (this.client.discount.prepay_to * total) / 100;
-    },
-
-    getDiscount() {
-      return (this.client.discount.discount * this.apartment.price) / 100;
-    },
-
-    getMonth() {
-      return (this.getTotal() - this.getPrepay()) / this.month;
-    },
-
-    getDebt() {
-      return this.getTotal() - this.getPrepay();
-    },
-
-    getStatusPayment(payment) {
-      switch (payment.status) {
-        case "waiting":
-          return "Ожидает оплату";
-        case "paid":
-          return "Оплачено";
-        default:
-          return "Отказано";
-      }
-    },
-
-    getTotal() {
-      let total_discount = this.getDiscount();
-
-      // let total = price * area;
-      let total = this.apartment.price - total_discount;
-
-      return total;
-    },
-  },
-};
-</script>
 
 <style scoped>
 ::placeholder {

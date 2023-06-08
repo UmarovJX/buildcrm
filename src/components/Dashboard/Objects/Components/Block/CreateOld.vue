@@ -1,3 +1,259 @@
+<script>
+export default {
+  props: {
+    dataObject: {},
+    currency: {},
+    balcony: {},
+  },
+
+  data: () => ({
+    block_preview: {
+      name: null,
+      floor: 1,
+      apartment: 1,
+      apartments: [],
+      floors: [],
+      prices: [],
+    },
+
+    settings: {
+      available_floors: [],
+      disabled_floors: [],
+    },
+
+    disabled: {
+      apartments: false,
+      block_create: false,
+      settings: false,
+      btn_save: true,
+    },
+  }),
+
+  watch: {
+    "block_preview.apartment": function () {
+      if (this.block_preview.apartment > 0 && this.block_preview.floor > 0) {
+        this.disabled.btn_save = true;
+      }
+    },
+
+    "block_preview.floor": function () {
+      if (this.block_preview.apartment > 0 && this.block_preview.floor > 0) {
+        this.disabled.btn_save = true;
+      }
+    },
+  },
+
+  methods: {
+    saveBlock() {
+      this.$emit("InsertBlock", { ...this.block_preview });
+      this.$emit("RemoveBlock");
+      this.clearPreviewBlock();
+    },
+
+    removeBlock() {
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then((result) => {
+        if (result.value) {
+          this.$emit("RemoveBlock");
+          this.clearPreviewBlock();
+        }
+      });
+    },
+
+    clearPreviewBlock() {
+      this.block_preview.apartment = 1;
+      this.block_preview.apartments = [];
+      this.block_preview.floor = 1;
+      this.block_preview.floors = [];
+      this.block_preview.name = "";
+      this.block_preview.prices = [];
+
+      this.disabled.block_create = false;
+      this.disabled.btn_save = true;
+      this.disabled.settings = false;
+      this.disabled.apartments = false;
+    },
+
+    createApartments() {
+      if (!this.disabled.apartments) {
+        for (let i = 0; i < this.block_preview.apartment; i++) {
+          this.block_preview.apartments.push({
+            floor: 1,
+            type_plan: null,
+            rooms: 0,
+            //area: 0,
+            price: 0,
+            price_id: 0,
+            balcony_paid: false,
+            entrance: 1,
+          });
+        }
+        this.disabled.apartments = true;
+
+        this.block_preview.prices.push({
+          price: 0,
+          floors: [],
+        });
+      }
+
+      this.block_preview.floors = [];
+      this.settings.available_floors = [];
+
+      if (
+        this.settings.available_floors.length > 0 ||
+        this.settings.disabled_floors.length > 0
+      ) {
+        for (let i = 1; i <= this.block_preview.floor; i++) {
+          this.block_preview.floors.push(i);
+          this.settings.available_floors.push(i);
+        }
+        this.settings.disabled_floors = [];
+        this.block_preview.prices = [
+          {
+            price: 0,
+            floors: [],
+          },
+        ];
+      } else {
+        for (let i = 1; i <= this.block_preview.floor; i++) {
+          this.block_preview.floors.push(i);
+          this.settings.available_floors.push(i);
+        }
+      }
+
+      this.disabled.settings = true;
+      this.disabled.btn_save = false;
+    },
+
+    selectFloor(index) {
+      let keyy = 0;
+      this.settings.available_floors.map((value, key) => {
+        if (value === index) {
+          keyy = key;
+        }
+      });
+
+      this.settings.available_floors.splice(keyy, 1);
+      this.settings.disabled_floors.push(index);
+      this.sortDisabledFloors();
+    },
+
+    removeFloor(index) {
+      let keyy = 0;
+
+      this.settings.disabled_floors.map((value, key) => {
+        if (value === index) {
+          keyy = key;
+        }
+      });
+
+      this.settings.disabled_floors.splice(keyy, 1);
+      this.settings.available_floors.push(index);
+      this.sortAvailableFloors();
+    },
+
+    calcApartmentPrice(index, area, apartment, currency) {
+      var price = 0;
+
+      if (area === 0) return 0;
+
+      for (
+        var prices = 0;
+        prices < this.block_preview.prices.length;
+        prices++
+      ) {
+        for (
+          var floors = 0;
+          floors < this.block_preview.prices[prices].floors.length;
+          floors++
+        ) {
+          if (
+            this.block_preview.prices[prices].floors[floors] === apartment.floor
+          ) {
+            this.block_preview.apartments[index].price_id = prices;
+            price = this.block_preview.prices[prices].price;
+          }
+        }
+      }
+
+      if (currency === 0) {
+        if (area.balcony && apartment.balcony_paid)
+          return price * area.area + this.balcony * area.balcony_area;
+
+        return price * area.area;
+      } else {
+        if (area.balcony && apartment.balcony_paid)
+          return (
+            (price * area.area + this.balcony * area.balcony_area) * currency
+          );
+
+        return price * area.area * currency;
+      }
+    },
+
+    sortDisabledFloors() {
+      this.settings.disabled_floors.sort((a, b) => {
+        return a - b;
+      });
+    },
+
+    sortAvailableFloors() {
+      this.settings.available_floors.sort((a, b) => {
+        return a - b;
+      });
+    },
+
+    createApartment() {
+      this.block_preview.apartments.push({
+        floor: 1,
+        type_plan: null,
+        rooms: 0,
+        //area: 0,
+        price: 0,
+        balcony_paid: false,
+        entrance: 1,
+      });
+
+      let apartment_count = this.block_preview.apartment + 1;
+
+      this.block_preview.apartment = apartment_count;
+    },
+
+    addPrice() {
+      this.block_preview.prices.push({
+        price: 0,
+        floors: [],
+      });
+    },
+
+    removePrice(index) {
+      this.block_preview.prices[index].floors.map((value) => {
+        for (let ii = 0; ii < this.settings.disabled_floors.length; ii++) {
+          if (value == this.settings.disabled_floors[ii]) {
+            this.settings.disabled_floors.splice(ii, 1);
+            this.settings.available_floors.push(value);
+            this.sortAvailableFloors();
+            this.sortDisabledFloors();
+          }
+        }
+      });
+      this.block_preview.prices.splice(index, 1);
+    },
+
+    removeApartment(index) {
+      this.block_preview.apartment -= 1;
+      this.block_preview.apartments.splice(index, 1);
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <b-modal
@@ -66,13 +322,7 @@
               </div>
             </div>
             <div
-              class="
-                col-lg-3
-                d-flex
-                flex-column
-                justify-content-end
-                align-items-end
-              "
+              class="col-lg-3 d-flex flex-column justify-content-end align-items-end"
             >
               <div class="mb-3" v-if="disabled.btn_save">
                 <button
@@ -357,12 +607,7 @@
         <hr class="mt-4 mb-3" />
 
         <div
-          class="
-            mt-4
-            d-flex
-            justify-content-md-start justify-content-center
-            float-right
-          "
+          class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
         >
           <button
             type="button"
@@ -380,261 +625,5 @@
     </b-modal>
   </div>
 </template>
-
-<script>
-export default {
-  props: {
-    dataObject: {},
-    currency: {},
-    balcony: {},
-  },
-
-  data: () => ({
-    block_preview: {
-      name: null,
-      floor: 1,
-      apartment: 1,
-      apartments: [],
-      floors: [],
-      prices: [],
-    },
-
-    settings: {
-      available_floors: [],
-      disabled_floors: [],
-    },
-
-    disabled: {
-      apartments: false,
-      block_create: false,
-      settings: false,
-      btn_save: true,
-    },
-  }),
-
-  watch: {
-    "block_preview.apartment": function () {
-      if (this.block_preview.apartment > 0 && this.block_preview.floor > 0) {
-        this.disabled.btn_save = true;
-      }
-    },
-
-    "block_preview.floor": function () {
-      if (this.block_preview.apartment > 0 && this.block_preview.floor > 0) {
-        this.disabled.btn_save = true;
-      }
-    },
-  },
-
-  methods: {
-    saveBlock() {
-      this.$emit("InsertBlock", {...this.block_preview});
-      this.$emit("RemoveBlock");
-      this.clearPreviewBlock();
-    },
-
-    removeBlock() {
-      this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
-        showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then((result) => {
-        if (result.value) {
-          this.$emit("RemoveBlock");
-          this.clearPreviewBlock();
-        }
-      });
-    },
-
-    clearPreviewBlock() {
-      this.block_preview.apartment = 1;
-      this.block_preview.apartments = [];
-      this.block_preview.floor = 1;
-      this.block_preview.floors = [];
-      this.block_preview.name = "";
-      this.block_preview.prices = [];
-
-      this.disabled.block_create = false;
-      this.disabled.btn_save = true;
-      this.disabled.settings = false;
-      this.disabled.apartments = false;
-    },
-
-    createApartments() {
-      if (!this.disabled.apartments) {
-        for (let i = 0; i < this.block_preview.apartment; i++) {
-          this.block_preview.apartments.push({
-            floor: 1,
-            type_plan: null,
-            rooms: 0,
-            //area: 0,
-            price: 0,
-            price_id: 0,
-            balcony_paid: false,
-            entrance: 1,
-          });
-        }
-        this.disabled.apartments = true;
-
-        this.block_preview.prices.push({
-          price: 0,
-          floors: [],
-        });
-      }
-
-      this.block_preview.floors = [];
-      this.settings.available_floors = [];
-
-      if (
-        this.settings.available_floors.length > 0 ||
-        this.settings.disabled_floors.length > 0
-      ) {
-        for (let i = 1; i <= this.block_preview.floor; i++) {
-          this.block_preview.floors.push(i);
-          this.settings.available_floors.push(i);
-        }
-        this.settings.disabled_floors = [];
-        this.block_preview.prices = [
-          {
-            price: 0,
-            floors: [],
-          },
-        ];
-      } else {
-        for (let i = 1; i <= this.block_preview.floor; i++) {
-          this.block_preview.floors.push(i);
-          this.settings.available_floors.push(i);
-        }
-      }
-
-      this.disabled.settings = true;
-      this.disabled.btn_save = false;
-    },
-
-    selectFloor(index) {
-      let keyy = 0;
-      this.settings.available_floors.map((value, key) => {
-        if (value === index) {
-          keyy = key;
-        }
-      });
-
-      this.settings.available_floors.splice(keyy, 1);
-      this.settings.disabled_floors.push(index);
-      this.sortDisabledFloors();
-    },
-
-    removeFloor(index) {
-      let keyy = 0;
-
-      this.settings.disabled_floors.map((value, key) => {
-        if (value === index) {
-          keyy = key;
-        }
-      });
-
-      this.settings.disabled_floors.splice(keyy, 1);
-      this.settings.available_floors.push(index);
-      this.sortAvailableFloors();
-    },
-
-    calcApartmentPrice(index, area, apartment, currency) {
-      var price = 0;
-
-      if (area === 0) return 0;
-
-      for (
-        var prices = 0;
-        prices < this.block_preview.prices.length;
-        prices++
-      ) {
-        for (
-          var floors = 0;
-          floors < this.block_preview.prices[prices].floors.length;
-          floors++
-        ) {
-          if (
-            this.block_preview.prices[prices].floors[floors] === apartment.floor
-          ) {
-            this.block_preview.apartments[index].price_id = prices;
-            price = this.block_preview.prices[prices].price;
-          }
-        }
-      }
-
-      if (currency === 0) {
-        if (area.balcony && apartment.balcony_paid)
-          return price * area.area + this.balcony * area.balcony_area;
-
-        return price * area.area;
-      } else {
-        if (area.balcony && apartment.balcony_paid)
-          return (
-            (price * area.area + this.balcony * area.balcony_area) * currency
-          );
-
-        return price * area.area * currency;
-      }
-    },
-
-    sortDisabledFloors() {
-      this.settings.disabled_floors.sort((a, b) => {
-        return a - b;
-      });
-    },
-
-    sortAvailableFloors() {
-      this.settings.available_floors.sort((a, b) => {
-        return a - b;
-      });
-    },
-
-    createApartment() {
-      this.block_preview.apartments.push({
-        floor: 1,
-        type_plan: null,
-        rooms: 0,
-        //area: 0,
-        price: 0,
-        balcony_paid: false,
-        entrance: 1,
-      });
-
-      let apartment_count = this.block_preview.apartment + 1;
-
-      this.block_preview.apartment = apartment_count;
-    },
-
-    addPrice() {
-      this.block_preview.prices.push({
-        price: 0,
-        floors: [],
-      });
-    },
-
-    removePrice(index) {
-      this.block_preview.prices[index].floors.map((value) => {
-        for (let ii = 0; ii < this.settings.disabled_floors.length; ii++) {
-          if (value == this.settings.disabled_floors[ii]) {
-            this.settings.disabled_floors.splice(ii, 1);
-            this.settings.available_floors.push(value);
-            this.sortAvailableFloors();
-            this.sortDisabledFloors();
-          }
-        }
-      });
-      this.block_preview.prices.splice(index, 1);
-    },
-
-    removeApartment(index) {
-      this.block_preview.apartment -= 1;
-      this.block_preview.apartments.splice(index, 1);
-    },
-  },
-};
-</script>
 
 <style scoped></style>

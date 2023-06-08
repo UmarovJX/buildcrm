@@ -1,7 +1,88 @@
+<script>
+export default {
+  name: "BaseSelect",
+  props: {
+    name: {
+      type: String,
+      default: "BaseSelect",
+    },
+    options: {
+      type: Array,
+      required: true,
+    },
+    placeholder: {
+      type: String,
+      default: null,
+    },
+    noPlaceholder: {
+      type: Boolean,
+      default: () => false,
+    },
+    label: {
+      type: Boolean,
+      default: () => false,
+    },
+    error: {
+      type: Boolean,
+      default: () => false,
+    },
+    valueField: {
+      type: String,
+      default: "value",
+    },
+    textField: {
+      type: String,
+      default: "text",
+    },
+    value: {
+      type: [String, Object, Array, Number, Boolean],
+      default: () => null,
+    },
+    disabled: {
+      type: Boolean,
+      default: () => false,
+    },
+  },
+  emits: ["change"],
+  data() {
+    return {
+      open: false,
+      inlineValue: Object.assign({}, this.value),
+    };
+  },
+  watch: {
+    inlineValue: {
+      handler() {
+        this.triggerEvent();
+      },
+    },
+  },
+  mounted() {
+    this.settingUp();
+  },
+  methods: {
+    triggerEvent() {
+      this.$emit("change", this.inlineValue);
+      this.$emit("input", this.inlineValue);
+    },
+    settingUp() {
+      if (this.options.length && (!this.placeholder || this.noPlaceholder)) {
+        this.inlineValue = this.options[0][this.valueField];
+      }
+    },
+    openSelect() {
+      this.open = true;
+    },
+  },
+};
+</script>
+
 <template>
   <div
-      class="filter__inputs-input select-container"
-      :class="[{'error':error,'justify-content-center align-items-center':!label}]"
+    class="filter__inputs-input select-container"
+    :class="[
+      { error: error, 'justify-content-center align-items-center': !label },
+    ]"
   >
     <div v-if="inlineValue && label" class="input-label">
       <span>
@@ -10,109 +91,26 @@
     </div>
     <!--    <span v-if="value && label" class="input-label">{{ placeholder }}</span>-->
     <select
-        :name="name"
-        :disabled="disabled"
-        v-model="inlineValue"
-        :class="{'base-select-initial':!value, 'not-label':!label}"
-        class="base-select"
-        @click="openSelect"
+      :name="name"
+      :disabled="disabled"
+      v-model="inlineValue"
+      :class="{ 'base-select-initial': !value, 'not-label': !label }"
+      class="base-select"
+      @click="openSelect"
     >
-      <option
-          disabled
-          :value="null"
-          v-if="!noPlaceholder && placeholder"
-      >
+      <option disabled :value="null" v-if="!noPlaceholder && placeholder">
         {{ placeholder }}
       </option>
       <option
-          v-for="(selectOption,index) in options"
-          :value="selectOption[valueField]"
-          :key="index"
+        v-for="(selectOption, index) in options"
+        :value="selectOption[valueField]"
+        :key="index"
       >
         {{ selectOption[textField] }}
       </option>
     </select>
   </div>
 </template>
-
-<script>
-export default {
-  name: "BaseSelect",
-  props: {
-    name: {
-      type: String,
-      default: 'BaseSelect'
-    },
-    options: {
-      type: Array,
-      required: true
-    },
-    placeholder: {
-      type: String,
-      default: null
-    },
-    noPlaceholder: {
-      type: Boolean,
-      default: () => false
-    },
-    label: {
-      type: Boolean,
-      default: () => false
-    },
-    error: {
-      type: Boolean,
-      default: () => false
-    },
-    valueField: {
-      type: String,
-      default: 'value'
-    },
-    textField: {
-      type: String,
-      default: 'text'
-    },
-    value: {
-      type: [String, Object, Array, Number, Boolean],
-      default: () => null
-    },
-    disabled: {
-      type: Boolean,
-      default: () => false
-    }
-  },
-  emits: ['change'],
-  data() {
-    return {
-      open: false,
-      inlineValue: Object.assign({}, this.value)
-    }
-  },
-  watch: {
-    inlineValue: {
-      handler() {
-        this.triggerEvent()
-      }
-    }
-  },
-  mounted() {
-    this.settingUp()
-  },
-  methods: {
-    triggerEvent() {
-      this.$emit('change', this.inlineValue)
-      this.$emit('input', this.inlineValue)
-    },
-    settingUp() {
-      if (this.options.length && (!this.placeholder || this.noPlaceholder)) {
-        this.inlineValue = this.options[0][this.valueField]
-      }
-    },
-    openSelect() {
-      this.open = true
-    }
-  }
-}
-</script>
 
 <style lang="sass" scoped>
 .select-container

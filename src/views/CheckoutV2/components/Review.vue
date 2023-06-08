@@ -1,55 +1,13 @@
-<template>
-  <div>
-    <section-title
-        v-if="clientDetails.length"
-        class="km-b-2"
-        :bilingual="true"
-        title="client_information"
-    />
-    <div class="information-block">
-      <field-information
-          v-for="(client,index) in clientDetails"
-          :key="index"
-          :bilingual="true"
-          :content="client.content"
-          :title="client.title"
-          :icon-name="client.icon"
-      />
-    </div>
-    <div class="apn-result">
-      <div class="apn-result__item" v-for="apartment in apartments" :key="apartment.id">
-        <section-title :bilingual="true" :title="$t('apartment')+' '+apartment.number" class="km-b-2"/>
-        <div class="apn-result__item-content">
-          <ch-plan-details :apartment="apartment" :remove="apartments.length > 1"/>
-          <ch-payment-result :apm="apartment" :result="true" class="pd-payment-result"/>
-        </div>
-      </div>
-      <div class="apn-result__total">
-        <p>{{ $t('final_total_price') }}</p>
-        <p>{{ prettier(totalForAll) }} сум</p>
-      </div>
-    </div>
-
-    <x-bottom-clipboard v-if="trashCount">
-      <p>{{ $t('cleaned_apartments') }} : {{ trashCount }}</p>
-      <x-button
-          :text="$t('return_all_apartments')"
-          @click="returnRemovedApartments"
-      />
-    </x-bottom-clipboard>
-  </div>
-</template>
-
 <script>
 import SectionTitle from "@/views/CheckoutV2/elements/SectionTitle";
 import ChPaymentResult from "@/views/CheckoutV2/components/PaymentResult";
 import ChPlanDetails from "@/views/CheckoutV2/components/PlanDetails";
 import FieldInformation from "@/views/CheckoutV2/elements/FieldInformation";
-import {mapActions, mapGetters, mapState} from "vuex";
-import {formatToPrice} from "@/util/reusable";
-import {XBottomClipboard} from "@/components/ui-components/bottom-clipboard";
-import {XButton} from "@/components/ui-components/button";
-import {isEmptyObject} from "@/util/inspect";
+import { mapActions, mapGetters, mapState } from "vuex";
+import { formatToPrice } from "@/util/reusable";
+import { XBottomClipboard } from "@/components/ui-components/bottom-clipboard";
+import { XButton } from "@/components/ui-components/button";
+import { isEmptyObject } from "@/util/inspect";
 import de from "vue2-datepicker/locale/es/de";
 
 export default {
@@ -60,159 +18,218 @@ export default {
     ChPlanDetails,
     FieldInformation,
     XBottomClipboard,
-    XButton
+    XButton,
   },
   data() {
-    return {}
+    return {};
   },
   computed: {
-    ...mapState('CheckoutV2', {
-      clientInfo: 'clientData',
-      clientTypeList: 'clientTypeList',
-      countryList: 'countryList'
+    ...mapState("CheckoutV2", {
+      clientInfo: "clientData",
+      clientTypeList: "clientTypeList",
+      countryList: "countryList",
     }),
-    ...mapGetters('CheckoutV2', {
-      apartments: 'gtsApartments',
-      totalForAll: 'totalForAll',
-      trashCount: 'trashCount'
+    ...mapGetters("CheckoutV2", {
+      apartments: "gtsApartments",
+      totalForAll: "totalForAll",
+      trashCount: "trashCount",
     }),
     clientDetails() {
       if (isEmptyObject(this.clientInfo)) {
-        return []
+        return [];
       }
 
-      let details = []
+      let details = [];
 
-      if (this.clientInfo.subject === 'legal') {
+      if (this.clientInfo.subject === "legal") {
         details = [
           {
-            title: 'person_type',
-            content: 'legal_entity',
-            icon: 'business_center',
+            title: "person_type",
+            content: "legal_entity",
+            icon: "business_center",
           },
           {
-            title: 'bank',
+            title: "bank",
             content: this.clientInfo.attributes.bank_name,
-            icon: 'account_balance',
+            icon: "account_balance",
           },
           {
-            title: 'account_number',
+            title: "account_number",
             content: this.clientInfo.attributes.payment_number,
-            icon: 'account_balance_wallet',
+            icon: "account_balance_wallet",
           },
           {
-            title: 'mfo',
+            title: "mfo",
             content: this.clientInfo.attributes.mfo,
-            icon: 'numbers',
+            icon: "numbers",
           },
           {
-            title: 'inn',
+            title: "inn",
             content: this.clientInfo.attributes.inn,
-            icon: 'numbers',
+            icon: "numbers",
           },
           {
-            title: 'ndc',
+            title: "ndc",
             content: this.clientInfo.attributes.nds,
-            icon: 'numbers',
+            icon: "numbers",
           },
           {
-            title: 'fax',
+            title: "fax",
             content: this.clientInfo.attributes.fax,
-            icon: 'fax',
+            icon: "fax",
           },
           {
-            title: 'legal_address',
+            title: "legal_address",
             content: this.clientInfo.attributes.legal_address,
-            icon: 'location_on',
-          }
-        ]
+            icon: "location_on",
+          },
+        ];
       } else {
-        const {locale} = this.$i18n
-        const typography = locale === 'uz' ? 'lotin' : 'kirill'
+        const { locale } = this.$i18n;
+        const typography = locale === "uz" ? "lotin" : "kirill";
         const name = {
           l: this.clientInfo.attributes.last_name[typography],
           f: this.clientInfo.attributes.first_name[typography],
-          m: this.clientInfo.attributes.middle_name[typography]
-        }
+          m: this.clientInfo.attributes.middle_name[typography],
+        };
 
-        const fullName = `${name.l} ${name.f} ${name.m}`
+        const fullName = `${name.l} ${name.f} ${name.m}`;
 
-        const country = this.countryList.find(cty => cty.id === this.clientInfo.attributes.country_id)
+        const country = this.countryList.find(
+          (cty) => cty.id === this.clientInfo.attributes.country_id
+        );
 
         details = [
           {
-            title: 'person_type',
-            content: 'physical_person',
-            icon: 'assignment_ind',
+            title: "person_type",
+            content: "physical_person",
+            icon: "assignment_ind",
           },
           {
-            title: 'nation',
+            title: "nation",
             content: country.name[locale],
-            icon: 'flag',
+            icon: "flag",
           },
           {
-            title: 'passport_series_example',
+            title: "passport_series_example",
             content: this.clientInfo.attributes.passport_series,
-            icon: 'contact_page',
+            icon: "contact_page",
           },
           {
-            title: 'birth_day',
+            title: "birth_day",
             content: this.clientInfo.attributes.date_of_birth,
-            icon: 'cake',
+            icon: "cake",
           },
           {
-            title: 'fio_full',
+            title: "fio_full",
             content: fullName,
-            icon: 'person',
+            icon: "person",
           },
           {
-            title: 'communication_language',
+            title: "communication_language",
             content: this.clientInfo.language,
-            icon: 'language',
+            icon: "language",
           },
           {
-            title: 'phone',
+            title: "phone",
             content: this.clientInfo.phones[0].phone,
-            icon: 'call',
-          }
-        ]
+            icon: "call",
+          },
+        ];
       }
 
       if (this.clientInfo.phones.length > 1) {
         details.push({
-          title: 'additional_phone_number',
+          title: "additional_phone_number",
           content: this.clientInfo.phones[1].phone,
-          icon: 'call'
-        })
+          icon: "call",
+        });
       }
 
-      if (this.clientInfo?.email !== '') {
+      if (this.clientInfo?.email !== "") {
         details.push({
-          title: 'email',
+          title: "email",
           content: this.clientInfo.email,
-          icon: 'mail',
-        })
+          icon: "mail",
+        });
       }
 
-      if (this.clientInfo?.additional_email !== '') {
+      if (this.clientInfo?.additional_email !== "") {
         details.push({
-          title: 'additional_email',
+          title: "additional_email",
           content: this.clientInfo.additional_email,
-          icon: 'mail',
-        })
+          icon: "mail",
+        });
       }
 
-      return details
-    }
+      return details;
+    },
   },
   methods: {
     prettier: formatToPrice,
-    ...mapActions('CheckoutV2', {
-      returnRemovedApartments: 'returnRemovedApartments'
-    })
-  }
-}
+    ...mapActions("CheckoutV2", {
+      returnRemovedApartments: "returnRemovedApartments",
+    }),
+  },
+};
 </script>
+
+<template>
+  <div>
+    <section-title
+      v-if="clientDetails.length"
+      class="km-b-2"
+      :bilingual="true"
+      title="client_information"
+    />
+    <div class="information-block">
+      <field-information
+        v-for="(client, index) in clientDetails"
+        :key="index"
+        :bilingual="true"
+        :content="client.content"
+        :title="client.title"
+        :icon-name="client.icon"
+      />
+    </div>
+    <div class="apn-result">
+      <div
+        class="apn-result__item"
+        v-for="apartment in apartments"
+        :key="apartment.id"
+      >
+        <section-title
+          :bilingual="true"
+          :title="$t('apartment') + ' ' + apartment.number"
+          class="km-b-2"
+        />
+        <div class="apn-result__item-content">
+          <ch-plan-details
+            :apartment="apartment"
+            :remove="apartments.length > 1"
+          />
+          <ch-payment-result
+            :apm="apartment"
+            :result="true"
+            class="pd-payment-result"
+          />
+        </div>
+      </div>
+      <div class="apn-result__total">
+        <p>{{ $t("final_total_price") }}</p>
+        <p>{{ prettier(totalForAll) }} сум</p>
+      </div>
+    </div>
+
+    <x-bottom-clipboard v-if="trashCount">
+      <p>{{ $t("cleaned_apartments") }} : {{ trashCount }}</p>
+      <x-button
+        :text="$t('return_all_apartments')"
+        @click="returnRemovedApartments"
+      />
+    </x-bottom-clipboard>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .information-block {
@@ -225,7 +242,6 @@ export default {
   .field-information {
     flex-basis: calc(50% - 24px);
   }
-
 }
 
 .apn-result {
@@ -243,7 +259,6 @@ export default {
         flex-basis: 50%;
       }
     }
-
   }
 
   &__total {

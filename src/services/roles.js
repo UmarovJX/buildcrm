@@ -1,30 +1,30 @@
-import {axiosV1CRM} from '@/services/core/base'
-import Core from '@/services/core/index'
+import { axiosV1CRM } from "@/services/core/base";
+import Core from "@/services/core/index";
 
 class Roles extends Core {
-    constructor(axios = axiosV1CRM) {
-        super(axios)
-    }
+  constructor(axios = axiosV1CRM) {
+    super(axios);
+  }
 
-    fetchRoles() {
-        return this.get('roles')
-    }
+  fetchRoles() {
+    return this.get("roles");
+  }
 
-    createRole(body) {
-        return this.post(`roles`, body)
-    }
+  createRole(body) {
+    return this.post(`roles`, body);
+  }
 
-    fetchRole(roleId) {
-        return this.get(`roles/${roleId}`)
-    }
+  fetchRole(roleId) {
+    return this.get(`roles/${roleId}`);
+  }
 
-    updateRole(roleId, body) {
-        return this.put(`roles/${roleId}`, body)
-    }
+  updateRole(roleId, body) {
+    return this.put(`roles/${roleId}`, body);
+  }
 
-    deleteRole(roleId) {
-        return this.delete(`roles/${roleId}`)
-    }
+  deleteRole(roleId) {
+    return this.delete(`roles/${roleId}`);
+  }
 }
 
-export default Roles
+export default Roles;

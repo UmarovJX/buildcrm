@@ -1,114 +1,3 @@
-<template>
-    <div>
-        <app-header>
-            <template #header-breadcrumb>
-                <div class="header-navigation d-flex align-items-center">
-                    <div
-                        class="go__back"
-                        @click="
-                          $router.push({
-                            name:'apartments',
-                            params:{object: $route.params.object}
-                          })"
-                    >
-                        <base-arrow-left :width="32" :height="32"></base-arrow-left>
-                    </div>
-                    <div class="breadcrumb__content">
-                        <div class="d-flex align-items-center">
-                            <span class="mr-2">{{ $t('objects.title') }}</span>
-                            <base-arrow-right :width="16" :height="16"/>
-                            <span class="ml-2">{{ apartmentName }}</span>
-                            <base-arrow-right :width="16" :height="16"/>
-                            <div class="ml-2">
-                                {{ $t('apartment') }} № {{ apartment.number }}
-                            </div>
-                        </div>
-                        <div class="head color-violet-600">
-                            {{ $t('apartment') }} № {{ apartment.number }}
-                        </div>
-                    </div>
-                </div>
-            </template>
-            <template #header-status>
-                <div
-                    class="apartment__status d-flex justify-content-center align-items-center"
-                    :class="`status-${status}`"
-                >
-                    {{ $t(`apartments.status.${status}`) }}
-                </div>
-            </template>
-        </app-header>
-
-        <!--  HEADER NAVIGATION  -->
-
-        <!--        <div class="header-navigation d-flex justify-content-between align-items-center">-->
-        <!--            <div class="d-flex align-items-center">-->
-        <!--                <div-->
-        <!--                    class="go__back"-->
-        <!--                    @click="$router.push(-->
-        <!--                    {name:'apartments',-->
-        <!--                    params:{object: $route.params.object}})">-->
-        <!--                    <base-arrow-left :width="32" :height="32"></base-arrow-left>-->
-        <!--                </div>-->
-        <!--                <div class="breadcrumb__content">-->
-        <!--                    <div class="d-flex align-items-center">-->
-        <!--                        <span class="mr-2">{{ $t('objects.title') }}</span>-->
-        <!--                        <base-arrow-right :width="16" :height="16"/>-->
-        <!--                        <span class="ml-2">{{ apartmentName }}</span>-->
-        <!--                        <base-arrow-right :width="16" :height="16"/>-->
-        <!--                        <div class="ml-2">-->
-        <!--                            {{ $t('apartment') }} № {{ apartment.number }}-->
-        <!--                        </div>-->
-        <!--                    </div>-->
-        <!--                    <div class="head color-violet-600">-->
-        <!--                        {{ $t('apartment') }} № {{ apartment.number }}-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--            </div>-->
-
-        <!--            <div>-->
-        <!--                <div-->
-        <!--                    class="apartment__status d-flex justify-content-center align-items-center"-->
-        <!--                    :class="`status-${status}`"-->
-        <!--                >-->
-        <!--                    {{ $t(`apartments.status.${status}`) }}-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-
-        <!--  END HEADER NAVIGATION  -->
-
-        <b-tabs
-            v-model="tabIndex"
-            @activate-tab="tabChange"
-            class="custom-tab"
-            card
-        >
-            <template #tabs-start>
-                <div class="bottom__line"></div>
-            </template>
-            <b-tab title="Оформление">
-                <!--   PRICE CONTENT     -->
-            </b-tab>
-
-            <b-tab v-if="commentsViewPermission" title="Примечания">
-                <!--   PRICE CONTENT     -->
-            </b-tab>
-        </b-tabs>
-
-        <router-view
-            :apartment="apartment"
-            :app-loading="appLoading"
-            :comments-data="commentsData"
-            :comment-loading="commentLoading"
-            @update-content="updateContent"
-            @update-comments="getComments"
-        />
-
-    </div>
-
-</template>
-
 <script>
 import api from "@/services/api";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
@@ -117,98 +6,214 @@ import AppHeader from "@/components/Header/AppHeader";
 import ApartmentsPermission from "@/permission/apartments";
 
 export default {
-    name: "Index",
-    components: {
-        AppHeader,
-        BaseArrowLeft,
-        BaseArrowRight,
-    },
-    data() {
-        const objectId = this.$route.params.object
+  name: "Index",
+  components: {
+    AppHeader,
+    BaseArrowLeft,
+    BaseArrowRight,
+  },
+  data() {
+    const objectId = this.$route.params.object;
 
-        return {
-            objectId,
-            apartment: {},
-            apartmentName: '',
-            appLoading: true,
-            commentsData: {},
-            commentLoading: false,
-            commentsViewPermission: ApartmentsPermission.getApartmentCommentsViewPermission(),
-
-        }
-    },
-    async created() {
-        await this.fetchApartmentView()
-    },
-    mounted() {
-        if (this.commentsViewPermission) {
-            this.getComments()
-        }
-    },
-    computed: {
-        status() {
-            if (!this.apartment['is_sold']) {
-                return 'unavailable'
-            }
-            return this.apartment.order.status
-        },
-        tabIndex: {
-            get() {
-                const {name} = this.$route
-                if (name === 'apartment-view') {
-                    return 0
-                } else {
-                    return 1
-                }
-            },
-            set(value) {
-                return value
-            }
-        }
-    },
-    methods: {
-        updateContent() {
-            this.fetchApartmentView()
-            if (this.commentsViewPermission) {
-                this.getComments()
-            }
-        },
-        async getComments() {
-            const paramsData = this.$route.query
-            this.commentLoading = true
-            const apartmentUuid = this.$route.params.id
-            await api.apartmentsV2.getApartmentComments(this.objectId, apartmentUuid, paramsData).then((res) => {
-                this.commentsData = res.data
-            }).catch((err) => {
-                this.toasted(err.message, "error");
-            }).finally(() => {
-                this.commentLoading = false
-            })
-        },
-        async fetchApartmentView() {
-            this.appLoading = true
-            const {object, id} = this.$route.params
-            await api.apartmentsV2.getApartmentView(object, id)
-                .then(response => {
-                    this.apartment = response.data
-                    this.apartmentName = response.data.object.name
-                }).catch((error) => {
-                    this.toastedWithErrorCode(error)
-                }).finally(() => {
-                    this.appLoading = false
-                })
-        },
-        tabChange(current, prev) {
-            if (current && !prev) {
-                this.$router.push({name: 'apartment-view-comment'})
-            } else {
-                this.$router.push({name: 'apartment-view'})
-            }
-        },
-
+    return {
+      objectId,
+      apartment: {},
+      apartmentName: "",
+      appLoading: true,
+      commentsData: {},
+      commentLoading: false,
+      commentsViewPermission:
+        ApartmentsPermission.getApartmentCommentsViewPermission(),
+    };
+  },
+  async created() {
+    await this.fetchApartmentView();
+  },
+  mounted() {
+    if (this.commentsViewPermission) {
+      this.getComments();
     }
-}
+  },
+  computed: {
+    status() {
+      if (!this.apartment["is_sold"]) {
+        return "unavailable";
+      }
+      return this.apartment.order.status;
+    },
+    tabIndex: {
+      get() {
+        const { name } = this.$route;
+        if (name === "apartment-view") {
+          return 0;
+        } else {
+          return 1;
+        }
+      },
+      set(value) {
+        return value;
+      },
+    },
+  },
+  methods: {
+    updateContent() {
+      this.fetchApartmentView();
+      if (this.commentsViewPermission) {
+        this.getComments();
+      }
+    },
+    async getComments() {
+      const paramsData = this.$route.query;
+      this.commentLoading = true;
+      const apartmentUuid = this.$route.params.id;
+      await api.apartmentsV2
+        .getApartmentComments(this.objectId, apartmentUuid, paramsData)
+        .then((res) => {
+          this.commentsData = res.data;
+        })
+        .catch((err) => {
+          this.toasted(err.message, "error");
+        })
+        .finally(() => {
+          this.commentLoading = false;
+        });
+    },
+    async fetchApartmentView() {
+      this.appLoading = true;
+      const { object, id } = this.$route.params;
+      await api.apartmentsV2
+        .getApartmentView(object, id)
+        .then((response) => {
+          this.apartment = response.data;
+          this.apartmentName = response.data.object.name;
+        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        })
+        .finally(() => {
+          this.appLoading = false;
+        });
+    },
+    tabChange(current, prev) {
+      if (current && !prev) {
+        this.$router.push({ name: "apartment-view-comment" });
+      } else {
+        this.$router.push({ name: "apartment-view" });
+      }
+    },
+  },
+};
 </script>
+
+<template>
+  <div>
+    <app-header>
+      <template #header-breadcrumb>
+        <div class="header-navigation d-flex align-items-center">
+          <div
+            class="go__back"
+            @click="
+              $router.push({
+                name: 'apartments',
+                params: { object: $route.params.object },
+              })
+            "
+          >
+            <base-arrow-left :width="32" :height="32"></base-arrow-left>
+          </div>
+          <div class="breadcrumb__content">
+            <div class="d-flex align-items-center">
+              <span class="mr-2">{{ $t("objects.title") }}</span>
+              <base-arrow-right :width="16" :height="16" />
+              <span class="ml-2">{{ apartmentName }}</span>
+              <base-arrow-right :width="16" :height="16" />
+              <div class="ml-2">
+                {{ $t("apartment") }} № {{ apartment.number }}
+              </div>
+            </div>
+            <div class="head color-violet-600">
+              {{ $t("apartment") }} № {{ apartment.number }}
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #header-status>
+        <div
+          class="apartment__status d-flex justify-content-center align-items-center"
+          :class="`status-${status}`"
+        >
+          {{ $t(`apartments.status.${status}`) }}
+        </div>
+      </template>
+    </app-header>
+
+    <!--  HEADER NAVIGATION  -->
+
+    <!--        <div class="header-navigation d-flex justify-content-between align-items-center">-->
+    <!--            <div class="d-flex align-items-center">-->
+    <!--                <div-->
+    <!--                    class="go__back"-->
+    <!--                    @click="$router.push(-->
+    <!--                    {name:'apartments',-->
+    <!--                    params:{object: $route.params.object}})">-->
+    <!--                    <base-arrow-left :width="32" :height="32"></base-arrow-left>-->
+    <!--                </div>-->
+    <!--                <div class="breadcrumb__content">-->
+    <!--                    <div class="d-flex align-items-center">-->
+    <!--                        <span class="mr-2">{{ $t('objects.title') }}</span>-->
+    <!--                        <base-arrow-right :width="16" :height="16"/>-->
+    <!--                        <span class="ml-2">{{ apartmentName }}</span>-->
+    <!--                        <base-arrow-right :width="16" :height="16"/>-->
+    <!--                        <div class="ml-2">-->
+    <!--                            {{ $t('apartment') }} № {{ apartment.number }}-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                    <div class="head color-violet-600">-->
+    <!--                        {{ $t('apartment') }} № {{ apartment.number }}-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+
+    <!--            <div>-->
+    <!--                <div-->
+    <!--                    class="apartment__status d-flex justify-content-center align-items-center"-->
+    <!--                    :class="`status-${status}`"-->
+    <!--                >-->
+    <!--                    {{ $t(`apartments.status.${status}`) }}-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+
+    <!--  END HEADER NAVIGATION  -->
+
+    <b-tabs
+      v-model="tabIndex"
+      @activate-tab="tabChange"
+      class="custom-tab"
+      card
+    >
+      <template #tabs-start>
+        <div class="bottom__line"></div>
+      </template>
+      <b-tab title="Оформление">
+        <!--   PRICE CONTENT     -->
+      </b-tab>
+
+      <b-tab v-if="commentsViewPermission" title="Примечания">
+        <!--   PRICE CONTENT     -->
+      </b-tab>
+    </b-tabs>
+
+    <router-view
+      :apartment="apartment"
+      :app-loading="appLoading"
+      :comments-data="commentsData"
+      :comment-loading="commentLoading"
+      @update-content="updateContent"
+      @update-comments="getComments"
+    />
+  </div>
+</template>
 
 <style lang="sass" scoped>
 
@@ -355,6 +360,4 @@ export default {
                     border-radius: 1rem 1rem 0 0
                     background-color: var(--violet-600)
                     z-index: 3
-
-
 </style>

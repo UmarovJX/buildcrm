@@ -1,14 +1,3 @@
-<template>
-  <div class="base-tabs">
-    <div class="tab" v-for="({tab, number, is_active}, index) in tabs" :key="index">
-      <span @click="activeTab(index)" :class="is_active ? 'tab-active' : 'tab-inactive'">
-        <p class="tab-text">{{$t(tab)}}</p>
-        <span class="tab-number">{{number}}</span>
-      </span>
-    </div>
-  </div>
-</template>
-
 <script>
 export default {
   name: "BaseTabs",
@@ -16,18 +5,36 @@ export default {
   props: {
     tabs: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     activeTab(index) {
-      let i = this.tabs.findIndex(item => item.is_active)
-      this.tabs[i].is_active = false
-      this.tabs[index].is_active = true
-    }
-  }
-}
+      let i = this.tabs.findIndex((item) => item.is_active);
+      this.tabs[i].is_active = false;
+      this.tabs[index].is_active = true;
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="base-tabs">
+    <div
+      class="tab"
+      v-for="({ tab, number, is_active }, index) in tabs"
+      :key="index"
+    >
+      <span
+        @click="activeTab(index)"
+        :class="is_active ? 'tab-active' : 'tab-inactive'"
+      >
+        <p class="tab-text">{{ $t(tab) }}</p>
+        <span class="tab-number">{{ number }}</span>
+      </span>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .base-tabs {
@@ -47,8 +54,8 @@ export default {
         font-weight: 600;
         font-size: 16px;
         line-height: 22px;
-        color: #9CA3AF;
-        background: #EDE9FE;
+        color: #9ca3af;
+        background: #ede9fe;
         border-radius: 32px;
         padding: 4px 8px;
       }
@@ -64,17 +71,17 @@ export default {
         width: 100%;
         bottom: -20px;
         height: 6px;
-        background: #F3F4F6;
+        background: #f3f4f6;
         border-radius: 16px 16px 0px 0px;
       }
       &:hover {
-        color: #7C3AED;
+        color: #7c3aed;
         cursor: pointer;
         &::after {
-          background: #E5E7EB;
+          background: #e5e7eb;
         }
         .tab-number {
-          color: #7C3AED;
+          color: #7c3aed;
         }
       }
     }
@@ -83,7 +90,7 @@ export default {
       align-items: center;
       position: relative;
       gap: 8px;
-      color: #7C3AED;
+      color: #7c3aed;
       p {
         margin: 0;
       }
@@ -92,7 +99,7 @@ export default {
         font-weight: 600;
         font-size: 16px;
         line-height: 22px;
-        background: #EDE9FE;
+        background: #ede9fe;
         border-radius: 32px;
         padding: 4px 8px;
       }
@@ -108,7 +115,7 @@ export default {
         bottom: -20px;
         width: 100%;
         height: 6px;
-        background: #7C3AED;
+        background: #7c3aed;
         border-radius: 16px 16px 0px 0px;
       }
     }

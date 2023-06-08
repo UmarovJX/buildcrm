@@ -1,85 +1,83 @@
-
 export function headerItems() {
-    const {apartments} = this
+  const { apartments } = this;
 
-    const h = {
-        pageInfo: {
-            title: '',
-            titleHighlight: ''
+  const h = {
+    pageInfo: {
+      title: "",
+      titleHighlight: "",
+    },
+    page: {
+      type: "string",
+      path: this.$t("checkout_booking"),
+    },
+    breadcrumbs: [
+      {
+        content: {
+          type: "multi_language",
+          path: "objects.title",
         },
-        page: {
-            type: 'string',
-            path: this.$t('checkout_booking')
+        route: {
+          name: "objects",
+          path: "/objects",
         },
-        breadcrumbs: [
-            {
-                content: {
-                    type: 'multi_language',
-                    path: 'objects.title'
-                },
-                route: {
-                    name: 'objects',
-                    path: '/objects'
-                }
-            }
-        ],
+      },
+    ],
+  };
+
+  if (!apartments.length) {
+    return h;
+  }
+
+  const apmTitles = apartments.reduce((acc, apm, idx, arr) => {
+    let str = apm.number;
+    if (arr.length - 1 !== idx) {
+      str += ", ";
     }
+    return acc + str;
+  }, "");
 
-    if (!apartments.length) {
-        return h
-    }
+  const { object } = apartments[0];
 
-    const apmTitles = apartments.reduce((acc, apm, idx, arr) => {
-        let str = apm.number
-        if (arr.length - 1 !== idx) {
-            str += ', '
-        }
-        return acc + str
-    }, '')
+  if (object) {
+    h.breadcrumbs.push({
+      content: {
+        type: "string",
+        path: object.name,
+      },
+      route: {
+        name: "apartments",
+        params: {
+          object: object.id,
+        },
+      },
+    });
 
-    const {object} = apartments[0]
+    h.breadcrumbs.push({
+      content: {
+        type: "string",
+        path: this.$t("apartment") + " " + apmTitles,
+      },
+      route: {
+        name: "apartment-view",
+        params: {
+          object: object.id,
+          id: apartments[0].id,
+        },
+      },
+    });
+  }
 
-    if (object) {
-        h.breadcrumbs.push({
-            content: {
-                type: 'string',
-                path: object.name
-            },
-            route: {
-                name: 'apartments',
-                params: {
-                    object: object.id
-                }
-            }
-        })
+  if (this.isCreateMode) {
+    h.pageInfo = {
+      title: this.$t("apartment_make_contract"),
+      titleHighlight: apmTitles,
+    };
+  } else {
+    h.pageInfo = {
+      title: this.$t("edit_apartment"),
+      titleHighlight: apmTitles,
+    };
+  }
 
-        h.breadcrumbs.push({
-            content: {
-                type: 'string',
-                path: this.$t('apartment') + ' ' + apmTitles
-            },
-            route: {
-                name: 'apartment-view',
-                params: {
-                    object: object.id,
-                    id: apartments[0].id
-                }
-            }
-        })
-    }
-
-    if (this.isCreateMode) {
-        h.pageInfo = {
-            title: this.$t('apartment_make_contract'),
-            titleHighlight: apmTitles
-        }
-    } else {
-        h.pageInfo = {
-            title: this.$t('edit_apartment'),
-            titleHighlight: apmTitles
-        }
-    }
-
-
-    return h
+  return h;
 }

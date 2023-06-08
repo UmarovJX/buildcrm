@@ -1,3 +1,218 @@
+<script>
+// import XFormSelect from "@/components/ui-components/form-select/FormSelect";
+import api from "@/services/api";
+import BaseInput from "@/components/Reusable/BaseInput";
+import { mapGetters } from "vuex";
+
+import "vue-select/dist/vue-select.css";
+
+export default {
+  name: "SecondStep",
+  components: {
+    BaseInput,
+    // XFormSelect,
+  },
+  props: {
+    importData: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      foundItems: [],
+      notFoundItems: [],
+      foundFields: [
+        {
+          key: "key",
+          label: "debtors.contract_system",
+          thClass: "theadKey",
+          tdClass: "tbodyKey",
+        },
+        {
+          key: "value",
+          label: "debtors.alias_system",
+          thClass: "theadValue",
+          tdClass: "tbodyValue",
+        },
+      ],
+      notFoundFields: [
+        {
+          key: "key",
+          label: "debtors.contract_file",
+          thClass: "theadKey",
+          tdClass: "tbodyKey",
+        },
+        {
+          key: "value",
+          label: "debtors.contract_system",
+          thClass: "theadValue",
+          tdClass: "tbodyValue",
+        },
+      ],
+      options: [],
+      tabIndex: 0,
+      openListId: null,
+      selected: null,
+      listForCreate: [],
+      allList: [],
+    };
+  },
+  watch: {
+    importData() {
+      console.log("Imported new one: ", this.importData);
+      this.setupOptions();
+    },
+  },
+  computed: {
+    ...mapGetters({
+      getDebtorsSheets: "getDebtorsSheets",
+    }),
+    debtorsSheet() {
+      if (this.getDebtorsSheets.rows) {
+        return this.getDebtorsSheets.rows.slice(1);
+      }
+      return [];
+    },
+  },
+
+  created() {
+    this.setupOptions();
+  },
+  methods: {
+    selectOptionSystem(itemKey, option) {
+      this.notFoundItems.forEach((item, index) => {
+        if (item.key === itemKey) {
+          this.notFoundItems[index] = {
+            key: item.key,
+            option: [],
+            value: {
+              alias: item.key,
+              uuid: option.uuid,
+              contract: option.contract,
+            },
+          };
+        }
+      });
+      this.openListId = null;
+    },
+    setupOptions() {
+      this.foundItems = this.importData.found.map((item) => {
+        return {
+          key: item.contract_number,
+          value: {
+            alias: item.alias,
+            contract: item.contract_number,
+            uuid: item.uuid,
+          },
+        };
+      });
+      this.notFoundItems = this.importData.not_found.map((item) => {
+        return {
+          key: item,
+          option: [],
+          value: {
+            alias: null,
+            contract: null,
+            uuid: null,
+          },
+        };
+      });
+    },
+    searchContract(item, search) {
+      console.log(this.importData);
+      const uuid = item.key;
+      const params = {
+        contract: search,
+      };
+      api.debtorsV2
+        .searchContract(params)
+        .then((res) => {
+          this.openListId = uuid;
+          this.notFoundItems.forEach((fItem, index) => {
+            if (fItem && fItem.key === uuid) {
+              this.notFoundItems[index].option = res.data.map((item) => {
+                return {
+                  alias: item.alias || null,
+                  contract: item.contract_number || null,
+                  uuid: item.uuid || null,
+                };
+              });
+            }
+          });
+        })
+        .catch((err) => {
+          return err;
+        });
+    },
+    getContractNumbers() {
+      const contractFieldName = this.foundItems[0].type;
+      let contractsList = [];
+      if (this.debtorsSheet.length) {
+        this.debtorsSheet.rows.map((item) => {
+          for (const [key, value] of Object.entries(item)) {
+            if (key === contractFieldName) {
+              contractsList = [...contractsList, value];
+            }
+          }
+        });
+      }
+      return contractsList;
+    },
+    async validateSecondStep() {
+      let createAliases = [];
+      let updateAliases = [];
+      let { allList } = this;
+
+      if (this.foundItems && this.foundItems.length) {
+        this.foundItems.forEach((item) => {
+          updateAliases = [...updateAliases, item.value];
+        });
+      }
+
+      if (this.notFoundItems && this.notFoundItems.length) {
+        this.notFoundItems.forEach((item) => {
+          if (item.value && item.value.uuid) {
+            createAliases = [...createAliases, item.value];
+          }
+        });
+      }
+
+      if (createAliases && createAliases.length) {
+        const createBody = {
+          aliases: createAliases,
+        };
+        await api.debtorsV2
+          .createAliases(createBody)
+          .then(() => {
+            allList = [...allList, ...createAliases];
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error);
+          });
+      }
+
+      allList = [...allList, ...updateAliases];
+
+      allList.forEach((item, index) => {
+        this.debtorsSheet.forEach((sheet) => {
+          if (
+            item.alias === sheet.contract ||
+            item.contract === sheet.contract
+          ) {
+            allList[`${index}`] = Object.assign(allList[`${index}`], sheet);
+          }
+        });
+      });
+      await this.$emit("all-debtors", allList);
+    },
+    iTranslate(text) {
+      return this.$t(`${text}`);
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <ValidationObserver ref="contract-validation" class="main__row">
@@ -103,221 +318,6 @@
     </ValidationObserver>
   </div>
 </template>
-
-<script>
-// import XFormSelect from "@/components/ui-components/form-select/FormSelect";
-import api from "@/services/api";
-import BaseInput from "@/components/Reusable/BaseInput";
-import { mapGetters } from "vuex";
-
-import "vue-select/dist/vue-select.css";
-
-export default {
-  name: "SecondStep",
-  components: {
-    BaseInput,
-    // XFormSelect,
-  },
-  props: {
-    importData: {
-      type: Object,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      foundItems: [],
-      notFoundItems: [],
-      foundFields: [
-        {
-          key: "key",
-          label: "debtors.contract_system",
-          thClass: "theadKey",
-          tdClass: "tbodyKey",
-        },
-        {
-          key: "value",
-          label: "debtors.alias_system",
-          thClass: "theadValue",
-          tdClass: "tbodyValue",
-        },
-      ],
-      notFoundFields: [
-        {
-          key: "key",
-          label: "debtors.contract_file",
-          thClass: "theadKey",
-          tdClass: "tbodyKey",
-        },
-        {
-          key: "value",
-          label: "debtors.contract_system",
-          thClass: "theadValue",
-          tdClass: "tbodyValue",
-        },
-      ],
-      options: [],
-      tabIndex: 0,
-      openListId: null,
-      selected: null,
-      listForCreate: [],
-      allList: [],
-    };
-  },
-  watch: {
-    importData() {
-      console.log('Imported new one: ', this.importData)
-      this.setupOptions()
-    }
-  },
-  computed: {
-    ...mapGetters({
-      getDebtorsSheets: "getDebtorsSheets",
-    }),
-    debtorsSheet() {
-      if (this.getDebtorsSheets.rows) {
-        return this.getDebtorsSheets.rows.slice(1);
-      }
-      return [];
-    },
-  },
-
-  created() {
-    this.setupOptions();
-  },
-  methods: {
-    selectOptionSystem(itemKey, option) {
-      this.notFoundItems.forEach((item, index) => {
-        if (item.key === itemKey) {
-          this.notFoundItems[index] = {
-            key: item.key,
-            option: [],
-            value: {
-              alias: item.key,
-              uuid: option.uuid,
-              contract: option.contract,
-            },
-          };
-        }
-      });
-      this.openListId = null;
-    },
-    setupOptions() {
-      this.foundItems = this.importData.found.map((item) => {
-        return {
-          key: item.contract_number,
-          value: {
-            alias: item.alias,
-            contract: item.contract_number,
-            uuid: item.uuid,
-          },
-        };
-      });
-      this.notFoundItems = this.importData.not_found.map((item) => {
-        return {
-          key: item,
-          option: [],
-          value: {
-            alias: null,
-            contract: null,
-            uuid: null,
-          },
-        };
-      });
-    },
-    searchContract(item, search) {
-      console.log(this.importData)
-      const uuid = item.key;
-      const params = {
-        contract: search,
-      };
-      api.debtorsV2
-        .searchContract(params)
-        .then((res) => {
-          this.openListId = uuid;
-          this.notFoundItems.forEach((fItem, index) => {
-            if (fItem && fItem.key === uuid) {
-              this.notFoundItems[index].option = res.data.map((item) => {
-                return {
-                  alias: item.alias || null,
-                  contract: item.contract_number || null,
-                  uuid: item.uuid || null,
-                };
-              });
-            }
-          });
-        })
-        .catch((err) => {
-          return err;
-        });
-    },
-    getContractNumbers() {
-      const contractFieldName = this.foundItems[0].type;
-      let contractsList = [];
-      if (this.debtorsSheet.length) {
-        this.debtorsSheet.rows.map((item) => {
-          for (const [key, value] of Object.entries(item)) {
-            if (key === contractFieldName) {
-              contractsList = [...contractsList, value];
-            }
-          }
-        });
-      }
-      return contractsList;
-    },
-    async validateSecondStep() {
-      let createAliases = [];
-      let updateAliases = [];
-      let { allList } = this;
-
-      if (this.foundItems && this.foundItems.length) {
-        this.foundItems.forEach((item) => {
-          updateAliases = [...updateAliases, item.value];
-        });
-      }
-
-      if (this.notFoundItems && this.notFoundItems.length) {
-        this.notFoundItems.forEach((item) => {
-          if (item.value && item.value.uuid) {
-            createAliases = [...createAliases, item.value];
-          }
-        });
-      }
-
-      if (createAliases && createAliases.length) {
-        const createBody = {
-          aliases: createAliases,
-        };
-        await api.debtorsV2
-          .createAliases(createBody)
-          .then(() => {
-            allList = [...allList, ...createAliases];
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error);
-          });
-      }
-
-      allList = [...allList, ...updateAliases];
-
-      allList.forEach((item, index) => {
-        this.debtorsSheet.forEach((sheet) => {
-          if (
-            item.alias === sheet.contract ||
-            item.contract === sheet.contract
-          ) {
-            allList[`${index}`] = Object.assign(allList[`${index}`], sheet);
-          }
-        });
-      });
-      await this.$emit("all-debtors", allList);
-    },
-    iTranslate(text) {
-      return this.$t(`${text}`);
-    },
-  },
-};
-</script>
 
 <style lang="sass" scoped>
 

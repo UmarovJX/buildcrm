@@ -1,311 +1,339 @@
-import Vue from 'vue'
+import Vue from "vue";
 
 export function getPrepay(apartments, contract) {
-    if (contract.discount.prepay === 100 || parseInt(contract.month) === 0) {
-        return getTotal(apartments, contract)
+  if (contract.discount.prepay === 100 || parseInt(contract.month) === 0) {
+    return getTotal(apartments, contract);
+  }
+
+  let total_discount = getDiscount(apartments, contract);
+  let total;
+
+  switch (contract.discount.type) {
+    case "addition":
+    case "promo":
+    case "fixed":
+      // if (parseFloat(this.calc.discount_price)) {
+      //     total =
+      //         (parseFloat(this.client.discount.amount) -
+      //             parseFloat(this.calc.discount_price)) *
+      //         getAreaTotal(apartments, contract);
+      // } else {
+      // }
+      total = getTotal(apartments, contract);
+      break;
+    default:
+      total = getTotalForPercent(apartments, contract) / total_discount;
+      break;
+  }
+
+  if (contract.initial_payments.length > 1) {
+    total = 0;
+
+    for (let i = 0; contract.initial_payments.length > i; i++) {
+      total += parseFloat(contract.initial_payments[i].amount);
     }
+    return total;
+  }
 
-    let total_discount = getDiscount(apartments, contract)
-    let total
+  if (contract.prepay_edited) {
+    return parseFloat(contract.prepay_amount);
+  }
 
-    switch (contract.discount.type) {
-        case "addition":
-        case "promo":
-        case "fixed":
-            // if (parseFloat(this.calc.discount_price)) {
-            //     total =
-            //         (parseFloat(this.client.discount.amount) -
-            //             parseFloat(this.calc.discount_price)) *
-            //         getAreaTotal(apartments, contract);
-            // } else {
-            // }
-            total = getTotal(apartments, contract);
-            break;
-        default:
-            total = getTotalForPercent(apartments, contract) / total_discount;
-            break;
-    }
-
-    if (contract.initial_payments.length > 1) {
-        total = 0;
-
-        for (let i = 0; contract.initial_payments.length > i; i++) {
-            total += parseFloat(contract.initial_payments[i].amount)
-        }
-        return total;
-    }   
-
-    if (contract.prepay_edited) {
-        return parseFloat(contract.prepay_amount);
-    }
-
-    return (contract.discount.prepay * total) / 100;
-
+  return (contract.discount.prepay * total) / 100;
 }
 
 export function getAreaTotal(apartments) {
-    let planAreas = 0;
-    for (let i = 0; apartments.length > i; i++) {
-        planAreas += apartments[i].plan.area;
-    }
-    return planAreas;
+  let planAreas = 0;
+  for (let i = 0; apartments.length > i; i++) {
+    planAreas += apartments[i].plan.area;
+  }
+  return planAreas;
 }
 
 export function getPricePerM2(apartments, contract) {
-    return getPrice(apartments, contract) / getAreaTotal(apartments);
+  return getPrice(apartments, contract) / getAreaTotal(apartments);
 }
 
 export function getPrice(apartments, contract) {
-    let price = [];
-    switch (contract.discount.type) {
-        case "addition":
-        case "promo":
-        case "fixed":
-            for (let i = 0; apartments.length > i; i++) {
-                let amountApartment = 0;
+  let price = [];
+  switch (contract.discount.type) {
+    case "addition":
+    case "promo":
+    case "fixed":
+      for (let i = 0; apartments.length > i; i++) {
+        let amountApartment = 0;
 
-                if (contract.discount.id !== 'other') {
-                    const {prepay, type} = contract.discount
-                    if (type === 'promo') {
-                        amountApartment = apartments[i].discounts.find(
-                            (val) => val.type === type && val.prepay === prepay
-                        ).amount
-                    } else {
-                        amountApartment = apartments[i].discounts.find(
-                            (val) => val.prepay === contract.discount.prepay
-                        )?.amount
-                    }
-                } else {
-                    amountApartment = contract.discount.amount;
-                }
+        if (contract.discount.id !== "other") {
+          const { prepay, type } = contract.discount;
+          if (type === "promo") {
+            amountApartment = apartments[i].discounts.find(
+              (val) => val.type === type && val.prepay === prepay
+            ).amount;
+          } else {
+            amountApartment = apartments[i].discounts.find(
+              (val) => val.prepay === contract.discount.prepay
+            )?.amount;
+          }
+        } else {
+          amountApartment = contract.discount.amount;
+        }
 
-                const totalAmount = parseFloat(amountApartment) * apartments[i].plan.area;
-                Vue.set(apartments[i], 'price_calc', parseFloat(totalAmount.toFixed(2)))
-                Vue.set(apartments[i], 'price_edited', false)
-                Vue.set(apartments[i], 'discount_id', contract.discount.id)
-                price.push(parseFloat(totalAmount.toFixed(2)));
-            }
-            break;
-        default:
-            if (contract.discount.prepay === 100) {
-                for (let index = 0; index < apartments.length; index++) {
+        const totalAmount =
+          parseFloat(amountApartment) * apartments[i].plan.area;
+        Vue.set(
+          apartments[i],
+          "price_calc",
+          parseFloat(totalAmount.toFixed(2))
+        );
+        Vue.set(apartments[i], "price_edited", false);
+        Vue.set(apartments[i], "discount_id", contract.discount.id);
+        price.push(parseFloat(totalAmount.toFixed(2)));
+      }
+      break;
+    default:
+      if (contract.discount.prepay === 100) {
+        for (let index = 0; index < apartments.length; index++) {
+          // apartments[index].price_current = apartments[index].price
+          apartments[index].price_calc = apartments[index].price;
 
-                    // apartments[index].price_current = apartments[index].price
-                    apartments[index].price_calc = apartments[index].price
+          // Vue.set(apartments[index], 'price_current', apartments[index].price.toFixed(2))
+          Vue.set(
+            apartments[index],
+            "price_calc",
+            parseFloat(apartments[index].price.toFixed(2))
+          );
+          Vue.set(apartments[index], "price_edited", false);
+          Vue.set(apartments[index], "discount_id", contract.discount.id);
 
-                    // Vue.set(apartments[index], 'price_current', apartments[index].price.toFixed(2))
-                    Vue.set(apartments[index], 'price_calc', parseFloat(apartments[index].price.toFixed(2)))
-                    Vue.set(apartments[index], 'price_edited', false)
-                    Vue.set(apartments[index], 'discount_id', contract.discount.id)
+          price.push(parseFloat(apartments[index].price.toFixed(2)));
+        }
+      } else {
+        for (let i = 0; apartments.length > i; i++) {
+          let amountApartment = 0;
+          if (contract.discount.id !== "other")
+            amountApartment = apartments[i].discounts.find(
+              (val) => val.prepay === contract.discount.prepay
+            ).amount;
+          else amountApartment = contract.discount.amount;
 
-                    price.push(parseFloat(apartments[index].price.toFixed(2)));
-                }
-            } else {
-                for (let i = 0; apartments.length > i; i++) {
-                    let amountApartment = 0;
-                    if (contract.discount.id !== 'other')
-                        amountApartment = apartments[i].discounts.find(
-                            (val) => val.prepay === contract.discount.prepay
-                        ).amount;
-                    else
-                        amountApartment = contract.discount.amount;
+          let totalAmount = 0;
 
+          // if (contract.discount.id === 'other')
+          //     Vue.set(apartments[i], 'price_edited', false)
 
-                    let totalAmount = 0;
+          if (apartments[i].price_edited)
+            totalAmount = apartments[i].price_calc;
+          else
+            totalAmount =
+              (parseFloat(apartments[i].price_m2) * apartments[i].plan.area) /
+              (1 - amountApartment / 100);
 
-                    // if (contract.discount.id === 'other')
-                    //     Vue.set(apartments[i], 'price_edited', false)
+          // apartments[i].price_calc = totalAmount
 
-                    if (apartments[i].price_edited)
-                        totalAmount = apartments[i].price_calc
-                    else
-                        totalAmount = parseFloat(apartments[i].price_m2) * apartments[i].plan.area / (1 - amountApartment / 100);
+          // apartments[i].price_current = totalAmount
+          // Vue.set(apartments[i], 'price_current', totalAmount.toFixed(2))
+          Vue.set(
+            apartments[i],
+            "price_calc",
+            parseFloat(totalAmount.toFixed(2))
+          );
+          Vue.set(apartments[i], "discount_id", contract.discount.id);
+          // apartments[i].price_calc = totalAmount
 
+          // apartments[i].price_current = totalAmount
 
-                    // apartments[i].price_calc = totalAmount
+          price.push(parseFloat(totalAmount.toFixed(2)));
+        }
+      }
+      break;
+  }
 
-                    // apartments[i].price_current = totalAmount
-                    // Vue.set(apartments[i], 'price_current', totalAmount.toFixed(2))
-                    Vue.set(apartments[i], 'price_calc', parseFloat(totalAmount.toFixed(2)))
-                    Vue.set(apartments[i], 'discount_id', contract.discount.id)
-                    // apartments[i].price_calc = totalAmount
-
-                    // apartments[i].price_current = totalAmount
-
-                    price.push(parseFloat(totalAmount.toFixed(2)));
-                }
-            }
-            break;
-    }
-
-    return price.reduce((a, b) => a + b, 0)
+  return price.reduce((a, b) => a + b, 0);
 }
 
 export function getDiscount(apartments, contract) {
-    if (contract.discount.prepay === 100) return 1;
+  if (contract.discount.prepay === 100) return 1;
 
-    if (contract.discount.type === 'promo') {
-        return 1 - contract.discount.prepay / 100;
-    }
+  if (contract.discount.type === "promo") {
+    return 1 - contract.discount.prepay / 100;
+  }
 
-    return 1 - contract.discount.amount / 100;
+  return 1 - contract.discount.amount / 100;
 }
 
 export function getMonth(apartments, contract) {
-    if (parseInt(contract.month) === 0) return 0;
+  if (parseInt(contract.month) === 0) return 0;
 
-    return (
-        (getTotal(apartments, contract) - getPrepay(apartments, contract)) /
-        parseInt(contract.month)
-    );
+  return (
+    (getTotal(apartments, contract) - getPrepay(apartments, contract)) /
+    parseInt(contract.month)
+  );
 }
 
 export function getDebt(apartments, contract) {
-    return getTotal(apartments, contract) - getPrepay(apartments, contract);
+  return getTotal(apartments, contract) - getPrepay(apartments, contract);
 }
 
 export function getTotalDiscount(apartments, contract) {
-    if (parseFloat(contract.discount_amount) > 0) {
-        let price = getPrice(apartments, contract)
-        let square = getAreaTotal(apartments)
+  if (parseFloat(contract.discount_amount) > 0) {
+    let price = getPrice(apartments, contract);
+    let square = getAreaTotal(apartments);
 
+    let now =
+      (parseFloat(price) - parseFloat(contract.discount_amount)) /
+      parseFloat(square);
+    let discount = price / square - now;
 
-        let now = (parseFloat(price) - parseFloat(contract.discount_amount)) / parseFloat(square);
-        let discount = price / square - now
+    Vue.set(contract, "discount_square", discount);
+  } else if (parseFloat(contract.discount_square) > 0) {
+    let total = getPrice(apartments, contract);
+    let price = getPricePerM2(apartments, contract);
+    let square = getAreaTotal(apartments);
 
-        Vue.set(contract, 'discount_square', discount)
-    } else if (parseFloat(contract.discount_square) > 0) {
-        let total = getPrice(apartments, contract)
-        let price = getPricePerM2(apartments, contract)
-        let square = getAreaTotal(apartments)
-
-        let now = parseFloat(price) - parseFloat(contract.discount_square);
-        let discount = now * square
-        discount = total - discount
-        Vue.set(contract, 'discount_amount', discount)
-    }
+    let now = parseFloat(price) - parseFloat(contract.discount_square);
+    let discount = now * square;
+    discount = total - discount;
+    Vue.set(contract, "discount_amount", discount);
+  }
 }
 
-
-import {dateProperties} from "@/util/calendar";
+import { dateProperties } from "@/util/calendar";
 
 export function CreditMonths(apartments, contract) {
-    let today = contract.payment_date ? new Date(contract.payment_date) : new Date()
-    const {year: todayYear, month: todayMonth, dayOfMonth: todayDate} = dateProperties(today)
-    const lastDateOfCurrentMonth = (new Date(todayYear, todayMonth + 1, 0)).getDate()
-    let calculateByLastDay = todayDate === lastDateOfCurrentMonth
-    contract.credit_months = []
+  let today = contract.payment_date
+    ? new Date(contract.payment_date)
+    : new Date();
+  const {
+    year: todayYear,
+    month: todayMonth,
+    dayOfMonth: todayDate,
+  } = dateProperties(today);
+  const lastDateOfCurrentMonth = new Date(
+    todayYear,
+    todayMonth + 1,
+    0
+  ).getDate();
+  let calculateByLastDay = todayDate === lastDateOfCurrentMonth;
+  contract.credit_months = [];
 
-    if (parseInt(contract.month) > 0) {
-        let month_amount = getMonth(apartments, contract)
-        for (let i = 0; i < parseInt(contract.month); i++) {
-            const creditMonth = {
-                amount: month_amount,
-                edit: false,
-                edited: false,
-                month: today
-            }
-            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + i + 1, 0)
-            if (i === 0) {
-                creditMonth.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth())
-            } else {
-                creditMonth.month = calculateByLastDay ? lastDayOfMonth : today.setMonth(today.getMonth() + 1)
-            }
-            contract.credit_months.push(creditMonth)
-        }
+  if (parseInt(contract.month) > 0) {
+    let month_amount = getMonth(apartments, contract);
+    for (let i = 0; i < parseInt(contract.month); i++) {
+      const creditMonth = {
+        amount: month_amount,
+        edit: false,
+        edited: false,
+        month: today,
+      };
+      const lastDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + i + 1,
+        0
+      );
+      if (i === 0) {
+        creditMonth.month = calculateByLastDay
+          ? lastDayOfMonth
+          : today.setMonth(today.getMonth());
+      } else {
+        creditMonth.month = calculateByLastDay
+          ? lastDayOfMonth
+          : today.setMonth(today.getMonth() + 1);
+      }
+      contract.credit_months.push(creditMonth);
     }
+  }
 
-    return contract
+  return contract;
 }
 
 export function editedCreditMonths(apartments, contract) {
-    if (parseInt(contract.month) === 0) return contract.credit_months = []
+  if (parseInt(contract.month) === 0) return (contract.credit_months = []);
 
-    let total = getPrepay(apartments, contract);
-    let months = 0;
+  let total = getPrepay(apartments, contract);
+  let months = 0;
 
-    if (contract.credit_months.length === 0)
-        return CreditMonths(apartments, contract)
+  if (contract.credit_months.length === 0)
+    return CreditMonths(apartments, contract);
 
-    if (contract.credit_months.length !== parseInt(contract.month))
-        return CreditMonths(apartments, contract)
+  if (contract.credit_months.length !== parseInt(contract.month))
+    return CreditMonths(apartments, contract);
 
-    for (let i = 0; i < contract.credit_months.length; i++) {
-        if (contract.credit_months[i].edited) {
-            total += parseFloat(contract.credit_months[i].amount);
-        } else {
-            months += 1;
-        }
+  for (let i = 0; i < contract.credit_months.length; i++) {
+    if (contract.credit_months[i].edited) {
+      total += parseFloat(contract.credit_months[i].amount);
+    } else {
+      months += 1;
     }
+  }
 
-    let monthly_amount = (getTotal(apartments, contract) - total) / months;
+  let monthly_amount = (getTotal(apartments, contract) - total) / months;
 
-    for (let m = 0; m < contract.credit_months.length; m++) {
-        if (!contract.credit_months[m].edited) {
-            // if (monthly_amount > 0)
-            contract.credit_months[m].amount = monthly_amount;
-            // else
-            //     this.credit_months.splice(m, 1)
-        }
+  for (let m = 0; m < contract.credit_months.length; m++) {
+    if (!contract.credit_months[m].edited) {
+      // if (monthly_amount > 0)
+      contract.credit_months[m].amount = monthly_amount;
+      // else
+      //     this.credit_months.splice(m, 1)
     }
+  }
 }
 
 export function getTotal(apartments, contract) {
-    let total_discount = getDiscount(apartments, contract)
-    let total
+  let total_discount = getDiscount(apartments, contract);
+  let total;
 
-    switch (contract.discount.type) {
-        case "promo":
-        case "addition":
-        case "fixed":
-            if (parseFloat(contract.discount_amount) > 0) {
-                total = getPrice(apartments, contract)
-                total = total - contract.discount_amount
-            } else {
-                total = getPrice(apartments, contract)
-            }
-            break
-        default:
-            if (parseFloat(contract.discount_amount) > 0) {
-                total = getPrice(apartments, contract)
-                total = total - contract.discount_amount
-            } else {
-                total = getPrice(apartments, contract) / total_discount
-            }
-            break;
-    }
+  switch (contract.discount.type) {
+    case "promo":
+    case "addition":
+    case "fixed":
+      if (parseFloat(contract.discount_amount) > 0) {
+        total = getPrice(apartments, contract);
+        total = total - contract.discount_amount;
+      } else {
+        total = getPrice(apartments, contract);
+      }
+      break;
+    default:
+      if (parseFloat(contract.discount_amount) > 0) {
+        total = getPrice(apartments, contract);
+        total = total - contract.discount_amount;
+      } else {
+        total = getPrice(apartments, contract) / total_discount;
+      }
+      break;
+  }
 
-    return total;
+  return total;
 }
 
 export function getTotalForPercent(apartments, contract) {
-    let total_discount = getDiscount(apartments, contract);
-    let total = 0;
-    let price = 0;
-    switch (contract.discount.type) {
-        case "addition":
-        case "promo":
-        case "fixed":
-            // if (parseFloat(this.calc.discount_price)) {
-            //     total =
-            //         (parseFloat(this.client.discount.amount) -
-            //             parseFloat(this.calc.discount_price)) *
-            //         this.planAreas();
-            // } else {
-            total = getPrice(apartments, contract);
-            // }
-            break;
-        default:
-            if (contract.discount.prepay === 100) {
-                for (let index = 0; index < apartments.length; index++) {
-                    price += apartments[index]?.price_m2;
-                }
-                total = price / (total_discount * apartments.length);
-            } else {
-                total = getPrice(apartments, contract);
-            }
-            break;
-    }
+  let total_discount = getDiscount(apartments, contract);
+  let total = 0;
+  let price = 0;
+  switch (contract.discount.type) {
+    case "addition":
+    case "promo":
+    case "fixed":
+      // if (parseFloat(this.calc.discount_price)) {
+      //     total =
+      //         (parseFloat(this.client.discount.amount) -
+      //             parseFloat(this.calc.discount_price)) *
+      //         this.planAreas();
+      // } else {
+      total = getPrice(apartments, contract);
+      // }
+      break;
+    default:
+      if (contract.discount.prepay === 100) {
+        for (let index = 0; index < apartments.length; index++) {
+          price += apartments[index]?.price_m2;
+        }
+        total = price / (total_discount * apartments.length);
+      } else {
+        total = getPrice(apartments, contract);
+      }
+      break;
+  }
 
-    return total;
+  return total;
 }

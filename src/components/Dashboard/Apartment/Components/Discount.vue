@@ -1,178 +1,15 @@
-<template>
-  <div class="object-calculator">
-    <b-form-group
-        class="mb-1"
-        label-cols="12"
-        content-cols="12"
-        :label="$t('apartments.view.enter_discount')"
-        label-for="discounts"
-    >
-      <b-form-select id="discounts" v-model="discount" @change="changeDiscount">
-        <b-form-select-option
-            v-for="(discount, index) in getApartmentDiscounts"
-            :value="discount"
-            :key="'discounts' + index"
-        >
-          {{ $t("apartments.view.variant") }}
-          <span v-if="discount.type === 'promo'">
-            ({{ $t('promo.by_promo') }})
-          </span>
-          {{ index + 1 }} - {{ discount.prepay }}%
-        </b-form-select-option>
-      </b-form-select>
-    </b-form-group>
-
-    <!-- Цена продажы за м2 -->
-    <b-form-group
-        class="mb-1"
-        label-cols="12"
-        content-cols="12"
-        :label="$t('apartments.view.price_for_m2')"
-        label-for="price"
-    >
-      <base-numeric-input
-          id="price"
-          v-model="calc.price_for_m2"
-          :currency="$t('ye')"
-          :precision="2"
-          decimal-separator=","
-          class="form-control"
-          currency-symbol-position="suffix"
-          separator="space"
-          disabled
-      ></base-numeric-input>
-    </b-form-group>
-
-    <!-- Скидка -->
-    <b-form-group
-        class="mb-1"
-        label-cols="12"
-        content-cols="12"
-        :label="$t('apartments.view.discount_per_m2')"
-        label-for="discound-price"
-    >
-      <base-numeric-input
-          id="discound-price"
-          v-model="calc.discount_price"
-          @change="changeDiscount_price"
-          :currency="$t('ye')"
-          :precision="2"
-          class="form-control"
-          currency-symbol-position="suffix"
-          separator="space"
-      ></base-numeric-input>
-    </b-form-group>
-
-    <!-- Предоплата -->
-    <div>
-      {{ $t('apartments.view.prepayment') }}: <span> {{ calc.prepay_percente }}%</span>
-    </div>
-
-    <!-- Первый взнос -->
-    <b-form-group
-        class="mb-1"
-        v-if="discount.amount > 0"
-        label-cols="12"
-        content-cols="12"
-        :label="$t('contracts.view.initial_payment')"
-        label-for="prepay_to"
-    >
-      <base-numeric-input
-          id="prepay_to"
-          v-model="calc.prepay"
-          class="form-control"
-          :currency="$t('ye')"
-          :precision="2"
-          currency-symbol-position="suffix"
-          separator="space"
-          disabled
-      ></base-numeric-input>
-    </b-form-group>
-
-    <!-- Ежемесячный -->
-    <b-form-group
-        class="mb-1"
-        v-if="discount.amount > 0"
-        label-cols="12"
-        content-cols="12"
-        :label="$t('monthly_payment')"
-        label-for="credit_month"
-    >
-      <b-form-input
-          id="credit_month"
-          @change="changeDiscount_month"
-          v-model="calc.month"
-      >
-      </b-form-input>
-      <base-numeric-input
-          id="credit_price_for_month"
-          v-model="monthly_price"
-          class="form-control mt-2"
-          :currency="$t('ye')"
-          :precision="2"
-          currency-symbol-position="suffix"
-          separator="space"
-          read-only-class="true"
-          disabled
-      ></base-numeric-input>
-      <span style="position: absolute; right: 20px; top: 6px">{{ $t('month') }}</span>
-    </b-form-group>
-
-    <!-- Остаток -->
-    <b-form-group
-        v-if="discount.amount > 0"
-        class="mb-1"
-        label-cols="12"
-        content-cols="12"
-        :label="$t('contracts.view.remainder')"
-        label-for="debt"
-    >
-      <base-numeric-input
-          id="debt"
-          v-model="calc.debt"
-          :currency="$t('ye')"
-          :precision="2"
-          class="form-control"
-          currency-symbol-position="suffix"
-          separator="space"
-          disabled
-      ></base-numeric-input>
-    </b-form-group>
-
-    <!-- Итого -->
-    <b-form-group
-        class="mb-1"
-        label-cols="12"
-        content-cols="12"
-        :label="$t('total')"
-        label-for="total"
-    >
-      <base-numeric-input
-          id="total"
-          v-model="calc.total"
-          :currency="$t('ye')"
-          :precision="2"
-          class="form-control"
-          currency-symbol-position="suffix"
-          separator="space"
-          disabled
-      ></base-numeric-input>
-    </b-form-group>
-  </div>
-</template>
-
 <script>
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Discount",
   components: {
-    BaseNumericInput
+    BaseNumericInput,
   },
   props: {
     apartment: {
-      type: Object
+      type: Object,
     },
   },
 
@@ -197,8 +34,8 @@ export default {
   mounted() {
     // setTimeout(() => {
     this.discount = this.getApartmentDiscounts
-        ? this.getApartmentDiscounts[0]
-        : [];
+      ? this.getApartmentDiscounts[0]
+      : [];
     this.initialCalc();
     // }, 1000);
   },
@@ -222,7 +59,7 @@ export default {
           this.calc.price_for_m2 = this.apartment.price_m2;
         } else {
           this.calc.price_for_m2 =
-              this.getTotalForPercente() / this.apartment.plan.area;
+            this.getTotalForPercente() / this.apartment.plan.area;
         }
       } else {
         this.calc.price_for_m2 = this.discount.amount;
@@ -276,8 +113,8 @@ export default {
         case "fixed":
           if (this.calc.discount_price) {
             total =
-                (this.discount.amount - parseFloat(this.calc.discount_price)) *
-                this.apartment.plan.area;
+              (this.discount.amount - parseFloat(this.calc.discount_price)) *
+              this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
@@ -293,7 +130,7 @@ export default {
     getDiscount() {
       if (this.discount.prepay === 100) return 1;
 
-      return 1 - this.discount.prepay / 100
+      return 1 - this.discount.prepay / 100;
 
       /*return 1 - this.discount.amount / 100;*/
     },
@@ -301,7 +138,7 @@ export default {
       if (this.calc.month) {
         return (this.getTotal() - this.getPrepay()) / this.calc.month;
       }
-      return 0
+      return 0;
     },
     getDebt() {
       return this.getTotal() - this.getPrepay();
@@ -311,12 +148,12 @@ export default {
       let total = 0;
 
       switch (this.discount.type) {
-        case 'promo':
+        case "promo":
         case "fixed":
           if (this.calc.discount_price) {
             total =
-                (this.discount.amount - parseFloat(this.calc.discount_price)) *
-                this.apartment.plan.area;
+              (this.discount.amount - parseFloat(this.calc.discount_price)) *
+              this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area; //(this.discount.amount * this.apartment.plan.area) / total_discount;
           }
@@ -325,7 +162,7 @@ export default {
           total = this.apartment.price / total_discount;
           if (this.calc.discount_price) {
             total -=
-                parseFloat(this.calc.discount_price) * this.apartment.plan.area;
+              parseFloat(this.calc.discount_price) * this.apartment.plan.area;
           }
           break;
       }
@@ -340,8 +177,8 @@ export default {
         case "fixed":
           if (this.calc.discount_price) {
             total =
-                (this.discount.amount - parseFloat(this.calc.discount_price)) *
-                this.apartment.plan.area;
+              (this.discount.amount - parseFloat(this.calc.discount_price)) *
+              this.apartment.plan.area;
           } else {
             total = this.discount.amount * this.apartment.plan.area;
           }
@@ -356,3 +193,169 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="object-calculator">
+    <b-form-group
+      class="mb-1"
+      label-cols="12"
+      content-cols="12"
+      :label="$t('apartments.view.enter_discount')"
+      label-for="discounts"
+    >
+      <b-form-select id="discounts" v-model="discount" @change="changeDiscount">
+        <b-form-select-option
+          v-for="(discount, index) in getApartmentDiscounts"
+          :value="discount"
+          :key="'discounts' + index"
+        >
+          {{ $t("apartments.view.variant") }}
+          <span v-if="discount.type === 'promo'">
+            ({{ $t("promo.by_promo") }})
+          </span>
+          {{ index + 1 }} - {{ discount.prepay }}%
+        </b-form-select-option>
+      </b-form-select>
+    </b-form-group>
+
+    <!-- Цена продажы за м2 -->
+    <b-form-group
+      class="mb-1"
+      label-cols="12"
+      content-cols="12"
+      :label="$t('apartments.view.price_for_m2')"
+      label-for="price"
+    >
+      <base-numeric-input
+        id="price"
+        v-model="calc.price_for_m2"
+        :currency="$t('ye')"
+        :precision="2"
+        decimal-separator=","
+        class="form-control"
+        currency-symbol-position="suffix"
+        separator="space"
+        disabled
+      ></base-numeric-input>
+    </b-form-group>
+
+    <!-- Скидка -->
+    <b-form-group
+      class="mb-1"
+      label-cols="12"
+      content-cols="12"
+      :label="$t('apartments.view.discount_per_m2')"
+      label-for="discound-price"
+    >
+      <base-numeric-input
+        id="discound-price"
+        v-model="calc.discount_price"
+        @change="changeDiscount_price"
+        :currency="$t('ye')"
+        :precision="2"
+        class="form-control"
+        currency-symbol-position="suffix"
+        separator="space"
+      ></base-numeric-input>
+    </b-form-group>
+
+    <!-- Предоплата -->
+    <div>
+      {{ $t("apartments.view.prepayment") }}:
+      <span> {{ calc.prepay_percente }}%</span>
+    </div>
+
+    <!-- Первый взнос -->
+    <b-form-group
+      class="mb-1"
+      v-if="discount.amount > 0"
+      label-cols="12"
+      content-cols="12"
+      :label="$t('contracts.view.initial_payment')"
+      label-for="prepay_to"
+    >
+      <base-numeric-input
+        id="prepay_to"
+        v-model="calc.prepay"
+        class="form-control"
+        :currency="$t('ye')"
+        :precision="2"
+        currency-symbol-position="suffix"
+        separator="space"
+        disabled
+      ></base-numeric-input>
+    </b-form-group>
+
+    <!-- Ежемесячный -->
+    <b-form-group
+      class="mb-1"
+      v-if="discount.amount > 0"
+      label-cols="12"
+      content-cols="12"
+      :label="$t('monthly_payment')"
+      label-for="credit_month"
+    >
+      <b-form-input
+        id="credit_month"
+        @change="changeDiscount_month"
+        v-model="calc.month"
+      >
+      </b-form-input>
+      <base-numeric-input
+        id="credit_price_for_month"
+        v-model="monthly_price"
+        class="form-control mt-2"
+        :currency="$t('ye')"
+        :precision="2"
+        currency-symbol-position="suffix"
+        separator="space"
+        read-only-class="true"
+        disabled
+      ></base-numeric-input>
+      <span style="position: absolute; right: 20px; top: 6px">{{
+        $t("month")
+      }}</span>
+    </b-form-group>
+
+    <!-- Остаток -->
+    <b-form-group
+      v-if="discount.amount > 0"
+      class="mb-1"
+      label-cols="12"
+      content-cols="12"
+      :label="$t('contracts.view.remainder')"
+      label-for="debt"
+    >
+      <base-numeric-input
+        id="debt"
+        v-model="calc.debt"
+        :currency="$t('ye')"
+        :precision="2"
+        class="form-control"
+        currency-symbol-position="suffix"
+        separator="space"
+        disabled
+      ></base-numeric-input>
+    </b-form-group>
+
+    <!-- Итого -->
+    <b-form-group
+      class="mb-1"
+      label-cols="12"
+      content-cols="12"
+      :label="$t('total')"
+      label-for="total"
+    >
+      <base-numeric-input
+        id="total"
+        v-model="calc.total"
+        :currency="$t('ye')"
+        :precision="2"
+        class="form-control"
+        currency-symbol-position="suffix"
+        separator="space"
+        disabled
+      ></base-numeric-input>
+    </b-form-group>
+  </div>
+</template>

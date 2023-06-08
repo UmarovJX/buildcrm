@@ -1,3 +1,15 @@
+<script>
+export default {
+  name: "BaseLoadingContent",
+  props: {
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+};
+</script>
+
 <template>
   <b-overlay :show="loading" no-wrap opacity="0.5" style="z-index: 2222">
     <template #overlay>
@@ -13,18 +25,4 @@
   </b-overlay>
 </template>
 
-<script>
-export default {
-  name: "BaseLoadingContent",
-  props: {
-    loading: {
-      type: Boolean,
-      default: false
-    }
-  }
-}
-</script>
-
-<style scoped>
-
-</style>
+<style scoped></style>

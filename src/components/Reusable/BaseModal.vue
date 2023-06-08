@@ -1,73 +1,70 @@
-<template>
-    <b-modal
-        ref="base-modal"
-        title="Using Component Methods"
-        :modal-class="modalClass"
-        @show="showModal"
-        @hide="hideModal"
-        hide-header
-        hide-footer
-        no-close-on-esc
-        no-close-on-backdrop
-    >
-        <div
-            :class="wrapperClass"
-            :style="wrapperStyle"
-        >
-            <div>
-                <slot name="header"/>
-            </div>
-            <div class="main">
-                <slot name="main"/>
-            </div>
-            <div>
-                <slot name="footer"/>
-            </div>
-        </div>
-    </b-modal>
-</template>
-
 <script>
-import {PROP_TYPE_ARRAY_OBJECT_STRING} from "@/constants/props"
-import {makeProp as p} from "@/util/props";
+import { PROP_TYPE_ARRAY_OBJECT_STRING } from "@/constants/props";
+import { makeProp as p } from "@/util/props";
 
 export default {
-    name: "BaseModal",
-    emits: ['show', 'hide'],
-    props: {
-        design: {
-            type: String,
-            default: () => ('')
-        },
-        wrapperClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ''),
-        wrapperStyle: p(PROP_TYPE_ARRAY_OBJECT_STRING, '')
+  name: "BaseModal",
+  emits: ["show", "hide"],
+  props: {
+    design: {
+      type: String,
+      default: () => "",
     },
-    data() {
-        return {
-            show: false
-        }
+    wrapperClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    wrapperStyle: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+  },
+  data() {
+    return {
+      show: false,
+    };
+  },
+  computed: {
+    modalClass() {
+      return `base__modal ${this.design}`;
     },
-    computed: {
-        modalClass() {
-            return `base__modal ${this.design}`
-        }
+  },
+  methods: {
+    openModal() {
+      this.$refs["base-modal"].show();
     },
-    methods: {
-        openModal() {
-            this.$refs["base-modal"].show()
-        },
-        closeModal() {
-            this.$refs['base-modal'].hide()
-        },
-        showModal() {
-            this.$emit('show')
-        },
-        hideModal() {
-            this.$emit('hide')
-        }
-    }
-}
+    closeModal() {
+      this.$refs["base-modal"].hide();
+    },
+    showModal() {
+      this.$emit("show");
+    },
+    hideModal() {
+      this.$emit("hide");
+    },
+  },
+};
 </script>
+
+<template>
+  <b-modal
+    ref="base-modal"
+    title="Using Component Methods"
+    :modal-class="modalClass"
+    @show="showModal"
+    @hide="hideModal"
+    hide-header
+    hide-footer
+    no-close-on-esc
+    no-close-on-backdrop
+  >
+    <div :class="wrapperClass" :style="wrapperStyle">
+      <div>
+        <slot name="header" />
+      </div>
+      <div class="main">
+        <slot name="main" />
+      </div>
+      <div>
+        <slot name="footer" />
+      </div>
+    </div>
+  </b-modal>
+</template>
 
 <style lang="sass" scoped>
 ::v-deep .small-modal
@@ -168,5 +165,4 @@ export default {
 @media screen and (min-width: 500px)
     ::v-deep .modal-dialog
         max-width: 100%
-
 </style>

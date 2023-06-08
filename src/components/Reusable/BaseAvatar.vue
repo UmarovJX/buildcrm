@@ -1,15 +1,116 @@
+<script>
+import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
+import { localeChanged } from "vee-validate";
+import GeneralPermission from "@/permission/general";
+import { mapActions } from "vuex";
+import Permission from "@/permission";
+
+export default {
+  name: "BaseAvatar",
+  components: {
+    AppDropdown,
+  },
+  props: {
+    background: {
+      type: String,
+      required: false,
+      default: "#F3F4F6",
+    },
+    avatar: {
+      type: String,
+      required: false,
+    },
+    full_name: {
+      type: String,
+      required: false,
+    },
+    role: {
+      type: String,
+      required: false,
+    },
+    nameSnippet: {
+      type: String,
+      required: false,
+    },
+  },
+  data() {
+    const settingsPermission =
+      GeneralPermission.getSettingsPermission() &&
+      (GeneralPermission.getPasswordSettingsPermission() ||
+        GeneralPermission.getProfileSettingsPermission());
+    return {
+      settingsPermission,
+      locale: false,
+      languagePermission: GeneralPermission.getLanguagePermission(),
+    };
+  },
+  computed: {
+    hasAvatarSlot() {
+      return this.$slots.hasOwnProperty("avatar");
+    },
+    hasFullNameSlot() {
+      return this.$slots.hasOwnProperty("full_name");
+    },
+    hasRoleSlot() {
+      return this.$slots.hasOwnProperty("role");
+    },
+    imagePath() {
+      if (this.avatar !== "") {
+        return this.avatar;
+      }
+      return "";
+    },
+  },
+  created() {
+    this.locale = localStorage.locale !== "uz";
+  },
+  methods: {
+    ...mapActions(["nullableAuth", "nullMe"]),
+    openUserSetting() {
+      this.$router.push({ name: "user-settings" });
+    },
+    changeLocale() {
+      if (this.locale === false) {
+        localStorage.setItem("locale", "ru");
+        localStorage.locale = "ru";
+        this.$i18n.locale = "ru";
+        this.locale = true;
+        localeChanged();
+      } else {
+        localStorage.setItem("locale", "uz");
+        localStorage.locale = "uz";
+        this.$i18n.locale = "uz";
+        this.locale = false;
+        localeChanged();
+      }
+      this.$nextTick(() => {
+        this.$forceUpdate();
+      });
+    },
+    logout() {
+      localStorage.clear();
+      sessionStorage.clear();
+      this.nullableAuth();
+      this.nullMe();
+      Permission.clearUserPermission();
+      this.$router.push({ name: "login" });
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <app-dropdown :collapse-arrow="true" :position-right="true">
       <template #header>
-        <div class="base-avatar" :style="{background}">
+        <div class="base-avatar" :style="{ background }">
           <slot name="avatar"></slot>
           <b-avatar
-              variant="primary"
-              :src="imagePath"
-              :text="nameSnippet"
-              size="40px"
-              class="d-flex"
+            variant="primary"
+            :src="imagePath"
+            :text="nameSnippet"
+            size="40px"
+            class="d-flex"
           ></b-avatar>
           <div class="person">
             <p class="full_name">
@@ -24,10 +125,14 @@
         </div>
       </template>
       <template #list>
-        <b-dropdown-item class="lang-block" v-if="languagePermission" style="touch-action: none">
+        <b-dropdown-item
+          class="lang-block"
+          v-if="languagePermission"
+          style="touch-action: none"
+        >
           <a href="javascript:void(0)">
             <label class="switch" @click="changeLocale">
-              <input type="checkbox" v-model="locale"/>
+              <input type="checkbox" v-model="locale" />
               <div class="slider round">
                 <span>Русский</span>
                 <span>O’zbekcha</span>
@@ -46,111 +151,7 @@
   </div>
 </template>
 
-<script>
-import AppDropdown from "@/components/Reusable/Dropdown/AppDropdown";
-import {localeChanged} from "vee-validate";
-import GeneralPermission from "@/permission/general";
-import {mapActions} from "vuex";
-import Permission from "@/permission";
-
-export default {
-  name: "BaseAvatar",
-  components: {
-    AppDropdown
-  },
-  props: {
-    background: {
-      type: String,
-      required: false,
-      default: "#F3F4F6"
-    },
-    avatar: {
-      type: String,
-      required: false
-    },
-    full_name: {
-      type: String,
-      required: false
-    },
-    role: {
-      type: String,
-      required: false
-    },
-    nameSnippet: {
-      type: String,
-      required: false
-    }
-  },
-  data() {
-    const settingsPermission = GeneralPermission.getSettingsPermission()
-        && (GeneralPermission.getPasswordSettingsPermission() || GeneralPermission.getProfileSettingsPermission())
-    return {
-      settingsPermission,
-      locale: false,
-      languagePermission: GeneralPermission.getLanguagePermission(),
-    }
-  },
-  computed: {
-    hasAvatarSlot() {
-      return this.$slots.hasOwnProperty('avatar')
-    },
-    hasFullNameSlot() {
-      return this.$slots.hasOwnProperty('full_name')
-    },
-    hasRoleSlot() {
-      return this.$slots.hasOwnProperty('role')
-    },
-    imagePath() {
-      if (this.avatar !== '') {
-        return this.avatar
-      }
-      return ''
-    }
-  },
-  created() {
-    this.locale = localStorage.locale !== "uz"
-  },
-  methods: {
-    ...mapActions([
-      "nullableAuth",
-      "nullMe",
-    ]),
-    openUserSetting() {
-      this.$router.push({name: 'user-settings'})
-    },
-    changeLocale() {
-      if (this.locale === false) {
-        localStorage.setItem('locale', 'ru')
-        localStorage.locale = "ru";
-        this.$i18n.locale = "ru";
-        this.locale = true
-        localeChanged()
-      } else {
-        localStorage.setItem('locale', 'uz')
-        localStorage.locale = "uz";
-        this.$i18n.locale = "uz";
-        this.locale = false
-        localeChanged()
-      }
-      this.$nextTick(() => {
-        this.$forceUpdate()
-      })
-    },
-    logout() {
-      localStorage.clear();
-      sessionStorage.clear();
-      this.nullableAuth();
-      this.nullMe();
-      Permission.clearUserPermission()
-      this.$router.push({name: "login"})
-    },
-  }
-}
-</script>
-
-
 <style lang="scss" scoped>
-
 .collapsed {
   .base-avatar {
     display: flex;
@@ -162,8 +163,6 @@ export default {
       display: none !important;
     }
   }
-
-
 }
 
 ::v-deep {
@@ -195,11 +194,10 @@ export default {
 
     .person {
       .full_name {
-        color: var(--violet-600)
+        color: var(--violet-600);
       }
     }
   }
-
 
   p {
     margin-bottom: 0;
@@ -238,7 +236,6 @@ export default {
     }
   }
 }
-
 
 ::v-deep {
   .notArrow .b-dropdown .btn:not(.dropdown-item),

@@ -1,91 +1,4 @@
-<template>
-  <main class="sidebar">
-    <DocHeader title="sidebar"/>
-    <div class="sidebar-content">
-      <div :class="menu_collapse===false ? 'sidebar-container lg' : 'sidebar-container sm'">
-        <div class="sidebar-container-top">
-          <router-link
-              :to="{name:'home'}"
-          >
-            <img src="@/assets/img/object__img1.png" alt="Xonsaroy"/>
-          </router-link>
-          <div class="items">
-            <div
-                class="item"
-                v-for="({icon, name, route, items, collapse},index) in items"
-                v-bind:key="index"
-            >
-              <template v-if="items">
-                <div :class="!collapse ? 'item-row purple-bg' : 'item-row'" @click="collapseItems(index)">
-                  <div class="item-row-left">
-                    <div class="icon">
-                      <component :is="icon"/>
-                    </div>
-                    <div class="text" v-if="!menu_collapse">
-                      <p>{{ $t(name) }}</p>
-                    </div>
-                  </div>
-                  <div class="icon down-icon" v-if="!menu_collapse && collapse">
-                    <BaseDownIcon/>
-                  </div>
-                  <div class="icon down-icon" v-if="!collapse && !menu_collapse">
-                    <BaseUpIcon/>
-                  </div>
-                </div>
-                <p class="sub-items" v-if="collapse===false">
-            <span v-for="({icon, name, route, collapsed_view}, index) in items" v-bind:key="index">
-              <router-link :to="{name: route}">
-                <template v-if="!menu_collapse">
-                  <BaseButton :text="`${ $t(name) }`">
-                  <template #left-icon>
-                    <component :is="icon"/>
-                  </template>
-                </BaseButton>
-                </template>
-                <template v-if="menu_collapse && icon">
-                  <span class="icon">
-                    <component :is="icon"/>
-                  </span>
-                </template>
-                <template v-if="menu_collapse && !icon">
-                  <span class="collapsed-text">
-                    {{ $t(collapsed_view) }}
-                  </span>
-                </template>
-              </router-link>
-            </span>
-                </p>
-              </template>
-              <template v-else>
-                <router-link :to="{name: route}" :class="!collapse ? 'item-row purple-bg' : 'item-row'">
-                  <div class="item-row-left" @click="collapseItems(index)">
-                    <div class="icon">
-                      <component :is="icon"/>
-                    </div>
-                    <div class="text" v-if="!menu_collapse">
-                      <p>{{ $t(name) }}</p>
-                    </div>
-                  </div>
-                </router-link>
-              </template>
-            </div>
-          </div>
-        </div>
-        <div class="hide" @click="collapseMenu" v-if="menu_collapse">
-          <BaseCollapseRightIcon/>
-        </div>
-        <div class="hide" @click="collapseMenu" v-else>
-          <BaseCollapseLeftIcon/>
-          {{ $t('hide_menu') }}
-        </div>
-      </div>
-    </div>
-  </main>
-
-</template>
-
 <script>
-
 import BaseHomeIcon from "@/components/icons/BaseHomeIcon";
 import BaseObjectsIcon from "@/components/icons/BaseObjectsIcon";
 import BaseUsersIcon from "@/components/icons/BaseUsersIcon";
@@ -100,122 +13,231 @@ import BaseCollapseRightIcon from "@/components/icons/BaseCollapseRightIcon";
 import DocHeader from "@/views/Documentation/DocHeader";
 
 export default {
-  name: 'Sidebar',
+  name: "Sidebar",
   components: {
     DocHeader,
-    BaseCollapseRightIcon, BaseUpIcon, BaseDownIcon, BaseRightIcon, BaseCollapseLeftIcon, BaseButton},
+    BaseCollapseRightIcon,
+    BaseUpIcon,
+    BaseDownIcon,
+    BaseRightIcon,
+    BaseCollapseLeftIcon,
+    BaseButton,
+  },
   props: {
     theme: {
       type: String,
       default: "",
     },
   },
-  data(){
+  data() {
     return {
       menu_collapse: false,
       items: [
         {
           icon: BaseHomeIcon,
-          name: 'home.title',
-          route: 'home',
+          name: "home.title",
+          route: "home",
           items: 0,
           collapse: true,
         },
         {
           icon: BaseObjectsIcon,
-          name: 'objects.title',
+          name: "objects.title",
           collapse: true,
           items: [
             {
               icon: null,
-              name: 'contracts.list_contracts',
-              route: 'contracts-list',
-              collapsed_view: "contracts.collapsed_contracts_list"
+              name: "contracts.list_contracts",
+              route: "contracts-list",
+              collapsed_view: "contracts.collapsed_contracts_list",
             },
             {
               icon: null,
-              name: 'debtors.new_title',
-              route: 'debtors',
-              collapsed_view: "debtors.collapsed_new_title"
+              name: "debtors.new_title",
+              route: "debtors",
+              collapsed_view: "debtors.collapsed_new_title",
             },
             {
               icon: null,
-              name: 'payments.payment_list',
-              route: 'payments',
-              collapsed_view: "payments.collapsed_payment_list"
+              name: "payments.payment_list",
+              route: "payments",
+              collapsed_view: "payments.collapsed_payment_list",
             },
-          ]
+          ],
         },
         {
           icon: BaseDocumentIcon,
-          name: 'contracts.title',
+          name: "contracts.title",
           collapse: true,
           items: [
             {
               icon: null,
-              name: 'contracts.list_contracts',
-              route: 'contracts-list',
-              collapsed_view: "contracts.collapsed_contracts_list"
+              name: "contracts.list_contracts",
+              route: "contracts-list",
+              collapsed_view: "contracts.collapsed_contracts_list",
             },
             {
               icon: null,
-              name: 'debtors.new_title',
-              route: 'debtors',
-              collapsed_view: "debtors.collapsed_new_title"
+              name: "debtors.new_title",
+              route: "debtors",
+              collapsed_view: "debtors.collapsed_new_title",
             },
             {
               icon: null,
-              name: 'payments.payment_list',
-              route: 'payments',
-              collapsed_view: "payments.collapsed_payment_list"
+              name: "payments.payment_list",
+              route: "payments",
+              collapsed_view: "payments.collapsed_payment_list",
             },
-          ]
+          ],
         },
         {
           icon: BaseUsersIcon,
-          name: 'roles.users',
+          name: "roles.users",
           collapse: true,
           items: [
             {
               icon: null,
-              name: 'contracts.list_contracts',
-              route: 'contracts-list',
-              collapsed_view: "contracts.collapsed_contracts_list"
+              name: "contracts.list_contracts",
+              route: "contracts-list",
+              collapsed_view: "contracts.collapsed_contracts_list",
             },
             {
               icon: null,
-              name: 'debtors.new_title',
-              route: 'debtors',
-              collapsed_view: "debtors.collapsed_new_title"
+              name: "debtors.new_title",
+              route: "debtors",
+              collapsed_view: "debtors.collapsed_new_title",
             },
             {
               icon: null,
-              name: 'payments.payment_list',
-              route: 'payments',
-              collapsed_view: "payments.collapsed_payment_list"
+              name: "payments.payment_list",
+              route: "payments",
+              collapsed_view: "payments.collapsed_payment_list",
             },
-          ]
+          ],
         },
         {
           icon: BaseSettingsIcon,
-          name: 'settings.title',
-          route: 'profile',
+          name: "settings.title",
+          route: "profile",
           items: 0,
           collapse: true,
         },
-      ]
-    }
+      ],
+    };
   },
   methods: {
-    collapseMenu(){
-      this.menu_collapse = !this.menu_collapse
+    collapseMenu() {
+      this.menu_collapse = !this.menu_collapse;
     },
     collapseItems(index) {
-      this.items[index].collapse = !this.items[index].collapse
-    }
+      this.items[index].collapse = !this.items[index].collapse;
+    },
   },
-}
+};
 </script>
+
+<template>
+  <main class="sidebar">
+    <DocHeader title="sidebar" />
+    <div class="sidebar-content">
+      <div
+        :class="
+          menu_collapse === false
+            ? 'sidebar-container lg'
+            : 'sidebar-container sm'
+        "
+      >
+        <div class="sidebar-container-top">
+          <router-link :to="{ name: 'home' }">
+            <img src="@/assets/img/object__img1.png" alt="Xonsaroy" />
+          </router-link>
+          <div class="items">
+            <div
+              class="item"
+              v-for="({ icon, name, route, items, collapse }, index) in items"
+              v-bind:key="index"
+            >
+              <template v-if="items">
+                <div
+                  :class="!collapse ? 'item-row purple-bg' : 'item-row'"
+                  @click="collapseItems(index)"
+                >
+                  <div class="item-row-left">
+                    <div class="icon">
+                      <component :is="icon" />
+                    </div>
+                    <div class="text" v-if="!menu_collapse">
+                      <p>{{ $t(name) }}</p>
+                    </div>
+                  </div>
+                  <div class="icon down-icon" v-if="!menu_collapse && collapse">
+                    <BaseDownIcon />
+                  </div>
+                  <div
+                    class="icon down-icon"
+                    v-if="!collapse && !menu_collapse"
+                  >
+                    <BaseUpIcon />
+                  </div>
+                </div>
+                <p class="sub-items" v-if="collapse === false">
+                  <span
+                    v-for="(
+                      { icon, name, route, collapsed_view }, index
+                    ) in items"
+                    v-bind:key="index"
+                  >
+                    <router-link :to="{ name: route }">
+                      <template v-if="!menu_collapse">
+                        <BaseButton :text="`${$t(name)}`">
+                          <template #left-icon>
+                            <component :is="icon" />
+                          </template>
+                        </BaseButton>
+                      </template>
+                      <template v-if="menu_collapse && icon">
+                        <span class="icon">
+                          <component :is="icon" />
+                        </span>
+                      </template>
+                      <template v-if="menu_collapse && !icon">
+                        <span class="collapsed-text">
+                          {{ $t(collapsed_view) }}
+                        </span>
+                      </template>
+                    </router-link>
+                  </span>
+                </p>
+              </template>
+              <template v-else>
+                <router-link
+                  :to="{ name: route }"
+                  :class="!collapse ? 'item-row purple-bg' : 'item-row'"
+                >
+                  <div class="item-row-left" @click="collapseItems(index)">
+                    <div class="icon">
+                      <component :is="icon" />
+                    </div>
+                    <div class="text" v-if="!menu_collapse">
+                      <p>{{ $t(name) }}</p>
+                    </div>
+                  </div>
+                </router-link>
+              </template>
+            </div>
+          </div>
+        </div>
+        <div class="hide" @click="collapseMenu" v-if="menu_collapse">
+          <BaseCollapseRightIcon />
+        </div>
+        <div class="hide" @click="collapseMenu" v-else>
+          <BaseCollapseLeftIcon />
+          {{ $t("hide_menu") }}
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
 
 <style lang="scss" scoped>
 .sidebar {
@@ -240,11 +262,11 @@ export default {
     border-radius: 16px;
     width: 100%;
     display: flex;
-    background: #E5E7EB;
+    background: #e5e7eb;
     justify-content: center;
     align-items: center;
     &:hover {
-      color: #7C3AED;
+      color: #7c3aed;
     }
   }
   .sidebar-container {
@@ -254,7 +276,7 @@ export default {
     gap: 46px;
     flex-wrap: wrap;
     justify-content: space-between;
-    background-color: #F3F4F6;
+    background-color: #f3f4f6;
     border-radius: 56px;
     .item {
       .sub-items {
@@ -263,18 +285,18 @@ export default {
         gap: 8px;
         margin-top: 8px;
         .base__button {
-          background: #E5E7EB;
+          background: #e5e7eb;
           width: 100%;
           font-style: normal;
           font-weight: 600;
           font-size: 16px;
           line-height: 22px;
-          color: #4B5563;
+          color: #4b5563;
           padding: 13px 24px;
           border-radius: 16px;
           justify-content: flex-start;
           &:hover {
-            color: #7C3AED!important;
+            color: #7c3aed !important;
           }
         }
       }
@@ -297,9 +319,9 @@ export default {
         margin-bottom: 0;
       }
       .purple-bg {
-        background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
+        background: linear-gradient(88.25deg, #7c3aed 0%, #818cf8 100%);
         border-radius: 16px;
-        color: white!important;
+        color: white !important;
       }
       .item-row {
         display: flex;
@@ -308,9 +330,9 @@ export default {
         justify-content: space-between;
         align-items: center;
         &:hover {
-          background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%);
+          background: linear-gradient(88.25deg, #7c3aed 0%, #818cf8 100%);
           border-radius: 16px;
-          color: white!important;
+          color: white !important;
         }
         &-left {
           display: flex;
@@ -322,12 +344,11 @@ export default {
     .hide {
       display: flex;
       gap: 20px;
-      color: #9CA3AF;
+      color: #9ca3af;
       cursor: pointer;
       align-items: center;
       padding: 19px 30px;
     }
   }
 }
-
 </style>

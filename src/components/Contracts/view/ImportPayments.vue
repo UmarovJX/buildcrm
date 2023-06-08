@@ -1,3 +1,370 @@
+<script>
+import { mapGetters } from "vuex";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BaseSelect from "@/components/Reusable/BaseSelect";
+import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
+import api from "@/services/api";
+import { formatToPrice, getDateProperty } from "@/util/reusable";
+import AppHeader from "@/components/Header/AppHeader";
+import { isNUNEZ, isUndefinedOrNullOrEmpty } from "@/util/inspect";
+import {
+  hasInPaymentTypes,
+  paymentTypes,
+  paymentMethods,
+  hasInPaymentMethods,
+} from "@/util/debtors/importPayments.util";
+import { getKeyByValue, hasOwnProperty } from "@/util/object";
+
+export default {
+  name: "ImportPayments",
+  components: {
+    BaseFilterTabsContent,
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
+    BaseSelect,
+    BaseButton,
+    AppHeader,
+  },
+  data() {
+    return {
+      successItems: [],
+      failedItems: [],
+      buttonLoading: false,
+      options: [],
+      form: {
+        date: null,
+        type: null,
+        amount: null,
+        payment_type: null,
+        comment: null,
+      },
+      errors: {
+        date: null,
+        type: null,
+        amount: null,
+        payment_type: null,
+        comment: null,
+      },
+      position: 0,
+      availableToUpload: [],
+      maxPortionLimit: 1000,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      excelSheets: "getExcelSheets",
+    }),
+    tabCurrentStatus() {
+      return this.$route.query.status || "success";
+    },
+    filterTabList() {
+      return [
+        {
+          name: "Успешные",
+          status: "success",
+          counts: this.successItems.length,
+        },
+        {
+          name: "Ошибка загрузки",
+          status: "failed",
+          counts: this.failedItems.length,
+        },
+      ];
+    },
+    failedFields() {
+      return [
+        {
+          key: "index",
+          label: "Строка в файле",
+        },
+        {
+          key: "error",
+          label: "Тип ошибки",
+        },
+      ];
+    },
+    successFields() {
+      return [
+        {
+          key: "date",
+          label: "Дата",
+          formatter: (date) => {
+            const { year, month, day } = getDateProperty(date);
+            const lastYear = year.toString().slice(-2);
+            return `${day}.${month}.${lastYear}`;
+          },
+        },
+        {
+          key: "amount",
+          label: "Сумма",
+          formatter: (amount) => formatToPrice(amount) + " " + this.$t("ye"),
+        },
+        {
+          key: "type",
+          label: "Тип",
+          formatter: (type) => this.$t(type),
+        },
+        {
+          key: "payment_type",
+          label: "Способ",
+          formatter: (paymentType) => {
+            if (paymentType === "cash") return this.$t("cash");
+            if (!paymentType) return "-";
+            return paymentType;
+          },
+        },
+        {
+          key: "comment",
+          label: "Комментарий",
+        },
+      ];
+    },
+    haveConstructorOrder() {
+      return Object.keys(this.excelSheets.contract).length > 0;
+    },
+    contract() {
+      if (this.haveConstructorOrder) return this.excelSheets.contract;
+      return {};
+    },
+    file() {
+      return this.excelSheets.file;
+    },
+    positionOnUpload() {
+      return !this.position;
+    },
+  },
+  mounted() {
+    this.setupOptions();
+  },
+  methods: {
+    setupOptions() {
+      const { rows } = this.excelSheets;
+      this.options = rows[0].map((item) => {
+        return { value: item };
+      });
+      this.trackOptions = rows[0];
+    },
+    backNavigation() {
+      this.$router.go(-1);
+    },
+    setFormProperty(property, value) {
+      this.form[property] = value;
+      this.errors[property] = false;
+    },
+    getPaymentTemplate(arrCell, { date, type, amount, payment_type, comment }) {
+      const _type = getKeyByValue(
+        paymentTypes,
+        arrCell[type] ? arrCell[type].toLowerCase() : null
+      );
+
+      const pMethod = getKeyByValue(
+        paymentMethods,
+        arrCell[payment_type].toLowerCase()
+      );
+
+      const ctx = {
+        date: arrCell[date],
+        type: _type,
+        amount: parseInt(arrCell[amount]),
+        payment_type: pMethod,
+        comment: arrCell[comment],
+      };
+
+      if (parseInt(amount)) {
+        ctx.amount = Math.ceil(parseInt(amount) * 100);
+      }
+
+      return ctx;
+    },
+    checkTemplateValidation({ type, payment_type }) {
+      return hasInPaymentTypes(type) && hasInPaymentMethods(payment_type);
+    },
+    async importExcelSheet() {
+      const validation = this.formValidation();
+      if (validation) {
+        this.buttonLoading = true;
+        const { id } = this.$route.params;
+        const { rows } = this.excelSheets;
+        const arrayOfCells = rows.slice(1);
+        const bStore = [[]];
+        const { date, type, amount, payment_type, comment } = this.form;
+
+        for (let i = 0; i < arrayOfCells.length; i++) {
+          if (
+            isUndefinedOrNullOrEmpty(arrayOfCells[i][amount]) ||
+            !(
+              parseInt(arrayOfCells[i][amount]) ||
+              this.checkTemplateValidation({
+                type: arrayOfCells[i][type],
+                payment_type: arrayOfCells[i][payment_type],
+              })
+            )
+          ) {
+            continue;
+          }
+
+          const itemCell = this.getPaymentTemplate(arrayOfCells[i], {
+            date,
+            type,
+            amount,
+            payment_type,
+            comment,
+          });
+
+          if (
+            !(
+              hasOwnProperty(itemCell, "type") &&
+              isNUNEZ(itemCell.type) &&
+              hasOwnProperty(itemCell, "payment_type") &&
+              isNUNEZ(itemCell.payment_type)
+            )
+          ) {
+            continue;
+          }
+
+          if (bStore[bStore.length - 1].length <= i % this.maxPortionLimit) {
+            bStore[bStore.length - 1].push(itemCell);
+          } else {
+            bStore.push([itemCell]);
+          }
+        }
+
+        const pSet = [];
+
+        console.log("bStore", bStore);
+
+        bStore.forEach((bs) => {
+          if (bs.length) {
+            pSet.push(this.saveToDatabase(id, bs));
+          }
+        });
+
+        try {
+          await Promise.all(pSet).then(() => {
+            this.$router.push({
+              name: "contracts-view",
+            });
+            this.$swal({
+              title: this.$t("successfully"),
+              text: this.$t("sweetAlert.payment_list_add"),
+              icon: "success",
+            });
+          });
+        } catch (e) {
+          const { data } = e.response;
+          const primaryKey = Object.keys(data)[0];
+          this.$bvToast.toast(data[primaryKey], {
+            title: `${this.$t("error")}`,
+            variant: "danger",
+            solid: true,
+          });
+        } finally {
+          this.buttonLoading = false;
+        }
+      } else {
+        const { errors } = this.$refs["form-validation"];
+        for (let [key] of Object.entries(this.errors)) {
+          if (!this.form[key]) {
+            this.errors[key] = errors.hasOwnProperty(key);
+          }
+        }
+      }
+    },
+    formValidation() {
+      const keys = Object.keys(this.form);
+      return keys.every((key) => this.form[key] !== null);
+    },
+    async saveToDatabase(id, payments) {
+      return await api.contractV2.importPaymentTransaction(id, payments);
+    },
+    showUploadPayments(payments) {
+      this.availableToUpload = this.getValidPayments(payments);
+      this.navigateThroughTab(1);
+    },
+    getValidPayments(payments) {
+      this.successItems = [];
+      this.failedItems = [];
+      return payments.filter(
+        ({ date, type, amount, payment_type, comment }, index) => {
+          const isDateValid = () => {
+            const parseDate = Date.parse(date);
+            return !isNaN(parseDate);
+          };
+
+          /*
+          Дата
+          Тип
+          Сумма
+          Способ
+          Комментарий
+        */
+          const errors = {
+            date: "'Неверные данные в поле “Дата”",
+            type: "Неверные данные в поле “TYPE”",
+            amount: "Неверные данные в поле “Сумма”",
+            payment_type: "Неверные данные в поле “Способ”",
+          };
+
+          const isValidType = type && typeof type === "string";
+          const isValidAmount = amount && typeof amount === "number";
+          const isValidPaymentType =
+            payment_type && typeof payment_type === "string";
+
+          if (!isDateValid()) {
+            this.passToFailedItems(index + 1, errors.date);
+            return false;
+          }
+
+          if (!isValidType) {
+            this.passToFailedItems(index + 1, errors.type);
+            return false;
+          }
+
+          if (!isValidAmount) {
+            this.passToFailedItems(index + 1, errors.amount);
+            return false;
+          }
+
+          if (!isValidPaymentType) {
+            this.passToFailedItems(index + 1, errors.payment_type);
+            return false;
+          }
+
+          this.successItems.push({ date, type, amount, payment_type, comment });
+          return true;
+        }
+      );
+    },
+    passToFailedItems(index, error) {
+      this.failedItems.push({
+        error,
+        index,
+      });
+    },
+    changeTabOfUploadList(status) {
+      const { status: queryStatus } = this.$route.query;
+      if (queryStatus !== status) {
+        this.$router.replace({
+          query: {
+            ...this.$route.query,
+            status,
+          },
+        });
+      }
+    },
+    navigateThroughTab(index) {
+      if (index) {
+        const validation = this.formValidation();
+        if (!validation) return;
+      }
+      this.position = index;
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <!--  HEADER NAVIGATION  -->
@@ -6,14 +373,17 @@
       <template #header-breadcrumb>
         <div v-if="haveConstructorOrder" class="navigation__content">
           <div class="go__back" @click="backNavigation">
-            <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+            <base-arrow-left-icon
+              :width="32"
+              :height="32"
+            ></base-arrow-left-icon>
           </div>
           <div class="breadcrumb__content">
             <div>
               Список договоров
-              <base-arrow-right-icon :width="18" :height="18"/>
+              <base-arrow-right-icon :width="18" :height="18" />
               <span>{{ contract.contract }}</span>
-              <base-arrow-right-icon :width="18" :height="18"/>
+              <base-arrow-right-icon :width="18" :height="18" />
               <span>Импорт оплат</span>
             </div>
             <div class="head">
@@ -29,53 +399,77 @@
     <div class="navigation__links">
       <div class="links">
         <span class="link" @click="navigateThroughTab(0)">
-          <span :class="[position === 0 ? 'violet__design':'gray__design']">1</span>
-          <span :class="[position === 0 ? 'color-violet-600':'gray__400']">Поля файла</span>
+          <span :class="[position === 0 ? 'violet__design' : 'gray__design']"
+            >1</span
+          >
+          <span :class="[position === 0 ? 'color-violet-600' : 'gray__400']"
+            >Поля файла</span
+          >
         </span>
         <span class="icon mr-2 ml-2">
-          <base-arrow-right-icon fill="#9CA3AF"/>
+          <base-arrow-right-icon fill="#9CA3AF" />
         </span>
         <span class="link" @click="navigateThroughTab(1)">
-          <span :class="[position === 1 ? 'violet__design':'gray__design']">2</span>
-          <span :class="[position === 1 ? 'color-violet-600':'gray__400']">Список загрузки</span>
+          <span :class="[position === 1 ? 'violet__design' : 'gray__design']"
+            >2</span
+          >
+          <span :class="[position === 1 ? 'color-violet-600' : 'gray__400']"
+            >Список загрузки</span
+          >
         </span>
       </div>
       <div class="buttons">
         <b-overlay
-            v-if="positionOnUpload"
-            :show="buttonLoading"
-            rounded
-            opacity="0.6"
-            spinner-small
-            spinner-variant="primary"
-            class="d-inline-block"
+          v-if="positionOnUpload"
+          :show="buttonLoading"
+          rounded
+          opacity="0.6"
+          spinner-small
+          spinner-variant="primary"
+          class="d-inline-block"
         >
-          <base-button @click="importExcelSheet" class="next__button" text="Продолжить">
+          <base-button
+            @click="importExcelSheet"
+            class="next__button"
+            text="Продолжить"
+          >
             <template #right-icon>
-              <base-arrow-right-icon :width="24" :height="24" fill="#ffffff"/>
+              <base-arrow-right-icon :width="24" :height="24" fill="#ffffff" />
             </template>
           </base-button>
         </b-overlay>
         <div v-else class="d-flex align-items-center justify-content-center">
           <b-overlay
-              rounded
-              opacity="0.6"
-              spinner-small
-              spinner-variant="primary"
-              class="d-inline-block"
+            rounded
+            opacity="0.6"
+            spinner-small
+            spinner-variant="primary"
+            class="d-inline-block"
           >
-            <base-button @click="importExcelSheet" class="reload__button mr-3" text="Перезагрузить файл"/>
+            <base-button
+              @click="importExcelSheet"
+              class="reload__button mr-3"
+              text="Перезагрузить файл"
+            />
           </b-overlay>
           <b-overlay
-              rounded
-              opacity="0.6"
-              spinner-small
-              spinner-variant="primary"
-              class="d-inline-block"
+            rounded
+            opacity="0.6"
+            spinner-small
+            spinner-variant="primary"
+            class="d-inline-block"
           >
-            <base-button @click="importExcelSheet" class="next__button" text="Добавить оплаты">
+            <base-button
+              @click="importExcelSheet"
+              class="next__button"
+              text="Добавить оплаты"
+            >
               <template #right-icon>
-                <base-arrow-right-icon :width="24" :height="24" fill="#ffffff"/>
+                <base-arrow-right-icon
+                  :width="24"
+                  :height="24"
+                  fill="#ffffff"
+                />
               </template>
             </base-button>
           </b-overlay>
@@ -95,11 +489,11 @@
             <span class="cell__item">Дата</span>
             <span class="cell__item">
               <base-select
-                  :class="{'warning__border': errors.date}"
-                  @change="setFormProperty('date',$event)"
-                  placeholder="Выберите поле"
-                  textField="value"
-                  :options="options"
+                :class="{ warning__border: errors.date }"
+                @change="setFormProperty('date', $event)"
+                placeholder="Выберите поле"
+                textField="value"
+                :options="options"
               />
             </span>
           </ValidationProvider>
@@ -108,11 +502,11 @@
             <span class="cell__item">Тип</span>
             <span class="cell__item">
               <base-select
-                  :class="{'warning__border': errors.type}"
-                  @change="setFormProperty('type',$event)"
-                  placeholder="Выберите поле"
-                  textField="value"
-                  :options="options"
+                :class="{ warning__border: errors.type }"
+                @change="setFormProperty('type', $event)"
+                placeholder="Выберите поле"
+                textField="value"
+                :options="options"
               />
             </span>
           </ValidationProvider>
@@ -121,11 +515,11 @@
             <span class="cell__item">Сумма</span>
             <span class="cell__item">
               <base-select
-                  :class="{'warning__border': errors.amount}"
-                  @change="setFormProperty('amount',$event)"
-                  placeholder="Выберите поле"
-                  textField="value"
-                  :options="options"
+                :class="{ warning__border: errors.amount }"
+                @change="setFormProperty('amount', $event)"
+                placeholder="Выберите поле"
+                textField="value"
+                :options="options"
               />
             </span>
           </ValidationProvider>
@@ -134,11 +528,11 @@
             <span class="cell__item">Способ</span>
             <span class="cell__item">
               <base-select
-                  :class="{'warning__border': errors.payment_type}"
-                  @change="setFormProperty('payment_type',$event)"
-                  placeholder="Выберите поле"
-                  textField="value"
-                  :options="options"
+                :class="{ warning__border: errors.payment_type }"
+                @change="setFormProperty('payment_type', $event)"
+                placeholder="Выберите поле"
+                textField="value"
+                :options="options"
               />
             </span>
           </ValidationProvider>
@@ -147,11 +541,11 @@
             <span class="cell__item">Комментарий</span>
             <span class="cell__item">
               <base-select
-                  :class="{'warning__border': errors.comment}"
-                  @change="setFormProperty('comment',$event)"
-                  placeholder="Выберите поле"
-                  textField="value"
-                  :options="options"
+                :class="{ warning__border: errors.comment }"
+                @change="setFormProperty('comment', $event)"
+                placeholder="Выберите поле"
+                textField="value"
+                :options="options"
               />
             </span>
           </ValidationProvider>
@@ -161,382 +555,58 @@
 
     <div v-show="position" class="upload__list">
       <base-filter-tabs-content
-          :filter-tab-list="filterTabList"
-          @get-new-content="changeTabOfUploadList"
+        :filter-tab-list="filterTabList"
+        @get-new-content="changeTabOfUploadList"
       />
 
       <b-table
-          v-if="tabCurrentStatus === 'success'"
-          :items="successItems"
-          :fields="successFields"
-          class="table__list"
-          :empty-text="$t('no_data')"
-          thead-tr-class="row__head__bottom-border"
-          tbody-tr-class="row__body__bottom-border"
-          show-empty
-          sticky-header
-          borderless
-          responsive
+        v-if="tabCurrentStatus === 'success'"
+        :items="successItems"
+        :fields="successFields"
+        class="table__list"
+        :empty-text="$t('no_data')"
+        thead-tr-class="row__head__bottom-border"
+        tbody-tr-class="row__body__bottom-border"
+        show-empty
+        sticky-header
+        borderless
+        responsive
       >
         <!--   CONTENT WHEN EMPTY SCOPE       -->
         <template #empty="scope" class="text-center">
-          <div class="d-flex justify-content-center align-items-center empty__scope">
-            {{ $t('no_data') }}
+          <div
+            class="d-flex justify-content-center align-items-center empty__scope"
+          >
+            {{ $t("no_data") }}
           </div>
         </template>
       </b-table>
 
       <b-table
-          v-else
-          :items="failedItems"
-          :fields="failedFields"
-          class="table__list"
-          :empty-text="$t('no_data')"
-          thead-tr-class="row__head__bottom-border"
-          tbody-tr-class="row__body__bottom-border"
-          show-empty
-          sticky-header
-          borderless
-          responsive
+        v-else
+        :items="failedItems"
+        :fields="failedFields"
+        class="table__list"
+        :empty-text="$t('no_data')"
+        thead-tr-class="row__head__bottom-border"
+        tbody-tr-class="row__body__bottom-border"
+        show-empty
+        sticky-header
+        borderless
+        responsive
       >
         <!--   CONTENT WHEN EMPTY SCOPE       -->
         <template #empty="scope" class="text-center">
-          <div class="d-flex justify-content-center align-items-center empty__scope">
-            {{ $t('no_data') }}
+          <div
+            class="d-flex justify-content-center align-items-center empty__scope"
+          >
+            {{ $t("no_data") }}
           </div>
         </template>
       </b-table>
     </div>
   </div>
 </template>
-
-<script>
-import {mapGetters} from "vuex";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseSelect from "@/components/Reusable/BaseSelect";
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-import api from "@/services/api";
-import {formatToPrice, getDateProperty} from "@/util/reusable";
-import AppHeader from "@/components/Header/AppHeader";
-import {isNotUndefinedNullEmptyZero, isUndefined, isUndefinedOrNullOrEmpty} from "@/util/inspect";
-
-export default {
-  name: "ImportPayments",
-  components: {
-    BaseFilterTabsContent,
-    BaseArrowLeftIcon,
-    BaseArrowRightIcon,
-    BaseSelect,
-    BaseButton,
-    AppHeader
-  },
-  data() {
-    return {
-      successItems: [],
-      failedItems: [],
-      buttonLoading: false,
-      options: [],
-      form: {
-        date: null,
-        type: null,
-        amount: null,
-        payment_type: null,
-        comment: null
-      },
-      errors: {
-        date: null,
-        type: null,
-        amount: null,
-        payment_type: null,
-        comment: null
-      },
-      position: 0,
-      availableToUpload: [],
-      maxPortionLimit: 1000
-    }
-  },
-  computed: {
-    ...mapGetters({
-      excelSheets: 'getExcelSheets'
-    }),
-    tabCurrentStatus() {
-      return this.$route.query.status || 'success'
-    },
-    filterTabList() {
-      return [
-        {
-          name: 'Успешные',
-          status: 'success',
-          counts: this.successItems.length
-        },
-        {
-          name: 'Ошибка загрузки',
-          status: 'failed',
-          counts: this.failedItems.length
-        }
-      ]
-    },
-    failedFields() {
-      return [
-        {
-          key: 'index',
-          label: 'Строка в файле'
-        },
-        {
-          key: 'error',
-          label: 'Тип ошибки'
-        }
-      ]
-    },
-    successFields() {
-      return [
-        {
-          key: 'date',
-          label: 'Дата',
-          formatter: (date) => {
-            const {year, month, day} = getDateProperty(date)
-            const lastYear = year.toString().slice(-2)
-            return `${day}.${month}.${lastYear}`
-          }
-        },
-        {
-          key: 'amount',
-          label: 'Сумма',
-          formatter: (amount) => (formatToPrice(amount) + ' ' + this.$t('ye'))
-        },
-        {
-          key: 'type',
-          label: 'Тип',
-          formatter: (type) => this.$t(type)
-        },
-        {
-          key: 'payment_type',
-          label: 'Способ',
-          formatter: (paymentType) => {
-            if (paymentType === 'cash') return this.$t('cash')
-            if (!paymentType) return '-'
-            return paymentType
-          }
-        },
-        {
-          key: 'comment',
-          label: 'Комментарий'
-        }
-      ]
-    },
-    haveConstructorOrder() {
-      return Object.keys(this.excelSheets.contract).length > 0
-    },
-    contract() {
-      if (this.haveConstructorOrder)
-        return this.excelSheets.contract
-      return {}
-    },
-    file() {
-      return this.excelSheets.file
-    },
-    positionOnUpload() {
-      return !this.position
-    }
-  },
-  mounted() {
-    this.setupOptions()
-  },
-  methods: {
-    setupOptions() {
-      const {rows} = this.excelSheets
-      this.options = rows[0].map((item) => {
-        return {value: item}
-      })
-      this.trackOptions = rows[0]
-
-    },
-    backNavigation() {
-      this.$router.go(-1)
-    },
-    setFormProperty(property, value) {
-      this.form[property] = value
-      this.errors[property] = false
-    },
-    getPaymentTemplate(arrCell, {date, type, amount, payment_type, comment}) {
-      const ctx = {
-        date: arrCell[date],
-        // type: arrCell[type],
-        type: "monthly",
-        amount: parseInt(arrCell[amount]),
-        // payment_type: arrCell[payment_type],
-        payment_type: 'cash',
-        comment: arrCell[comment]
-      }
-
-      if (parseInt(amount)) {
-        ctx.amount = Math.ceil( parseInt(amount) * 100 )
-      }
-
-      return ctx
-    },
-    async importExcelSheet() {
-      const validation = this.formValidation()
-      if (validation) {
-        this.buttonLoading = true
-        const {id} = this.$route.params
-        const {rows} = this.excelSheets
-        const arrayOfCells = rows.slice(1)
-        const bStore = [[]]
-        const {date, type, amount, payment_type, comment} = this.form
-        for (let i = 0; i < arrayOfCells.length; i++) {
-          if (isUndefinedOrNullOrEmpty(arrayOfCells[i][amount]) || !parseInt(arrayOfCells[i][amount])) {
-            continue
-          }
-
-          const itemCell = this.getPaymentTemplate(arrayOfCells[i], {
-            date, type, amount, payment_type, comment
-          })
-
-          if (bStore[bStore.length - 1].length <= i % this.maxPortionLimit) {
-            bStore[bStore.length - 1].push(itemCell)
-          } else {
-            bStore.push(
-                [
-                  itemCell
-                ]
-            )
-          }
-        }
-
-        const pSet = []
-
-        bStore.forEach((bs) => {
-          if (bs.length) {
-            pSet.push(
-                this.saveToDatabase(id, bs)
-            )
-          }
-        })
-
-        try {
-          await Promise.all(pSet)
-              .then(() => {
-                this.$router.push({
-                  name: 'contracts-view'
-                })
-                this.$swal({
-                  title: this.$t('successfully'),
-                  text: this.$t('sweetAlert.payment_list_add'),
-                  icon: "success"
-                })
-              })
-        } catch (e) {
-          const {data} = e.response
-          const primaryKey = Object.keys(data)[0]
-          this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t('error')}`,
-            variant: 'danger',
-            solid: true
-          })
-        } finally {
-          this.buttonLoading = false
-        }
-      } else {
-        const {errors} = this.$refs['form-validation']
-        for (let [key,] of Object.entries(this.errors)) {
-          if (!this.form[key]) {
-            this.errors[key] = errors.hasOwnProperty(key)
-          }
-        }
-      }
-    },
-    formValidation() {
-      const keys = Object.keys(this.form)
-      return keys.every(key => this.form[key] !== null)
-    },
-    async saveToDatabase(id, payments) {
-      return await api.contractV2.importPaymentTransaction(id, payments)
-    },
-    showUploadPayments(payments) {
-      this.availableToUpload = this.getValidPayments(payments)
-      this.navigateThroughTab(1)
-    },
-    getValidPayments(payments) {
-      this.successItems = []
-      this.failedItems = []
-      return payments.filter(({date, type, amount, payment_type, comment}, index) => {
-        const isDateValid = () => {
-          const parseDate = Date.parse(date)
-          return !isNaN(parseDate)
-        }
-
-        /*
-          Дата
-          Тип
-          Сумма
-          Способ
-          Комментарий
-        */
-        const errors = {
-          date: "'Неверные данные в поле “Дата”",
-          type: 'Неверные данные в поле “TYPE”',
-          amount: 'Неверные данные в поле “Сумма”',
-          payment_type: 'Неверные данные в поле “Способ”'
-        }
-
-        const isValidType = type && typeof type === 'string'
-        const isValidAmount = amount && typeof amount === 'number'
-        const isValidPaymentType = payment_type && typeof payment_type === 'string'
-
-        if (!isDateValid()) {
-          this.passToFailedItems(index + 1, errors.date)
-          return false
-        }
-
-        if (!isValidType) {
-          this.passToFailedItems(index + 1, errors.type)
-          return false
-        }
-
-        if (!isValidAmount) {
-          this.passToFailedItems(index + 1, errors.amount)
-          return false
-        }
-
-        if (!isValidPaymentType) {
-          this.passToFailedItems(index + 1, errors.payment_type)
-          return false
-        }
-
-        this.successItems.push({date, type, amount, payment_type, comment})
-        return true
-      })
-    },
-    passToFailedItems(index, error) {
-      this.failedItems.push({
-        error,
-        index
-      })
-    },
-    changeTabOfUploadList(status) {
-      const {status: queryStatus} = this.$route.query
-      if (queryStatus !== status) {
-        this.$router.replace({
-          query: {
-            ...this.$route.query,
-            status
-          }
-        })
-      }
-    },
-    navigateThroughTab(index) {
-      if (index) {
-        const validation = this.formValidation()
-        if (!validation) return
-      }
-      this.position = index
-    }
-  }
-}
-</script>
 
 <style lang="sass" scoped>
 *
@@ -747,6 +817,4 @@ export default {
 
 ::v-deep .row__body__bottom-border:not(:last-child)
   border-bottom: 2px solid var(--gray-200) !important
-
-
 </style>

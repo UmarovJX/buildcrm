@@ -1,3 +1,15 @@
+<script>
+export default {
+  name: "ClientInformation",
+  props: {
+    client: {
+      type: Object,
+      default: () => {},
+    },
+  },
+};
+</script>
+
 <template>
   <div class="info">
     <div class="info-list">
@@ -19,7 +31,7 @@
       </div>
       <div class="info-item">
         <span class="label">
-           {{ $t("apartments.agree.date_of_issue") }}
+          {{ $t("apartments.agree.date_of_issue") }}
         </span>
         <p class="value">
           {{ client.date_of_issue }}
@@ -27,7 +39,7 @@
       </div>
       <div class="info-item">
         <span class="label">
-           {{ $t("apartments.agree.birth_day") }}
+          {{ $t("apartments.agree.birth_day") }}
         </span>
         <p class="value">
           {{ client.birth_day }}
@@ -63,19 +75,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "ClientInformation",
-  props: {
-    client: {
-      type: Object,
-      default: () => {
-      }
-    }
-  }
-}
-</script>
-
 <style lang="scss" scoped>
 .info {
   margin-bottom: 2rem;
@@ -85,7 +84,6 @@ export default {
     flex-wrap: wrap;
     row-gap: 1.5rem;
     column-gap: 2rem;
-
   }
 
   &-item {
@@ -107,7 +105,6 @@ export default {
     .value {
       margin: 0;
       color: var(--gray-600);
-
     }
   }
 }

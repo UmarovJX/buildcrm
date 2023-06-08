@@ -1,15 +1,15 @@
 import Vue from "vue";
-import VueLang from "vue-i18n"
-import ru from './ru/index'
-import uz from './uz/index'
-Vue.use(VueLang)
-const language = localStorage.locale
+import VueLang from "vue-i18n";
+import ru from "./ru/index";
+import uz from "./uz/index";
+Vue.use(VueLang);
+const language = localStorage.locale;
 const i18n = new VueLang({
   locale: language,
   messages: {
-   ru,
-   uz
-  }
-})
+    ru,
+    uz,
+  },
+});
 
 export default i18n;

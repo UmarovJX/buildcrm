@@ -1,6 +1,6 @@
-import { RX_ARRAY_NOTATION } from '../constants/regex'
-import { identity } from './identity'
-import { isArray, isNull, isObject, isUndefinedOrNull } from './inspect'
+import { RX_ARRAY_NOTATION } from "../constants/regex";
+import { identity } from "./identity";
+import { isArray, isNull, isObject, isUndefinedOrNull } from "./inspect";
 
 /**
  * Get property defined by dot/array notation in string, returns undefined if not found
@@ -13,11 +13,11 @@ import { isArray, isNull, isObject, isUndefinedOrNull } from './inspect'
  */
 export const getRaw = (obj, path, defaultValue = undefined) => {
   // Handle array of path values
-  path = isArray(path) ? path.join('.') : path
+  path = isArray(path) ? path.join(".") : path;
 
   // If no path or no object passed
   if (!path || !isObject(obj)) {
-    return defaultValue
+    return defaultValue;
   }
 
   // Handle edge case where user has dot(s) in top-level item field key
@@ -25,28 +25,31 @@ export const getRaw = (obj, path, defaultValue = undefined) => {
   // Switched to `in` operator vs `hasOwnProperty` to handle obj.prototype getters
   // https://github.com/bootstrap-vue/bootstrap-vue/issues/3463
   if (path in obj) {
-    return obj[path]
+    return obj[path];
   }
 
   // Handle string array notation (numeric indices only)
-  path = String(path).replace(RX_ARRAY_NOTATION, '.$1')
+  path = String(path).replace(RX_ARRAY_NOTATION, ".$1");
 
-  const steps = path.split('.').filter(identity)
+  const steps = path.split(".").filter(identity);
 
   // Handle case where someone passes a string of only dots
   if (steps.length === 0) {
-    return defaultValue
+    return defaultValue;
   }
 
   // Traverse path in object to find result
   // Switched to `in` operator vs `hasOwnProperty` to handle obj.prototype getters
   // https://github.com/bootstrap-vue/bootstrap-vue/issues/3463
-  return steps.every(step => isObject(obj) && step in obj && !isUndefinedOrNull((obj = obj[step])))
+  return steps.every(
+    (step) =>
+      isObject(obj) && step in obj && !isUndefinedOrNull((obj = obj[step]))
+  )
     ? obj
     : isNull(obj)
-      ? null
-      : defaultValue
-}
+    ? null
+    : defaultValue;
+};
 
 /**
  * Get property defined by dot/array notation in string.
@@ -59,6 +62,6 @@ export const getRaw = (obj, path, defaultValue = undefined) => {
  * @return {*}
  */
 export const get = (obj, path, defaultValue = null) => {
-  const value = getRaw(obj, path)
-  return isUndefinedOrNull(value) ? defaultValue : value
-}
+  const value = getRaw(obj, path);
+  return isUndefinedOrNull(value) ? defaultValue : value;
+};

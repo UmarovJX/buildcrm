@@ -1,15 +1,3 @@
-<template>
-  <div class="base-checkbox">
-    <input
-        :disabled="disabled"
-        type="checkbox"
-        name="checkbox"
-        v-model="inlineWatcher"
-        @input="$emit('input',$event)"
-    />
-  </div>
-</template>
-
 <script>
 export default {
   name: "BaseCheckbox",
@@ -18,28 +6,40 @@ export default {
     disabled: {
       type: Boolean,
       required: false,
-      default: () => false
+      default: () => false,
     },
     checked: {
       type: Boolean,
       required: false,
-      default: () => false
-    }
+      default: () => false,
+    },
   },
   data() {
     return {
-      inlineWatcher: this.checked
-    }
+      inlineWatcher: this.checked,
+    };
   },
   watch: {
     checked(latest) {
       if (latest !== this.inlineWatcher) {
-        this.inlineWatcher = latest
+        this.inlineWatcher = latest;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="base-checkbox">
+    <input
+      :disabled="disabled"
+      type="checkbox"
+      name="checkbox"
+      v-model="inlineWatcher"
+      @input="$emit('input', $event)"
+    />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .base-checkbox {
@@ -61,7 +61,7 @@ export default {
     color: currentColor;
     width: 1em;
     height: 1em;
-    border: 3px solid #9CA3AF;
+    border: 3px solid #9ca3af;
     border-radius: 4px;
     transform: translateY(-0.075em);
     display: grid;
@@ -85,27 +85,27 @@ export default {
   }
 
   input[type="checkbox"]:checked {
-    background-color: #7C3AED;
+    background-color: #7c3aed;
     border: none;
   }
 
   input[type="checkbox"]:checked:disabled {
-    background-color: #9CA3AF;
+    background-color: #9ca3af;
     border: none;
   }
 
   input[type="checkbox"]:checked:hover {
-    background-color: #6D28D9;
+    background-color: #6d28d9;
     border: none;
   }
 
   input[type="checkbox"]:hover {
-    border: 3px solid #7C3AED;
+    border: 3px solid #7c3aed;
   }
 
   input[type="checkbox"]:disabled {
     --form-control-color: var(--form-control-disabled);
-    border: 4px solid #E5E7EB;
+    border: 4px solid #e5e7eb;
     color: var(--form-control-disabled);
     cursor: not-allowed;
   }

@@ -1,20 +1,154 @@
+<script>
+import VueHtml2pdf from "vue-html2pdf";
+import { formatToPrice } from "@/util/reusable";
+
+export default {
+  name: "PdfTemplate",
+  components: {
+    VueHtml2pdf,
+  },
+  props: {
+    apartment: {
+      type: Object,
+      default: () => {},
+    },
+    printCalc: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  emits: ["has-downloaded"],
+  data() {
+    return {
+      showPdfContent: false,
+      htmlToPdfOptions: {
+        margin: 0,
+        filename: "",
+        // html2canvas: {
+        //   dpi: 72,
+        //   scale: 4,
+        //   letterRendering: true,
+        //   useCORS: true
+        // },
+        // image: {type: 'png', quality: 0.99},
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      },
+      discountField: [
+        {
+          key: "type",
+          class: "text-capitalize",
+          label: "payment_discount",
+        },
+        {
+          key: "priceMeter",
+          class: "text-right",
+          label: "price_sold_m2",
+        },
+        {
+          key: "price",
+          class: "text-right",
+          label: "total_price",
+        },
+        {
+          key: "priceTotal",
+          class: "text-right",
+          label: "total_discount",
+        },
+      ],
+    };
+  },
+  computed: {
+    planImage() {
+      if (this.apartment.plan.image.length) {
+        return this.apartment.plan.image[0];
+      } else {
+        return `require('@/assets/img/object__img1.png')`;
+      }
+    },
+    hasBalcony() {
+      return this.apartment.plan?.balcony;
+    },
+  },
+  methods: {
+    pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
+    beforeDownloadPdf() {
+      // this.showPdfContent = true
+    },
+    hasDownloadedPdf($event) {
+      this.$emit("has-downloaded", $event);
+      // this.showPdfContent = false
+    },
+    generatePdf() {
+      this.htmlToPdfOptions.filename =
+        this.apartment?.object?.name +
+        ", " +
+        this.apartment.number +
+        " - " +
+        this.$t("apartment");
+      this.$refs.html2Pdf.generatePdf();
+    },
+    buildingDate(time) {
+      const date = new Date(time);
+      const year = date.getFullYear();
+      let month = date.getMonth();
+      if (month < 3) {
+        month = "I";
+      } else if (month >= 3 && month < 6) {
+        month = "II";
+      } else if (month >= 6 && month < 9) {
+        month = "III";
+      } else {
+        month = "IV";
+      }
+      return ` ${month} - ${this.$t("quarter")}, ${year}`;
+    },
+
+    totalPrintDiscount({ amount, prepay, type }) {
+      const { apartment, printCalc } = this;
+      const basePriceM2 = parseFloat(apartment.price_m2);
+      const basePrice = apartment.prices.price;
+      let result = 0;
+      const customDiscount = printCalc.discount_price * apartment.plan.area;
+      if (prepay === 100 && type === "percent") {
+        result = basePrice - basePriceM2 * apartment.plan.area + customDiscount;
+      } else {
+        result = basePrice - amount * apartment.plan.area + customDiscount;
+      }
+      return {
+        format: formatToPrice(result, 2),
+        value: result,
+      };
+    },
+    totalPrintPrice(item) {
+      const basePrice = this.apartment.prices.price;
+      const { value: discountPrice } = this.totalPrintDiscount(item);
+      const result = basePrice - discountPrice;
+      return {
+        format: formatToPrice(result, 2),
+        value: result,
+      };
+    },
+  },
+};
+</script>
+
 <template>
   <vue-html2pdf
-      v-show="false"
-      ref="html2Pdf"
-      pdf-format="a4"
-      pdf-orientation="portrait"
-      pdf-content-width="800px"
-      :show-layout="false"
-      :float-layout="false"
-      :enable-download="true"
-      :preview-modal="true"
-      :pdf-quality="2"
-      :manual-pagination="true"
-      :paginate-elements-by-height="842"
-      :html-to-pdf-options="htmlToPdfOptions"
-      @beforeDownload="beforeDownloadPdf"
-      @hasDownloaded="hasDownloadedPdf"
+    v-show="false"
+    ref="html2Pdf"
+    pdf-format="a4"
+    pdf-orientation="portrait"
+    pdf-content-width="800px"
+    :show-layout="false"
+    :float-layout="false"
+    :enable-download="true"
+    :preview-modal="true"
+    :pdf-quality="2"
+    :manual-pagination="true"
+    :paginate-elements-by-height="842"
+    :html-to-pdf-options="htmlToPdfOptions"
+    @beforeDownload="beforeDownloadPdf"
+    @hasDownloaded="hasDownloadedPdf"
   >
     <section slot="pdf-content">
       <div class="html2pdf__page-break pdf-page">
@@ -22,18 +156,19 @@
           <div class="row">
             <div class="col-12 pdf-header">
               <div class="pdf-header__title">
-                <h5>
-                  {{ $t('apartment') }} № {{ apartment.number }}
-                </h5>
+                <h5>{{ $t("apartment") }} № {{ apartment.number }}</h5>
                 <p>
-                  <img :src="require('@/assets/icons/location.svg')" alt="">
+                  <img :src="require('@/assets/icons/location.svg')" alt="" />
                   <span v-if="apartment.object">
-                   {{ apartment.object.address }}
-                 </span>
+                    {{ apartment.object.address }}
+                  </span>
                 </p>
               </div>
               <div class="pdf-header__logo">
-                <img :src="require('@/assets/img/object__img1.png')" alt="xonsaroy logo">
+                <img
+                  :src="require('@/assets/img/object__img1.png')"
+                  alt="xonsaroy logo"
+                />
               </div>
             </div>
           </div>
@@ -41,91 +176,89 @@
             <div v-if="apartment.plan" class="col-12 pdf-img">
               <!--              <img v-if="apartment.plan"-->
               <!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
-              <img :src="require('@/assets/img/object__img1.png')" alt="xonsaroy logo">
+              <img
+                :src="require('@/assets/img/object__img1.png')"
+                alt="xonsaroy logo"
+              />
               <!--              <img :src="apartment.plan.image[0]" alt="">-->
               <!--              <img :src="require('@/assets/img/plan.png')" alt="plan-image">-->
             </div>
           </div>
           <div class="row pdf-features">
             <div class="col-4 pdf-feature">
-              <h5 class="pdf-feature__title">
-                {{ $t('users.object') }}:
-              </h5>
+              <h5 class="pdf-feature__title">{{ $t("users.object") }}:</h5>
               <div v-if="apartment.object" class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-facade.svg')" alt="">
+                <img :src="require('@/assets/icons/icon-facade.svg')" alt="" />
                 <p>{{ apartment.object.name }}</p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                {{ $t('apartment_number') }}
+                {{ $t("apartment_number") }}
               </h5>
               <div class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-door.svg')" alt="">
+                <img :src="require('@/assets/icons/icon-door.svg')" alt="" />
                 <p>{{ apartment.number }}</p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
-              <h5 class="pdf-feature__title">
-                {{ $t('plan_area') }}:
-              </h5>
+              <h5 class="pdf-feature__title">{{ $t("plan_area") }}:</h5>
               <div v-if="apartment.plan" class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-area.svg')" alt="">
+                <img :src="require('@/assets/icons/icon-area.svg')" alt="" />
                 <p>{{ apartment.plan.area }} m<sup>2</sup></p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
-              <h5 class="pdf-feature__title">
-                {{ $t('object.sort.block') }}:
-              </h5>
+              <h5 class="pdf-feature__title">{{ $t("object.sort.block") }}:</h5>
               <div v-if="apartment.block" class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-flat.svg')" alt="">
+                <img :src="require('@/assets/icons/icon-flat.svg')" alt="" />
                 <p>{{ apartment.block.name }}</p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
-              <h5 class="pdf-feature__title">
-                {{ $t('object.level') }}:
-              </h5>
+              <h5 class="pdf-feature__title">{{ $t("object.level") }}:</h5>
               <div class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-floor.svg')" alt="">
+                <img :src="require('@/assets/icons/icon-floor.svg')" alt="" />
                 <p>{{ apartment.floor }}</p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
-              <h5 class="pdf-feature__title">
-                {{ $t('number_of_rooms') }}:
-              </h5>
+              <h5 class="pdf-feature__title">{{ $t("number_of_rooms") }}:</h5>
               <div class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-door.svg')" alt="">
+                <img :src="require('@/assets/icons/icon-door.svg')" alt="" />
                 <p>{{ apartment.rooms }}</p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                {{ $t('apartments.view.completion_date') }}:
+                {{ $t("apartments.view.completion_date") }}:
               </h5>
               <div v-if="apartment.object" class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-construction.svg')" alt="">
+                <img
+                  :src="require('@/assets/icons/icon-construction.svg')"
+                  alt=""
+                />
                 <p>{{ buildingDate(apartment.object.build_date) }}</p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                {{ $t('apartments.view.number_of_blocks') }}:
+                {{ $t("apartments.view.number_of_blocks") }}:
               </h5>
               <div v-if="apartment.block" class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-flat.svg')" alt="">
+                <img :src="require('@/assets/icons/icon-flat.svg')" alt="" />
                 <p>{{ apartment.block.floors }}</p>
               </div>
             </div>
             <div class="col-4 pdf-feature">
               <h5 class="pdf-feature__title">
-                {{ $t('objects.create.plan.balcony_area') }}:
+                {{ $t("objects.create.plan.balcony_area") }}:
               </h5>
               <div class="pdf-feature__content">
-                <img :src="require('@/assets/icons/icon-area.svg')" alt="">
-                <p v-if="hasBalcony">{{ apartment.plan.balcony_area }} m<sup>2</sup></p>
+                <img :src="require('@/assets/icons/icon-area.svg')" alt="" />
+                <p v-if="hasBalcony">
+                  {{ apartment.plan.balcony_area }} m<sup>2</sup>
+                </p>
                 <p v-else>-</p>
               </div>
             </div>
@@ -133,73 +266,111 @@
           <div v-if="Object.keys(printCalc).length" class="row pdf-payment">
             <div class="col-12">
               <h4 class="pdf-payment__title">
-                {{ $t('selected_variant') }}
+                {{ $t("selected_variant") }}
               </h4>
             </div>
             <div class="col-4">
-              <p class="pdf-payment__type">“{{ printCalc.prepay_percente }}% {{ $t('apartments.view.prepayment') }}”</p>
+              <p class="pdf-payment__type">
+                “{{ printCalc.prepay_percente }}%
+                {{ $t("apartments.view.prepayment") }}”
+              </p>
             </div>
             <div class="col-8">
               <div class="row pdf-payment__block">
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__item">
-                    <p class="option">{{ $t('starting_price') }}: </p>
-                    <p class="value">{{ pricePrettier(apartment.prices.price, 2) }} {{ $t('ye') }}</p>
+                    <p class="option">{{ $t("starting_price") }}:</p>
+                    <p class="value">
+                      {{ pricePrettier(apartment.prices.price, 2) }}
+                      {{ $t("ye") }}
+                    </p>
                   </div>
                   <div class="pdf-payment__item">
-                    <p class="option" v-html="$t('price_sold_m2', {msg: `m<sup>2</sup>`})"/>
+                    <p
+                      class="option"
+                      v-html="$t('price_sold_m2', { msg: `m<sup>2</sup>` })"
+                    />
                     <p class="value">
-                      {{ pricePrettier(printCalc.price_for_m2 - printCalc.discount_price, 2) }}
-                      {{ $t('ye') }}</p>
+                      {{
+                        pricePrettier(
+                          printCalc.price_for_m2 - printCalc.discount_price,
+                          2
+                        )
+                      }}
+                      {{ $t("ye") }}
+                    </p>
                   </div>
                   <div class="pdf-payment__subtotal pdf-payment__item">
-                    <p class="option">{{ $t('apartments.view.discount_per_m2') }}</p>
-                    <p class="value">{{ pricePrettier(printCalc.discount_price, 2) }} {{ $t('ye') }}</p>
+                    <p class="option">
+                      {{ $t("apartments.view.discount_per_m2") }}
+                    </p>
+                    <p class="value">
+                      {{ pricePrettier(printCalc.discount_price, 2) }}
+                      {{ $t("ye") }}
+                    </p>
                   </div>
                 </div>
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__item">
-                    <p class="option">{{ $t('apartments.view.prepayment') }} {{ printCalc.prepay_percente }}%: </p>
+                    <p class="option">
+                      {{ $t("apartments.view.prepayment") }}
+                      {{ printCalc.prepay_percente }}%:
+                    </p>
                     <p class="value" v-if="printCalc.prepay_percente === 100">
-                      {{ pricePrettier(printCalc.total, 2) }} {{
-                        $t('ye')
-                      }}</p>
+                      {{ pricePrettier(printCalc.total, 2) }} {{ $t("ye") }}
+                    </p>
                     <p class="value" v-else>
-                      {{ pricePrettier(printCalc.prepay, 2) }} {{
-                        $t('ye')
-                      }}</p>
+                      {{ pricePrettier(printCalc.prepay, 2) }} {{ $t("ye") }}
+                    </p>
                   </div>
                   <div class="pdf-payment__item">
-                    <p class="option">{{ $t('payments.balance') }}: </p>
-                    <p class="value" v-if="printCalc.prepay_percente === 100">0
-                      {{ $t('ye') }}</p>
-                    <p class="value" v-else>{{ pricePrettier(printCalc.less_price, 2) }} {{ $t('ye') }}</p>
+                    <p class="option">{{ $t("payments.balance") }}:</p>
+                    <p class="value" v-if="printCalc.prepay_percente === 100">
+                      0 {{ $t("ye") }}
+                    </p>
+                    <p class="value" v-else>
+                      {{ pricePrettier(printCalc.less_price, 2) }}
+                      {{ $t("ye") }}
+                    </p>
                   </div>
                   <div class="pdf-payment__subtotal pdf-payment__item">
-                    <p class="option">{{ $t('total_discount') }}: </p>
-                    <p class="value">{{ pricePrettier(printCalc.total_discount, 2) }} {{ $t('ye') }}</p>
+                    <p class="option">{{ $t("total_discount") }}:</p>
+                    <p class="value">
+                      {{ pricePrettier(printCalc.total_discount, 2) }}
+                      {{ $t("ye") }}
+                    </p>
                   </div>
                 </div>
               </div>
               <div class="row pdf-payment__last">
                 <div class="col-6 pdf-payment__items">
                   <div class="pdf-payment__total pdf-payment__item">
-                    <p class="option">{{ $t('total') }}: </p>
-                    <p class="value">{{ pricePrettier(printCalc.total) }} {{ $t('ye') }}</p>
+                    <p class="option">{{ $t("total") }}:</p>
+                    <p class="value">
+                      {{ pricePrettier(printCalc.total) }} {{ $t("ye") }}
+                    </p>
                   </div>
                   <div class="pdf-payment__item">
-                    <p class="option">{{ $t('monthly_payment') }}: </p>
+                    <p class="option">{{ $t("monthly_payment") }}:</p>
                     <p class="value" v-if="printCalc.prepay_percente === 100">
-                      {{ $t('by_price_m2', {price: 0}) }}
+                      {{ $t("by_price_m2", { price: 0 }) }}
                     </p>
-                    <p class="value" v-else>{{ $t('by_price_m2', {price: pricePrettier(printCalc.monthly_price)}) }}</p>
+                    <p class="value" v-else>
+                      {{
+                        $t("by_price_m2", {
+                          price: pricePrettier(printCalc.monthly_price),
+                        })
+                      }}
+                    </p>
                   </div>
-                  <div class=" pdf-payment__item">
-                    <p class="option">{{ $t('duration') }}: </p>
+                  <div class="pdf-payment__item">
+                    <p class="option">{{ $t("duration") }}:</p>
                     <p class="value" v-if="printCalc.prepay_percente === 100">
-                      0 {{ $t('month') }}
+                      0 {{ $t("month") }}
                     </p>
-                    <p class="value" v-else>{{ pricePrettier(printCalc.month) }} {{ $t('month') }}</p>
+                    <p class="value" v-else>
+                      {{ pricePrettier(printCalc.month) }} {{ $t("month") }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -214,43 +385,44 @@
           <div class="row">
             <div class="col-12 pdf-header">
               <div class="pdf-header__title">
-                <h5>
-                  {{ $t('apartment') }} № {{ apartment.number }}
-                </h5>
+                <h5>{{ $t("apartment") }} № {{ apartment.number }}</h5>
                 <p>
-                  <img :src="require('@/assets/icons/location.svg')" alt="">
+                  <img :src="require('@/assets/icons/location.svg')" alt="" />
                   {{ apartment.object.address }}
                 </p>
               </div>
               <div class="pdf-header__logo">
-                <img :src="require('@/assets/img/object__img1.png')" alt="xonsaroy logo">
+                <img
+                  :src="require('@/assets/img/object__img1.png')"
+                  alt="xonsaroy logo"
+                />
               </div>
             </div>
           </div>
           <div class="row pdf-payment">
             <div class="col-12">
-              <h4 class="pdf-payment__title">
-                {{ $t('other_variant') }}:
-              </h4>
+              <h4 class="pdf-payment__title">{{ $t("other_variant") }}:</h4>
             </div>
           </div>
           <div class="row pdf-table">
             <div class="col-12">
               <b-table
-                  :items="apartment.discounts"
-                  :fields="discountField"
-                  class="pdf-table"
-                  :empty-text="$t('no_data')"
-                  thead-class="pdf-table__head"
-                  tbody-class="pdf-table__body"
-                  show-empty
-                  sticky-header
-                  bordered
-                  responsive
+                :items="apartment.discounts"
+                :fields="discountField"
+                class="pdf-table"
+                :empty-text="$t('no_data')"
+                thead-class="pdf-table__head"
+                tbody-class="pdf-table__body"
+                show-empty
+                sticky-header
+                bordered
+                responsive
               >
                 <template #empty="scope" class="text-center">
-                  <div class="d-flex justify-content-center align-items-center empty__scope">
-                    {{ $t('no_data') }}
+                  <div
+                    class="d-flex justify-content-center align-items-center empty__scope"
+                  >
+                    {{ $t("no_data") }}
                   </div>
                 </template>
                 <!--                <template #head(name)="data">-->
@@ -259,13 +431,19 @@
                 <!--                </template>-->
 
                 <template #head()="data">
-                  <span :class="data.class" v-html="$t(data.label, {msg: `m<sup>2</sup>`})"/>
+                  <span
+                    :class="data.class"
+                    v-html="$t(data.label, { msg: `m<sup>2</sup>` })"
+                  />
                 </template>
 
-                <template #cell(type)="{item}">
-                  <span>{{ item.prepay }}% {{ $t('apartments.view.prepayment') }}</span>
+                <template #cell(type)="{ item }">
+                  <span
+                    >{{ item.prepay }}%
+                    {{ $t("apartments.view.prepayment") }}</span
+                  >
                 </template>
-                <template #cell(priceMeter)="{item}">
+                <template #cell(priceMeter)="{ item }">
                   <span class="table-item" v-if="item.prepay === 100">
                     {{ pricePrettier(apartment.price_m2, 2) }}
                   </span>
@@ -273,12 +451,15 @@
                     {{ pricePrettier(item.amount, 2) }}
                   </span>
                 </template>
-                <template #cell(price)="{item}">
-                  <span class="table-item">{{ totalPrintPrice(item).format }}</span>
+                <template #cell(price)="{ item }">
+                  <span class="table-item">{{
+                    totalPrintPrice(item).format
+                  }}</span>
                 </template>
-                <template #cell(priceTotal)="{item}">
+                <template #cell(priceTotal)="{ item }">
                   <span class="table-item table-item__teal">
-                    {{ totalPrintDiscount(item).format }}</span>
+                    {{ totalPrintDiscount(item).format }}</span
+                  >
                 </template>
               </b-table>
             </div>
@@ -287,40 +468,50 @@
         <div class="pdf-footer">
           <div class="row">
             <div class="col-7">
-              <h5 class="pdf-footer__title">
-                ООО “{{ $t('xonsaroy') }}”
-              </h5>
+              <h5 class="pdf-footer__title">ООО “{{ $t("xonsaroy") }}”</h5>
               <div class="pdf-footer__contact">
                 <p class="pdf-footer__link">
-                  <img :src="require('@/assets/icons/location.svg')" alt="">
-                  {{ $t('address_office') }}
+                  <img :src="require('@/assets/icons/location.svg')" alt="" />
+                  {{ $t("address_office") }}
                 </p>
                 <p class="pdf-footer__link">
-                  <img :src="require('@/assets/icons/phone.svg')" alt="">
+                  <img :src="require('@/assets/icons/phone.svg')" alt="" />
                   +998 55 501 74 00
                 </p>
                 <p class="pdf-footer__link">
-                  <img :src="require('@/assets/icons/icons-globe.svg')" alt="">
+                  <img
+                    :src="require('@/assets/icons/icons-globe.svg')"
+                    alt=""
+                  />
                   xonsaroy.uz
                 </p>
                 <p class="pdf-footer__link">
-                  <img :src="require('@/assets/icons/icon-instagram.svg')" alt="">
+                  <img
+                    :src="require('@/assets/icons/icon-instagram.svg')"
+                    alt=""
+                  />
                   Xonsaroyuz
                 </p>
                 <p class="pdf-footer__link">
-                  <img :src="require('@/assets/icons/icon-facebook.svg')" alt="">
+                  <img
+                    :src="require('@/assets/icons/icon-facebook.svg')"
+                    alt=""
+                  />
                   Xonsaroyuz
                 </p>
                 <p class="pdf-footer__link">
-                  <img :src="require('@/assets/icons/icon-telegram.svg')" alt="">
+                  <img
+                    :src="require('@/assets/icons/icon-telegram.svg')"
+                    alt=""
+                  />
                   Xonsaroyuz
                 </p>
               </div>
             </div>
             <div class="col-5 d-flex justify-content-end">
               <div class="pdf-footer__logo">
-                <img :src="require('@/assets/img/object__img1.png')" alt="">
-                <p>{{ $t('motto') }}</p>
+                <img :src="require('@/assets/img/object__img1.png')" alt="" />
+                <p>{{ $t("motto") }}</p>
               </div>
             </div>
           </div>
@@ -331,142 +522,7 @@
   </vue-html2pdf>
 </template>
 
-<script>
-import VueHtml2pdf from 'vue-html2pdf'
-import {formatToPrice} from "@/util/reusable";
-
-export default {
-  name: "PdfTemplate",
-  components: {
-    VueHtml2pdf,
-  },
-  props: {
-    apartment: {
-      type: Object,
-      default: () => {
-      }
-    },
-    printCalc: {
-      type: Object,
-      default: () => {
-      }
-    },
-  },
-  emits: ['has-downloaded'],
-  data() {
-    return {
-      showPdfContent: false,
-      htmlToPdfOptions: {
-        margin: 0,
-        filename: '',
-        // html2canvas: {
-        //   dpi: 72,
-        //   scale: 4,
-        //   letterRendering: true,
-        //   useCORS: true
-        // },
-        // image: {type: 'png', quality: 0.99},
-        jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'}
-      },
-      discountField: [
-        {
-          key: "type",
-          class: 'text-capitalize',
-          label: ('payment_discount'),
-        },
-        {
-          key: "priceMeter",
-          class: 'text-right',
-          label: ('price_sold_m2'),
-        },
-        {
-          key: "price",
-          class: 'text-right',
-          label: ('total_price'),
-        },
-        {
-          key: "priceTotal",
-          class: 'text-right',
-          label: ('total_discount'),
-        },
-      ],
-
-
-    }
-  },
-  computed: {
-    planImage() {
-      if (this.apartment.plan.image.length) {
-        return this.apartment.plan.image[0]
-      } else {
-        return `require('@/assets/img/object__img1.png')`
-      }
-    },
-    hasBalcony() {
-      return this.apartment.plan?.balcony
-    }
-  },
-  methods: {
-    pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
-    beforeDownloadPdf() {
-      // this.showPdfContent = true
-    },
-    hasDownloadedPdf($event) {
-      this.$emit('has-downloaded', $event)
-      // this.showPdfContent = false
-    },
-    generatePdf() {
-      this.htmlToPdfOptions.filename = this.apartment?.object?.name + ', ' + this.apartment.number + ' - ' + this.$t('apartment')
-      this.$refs.html2Pdf.generatePdf()
-    },
-    buildingDate(time) {
-      const date = new Date(time)
-      const year = date.getFullYear()
-      let month = date.getMonth()
-      if (month < 3) {
-        month = 'I'
-      } else if (month >= 3 && month < 6) {
-        month = 'II'
-      } else if (month >= 6 && month < 9) {
-        month = 'III'
-      } else {
-        month = 'IV'
-      }
-      return ` ${month} - ${this.$t('quarter')}, ${year}`
-    },
-
-    totalPrintDiscount({amount, prepay, type}) {
-      const {apartment, printCalc} = this
-      const basePriceM2 = parseFloat(apartment.price_m2)
-      const basePrice = apartment.prices.price
-      let result = 0
-      const customDiscount = printCalc.discount_price * apartment.plan.area
-      if (prepay === 100 && type === 'percent') {
-        result = basePrice - basePriceM2 * apartment.plan.area + customDiscount
-      } else {
-        result = basePrice - amount * apartment.plan.area + customDiscount
-      }
-      return {
-        format: formatToPrice(result, 2),
-        value: result
-      }
-    },
-    totalPrintPrice(item) {
-      const basePrice = this.apartment.prices.price
-      const {value: discountPrice} = this.totalPrintDiscount(item)
-      const result = basePrice - discountPrice
-      return {
-        format: formatToPrice(result, 2),
-        value: result
-      }
-    }
-  },
-
-}
-</script>
-
 <style lang="scss" scoped>
-
 .pdf-page {
   position: relative;
   padding: 32px;
@@ -494,7 +550,6 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-bottom: 28px;
-
 
     &__title {
       h5 {
@@ -534,7 +589,6 @@ export default {
         max-width: 100%;
       }
     }
-
   }
 
   .pdf-body {
@@ -615,7 +669,6 @@ export default {
         margin-bottom: 16px;
       }
 
-
       &__block {
         position: relative;
         display: flex;
@@ -623,7 +676,7 @@ export default {
 
         &:after {
           position: absolute;
-          content: '';
+          content: "";
           bottom: 0;
           right: 15px;
           height: 1px;
@@ -715,8 +768,6 @@ export default {
           color: var(--violet-700) !important;
         }
       }
-
-
     }
   }
 
@@ -784,9 +835,7 @@ export default {
       }
     }
   }
-
 }
-
 
 ::v-deep .pdf-table {
   font-family: Inter, sans-serif;
@@ -820,7 +869,8 @@ export default {
     }
   }
 
-  tr > td, th {
+  tr > td,
+  th {
     font-family: Inter, sans-serif;
     font-weight: 600 !important;
     font-size: 13px !important;
@@ -841,5 +891,4 @@ export default {
     color: var(--gray-600);
   }
 }
-
 </style>

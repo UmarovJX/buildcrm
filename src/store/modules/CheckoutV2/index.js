@@ -4,9 +4,9 @@ import mutations from "@/store/modules/CheckoutV2/mutations";
 import actions from "@/store/modules/CheckoutV2/actions";
 
 export default {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions,
-}
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+  actions,
+};

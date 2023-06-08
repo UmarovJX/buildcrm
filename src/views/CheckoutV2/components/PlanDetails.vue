@@ -1,3 +1,50 @@
+<script>
+import FieldInformation from "@/views/CheckoutV2/elements/FieldInformation";
+import { hasChild } from "@/util/object";
+import { makeProp as p } from "@/util/props";
+import { PROP_TYPE_BOOLEAN, PROP_TYPE_OBJECT } from "@/constants/props";
+import { dateProperties } from "@/util/calendar";
+import BaseButton from "@/components/Reusable/BaseButton";
+import { XIcon } from "@/components/ui-components/material-icons";
+import { mapActions } from "vuex";
+
+export default {
+  name: "ChPlanDetails",
+  components: {
+    FieldInformation,
+    BaseButton,
+    XIcon,
+  },
+  props: {
+    apartment: p(PROP_TYPE_OBJECT, {}),
+    remove: p(PROP_TYPE_BOOLEAN(), false),
+  },
+  computed: {
+    buildDate() {
+      if (hasChild(this.apartment)) {
+        const { build_date } = this.apartment.object;
+        const { month, year } = dateProperties(build_date, "string");
+        const value = Math.ceil((month + 1) / 3);
+        let outputValue = ` ${this.$t("quarter")}, ${year}`;
+        const romeNmb = {
+          1: "I",
+          2: "II",
+          3: "III",
+          4: "IV",
+        };
+        return romeNmb[value] + outputValue;
+      }
+      return this.$t("not_found");
+    },
+  },
+  methods: {
+    ...mapActions("CheckoutV2", {
+      removeApartment: "removeApartment",
+    }),
+  },
+};
+</script>
+
 <template>
   <div class="apartment-details-content">
     <div class="apd-overview-titles">
@@ -15,52 +62,50 @@
     </div>
     <div class="apd-information">
       <field-information
-          :bilingual="true"
-          :content="apartment.number"
-          title="apartment_number"
-          icon-name="door_open"
+        :bilingual="true"
+        :content="apartment.number"
+        title="apartment_number"
+        icon-name="door_open"
       />
       <field-information
-          :bilingual="true"
-          :content="apartment.floor"
-          title="floor"
-          icon-name="stairs"
+        :bilingual="true"
+        :content="apartment.floor"
+        title="floor"
+        icon-name="stairs"
       />
       <field-information
-          :bilingual="true"
-          :content="apartment.rooms"
-          title="number_of_rooms"
-          icon-name="door_front"
+        :bilingual="true"
+        :content="apartment.rooms"
+        title="number_of_rooms"
+        icon-name="door_front"
       />
       <field-information
-          :bilingual="true"
-          :content="apartment.block.floors"
-          title="number_of_blocks"
-          icon-name="domain"
+        :bilingual="true"
+        :content="apartment.block.floors"
+        title="number_of_blocks"
+        icon-name="domain"
       />
       <field-information
-          :bilingual="true"
-          title="area"
-          icon-name="activity_zone"
+        :bilingual="true"
+        title="area"
+        icon-name="activity_zone"
       >
-        <template #content>
-          {{ apartment.plan.area }} M<sup>2</sup>
-        </template>
+        <template #content> {{ apartment.plan.area }} M<sup>2</sup> </template>
       </field-information>
       <field-information
-          :bilingual="true"
-          :content="apartment.floor"
-          title="balcony"
-          icon-name="balcony"
+        :bilingual="true"
+        :content="apartment.floor"
+        title="balcony"
+        icon-name="balcony"
       >
         <template #content>
           {{ apartment.plan.balcony_area }} M<sup>2</sup>
         </template>
       </field-information>
       <field-information
-          :bilingual="true"
-          title="object.complete"
-          icon-name="precision_manufacturing"
+        :bilingual="true"
+        title="object.complete"
+        icon-name="precision_manufacturing"
       >
         <template #content>
           {{ buildDate }}
@@ -79,54 +124,6 @@
     <!--    </base-button>-->
   </div>
 </template>
-
-<script>
-import FieldInformation from "@/views/CheckoutV2/elements/FieldInformation";
-import {hasChild} from "@/util/object";
-import {makeProp as p} from "@/util/props";
-import {PROP_TYPE_BOOLEAN, PROP_TYPE_OBJECT} from "@/constants/props";
-import {dateProperties} from "@/util/calendar";
-import BaseButton from "@/components/Reusable/BaseButton";
-import {XIcon} from "@/components/ui-components/material-icons";
-import {mapActions} from "vuex";
-
-
-export default {
-  name: "ChPlanDetails",
-  components: {
-    FieldInformation,
-    BaseButton,
-    XIcon
-  },
-  props: {
-    apartment: p(PROP_TYPE_OBJECT, {}),
-    remove: p(PROP_TYPE_BOOLEAN(), false)
-  },
-  computed: {
-    buildDate() {
-      if (hasChild(this.apartment)) {
-        const {build_date} = this.apartment.object
-        const {month, year} = dateProperties(build_date, 'string')
-        const value = Math.ceil((month + 1) / 3)
-        let outputValue = ` ${this.$t('quarter')}, ${year}`
-        const romeNmb = {
-          1: 'I',
-          2: 'II',
-          3: 'III',
-          4: 'IV'
-        }
-        return romeNmb[value] + outputValue
-      }
-      return this.$t('not_found')
-    }
-  },
-  methods: {
-    ...mapActions('CheckoutV2', {
-      removeApartment: 'removeApartment'
-    })
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .apartment-details-content {
@@ -155,5 +152,4 @@ export default {
   column-gap: 1rem;
   row-gap: 1.5rem;
 }
-
 </style>

@@ -1,63 +1,134 @@
+<script>
+import api from "@/services/api";
+import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
+import PaymentAccount from "@/permission/payment_account";
+
+export default {
+  name: "PaymentBoxContent",
+  props: {
+    detail: {
+      type: Object,
+      required: true,
+    },
+    company: {
+      type: [Number, String],
+      required: true,
+    },
+  },
+  emits: ["edit-selected-payment", "delete-payment", "update-company"],
+  components: {
+    BaseContractsIcon,
+  },
+  data() {
+    return {
+      isPrimary: this.checker(this.detail.is_primary),
+      editPermission: PaymentAccount.getPaymentAccountEditPermission(),
+      deletePermission: PaymentAccount.getPaymentAccountDeletePermission(),
+    };
+  },
+  watch: {
+    isPrimary() {
+      this.makePrimaryPayment();
+    },
+  },
+  methods: {
+    deleteCompany() {
+      const company_id = this.$route.params.companyId;
+      this.$emit("delete-payment", company_id, this.detail.id);
+    },
+    editSelectedPayment() {
+      if (this.$props.detail) {
+        this.$emit("edit-selected-payment", this.$props.detail);
+      } else {
+        console.log("sorry");
+      }
+    },
+    checker(data) {
+      if (data === 1) {
+        return 0;
+      } else {
+        return 1;
+      }
+    },
+    makePrimaryPayment() {
+      const data = {
+        is_primary: this.isPrimary,
+      };
+      api.companies
+        .changeStatusCompany(this.company, this.detail.id, data)
+        .then((response) => {
+          const { message } = response.data;
+          this.$emit("update-company", { message });
+        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    getName(name) {
+      if (localStorage.locale) return name[localStorage.locale];
+      else return name["ru"];
+    },
+  },
+};
+</script>
+
 <template>
-  <div
-      class="payment__content-detail"
-  >
+  <div class="payment__content-detail">
     <span>
       <span>
         <span>
-          <base-contracts-icon fill="#A78BFA"/>
+          <base-contracts-icon fill="#A78BFA" />
           <p>{{ getName(detail.bank_name) }}</p>
         </span>
         <div
-            v-if="editPermission||deletePermission"
-            class="float-right dropdown my-dropdown dropleft"
+          v-if="editPermission || deletePermission"
+          class="float-right dropdown my-dropdown dropleft"
         >
-            <button
-                type="button"
-                class="dropdown-toggle"
-                data-toggle="dropdown"
+          <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="far fa-ellipsis-h"></i>
+          </button>
+
+          <div class="dropdown-menu">
+            <b-button
+              v-if="editPermission"
+              @click="makePrimaryPayment"
+              v-model="isPrimary"
+              name="check-button"
+              switch
+              class="dropdown-item dropdown-item--inside"
             >
-              <i class="far fa-ellipsis-h"></i>
-            </button>
+              <span v-if="!detail.is_primary">{{ $t("activate") }}</span>
+              <span v-else>{{ $t("deactivate") }}</span>
+            </b-button>
+            <b-button
+              v-if="editPermission"
+              class="dropdown-item dropdown-item--inside"
+              @click="editSelectedPayment()"
+            >
+              {{ $t("edit") }}
+            </b-button>
 
-            <div class="dropdown-menu">
-              <b-button
-                  v-if="editPermission"
-                  @click="makePrimaryPayment"
-                  v-model="isPrimary"
-                  name="check-button"
-                  switch
-                  class="dropdown-item dropdown-item--inside">
-                <span v-if="!detail.is_primary">{{ $t("activate") }}</span>
-                <span v-else>{{ $t("deactivate") }}</span>
-              </b-button>
-              <b-button
-                  v-if="editPermission"
-                  class="dropdown-item dropdown-item--inside"
-                  @click="editSelectedPayment()"
-              >
-                {{ $t("edit") }}
-              </b-button>
-
-              <b-button
-                  v-if="deletePermission"
-                  class="dropdown-item  dropdown-item--inside"
-                  @click="deleteCompany()"
-              >
-                {{ $t('delete') }}
-              </b-button>
-            </div>
+            <b-button
+              v-if="deletePermission"
+              class="dropdown-item dropdown-item--inside"
+              @click="deleteCompany()"
+            >
+              {{ $t("delete") }}
+            </b-button>
+          </div>
         </div>
       </span>
-      <span v-if="detail.is_primary" class="stamp active__payment__content"
-      >
+      <span v-if="detail.is_primary" class="stamp active__payment__content">
         {{ $t("companies.active_payment") }}
       </span>
       <span v-else class="stamp">
         {{ $t("companies.inactive_payment") }}
       </span>
     </span>
-    <hr/>
+    <hr />
     <p>
       <span>{{ $t("companies.payment_account") }}:</span>
       <span>{{ detail.payment_account }}</span>
@@ -69,98 +140,19 @@
   </div>
 </template>
 
-<script>
-import api from "@/services/api";
-import BaseContractsIcon from "@/components/icons/BaseContractsIcon";
-import PaymentAccount from "@/permission/payment_account";
-
-export default {
-  name: "PaymentBoxContent",
-  props: {
-    detail: {
-      type: Object,
-      required: true
-    },
-    company: {
-      type: [Number, String],
-      required: true
-    }
-  },
-  emits: ['edit-selected-payment', 'delete-payment', 'update-company'],
-  components: {
-    BaseContractsIcon
-  },
-  data() {
-    return {
-      isPrimary: this.checker(this.detail.is_primary),
-      editPermission: PaymentAccount.getPaymentAccountEditPermission(),
-      deletePermission: PaymentAccount.getPaymentAccountDeletePermission()
-    }
-  },
-  watch: {
-    isPrimary() {
-      this.makePrimaryPayment()
-    }
-  },
-  methods: {
-    deleteCompany() {
-      const company_id = this.$route.params.companyId
-      this.$emit('delete-payment', company_id, this.detail.id)
-    },
-    editSelectedPayment() {
-      if (this.$props.detail) {
-        this.$emit('edit-selected-payment', this.$props.detail)
-      } else {
-        console.log("sorry")
-      }
-    },
-    checker(data) {
-      if (data === 1) {
-        return 0
-      } else {
-        return 1
-      }
-    },
-    makePrimaryPayment() {
-      const data = {
-        is_primary: this.isPrimary
-      }
-      api.companies.changeStatusCompany(this.company, this.detail.id, data)
-          .then((response) => {
-            const {message} = response.data
-            this.$emit("update-company", {message})
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
-            this.loading = false
-          })
-    },
-    getName(name) {
-      if (localStorage.locale)
-        return name[localStorage.locale]
-      else
-        return name['ru']
-    },
-  }
-}
-</script>
-
 <style lang="scss" scoped>
 hr {
   margin: 26px 0;
-  border: 0.8px solid #E5E7EB;
-  background: #E5E7EB;
+  border: 0.8px solid #e5e7eb;
+  background: #e5e7eb;
 }
-
 
 .stamp {
   background: #fff;
   width: max-content;
   padding: 5px 12px;
-  margin-top: 12px!important;
-  color: #9CA3AF;
+  margin-top: 12px !important;
+  color: #9ca3af;
   border: none;
   border-radius: 32px;
 }
@@ -171,8 +163,8 @@ hr {
   padding: 1.5rem;
   font-size: 14px;
   width: auto;
-  background: #F3F4F6;
-  color: #9CA3AF;
+  background: #f3f4f6;
+  color: #9ca3af;
   min-width: 28rem;
 
   .dropdown-menu {
@@ -193,8 +185,8 @@ hr {
   p {
     display: flex;
     gap: 5px;
-    color: #9CA3AF;
-    font-family: Inter,serif;
+    color: #9ca3af;
+    font-family: Inter, serif;
     font-style: normal;
     font-weight: 600;
     font-size: 15px;
@@ -214,7 +206,7 @@ hr {
         font-weight: 900;
         font-size: 16px;
         margin-bottom: 0;
-        color: #7C3AED;
+        color: #7c3aed;
       }
 
       .float-right {
@@ -224,7 +216,7 @@ hr {
             box-shadow: none;
 
             i {
-              color: #4B5563;
+              color: #4b5563;
             }
           }
         }
@@ -234,7 +226,7 @@ hr {
 }
 
 .active__payment__content {
-  background-color: #7C3AED;
+  background-color: #7c3aed;
   color: white;
 }
 

@@ -1,39 +1,45 @@
-<template>
-  <div class="currency__chart">
-    <span class="title">{{ context.title }}</span>
-    <span class="price">{{ context.price }} {{ $t('payments.course_name') }}</span>
-    <span class="bottom__info">{{ context.bottom }}</span>
-    <span class="chart__list" :class="firstChartLineClass">
-      <span class="d-flex align-items-center">
-        <b-progress class="progress" :value="context.progress" :max="100"></b-progress>
-        <span class="percent__value" v-show="context.index > 0">{{ context.progress }} %</span>
-      </span>
-    </span>
-  </div>
-</template>
-
 <script>
-
 export default {
   name: "CurrencyChart",
   props: {
     context: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     firstChartLineClass() {
       return {
-        'first__chart': this.context.index === 0
-      }
-    }
+        first__chart: this.context.index === 0,
+      };
+    },
   },
-}
+};
 </script>
 
-<style lang="scss" scoped>
+<template>
+  <div class="currency__chart">
+    <span class="title">{{ context.title }}</span>
+    <span class="price"
+      >{{ context.price }} {{ $t("payments.course_name") }}</span
+    >
+    <span class="bottom__info">{{ context.bottom }}</span>
+    <span class="chart__list" :class="firstChartLineClass">
+      <span class="d-flex align-items-center">
+        <b-progress
+          class="progress"
+          :value="context.progress"
+          :max="100"
+        ></b-progress>
+        <span class="percent__value" v-show="context.index > 0"
+          >{{ context.progress }} %</span
+        >
+      </span>
+    </span>
+  </div>
+</template>
 
+<style lang="scss" scoped>
 .title {
   font-family: CraftworkSans, serif;
   font-size: 1.25rem;
@@ -76,7 +82,7 @@ export default {
 
   ::v-deep .progress-bar {
     border-radius: 1rem;
-    background: linear-gradient(88.25deg, #7C3AED 0%, #818CF8 100%) !important;
+    background: linear-gradient(88.25deg, #7c3aed 0%, #818cf8 100%) !important;
   }
 
   .percent__value {
@@ -96,7 +102,6 @@ export default {
     background-color: var(--gray-200);
   }
 }
-
 
 @media screen and (max-width: 1300px) {
   .title {

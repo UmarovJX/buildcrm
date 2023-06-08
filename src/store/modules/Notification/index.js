@@ -4,9 +4,9 @@ import mutations from "@/store/modules/Notification/mutations";
 import actions from "@/store/modules/Notification/actions";
 
 export default {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions,
-}
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+  actions,
+};

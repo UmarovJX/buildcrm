@@ -1,50 +1,3 @@
-<template>
-  <div>
-    <b-modal
-        id="modal-upload-logo"
-        ref="modal"
-        :title="$t('upload_logo')"
-        hide-footer
-        @show="resetModal"
-    >
-      <b-alert show variant="danger" v-if="error">
-        <ul>
-          <li v-for="(error, index) in errors" :key="index">
-            <span v-for="msg in error" :key="msg">
-              {{ msg }}
-            </span>
-          </li>
-        </ul>
-      </b-alert>
-
-      <form ref="form" @submit.stop.prevent="handleSubmit">
-        <div class="mb-3">
-          <label for="image" class="form-label">
-            {{ $t("image") }}
-          </label>
-          <input
-              type="file"
-              @change="posterFile($event)"
-              class="form-control"
-              accept="image/*"
-              id="image"
-          />
-        </div>
-
-        <div class="d-flex justify-content-center mt-3">
-          <b-button variant="light" @click="resetModal">
-            {{ $t("cancel") }}
-          </b-button>
-
-          <b-button type="submit" class="ml-1" variant="success">
-            <i class="fas fa-save"></i> {{ $t("save") }}
-          </b-button>
-        </div>
-      </form>
-    </b-modal>
-  </div>
-</template>
-
 <script>
 import api from "@/services/api";
 import Compressor from "compressorjs";
@@ -93,9 +46,9 @@ export default {
             type: result.type,
             lastModified: Date.now(),
           });
-          this.image = URL.createObjectURL(this.output)
+          this.image = URL.createObjectURL(this.output);
         },
-      })
+      });
     },
 
     handleOk(bvModalEvt) {
@@ -112,7 +65,7 @@ export default {
       formData.append("image", this.image);
 
       try {
-        const response = await api.objects.updateLogo(this.objectId, formData)
+        const response = await api.objects.updateLogo(this.objectId, formData);
         this.toasted(response.data.message, "success");
 
         this.$nextTick(() => {
@@ -126,9 +79,9 @@ export default {
         } else {
           if (error.response.status === 422) {
             this.error = true;
-            this.errors = error.response.data
+            this.errors = error.response.data;
           } else if (error.response.status) {
-            console.log('lol')
+            console.log("lol");
           } else {
             this.toasted(error.response.data.message, "error");
           }
@@ -138,5 +91,52 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div>
+    <b-modal
+      id="modal-upload-logo"
+      ref="modal"
+      :title="$t('upload_logo')"
+      hide-footer
+      @show="resetModal"
+    >
+      <b-alert show variant="danger" v-if="error">
+        <ul>
+          <li v-for="(error, index) in errors" :key="index">
+            <span v-for="msg in error" :key="msg">
+              {{ msg }}
+            </span>
+          </li>
+        </ul>
+      </b-alert>
+
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <div class="mb-3">
+          <label for="image" class="form-label">
+            {{ $t("image") }}
+          </label>
+          <input
+            type="file"
+            @change="posterFile($event)"
+            class="form-control"
+            accept="image/*"
+            id="image"
+          />
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+          <b-button variant="light" @click="resetModal">
+            {{ $t("cancel") }}
+          </b-button>
+
+          <b-button type="submit" class="ml-1" variant="success">
+            <i class="fas fa-save"></i> {{ $t("save") }}
+          </b-button>
+        </div>
+      </form>
+    </b-modal>
+  </div>
+</template>
 
 <style scoped></style>

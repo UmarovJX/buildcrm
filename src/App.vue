@@ -1,42 +1,18 @@
-<template>
-  <div id="app">
-    <div class="connection-status">
-      <div class="banner">
-        <div class="content disconnected" v-if="connecting === 2">
-          <div class="mr-1">
-            <i class="fal fa-times-circle"></i>
-          </div>
-          <span>Нет подключения к Интернету</span>
-        </div>
-        <div class="content connected" v-if="connecting === 1">
-          <div class="mr-1">
-            <i class="fal fa-check-circle"></i>
-          </div>
-          <span>Подключен к интернету!</span>
-        </div>
-      </div>
-    </div>
-
-    <router-view :theme="theme"></router-view>
-  </div>
-</template>
-
 <script>
-import {mapGetters, mapActions, mapMutations} from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
       onLine: navigator.onLine,
       theme: "",
       connecting: null,
       showHeaderContent: false,
-    }
+    };
   },
   computed: {
     ...mapGetters(["getPermission"]),
-
   },
   async created() {
     if (!localStorage.locale) {
@@ -45,28 +21,28 @@ export default {
     }
 
     let path = this.$router.currentRoute;
-    if (localStorage.getItem('auth__access__token')) {
+    if (localStorage.getItem("auth__access__token")) {
       let vm = this;
-      await this.setMe(vm, path)
+      await this.setMe(vm, path);
     } else {
       if (path.path !== "/") {
-        await this.$router.push("/")
+        await this.$router.push("/");
       }
     }
     if (!localStorage.getItem("user-theme")) {
-      this.setTheme("light-theme")
+      this.setTheme("light-theme");
     }
   },
   methods: {
     ...mapActions(["setMe"]),
-    ...mapMutations(['setContentTheme']),
+    ...mapMutations(["setContentTheme"]),
     updateOnlineStatus(e) {
-      const {type} = e;
+      const { type } = e;
       this.onLine = type === "online";
     },
     getMediaPreference() {
       const hasDarkPreference = window.matchMedia(
-          "(prefers-color-scheme: dark)"
+        "(prefers-color-scheme: dark)"
       ).matches;
       if (hasDarkPreference) {
         return "dark-theme";
@@ -76,7 +52,7 @@ export default {
     },
     setTheme(theme) {
       localStorage.setItem("user-theme", theme);
-      this.setContentTheme = theme
+      this.setContentTheme = theme;
       this.userTheme = theme;
       document.documentElement.className = theme;
     },
@@ -121,10 +97,32 @@ export default {
     window.addEventListener("online", this.updateOnlineStatus);
     window.addEventListener("offline", this.updateOnlineStatus);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener("online", this.updateOnlineStatus);
     window.removeEventListener("offline", this.updateOnlineStatus);
   },
 };
 </script>
 
+<template>
+  <div id="app">
+    <div class="connection-status">
+      <div class="banner">
+        <div class="content disconnected" v-if="connecting === 2">
+          <div class="mr-1">
+            <i class="fal fa-times-circle"></i>
+          </div>
+          <span>Нет подключения к Интернету</span>
+        </div>
+        <div class="content connected" v-if="connecting === 1">
+          <div class="mr-1">
+            <i class="fal fa-check-circle"></i>
+          </div>
+          <span>Подключен к интернету!</span>
+        </div>
+      </div>
+    </div>
+
+    <router-view :theme="theme"></router-view>
+  </div>
+</template>

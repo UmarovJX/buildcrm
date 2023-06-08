@@ -1,38 +1,281 @@
+<script>
+import api from "@/services/api";
+import CreateUpdateModal from "./Components/CreateUpdateModal";
+import CompaniesList from "@/components/Dashboard/Companies/Components/CompaniesList";
+import { isPrimitiveValue } from "@/util/reusable";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import CompaniesPermission from "@/permission/companies";
+import AppHeader from "@/components/Header/AppHeader";
+
+export default {
+  name: "Companies",
+  components: {
+    BasePlusIcon,
+    CreateUpdateModal,
+    BaseSearchInput,
+    CompaniesList,
+    BaseButton,
+    AppHeader,
+  },
+  data() {
+    return {
+      createPermission: CompaniesPermission.getCompaniesCreatePermission(),
+      loading: false,
+      companies: [],
+      editedItem: {},
+      searchInput: this.$route.query.search,
+      company_id: false,
+      showClearIcon: false,
+      activeContent: this.$t("list"),
+      modalProperties: {
+        position: "create",
+        title: this.$t("companies.add_title"),
+      },
+      newCompany: {
+        type: null,
+        name: null,
+        director_name: null,
+        director_surname: null,
+        director_middle_name: null,
+        company_address: null,
+        phone: null,
+        extra_phone: null,
+        inn: null,
+        mfo: null,
+        register_code: null,
+      },
+      breadCrumbs: [
+        {
+          routeName: this.$route.name,
+          textContent: this.$t("companies.title"),
+        },
+      ],
+    };
+  },
+  watch: {
+    "$route.query": {
+      handler: function () {
+        this.fetchCompaniesList();
+      },
+      deep: true,
+    },
+    searchValue() {
+      this.getCompaniesListBySearch();
+    },
+  },
+  async created() {
+    await this.fetchCompaniesList();
+  },
+  computed: {
+    query() {
+      return Object.assign({}, this.$route.query);
+    },
+  },
+  methods: {
+    pushRouter(sortQuery) {
+      this.$router.push({ query: sortQuery });
+    },
+    getInputValue(value) {
+      this.searchInput = value;
+    },
+    async fetchCompaniesList() {
+      // const query = sortObjectValues(this.query)
+      this.loading = true;
+      await api.companies
+        .getCompaniesList()
+        .then((response) => {
+          this.companies = response.data;
+          this.tableItems = response.data.map((item) => ({
+            ...item,
+            toggleCollapse: false,
+          }));
+          this.loading = true;
+        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    showAddModal() {
+      this.modalProperties = {
+        title: this.$t("companies.add_company"),
+        position: "create",
+      };
+      this.$refs["create-modal"].show();
+    },
+    fetchContentByStatus(status) {
+      const query = Object.assign({}, this.query);
+      if (query.hasOwnProperty("page")) {
+        delete query.page;
+      }
+      this.replaceRouter({ ...query, status });
+    },
+    openEditingModal(item) {
+      this.modalProperties = {
+        title: this.$t("edit"),
+        position: "edit",
+      };
+      this.$bvModal.show("modal-create");
+      this.editedItem = { ...item };
+    },
+    createdNewCompany({ message }) {
+      this.fetchCompaniesList(false);
+      this.$swal({
+        title: this.$t("sweetAlert.success_create_company"),
+        text: message,
+        icon: "success",
+        showCancelButton: false,
+        confirmButtonText: this.$t("next"),
+      });
+    },
+
+    updatedCompany({ message }) {
+      this.fetchCompaniesList(false);
+      this.$swal({
+        title: this.$t("sweetAlert.success_update_company"),
+        text: message,
+        icon: "success",
+        showCancelButton: false,
+        confirmButtonText: this.$t("next"),
+      });
+    },
+
+    async deleteCompany(id) {
+      await api.companies
+        .deleteCompany(id)
+        .then((response) => {
+          const { message } = response.data;
+          this.fetchCompaniesList(false);
+          this.$swal({
+            title: this.$t("sweetAlert.success_delete_company"),
+            text: message,
+            icon: "success",
+            showCancelButton: false,
+            confirmButtonText: this.$t("next"),
+          });
+        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        });
+    },
+    searchQueryFilter(searchQuery) {
+      const hasQueryStatus = this.query.hasOwnProperty("status");
+      if (hasQueryStatus) {
+        const { status } = this.query;
+        this.pushRouter({
+          ...searchQuery,
+          status,
+        });
+        return;
+      }
+      this.pushRouter(searchQuery);
+    },
+    setSearchValue(search) {
+      const hasSearchQuery = this.query.hasOwnProperty("search");
+      if (search?.length < 3 && hasSearchQuery) {
+        this.replaceRouter({});
+      }
+
+      if (this.searchValue === search || search.length < 3) return;
+      this.searchValue = search;
+    },
+    getCompaniesListBySearch() {
+      const { query, searchValue } = this;
+      const hasSearchQuery = query.hasOwnProperty("search");
+      if (!hasSearchQuery) {
+        this.pushRouter({
+          search: searchValue,
+        });
+        return;
+      }
+
+      query.search = searchValue;
+      this.pushRouter(query);
+    },
+    addModalOpened() {
+      const haveInRouteQuery = (property) => {
+        const query = Object.assign({}, this.query);
+        const hasOwnProperty = query.hasOwnProperty(property);
+        if (hasOwnProperty) return query[property];
+        return false;
+      };
+
+      for (let property of Object.keys(this.filter)) {
+        const query = haveInRouteQuery(property);
+        if (property === "apartment_number" && typeof query === "string") {
+          const toNumber = parseInt(query);
+          this.filter[property] = isNaN(toNumber) ? [] : [toNumber];
+          continue;
+        }
+
+        /*if (property === 'object_id' && query) {
+          if (Array.isArray(query)) {
+            this.filter[property] = parseInt(query[0])
+          } else {
+            this.filter[property] = parseInt(query)
+          }
+          continue
+        }*/
+
+        if (property === "object_id" && query) {
+          if (isPrimitiveValue(query)) {
+            this.filter[property] = [parseInt(query)];
+          } else {
+            this.filter[property] = query.map((value) => parseInt(value));
+          }
+          continue;
+        }
+
+        if (query) this.filter[property] = query;
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <app-header>
       <template #header-title>
-        {{ $t('roles_permission.titles.companies') }}
+        {{ $t("roles_permission.titles.companies") }}
       </template>
     </app-header>
 
     <div class="search__content">
       <base-search-input
-          class="base-search-input w-50 mr-2"
-          :placeholder="`${ $t('contract_number_or_full_name') }`"
-          @trigger-input="getInputValue"
+        class="base-search-input w-50 mr-2"
+        :placeholder="`${$t('contract_number_or_full_name')}`"
+        @trigger-input="getInputValue"
       />
 
-      <BaseButton v-if="createPermission" @click="showAddModal" :text="`${ $t('companies.add_company') }`">
+      <BaseButton
+        v-if="createPermission"
+        @click="showAddModal"
+        :text="`${$t('companies.add_company')}`"
+      >
         <template #left-icon>
-          <BasePlusIcon fill="#7C3AED"/>
+          <BasePlusIcon fill="#7C3AED" />
         </template>
       </BaseButton>
     </div>
     <create-update-modal
-        ref="create-modal"
-        class="add_modal"
-        @updated-company="updatedCompany"
-        @created-new-company="createdNewCompany"
-        :history-edit-info="editedItem"
-        :modal-properties="modalProperties"
+      ref="create-modal"
+      class="add_modal"
+      @updated-company="updatedCompany"
+      @created-new-company="createdNewCompany"
+      :history-edit-info="editedItem"
+      :modal-properties="modalProperties"
     />
     <companies-list
-        @sort-companies="pushRouter"
-        :companies="companies"
-        @delete-company="deleteCompany"
-        @edit-selected-company="openEditingModal"
-        @updated-company="updatedCompany"
+      @sort-companies="pushRouter"
+      :companies="companies"
+      @delete-company="deleteCompany"
+      @edit-selected-company="openEditingModal"
+      @updated-company="updatedCompany"
     />
     <b-overlay :show="loading" no-wrap opacity="0.5" class="loading__overlay">
       <template #overlay>
@@ -48,241 +291,6 @@
     </b-overlay>
   </div>
 </template>
-
-<script>
-import api from "@/services/api";
-import CreateUpdateModal from "./Components/CreateUpdateModal";
-import CompaniesList from "@/components/Dashboard/Companies/Components/CompaniesList";
-import {isPrimitiveValue} from "@/util/reusable";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
-import CompaniesPermission from "@/permission/companies";
-import AppHeader from "@/components/Header/AppHeader";
-
-export default {
-  name: 'Companies',
-  components: {
-    BasePlusIcon,
-    CreateUpdateModal,
-    BaseSearchInput,
-    CompaniesList,
-    BaseButton,
-    AppHeader
-  },
-  data() {
-    return {
-      createPermission: CompaniesPermission.getCompaniesCreatePermission(),
-      loading: false,
-      companies: [],
-      editedItem: {},
-      searchInput: this.$route.query.search,
-      company_id: false,
-      showClearIcon: false,
-      activeContent: this.$t('list'),
-      modalProperties: {
-        position: 'create',
-        title: this.$t('companies.add_title'),
-      },
-      newCompany: {
-        type: null,
-        name: null,
-        director_name: null,
-        director_surname: null,
-        director_middle_name: null,
-        company_address: null,
-        phone: null,
-        extra_phone: null,
-        inn: null,
-        mfo: null,
-        register_code: null
-      },
-      breadCrumbs: [
-        {
-          routeName: this.$route.name,
-          textContent: this.$t('companies.title')
-        }
-      ]
-    }
-  },
-  watch: {
-    '$route.query': {
-      handler: function () {
-        this.fetchCompaniesList()
-      },
-      deep: true
-    },
-    searchValue() {
-      this.getCompaniesListBySearch()
-    }
-  },
-  async created() {
-    await this.fetchCompaniesList()
-  },
-  computed: {
-    query() {
-      return Object.assign({}, this.$route.query)
-    },
-  },
-  methods: {
-    pushRouter(sortQuery) {
-      this.$router.push({query: sortQuery})
-    },
-    getInputValue(value) {
-      this.searchInput = value
-    },
-    async fetchCompaniesList() {
-      // const query = sortObjectValues(this.query)
-      this.loading = true
-      await api.companies.getCompaniesList()
-          .then((response) => {
-            this.companies = response.data
-            this.tableItems = response.data.map(item => ({...item, toggleCollapse: false}))
-            this.loading = true
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-          .finally(() => {
-            this.loading = false
-          })
-    },
-    showAddModal() {
-      this.modalProperties = {
-        title: this.$t('companies.add_company'),
-        position: 'create'
-      }
-      this.$refs['create-modal'].show()
-    },
-    fetchContentByStatus(status) {
-      const query = Object.assign({}, this.query)
-      if (query.hasOwnProperty('page')) {
-        delete query.page
-      }
-      this.replaceRouter({...query, status})
-    },
-    openEditingModal(item) {
-      this.modalProperties = {
-        title: this.$t('edit'),
-        position: 'edit'
-      }
-      this.$bvModal.show('modal-create')
-      this.editedItem = {...item}
-    },
-    createdNewCompany({message}) {
-      this.fetchCompaniesList(false)
-      this.$swal({
-        title: this.$t("sweetAlert.success_create_company"),
-        text: message,
-        icon: "success",
-        showCancelButton: false,
-        confirmButtonText: this.$t("next"),
-      })
-    },
-
-    updatedCompany({message}) {
-      this.fetchCompaniesList(false)
-      this.$swal({
-        title: this.$t("sweetAlert.success_update_company"),
-        text: message,
-        icon: "success",
-        showCancelButton: false,
-        confirmButtonText: this.$t("next"),
-      });
-    },
-
-    async deleteCompany(id) {
-      await api.companies.deleteCompany(id)
-          .then((response) => {
-            const {message} = response.data
-            this.fetchCompaniesList(false)
-            this.$swal({
-              title: this.$t("sweetAlert.success_delete_company"),
-              text: message,
-              icon: "success",
-              showCancelButton: false,
-              confirmButtonText: this.$t("next"),
-            })
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error)
-          })
-    },
-    searchQueryFilter(searchQuery) {
-      const hasQueryStatus = this.query.hasOwnProperty('status')
-      if (hasQueryStatus) {
-        const {status} = this.query
-        this.pushRouter({
-          ...searchQuery,
-          status
-        })
-        return
-      }
-      this.pushRouter(searchQuery)
-    },
-    setSearchValue(search) {
-      const hasSearchQuery = this.query.hasOwnProperty('search')
-      if (search?.length < 3 && hasSearchQuery) {
-        this.replaceRouter({})
-      }
-
-      if (this.searchValue === search || search.length < 3) return
-      this.searchValue = search
-    },
-    getCompaniesListBySearch() {
-      const {query, searchValue} = this
-      const hasSearchQuery = query.hasOwnProperty('search')
-      if (!hasSearchQuery) {
-        this.pushRouter({
-          search: searchValue
-        })
-        return
-      }
-
-      query.search = searchValue
-      this.pushRouter(query)
-    },
-    addModalOpened() {
-      const haveInRouteQuery = (property) => {
-        const query = Object.assign({}, this.query)
-        const hasOwnProperty = query.hasOwnProperty(property)
-        if (hasOwnProperty)
-          return query[property]
-        return false
-      }
-
-      for (let property of Object.keys(this.filter)) {
-        const query = haveInRouteQuery(property)
-        if (property === 'apartment_number' && typeof query === 'string') {
-          const toNumber = parseInt(query)
-          this.filter[property] = isNaN(toNumber) ? [] : [toNumber]
-          continue
-        }
-
-        /*if (property === 'object_id' && query) {
-          if (Array.isArray(query)) {
-            this.filter[property] = parseInt(query[0])
-          } else {
-            this.filter[property] = parseInt(query)
-          }
-          continue
-        }*/
-
-        if (property === 'object_id' && query) {
-          if (isPrimitiveValue(query)) {
-            this.filter[property] = [parseInt(query)]
-          } else {
-            this.filter[property] = query.map(value => parseInt(value))
-          }
-          continue
-        }
-
-        if (query) this.filter[property] = query
-      }
-    }
-  }
-}
-</script>
 
 <style scoped lang="scss">
 .exit {
@@ -341,5 +349,4 @@ export default {
     }
   }
 }
-
 </style>

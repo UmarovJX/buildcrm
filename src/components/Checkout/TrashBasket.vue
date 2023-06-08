@@ -1,43 +1,39 @@
-<template>
-  <div class="basket" :class="{'d-none':!apartmentCount}">
-    <p>
-      Убранные квартиры: {{ apartmentCount }}
-    </p>
-    <base-button
-        @click="returnApartment"
-        design="violet500"
-        text="Вернуть все квартиры"
-    />
-  </div>
-</template>
-
 <script>
 import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: "TrashBasket",
   components: {
-    BaseButton
+    BaseButton,
   },
 
   props: {
     apartmentCount: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
 
-  emits: ['return-apartment'],
+  emits: ["return-apartment"],
 
   methods: {
     returnApartment() {
-      this.$emit('return-apartment')
-    }
-  }
-
-}
+      this.$emit("return-apartment");
+    },
+  },
+};
 </script>
 
+<template>
+  <div class="basket" :class="{ 'd-none': !apartmentCount }">
+    <p>Убранные квартиры: {{ apartmentCount }}</p>
+    <base-button
+      @click="returnApartment"
+      design="violet500"
+      text="Вернуть все квартиры"
+    />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .basket {
@@ -54,7 +50,7 @@ export default {
   border-radius: 2rem 2rem 0 0;
   padding: 12px 32px;
   z-index: 999;
-  animation: fade-top .5s linear;
+  animation: fade-top 0.5s linear;
   background-color: var(--violet-600);
 
   .violet500 {
@@ -87,6 +83,4 @@ export default {
     }
   }
 }
-
-
 </style>

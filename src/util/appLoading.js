@@ -1,7 +1,7 @@
 export function startLoading() {
-    this.appLoading = true
+  this.appLoading = true;
 }
 
 export function finishLoading() {
-    this.appLoading = false
+  this.appLoading = false;
 }

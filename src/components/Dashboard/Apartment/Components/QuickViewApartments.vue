@@ -1,3 +1,35 @@
+<script>
+import ApartmentPrice from "./ApartmentPrice";
+
+export default {
+  components: {
+    ApartmentPrice,
+  },
+
+  data() {
+    return {};
+  },
+
+  watch: {
+    apartment: function () {
+      console.log("QuickViewApartments change");
+    },
+  },
+
+  props: {
+    apartment: {},
+    contract: {},
+    index: {},
+  },
+
+  methods: {
+    apartmentPrice() {
+      this.$emit("changedApartmentPrice", {});
+    },
+  },
+};
+</script>
+
 <template>
   <div class="card px-3 pt-4 pb-4 border mb-3">
     <table class="w-100">
@@ -5,7 +37,7 @@
         <tr>
           <td style="width: 120px">
             <i
-              style="width: 20px; text-align:center"
+              style="width: 20px; text-align: center"
               class="mr-1 far fa-building"
             ></i>
             № Дома:
@@ -17,7 +49,7 @@
         <tr>
           <td>
             <i
-              style="width: 20px; text-align:center"
+              style="width: 20px; text-align: center"
               class="mr-1 far fa-dollar-sign"
             ></i>
             Цена:
@@ -40,7 +72,7 @@
           <tr>
             <td style="width: 120px">
               <i
-                style="width: 20px; text-align:center"
+                style="width: 20px; text-align: center"
                 class="mr-1 far fa-expand"
               ></i>
               Площадь:
@@ -50,7 +82,7 @@
           <tr>
             <td style="width: 120px">
               <i
-                style="width: 20px; text-align:center"
+                style="width: 20px; text-align: center"
                 class="mr-1 far fa-inbox"
               ></i>
               Балкон:
@@ -60,7 +92,7 @@
           <tr>
             <td style="width: 120px">
               <i
-                style="width: 20px; text-align:center"
+                style="width: 20px; text-align: center"
                 class="mr-1 far fa-door-open"
               ></i>
               Комнат:
@@ -70,7 +102,7 @@
           <tr>
             <td style="width: 120px">
               <i
-                style="width: 20px; text-align:center"
+                style="width: 20px; text-align: center"
                 class="mr-1 far fa-industry"
               ></i>
               Этаж:
@@ -82,7 +114,12 @@
     </b-collapse>
     <div
       class="d-flex justify-content-center"
-      style="position: absolute; left: 50%; transform: translateX(-50%); bottom: -10px"
+      style="
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+      "
     >
       <b-button
         style="transform: scale(0.6)"
@@ -96,37 +133,5 @@
     </div>
   </div>
 </template>
-
-<script>
-import ApartmentPrice from "./ApartmentPrice";
-
-export default {
-  components: {
-    ApartmentPrice,
-  },
-
-  data() {
-    return {};
-  },
-
-  watch: {
-    apartment: function () {
-      console.log("QuickViewApartments change")
-    }
-  },
-
-  props: {
-    apartment: {},
-    contract: {},
-    index: {},
-  },
-
-  methods: {
-    apartmentPrice() {
-      this.$emit("changedApartmentPrice", {});
-    },
-  },
-};
-</script>
 
 <style lang="scss" scoped></style>

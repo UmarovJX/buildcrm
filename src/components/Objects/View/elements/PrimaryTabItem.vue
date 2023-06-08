@@ -1,6 +1,65 @@
+<script>
+import { formatToPrice, formatDateWithDot } from "@/util/reusable";
+
+export default {
+  name: "PrimaryInformation",
+  props: {
+    apartment: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  methods: {
+    priceDiscount(value) {
+      return formatToPrice(value, 2);
+    },
+    startDate(value) {
+      return formatDateWithDot(value);
+    },
+    getName(name) {
+      let locale = localStorage.locale;
+      let value = "";
+
+      if (locale) {
+        switch (locale) {
+          case "ru":
+            value = name.ru;
+            break;
+          case "uz":
+            value = name.uz;
+            break;
+        }
+      } else {
+        value = name.ru;
+      }
+
+      return value;
+    },
+    buildingDate(time) {
+      const date = new Date(time);
+      const year = date.getFullYear();
+      let month = date.getMonth();
+      if (month < 3) {
+        month = "1";
+      } else if (month >= 3 && month < 6) {
+        month = "2";
+      } else if (month >= 6 && month < 9) {
+        month = "3";
+      } else {
+        month = "4";
+      }
+
+      return ` ${month} - ${this.$t("quarter")} ${year} ${this.$t(
+        "of_the_year"
+      )}`;
+    },
+  },
+};
+</script>
+
 <template>
   <div class="main__content">
-
     <!--    &lt;!&ndash;   PROMO SECTION &ndash;&gt;-->
     <!--    <div v-if="apartment.promo.length" class="promos">-->
     <!--      <div v-for="promo in apartment.promo" :key="promo.id" class="promo__section">-->
@@ -23,113 +82,53 @@
 
     <!--   APARTMENT DETAILS     -->
     <div class="apartment__details my-3">
-      <h5 class="apartment__details-title">{{ $t('characters') }}</h5>
+      <h5 class="apartment__details-title">{{ $t("characters") }}</h5>
       <span class="apartment__details-row">
-        <span class="property">№ {{ $t('apartment_number') }}</span>
+        <span class="property">№ {{ $t("apartment_number") }}</span>
         <span class="value">{{ apartment.number }}</span>
       </span>
 
       <span class="apartment__details-row">
-        <span class="property">{{ $t('completion_date') }}</span>
-        <span class="value"> {{ buildingDate(apartment.object.build_date) }} </span>
-      </span>
-
-      <span class="apartment__details-row">
-        <span class="property">{{ $t('plan_area') }}</span>
+        <span class="property">{{ $t("completion_date") }}</span>
         <span class="value">
-          {{ apartment.plan.area }} m<sup>2</sup>
+          {{ buildingDate(apartment.object.build_date) }}
         </span>
       </span>
 
       <span class="apartment__details-row">
-        <span class="property">{{ $t('balcony') }}</span>
+        <span class="property">{{ $t("plan_area") }}</span>
+        <span class="value"> {{ apartment.plan.area }} m<sup>2</sup> </span>
+      </span>
+
+      <span class="apartment__details-row">
+        <span class="property">{{ $t("balcony") }}</span>
         <span class="value">
           {{ apartment.plan.balcony_area }} m<sup>2</sup>
         </span>
       </span>
 
       <span class="apartment__details-row">
-        <span class="property">{{ $t('number_of_rooms') }}</span>
+        <span class="property">{{ $t("number_of_rooms") }}</span>
         <span class="value">{{ apartment.rooms }}</span>
       </span>
 
       <span class="apartment__details-row">
-        <span class="property">{{ $t('floor') }}</span>
+        <span class="property">{{ $t("floor") }}</span>
         <span class="value">{{ apartment.floor }}</span>
       </span>
 
       <span class="apartment__details-row">
-        <span class="property">{{ $t('number_of_floors_of_the_block') }}</span>
+        <span class="property">{{ $t("number_of_floors_of_the_block") }}</span>
         <span class="value">{{ apartment.block.floors }}</span>
       </span>
 
       <span class="apartment__details-row">
-        <span class="property">{{ $t('objects.placeholder.block_name') }}</span>
+        <span class="property">{{ $t("objects.placeholder.block_name") }}</span>
         <span class="value">{{ apartment.block.name }}</span>
       </span>
     </div>
-
   </div>
 </template>
-
-<script>
-import {formatToPrice, formatDateWithDot} from "@/util/reusable";
-
-export default {
-  name: "PrimaryInformation",
-  props: {
-    apartment: {
-      type: Object,
-      required: true
-    }
-  },
-
-
-  methods: {
-    priceDiscount(value) {
-      return formatToPrice(value, 2)
-    },
-    startDate(value) {
-      return formatDateWithDot(value)
-    },
-    getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
-
-      if (locale) {
-        switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
-        }
-      } else {
-        value = name.ru;
-      }
-
-      return value;
-    },
-    buildingDate(time) {
-      const date = new Date(time)
-      const year = date.getFullYear()
-      let month = date.getMonth()
-      if (month < 3) {
-        month = '1'
-      } else if (month >= 3 && month < 6) {
-        month = '2'
-      } else if (month >= 6 && month < 9) {
-        month = '3'
-      } else {
-        month = '4'
-      }
-
-      return ` ${month} - ${this.$t('quarter')} ${year} ${this.$t('of_the_year')}`
-    },
-  }
-}
-</script>
 
 <style lang="sass" scoped>
 
@@ -255,5 +254,4 @@ export default {
       .description
         font-size: 14px
         line-height: 20px
-
 </style>

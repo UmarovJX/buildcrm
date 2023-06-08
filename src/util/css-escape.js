@@ -1,21 +1,21 @@
-import { toString } from './string'
+import { toString } from "./string";
 
-const escapeChar = value => '\\' + value
+const escapeChar = (value) => "\\" + value;
 
 // The `cssEscape()` util is based on this `CSS.escape()` polyfill:
 // https://github.com/mathiasbynens/CSS.escape
-export const cssEscape = value => {
-  value = toString(value)
+export const cssEscape = (value) => {
+  value = toString(value);
 
-  const length = value.length
-  const firstCharCode = value.charCodeAt(0)
+  const length = value.length;
+  const firstCharCode = value.charCodeAt(0);
 
-  return value.split('').reduce((result, char, index) => {
-    const charCode = value.charCodeAt(index)
+  return value.split("").reduce((result, char, index) => {
+    const charCode = value.charCodeAt(index);
 
     // If the character is NULL (U+0000), use (U+FFFD) as replacement
     if (charCode === 0x0000) {
-      return result + '\uFFFD'
+      return result + "\uFFFD";
     }
 
     // If the character ...
@@ -28,10 +28,13 @@ export const cssEscape = value => {
       (index === 0 && charCode >= 0x0030 && charCode <= 0x0039) ||
       // ... is the second character and is in the range [0-9] (U+0030 to U+0039)
       // and the first character is a `-` (U+002D) ...
-      (index === 1 && charCode >= 0x0030 && charCode <= 0x0039 && firstCharCode === 0x002d)
+      (index === 1 &&
+        charCode >= 0x0030 &&
+        charCode <= 0x0039 &&
+        firstCharCode === 0x002d)
     ) {
       // ... https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
-      return result + escapeChar(`${charCode.toString(16)} `)
+      return result + escapeChar(`${charCode.toString(16)} `);
     }
 
     // If the character ...
@@ -44,7 +47,7 @@ export const cssEscape = value => {
       length === 1
     ) {
       // ... use the escaped character
-      return result + escapeChar(char)
+      return result + escapeChar(char);
     }
 
     // If the character ...
@@ -63,11 +66,11 @@ export const cssEscape = value => {
       (charCode >= 0x0061 && charCode <= 0x007a)
     ) {
       // ... use the character itself
-      return result + char
+      return result + char;
     }
 
     // Otherwise use the escaped character
     // See: https://drafts.csswg.org/cssom/#escape-a-character
-    return result + escapeChar(char)
-  }, '')
-}
+    return result + escapeChar(char);
+  }, "");
+};

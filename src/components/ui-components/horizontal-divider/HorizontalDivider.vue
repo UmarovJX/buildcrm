@@ -1,12 +1,12 @@
-<template>
-  <div class="x-horizontal-divider"></div>
-</template>
-
 <script>
 export default {
   name: "HorizontalDivider",
-}
+};
 </script>
+
+<template>
+  <div class="x-horizontal-divider"></div>
+</template>
 
 <style lang="scss" scoped>
 .x-horizontal-divider {

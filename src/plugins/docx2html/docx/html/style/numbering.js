@@ -1,5 +1,3 @@
-import Style from './converter'
+import Style from "./converter";
 
-export default class Numbering extends Style{
-	
-}
+export default class Numbering extends Style {}

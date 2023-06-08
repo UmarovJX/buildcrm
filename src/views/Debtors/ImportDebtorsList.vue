@@ -1,3 +1,232 @@
+<script>
+import AppHeader from "@/components/Header/AppHeader";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BaseRightIcon from "@/components/icons/BaseRightIcon";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+// import XFormSelect from "@/components/ui-components/form-select/FormSelect";
+import { mapGetters, mapMutations } from "vuex";
+import api from "@/services/api";
+import FirstStep from "@/views/Debtors/steps/FirstStep";
+import SecondStep from "@/views/Debtors/steps/SecondStep";
+import ThirdStep from "@/views/Debtors/steps/ThirdStep";
+import BaseModal from "@/components/Reusable/BaseModal";
+import { TYPE, PAYMENT_TYPE, PAGINATION_COUNT } from "@/constants/names";
+import BasePagination from "@/components/Reusable/Navigation/BasePagination";
+
+export default {
+  name: "ImportDebtorsList",
+  components: {
+    FirstStep,
+    SecondStep,
+    ThirdStep,
+    BasePagination,
+    // XFormSelect,
+    BaseArrowLeftIcon,
+    BaseRightIcon,
+    BaseArrowRightIcon,
+    AppHeader,
+    BaseButton,
+    BaseModal,
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$refs["leave-modal"].openModal();
+    this.nextRoute = to.name;
+    if (this.permissionLeave) {
+      next();
+    } else {
+      next(false);
+    }
+  },
+  created() {
+    window.onbeforeunload = function (e) {
+      e = e || window.event;
+      //old browsers
+      if (e) {
+        e.returnValue = "Changes you made may not be saved";
+      }
+      //safari, chrome(chrome ignores text)
+      return "Changes you made may not be saved";
+    };
+  },
+  data() {
+    return {
+      tabIndex: 0,
+      stepTwoDisable: false,
+      stepThirdDisable: false,
+      appLoading: false,
+      importContracts: {},
+      resultList: [],
+      listLoading: false,
+      resultDebtors: [],
+      permissionLeave: false,
+      nextRoute: "",
+    };
+  },
+  computed: {
+    ...mapGetters({
+      getDebtorsSheets: "getDebtorsSheets",
+      currentPagination: "getCurrentPagination",
+    }),
+    paginationCount() {
+      return Math.ceil(
+        (this.getDebtorsSheets.rows.length - 1) / PAGINATION_COUNT
+      );
+    },
+    haveConstructorOrder() {
+      return Object.keys(this.getDebtorsSheets).length > 0;
+    },
+    fileName() {
+      const debt = this.getDebtorsSheets;
+      if (debt && debt.file) {
+        return this.getDebtorsSheets.file.name;
+      }
+      return "";
+    },
+  },
+  methods: {
+    ...mapMutations({
+      setCurrentPagination: "SET_CURRENT_PAGINATION",
+    }),
+    paginate(page) {
+      this.setCurrentPagination(page);
+      this.getImportDebtorsContract();
+    },
+    cancelLeave() {
+      this.permissionLeave = false;
+      this.$refs["leave-modal"].closeModal();
+    },
+    confirmLeave() {
+      this.permissionLeave = true;
+      this.$router.push({ name: this.nextRoute });
+      this.$refs["leave-modal"].closeModal();
+    },
+    backNavigation() {
+      this.$router.go(-1);
+    },
+    async getImportDebtorsContract() {
+      const typeFieldValidation = await this.$refs[
+        "first-step"
+      ].validateFirstStep();
+
+      if (typeFieldValidation) {
+        const body = {
+          contracts: this.$refs["first-step"].getContractNumbers(),
+        };
+
+        api.debtorsV2
+          .checkImportDebtors(body)
+          .then((res) => {
+            this.validationError = {
+              visible: true,
+              message: "Успешно",
+              type: "success",
+            };
+            console.log("Response: ", res.data);
+            this.importContracts = res.data;
+            // this.foundContracts = res.data.found
+            // this.notFoundContracts = res.data.not_found
+
+            if (this.tabIndex === 0) {
+              this.stepTwoDisable = false;
+              setTimeout(() => {
+                this.tabIndex = 1;
+              }, 100);
+            }
+          })
+          .catch((err) => {
+            let error = [];
+            for (const value of Object.values(err.response.data)) {
+              error = [...error, value];
+            }
+            this.validationError = {
+              visible: true,
+              message: error.join(", "),
+              type: "error",
+            };
+            this.stepTwoDisable = true;
+          });
+      } else {
+        this.validationError = {
+          visible: true,
+          message:
+            "Поля, выделенные красным цветом, не заполнены или заполнены неправильно",
+          type: "error",
+        };
+        this.stepTwoDisable = true;
+      }
+    },
+    async changeTab() {
+      if (this.tabIndex === 0) {
+        this.getImportDebtorsContract();
+      } else if (this.tabIndex === 1) {
+        await this.$refs["second-step"].validateSecondStep();
+      }
+    },
+    matchPaymentType(type) {
+      return PAYMENT_TYPE[type];
+    },
+    matchType(type) {
+      return TYPE[type];
+    },
+    setDebtorsList(debtors) {
+      this.resultDebtors = debtors.map((debtor) => {
+        let existContract = this.getDebtorsSheets?.rows.find(
+          (debtorSheet) => debtorSheet["Номер Договораг №"] === debtor.alias
+        );
+        const date = new Date(existContract["Дата"]);
+        const formatDate = date.toLocaleDateString("en-US");
+        return {
+          uuid: debtor.uuid,
+          amount: existContract["Сумма оплаты"],
+          date: formatDate,
+          type: this.matchType(existContract["Тип оплаты"]),
+          payment_type: this.matchPaymentType(existContract["Способ оплаты"]),
+          comment: existContract["Примичание"],
+        };
+      });
+
+      this.listLoading = true;
+
+      const body = {
+        contracts: this.resultDebtors,
+      };
+      api.debtorsV2
+        .viewImportList(body)
+        .then((res) => {
+          this.resultList = res.data;
+          this.tabIndex = 2;
+        })
+        .catch((err) => {
+          this.resultList = [];
+          return err;
+        })
+        .finally(() => {
+          this.listLoading = false;
+        });
+    },
+    async submitConcludeDebtors() {
+      const body = {
+        payments: this.resultDebtors,
+      };
+      await api.debtorsV2
+        .activatePayments(body)
+        .then(() => {
+          this.permissionLeave = true;
+          this.$store.dispatch("notify/openNotify", {
+            type: "success",
+            duration: 3000,
+          });
+          this.$router.push({ name: "debtors" });
+        })
+        .catch((err) => {
+          return err;
+        });
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <app-header>
@@ -69,9 +298,9 @@
               :import-data="importContracts"
               @all-debtors="setDebtorsList"
             />
-            <BasePagination 
+            <BasePagination
               :paginationCount="paginationCount"
-              :paginationCurrent="currentPagination" 
+              :paginationCurrent="currentPagination"
               @change-page="paginate"
             />
           </div>
@@ -174,231 +403,6 @@
     </base-modal>
   </div>
 </template>
-
-<script>
-import AppHeader from "@/components/Header/AppHeader";
-import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-// import XFormSelect from "@/components/ui-components/form-select/FormSelect";
-import { mapGetters, mapMutations } from "vuex";
-import api from "@/services/api";
-import FirstStep from "@/views/Debtors/steps/FirstStep";
-import SecondStep from "@/views/Debtors/steps/SecondStep";
-import ThirdStep from "@/views/Debtors/steps/ThirdStep";
-import BaseModal from "@/components/Reusable/BaseModal";
-import { TYPE, PAYMENT_TYPE, PAGINATION_COUNT } from "@/constants/names";
-import BasePagination from "@/components/Reusable/Navigation/BasePagination";
-
-export default {
-  name: "ImportDebtorsList",
-  components: {
-    FirstStep,
-    SecondStep,
-    ThirdStep,
-    BasePagination,
-    // XFormSelect,
-    BaseArrowLeftIcon,
-    BaseRightIcon,
-    BaseArrowRightIcon,
-    AppHeader,
-    BaseButton,
-    BaseModal,
-  },
-  beforeRouteLeave(to, from, next) {
-    this.$refs["leave-modal"].openModal();
-    this.nextRoute = to.name;
-    if (this.permissionLeave) {
-      next();
-    } else {
-      next(false);
-    }
-  },
-  created() {
-    window.onbeforeunload = function (e) {
-      e = e || window.event;
-      //old browsers
-      if (e) {
-        e.returnValue = "Changes you made may not be saved";
-      }
-      //safari, chrome(chrome ignores text)
-      return "Changes you made may not be saved";
-    };
-  },
-  data() {
-    return {
-      tabIndex: 0,
-      stepTwoDisable: false,
-      stepThirdDisable: false,
-      appLoading: false,
-      importContracts: {},
-      resultList: [],
-      listLoading: false,
-      resultDebtors: [],
-      permissionLeave: false,
-      nextRoute: "",
-    };
-  },
-  computed: {
-    ...mapGetters({
-      getDebtorsSheets: "getDebtorsSheets",
-      currentPagination: "getCurrentPagination"
-    }),
-    paginationCount() {
-      return Math.ceil((this.getDebtorsSheets.rows.length-1) / PAGINATION_COUNT)
-    },
-    haveConstructorOrder() {
-      return Object.keys(this.getDebtorsSheets).length > 0;
-    },
-    fileName() {
-      const debt = this.getDebtorsSheets;
-      if (debt && debt.file) {
-        return this.getDebtorsSheets.file.name;
-      }
-      return "";
-    },
-  },
-  methods: {
-    ...mapMutations({
-      setCurrentPagination: 'SET_CURRENT_PAGINATION'
-    }),
-    paginate(page) {
-      this.setCurrentPagination(page)
-      this.getImportDebtorsContract()
-    },
-    cancelLeave() {
-      this.permissionLeave = false;
-      this.$refs["leave-modal"].closeModal();
-    },
-    confirmLeave() {
-      this.permissionLeave = true;
-      this.$router.push({ name: this.nextRoute });
-      this.$refs["leave-modal"].closeModal();
-    },
-    backNavigation() {
-      this.$router.go(-1);
-    },
-    async getImportDebtorsContract() {
-      const typeFieldValidation = await this.$refs[
-          "first-step"
-        ].validateFirstStep();
-
-        if (typeFieldValidation) {
-          const body = {
-            contracts: this.$refs["first-step"].getContractNumbers(),
-          };
-
-          api.debtorsV2
-            .checkImportDebtors(body)
-            .then((res) => {
-              this.validationError = {
-                visible: true,
-                message: "Успешно",
-                type: "success",
-              };
-              console.log('Response: ', res.data)
-              this.importContracts = res.data;
-              // this.foundContracts = res.data.found
-              // this.notFoundContracts = res.data.not_found
-
-              if (this.tabIndex === 0) {
-                this.stepTwoDisable = false;
-                setTimeout(() => {
-                  this.tabIndex = 1;
-                }, 100);
-              }
-            })
-            .catch((err) => {
-              let error = [];
-              for (const value of Object.values(err.response.data)) {
-                error = [...error, value];
-              }
-              this.validationError = {
-                visible: true,
-                message: error.join(", "),
-                type: "error",
-              };
-              this.stepTwoDisable = true;
-            });
-        } else {
-          this.validationError = {
-            visible: true,
-            message:
-              "Поля, выделенные красным цветом, не заполнены или заполнены неправильно",
-            type: "error",
-          };
-          this.stepTwoDisable = true;
-        }
-    },
-    async changeTab() {
-      if (this.tabIndex === 0) {
-        this.getImportDebtorsContract();
-      } else if (this.tabIndex === 1) {
-        await this.$refs["second-step"].validateSecondStep();
-      }
-    },
-    matchPaymentType(type) {
-      return PAYMENT_TYPE[type]
-    },
-    matchType(type) {
-      return TYPE[type]
-    },
-    setDebtorsList(debtors) {
-      this.resultDebtors = debtors.map((debtor) => {
-        let existContract = this.getDebtorsSheets?.rows.find(debtorSheet => debtorSheet["Номер Договораг №"] === debtor.alias)
-        const date = new Date(existContract["Дата"]);
-        const formatDate = date.toLocaleDateString('en-US')
-        return {
-          uuid: debtor.uuid,
-          amount: existContract["Сумма оплаты"],
-          date: formatDate,
-          type: this.matchType(existContract["Тип оплаты"]),
-          payment_type: this.matchPaymentType(existContract["Способ оплаты"]),
-          comment: existContract["Примичание"],
-        }
-      });
-
-      this.listLoading = true;
-      
-      const body = {
-        contracts: this.resultDebtors,
-      };
-      api.debtorsV2
-        .viewImportList(body)
-        .then((res) => {
-          this.resultList = res.data;
-          this.tabIndex = 2;
-        })
-        .catch((err) => {
-          this.resultList = [];
-          return err;
-        })
-        .finally(() => {
-          this.listLoading = false;
-        });
-    },
-    async submitConcludeDebtors() {
-      const body = {
-        payments: this.resultDebtors,
-      };
-      await api.debtorsV2
-        .activatePayments(body)
-        .then(() => {
-          this.permissionLeave = true;
-          this.$store.dispatch("notify/openNotify", {
-            type: "success",
-            duration: 3000,
-          });
-          this.$router.push({ name: "debtors" });
-        })
-        .catch((err) => {
-          return err;
-        });
-    },
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 ::v-deep .app-tabs-content {

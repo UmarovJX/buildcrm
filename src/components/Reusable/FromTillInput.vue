@@ -1,33 +1,33 @@
-<template>
-<div class="from-till-input" :class="error ? 'error' : ''">
-  <BaseInput :placeholder="from_label" :label="true" type="number"/>
-  <BaseInput :placeholder="till_label" :label="true" type="number"/>
-</div>
-</template>
-
 <script>
 import BaseInput from "@/components/Reusable/BaseInput";
 export default {
   name: "FromTillInput",
-  components: {BaseInput},
+  components: { BaseInput },
   props: {
     error: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     from_label: {
       type: String,
       required: false,
-      default: () => 'От'
+      default: () => "От",
     },
     till_label: {
       type: String,
       required: false,
-      default: () => 'До'
-    }
-  }
-}
+      default: () => "До",
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="from-till-input" :class="error ? 'error' : ''">
+    <BaseInput :placeholder="from_label" :label="true" type="number" />
+    <BaseInput :placeholder="till_label" :label="true" type="number" />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .from-till-input {
@@ -35,13 +35,13 @@ export default {
   width: 320px;
   input {
     border: none;
-    background: #F3F4F6;
+    background: #f3f4f6;
     padding: 17px 20px;
     font-family: "Inter", serif;
     font-weight: 600;
     font-size: 16px;
     line-height: 22px;
-    color: #9CA3AF;
+    color: #9ca3af;
   }
   .base-input:first-child {
     display: flex;
@@ -49,9 +49,9 @@ export default {
     border-bottom-left-radius: 32px;
     border-top-left-radius: 32px;
     width: 50%;
-    border-right: 3px solid #D1D5DB;
+    border-right: 3px solid #d1d5db;
     &:focus {
-      border: 4px solid #E5E7EB;
+      border: 4px solid #e5e7eb;
       border-right-width: 3px;
     }
   }
@@ -61,17 +61,17 @@ export default {
     border-bottom-right-radius: 32px;
     border-top-right-radius: 32px;
     &:focus {
-      border: 4px solid #E5E7EB;
+      border: 4px solid #e5e7eb;
       border-left-style: none;
     }
   }
 }
 .error {
-  border: .25rem solid var(--red-500) !important
+  border: 0.25rem solid var(--red-500) !important;
 }
 .from-till-input:hover {
   input {
-    background: #E5E7EB;
+    background: #e5e7eb;
   }
 }
 </style>

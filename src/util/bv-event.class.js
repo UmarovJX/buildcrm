@@ -1,4 +1,9 @@
-import { assign, defineProperty, defineProperties, readonlyDescriptor } from './object'
+import {
+  assign,
+  defineProperty,
+  defineProperties,
+  readonlyDescriptor,
+} from "./object";
 
 export class BvEvent {
   constructor(type, eventInit = {}) {
@@ -6,15 +11,15 @@ export class BvEvent {
     if (!type) {
       /* istanbul ignore next */
       throw new TypeError(
-        `Failed to construct '${this.constructor.name}'. 1 argument required, ${
-          arguments.length
-        } given.`
-      )
+        `Failed to construct '${this.constructor.name}'. 1 argument required, ${arguments.length} given.`
+      );
     }
 
     // Merge defaults first, the eventInit, and the type last
     // so it can't be overwritten
-    assign(this, BvEvent.Defaults, this.constructor.Defaults, eventInit, { type })
+    assign(this, BvEvent.Defaults, this.constructor.Defaults, eventInit, {
+      type,
+    });
 
     // Freeze some props as readonly, but leave them enumerable
     defineProperties(this, {
@@ -24,37 +29,37 @@ export class BvEvent {
       target: readonlyDescriptor(),
       relatedTarget: readonlyDescriptor(),
       vueTarget: readonlyDescriptor(),
-      componentId: readonlyDescriptor()
-    })
+      componentId: readonlyDescriptor(),
+    });
 
     // Create a private variable using closure scoping
-    let defaultPrevented = false
+    let defaultPrevented = false;
     // Recreate preventDefault method. One way setter
     this.preventDefault = function preventDefault() {
       if (this.cancelable) {
-        defaultPrevented = true
+        defaultPrevented = true;
       }
-    }
+    };
 
     // Create `defaultPrevented` publicly accessible prop that
     // can only be altered by the preventDefault method
-    defineProperty(this, 'defaultPrevented', {
+    defineProperty(this, "defaultPrevented", {
       enumerable: true,
       get() {
-        return defaultPrevented
-      }
-    })
+        return defaultPrevented;
+      },
+    });
   }
 
   static get Defaults() {
     return {
-      type: '',
+      type: "",
       cancelable: true,
       nativeEvent: null,
       target: null,
       relatedTarget: null,
       vueTarget: null,
-      componentId: null
-    }
+      componentId: null,
+    };
   }
 }

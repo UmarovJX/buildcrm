@@ -1,6 +1,6 @@
-import { concat } from './array'
-import { identity } from './identity'
-import { isFunction } from './inspect'
+import { concat } from "./array";
+import { identity } from "./identity";
+import { isFunction } from "./inspect";
 
 // Note for functional components:
 // In functional components, `slots` is a function so it must be called
@@ -17,10 +17,10 @@ import { isFunction } from './inspect'
  */
 export const hasNormalizedSlot = (names, $scopedSlots = {}, $slots = {}) => {
   // Ensure names is an array
-  names = concat(names).filter(identity)
+  names = concat(names).filter(identity);
   // Returns true if the either a $scopedSlot or $slot exists with the specified name
-  return names.some(name => $scopedSlots[name] || $slots[name])
-}
+  return names.some((name) => $scopedSlots[name] || $slots[name]);
+};
 
 /**
  * Returns VNodes for named slot either scoped or unscoped
@@ -31,14 +31,19 @@ export const hasNormalizedSlot = (names, $scopedSlots = {}, $slots = {}) => {
  * @param {Object} slots
  * @returns {Array|undefined} VNodes
  */
-export const normalizeSlot = (names, scope = {}, $scopedSlots = {}, $slots = {}) => {
+export const normalizeSlot = (
+  names,
+  scope = {},
+  $scopedSlots = {},
+  $slots = {}
+) => {
   // Ensure names is an array
-  names = concat(names).filter(identity)
-  let slot
+  names = concat(names).filter(identity);
+  let slot;
   for (let i = 0; i < names.length && !slot; i++) {
-    const name = names[i]
-    slot = $scopedSlots[name] || $slots[name]
+    const name = names[i];
+    slot = $scopedSlots[name] || $slots[name];
   }
   // Note: in Vue 2.6.x, all named slots are also scoped slots
-  return isFunction(slot) ? slot(scope) : slot
-}
+  return isFunction(slot) ? slot(scope) : slot;
+};

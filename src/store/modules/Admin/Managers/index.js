@@ -1,48 +1,47 @@
 import api from "@/services/api";
 
 export default {
-    actions: {
-        async fetchUsers(ctx, vm) {
-            ctx.commit('updateLoading', true, {root: true});
-            try {
-                const response = await api.user.getUsersList()
-                const managers = response.data;
-                ctx.commit('updateUsers', managers);
-            } catch (error) {
-                if (!error.response) {
-                    vm.toasted('Error: Network Error', 'error');
-                } else {
-                    if (error.response.status === 403) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 401) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else if (error.response.status === 500) {
-                        vm.toasted(error.response.data.message, 'error');
-                    } else {
-                        vm.toasted(error.response.data.message, 'error');
-                    }
-                }
-                ctx.commit('updateLoading', false, {root: true});
-            } finally {
-                ctx.commit('updateLoading', false, {root: true});
-            }
-        },
-
-    },
-
-    mutations: {
-        updateUsers(state, managers) {
-            state.users = managers;
+  actions: {
+    async fetchUsers(ctx, vm) {
+      ctx.commit("updateLoading", true, { root: true });
+      try {
+        const response = await api.user.getUsersList();
+        const managers = response.data;
+        ctx.commit("updateUsers", managers);
+      } catch (error) {
+        if (!error.response) {
+          vm.toasted("Error: Network Error", "error");
+        } else {
+          if (error.response.status === 403) {
+            vm.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 401) {
+            vm.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 500) {
+            vm.toasted(error.response.data.message, "error");
+          } else {
+            vm.toasted(error.response.data.message, "error");
+          }
         }
+        ctx.commit("updateLoading", false, { root: true });
+      } finally {
+        ctx.commit("updateLoading", false, { root: true });
+      }
     },
+  },
 
-    state: {
-        users: []
+  mutations: {
+    updateUsers(state, managers) {
+      state.users = managers;
     },
+  },
 
-    getters: {
-        getUsers(state) {
-            return state.users;
-        }
-    }
-}
+  state: {
+    users: [],
+  },
+
+  getters: {
+    getUsers(state) {
+      return state.users;
+    },
+  },
+};

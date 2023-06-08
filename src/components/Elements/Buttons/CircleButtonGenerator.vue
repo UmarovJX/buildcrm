@@ -1,56 +1,56 @@
-<template>
-  <button
-      class="circle-button d-flex justify-content-center align-items-center"
-      :style="circleStyle"
-      @click="triggerClick"
-  >
-    <slot></slot>
-  </button>
-</template>
-
 <script>
 export default {
   name: "CircleButtonGenerator",
   props: {
     background: {
       type: String,
-      default: 'gray-100'
+      default: "gray-100",
     },
     bgByVariable: {
       type: Boolean,
-      default: true
+      default: true,
     },
     circleLength: {
       type: Number,
-      default: 3.5
+      default: 3.5,
     },
     lengthBy: {
       type: String,
-      default: 'rem'
-    }
+      default: "rem",
+    },
   },
-  emits: ['click'],
+  emits: ["click"],
   computed: {
     circleStyle() {
-      let generateStyle = ''
+      let generateStyle = "";
       if (this.bgByVariable) {
-        generateStyle += `background-color:var(--${this.background});`
+        generateStyle += `background-color:var(--${this.background});`;
       } else {
-        generateStyle += `background-color:${this.background};`
+        generateStyle += `background-color:${this.background};`;
       }
       generateStyle += `
         width:${this.circleLength}${this.lengthBy};
-        height:${this.circleLength}${this.lengthBy};`
-      return generateStyle
-    }
+        height:${this.circleLength}${this.lengthBy};`;
+      return generateStyle;
+    },
   },
   methods: {
     triggerClick() {
-      this.$emit('click')
-    }
-  }
-}
+      this.$emit("click");
+    },
+  },
+};
 </script>
+
+<template>
+  <button
+    class="circle-button d-flex justify-content-center align-items-center"
+    :style="circleStyle"
+    @click="triggerClick"
+  >
+    <slot></slot>
+  </button>
+</template>
 
 <style lang="scss" scoped>
 .circle-button {

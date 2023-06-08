@@ -1,3 +1,92 @@
+<script>
+import { mapActions, mapGetters } from "vuex";
+
+export default {
+  data: () => ({
+    filter: {
+      rooms: [],
+      floors: [],
+      price_from: null,
+      price_to: null,
+      status: 0,
+
+      objects: [],
+      area_from: null,
+      area_to: null,
+    },
+  }),
+
+  mounted() {
+    this.fetchObjects(this);
+    this.fetchApartmentsFloors(this);
+    this.fetchApartmentsRooms(this);
+  },
+
+  watch: {
+    "filter.rooms": function () {
+      this.fetchFilterApartments(this);
+    },
+
+    "filter.floors": function () {
+      this.fetchFilterApartments(this);
+    },
+
+    "filter.price_from": function () {
+      this.fetchFilterApartments(this);
+    },
+
+    "filter.price_to": function () {
+      this.fetchFilterApartments(this);
+    },
+
+    "filter.area_from": function () {
+      this.fetchFilterApartments(this);
+    },
+
+    "filter.area_to": function () {
+      this.fetchFilterApartments(this);
+    },
+
+    "filter.status": function () {
+      this.fetchFilterApartments(this);
+    },
+
+    "filter.objects": function () {
+      this.fetchFilterApartments(this);
+    },
+  },
+  computed: mapGetters(["getObjects", "getFilterRooms", "getFilterFloors"]),
+
+  methods: {
+    ...mapActions([
+      "fetchFilterApartments",
+      "fetchObjects",
+      "fetchApartmentsFloors",
+      "fetchApartmentsRooms",
+    ]),
+
+    Filter() {
+      this.$bvModal.hide("modal-filter-all");
+      this.$emit("Filtered", this.filter);
+    },
+
+    filterClear() {
+      this.filter = {
+        rooms: [],
+        floors: [],
+        price_from: null,
+        price_to: null,
+        status: 0,
+        objects: [],
+
+        area_from: null,
+        area_to: null,
+      };
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <b-modal
@@ -134,12 +223,7 @@
       </div>
 
       <div
-        class="
-          mt-4
-          d-flex
-          justify-content-md-start justify-content-center
-          float-right
-        "
+        class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
       >
         <button
           class="btn btn-outline-secondary"
@@ -156,94 +240,5 @@
     </b-modal>
   </div>
 </template>
-
-<script>
-import {mapActions, mapGetters} from "vuex";
-
-export default {
-  data: () => ({
-    filter: {
-      rooms: [],
-      floors: [],
-      price_from: null,
-      price_to: null,
-      status: 0,
-
-      objects: [],
-      area_from: null,
-      area_to: null,
-    },
-  }),
-
-  mounted() {
-    this.fetchObjects(this);
-    this.fetchApartmentsFloors(this);
-    this.fetchApartmentsRooms(this);
-  },
-
-  watch: {
-    "filter.rooms": function () {
-      this.fetchFilterApartments(this);
-    },
-
-    "filter.floors": function () {
-      this.fetchFilterApartments(this);
-    },
-
-    "filter.price_from": function () {
-      this.fetchFilterApartments(this);
-    },
-
-    "filter.price_to": function () {
-      this.fetchFilterApartments(this);
-    },
-
-    "filter.area_from": function () {
-      this.fetchFilterApartments(this);
-    },
-
-    "filter.area_to": function () {
-      this.fetchFilterApartments(this);
-    },
-
-    "filter.status": function () {
-      this.fetchFilterApartments(this);
-    },
-
-    "filter.objects": function () {
-      this.fetchFilterApartments(this);
-    },
-  },
-  computed: mapGetters(["getObjects", "getFilterRooms", "getFilterFloors"]),
-
-  methods: {
-    ...mapActions([
-      "fetchFilterApartments",
-      "fetchObjects",
-      "fetchApartmentsFloors",
-      "fetchApartmentsRooms",
-    ]),
-
-    Filter() {
-      this.$bvModal.hide("modal-filter-all");
-      this.$emit("Filtered", this.filter);
-    },
-
-    filterClear() {
-      this.filter = {
-        rooms: [],
-        floors: [],
-        price_from: null,
-        price_to: null,
-        status: 0,
-        objects: [],
-
-        area_from: null,
-        area_to: null,
-      };
-    },
-  },
-};
-</script>
 
 <style scoped></style>

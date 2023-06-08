@@ -1,11 +1,5 @@
-<template>
-  <div>
-    <canvas ref="canvas"></canvas>
-  </div>
-</template>
-
 <script>
-import {Line} from "vue-chartjs";
+import { Line } from "vue-chartjs";
 
 export default {
   extends: Line,
@@ -41,5 +35,11 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div>
+    <canvas ref="canvas"></canvas>
+  </div>
+</template>
 
 <style scoped></style>

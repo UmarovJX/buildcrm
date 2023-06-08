@@ -1,50 +1,3 @@
-<template>
-  <div>
-    <!--  MAIN NAVIGATION  -->
-    <ValidationObserver ref="type-validation" class="main__row">
-      <b-table
-        :fields="typeFields"
-        :items="fileFields"
-        class="fixed-table"
-        :empty-text="$t('no_data')"
-        thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border"
-        borderless
-        fixed
-      >
-        <template #head()="data">
-          <span>{{ $t(`${data.label}`) }}</span>
-        </template>
-
-        <template #cell(field)="data">
-          <span>
-            {{ $t(`${data.item.field}`) }}
-          </span>
-        </template>
-
-        <template #cell(type)="data">
-          <ValidationProvider
-            v-slot="{ errors }"
-            rules="required"
-            class="cell"
-            :name="$t(`${data.item.field}`)"
-          >
-            <x-form-select
-              class="w-100"
-              v-model="data.item.type"
-              :options="options"
-              :placeholder="iTranslate(data.item.field)"
-            />
-            <span class="error__provider" v-if="errors[0]">
-              {{ errors[0] }}
-            </span>
-          </ValidationProvider>
-        </template>
-      </b-table>
-    </ValidationObserver>
-  </div>
-</template>
-
 <script>
 import XFormSelect from "@/components/ui-components/form-select/FormSelect";
 import { mapGetters } from "vuex";
@@ -109,13 +62,13 @@ export default {
   computed: {
     ...mapGetters({
       getDebtorsSheets: "getDebtorsSheets",
-      getCurrentPagination: "getCurrentPagination"
+      getCurrentPagination: "getCurrentPagination",
     }),
   },
   watch: {
     getCurrentPagination() {
-      this.getContractNumbers()
-    }
+      this.getContractNumbers();
+    },
   },
   created() {
     this.setupOptions();
@@ -137,23 +90,34 @@ export default {
 
       if (debtorsSheets.rows && debtorsSheets.rows.length) {
         debtorsSheets = debtorsSheets.rows.slice(1);
-        console.log(debtorsSheets)
-        console.log('DebtorsSheets: ', debtorsSheets.slice(PAGINATION_COUNT*this.getCurrentPagination,PAGINATION_COUNT*this.getCurrentPagination+PAGINATION_COUNT))
-        debtorsSheets.slice(PAGINATION_COUNT*this.getCurrentPagination,PAGINATION_COUNT*this.getCurrentPagination+PAGINATION_COUNT).map((item, index) => {
-          Object.entries(item).forEach(([key, value]) => {
-            if (key === contractFieldName || key === "contract") {
-              contractsList = [...contractsList, value];
-            }
-          });
+        console.log(debtorsSheets);
+        console.log(
+          "DebtorsSheets: ",
+          debtorsSheets.slice(
+            PAGINATION_COUNT * this.getCurrentPagination,
+            PAGINATION_COUNT * this.getCurrentPagination + PAGINATION_COUNT
+          )
+        );
+        debtorsSheets
+          .slice(
+            PAGINATION_COUNT * this.getCurrentPagination,
+            PAGINATION_COUNT * this.getCurrentPagination + PAGINATION_COUNT
+          )
+          .map((item, index) => {
+            Object.entries(item).forEach(([key, value]) => {
+              if (key === contractFieldName || key === "contract") {
+                contractsList = [...contractsList, value];
+              }
+            });
 
-          this.fileFields.forEach((field) => {
-            if (debtorsSheets[index][`${field.default}`]) {
-              debtorsSheets[index][`${field.default}`] =
-                debtorsSheets[index][`${field.type}`];
-              // delete debtorsSheets[index][`${field.type}`]
-            }
+            this.fileFields.forEach((field) => {
+              if (debtorsSheets[index][`${field.default}`]) {
+                debtorsSheets[index][`${field.default}`] =
+                  debtorsSheets[index][`${field.type}`];
+                // delete debtorsSheets[index][`${field.type}`]
+              }
+            });
           });
-        });
       }
       return contractsList;
     },
@@ -166,6 +130,53 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div>
+    <!--  MAIN NAVIGATION  -->
+    <ValidationObserver ref="type-validation" class="main__row">
+      <b-table
+        :fields="typeFields"
+        :items="fileFields"
+        class="fixed-table"
+        :empty-text="$t('no_data')"
+        thead-tr-class="row__head__bottom-border"
+        tbody-tr-class="row__body__bottom-border"
+        borderless
+        fixed
+      >
+        <template #head()="data">
+          <span>{{ $t(`${data.label}`) }}</span>
+        </template>
+
+        <template #cell(field)="data">
+          <span>
+            {{ $t(`${data.item.field}`) }}
+          </span>
+        </template>
+
+        <template #cell(type)="data">
+          <ValidationProvider
+            v-slot="{ errors }"
+            rules="required"
+            class="cell"
+            :name="$t(`${data.item.field}`)"
+          >
+            <x-form-select
+              class="w-100"
+              v-model="data.item.type"
+              :options="options"
+              :placeholder="iTranslate(data.item.field)"
+            />
+            <span class="error__provider" v-if="errors[0]">
+              {{ errors[0] }}
+            </span>
+          </ValidationProvider>
+        </template>
+      </b-table>
+    </ValidationObserver>
+  </div>
+</template>
 
 <style scoped>
 .error__provider {

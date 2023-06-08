@@ -1,3 +1,66 @@
+<script>
+// import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
+// import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
+// import BaseNotificationsIcon from "@/components/icons/BaseNotificationsIcon";
+import BaseAvatar from "@/components/Reusable/BaseAvatar";
+import { mapGetters } from "vuex";
+
+export default {
+  name: "AppHeader",
+  components: {
+    BaseAvatar,
+    // BaseCircleWrapper,
+    // BaseQuestionsIcon,
+    // BaseNotificationsIcon
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapGetters({
+      pms: "getPermission",
+      me: "getMe",
+    }),
+    userCollapse() {
+      return this.$slots.hasOwnProperty("header-actions");
+    },
+    getFullName() {
+      if (this.me?.user) {
+        const { firstName, lastName } = this.me.user;
+        if (firstName !== "" && lastName !== "") {
+          return firstName + " " + lastName;
+        }
+      }
+      return "";
+    },
+    getNameSnippet() {
+      if (this.me?.user) {
+        const { firstName, lastName } = this.me.user;
+        if (firstName !== "" && lastName !== "") {
+          return firstName[0] + lastName[0];
+        }
+      }
+      return "";
+    },
+    getUserAvatarUrl() {
+      if (this.me?.user?.avatar) {
+        return this.me.user.avatar;
+      }
+      return "";
+    },
+    getRole() {
+      if (this.me?.role?.name) {
+        if (localStorage.locale)
+          return this.me?.role?.name[localStorage.locale];
+        else return this.me?.role?.name["ru"];
+      } else {
+        return "no-role";
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <header class="app-header">
     <div class="header-left">
@@ -14,9 +77,10 @@
       <slot name="header-actions"></slot>
 
       <BaseAvatar
-          :class="{'collapsed':userCollapse}"
-          :name-snippet="getNameSnippet"
-          :avatar="getUserAvatarUrl">
+        :class="{ collapsed: userCollapse }"
+        :name-snippet="getNameSnippet"
+        :avatar="getUserAvatarUrl"
+      >
         <template #full_name>
           {{ getFullName }}
         </template>
@@ -27,70 +91,6 @@
     </div>
   </header>
 </template>
-
-<script>
-// import BaseCircleWrapper from "@/components/Reusable/BaseCircleWrapper";
-// import BaseQuestionsIcon from "@/components/icons/BaseQuestionsIcon";
-// import BaseNotificationsIcon from "@/components/icons/BaseNotificationsIcon";
-import BaseAvatar from "@/components/Reusable/BaseAvatar";
-import {mapGetters} from "vuex";
-
-export default {
-  name: "AppHeader",
-  components: {
-    BaseAvatar,
-    // BaseCircleWrapper,
-    // BaseQuestionsIcon,
-    // BaseNotificationsIcon
-  },
-  data() {
-    return {}
-  },
-  computed: {
-    ...mapGetters({
-      pms: 'getPermission',
-      me: 'getMe'
-    }),
-    userCollapse() {
-      return this.$slots.hasOwnProperty('header-actions')
-    },
-    getFullName() {
-      if (this.me?.user) {
-        const {firstName, lastName} = this.me.user
-        if (firstName !== '' && lastName !== '') {
-          return firstName + " " + lastName
-        }
-      }
-      return ''
-    },
-    getNameSnippet() {
-      if (this.me?.user) {
-        const {firstName, lastName} = this.me.user
-        if (firstName !== '' && lastName !== '') {
-          return firstName[0] + lastName[0]
-        }
-      }
-      return ''
-    },
-    getUserAvatarUrl() {
-      if (this.me?.user?.avatar) {
-        return this.me.user.avatar
-      }
-      return ''
-    },
-    getRole() {
-      if (this.me?.role?.name) {
-        if (localStorage.locale)
-          return this.me?.role?.name[localStorage.locale]
-        else
-          return this.me?.role?.name['ru']
-      } else {
-        return 'no-role'
-      }
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .app-header {
@@ -103,7 +103,7 @@ export default {
   .header-left {
     display: flex;
     align-items: center;
-    column-gap: .25rem;
+    column-gap: 0.25rem;
   }
 
   .header-right {
@@ -126,6 +126,4 @@ export default {
     justify-content: center;
   }
 }
-
-
 </style>

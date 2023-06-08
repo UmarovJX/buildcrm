@@ -1,15 +1,11 @@
-<template>
-<div>
-  kms
-</div>
-</template>
-
 <script>
 export default {
-  name: "HeaderNavigation"
-}
+  name: "HeaderNavigation",
+};
 </script>
 
-<style scoped>
+<template>
+  <div>kms</div>
+</template>
 
-</style>
+<style scoped></style>

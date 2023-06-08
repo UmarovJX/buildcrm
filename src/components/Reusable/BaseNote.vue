@@ -1,65 +1,28 @@
-<template>
-<div class="base-note">
-  <div class="base-note-header">
-    <p class="m-0 base-note-text">{{detail.text}}</p>
-    <div
-        class="float-right dropdown my-dropdown"
-    >
-      <button
-          v-if="actions"
-          type="button"
-          class="dropdown-toggle"
-          data-toggle="dropdown"
-      >
-        <i class="far fa-ellipsis-h"></i>
-      </button>
-      <div class="dropdown-menu" v-if="actions">
-        <slot name="delete"/>
-        <slot name="edit"/>
-      </div>
-    </div>
-  </div>
-  <div class="d-flex justify-content-between base-note-content align-items-center">
-    <div class="d-flex align-items-center base-note-content-author">
-      <img :src="require(`@/assets/img/${detail.image}`)" class="mr-2 base-note-content-author-image" alt="avatar"/>
-      <span class="base-note-content-author-info d-flex">
-        <p class="m-0 base-note-content-author-info-name">{{detail.author}}</p>
-        <p class="m-0 dot">·</p>
-        <p class="m-0 base-note-content-author-info-role">{{detail.role}}</p>
-      </span>
-    </div>
-    <div class="base-note-content-date">
-      <p class="m-0">{{getDate}}</p>
-    </div>
-  </div>
-</div>
-</template>
-
 <script>
 import moment from "moment";
 
 export default {
   name: "BaseNote",
-  emits: ['edit-selected-note', 'delete-note'],
+  emits: ["edit-selected-note", "delete-note"],
   props: {
     detail: {
       type: Object,
-      required: true
+      required: true,
     },
     actions: {
       type: Boolean,
       required: false,
-      default: () => false
+      default: () => false,
     },
   },
   computed: {
-    getDate(){
-      let date = moment(this.detail.date).format('DD')
-      let month = moment(this.detail.date).format('MMMM')
-      let hour = moment(this.detail.date).format('HH')
-      let minute = moment(this.detail.date).format('m')
-      hour += ":" + minute + ", " + date + " " + month
-      return hour
+    getDate() {
+      let date = moment(this.detail.date).format("DD");
+      let month = moment(this.detail.date).format("MMMM");
+      let hour = moment(this.detail.date).format("HH");
+      let minute = moment(this.detail.date).format("m");
+      hour += ":" + minute + ", " + date + " " + month;
+      return hour;
     },
   },
   methods: {
@@ -69,13 +32,58 @@ export default {
     editSelectedPayment() {
       console.log("edit");
     },
-  }
-}
+  },
+};
 </script>
+
+<template>
+  <div class="base-note">
+    <div class="base-note-header">
+      <p class="m-0 base-note-text">{{ detail.text }}</p>
+      <div class="float-right dropdown my-dropdown">
+        <button
+          v-if="actions"
+          type="button"
+          class="dropdown-toggle"
+          data-toggle="dropdown"
+        >
+          <i class="far fa-ellipsis-h"></i>
+        </button>
+        <div class="dropdown-menu" v-if="actions">
+          <slot name="delete" />
+          <slot name="edit" />
+        </div>
+      </div>
+    </div>
+    <div
+      class="d-flex justify-content-between base-note-content align-items-center"
+    >
+      <div class="d-flex align-items-center base-note-content-author">
+        <img
+          :src="require(`@/assets/img/${detail.image}`)"
+          class="mr-2 base-note-content-author-image"
+          alt="avatar"
+        />
+        <span class="base-note-content-author-info d-flex">
+          <p class="m-0 base-note-content-author-info-name">
+            {{ detail.author }}
+          </p>
+          <p class="m-0 dot">·</p>
+          <p class="m-0 base-note-content-author-info-role">
+            {{ detail.role }}
+          </p>
+        </span>
+      </div>
+      <div class="base-note-content-date">
+        <p class="m-0">{{ getDate }}</p>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .base-note {
-  border: 2px solid #E5E7EB;
+  border: 2px solid #e5e7eb;
   border-radius: 32px;
   display: flex;
   flex-direction: column;
@@ -84,16 +92,16 @@ export default {
   padding: 24px 64px 24px 24px;
   gap: 16px;
   &-action {
-    cursor: pointer!important;
+    cursor: pointer !important;
   }
   &-text {
-    font-family: 'Inter', serif;
+    font-family: "Inter", serif;
     font-weight: 600;
     font-size: 18px;
     line-height: 24px;
-    color: #4B5563;
+    color: #4b5563;
   }
-  &-header{
+  &-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -111,35 +119,35 @@ export default {
     &-date {
       width: auto;
     }
-    &-author{
+    &-author {
       &-info {
         gap: 6px;
         font-weight: 600;
         font-family: "Inter", serif;
         font-size: 14px;
         line-height: 20px;
-          &-name {
-            color: #7C3AED;
-          }
-          &-role {
-            color: #4B5563;
-          }
+        &-name {
+          color: #7c3aed;
+        }
+        &-role {
+          color: #4b5563;
+        }
       }
       .dot {
-        color: #9CA3AF;
+        color: #9ca3af;
       }
     }
     &-date {
-      font-family: 'Inter', serif;
+      font-family: "Inter", serif;
       font-weight: 600;
       font-size: 14px;
       line-height: 20px;
-      color: #9CA3AF;
+      color: #9ca3af;
     }
   }
 }
 .base-note:hover {
-  background: #F9FAFB;
+  background: #f9fafb;
   cursor: pointer;
 }
 </style>

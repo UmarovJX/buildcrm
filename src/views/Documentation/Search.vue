@@ -1,31 +1,30 @@
-<template>
-  <main class="search">
-    <DocHeader title="search"/>
-    <div class="search-content">
-      <div class="search-content-item">
-        <BaseSearchInput/>
-        <BaseSearchInput value="Введенные слова для поиска"/>
-      </div>
-      <div class="search-content-item">
-        <BaseSearchInput/>
-        <BaseSearchInput value="Введенные слова для поиска"/>
-      </div>
-      <div class="search-content-item">
-        <BaseSearchInput/>
-        <BaseSearchInput value="Введенные слова для поиска"/>
-      </div>
-    </div>
-  </main>
-</template>
 <script>
-
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import DocHeader from "@/views/Documentation/DocHeader";
 export default {
   name: "search",
-  components: {DocHeader, BaseSearchInput},
-}
+  components: { DocHeader, BaseSearchInput },
+};
 </script>
+<template>
+  <main class="search">
+    <DocHeader title="search" />
+    <div class="search-content">
+      <div class="search-content-item">
+        <BaseSearchInput />
+        <BaseSearchInput value="Введенные слова для поиска" />
+      </div>
+      <div class="search-content-item">
+        <BaseSearchInput />
+        <BaseSearchInput value="Введенные слова для поиска" />
+      </div>
+      <div class="search-content-item">
+        <BaseSearchInput />
+        <BaseSearchInput value="Введенные слова для поиска" />
+      </div>
+    </div>
+  </main>
+</template>
 
 <style scoped lang="scss">
 .search {
@@ -44,14 +43,14 @@ export default {
       }
     }
   }
-  .search-content-item:nth-child(2){
+  .search-content-item:nth-child(2) {
     ::v-deep .search__content-input {
-      background-color: #E5E7EB;
+      background-color: #e5e7eb;
     }
   }
-  .search-content-item:nth-child(3){
+  .search-content-item:nth-child(3) {
     ::v-deep .search__content-input {
-      border: 4px solid #E5E7EB;
+      border: 4px solid #e5e7eb;
     }
   }
 }

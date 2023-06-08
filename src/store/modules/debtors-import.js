@@ -1,39 +1,38 @@
 export default {
-    state: {
-        debtors: [],
-        pagination: {},
-        debtorsExcelSheets: {
-            rows: [],
-            file: null,
-        }
+  state: {
+    debtors: [],
+    pagination: {},
+    debtorsExcelSheets: {
+      rows: [],
+      file: null,
+    },
+  },
+
+  mutations: {
+    updateDebtors(state, debtors) {
+      state.debtors = debtors;
     },
 
-    mutations: {
-        updateDebtors(state, debtors) {
-            state.debtors = debtors;
-        },
-
-        updatePagination(state, pagination) {
-            state.pagination = pagination;
-        },
-
-        updateDebtorsExcel(state, debtorsExcelSheets) {
-            state.debtorsExcelSheets = debtorsExcelSheets
-        }
+    updatePagination(state, pagination) {
+      state.pagination = pagination;
     },
 
-    getters: {
-        getImportDebtors(state) {
-            return state.debtors;
-        },
+    updateDebtorsExcel(state, debtorsExcelSheets) {
+      state.debtorsExcelSheets = debtorsExcelSheets;
+    },
+  },
 
-        getImportPaginationDebtors(state) {
-            return state.pagination;
-        },
-
-        getDebtorsSheets(state) {
-            return state.debtorsExcelSheets
-        }
+  getters: {
+    getImportDebtors(state) {
+      return state.debtors;
     },
 
+    getImportPaginationDebtors(state) {
+      return state.pagination;
+    },
+
+    getDebtorsSheets(state) {
+      return state.debtorsExcelSheets;
+    },
+  },
 };

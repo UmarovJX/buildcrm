@@ -1,40 +1,31 @@
-<template>
-<main class="checkmate">
-  <DocHeader title="checkmate"/>
-  <div class="checkmate-content">
-    <div v-for="(apartment, index) in apartments" :key="index">
-      <ApartmentBox :apartment="apartment"/>
-    </div>
-  </div>
-</main>
-</template>
-
 <script>
-import  DocHeader from "@/views/Documentation/DocHeader";
+import DocHeader from "@/views/Documentation/DocHeader";
 import ApartmentBox from "@/components/Objects/View/Tabs/ApartmentBox";
 
 export default {
   name: "Checkmate",
   components: {
     ApartmentBox,
-    DocHeader},
-  data(){
+    DocHeader,
+  },
+  data() {
     return {
-      apartments: [{
-        number: 200,
-        is_promo: true,
-        surface: 166,
-        cost: 3000000000,
-        cost_m2: 1300000,
-        status: 'available'
-      },
+      apartments: [
+        {
+          number: 200,
+          is_promo: true,
+          surface: 166,
+          cost: 3000000000,
+          cost_m2: 1300000,
+          status: "available",
+        },
         {
           number: 200,
           is_promo: false,
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: 'sold'
+          status: "sold",
         },
         {
           number: 200,
@@ -42,7 +33,7 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: 'decorated'
+          status: "decorated",
         },
         {
           number: 200,
@@ -50,7 +41,7 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: 'not_available'
+          status: "not_available",
         },
         {
           number: 200,
@@ -58,15 +49,25 @@ export default {
           surface: 166,
           cost: 3000000000,
           cost_m2: 1300000,
-          status: 'booked'
+          status: "booked",
         },
-      ]
-    }
+      ],
+    };
   },
-  methods: {
-  }
-}
+  methods: {},
+};
 </script>
+
+<template>
+  <main class="checkmate">
+    <DocHeader title="checkmate" />
+    <div class="checkmate-content">
+      <div v-for="(apartment, index) in apartments" :key="index">
+        <ApartmentBox :apartment="apartment" />
+      </div>
+    </div>
+  </main>
+</template>
 
 <style lang="scss" scoped>
 .checkmate {

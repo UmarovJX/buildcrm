@@ -1,6 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
-import axios from "axios"
+import axios from "axios";
 import VueAxios from "vue-axios";
 import Toasted from "vue-toasted";
 import Vue2Filters from "vue2-filters";
@@ -12,11 +12,11 @@ import store from "./store";
 import vueMoment from "vue-moment";
 import VueMask from "v-mask";
 import VueSweetalert2 from "vue-sweetalert2";
-import VueYandexMetrika from 'vue-yandex-metrika'
+import VueYandexMetrika from "vue-yandex-metrika";
 import "sweetalert2/dist/sweetalert2.min.css";
 import "./assets/scss/components/_calendar.scss";
 import "./components";
-import {BootstrapVue, IconsPlugin} from "bootstrap-vue";
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@/assets/scss/main.scss";
@@ -28,39 +28,43 @@ Vue.component("v-select", vSelect);
 Vue.config.devtools = true;
 
 const sweetOptions = {
-    confirmButtonColor: "#3085d6", cancelButtonColor: "#d33",
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
 };
 
 import {
-    ValidationObserver, ValidationProvider, extend, localize,
-} from "vee-validate"
+  ValidationObserver,
+  ValidationProvider,
+  extend,
+  localize,
+} from "vee-validate";
 
-import ru from './locales/ru/warns/index.json'
-import uz from './locales/uz/warns/index.json'
+import ru from "./locales/ru/warns/index.json";
+import uz from "./locales/uz/warns/index.json";
 
-import * as rules from "vee-validate/dist/rules"
+import * as rules from "vee-validate/dist/rules";
 
-localize({ru, uz})
+localize({ ru, uz });
 
-const localeLang = localStorage.locale ? localStorage.locale : 'ru'
+const localeLang = localStorage.locale ? localStorage.locale : "ru";
 
-localize(localeLang)
+localize(localeLang);
 
 Object.keys(rules).forEach((rule) => {
-    extend(rule, rules[rule]);
-})
+  extend(rule, rules[rule]);
+});
 
-Vue.component("ValidationObserver", ValidationObserver)
-Vue.component("ValidationProvider", ValidationProvider)
+Vue.component("ValidationObserver", ValidationObserver);
+Vue.component("ValidationProvider", ValidationProvider);
 
 Vue.use(VueMask);
 Vue.use(vueMoment);
 
 Vue.use(VueLazyload, {
-    preLoad: 1.3,
-    error: require("@/assets/img/no-image.jpg"),
-    loading: require("@/assets/img/loading.gif"),
-    attempt: 1
+  preLoad: 1.3,
+  error: require("@/assets/img/no-image.jpg"),
+  loading: require("@/assets/img/loading.gif"),
+  attempt: 1,
 });
 
 Vue.use(BootstrapVue);
@@ -71,14 +75,27 @@ Vue.mixin(toasted);
 Vue.use(VueAxios, axios);
 
 Vue.use(Toasted, {
-    iconPack: 'custom-class', theme: "toasted-primary", position: "top-right", duration: 5000,
+  iconPack: "custom-class",
+  theme: "toasted-primary",
+  position: "top-right",
+  duration: 5000,
 });
 
 Vue.use(VueYandexMetrika, {
-    id: 86876647, router, env: process.env.NODE_ENV, options: {
-        clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true
-    }
-})
+  id: 86876647,
+  router,
+  env: process.env.NODE_ENV,
+  options: {
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+    webvisor: true,
+  },
+});
 new Vue({
-    el: "#app", i18n, store, router, render: (h) => h(App),
+  el: "#app",
+  i18n,
+  store,
+  router,
+  render: (h) => h(App),
 });

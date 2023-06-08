@@ -1,146 +1,147 @@
-<template>
-    <base-modal ref="base-modal">
-        <template #header>
-            <!--   GO BACK     -->
-            <span class="d-flex align-items-center">
-          <span class="go__back" @click="closeModal">
-            <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
-          </span>
-                <!--    TITLE      -->
-          <span class="title">{{ $t('payments.payment_add') }}</span>
-        </span>
-        </template>
-
-        <template #main>
-            <p class="instruction">{{ $t('payments.import') }}</p>
-
-            <FileUploader ref="file-upload" :contract="contract"/>
-
-            <base-button @click="downloadTemplate" :text="$t('payments.download_template')" class="download__template"/>
-
-        </template>
-
-        <template #footer>
-            <b-overlay
-                :show="buttonLoading"
-                rounded
-                opacity="0.6"
-                spinner-small
-                spinner-variant="primary"
-                class="d-inline-block w-100"
-            >
-                <base-button
-                    :text="$t('next')"
-                    @click="importUploadExcel"
-                    :fixed="true"
-                    design="violet-gradient"
-                />
-            </b-overlay>
-        </template>
-
-    </base-modal>
-</template>
-
 <script>
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-import readExcelFile from 'read-excel-file'
-import {mapMutations} from "vuex";
+import readExcelFile from "read-excel-file";
+import { mapMutations } from "vuex";
 import api from "@/services/api";
 import FileUploader from "@/components/Reusable/FileUploader";
 
 export default {
-    name: "ImportPaymentsModal",
-    components: {
-        FileUploader,
-        BaseModal,
-        BaseButton,
-        BaseArrowLeftIcon,
+  name: "ImportPaymentsModal",
+  components: {
+    FileUploader,
+    BaseModal,
+    BaseButton,
+    BaseArrowLeftIcon,
+  },
+  props: {
+    contract: {
+      type: Object,
+      required: true,
     },
-    props: {
-        contract: {
-            type: Object,
-            required: true
+  },
+  beforeRouteLeave(to, from, next) {
+    this.excelFile = null;
+    next();
+  },
+  data() {
+    return {
+      buttonLoading: false,
+      excelFile: null,
+    };
+  },
+  computed: {
+    size() {
+      if (this.excelFile) {
+        const kilobyte = this.excelFile.size / 1024;
+        if (kilobyte > 10) {
+          return Math.round(kilobyte / 1024) + " МБ";
         }
-    },
-    beforeRouteLeave(to, from, next) {
-        this.excelFile = null
-        next()
-    },
-    data() {
-        return {
-            buttonLoading: false,
-            excelFile: null
-        }
-    },
-    computed: {
-        size() {
-            if (this.excelFile) {
-                const kilobyte = this.excelFile.size / 1024
-                if (kilobyte > 10) {
-                    return Math.round(kilobyte / 1024) + ' МБ'
-                }
 
-                return Math.round(kilobyte) + ' КБ'
-            }
-            return 0
-        }
+        return Math.round(kilobyte) + " КБ";
+      }
+      return 0;
     },
-    methods: {
-        ...mapMutations({
-            initExcelSheet: 'initExcelSheet'
-        }),
-        downloadTemplate() {
-            api.contractV2.downloadContractTemplate()
-                .then(response => {
-                    const fileURL = window.URL.createObjectURL(new Blob([response.data]))
-                    const fileLink = document.createElement('a')
-                    fileLink.href = fileURL
-                    fileLink.setAttribute('download', 'contract_template.xlsx')
-                    document.body.appendChild(fileLink)
-                    fileLink.click()
-                })
-        },
-        openModal() {
-            this.$refs['base-modal'].openModal()
-        },
-        closeModal() {
-            this.$refs['base-modal'].closeModal()
-        },
-        importUploadExcel() {
-            const file = this.$refs['file-upload'].excelFile
-            if (file) {
-                this.$router.push({
-                    name: 'contract-import-payments',
-                    params: {
-                        id: this.contract.id
-                    }
-                })
-            }
-        },
-        triggerUploadEvent() {
-            this.excelFile = this.$refs['file-input'].files[0]
-            readExcelFile(this.excelFile).then((rows) => {
-                const head = rows[0]
-                const sortRows = rows.slice(1).map(row => {
-                    const loopPackage = {}
-                    head.forEach((headCell, index) => {
-                        loopPackage[headCell] = row[index]
-                    })
-                    return loopPackage
-                })
-                sortRows.unshift(head)
-                this.initExcelSheet({
-                    rows: sortRows,
-                    file: this.excelFile,
-                    contract: this.contract
-                })
-            })
-        }
-    }
-}
+  },
+  methods: {
+    ...mapMutations({
+      initExcelSheet: "initExcelSheet",
+    }),
+    downloadTemplate() {
+      api.contractV2.downloadContractTemplate().then((response) => {
+        const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        const fileLink = document.createElement("a");
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "contract_template.xlsx");
+        document.body.appendChild(fileLink);
+        fileLink.click();
+      });
+    },
+    openModal() {
+      this.$refs["base-modal"].openModal();
+    },
+    closeModal() {
+      this.$refs["base-modal"].closeModal();
+    },
+    importUploadExcel() {
+      const file = this.$refs["file-upload"].excelFile;
+      if (file) {
+        this.$router.push({
+          name: "contract-import-payments",
+          params: {
+            id: this.contract.id,
+          },
+        });
+      }
+    },
+    triggerUploadEvent() {
+      this.excelFile = this.$refs["file-input"].files[0];
+      readExcelFile(this.excelFile).then((rows) => {
+        const head = rows[0];
+        const sortRows = rows.slice(1).map((row) => {
+          const loopPackage = {};
+          head.forEach((headCell, index) => {
+            loopPackage[headCell] = row[index];
+          });
+          return loopPackage;
+        });
+        sortRows.unshift(head);
+        this.initExcelSheet({
+          rows: sortRows,
+          file: this.excelFile,
+          contract: this.contract,
+        });
+      });
+    },
+  },
+};
 </script>
+
+<template>
+  <base-modal ref="base-modal">
+    <template #header>
+      <!--   GO BACK     -->
+      <span class="d-flex align-items-center">
+        <span class="go__back" @click="closeModal">
+          <base-arrow-left-icon :width="32" :height="32"></base-arrow-left-icon>
+        </span>
+        <!--    TITLE      -->
+        <span class="title">{{ $t("payments.payment_add") }}</span>
+      </span>
+    </template>
+
+    <template #main>
+      <p class="instruction">{{ $t("payments.import") }}</p>
+
+      <FileUploader ref="file-upload" :contract="contract" />
+
+      <base-button
+        @click="downloadTemplate"
+        :text="$t('payments.download_template')"
+        class="download__template"
+      />
+    </template>
+
+    <template #footer>
+      <b-overlay
+        :show="buttonLoading"
+        rounded
+        opacity="0.6"
+        spinner-small
+        spinner-variant="primary"
+        class="d-inline-block w-100"
+      >
+        <base-button
+          :text="$t('next')"
+          @click="importUploadExcel"
+          :fixed="true"
+          design="violet-gradient"
+        />
+      </b-overlay>
+    </template>
+  </base-modal>
+</template>
 
 <style lang="sass" scoped>
 *

@@ -1,3 +1,34 @@
+<script>
+import { mapGetters } from "vuex";
+
+export default {
+  props: {
+    ManagerData: {},
+  },
+
+  data: function () {
+    return {
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
+        },
+      },
+    };
+  },
+
+  mounted() {},
+
+  computed: mapGetters(["getReserveClient"]),
+
+  methods: {
+    resetModal() {
+      this.$bvModal.hide("modal-view-info-manager");
+      //this.$emit('CloseReserveInfo');
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <b-modal
@@ -56,36 +87,5 @@
     </b-modal>
   </div>
 </template>
-
-<script>
-import {mapGetters} from "vuex";
-
-export default {
-  props: {
-    ManagerData: {},
-  },
-
-  data: function () {
-    return {
-      header: {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
-        },
-      },
-    };
-  },
-
-  mounted() {},
-
-  computed: mapGetters(["getReserveClient"]),
-
-  methods: {
-    resetModal() {
-      this.$bvModal.hide("modal-view-info-manager");
-      //this.$emit('CloseReserveInfo');
-    },
-  },
-};
-</script>
 
 <style scoped></style>

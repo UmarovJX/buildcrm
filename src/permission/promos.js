@@ -1,34 +1,34 @@
 import Permission from "@/permission/index";
 
 export default class PromosPermission extends Permission {
-    static promos() {
-        return super.getUserPermission('promos')
-    }
+  static promos() {
+    return super.getUserPermission("promos");
+  }
 
-    static getPromosPermission(property) {
-        const splitProperty = property.split('.')
-        const [one, two] = splitProperty
-        if (this.hasAdminRole()) return true
-        if (splitProperty.length > 1) {
-            return this.promos()[one][two] ?? false
-        } else {
-            return this.promos()[one] ?? false
-        }
+  static getPromosPermission(property) {
+    const splitProperty = property.split(".");
+    const [one, two] = splitProperty;
+    if (this.hasAdminRole()) return true;
+    if (splitProperty.length > 1) {
+      return this.promos()[one][two] ?? false;
+    } else {
+      return this.promos()[one] ?? false;
     }
+  }
 
-    static getPromosCreatePermission() {
-        return this.getPromosPermission('create')
-    }
+  static getPromosCreatePermission() {
+    return this.getPromosPermission("create");
+  }
 
-    static getPromosViewPermission() {
-        return this.getPromosPermission('view')
-    }
+  static getPromosViewPermission() {
+    return this.getPromosPermission("view");
+  }
 
-    static getPromosEditPermission() {
-        return this.getPromosPermission('edit')
-    }
+  static getPromosEditPermission() {
+    return this.getPromosPermission("edit");
+  }
 
-    static getPromosDeletePermission() {
-        return this.getPromosPermission('delete')
-    }
+  static getPromosDeletePermission() {
+    return this.getPromosPermission("delete");
+  }
 }

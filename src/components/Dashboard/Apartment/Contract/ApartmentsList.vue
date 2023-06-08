@@ -1,37 +1,3 @@
-<template>
-  <!-- Apartments -->
-  <div className="new-object p-0">
-    <div v-b-toggle.collapse-apartments block className="d-flex p-3">
-      <span>{{ $t('apartment_list') }}:</span>
-      <strong
-          v-if="isVisibleApartments"
-          aria-hidden="true"
-          className="ml-auto"
-      >
-        <i className="fal fa-chevron-up"></i>
-      </strong>
-      <strong v-else aria-hidden="true" className="ml-auto">
-        <i className="fal fa-chevron-down"></i>
-      </strong>
-    </div>
-    <b-collapse
-        id="collapse-apartments"
-        v-model="isVisibleApartments"
-        className="px-3 pb-3"
-    >
-      <QuickViewApartments
-          v-for="(apartment, index) in apartments"
-          :key="apartment.id"
-          :apartment="apartment"
-          :contract="contract"
-          :index="index"
-          @changedApartmentPrice="changedApartmentPrice"
-      />
-
-    </b-collapse>
-  </div>
-</template>
-
 <script>
 import QuickViewApartments from "../Components/QuickViewApartments";
 
@@ -40,7 +6,7 @@ export default {
 
   props: {
     apartments: {},
-    contract: {}
+    contract: {},
   },
 
   components: {
@@ -49,8 +15,8 @@ export default {
 
   data() {
     return {
-      isVisibleApartments: true
-    }
+      isVisibleApartments: true,
+    };
   },
 
   mounted() {
@@ -59,12 +25,39 @@ export default {
 
   methods: {
     changedApartmentPrice() {
-      this.$emit("changePrice", {})
-    }
-  }
-}
+      this.$emit("changePrice", {});
+    },
+  },
+};
 </script>
 
-<style scoped>
+<template>
+  <!-- Apartments -->
+  <div className="new-object p-0">
+    <div v-b-toggle.collapse-apartments block className="d-flex p-3">
+      <span>{{ $t("apartment_list") }}:</span>
+      <strong v-if="isVisibleApartments" aria-hidden="true" className="ml-auto">
+        <i className="fal fa-chevron-up"></i>
+      </strong>
+      <strong v-else aria-hidden="true" className="ml-auto">
+        <i className="fal fa-chevron-down"></i>
+      </strong>
+    </div>
+    <b-collapse
+      id="collapse-apartments"
+      v-model="isVisibleApartments"
+      className="px-3 pb-3"
+    >
+      <QuickViewApartments
+        v-for="(apartment, index) in apartments"
+        :key="apartment.id"
+        :apartment="apartment"
+        :contract="contract"
+        :index="index"
+        @changedApartmentPrice="changedApartmentPrice"
+      />
+    </b-collapse>
+  </div>
+</template>
 
-</style>
+<style scoped></style>

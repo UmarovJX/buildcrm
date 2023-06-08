@@ -1,286 +1,3 @@
-<template>
-  <div>
-    <div class="app-tab-content">
-      <ValidationObserver ref="client-validation">
-        <section class="tab-section">
-          <h3 class="section-title">{{ $t('contract_details') }}</h3>
-          <div class="section-container">
-            <output-information
-                v-if="order && order.contract_number"
-                :property="$t('apartments.agree.number')"
-                :value="order.contract_number"
-            >
-              <template #right-icon>
-                <span
-                    @click="openEditNumberModal"
-                    class="d-flex align-items-center cursor-pointer"
-                >
-                  <base-circle-wrapper
-                      class="d-flex justify-content-center align-items-center edit-icon-wrapper"
-                  >
-                    <base-edit-icon :width="13.5" :height="13.5" fill="#fff"/>
-                  </base-circle-wrapper>
-                </span>
-              </template>
-            </output-information>
-            <ValidationProvider
-                :name="`${ $t('create_date') }`"
-                rules="required"
-                v-slot="{ errors }"
-            >
-              <base-date-picker
-                  v-model="client.contract_date"
-                  :range="false"
-                  class="data-picker"
-                  format="DD.MM.YYYY"
-                  :error="!!errors[0]"
-                  :icon-fill="datePickerIconFill"
-                  :placeholder="`${ $t('create_date') }`"
-              />
-            </ValidationProvider>
-          </div>
-        </section>
-
-        <section class="tab-section mt-5 mb-5">
-          <h3 class="section-title">{{ $t('client_details') }}</h3>
-          <div class="section-container row-gap-1">
-            <ValidationProvider
-                v-slot="{ errors }"
-                rules="required|min:9"
-                :name="`${ $t('passport_series') } (${ $t('for_example') }. AB1234567)`"
-            >
-              <base-input
-                  v-model="client.passport_series"
-                  @input="clientDebounce"
-                  mask="AA#######"
-                  :label="true"
-                  :error="!!errors[0]"
-                  class="w-100"
-                  :placeholder="`${ $t('apartments.agree.passport_series') } (${ $t('for_example') }. AB1234567) `"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('apartments.agree.passport_series') }`"
-                rules="required"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  v-model="client.issued_by_whom"
-                  :label="true"
-                  :error="!!errors[0]"
-                  :placeholder="`${ $t('apartments.agree.passport_series') }`"
-                  class="w-100"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('passport_issue_date') }`"
-                rules="required"
-                v-slot="{ errors }"
-            >
-              <base-date-picker
-                  v-model="client.date_of_issue"
-                  :range="false"
-                  :error="!!errors[0]"
-                  class="data-picker"
-                  format="DD.MM.YYYY"
-                  :placeholder="`${ $t('passport_issue_date') }`"
-                  :icon-fill="datePickerIconFill"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('birth_day') }`"
-                rules="required"
-                v-slot="{ errors }"
-            >
-              <base-date-picker
-                  v-model="client.birth_day"
-                  class="w-100"
-                  :range="false"
-                  :error="!!errors[0]"
-                  format="DD.MM.YYYY"
-                  :placeholder="`${ $t('birth_day') }`"
-                  :icon-fill="datePickerIconFill"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('last_name') } (${ $t('cyrillic_shortcut') }.)`"
-                rules="required|min:1"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  :label="true"
-                  class="w-100"
-                  :error="!!errors[0]"
-                  v-model="client.last_name.kirill"
-                  @input="translateLatin('last_name', $event)"
-                  :placeholder="`${ $t('last_name') } (${ $t('cyrillic_shortcut') }.)`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('last_name') } (${ $t('latin_shortcut') }.)`"
-                rules="required|min:1"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  class="w-100"
-                  :label="true"
-                  :error="!!errors[0]"
-                  v-model="client.last_name.lotin"
-                  @input="translateCyrillic('last_name', $event)"
-                  :placeholder="`${ $t('last_name') } (${ $t('latin_shortcut') }.)`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('name') } (${ $t('cyrillic_shortcut') }.)`"
-                rules="required|min:1"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  class="w-100"
-                  :label="true"
-                  :error="!!errors[0]"
-                  v-model="client.first_name.kirill"
-                  @input="translateLatin('first_name', $event)"
-                  :placeholder="`${ $t('name') } (${ $t('cyrillic_shortcut') }.)`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('name') } (${ $t('latin_shortcut') }.)`"
-                rules="required|min:1"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  class="w-100"
-                  :label="true"
-                  :error="!!errors[0]"
-                  v-model="client.first_name.lotin"
-                  @input="translateCyrillic('first_name', $event)"
-                  :placeholder="`${ $t('name') } (${ $t('latin_shortcut') }.)`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('second_name') } (${ $t('cyrillic_shortcut') }.)`"
-                rules="required|min:1"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  class="w-100"
-                  :label="true"
-                  :error="!!errors[0]"
-                  v-model="client.second_name.kirill"
-                  @input="translateLatin('second_name', $event)"
-                  :placeholder="`${ $t('second_name') } (${ $t('cyrillic_shortcut') }.)`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('second_name') } (${ $t('latin_shortcut') }.)`"
-                rules="required|min:1"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  class="w-100"
-                  :label="true"
-                  :error="!!errors[0]"
-                  v-model="client.second_name.lotin"
-                  @input="translateCyrillic('second_name', $event)"
-                  :placeholder="`${ $t('second_name') } (${ $t('latin_shortcut') }.)`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('phone') }`"
-                rules="required|min:12"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  class="w-100"
-                  :label="true"
-                  :error="!!errors[0]"
-                  v-model="client.phone"
-                  mask="+### ## ### ## ##"
-                  :placeholder="`${ $t('phone') }`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('additional') } ${ $t('phone') }`"
-                v-slot="{ errors }"
-            >
-              <base-input
-                  class="w-100"
-                  :label="true"
-                  v-model="client.other_phone"
-                  mask="+### ## ### ## ##"
-                  :placeholder="`${ $t('additional') } ${ $t('phone') }`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('language') }`"
-                rules="required"
-                v-slot="{ errors }"
-            >
-              <base-select
-                  :label="true"
-                  :error="!!errors[0]"
-                  :noPlaceholder="true"
-                  :options="options"
-                  :value="client.language"
-                  @change="client.language = $event"
-                  :placeholder="`${ $t('language') }`"
-              />
-            </ValidationProvider>
-            <ValidationProvider
-                :name="`${ $t('client_type') }`"
-                rules="required"
-                v-slot="{ errors }"
-            >
-              <base-select
-                  :label="true"
-                  :error="!!errors[0]"
-                  :noPlaceholder="true"
-                  :options="clientTypeOption"
-                  :value="client.friends"
-                  @change="client.friends = $event"
-                  :placeholder="`${ $t('client_type') }`"
-              />
-            </ValidationProvider>
-          </div>
-        </section>
-      </ValidationObserver>
-    </div>
-    <base-modal ref="edit-contract-number" design="auto-height">
-      <template #header>
-        <span class="d-flex align-items-center justify-content-between">
-          <!--    TITLE      -->
-          <span class="title">{{ $t('apartments.agree.number') }}</span>
-          <!--   CLOSE    -->
-          <span class="go__back" @click="closeEditNumberModal">
-            <BaseCloseIcon :width="56" :height="56"/>
-          </span>
-        </span>
-      </template>
-
-      <template #main>
-        <div>
-          <base-input
-              :label="true"
-              class="w-100"
-              padding-left="2px !important"
-              v-model="newContractNumber"
-              :placeholder="`${ $t('apartments.agree.number') }`"
-          />
-        </div>
-      </template>
-      <template #footer>
-        <base-button
-            @click="setNewContractNumber"
-            :disabled="!changedContractNumber"
-            class="violet-gradient w-100"
-            :text="`${ $t('apply') }`"
-        />
-      </template>
-    </base-modal>
-  </div>
-</template>
-
 <script>
 import OutputInformation from "@/components/Elements/Outputs/OutputInformation";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
@@ -316,211 +33,217 @@ export default {
     },
     clientData: {
       type: Object,
-    }
+    },
   },
-  emits: ['change-contract-number'],
+  emits: ["change-contract-number"],
   data() {
     return {
-      newContractNumber: '',
+      newContractNumber: "",
       changedContractNumber: false,
-      datePickerIconFill: 'var(--violet-600)',
+      datePickerIconFill: "var(--violet-600)",
       options: [
         {
-          text: 'UZ',
-          value: 'uz'
+          text: "UZ",
+          value: "uz",
         },
         {
-          text: 'RU',
-          value: 'ru'
-        }
+          text: "RU",
+          value: "ru",
+        },
       ],
       validationError: {
-        type: '',
-        message: '',
+        type: "",
+        message: "",
         visible: false,
       },
       timeoutId: null,
-      autoFill: false
-    }
+      autoFill: false,
+    };
   },
   watch: {
     newContractNumber(value) {
-      this.changedContractNumber = !!(value && value.length && !(value === this.order.contract_number));
+      this.changedContractNumber = !!(
+        value &&
+        value.length &&
+        !(value === this.order.contract_number)
+      );
       if (this.changedContractNumber) {
-        this.$emit('change-contract-number', value)
+        this.$emit("change-contract-number", value);
       }
-    }
+    },
   },
   computed: {
     clientTypeOption() {
       return [
         {
-          text: this.$t('unfamiliar'), value: 'false'
+          text: this.$t("unfamiliar"),
+          value: "false",
         },
         {
-          text: this.$t('familiar'), value: 'true'
+          text: this.$t("familiar"),
+          value: "true",
         },
-      ]
+      ];
     },
     flexCenter() {
-      return 'd-flex justify-content-center align-items-center'
+      return "d-flex justify-content-center align-items-center";
     },
     client: {
       get() {
-        return this.clientData
+        return this.clientData;
       },
       set(value) {
-        return this.$emit('set-client', value)
-      }
-    }
+        return this.$emit("set-client", value);
+      },
+    },
   },
   methods: {
     async validate() {
-      return await this.$refs['client-validation'].validate()
+      return await this.$refs["client-validation"].validate();
     },
     clientDebounce() {
       if (this.client.passport_series) {
-        console.log(this.client.passport_series)
+        console.log(this.client.passport_series);
         if (this.timeoutId !== null) {
-          clearTimeout(this.timeoutId)
+          clearTimeout(this.timeoutId);
         }
         this.timeoutId = setTimeout(() => {
-          this.getClientByPassport()
-        }, 500)
+          this.getClientByPassport();
+        }, 500);
       } else {
         if (this.autoFill) {
-          this.resetClientContext()
-          this.turnedOffAutoFill()
+          this.resetClientContext();
+          this.turnedOffAutoFill();
         }
       }
     },
     turnedOnAutoFill() {
-      this.autoFill = true
+      this.autoFill = true;
     },
     turnedOffAutoFill() {
-      this.autoFill = false
+      this.autoFill = false;
     },
     async getClientByPassport() {
       if (this.client.passport_series.length === 9) {
-        await api.clientsV2.getClientBySearch({
-          field: this.client.passport_series
-        })
-            .then(response => {
-              console.log(response.data)
-              // const newClient = response.data
-              // this.client = {
-              //   ...newClient,
-              //   friends: 'false',
-              //   contract_date: this.client.contract_date
-              // }
-              // this.turnedOnAutoFill()
-            })
-            .catch((error) => {
-              this.resetClientContext()
-              this.toastedWithErrorCode(error);
-              this.turnedOffAutoFill()
-            })
+        await api.clientsV2
+          .getClientBySearch({
+            field: this.client.passport_series,
+          })
+          .then((response) => {
+            console.log(response.data);
+            // const newClient = response.data
+            // this.client = {
+            //   ...newClient,
+            //   friends: 'false',
+            //   contract_date: this.client.contract_date
+            // }
+            // this.turnedOnAutoFill()
+          })
+          .catch((error) => {
+            this.resetClientContext();
+            this.toastedWithErrorCode(error);
+            this.turnedOffAutoFill();
+          });
       }
     },
     resetClientContext() {
-      this.client =
-          {
-            first_name: {
-              lotin: null,
-              kirill: null,
-            },
-            last_name: {
-              lotin: null,
-              kirill: null,
-            },
-            second_name: {
-              lotin: null,
-              kirill: null,
-            },
-            passport_series: this.client.passport_series,
-            issued_by_whom: null,
-            date_of_issue: null,
-            language: null,
-            friends: 'false',
-            birth_day: null,
-            phone: null,
-            other_phone: null,
-            first_payment_date: null,
-            payment_date: null,
-          }
+      this.client = {
+        first_name: {
+          lotin: null,
+          kirill: null,
+        },
+        last_name: {
+          lotin: null,
+          kirill: null,
+        },
+        second_name: {
+          lotin: null,
+          kirill: null,
+        },
+        passport_series: this.client.passport_series,
+        issued_by_whom: null,
+        date_of_issue: null,
+        language: null,
+        friends: "false",
+        birth_day: null,
+        phone: null,
+        other_phone: null,
+        first_payment_date: null,
+        payment_date: null,
+      };
     },
     setNewContractNumber() {
-      this.order.contract_number = this.newContractNumber
-      this.closeEditNumberModal()
+      this.order.contract_number = this.newContractNumber;
+      this.closeEditNumberModal();
     },
     closeEditNumberModal() {
-      this.$refs['edit-contract-number'].closeModal()
-      this.changedContractNumber = false
+      this.$refs["edit-contract-number"].closeModal();
+      this.changedContractNumber = false;
     },
     openEditNumberModal() {
-      this.newContractNumber = this.order.contract_number
-      this.$refs['edit-contract-number'].openModal()
+      this.newContractNumber = this.order.contract_number;
+      this.$refs["edit-contract-number"].openModal();
     },
     setFormProperty(property, value) {
-      this.client[property] = value
-      this.errors[property] = false
+      this.client[property] = value;
+      this.errors[property] = false;
     },
 
     translateCyrillic(type, event) {
       if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId)
+        clearTimeout(this.timeoutId);
       }
       this.timeoutId = setTimeout(() => {
         switch (type) {
-          case 'first_name':
+          case "first_name":
             if (!this.client.first_name.kirill) {
               this.client.first_name.kirill = this.symbolLatinToCyrillic(event);
             }
             break;
-          case 'last_name':
+          case "last_name":
             if (!this.client.last_name.kirill) {
               this.client.last_name.kirill = this.symbolLatinToCyrillic(event);
             }
             break;
-          case 'second_name':
+          case "second_name":
             if (!this.client.second_name.kirill) {
-              this.client.second_name.kirill = this.symbolLatinToCyrillic(event);
+              this.client.second_name.kirill =
+                this.symbolLatinToCyrillic(event);
             }
             break;
         }
-      }, 1000)
+      }, 1000);
     },
 
     translateLatin(type, event) {
       if (this.timeoutId !== null) {
-        clearTimeout(this.timeoutId)
+        clearTimeout(this.timeoutId);
       }
       this.timeoutId = setTimeout(() => {
         switch (type) {
-          case 'first_name':
+          case "first_name":
             if (!this.client.first_name.lotin) {
               this.client.first_name.lotin = this.symbolCyrillicToLatin(event);
             }
             break;
-          case 'last_name':
+          case "last_name":
             if (!this.client.last_name.lotin) {
               this.client.last_name.lotin = this.symbolCyrillicToLatin(event);
             }
             break;
-          case 'second_name':
+          case "second_name":
             if (!this.client.second_name.lotin) {
               this.client.second_name.lotin = this.symbolCyrillicToLatin(event);
             }
             break;
         }
-      }, 1000)
-
+      }, 1000);
     },
 
     symbolCyrillicToLatin(word) {
-      this.symbolIsCyrillic(word)
+      this.symbolIsCyrillic(word);
 
-      let result = '';
+      let result = "";
       const A = {};
 
       A["Ё"] = "YO";
@@ -590,9 +313,7 @@ export default {
       A["б"] = "b";
       A["ю"] = "yu";
 
-
       for (let i in word) {
-
         if (word.hasOwnProperty(i)) {
           if (A[word[i]] === undefined) {
             result += word[i];
@@ -602,14 +323,13 @@ export default {
         }
       }
 
-
       return result;
     },
 
     symbolLatinToCyrillic(word) {
       word = this.symbolIsLatin(word);
 
-      let result = '';
+      let result = "";
       const a = {};
 
       a["Q"] = "Қ";
@@ -670,7 +390,6 @@ export default {
       a["t"] = "т";
       a["b"] = "б";
 
-
       word = word.replaceAll("Sh", "Ш");
       word = word.replaceAll("sh", "ш");
 
@@ -704,7 +423,6 @@ export default {
       word = word.replaceAll("H", "Ҳ");
       word = word.replaceAll("h", "ҳ");
 
-
       for (let i in word) {
         if (word.hasOwnProperty(i)) {
           if (a[word[i]] === undefined) {
@@ -719,19 +437,309 @@ export default {
 
     symbolIsCyrillic(event) {
       return event
-          .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
-          .replace(/(\..*?)\..*/g, "$1");
+        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
+        .replace(/(\..*?)\..*/g, "$1");
     },
 
     symbolIsLatin(event) {
       return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
     },
-  }
-}
+  },
+};
 </script>
 
-<style lang="scss" scoped>
+<template>
+  <div>
+    <div class="app-tab-content">
+      <ValidationObserver ref="client-validation">
+        <section class="tab-section">
+          <h3 class="section-title">{{ $t("contract_details") }}</h3>
+          <div class="section-container">
+            <output-information
+              v-if="order && order.contract_number"
+              :property="$t('apartments.agree.number')"
+              :value="order.contract_number"
+            >
+              <template #right-icon>
+                <span
+                  @click="openEditNumberModal"
+                  class="d-flex align-items-center cursor-pointer"
+                >
+                  <base-circle-wrapper
+                    class="d-flex justify-content-center align-items-center edit-icon-wrapper"
+                  >
+                    <base-edit-icon :width="13.5" :height="13.5" fill="#fff" />
+                  </base-circle-wrapper>
+                </span>
+              </template>
+            </output-information>
+            <ValidationProvider
+              :name="`${$t('create_date')}`"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <base-date-picker
+                v-model="client.contract_date"
+                :range="false"
+                class="data-picker"
+                format="DD.MM.YYYY"
+                :error="!!errors[0]"
+                :icon-fill="datePickerIconFill"
+                :placeholder="`${$t('create_date')}`"
+              />
+            </ValidationProvider>
+          </div>
+        </section>
 
+        <section class="tab-section mt-5 mb-5">
+          <h3 class="section-title">{{ $t("client_details") }}</h3>
+          <div class="section-container row-gap-1">
+            <ValidationProvider
+              v-slot="{ errors }"
+              rules="required|min:9"
+              :name="`${$t('passport_series')} (${$t(
+                'for_example'
+              )}. AB1234567)`"
+            >
+              <base-input
+                v-model="client.passport_series"
+                @input="clientDebounce"
+                mask="AA#######"
+                :label="true"
+                :error="!!errors[0]"
+                class="w-100"
+                :placeholder="`${$t('apartments.agree.passport_series')} (${$t(
+                  'for_example'
+                )}. AB1234567) `"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('apartments.agree.passport_series')}`"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <base-input
+                v-model="client.issued_by_whom"
+                :label="true"
+                :error="!!errors[0]"
+                :placeholder="`${$t('apartments.agree.passport_series')}`"
+                class="w-100"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('passport_issue_date')}`"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <base-date-picker
+                v-model="client.date_of_issue"
+                :range="false"
+                :error="!!errors[0]"
+                class="data-picker"
+                format="DD.MM.YYYY"
+                :placeholder="`${$t('passport_issue_date')}`"
+                :icon-fill="datePickerIconFill"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('birth_day')}`"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <base-date-picker
+                v-model="client.birth_day"
+                class="w-100"
+                :range="false"
+                :error="!!errors[0]"
+                format="DD.MM.YYYY"
+                :placeholder="`${$t('birth_day')}`"
+                :icon-fill="datePickerIconFill"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('last_name')} (${$t('cyrillic_shortcut')}.)`"
+              rules="required|min:1"
+              v-slot="{ errors }"
+            >
+              <base-input
+                :label="true"
+                class="w-100"
+                :error="!!errors[0]"
+                v-model="client.last_name.kirill"
+                @input="translateLatin('last_name', $event)"
+                :placeholder="`${$t('last_name')} (${$t(
+                  'cyrillic_shortcut'
+                )}.)`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('last_name')} (${$t('latin_shortcut')}.)`"
+              rules="required|min:1"
+              v-slot="{ errors }"
+            >
+              <base-input
+                class="w-100"
+                :label="true"
+                :error="!!errors[0]"
+                v-model="client.last_name.lotin"
+                @input="translateCyrillic('last_name', $event)"
+                :placeholder="`${$t('last_name')} (${$t('latin_shortcut')}.)`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('name')} (${$t('cyrillic_shortcut')}.)`"
+              rules="required|min:1"
+              v-slot="{ errors }"
+            >
+              <base-input
+                class="w-100"
+                :label="true"
+                :error="!!errors[0]"
+                v-model="client.first_name.kirill"
+                @input="translateLatin('first_name', $event)"
+                :placeholder="`${$t('name')} (${$t('cyrillic_shortcut')}.)`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('name')} (${$t('latin_shortcut')}.)`"
+              rules="required|min:1"
+              v-slot="{ errors }"
+            >
+              <base-input
+                class="w-100"
+                :label="true"
+                :error="!!errors[0]"
+                v-model="client.first_name.lotin"
+                @input="translateCyrillic('first_name', $event)"
+                :placeholder="`${$t('name')} (${$t('latin_shortcut')}.)`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('second_name')} (${$t('cyrillic_shortcut')}.)`"
+              rules="required|min:1"
+              v-slot="{ errors }"
+            >
+              <base-input
+                class="w-100"
+                :label="true"
+                :error="!!errors[0]"
+                v-model="client.second_name.kirill"
+                @input="translateLatin('second_name', $event)"
+                :placeholder="`${$t('second_name')} (${$t(
+                  'cyrillic_shortcut'
+                )}.)`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('second_name')} (${$t('latin_shortcut')}.)`"
+              rules="required|min:1"
+              v-slot="{ errors }"
+            >
+              <base-input
+                class="w-100"
+                :label="true"
+                :error="!!errors[0]"
+                v-model="client.second_name.lotin"
+                @input="translateCyrillic('second_name', $event)"
+                :placeholder="`${$t('second_name')} (${$t('latin_shortcut')}.)`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('phone')}`"
+              rules="required|min:12"
+              v-slot="{ errors }"
+            >
+              <base-input
+                class="w-100"
+                :label="true"
+                :error="!!errors[0]"
+                v-model="client.phone"
+                mask="+### ## ### ## ##"
+                :placeholder="`${$t('phone')}`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('additional')} ${$t('phone')}`"
+              v-slot="{ errors }"
+            >
+              <base-input
+                class="w-100"
+                :label="true"
+                v-model="client.other_phone"
+                mask="+### ## ### ## ##"
+                :placeholder="`${$t('additional')} ${$t('phone')}`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('language')}`"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <base-select
+                :label="true"
+                :error="!!errors[0]"
+                :noPlaceholder="true"
+                :options="options"
+                :value="client.language"
+                @change="client.language = $event"
+                :placeholder="`${$t('language')}`"
+              />
+            </ValidationProvider>
+            <ValidationProvider
+              :name="`${$t('client_type')}`"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <base-select
+                :label="true"
+                :error="!!errors[0]"
+                :noPlaceholder="true"
+                :options="clientTypeOption"
+                :value="client.friends"
+                @change="client.friends = $event"
+                :placeholder="`${$t('client_type')}`"
+              />
+            </ValidationProvider>
+          </div>
+        </section>
+      </ValidationObserver>
+    </div>
+    <base-modal ref="edit-contract-number" design="auto-height">
+      <template #header>
+        <span class="d-flex align-items-center justify-content-between">
+          <!--    TITLE      -->
+          <span class="title">{{ $t("apartments.agree.number") }}</span>
+          <!--   CLOSE    -->
+          <span class="go__back" @click="closeEditNumberModal">
+            <BaseCloseIcon :width="56" :height="56" />
+          </span>
+        </span>
+      </template>
+
+      <template #main>
+        <div>
+          <base-input
+            :label="true"
+            class="w-100"
+            padding-left="2px !important"
+            v-model="newContractNumber"
+            :placeholder="`${$t('apartments.agree.number')}`"
+          />
+        </div>
+      </template>
+      <template #footer>
+        <base-button
+          @click="setNewContractNumber"
+          :disabled="!changedContractNumber"
+          class="violet-gradient w-100"
+          :text="`${$t('apply')}`"
+        />
+      </template>
+    </base-modal>
+  </div>
+</template>
+
+<style lang="scss" scoped>
 .row-gap-1 {
   row-gap: 1rem;
 }

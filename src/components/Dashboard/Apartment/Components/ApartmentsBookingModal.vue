@@ -1,11 +1,56 @@
+<script>
+export default {
+  name: "ApartmentsBookingModal",
+  emits: ["set-client-data"],
+  data: () => ({
+    client: {
+      first_name: null,
+      last_name: null,
+      phone: null,
+      period_date: null,
+      apartment_id: null,
+      language: "uz",
+    },
+    error: false,
+    errors: [],
+    getLoading: false,
+  }),
+
+  methods: {
+    closeModal() {
+      this.$nextTick(() => {
+        this.$bvModal.hide("booking-creation-modal");
+      });
+    },
+    resetModal() {
+      this.client.first_name = null;
+      this.client.last_name = null;
+      this.client.phone = null;
+      this.client.period_date = null;
+      this.error = false;
+      this.errors = [];
+    },
+
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefault();
+    },
+
+    submitForm() {
+      this.$refs["booking-creation-modal"].hide();
+      this.$emit("set-client-data", this.client);
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <b-modal
-        id="booking-creation-modal"
-        ref="booking-creation-modal"
-        :title="$t('apartments.list.book')"
-        hide-footer
-        @show="resetModal"
+      id="booking-creation-modal"
+      ref="booking-creation-modal"
+      :title="$t('apartments.list.book')"
+      hide-footer
+      @show="resetModal"
     >
       <b-alert show variant="danger" v-if="error">
         <ul>
@@ -19,34 +64,34 @@
 
       <form ref="form" @submit.prevent="submitForm">
         <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.first_name')"
-            label-for="first_name"
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.first_name')"
+          label-for="first_name"
         >
           <b-form-input
-              id="first_name"
-              v-model="client.first_name"
+            id="first_name"
+            v-model="client.first_name"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.last_name')"
-            label-for="last_name"
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.last_name')"
+          label-for="last_name"
         >
           <b-form-input
-              id="last_name"
-              v-model="client.last_name"
+            id="last_name"
+            v-model="client.last_name"
           ></b-form-input>
         </b-form-group>
 
         <b-form-group
-            label-cols="4"
-            label-cols-lg="2"
-            :label="$t('user.phone')"
-            label-for="phone"
+          label-cols="4"
+          label-cols-lg="2"
+          :label="$t('user.phone')"
+          label-for="phone"
         >
           <b-form-input id="phone" v-model="client.phone"></b-form-input>
         </b-form-group>
@@ -57,9 +102,9 @@
           </label>
           <div class="bv-no-focus-ring col">
             <select
-                class="form-control"
-                id="language"
-                v-model="client.language"
+              class="form-control"
+              id="language"
+              v-model="client.language"
             >
               <option value="uz">Узбекский</option>
               <option value="ru">Русский</option>
@@ -68,22 +113,22 @@
         </div>
 
         <b-form-group
-            label-cols="4"
-            label-cols-lg="4"
-            :label="$t('apartments.list.period_date')"
-            label-for="period_date"
+          label-cols="4"
+          label-cols-lg="4"
+          :label="$t('apartments.list.period_date')"
+          label-for="period_date"
         >
           <b-form-datepicker
-              v-model="client.period_date"
-              locale="ru"
+            v-model="client.period_date"
+            locale="ru"
           ></b-form-datepicker>
         </b-form-group>
 
         <div class="w-100 d-flex justify-content-center">
           <b-button
-              type="button"
-              variant="light"
-              @click="$bvModal.hide('booking-creation-modal')"
+            type="button"
+            variant="light"
+            @click="$bvModal.hide('booking-creation-modal')"
           >
             {{ $t("cancel") }}
           </b-button>
@@ -110,49 +155,3 @@
     </b-overlay>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'ApartmentsBookingModal',
-  emits: ['set-client-data'],
-  data: () => ({
-    client: {
-      first_name: null,
-      last_name: null,
-      phone: null,
-      period_date: null,
-      apartment_id: null,
-      language: "uz",
-    },
-    error: false,
-    errors: [],
-    getLoading: false
-  }),
-
-  methods: {
-    closeModal() {
-      this.$nextTick(() => {
-        this.$bvModal.hide("booking-creation-modal");
-      })
-    },
-    resetModal() {
-      this.client.first_name = null;
-      this.client.last_name = null;
-      this.client.phone = null;
-      this.client.period_date = null;
-      this.error = false;
-      this.errors = [];
-    },
-
-    handleOk(bvModalEvt) {
-      bvModalEvt.preventDefault()
-    },
-
-    submitForm() {
-      this.$refs['booking-creation-modal'].hide()
-      this.$emit('set-client-data', this.client)
-    }
-  }
-}
-</script>
-

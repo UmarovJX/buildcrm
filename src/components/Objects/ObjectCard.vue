@@ -1,22 +1,28 @@
+<script>
+import BaseEditIcon from "@/components/icons/BaseEditIcon";
+
+export default {
+  name: "ObjectCard.vue",
+  components: {
+    BaseEditIcon,
+  },
+};
+</script>
+
 <template>
   <div>
     <div class="card">
       <div class="card-body">
         <div class="card-top">
           <div class="card-top__content">
-            <h5 class="card-title">
-              Pandora
-            </h5>
-            <div class="card-button">
-              Объект сдан
-            </div>
+            <h5 class="card-title">Pandora</h5>
+            <div class="card-button">Объект сдан</div>
             <div class="card-subtitle">
-              Юнусобод тумани, мавзе 4,
-              Ахмад Дониш Кучаси, 61 А уй
+              Юнусобод тумани, мавзе 4, Ахмад Дониш Кучаси, 61 А уй
             </div>
           </div>
           <div class="card-link">
-            <base-edit-icon fill="#7C3AED"/>
+            <base-edit-icon fill="#7C3AED" />
           </div>
         </div>
         <div class="card-content">
@@ -29,26 +35,13 @@
             <p class="card-block__subtitle">от 3,500,000 сум/м2</p>
           </div>
         </div>
-
       </div>
       <div class="card-img">
-        <img src="../../assets/img/xonsaroy.jpg" alt="">
+        <img src="../../assets/img/xonsaroy.jpg" alt="" />
       </div>
     </div>
-
   </div>
 </template>
-
-<script>
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-
-export default {
-  name: "ObjectCard.vue",
-  components: {
-    BaseEditIcon
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .card {
@@ -59,7 +52,7 @@ export default {
   &-body {
     border-radius: 1rem 1rem 0 0;
     padding: 28px;
-    background-color: var(--gray-100)
+    background-color: var(--gray-100);
   }
 
   &-top {
@@ -104,7 +97,6 @@ export default {
     justify-content: space-between;
     margin-bottom: 0.75rem;
 
-
     p {
       margin-bottom: 0;
       font-weight: 600;
@@ -120,7 +112,6 @@ export default {
     }
 
     &__title {
-
     }
   }
 

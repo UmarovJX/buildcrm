@@ -1,24 +1,10 @@
-<template>
-  <b-tooltip
-      :target="target"
-      :title="text"
-      :variant="variant"
-      :triggers="triggers"
-      :custom-class="custom_class"
-      :disabled="disabled"
-      :show="show"
-      :placement="placement">
-    {{ text }}
-  </b-tooltip>
-</template>
-
 <script>
 export default {
   name: "BaseTooltip",
   props: {
     text: {
       type: String,
-      required: true
+      required: true,
     },
     target: {
       type: String,
@@ -27,38 +13,53 @@ export default {
     placement: {
       type: String,
       required: false,
-      default: () => "top"
+      default: () => "top",
     },
     show: {
       type: Boolean,
       required: false,
-      default: () => false
+      default: () => false,
     },
     triggers: {
       type: String,
       required: false,
-      default: () => "hover"
+      default: () => "hover",
     },
     variant: {
       type: String,
-      required: false
+      required: false,
     },
     custom_class: {
       type: String,
-      required: false
+      required: false,
     },
     disabled: {
       type: Boolean,
       required: false,
-    }
-  }
-}
+    },
+  },
+};
 </script>
+
+<template>
+  <b-tooltip
+    :target="target"
+    :title="text"
+    :variant="variant"
+    :triggers="triggers"
+    :custom-class="custom_class"
+    :disabled="disabled"
+    :show="show"
+    :placement="placement"
+  >
+    {{ text }}
+  </b-tooltip>
+</template>
 
 <style scoped>
 ::v-deep .tooltip-inner {
-  background: #E5E7EB;
-  color: #4B5563;
+  background: #e5e7eb;
+  color: #4b5563;
   border-radius: 16px;
   padding: 12px 16px;
   font-weight: 600;
@@ -67,8 +68,7 @@ export default {
   font-family: "Inter", serif;
 }
 ::v-deep .arrow::before {
-  border-bottom-color: #E5E7EB;
-  border-top-color: #E5E7EB;
+  border-bottom-color: #e5e7eb;
+  border-top-color: #e5e7eb;
 }
-
 </style>

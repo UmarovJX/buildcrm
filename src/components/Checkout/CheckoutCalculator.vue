@@ -1,78 +1,169 @@
+<script>
+import BaseSelect from "@/components/Reusable/BaseSelect";
+import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+import { formatToPrice } from "@/util/reusable";
+import { mapActions, mapMutations, mapState } from "vuex";
+
+export default {
+  name: "CheckoutCalculator",
+  components: {
+    BaseSelect,
+    BasePriceInput,
+    BaseDatePicker,
+  },
+  props: {
+    apartments: {
+      type: Array,
+      required: true,
+    },
+    order: {
+      type: Object,
+      required: true,
+    },
+    paymentOptions: {
+      type: Array,
+      required: true,
+    },
+    datePickerIconFill: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ["update"],
+  computed: {
+    ...mapState("checkout", {
+      calc: "calc",
+      discount: "discount",
+    }),
+    showMonthlyInputField() {
+      return this.calc.prepay !== 100;
+    },
+  },
+  methods: {
+    ...mapMutations("checkout", {
+      editState: "editState",
+    }),
+    ...mapActions("checkout", {
+      changeDiscount: "changeDiscount",
+      changePaymentDate: "changePaymentDate",
+      changeFirstPaymentDate: "changeFirstPaymentDate",
+      changePrepay: "changePrepay",
+    }),
+    prettier: formatToPrice,
+    mutateInitialPrice() {
+      this.editState("initial_price");
+      this.update();
+    },
+    mutateMonthlyPaymentPeriod() {
+      this.editState("monthly_payment_period");
+      this.update();
+    },
+    mutatePrepayment() {
+      this.editState("prepayment");
+      this.changePrepay();
+    },
+    updateDiscount(id) {
+      const currentDiscount = this.paymentOptions.find(
+        (pmOp) => pmOp.id === id
+      );
+      if (currentDiscount) {
+        this.update(this.calc, currentDiscount);
+        this.changeDiscount(currentDiscount);
+      }
+    },
+    update(calc = null, discount = null) {
+      if (calc && discount) {
+        this.$emit("update", {
+          calc,
+          discount,
+        });
+      } else {
+        this.$emit("update", {
+          calc: this.calc,
+          discount: this.discount,
+        });
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <div class="checkout">
     <div class="calculator-wrapper">
       <!--  Вариант оплаты  -->
       <base-select
-          :value="discount"
-          :label="true"
-          :noPlaceholder="true"
-          value-field="id"
-          :options="paymentOptions"
-          :placeholder="`${ $t('enter_discount') }`"
-          class="discount-select"
-          @change="updateDiscount"
+        :value="discount"
+        :label="true"
+        :noPlaceholder="true"
+        value-field="id"
+        :options="paymentOptions"
+        :placeholder="`${$t('enter_discount')}`"
+        class="discount-select"
+        @change="updateDiscount"
       />
       <!--  Рассрочка (monthly)  -->
       <base-price-input
-          v-if="showMonthlyInputField"
-          v-model="calc.monthly_payment_period"
-          :value="calc.monthly_payment_period"
-          :permission-change="true"
-          :label="true"
-          :top-placeholder="true"
-          :placeholder="$t('installment') +' '+ $t('month')"
-          currency="месяцев"
-          class="checkout-monthly-payment-period"
-          @input="mutateMonthlyPaymentPeriod"
+        v-if="showMonthlyInputField"
+        v-model="calc.monthly_payment_period"
+        :value="calc.monthly_payment_period"
+        :permission-change="true"
+        :label="true"
+        :top-placeholder="true"
+        :placeholder="$t('installment') + ' ' + $t('month')"
+        currency="месяцев"
+        class="checkout-monthly-payment-period"
+        @input="mutateMonthlyPaymentPeriod"
       />
       <!--  Предоплата  -->
       <base-price-input
-          v-model="calc.prepay"
-          :value="calc.prepay"
-          :permission-change="true"
-          :label="true"
-          :top-placeholder="true"
-          :currency="`${$t('ye')}`"
-          :placeholder="$t('prepayment') + ' %'"
-          class="checkout-prepay-percentage"
-          @input="mutatePrepayment"
+        v-model="calc.prepay"
+        :value="calc.prepay"
+        :permission-change="true"
+        :label="true"
+        :top-placeholder="true"
+        :currency="`${$t('ye')}`"
+        :placeholder="$t('prepayment') + ' %'"
+        class="checkout-prepay-percentage"
+        @input="mutatePrepayment"
       />
       <!--  Первоначальный взнос    -->
       <base-price-input
-          v-model="calc.initial_price"
-          :value="calc.initial_price"
-          :permission-change="true"
-          @input="mutateInitialPrice"
-          :label="true"
-          :top-placeholder="true"
-          :currency="`${$t('ye')}`"
-          :placeholder="$t('payments.initial_fee')"
-          class="checkout-initial-price-input w-100"
+        v-model="calc.initial_price"
+        :value="calc.initial_price"
+        :permission-change="true"
+        @input="mutateInitialPrice"
+        :label="true"
+        :top-placeholder="true"
+        :currency="`${$t('ye')}`"
+        :placeholder="$t('payments.initial_fee')"
+        class="checkout-initial-price-input w-100"
       />
       <base-date-picker
-          v-model="calc.first_payment_date"
-          :range="false"
-          class="data-picker contract-date-picker"
-          format="DD.MM.YYYY"
-          :icon-fill="datePickerIconFill"
-          :placeholder="`${ $t('apartments.agree.first_payment_date') }`"
-          @select="changeFirstPaymentDate"
+        v-model="calc.first_payment_date"
+        :range="false"
+        class="data-picker contract-date-picker"
+        format="DD.MM.YYYY"
+        :icon-fill="datePickerIconFill"
+        :placeholder="`${$t('apartments.agree.first_payment_date')}`"
+        @select="changeFirstPaymentDate"
       />
       <!--  Дата ежемесячного платежа   -->
       <base-date-picker
-          v-model="calc.payment_date"
-          :range="false"
-          class="data-picker payment-date-picker"
-          format="DD.MM.YYYY"
-          :icon-fill="datePickerIconFill"
-          :placeholder="`${ $t('apartments.agree.payment_date') }`"
-          @select="changePaymentDate"
+        v-model="calc.payment_date"
+        :range="false"
+        class="data-picker payment-date-picker"
+        format="DD.MM.YYYY"
+        :icon-fill="datePickerIconFill"
+        :placeholder="`${$t('apartments.agree.payment_date')}`"
+        @select="changePaymentDate"
       />
     </div>
     <div class="calculator-result">
       <div class="apartment-item">
         <span class="apartment-label">
-         {{ $t('starting_price') }}
+          {{ $t("starting_price") }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.initial_price) }}
@@ -80,7 +171,7 @@
       </div>
       <div class="apartment-item">
         <span class="apartment-label">
-         {{ $t('remainder') }}
+          {{ $t("remainder") }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.remainder) }}
@@ -88,7 +179,7 @@
       </div>
       <div class="apartment-item">
         <span class="apartment-label">
-         {{ $t('apartments.view.discount_price') }}
+          {{ $t("apartments.view.discount_price") }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.total_discount) }}
@@ -96,7 +187,7 @@
       </div>
       <div class="apartment-item">
         <span class="apartment-label">
-          {{ $t('total') }}
+          {{ $t("total") }}
         </span>
         <p class="apartment-value">
           {{ prettier(calc.total) }}
@@ -105,94 +196,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import BaseSelect from "@/components/Reusable/BaseSelect";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import {formatToPrice} from "@/util/reusable";
-import {mapActions, mapMutations, mapState} from 'vuex'
-
-export default {
-  name: "CheckoutCalculator",
-  components: {
-    BaseSelect,
-    BasePriceInput,
-    BaseDatePicker
-  },
-  props: {
-    apartments: {
-      type: Array,
-      required: true
-    },
-    order: {
-      type: Object,
-      required: true
-    },
-    paymentOptions: {
-      type: Array,
-      required: true
-    },
-    datePickerIconFill: {
-      type: String,
-      required: true
-    }
-  },
-  emits: ['update'],
-  computed: {
-    ...mapState('checkout', {
-      calc: 'calc',
-      discount: 'discount'
-    }),
-    showMonthlyInputField() {
-      return this.calc.prepay !== 100
-    },
-  },
-  methods: {
-    ...mapMutations('checkout', {
-      editState: 'editState'
-    }),
-    ...mapActions('checkout', {
-      changeDiscount: 'changeDiscount',
-      changePaymentDate: 'changePaymentDate',
-      changeFirstPaymentDate: 'changeFirstPaymentDate',
-      changePrepay: 'changePrepay'
-    }),
-    prettier: formatToPrice,
-    mutateInitialPrice() {
-      this.editState('initial_price')
-      this.update()
-    },
-    mutateMonthlyPaymentPeriod() {
-      this.editState('monthly_payment_period')
-      this.update()
-    },
-    mutatePrepayment() {
-      this.editState('prepayment')
-      this.changePrepay()
-    },
-    updateDiscount(id) {
-      const currentDiscount = this.paymentOptions.find(pmOp => pmOp.id === id)
-      if (currentDiscount) {
-        this.update(this.calc, currentDiscount)
-        this.changeDiscount(currentDiscount)
-      }
-    },
-    update(calc = null, discount = null) {
-      if (calc && discount) {
-        this.$emit('update', {
-          calc, discount,
-        })
-      } else {
-        this.$emit('update', {
-          calc: this.calc,
-          discount: this.discount
-        })
-      }
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .checkout {
@@ -206,14 +209,14 @@ export default {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
     grid-gap: 1rem;
-    column-gap: .5rem;
+    column-gap: 0.5rem;
     grid-template-areas:
-    "one one"
-    "two two"
-    "three four"
-    "five six"
-    "seven seven"
-    "eight eight";
+      "one one"
+      "two two"
+      "three four"
+      "five six"
+      "seven seven"
+      "eight eight";
 
     .discount-select {
       grid-area: one;
@@ -269,7 +272,6 @@ export default {
   }
 }
 
-
 .apartment-item {
   display: flex;
   column-gap: 24px;
@@ -290,6 +292,4 @@ export default {
   margin: 0;
   color: var(--gray-600);
 }
-
-
 </style>

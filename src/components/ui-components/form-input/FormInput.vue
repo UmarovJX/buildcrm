@@ -1,97 +1,26 @@
-<template>
-  <div
-      class="base-input gray-300"
-      :class="{
-        'error':error,
-        'label':!isUndefinedOrNullOrEmpty(value) && label,
-        'disable-input':disable
-      }"
-  >
-    <div v-if="!isUndefinedOrNullOrEmpty(value) && label" class="input-label">
-      <span>
-        {{ placeholder }}
-      </span>
-    </div>
-    <base-numeric-input
-        v-if=" type === 'number'"
-        v-model="inputModel"
-        :minus="false"
-        :value="null"
-        :disabled="disable"
-        :currency="currency"
-        :placeholder="placeholder"
-        :field-style="inputFieldStyle"
-        :precision="precision"
-        :currency-symbol="currencySymbol"
-        :max="max"
-        :min="min"
-        ref="base-input"
-        separator="space"
-        currency-symbol-position="suffix"
-        @blur="$emit('blur',$event)"
-        @focus="$emit('focus',$event)"
-    />
-    <input
-        v-else-if="mask !== ''"
-        :type="type"
-        v-model="inputModel"
-        ref="base-input"
-        id="base-input-mask"
-        v-mask="mask"
-        :style="inputFieldStyle"
-        :placeholder="placeholder"
-        :autocomplete="autocomplete"
-        @blur="$emit('blur',$event)"
-        @focus="$emit('focus',$event)"
-        :disabled="disable"
-
-    />
-    <input
-        v-else
-        :type="type"
-        v-model="inputModel"
-        id="base-input"
-        ref="base-input"
-        :style="inputFieldStyle"
-        :placeholder="placeholder"
-        @blur="$emit('blur',$event)"
-        @focus="$emit('focus',$event)"
-        :disabled="disable"
-    />
-
-    <span
-        v-show="showClearIcon && !disable"
-        class="clear__icon"
-        @click="clearSearchInput"
-    >
-        <base-times-circle-icon/>
-      </span>
-  </div>
-</template>
-
 <script>
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import {isUndefinedOrNullOrEmpty, isUndefinedOrNull} from "@/util/inspect";
+import { isUndefinedOrNullOrEmpty, isUndefinedOrNull } from "@/util/inspect";
 
 const cssDefaultProperty = {
   type: String,
-  default: ''
-}
+  default: "",
+};
 
 export default {
   name: "BaseInput",
 
   components: {
     BaseTimesCircleIcon,
-    BaseNumericInput: () => import('@/components/Reusable/BaseNumericInput')
+    BaseNumericInput: () => import("@/components/Reusable/BaseNumericInput"),
   },
 
   model: {
-    prop: 'value',
-    event: 'input'
+    prop: "value",
+    event: "input",
   },
 
-  emits: ['input', 'blur', 'focus'],
+  emits: ["input", "blur", "focus"],
 
   props: {
     placeholder: {
@@ -99,39 +28,39 @@ export default {
     },
     precision: {
       type: Number,
-      default: 0
+      default: 0,
     },
     value: {
       type: [String, Number, Array],
-      default: () => null
+      default: () => null,
     },
     type: {
       type: String,
-      default: () => 'text'
+      default: () => "text",
     },
     label: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     error: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     currency: {
       type: String,
-      default: ' '
+      default: " ",
     },
     mask: {
       type: String,
-      default: ''
+      default: "",
     },
     disable: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     autocomplete: {
       type: String,
-      default: 'on'
+      default: "on",
     },
     /**
      * Maximum value allowed.
@@ -148,11 +77,11 @@ export default {
     min: {
       type: Number,
       default: Number.MIN_SAFE_INTEGER || -9007199254740991,
-      required: false
+      required: false,
     },
     currencySymbol: {
       type: Boolean,
-      default: false
+      default: false,
     },
     margin: cssDefaultProperty,
     padding: cssDefaultProperty,
@@ -164,16 +93,15 @@ export default {
     marginBottom: cssDefaultProperty,
     marginLeft: cssDefaultProperty,
     marginRight: cssDefaultProperty,
-
   },
 
   data() {
-    let inputModel = this.value
+    let inputModel = this.value;
 
     return {
       inputModel,
       showClearIcon: !isUndefinedOrNullOrEmpty(inputModel),
-    }
+    };
   },
 
   computed: {
@@ -188,8 +116,8 @@ export default {
         marginTop,
         marginBottom,
         marginLeft,
-        marginRight
-      } = this
+        marginRight,
+      } = this;
       return {
         margin,
         padding,
@@ -200,45 +128,114 @@ export default {
         marginTop,
         marginBottom,
         marginLeft,
-        marginRight
-      }
-    }
+        marginRight,
+      };
+    },
   },
 
   watch: {
     inputModel: {
       handler() {
-        this.emitValue()
-        this.toggleClearButton()
+        this.emitValue();
+        this.toggleClearButton();
       },
-      immediate: false
+      immediate: false,
     },
     value(valueUpdateByParent) {
       if (valueUpdateByParent !== this.inputModel) {
-        this.inputModel = valueUpdateByParent
+        this.inputModel = valueUpdateByParent;
       }
-    }
+    },
   },
 
   methods: {
     isUndefinedOrNullOrEmpty,
     isUndefinedOrNull,
     toggleClearButton() {
-      this.showClearIcon = !isUndefinedOrNullOrEmpty(this.inputModel)
+      this.showClearIcon = !isUndefinedOrNullOrEmpty(this.inputModel);
     },
     clearSearchInput() {
-      this.effectModel('')
+      this.effectModel("");
     },
     effectModel(value) {
-      this.inputModel = value
+      this.inputModel = value;
     },
     emitValue() {
-      this.$emit('input', this.inputModel)
-    }
+      this.$emit("input", this.inputModel);
+    },
   },
-}
+};
 </script>
 
+<template>
+  <div
+    class="base-input gray-300"
+    :class="{
+      error: error,
+      label: !isUndefinedOrNullOrEmpty(value) && label,
+      'disable-input': disable,
+    }"
+  >
+    <div v-if="!isUndefinedOrNullOrEmpty(value) && label" class="input-label">
+      <span>
+        {{ placeholder }}
+      </span>
+    </div>
+    <base-numeric-input
+      v-if="type === 'number'"
+      v-model="inputModel"
+      :minus="false"
+      :value="null"
+      :disabled="disable"
+      :currency="currency"
+      :placeholder="placeholder"
+      :field-style="inputFieldStyle"
+      :precision="precision"
+      :currency-symbol="currencySymbol"
+      :max="max"
+      :min="min"
+      ref="base-input"
+      separator="space"
+      currency-symbol-position="suffix"
+      @blur="$emit('blur', $event)"
+      @focus="$emit('focus', $event)"
+    />
+    <input
+      v-else-if="mask !== ''"
+      :type="type"
+      v-model="inputModel"
+      ref="base-input"
+      id="base-input-mask"
+      v-mask="mask"
+      :style="inputFieldStyle"
+      :placeholder="placeholder"
+      :autocomplete="autocomplete"
+      @blur="$emit('blur', $event)"
+      @focus="$emit('focus', $event)"
+      :disabled="disable"
+    />
+    <input
+      v-else
+      :type="type"
+      v-model="inputModel"
+      id="base-input"
+      ref="base-input"
+      :style="inputFieldStyle"
+      :placeholder="placeholder"
+      @blur="$emit('blur', $event)"
+      @focus="$emit('focus', $event)"
+      :disabled="disable"
+    />
+
+    <span
+      v-show="showClearIcon && !disable"
+      class="clear__icon"
+      @click="clearSearchInput"
+    >
+      <base-times-circle-icon />
+    </span>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .input-label {
@@ -285,7 +282,6 @@ export default {
     background-color: var(--gray-100);
   }
 
-
   input {
     font-family: Inter, sans-serif !important;
     width: 100%;
@@ -319,7 +315,6 @@ export default {
     align-items: center;
     cursor: pointer;
   }
-
 }
 
 .disable-input {
@@ -342,7 +337,6 @@ export default {
     transform: scale(1.1);
   }
 }
-
 
 ::placeholder {
   color: var(--gray-600);
@@ -368,7 +362,7 @@ input[type="date"]::-webkit-datetime-edit-year-field {
 }
 
 .error {
-  border: .25rem solid var(--red-500) !important
+  border: 0.25rem solid var(--red-500) !important;
 }
 
 @media (max-width: 996px) {

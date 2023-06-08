@@ -1,6 +1,5 @@
-import docx4js from "../docx4js/openxml/document"
-import converters from "./docx/html/factory"
-
+import docx4js from "../docx4js/openxml/document";
+import converters from "./docx/html/factory";
 
 /**
  *
@@ -12,28 +11,26 @@ import converters from "./docx/html/factory"
  * @returns
  */
 export function docx2html(file, opt) {
-    return docx4js.load(file)
-        .then(docx => {
-
-            const html = docx.parse(docx4js.createVisitorFactory(converters, {}))
-            console.log(html)
-            // return Object.create({
-            //     content: html.content,
-            //     toString() {
-            //         return html.toString(...arguments)
-            //     },
-            //     asZip() {
-            //         return html.asZip(...arguments)
-            //     },
-            //     download() {
-            //         return html.download(...arguments)
-            //     },
-            //     save() {
-            //         return html.save(...arguments)
-            //     },
-            //     release() {
-            //         html.release()
-            //     }
-            // })
-        })
+  return docx4js.load(file).then((docx) => {
+    const html = docx.parse(docx4js.createVisitorFactory(converters, {}));
+    console.log(html);
+    // return Object.create({
+    //     content: html.content,
+    //     toString() {
+    //         return html.toString(...arguments)
+    //     },
+    //     asZip() {
+    //         return html.asZip(...arguments)
+    //     },
+    //     download() {
+    //         return html.download(...arguments)
+    //     },
+    //     save() {
+    //         return html.save(...arguments)
+    //     },
+    //     release() {
+    //         html.release()
+    //     }
+    // })
+  });
 }

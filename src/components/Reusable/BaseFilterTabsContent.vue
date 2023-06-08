@@ -1,19 +1,65 @@
+<script>
+export default {
+  name: "BaseFilterTabsContent",
+  emits: ["get-new-content"],
+  props: {
+    filterTabList: {
+      type: Array,
+      required: true,
+    },
+  },
+  created() {
+    this.setCurrentStatus();
+  },
+  data() {
+    return {
+      currentStatus: "",
+    };
+  },
+  watch: {
+    "$route.query": {
+      handler: function () {
+        this.setCurrentStatus();
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    getFilteredContent(status) {
+      this.currentStatus = status;
+      this.$emit("get-new-content", status);
+    },
+    setCurrentStatus() {
+      const { query } = this.$route;
+      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status;
+      if (hasQueryAndStatus) {
+        this.currentStatus = query.status;
+      } else if (this.filterTabList && this.filterTabList[0]) {
+        this.currentStatus = this.filterTabList[0].status;
+      } else {
+        this.currentStatus = "";
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <div class="tab__container">
     <div class="filter__content">
       <div
-          v-for="{name,status,counts} in filterTabList"
-          :key="status"
-          @click="getFilteredContent(status)"
-          class="filter__content-item"
-          :class="[status === currentStatus ? 'filter__content-item-active' : '']"
+        v-for="{ name, status, counts } in filterTabList"
+        :key="status"
+        @click="getFilteredContent(status)"
+        class="filter__content-item"
+        :class="[status === currentStatus ? 'filter__content-item-active' : '']"
       >
         <div class="filter__content-item-inline">
           <span>{{ $t(`${name}`) }}</span>
           <span
-              v-if="counts"
-              class="counts"
-              :class="{ 'active' : status === currentStatus }"
+            v-if="counts"
+            class="counts"
+            :class="{ active: status === currentStatus }"
           >
             {{ counts }}
           </span>
@@ -23,53 +69,6 @@
     <div class="bottom__line"></div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "BaseFilterTabsContent",
-  emits: ['get-new-content'],
-  props: {
-    filterTabList: {
-      type: Array,
-      required: true
-    }
-  },
-  created() {
-    this.setCurrentStatus()
-  },
-  data() {
-    return {
-      currentStatus: ''
-    }
-  },
-  watch: {
-    '$route.query': {
-      handler: function () {
-        this.setCurrentStatus()
-      },
-      deep: true
-    },
-  },
-  methods: {
-    getFilteredContent(status) {
-      this.currentStatus = status
-      this.$emit('get-new-content', status)
-    },
-    setCurrentStatus() {
-      const {query} = this.$route
-      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status
-      if (hasQueryAndStatus) {
-        this.currentStatus = query.status
-      } else if (this.filterTabList && this.filterTabList[0]) {
-        this.currentStatus = this.filterTabList[0].status
-      } else {
-        this.currentStatus = ''
-
-      }
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 * {
@@ -132,7 +131,7 @@ export default {
       }
 
       &:after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: -16px;
         left: 0;

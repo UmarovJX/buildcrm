@@ -1,91 +1,3 @@
-<template>
-  <div class="new-object p-3">
-    <!-- Комментария -->
-    <div class="">
-      <label>{{ $t('userComment') }}</label>
-      <textarea
-          rows="3"
-          cols="3"
-          v-model="contract.comment"
-          class="form-control"
-      ></textarea>
-    </div>
-
-    <!-- error msg -->
-    <div class="alert alert-danger mt-3" v-if="error">
-      <ul>
-        <li v-for="(error, index) in errors" :key="index">
-            <span v-for="msg in error" :key="msg">
-              {{ msg }}
-            </span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Btns -->
-    <div class="sidebar-btns">
-      <div class="row justify-content-center">
-
-        <button
-            type="button"
-            class="btn text-dark mx-md-2"
-            @click="removeBlock"
-        >
-          {{ $t("cancel") }}
-        </button>
-
-        <button
-            type="button"
-            class="btn btn-secondary ml-2"
-            @click="[(contract.step = 1), (buttons.next = true), (buttons.confirm = false)]"
-        >
-          <i class="fa fa-chevron-circle-left"></i>
-          {{ $t("back") }}
-        </button>
-
-        <template v-if="!edit">
-          <button
-              type="submit"
-              class="btn btn-success mr-0"
-              v-if="!buttons.loading && buttons.confirm"
-          >
-            {{ $t("create_agree") }}
-            <i class="fa fa-file-contract"></i>
-          </button>
-          <button
-              v-if="buttons.loading && buttons.confirm"
-              type="button"
-              class="btn btn-success mr-0"
-          >
-            {{ $t("create_agree") }}
-            <i class="fas fa-spinner fa-spin"></i>
-          </button>
-        </template>
-        <template v-else>
-          <button
-              type="submit"
-              class="btn btn-success mr-0"
-              v-if="!buttons.loading && buttons.confirm"
-          >
-            {{ $t("save_changes") }}
-            <i class="fa fa-file-contract"></i>
-          </button>
-          <button
-              v-if="buttons.loading && buttons.confirm"
-              type="button"
-              class="btn btn-success mr-0"
-          >
-            {{ $t("save_changes") }}
-            <i class="fas fa-spinner fa-spin"></i>
-          </button>
-        </template>
-
-      </div>
-
-    </div>
-  </div>
-</template>
-
 <script>
 import api from "@/services/api";
 
@@ -102,10 +14,10 @@ export default {
     contract: {},
     discounts: {},
     buttons: {},
-    order: {}
+    order: {},
   },
 
-  emits: ['redirect-to-contract'],
+  emits: ["redirect-to-contract"],
 
   data() {
     return {
@@ -114,7 +26,7 @@ export default {
           Authorization: "Bearer " + localStorage.token,
         },
       },
-    }
+    };
   },
 
   methods: {
@@ -128,7 +40,7 @@ export default {
         confirmButtonText: this.$t("sweetAlert.yes_close"),
       }).then((result) => {
         if (result.value) {
-          this.$emit('redirect-to-contract')
+          this.$emit("redirect-to-contract");
         }
       });
     },
@@ -136,14 +48,15 @@ export default {
     async expiredConfirm() {
       try {
         this.loading = true;
-        await api.orders.deactivateOrderHold(this.order.uuid)
-            .then(() => {
-              this.loading = false;
-              this.$router.push({
-                name: "apartments",
-              });
-            })
-            .catch();
+        await api.orders
+          .deactivateOrderHold(this.order.uuid)
+          .then(() => {
+            this.loading = false;
+            this.$router.push({
+              name: "apartments",
+            });
+          })
+          .catch();
       } catch (error) {
         this.loading = false;
         if (!error.response) {
@@ -161,11 +74,99 @@ export default {
         }
       }
     },
-
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
+<template>
+  <div class="new-object p-3">
+    <!-- Комментария -->
+    <div class="">
+      <label>{{ $t("userComment") }}</label>
+      <textarea
+        rows="3"
+        cols="3"
+        v-model="contract.comment"
+        class="form-control"
+      ></textarea>
+    </div>
 
-</style>
+    <!-- error msg -->
+    <div class="alert alert-danger mt-3" v-if="error">
+      <ul>
+        <li v-for="(error, index) in errors" :key="index">
+          <span v-for="msg in error" :key="msg">
+            {{ msg }}
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Btns -->
+    <div class="sidebar-btns">
+      <div class="row justify-content-center">
+        <button
+          type="button"
+          class="btn text-dark mx-md-2"
+          @click="removeBlock"
+        >
+          {{ $t("cancel") }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary ml-2"
+          @click="
+            [
+              (contract.step = 1),
+              (buttons.next = true),
+              (buttons.confirm = false),
+            ]
+          "
+        >
+          <i class="fa fa-chevron-circle-left"></i>
+          {{ $t("back") }}
+        </button>
+
+        <template v-if="!edit">
+          <button
+            type="submit"
+            class="btn btn-success mr-0"
+            v-if="!buttons.loading && buttons.confirm"
+          >
+            {{ $t("create_agree") }}
+            <i class="fa fa-file-contract"></i>
+          </button>
+          <button
+            v-if="buttons.loading && buttons.confirm"
+            type="button"
+            class="btn btn-success mr-0"
+          >
+            {{ $t("create_agree") }}
+            <i class="fas fa-spinner fa-spin"></i>
+          </button>
+        </template>
+        <template v-else>
+          <button
+            type="submit"
+            class="btn btn-success mr-0"
+            v-if="!buttons.loading && buttons.confirm"
+          >
+            {{ $t("save_changes") }}
+            <i class="fa fa-file-contract"></i>
+          </button>
+          <button
+            v-if="buttons.loading && buttons.confirm"
+            type="button"
+            class="btn btn-success mr-0"
+          >
+            {{ $t("save_changes") }}
+            <i class="fas fa-spinner fa-spin"></i>
+          </button>
+        </template>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped></style>

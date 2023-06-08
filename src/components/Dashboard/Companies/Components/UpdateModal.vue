@@ -1,3 +1,125 @@
+<script>
+import { mapActions, mapGetters } from "vuex";
+import api from "@/services/api";
+
+export default {
+  props: {
+    branchId: {},
+  },
+
+  mounted() {
+    this.getBranch();
+    this.fetchBranchTypes(this);
+  },
+
+  computed: mapGetters(["getBranchTypes", "getBranch"]),
+
+  data() {
+    return {
+      branch: {},
+      error: null,
+      company: {
+        first_name: null,
+        last_name: null,
+        second_name: null,
+
+        payment_account: null,
+        name: null,
+        inn: null,
+        mfo: null,
+        bank_name: {
+          ru: null,
+          uz: null,
+        },
+
+        phone: null,
+        other_phone: null,
+        type_id: 0,
+      },
+
+      header: {
+        headers: {
+          Authorization: "Bearer " + localStorage.token,
+        },
+      },
+    };
+  },
+
+  methods: {
+    ...mapActions(["fetchBranchTypes"]),
+
+    resetModal() {
+      this.$bvModal.hide("modal-update");
+
+      // this.$emit('UpdateCompany', this.company);
+
+      this.error = false;
+      this.errors = [];
+
+      this.objects = [];
+    },
+
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefault();
+      this.handleSubmit();
+    },
+
+    async handleSubmit() {
+      const branch = this.getBranch;
+
+      try {
+        branch.id = this.branchId;
+        const response = await api.companies.updateCompany(branch);
+        this.toasted(response.data.message, "success");
+
+        this.$nextTick(() => {
+          this.$bvModal.hide("modal-update");
+        });
+
+        this.$emit("UpdateCompany");
+      } catch (error) {
+        if (!error.response) {
+          this.toasted("Error: Network Error", "error");
+        } else {
+          if (error.response.status === 403) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 401) {
+            this.toasted(error.response.data, "error");
+          } else if (error.response.status === 500) {
+            this.toasted(error.response.data.message, "error");
+          } else if (error.response.status === 422) {
+            this.error = true;
+            this.errors = error.response.data;
+          } else {
+            this.toasted(error.response.data.message, "error");
+          }
+        }
+      }
+    },
+
+    getName(name) {
+      let locale = localStorage.locale;
+      let value = "";
+
+      if (locale) {
+        switch (locale) {
+          case "ru":
+            value = name.ru;
+            break;
+          case "uz":
+            value = name.uz;
+            break;
+        }
+      } else {
+        value = name.ru;
+      }
+
+      return value;
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <b-modal
@@ -130,127 +252,5 @@
     </b-modal>
   </div>
 </template>
-
-<script>
-import {mapActions, mapGetters} from "vuex";
-import api from "@/services/api";
-
-export default {
-  props: {
-    branchId: {},
-  },
-
-  mounted() {
-    this.getBranch();
-    this.fetchBranchTypes(this);
-  },
-
-  computed: mapGetters(["getBranchTypes", "getBranch"]),
-
-  data() {
-    return {
-      branch: {},
-      error: null,
-      company: {
-        first_name: null,
-        last_name: null,
-        second_name: null,
-
-        payment_account: null,
-        name: null,
-        inn: null,
-        mfo: null,
-        bank_name: {
-          ru: null,
-          uz: null,
-        },
-
-        phone: null,
-        other_phone: null,
-        type_id: 0,
-      },
-
-      header: {
-        headers: {
-          Authorization: "Bearer " + localStorage.token,
-        },
-      },
-    };
-  },
-
-  methods: {
-    ...mapActions(["fetchBranchTypes"]),
-
-    resetModal() {
-      this.$bvModal.hide("modal-update");
-
-      // this.$emit('UpdateCompany', this.company);
-
-      this.error = false;
-      this.errors = [];
-
-      this.objects = [];
-    },
-
-    handleOk(bvModalEvt) {
-      bvModalEvt.preventDefault();
-      this.handleSubmit();
-    },
-
-    async handleSubmit() {
-      const branch = this.getBranch;
-
-      try {
-        branch.id = this.branchId
-        const response = await api.companies.updateCompany(branch)
-        this.toasted(response.data.message, "success");
-
-        this.$nextTick(() => {
-          this.$bvModal.hide("modal-update");
-        });
-
-        this.$emit("UpdateCompany");
-      } catch (error) {
-        if (!error.response) {
-          this.toasted("Error: Network Error", "error");
-        } else {
-          if (error.response.status === 403) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 401) {
-            this.toasted(error.response.data, "error");
-          } else if (error.response.status === 500) {
-            this.toasted(error.response.data.message, "error");
-          } else if (error.response.status === 422) {
-            this.error = true;
-            this.errors = error.response.data;
-          } else {
-            this.toasted(error.response.data.message, "error");
-          }
-        }
-      }
-    },
-
-    getName(name) {
-      let locale = localStorage.locale;
-      let value = "";
-
-      if (locale) {
-        switch (locale) {
-          case "ru":
-            value = name.ru;
-            break;
-          case "uz":
-            value = name.uz;
-            break;
-        }
-      } else {
-        value = name.ru;
-      }
-
-      return value;
-    },
-  },
-};
-</script>
 
 <style scoped></style>

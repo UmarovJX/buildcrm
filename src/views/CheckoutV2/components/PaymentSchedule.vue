@@ -1,16 +1,143 @@
+<script>
+import { formatDateWithDot, formatToPrice } from "@/util/reusable";
+import BaseButton from "@/components/Reusable/BaseButton";
+import BaseEditIcon from "@/components/icons/BaseEditIcon";
+import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
+import BaseModal from "@/components/Reusable/BaseModal";
+import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
+import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
+import BasePriceInput from "@/components/Reusable/BasePriceInput";
+import { mapActions } from "vuex";
+import { dateProperties } from "@/util/calendar";
+import { makeProp as p } from "@/util/props";
+import { PROP_TYPE_OBJECT } from "@/constants/props";
+
+export default {
+  name: "ChPaymentSchedule",
+  components: {
+    BaseDeleteIcon,
+    BasePlusIcon,
+    BaseButton,
+    BaseEditIcon,
+    BaseModal,
+    BaseCloseIcon,
+    BaseDatePicker,
+    BasePriceInput,
+  },
+  props: {
+    datePickerIconFill: {
+      type: String,
+      default: "var(--violet-600)",
+    },
+    apartment: p(PROP_TYPE_OBJECT, {}),
+  },
+  data() {
+    return {
+      editContext: {
+        month: null,
+        amount: null,
+        tracker: {},
+      },
+    };
+  },
+  computed: {
+    paymentsSchedule() {
+      return [
+        ...this.apartment.calc.initial_payments,
+        ...this.apartment.calc.credit_months,
+      ];
+    },
+    fields() {
+      return [
+        {
+          key: "month",
+          label: this.$t("date"),
+        },
+        {
+          key: "type",
+          label: this.$t("type"),
+        },
+        {
+          key: "amount",
+          label: this.$t("sum"),
+          formatter: (value) => formatToPrice(value, 2),
+        },
+        {
+          key: "actions",
+          label: this.$t("companies.actions"),
+        },
+      ];
+    },
+  },
+  methods: {
+    ...mapActions("CheckoutV2", [
+      "addNewPaymentSchedule",
+      "editPaymentSchedule",
+      "deletePaymentSchedule",
+      "changeFirstAttempt",
+    ]),
+    formatDate: formatDateWithDot,
+    editSelectedPayment(payment) {
+      this.disableFirstAttempt();
+
+      const { ymd } = dateProperties(payment.month, "string");
+      this.editContext = {
+        ...payment,
+        month: ymd,
+      };
+      this.editContext.tracker = payment;
+      this.openEditModal();
+    },
+    openEditModal() {
+      this.$refs["edit-payment-schedule"].openModal();
+    },
+    closeEditModal() {
+      this.$refs["edit-payment-schedule"].closeModal();
+    },
+    addPayment(payment) {
+      this.disableFirstAttempt();
+      this.addNewPaymentSchedule({ apmId: this.apartment.id, payment });
+    },
+    deletePayment(payment) {
+      this.disableFirstAttempt();
+      this.deletePaymentSchedule({ apmId: this.apartment.id, payment });
+    },
+    editPayment() {
+      this.disableFirstAttempt();
+      const { time } = dateProperties(this.editContext.month, "string");
+      this.editPaymentSchedule({
+        apmId: this.apartment.id,
+        payment: {
+          ...this.editContext,
+          month: time,
+        },
+      });
+      this.closeEditModal();
+    },
+    disableFirstAttempt() {
+      this.changeFirstAttempt({
+        apmId: this.apartment.id,
+        firstAttempt: false,
+      });
+    },
+  },
+};
+</script>
+
 <template>
   <div class="payments-list">
     <b-table
-        sticky-header
-        borderless
-        responsive
-        show-empty
-        class="table__list font-inter"
-        thead-tr-class="row__head__bottom-border"
-        tbody-tr-class="row__body__bottom-border"
-        :fields="fields"
-        :items="paymentsSchedule"
-        :empty-text="$t('no_data')"
+      sticky-header
+      borderless
+      responsive
+      show-empty
+      class="table__list font-inter"
+      thead-tr-class="row__head__bottom-border"
+      tbody-tr-class="row__body__bottom-border"
+      :fields="fields"
+      :items="paymentsSchedule"
+      :empty-text="$t('no_data')"
     >
       <template class="header_label" #head(name)="data">
         <span>
@@ -18,12 +145,12 @@
         </span>
       </template>
 
-      <template #cell(type)="{item}">
+      <template #cell(type)="{ item }">
         <span v-if="item.type === 'monthly'">
-          {{ $t('monthly_payment') }}
+          {{ $t("monthly_payment") }}
         </span>
         <span v-else>
-          {{ $t('payments.initial_fee') }}
+          {{ $t("payments.initial_fee") }}
         </span>
       </template>
 
@@ -39,32 +166,32 @@
       <template #cell(actions)="data">
         <div class="action-buttons">
           <BaseButton
-              v-if="parseInt(data.index) > 0"
-              text=""
-              class="violet rounded-circle"
-              @click="editSelectedPayment(data.item)"
+            v-if="parseInt(data.index) > 0"
+            text=""
+            class="violet rounded-circle"
+            @click="editSelectedPayment(data.item)"
           >
             <template #right-icon>
-              <BaseEditIcon fill="var(--white)"/>
+              <BaseEditIcon fill="var(--white)" />
             </template>
           </BaseButton>
           <BaseButton
-              v-if="parseInt(data.index) > 0"
-              text=""
-              class="red rounded-circle"
-              @click="deletePayment(data.item)"
+            v-if="parseInt(data.index) > 0"
+            text=""
+            class="red rounded-circle"
+            @click="deletePayment(data.item)"
           >
             <template #right-icon>
-              <BaseDeleteIcon fill="var(--white)"/>
+              <BaseDeleteIcon fill="var(--white)" />
             </template>
           </BaseButton>
           <BaseButton
-              text=""
-              class="green rounded-circle"
-              @click="addPayment(data.item)"
+            text=""
+            class="green rounded-circle"
+            @click="addPayment(data.item)"
           >
             <template #right-icon>
-              <BasePlusIcon fill="var(--white)"/>
+              <BasePlusIcon fill="var(--white)" />
             </template>
           </BaseButton>
         </div>
@@ -74,10 +201,10 @@
       <template #header>
         <div class="d-flex align-items-center justify-content-between">
           <!--    TITLE      -->
-          <p class="title">{{ $t('apartments.agree.number') }}</p>
+          <p class="title">{{ $t("apartments.agree.number") }}</p>
           <!--   CLOSE    -->
           <p class="close-btn" @click="closeEditModal">
-            <BaseCloseIcon :width="56" :height="56"/>
+            <BaseCloseIcon :width="56" :height="56" />
           </p>
         </div>
       </template>
@@ -85,164 +212,37 @@
       <template #main>
         <div class="main-wrapper">
           <base-date-picker
-              v-model="editContext.month"
-              :range="false"
-              class="w-100"
-              format="DD.MM.YYYY"
-              :icon-fill="datePickerIconFill"
-              :placeholder="`${ $t('apartments.agree.first_payment_date') }`"
+            v-model="editContext.month"
+            :range="false"
+            class="w-100"
+            format="DD.MM.YYYY"
+            :icon-fill="datePickerIconFill"
+            :placeholder="`${$t('apartments.agree.first_payment_date')}`"
           />
           <base-price-input
-              v-model="editContext.amount"
-              :value="editContext.amount"
-              :label="true"
-              :permission-change="true"
-              :top-placeholder="true"
-              input-class="input-amount"
-              :input-style="{padding:0}"
-              :currency="`${$t('ye')}`"
-              :placeholder="$t('sum')"
-              class="modal-price-input w-100"
+            v-model="editContext.amount"
+            :value="editContext.amount"
+            :label="true"
+            :permission-change="true"
+            :top-placeholder="true"
+            input-class="input-amount"
+            :input-style="{ padding: 0 }"
+            :currency="`${$t('ye')}`"
+            :placeholder="$t('sum')"
+            class="modal-price-input w-100"
           />
         </div>
       </template>
       <template #footer>
         <base-button
-            @click="editPayment"
-            :fixed="true"
-            :text="`${ $t('apply') }`"
+          @click="editPayment"
+          :fixed="true"
+          :text="`${$t('apply')}`"
         />
       </template>
     </base-modal>
   </div>
 </template>
-
-<script>
-import {formatDateWithDot, formatToPrice} from "@/util/reusable";
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseEditIcon from "@/components/icons/BaseEditIcon";
-import BasePlusIcon from "@/components/icons/BasePlusIcon";
-import BaseDeleteIcon from "@/components/icons/BaseDeleteIcon";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
-import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
-import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import {mapActions} from "vuex";
-import {dateProperties} from "@/util/calendar";
-import {makeProp as p} from "@/util/props";
-import {PROP_TYPE_OBJECT} from "@/constants/props";
-
-export default {
-  name: "ChPaymentSchedule",
-  components: {
-    BaseDeleteIcon,
-    BasePlusIcon,
-    BaseButton,
-    BaseEditIcon,
-    BaseModal,
-    BaseCloseIcon,
-    BaseDatePicker,
-    BasePriceInput
-  },
-  props: {
-    datePickerIconFill: {
-      type: String,
-      default: 'var(--violet-600)'
-    },
-    apartment: p(PROP_TYPE_OBJECT, {}),
-  },
-  data() {
-    return {
-      editContext: {
-        month: null,
-        amount: null,
-        tracker: {}
-      }
-    }
-  },
-  computed: {
-    paymentsSchedule() {
-      return [
-        ...this.apartment.calc.initial_payments,
-        ...this.apartment.calc.credit_months
-      ]
-    },
-    fields() {
-      return [
-        {
-          key: 'month',
-          label: this.$t('date')
-        },
-        {
-          key: 'type',
-          label: this.$t('type'),
-        },
-        {
-          key: 'amount',
-          label: this.$t('sum'),
-          formatter: (value) => formatToPrice(value, 2)
-        },
-        {
-          key: "actions",
-          label: this.$t("companies.actions"),
-        },
-      ]
-    }
-  },
-  methods: {
-    ...mapActions('CheckoutV2', [
-      'addNewPaymentSchedule',
-      'editPaymentSchedule',
-      'deletePaymentSchedule',
-      'changeFirstAttempt'
-    ]),
-    formatDate: formatDateWithDot,
-    editSelectedPayment(payment) {
-      this.disableFirstAttempt()
-
-      const {ymd} = dateProperties(payment.month, 'string')
-      this.editContext = {
-        ...payment,
-        month: ymd
-      }
-      this.editContext.tracker = payment
-      this.openEditModal()
-    },
-    openEditModal() {
-      this.$refs['edit-payment-schedule'].openModal()
-    },
-    closeEditModal() {
-      this.$refs['edit-payment-schedule'].closeModal()
-    },
-    addPayment(payment) {
-      this.disableFirstAttempt()
-      this.addNewPaymentSchedule({apmId: this.apartment.id, payment})
-    },
-    deletePayment(payment) {
-      this.disableFirstAttempt()
-      this.deletePaymentSchedule({apmId: this.apartment.id, payment})
-    },
-    editPayment() {
-      this.disableFirstAttempt()
-      const {time} = dateProperties(this.editContext.month, 'string')
-      this.editPaymentSchedule({
-        apmId: this.apartment.id,
-        payment: {
-          ...this.editContext,
-          month: time,
-        }
-      })
-      this.closeEditModal()
-    },
-    disableFirstAttempt() {
-      this.changeFirstAttempt({
-        apmId: this.apartment.id,
-        firstAttempt: false
-      })
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .payments-list {
@@ -256,7 +256,6 @@ export default {
 ::v-deep .row__body__bottom-border:not(:last-child) {
   border-bottom: 2px solid var(--gray-200) !important;
 }
-
 
 ::v-deep .table__list {
   min-height: 250px;
@@ -288,12 +287,10 @@ export default {
     }
   }
 
-
-  .table.b-table[aria-busy=true] {
+  .table.b-table[aria-busy="true"] {
     opacity: 1 !important;
   }
 }
-
 
 ::v-deep .table.b-table > thead > tr > [aria-sort="none"],
 ::v-deep .table.b-table > tfoot > tr > [aria-sort="none"] {
@@ -302,20 +299,19 @@ export default {
   padding-right: 20px;
 }
 
-::v-deep .table.b-table > thead > tr > [aria-sort=ascending],
-::v-deep .table.b-table > tfoot > tr > [aria-sort=ascending] {
+::v-deep .table.b-table > thead > tr > [aria-sort="ascending"],
+::v-deep .table.b-table > tfoot > tr > [aria-sort="ascending"] {
   background-position: right calc(2rem / 2) center !important;
   background-size: 20px;
   background-image: url("../../../assets/icons/icon-arrow-down.svg") !important;
 }
 
-::v-deep .table.b-table > thead > tr > [aria-sort=descending],
-::v-deep .table.b-table > tfoot > tr > [aria-sort=descending] {
+::v-deep .table.b-table > thead > tr > [aria-sort="descending"],
+::v-deep .table.b-table > tfoot > tr > [aria-sort="descending"] {
   background-position: right calc(2rem / 2) center !important;
   background-size: 20px;
   background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
 }
-
 
 .action-buttons {
   display: flex;
@@ -325,8 +321,7 @@ export default {
   .base__button {
     width: 32px;
     height: 32px;
-    padding: .25rem !important;
-
+    padding: 0.25rem !important;
 
     ::v-deep .right__icon {
       margin: 0 !important;
@@ -362,5 +357,4 @@ export default {
 .close-btn {
   cursor: pointer;
 }
-
 </style>

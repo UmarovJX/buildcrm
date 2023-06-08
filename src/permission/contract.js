@@ -1,119 +1,115 @@
 import Permission from "@/permission/index";
 
 export default class ContractsPermission extends Permission {
-    static contracts() {
-        return super.getUserPermission('contracts')
+  static contracts() {
+    return super.getUserPermission("contracts");
+  }
+
+  static getContractsPermission(property) {
+    const splitProperty = property.split(".");
+    const [one, two, three] = splitProperty;
+    if (this.hasAdminRole()) return true;
+    else {
+      if (splitProperty.length === 3) {
+        return this.contracts()[one][two][three] ?? false;
+      }
+      if (splitProperty.length === 2) {
+        return this.contracts()[one][two] ?? false;
+      } else {
+        return this.contracts()[one] ?? false;
+      }
     }
+  }
 
-    static getContractsPermission(property) {
-        const splitProperty = property.split('.')
-        const [one, two, three] = splitProperty
-        if (this.hasAdminRole()) return true
-        else {
-            if (splitProperty.length === 3) {
-                return this.contracts()[one][two][three] ?? false
-            }
-            if (splitProperty.length === 2) {
-                return this.contracts()[one][two] ?? false
-            } else {
-                return this.contracts()[one] ?? false
-            }
-        }
+  static getContractsFilterPermission() {
+    return this.getContractsPermission("filter");
+  }
 
-    }
+  static getContractsDownloadPermission() {
+    return this.getContractsPermission("download");
+  }
 
+  static getContractsCancelPermission() {
+    return this.getContractsPermission("cancel");
+  }
 
-    static getContractsFilterPermission() {
-        return this.getContractsPermission('filter')
-    }
+  static getContractsClientTypePermission() {
+    return this.getContractsPermission("client_type");
+  }
 
-    static getContractsDownloadPermission() {
-        return this.getContractsPermission('download')
-    }
+  static getContractsRootPermission() {
+    return this.getContractsPermission("root");
+  }
 
-    static getContractsCancelPermission() {
-        return this.getContractsPermission('cancel')
-    }
+  static getContractsReissueViewPermission() {
+    return this.getContractsPermission("reissue.view");
+  }
 
-    static getContractsClientTypePermission() {
-        return this.getContractsPermission('client_type')
-    }
+  static getContractsReissueCreatePermission() {
+    return this.getContractsPermission("reissue.create");
+  }
 
-    static getContractsRootPermission() {
-        return this.getContractsPermission('root')
-    }
+  static getContractsUniformityPermission() {
+    return this.getContractsPermission("uniformity");
+  }
 
-    static getContractsReissueViewPermission() {
-        return this.getContractsPermission('reissue.view')
-    }
+  static getContractsCommentsPermission() {
+    return this.getContractsPermission("comments");
+  }
 
-    static getContractsReissueCreatePermission() {
-        return this.getContractsPermission('reissue.create')
-    }
+  static getContractsEditPermission() {
+    return this.getContractsPermission("edit");
+  }
 
-    static getContractsUniformityPermission() {
-        return this.getContractsPermission('uniformity')
-    }
+  static getContractsPaymentsCreatePermission() {
+    return this.getContractsPermission("payments.create");
+  }
 
-    static getContractsCommentsPermission() {
-        return this.getContractsPermission('comments')
-    }
+  static getContractsPaymentsListPermission() {
+    return this.getContractsPermission("payments.list");
+  }
 
-    static getContractsEditPermission() {
-        return this.getContractsPermission('edit')
-    }
+  static getContractsPaymentsImportPermission() {
+    return this.getContractsPermission("payments.import");
+  }
 
-    static getContractsPaymentsCreatePermission() {
-        return this.getContractsPermission('payments.create')
-    }
+  static getContractsInitialCreatePermission() {
+    return this.getContractsPermission("payments.initial_type.create");
+  }
 
-    static getContractsPaymentsListPermission() {
-        return this.getContractsPermission('payments.list')
-    }
+  static getContractsInitialEditPermission() {
+    return this.getContractsPermission("payments.initial_type.edit");
+  }
 
-    static getContractsPaymentsImportPermission() {
-        return this.getContractsPermission('payments.import')
-    }
+  static getContractsInitialDeletePermission() {
+    return this.getContractsPermission("payments.initial_type.delete");
+  }
 
-    static getContractsInitialCreatePermission() {
-        return this.getContractsPermission('payments.initial_type.create')
-    }
+  static getContractsMonthlyCreatePermission() {
+    return this.getContractsPermission("payments.monthly_type.create");
+  }
 
-    static getContractsInitialEditPermission() {
-        return this.getContractsPermission('payments.initial_type.edit')
-    }
+  static getContractsMonthlyEditPermission() {
+    return this.getContractsPermission("payments.monthly_type.edit");
+  }
 
-    static getContractsInitialDeletePermission() {
-        return this.getContractsPermission('payments.initial_type.delete')
-    }
+  static getContractsMonthlyDeletePermission() {
+    return this.getContractsPermission("payments.monthly_type.delete");
+  }
 
-    static getContractsMonthlyCreatePermission() {
-        return this.getContractsPermission('payments.monthly_type.create')
-    }
+  static getContractsViewCommentPermission() {
+    return this.getContractsPermission("comments.view");
+  }
 
-    static getContractsMonthlyEditPermission() {
-        return this.getContractsPermission('payments.monthly_type.edit')
-    }
+  static getContractsCreateCommentPermission() {
+    return this.getContractsPermission("comments.create");
+  }
 
-    static getContractsMonthlyDeletePermission() {
-        return this.getContractsPermission('payments.monthly_type.delete')
-    }
+  static getContractsEditCommentPermission() {
+    return this.getContractsPermission("comments.edit");
+  }
 
-    static getContractsViewCommentPermission() {
-        return this.getContractsPermission('comments.view')
-    }
-
-    static getContractsCreateCommentPermission() {
-        return this.getContractsPermission('comments.create')
-    }
-
-    static getContractsEditCommentPermission() {
-        return this.getContractsPermission('comments.edit')
-    }
-
-    static getContractsDeleteCommentPermission() {
-        return this.getContractsPermission('comments.delete')
-    }
-
-
+  static getContractsDeleteCommentPermission() {
+    return this.getContractsPermission("comments.delete");
+  }
 }

@@ -1,15 +1,13 @@
-<template>
-    <div>
-        <router-view></router-view>
-    </div>
-</template>
-
 <script>
 export default {
-    name: "BranchView"
-}
+  name: "BranchView",
+};
 </script>
 
-<style scoped>
+<template>
+  <div>
+    <router-view></router-view>
+  </div>
+</template>
 
-</style>
+<style scoped></style>

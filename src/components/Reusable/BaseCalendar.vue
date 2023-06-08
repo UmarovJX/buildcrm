@@ -1,29 +1,7 @@
-<template>
-  <div class="search__content">
-    <div class="search__content-input">
-      <input
-          v-model="searchInput"
-          type="search"
-          id="search-input"
-          ref="search-input"
-          placeholder="ФИО, телефон, номер договора"
-          @input="triggerInputEvent"
-      />
-      <span
-          class="clear__icon"
-          @click="clearSearchInput"
-      >
-        <base-calendar-icon/>
-      </span>
-    </div>
-  </div>
-</template>
-
-
 <script>
 // import BaseSearchIcon from "@/components/icons/BaseSearchIcon";
 // import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import {debounce, sortInFirstRelationship} from "@/util/reusable";
+import { debounce, sortInFirstRelationship } from "@/util/reusable";
 import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
 // import DataPicker from
 
@@ -34,56 +12,72 @@ export default {
     // BaseSearchIcon,
     // BaseTimesCircleIcon,
   },
-  emits: ['trigger-input', 'search-by-filter', 'replace-router'],
+  emits: ["trigger-input", "search-by-filter", "replace-router"],
   data() {
     return {
       searchInput: this.$route.query.search,
       debounceInput: this.$route.query.search,
       showClearIcon: false,
-    }
+    };
   },
   computed: {
     query() {
-      return Object.assign({}, this.$route.query)
-    }
+      return Object.assign({}, this.$route.query);
+    },
   },
   watch: {
     searchInput: debounce(function (newValue) {
-      this.debounceInput = newValue
+      this.debounceInput = newValue;
     }, 350),
     debounceInput() {
-      this.toggleClearIcon()
-      this.triggerInputEvent()
-    }
+      this.toggleClearIcon();
+      this.triggerInputEvent();
+    },
   },
   mounted() {
     if (this.searchInput?.length) {
-      this.toggleClearIcon()
+      this.toggleClearIcon();
     }
   },
   methods: {
     searchByFilterField() {
-      const sortingQuery = sortInFirstRelationship(this.filter)
-      this.$emit('search-by-filter', sortingQuery)
-      this.hideFilterModal()
+      const sortingQuery = sortInFirstRelationship(this.filter);
+      this.$emit("search-by-filter", sortingQuery);
+      this.hideFilterModal();
     },
     focusOnSearchInput() {
-      this.$refs['search-input'].focus()
+      this.$refs["search-input"].focus();
     },
     clearSearchInput() {
-      this.searchInput = ''
+      this.searchInput = "";
     },
     toggleClearIcon() {
-      this.showClearIcon = !!this.searchInput.length
+      this.showClearIcon = !!this.searchInput.length;
     },
     triggerInputEvent() {
-      this.$emit('trigger-input', this.debounceInput)
+      this.$emit("trigger-input", this.debounceInput);
     },
-
-  }
-}
+  },
+};
 </script>
 
+<template>
+  <div class="search__content">
+    <div class="search__content-input">
+      <input
+        v-model="searchInput"
+        type="search"
+        id="search-input"
+        ref="search-input"
+        placeholder="ФИО, телефон, номер договора"
+        @input="triggerInputEvent"
+      />
+      <span class="clear__icon" @click="clearSearchInput">
+        <base-calendar-icon />
+      </span>
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .search__content {
@@ -124,7 +118,6 @@ export default {
       font-weight: 700;
       color: var(--gray-600);
 
-
       &::placeholder {
         font-weight: 600;
         color: var(--gray-400);
@@ -137,7 +130,6 @@ export default {
       cursor: pointer;
     }
   }
-
 }
 
 .clear__icon {
@@ -151,7 +143,6 @@ export default {
     transform: scale(1.1);
   }
 }
-
 
 ::placeholder {
   color: var(--gray-600);

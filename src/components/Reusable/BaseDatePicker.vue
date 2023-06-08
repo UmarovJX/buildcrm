@@ -1,114 +1,79 @@
-<template>
-  <div class="base-calendar">
-    <div v-if="hasLabel" class="input-label">
-      <span>
-        {{ placeholder }}
-      </span>
-    </div>
-    <date-picker
-        ref="data-picker"
-        type="date"
-        :value-type="valueType"
-        :format="format"
-        lang="en"
-        :placeholder="placeholder"
-        v-model="dateValue"
-        class="date-picker"
-        :class="{'error':error, 'label':hasLabel}"
-        :range="range"
-    >
-      <template
-          @click="togglePicker"
-          class="calendar-icon"
-          #icon-calendar
-      >
-        <base-calendar-icon
-            :fill="iconFill"
-            :width="iconSquareSize"
-            :height="iconSquareSize"
-        />
-      </template>
-    </date-picker>
-
-  </div>
-</template>
-
 <script>
 import "vue2-datepicker/index.css";
 import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
 import DatePicker from "vue2-datepicker";
-import 'vue2-datepicker/locale/en';
+import "vue2-datepicker/locale/en";
 
 export default {
   name: "BaseDatePicker",
   components: {
     DatePicker,
-    BaseCalendarIcon
+    BaseCalendarIcon,
   },
-  emits: ['input'],
+  emits: ["input"],
   props: {
     value: {
       type: [Array, String],
-      default: () => []
+      default: () => [],
     },
     range: {
       type: Boolean,
-      default: () => true
+      default: () => true,
     },
     format: {
       type: String,
-      default: 'YYYY-MM-DD'
+      default: "YYYY-MM-DD",
     },
     valueType: {
       type: String,
-      default: 'YYYY-MM-DD'
+      default: "YYYY-MM-DD",
     },
     placeholder: {
       type: String,
-      default: 'Select date range'
+      default: "Select date range",
     },
     iconSquareSize: {
       type: Number,
-      default: 24
+      default: 24,
     },
     iconFill: {
       type: String,
-      default: '#9CA3AF'
+      default: "#9CA3AF",
     },
     error: {
       type: Boolean,
-      default: () => false
+      default: () => false,
     },
     label: {
       type: Boolean,
-      default: () => true
-    }
+      default: () => true,
+    },
   },
   data() {
     return {
-      dateValue: null
-    }
+      dateValue: null,
+    };
   },
   watch: {
     dateValue(lastValue) {
-      this.$emit('input', lastValue)
-      this.$emit('select', lastValue)
+      this.$emit("input", lastValue);
+      this.$emit("select", lastValue);
     },
     value: {
       immediate: true,
       handler(value) {
         if (value && value.length) {
-          this.dateValue = value
+          this.dateValue = value;
         } else {
-          this.dateValue = null
+          this.dateValue = null;
         }
-      }
-    }
+      },
+    },
   },
   computed: {
     hasLabel() {
-      return this.value && this.value.length && this.label
-    }
+      return this.value && this.value.length && this.label;
+    },
   },
   // mounted() {
   // this.initDefaultValue()
@@ -121,7 +86,6 @@ export default {
       // } else {
       //   this.$refs["data-picker"].openPopup()
       // }
-
     },
     // initDefaultValue() {
     //   console.log(this.defaultValue, 'defaultValue');
@@ -132,11 +96,41 @@ export default {
     //   }
     // },
     clearField() {
-      this.dateValue = undefined
-    }
-  }
-}
+      this.dateValue = undefined;
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="base-calendar">
+    <div v-if="hasLabel" class="input-label">
+      <span>
+        {{ placeholder }}
+      </span>
+    </div>
+    <date-picker
+      ref="data-picker"
+      type="date"
+      :value-type="valueType"
+      :format="format"
+      lang="en"
+      :placeholder="placeholder"
+      v-model="dateValue"
+      class="date-picker"
+      :class="{ error: error, label: hasLabel }"
+      :range="range"
+    >
+      <template @click="togglePicker" class="calendar-icon" #icon-calendar>
+        <base-calendar-icon
+          :fill="iconFill"
+          :width="iconSquareSize"
+          :height="iconSquareSize"
+        />
+      </template>
+    </date-picker>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .input-label {
@@ -161,7 +155,6 @@ export default {
   }
 }
 
-
 .base-calendar {
   position: relative;
 
@@ -170,7 +163,7 @@ export default {
 
     &.error {
       ::v-deep .mx-input-wrapper .mx-input {
-        border: .25rem solid var(--red-500) !important;
+        border: 0.25rem solid var(--red-500) !important;
       }
     }
 
@@ -184,7 +177,7 @@ export default {
       .mx-input {
         font-family: Inter, sans-serif !important;
         box-shadow: none;
-        border: .25rem solid transparent;
+        border: 0.25rem solid transparent;
         font-size: 1rem;
         font-weight: 700;
         border-radius: 2rem;

@@ -1,27 +1,153 @@
+<script>
+import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
+import BaseRightIcon from "@/components/icons/BaseRightIcon";
+import { isFunction } from "@/util/inspect";
+
+export default {
+  name: "AppBreadcrumb",
+  components: {
+    BaseRightIcon,
+    BaseLeftIcon,
+  },
+  props: {
+    goBackMethod: {
+      type: Function,
+      default: undefined,
+    },
+    page: {
+      type: [Object, String],
+      required: true,
+      /*
+       *
+       * Structure
+       * {
+       *   type:'',
+       *   path:''
+       * }
+       *
+       * */
+    },
+    breadcrumbs: {
+      type: Array,
+      required: true,
+      /*
+       *
+       * Structure
+       * [
+       *   {
+       *     content:{
+       *       type:'string',
+       *       path:''
+       *     },
+       *     route:{
+       *       name:'',
+       *       path:'',
+       *       params:'',
+       *       query:'',
+       *       class:'',
+       *     }
+       *     class:''
+       *   }
+       * ]
+       *
+       * */
+    },
+    pageInfo: {
+      type: [Object, String],
+      default: null,
+    },
+  },
+  computed: {
+    title() {
+      const { pageInfo } = this;
+      if (!pageInfo) return null;
+      const { title: pageTitle } = pageInfo;
+
+      if (typeof pageInfo === "string") {
+        return this.$t(pageInfo);
+      }
+
+      if (typeof pageTitle === "object") {
+        if (pageTitle.type === "i18n") {
+          return this.$t(pageTitle.content);
+        }
+      }
+
+      return pageTitle;
+    },
+    highlight() {
+      const { pageInfo } = this;
+      if (typeof pageInfo === "string") {
+        return null;
+      }
+
+      const { titleHighlight: pageHighlight } = pageInfo;
+      if (typeof pageHighlight === "object") {
+        if (pageHighlight.type === "i18n") {
+          return this.$t(pageHighlight.content);
+        }
+      }
+
+      return pageHighlight;
+    },
+    pageOutput() {
+      const { page } = this;
+      if (typeof page === "object") {
+        if (page.type === "string") {
+          return page.path;
+        }
+        return this.$t(page.path);
+      }
+      return this.$t(page);
+    },
+  },
+  methods: {
+    backBtnHandler() {
+      if (isFunction(this.goBackMethod)) {
+        this.goBackMethod();
+      } else {
+        this.$router.go(-1);
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <div class="d-flex">
-    <div @click="backBtnHandler" class="app-header-back-button d-flex justify-content-center align-items-center">
-      <base-left-icon :width="32" :height="32"/>
+    <div
+      @click="backBtnHandler"
+      class="app-header-back-button d-flex justify-content-center align-items-center"
+    >
+      <base-left-icon :width="32" :height="32" />
     </div>
     <div class="app-header-page-content">
       <div class="app-breadcrumb d-flex align-items-center">
-        <div v-for="(breadcrumb,index) in breadcrumbs" :key="index" :class="breadcrumb.class">
+        <div
+          v-for="(breadcrumb, index) in breadcrumbs"
+          :key="index"
+          :class="breadcrumb.class"
+        >
           <router-link
-              :to="{
-                name:breadcrumb.route.name,
-                params:breadcrumb.route.params,
-                query:breadcrumb.route.query
-              }"
-              :class="breadcrumb.route.class"
-              class="app-breadcrumb-link"
+            :to="{
+              name: breadcrumb.route.name,
+              params: breadcrumb.route.params,
+              query: breadcrumb.route.query,
+            }"
+            :class="breadcrumb.route.class"
+            class="app-breadcrumb-link"
           >
             <slot :name="`${breadcrumb.route.name}-left`"></slot>
             <span class="app-breadcrumb-link-content">
-              {{ (breadcrumb.content.type === 'string') ? breadcrumb.content.path : $t(breadcrumb.content.path) }}
+              {{
+                breadcrumb.content.type === "string"
+                  ? breadcrumb.content.path
+                  : $t(breadcrumb.content.path)
+              }}
             </span>
             <slot :name="`${breadcrumb.route.name}-right`"></slot>
             <span>
-              <base-right-icon :width="18" :height="18"/>
+              <base-right-icon :width="18" :height="18" />
             </span>
           </router-link>
         </div>
@@ -37,125 +163,9 @@
       </div>
     </div>
     <!-- TODO:SLOT BREADCRUMB_RIGHT   -->
-    <slot name="breadcrumb-right"/>
+    <slot name="breadcrumb-right" />
   </div>
 </template>
-
-<script>
-import BaseLeftIcon from "@/components/icons/BaseLeftIcon";
-import BaseRightIcon from "@/components/icons/BaseRightIcon";
-import {isFunction} from "@/util/inspect";
-
-export default {
-  name: "AppBreadcrumb",
-  components: {
-    BaseRightIcon,
-    BaseLeftIcon
-  },
-  props: {
-    goBackMethod: {
-      type: Function,
-      default: undefined
-    },
-    page: {
-      type: [Object, String],
-      required: true
-      /*
-      *
-      * Structure
-      * {
-      *   type:'',
-      *   path:''
-      * }
-      *
-      * */
-    },
-    breadcrumbs: {
-      type: Array,
-      required: true
-      /*
-      *
-      * Structure
-      * [
-      *   {
-      *     content:{
-      *       type:'string',
-      *       path:''
-      *     },
-      *     route:{
-      *       name:'',
-      *       path:'',
-      *       params:'',
-      *       query:'',
-      *       class:'',
-      *     }
-      *     class:''
-      *   }
-      * ]
-      *
-      * */
-    },
-    pageInfo: {
-      type: [Object, String],
-      default: null
-    },
-  },
-  computed: {
-    title() {
-      const {pageInfo} = this
-      if (!pageInfo) return null
-      const {title: pageTitle} = pageInfo
-
-      if (typeof pageInfo === 'string') {
-        return this.$t(pageInfo)
-      }
-
-      if (typeof pageTitle === 'object') {
-        if (pageTitle.type === 'i18n') {
-          return this.$t(pageTitle.content)
-        }
-      }
-
-      return pageTitle
-    },
-    highlight() {
-      const {pageInfo} = this
-      if (typeof pageInfo === 'string') {
-        return null
-      }
-
-      const {titleHighlight: pageHighlight} = pageInfo
-      if (typeof pageHighlight === 'object') {
-        if (pageHighlight.type === 'i18n') {
-          return this.$t(pageHighlight.content)
-        }
-      }
-
-      return pageHighlight
-    },
-    pageOutput() {
-      const {page} = this
-      if (typeof page === 'object') {
-        if (page.type === 'string') {
-          return page.path
-        }
-        return this.$t(page.path)
-      }
-      return this.$t(page)
-    }
-
-  },
-  methods: {
-    backBtnHandler() {
-      if (isFunction(this.goBackMethod)) {
-        this.goBackMethod()
-      } else {
-        this.$router.go(-1)
-      }
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .app-breadcrumb {
@@ -166,13 +176,13 @@ export default {
   display: flex;
   align-items: center;
   //justify-content: center;
-  column-gap: .25rem;
+  column-gap: 0.25rem;
 
   &-link {
     display: flex;
     justify-content: center;
     align-items: center;
-    column-gap: .25rem;
+    column-gap: 0.25rem;
 
     span {
       display: flex;

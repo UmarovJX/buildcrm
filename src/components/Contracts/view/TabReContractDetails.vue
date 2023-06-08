@@ -1,13 +1,102 @@
+<script>
+import BaseButton from "@/components/Reusable/BaseButton";
+import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
+import api from "@/services/api";
+import { phonePrettier } from "@/util/reusable";
+
+export default {
+  name: "TabReContractDetails",
+  components: {
+    BaseArrowDownIcon,
+    BaseButton,
+  },
+  data() {
+    return {
+      clientDetails: {
+        full_name: "sas",
+      },
+      assignee: {},
+      assignor: {},
+      order: {},
+      errors: [],
+    };
+  },
+  async created() {
+    await this.getDetails();
+  },
+  methods: {
+    checkLocales(name) {
+      if (localStorage.locale) return name[localStorage.locale];
+      else return name["ru"];
+    },
+
+    phone(value) {
+      return phonePrettier(value);
+    },
+
+    fullName(value) {
+      if (value && value.first_name && value.last_name && value.second_name)
+        return (
+          value.last_name.lotin +
+          " " +
+          value.first_name.lotin +
+          " " +
+          value.second_name.lotin
+        );
+      return "";
+    },
+
+    setFormProperty(property, value) {
+      this.form[property] = value;
+      this.errors[property] = false;
+    },
+
+    async getDetails() {
+      const id = this.$route.params.id;
+      await api.contractV2
+        .getReissue(id)
+        .then((res) => {
+          this.assignee = res.data.assignee;
+          this.assignor = res.data.assignor;
+          this.order = res.data.order;
+        })
+        .catch(() => {});
+    },
+
+    downloadContact() {
+      const id = this.order.uuid;
+      api.contractV2
+        .downloadReContract(id)
+        .then(({ data, headers }) => {
+          const filename = headers.hasOwnProperty("x-filename")
+            ? headers["x-filename"]
+            : "contract";
+          const fileURL = window.URL.createObjectURL(new Blob([data]));
+          const fileLink = document.createElement("a");
+          fileLink.href = fileURL;
+          fileLink.setAttribute("download", filename);
+          document.body.appendChild(fileLink);
+          fileLink.click();
+        })
+        .catch(() => {
+          return "#";
+        });
+    },
+  },
+};
+</script>
+w
 <template>
   <div>
     <div class="agree">
       <div class="row">
         <div class="col-6">
           <div class="assignee-header">
-            <p class="assignee-header__title">{{ $t('details_of_the_agreement') }}</p>
+            <p class="assignee-header__title">
+              {{ $t("details_of_the_agreement") }}
+            </p>
           </div>
         </div>
-
       </div>
       <div class="row">
         <div class="col-6">
@@ -15,33 +104,41 @@
             <div class="col-12">
               <div class="assignee-item">
                 <div class="client__details_info_card mr-5">
-                  <label>{{ $t('date_of_the_agreement') }}</label>
-                  <b-form-input disabled :value="order.date"/>
+                  <label>{{ $t("date_of_the_agreement") }}</label>
+                  <b-form-input disabled :value="order.date" />
                 </div>
               </div>
             </div>
             <div class="col-12">
               <div class="assignee-item">
                 <div class="client__details_info_card mr-5">
-                  <label>{{ $t('agreement_number') }}</label>
-                  <b-form-input disabled :value="order.contract_number"/>
+                  <label>{{ $t("agreement_number") }}</label>
+                  <b-form-input disabled :value="order.contract_number" />
                 </div>
               </div>
             </div>
             <div class="col-12">
               <div class="assignee-item">
                 <div class="client__details_info_card mr-5">
-                  <label>{{ $t('reason_for_reissuing') }}</label>
-                  <b-form-input v-if="order['reorder_type']" disabled :value="checkLocales(order.reorder_type.name)"/>
+                  <label>{{ $t("reason_for_reissuing") }}</label>
+                  <b-form-input
+                    v-if="order['reorder_type']"
+                    disabled
+                    :value="checkLocales(order.reorder_type.name)"
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="col-6">
-          <base-button @click="downloadContact" class="download-button" :text="$t(`recontract_download`)">
+          <base-button
+            @click="downloadContact"
+            class="download-button"
+            :text="$t(`recontract_download`)"
+          >
             <template #left-icon>
-              <BaseArrowDownIcon :width="20" :height="20" fill="#7C3AED"/>
+              <BaseArrowDownIcon :width="20" :height="20" fill="#7C3AED" />
             </template>
           </base-button>
         </div>
@@ -52,34 +149,47 @@
         <div class="col-6">
           <div class="assignee-header">
             <p class="assignee-header__title">Цедент</p>
-            <span class="assignee-header__tooltip" style="cursor: pointer" id="assignee-tooltip">
-                  <img
-                      :src="require('@/assets/icons/icon-questions__circle.svg')" alt=""/>
+            <span
+              class="assignee-header__tooltip"
+              style="cursor: pointer"
+              id="assignee-tooltip"
+            >
+              <img
+                :src="require('@/assets/icons/icon-questions__circle.svg')"
+                alt=""
+              />
             </span>
             <b-tooltip
-                target="assignee-tooltip"
-                triggers="hover"
-                variant="secondary"
+              target="assignee-tooltip"
+              triggers="hover"
+              variant="secondary"
             >
-              Цедент – это участник договора цессии, который в рамках договора цессии уступает иному лицу свое право
-              требования.
+              Цедент – это участник договора цессии, который в рамках договора
+              цессии уступает иному лицу свое право требования.
             </b-tooltip>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-header">
             <p class="assignee-header__title">цессионарий</p>
-            <span class="assignee-header__tooltip" style="cursor: pointer" id="session-tooltip">
-                  <img
-                      :src="require('@/assets/icons/icon-questions__circle.svg')" alt="">
+            <span
+              class="assignee-header__tooltip"
+              style="cursor: pointer"
+              id="session-tooltip"
+            >
+              <img
+                :src="require('@/assets/icons/icon-questions__circle.svg')"
+                alt=""
+              />
             </span>
             <b-tooltip
-                style="width: 400px !important;"
-                target="session-tooltip"
-                variant="secondary"
-                triggers="hover"
+              style="width: 400px !important"
+              target="session-tooltip"
+              variant="secondary"
+              triggers="hover"
             >
-              Цессионарий – участник договора цессии, приобретающий право, уступаемое цедентом.
+              Цессионарий – участник договора цессии, приобретающий право,
+              уступаемое цедентом.
             </b-tooltip>
           </div>
         </div>
@@ -88,16 +198,16 @@
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('fio') }}</label>
-              <b-form-input disabled :value="fullName(assignor)"/>
+              <label>{{ $t("fio") }}</label>
+              <b-form-input disabled :value="fullName(assignor)" />
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('fio') }}</label>
-              <b-form-input disabled :value="fullName(assignee)"/>
+              <label>{{ $t("fio") }}</label>
+              <b-form-input disabled :value="fullName(assignee)" />
             </div>
           </div>
         </div>
@@ -106,16 +216,16 @@
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('series') }}</label>
-              <b-form-input disabled :value="assignor['passport_series']"/>
+              <label>{{ $t("series") }}</label>
+              <b-form-input disabled :value="assignor['passport_series']" />
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('series') }}</label>
-              <b-form-input disabled :value="assignee['passport_series']"/>
+              <label>{{ $t("series") }}</label>
+              <b-form-input disabled :value="assignee['passport_series']" />
             </div>
           </div>
         </div>
@@ -124,16 +234,16 @@
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('apartments.agree.issued_by_whom') }}</label>
-              <b-form-input disabled :value="assignor['issued_by_whom']"/>
+              <label>{{ $t("apartments.agree.issued_by_whom") }}</label>
+              <b-form-input disabled :value="assignor['issued_by_whom']" />
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('apartments.agree.issued_by_whom') }}</label>
-              <b-form-input disabled :value="assignee['issued_by_whom']"/>
+              <label>{{ $t("apartments.agree.issued_by_whom") }}</label>
+              <b-form-input disabled :value="assignee['issued_by_whom']" />
             </div>
           </div>
         </div>
@@ -142,16 +252,16 @@
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('apartments.agree.date_of_issue') }}</label>
-              <b-form-input disabled :value="assignor['date_of_issue']"/>
+              <label>{{ $t("apartments.agree.date_of_issue") }}</label>
+              <b-form-input disabled :value="assignor['date_of_issue']" />
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('apartments.agree.date_of_issue') }}</label>
-              <b-form-input disabled :value="assignee['date_of_issue']"/>
+              <label>{{ $t("apartments.agree.date_of_issue") }}</label>
+              <b-form-input disabled :value="assignee['date_of_issue']" />
             </div>
           </div>
         </div>
@@ -160,16 +270,16 @@
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('birth_day') }}</label>
-              <b-form-input disabled :value="assignor['birth_day']"/>
+              <label>{{ $t("birth_day") }}</label>
+              <b-form-input disabled :value="assignor['birth_day']" />
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('birth_day') }}</label>
-              <b-form-input disabled :value="assignee['birth_day']"/>
+              <label>{{ $t("birth_day") }}</label>
+              <b-form-input disabled :value="assignee['birth_day']" />
             </div>
           </div>
         </div>
@@ -178,16 +288,16 @@
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
-              <b-form-input disabled :value="phone(assignor['phone'])"/>
+              <label>{{ $t("number") }} ({{ $t("main_number") }})</label>
+              <b-form-input disabled :value="phone(assignor['phone'])" />
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('number') }} ({{ $t('main_number') }})</label>
-              <b-form-input disabled :value="phone(assignee['phone'])"/>
+              <label>{{ $t("number") }} ({{ $t("main_number") }})</label>
+              <b-form-input disabled :value="phone(assignee['phone'])" />
             </div>
           </div>
         </div>
@@ -196,109 +306,25 @@
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('number') }} ({{ $t('extra') }})</label>
-              <b-form-input disabled :value="phone(assignor['other_phone'])"/>
+              <label>{{ $t("number") }} ({{ $t("extra") }})</label>
+              <b-form-input disabled :value="phone(assignor['other_phone'])" />
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="assignee-item">
             <div class="client__details_info_card mr-5">
-              <label>{{ $t('number') }} ({{ $t('extra') }})</label>
-              <b-form-input disabled :value="phone(assignee['other_phone'])"/>
+              <label>{{ $t("number") }} ({{ $t("extra") }})</label>
+              <b-form-input disabled :value="phone(assignee['other_phone'])" />
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
-w
-<script>
-import BaseButton from "@/components/Reusable/BaseButton";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
-import api from "@/services/api";
-import {phonePrettier} from "@/util/reusable";
-
-export default {
-  name: "TabReContractDetails",
-  components: {
-    BaseArrowDownIcon,
-    BaseButton
-  },
-  data() {
-    return {
-      clientDetails: {
-        full_name: 'sas'
-      },
-      assignee: {},
-      assignor: {},
-      order: {},
-      errors: [],
-    }
-  },
-  async created() {
-    await this.getDetails()
-  },
-  methods: {
-    checkLocales(name) {
-      if (localStorage.locale)
-        return name[localStorage.locale]
-      else
-        return name['ru']
-    },
-
-    phone(value) {
-      return phonePrettier(value)
-    },
-
-    fullName(value) {
-      if (value && value.first_name && value.last_name && value.second_name)
-        return value.last_name.lotin + ' ' + value.first_name.lotin + ' ' + value.second_name.lotin
-      return ''
-    },
-
-    setFormProperty(property, value) {
-      this.form[property] = value
-      this.errors[property] = false
-    },
-
-    async getDetails() {
-      const id = this.$route.params.id
-      await api.contractV2.getReissue(id).then((res) => {
-        this.assignee = res.data.assignee
-        this.assignor = res.data.assignor
-        this.order = res.data.order
-      }).catch(() => {
-
-      })
-    },
-
-    downloadContact() {
-      const id = this.order.uuid
-      api.contractV2.downloadReContract(id)
-          .then(({data, headers}) => {
-            const filename = headers.hasOwnProperty('x-filename') ? headers['x-filename'] : 'contract'
-            const fileURL = window.URL.createObjectURL(new Blob([data]))
-            const fileLink = document.createElement('a')
-            fileLink.href = fileURL
-            fileLink.setAttribute('download', filename)
-            document.body.appendChild(fileLink)
-            fileLink.click()
-          })
-          .catch(() => {
-            return '#'
-          })
-
-    },
-  }
-}
-</script>
 
 <style lang="scss" scoped>
-
-
 .assignee {
   display: flex;
   justify-content: center;
@@ -324,7 +350,7 @@ export default {
   &-header {
     display: flex;
     align-items: center;
-    column-gap: .5rem;
+    column-gap: 0.5rem;
     //padding: 1rem 1.25rem;
     font-family: CraftworkSans, serif;
     font-style: normal;
@@ -348,14 +374,11 @@ export default {
       text-transform: uppercase;
       margin: 0;
     }
-
-
   }
 
   .row {
     margin: 0 auto;
     width: 100%;
-
   }
 
   &-item {
@@ -377,18 +400,17 @@ export default {
       }
 
       &_info {
-
         &_card {
           display: flex;
           align-items: center;
           width: 100%;
           //max-width: 40rem;
           height: 56px;
-          border: 2px solid #E5E7EB;
+          border: 2px solid #e5e7eb;
           border-radius: 32px;
           padding: 0 20px;
           position: relative;
-          margin: .5rem auto;
+          margin: 0.5rem auto;
 
           & svg {
             position: absolute;
@@ -418,15 +440,11 @@ export default {
             font-weight: 900;
             color: var(--gray-600);
           }
-
         }
       }
-
     }
-
   }
 }
-
 
 .agree {
   margin-top: 32px;
@@ -436,13 +454,10 @@ export default {
     flex-direction: column;
     row-gap: 1rem;
   }
-
 }
 
 .download-button {
   cursor: pointer;
   width: 100%;
 }
-
-
 </style>

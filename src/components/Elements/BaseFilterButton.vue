@@ -1,38 +1,41 @@
-<template>
-  <div class="filter-button d-flex align-items-center" @click="showFilterInterface">
-    <span class="filter-icon">
-      <base-filter-icon :fill="iconFill"/>
-    </span>
-    <span>{{ $t(buttonText) }}</span>
-  </div>
-</template>
-
 <script>
 import BaseFilterIcon from "@/components/icons/BaseFilterIcon";
 
 export default {
   name: "FilterButton",
   components: {
-    BaseFilterIcon
+    BaseFilterIcon,
   },
   props: {
     iconFill: {
       type: String,
-      default: '#7C3AED'
+      default: "#7C3AED",
     },
     buttonText: {
       type: String,
-      default: 'contracts.filter'
-    }
+      default: "contracts.filter",
+    },
   },
-  emits: ['click'],
+  emits: ["click"],
   methods: {
     showFilterInterface() {
-      this.$emit('click')
-    }
-  }
-}
+      this.$emit("click");
+    },
+  },
+};
 </script>
+
+<template>
+  <div
+    class="filter-button d-flex align-items-center"
+    @click="showFilterInterface"
+  >
+    <span class="filter-icon">
+      <base-filter-icon :fill="iconFill" />
+    </span>
+    <span>{{ $t(buttonText) }}</span>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .filter-button {

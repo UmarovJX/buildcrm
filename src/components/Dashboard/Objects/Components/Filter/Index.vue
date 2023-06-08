@@ -1,3 +1,60 @@
+<script>
+import { mapGetters, mapActions } from "vuex";
+
+export default {
+  data: () => ({
+    header: {
+      headers: {
+        Authorization: "Bearer " + localStorage.token,
+      },
+    },
+
+    filter: {
+      rooms: [],
+      floors: [],
+      price_from: null,
+      price_to: null,
+      status: 0,
+      objects: [],
+
+      area_from: null,
+      area_to: null,
+    },
+  }),
+
+  mounted() {
+    this.fetchObjects(this);
+    this.fetchApartmentsFloors(this);
+    this.fetchApartmentsRooms(this);
+  },
+
+  computed: mapGetters([
+    "getObjects",
+    "getPermission",
+    "getFilterRooms",
+    "getFilterFloors",
+  ]),
+
+  methods: {
+    ...mapActions([
+      "fetchObjects",
+      "fetchApartmentsFloors",
+      "fetchApartmentsRooms",
+      "fetchFilterApartments",
+    ]),
+
+    filterSend() {
+      this.fetchFilterApartments(this);
+      this.$router.push({ name: "objects-filter" });
+    },
+
+    filterClear() {
+      this.filter = {};
+    },
+  },
+};
+</script>
+
 <template>
   <div>
     <b-modal
@@ -139,12 +196,7 @@
         </div>
 
         <div
-          class="
-            mt-4
-            d-flex
-            justify-content-md-start justify-content-center
-            float-right
-          "
+          class="mt-4 d-flex justify-content-md-start justify-content-center float-right"
         >
           <button
             class="btn btn-outline-secondary"
@@ -162,62 +214,5 @@
     </b-modal>
   </div>
 </template>
-
-<script>
-import {mapGetters, mapActions} from "vuex";
-
-export default {
-  data: () => ({
-    header: {
-      headers: {
-        Authorization: "Bearer " + localStorage.token,
-      },
-    },
-
-    filter: {
-      rooms: [],
-      floors: [],
-      price_from: null,
-      price_to: null,
-      status: 0,
-      objects: [],
-
-      area_from: null,
-      area_to: null,
-    },
-  }),
-
-  mounted() {
-    this.fetchObjects(this);
-    this.fetchApartmentsFloors(this);
-    this.fetchApartmentsRooms(this);
-  },
-
-  computed: mapGetters([
-    "getObjects",
-    "getPermission",
-    "getFilterRooms",
-    "getFilterFloors",
-  ]),
-
-  methods: {
-    ...mapActions([
-      "fetchObjects",
-      "fetchApartmentsFloors",
-      "fetchApartmentsRooms",
-      "fetchFilterApartments",
-    ]),
-
-    filterSend() {
-      this.fetchFilterApartments(this);
-      this.$router.push({name: "objects-filter"});
-    },
-
-    filterClear() {
-      this.filter = {};
-    },
-  },
-};
-</script>
 
 <style scoped></style>

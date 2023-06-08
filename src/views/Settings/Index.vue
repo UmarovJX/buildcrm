@@ -1,31 +1,31 @@
-<template>
-  <div>
-    <app-header>
-      <template #header-title>
-        {{ $t('settings.title') }}
-      </template>
-    </app-header>
-
-    <settings-client-types class="x-horizontal-divider"/>
-
-    <settings-countries/>
-  </div>
-</template>
-
 <script>
-import AppHeader from '@/components/Header/AppHeader.vue';
+import AppHeader from "@/components/Header/AppHeader.vue";
 import SettingsClientTypes from "@/views/Settings/components/SettingsClientTypes.vue";
 import SettingsCountries from "@/views/Settings/components/SettingsCountries.vue";
 
 export default {
-  name: 'SettingsPage',
+  name: "SettingsPage",
   components: {
     AppHeader,
     SettingsClientTypes,
-    SettingsCountries
+    SettingsCountries,
   },
 };
 </script>
+
+<template>
+  <div>
+    <app-header>
+      <template #header-title>
+        {{ $t("settings.title") }}
+      </template>
+    </app-header>
+
+    <settings-client-types class="x-horizontal-divider" />
+
+    <settings-countries />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .x-horizontal-divider {
@@ -33,7 +33,7 @@ export default {
   padding-bottom: 2rem;
 
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;

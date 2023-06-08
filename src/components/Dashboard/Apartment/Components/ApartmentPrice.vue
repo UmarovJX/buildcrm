@@ -1,6 +1,51 @@
-<template>
-  <div class="d-flex align-items-center" style="height:30px">
+<script>
+import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
+import Vue from "vue";
+export default {
+  components: {
+    BaseNumericInput,
+  },
 
+  watch: {
+    "contract.discount.id": function (valNew) {
+      this.type = valNew;
+      this.discount_type = valNew === "other";
+    },
+  },
+
+  data() {
+    return {
+      editable: false,
+      edited: false,
+      discount_type: false,
+      type: null,
+    };
+  },
+
+  props: {
+    apartment: {},
+    contract: {},
+    // id: {},
+    // area: {},
+  },
+
+  methods: {
+    editPrice() {
+      Vue.set(this.apartment, "price_edited", true);
+      // this.apartment.price_edited = true
+      this.editable = true;
+    },
+    savePrice() {
+      this.editable = !this.editable;
+      this.edited = true;
+      this.$emit("apartmentPrice", {});
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="d-flex align-items-center" style="height: 30px">
     <b-button
       v-if="discount_type && !editable"
       @click="editPrice"
@@ -35,51 +80,5 @@
     ></base-numeric-input>
   </div>
 </template>
-
-<script>
-import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
-import Vue from 'vue'
-export default {
-  components: {
-    BaseNumericInput,
-  },
-
-  watch: {
-    'contract.discount.id': function (valNew) {
-      this.type = valNew
-      this.discount_type = valNew === 'other';
-    },
-  },
-
-  data() {
-    return {
-      editable: false,
-      edited: false,
-      discount_type: false,
-      type: null
-    };
-  },
-
-  props: {
-    apartment: {},
-    contract: {}
-    // id: {},
-    // area: {},
-  },
-
-  methods: {
-    editPrice() {
-      Vue.set(this.apartment, 'price_edited', true)
-      // this.apartment.price_edited = true
-      this.editable = true;
-    },
-    savePrice() {
-      this.editable = !this.editable;
-      this.edited = true
-      this.$emit("apartmentPrice", {});
-    },
-  },
-};
-</script>
 
 <style lang="scss" scoped></style>

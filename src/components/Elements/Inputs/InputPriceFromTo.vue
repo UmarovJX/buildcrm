@@ -1,80 +1,80 @@
-<template>
-  <div class="input-price-group">
-    <!-- PRICE FROM   -->
-    <base-price-input
-        ref="input-price-from"
-        :currency="`${$t('ye')}`"
-        :placeholder="$t('base_price_from')"
-        :value="defaultFrom"
-        :permission-change="true"
-        :top-placeholder="true"
-        @input="price.from = $event"
-        class="price-from"
-    />
-    <!--  PRICE TO  -->
-    <base-price-input
-        ref="input-price-to"
-        :currency="`${$t('ye')}`"
-        :placeholder="$t('base_price_to')"
-        :value="defaultTo"
-        :top-placeholder="true"
-        :permission-change="true"
-        @input="price.to = $event"
-        class="price-to"
-    />
-  </div>
-</template>
-
 <script>
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
 
 export default {
   name: "InputPriceFromTo",
   components: {
-    BasePriceInput
+    BasePriceInput,
   },
-  emits: ['input'],
+  emits: ["input"],
   props: {
     defaultFrom: {
       type: [String, Number],
-      default: null
+      default: null,
     },
     defaultTo: {
       type: [String, Number],
-      default: null
+      default: null,
     },
   },
   data() {
     return {
       price: {
         from: null,
-        to: null
-      }
-    }
+        to: null,
+      },
+    };
   },
   watch: {
     price: {
       handler(value) {
-        this.$emit('input', value)
+        this.$emit("input", value);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   created() {
-    this.setDefaultFields()
+    this.setDefaultFields();
   },
   methods: {
     setDefaultFields() {
-      this.price.to = this.defaultTo
-      this.price.from = this.defaultFrom
+      this.price.to = this.defaultTo;
+      this.price.from = this.defaultFrom;
     },
     resetFields() {
-      this.$refs['input-price-from'].clearPriceAmountValue()
-      this.$refs['input-price-to'].clearPriceAmountValue()
-    }
-  }
-}
+      this.$refs["input-price-from"].clearPriceAmountValue();
+      this.$refs["input-price-to"].clearPriceAmountValue();
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="input-price-group">
+    <!-- PRICE FROM   -->
+    <base-price-input
+      ref="input-price-from"
+      :currency="`${$t('ye')}`"
+      :placeholder="$t('base_price_from')"
+      :value="defaultFrom"
+      :permission-change="true"
+      :top-placeholder="true"
+      @input="price.from = $event"
+      class="price-from"
+    />
+    <!--  PRICE TO  -->
+    <base-price-input
+      ref="input-price-to"
+      :currency="`${$t('ye')}`"
+      :placeholder="$t('base_price_to')"
+      :value="defaultTo"
+      :top-placeholder="true"
+      :permission-change="true"
+      @input="price.to = $event"
+      class="price-to"
+    />
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .input-price-group {

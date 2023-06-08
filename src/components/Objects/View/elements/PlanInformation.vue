@@ -1,160 +1,177 @@
-<template>
-    <div class="main__content">
-        <!--   IMAGE SLIDER     -->
-        <div class="slider-content">
-            <div class="swiper" v-swiper="swiperOption">
-                <!--     MAIN CONTENT OF SLIDE       -->
-                <div class="swiper-wrapper">
-                    <div
-                        v-for="(image,index) in plan.images"
-                        :key="index"
-                        class="swiper-slide"
-                    >
-                        <div class="d-flex justify-content-center align-items-center">
-                            <img v-if="image" :data-fancybox="image" class="swiper-image" :src="image" alt="img">
-                            <img v-else class="swiper-image" :src="require('@/assets/img/no-image.jpg')" alt="img">
-                        </div>
-                    </div>
-                </div>
-                <!--     DOTS PAGINATION       -->
-                <div class="swiper-pagination"></div>
-
-                <!--     BUTTON PREVIOUS       -->
-                <div
-                    slot="button-prev"
-                    class="swiper-button-prev swiper-button d-flex justify-content-center align-items-center"
-                >
-                    <base-arrow-left-icon/>
-                </div>
-
-                <!--     BUTTON NEXT       -->
-                <div
-                    slot="button-next"
-                    class="swiper-button-next swiper-button d-flex justify-content-center align-items-center"
-                >
-                    <base-arrow-right-icon/>
-                </div>
-            </div>
-
-        </div>
-
-        <!--   PRICE CONTENT     -->
-        <div class="plan-text">
-            <h5>{{ $t('apartment') }}: {{ plan.area }} М<sup>2</sup></h5>
-            <p>{{ $t('apartment_rooms', {msg: `${plan.apartments_count}`}) }}</p>
-        </div>
-
-        <div class="plans">
-            <div v-for="item in plan.apartments" :key="item.id" class="plan-block" @click="openModal(item)">
-                <div class="plan-item">
-                    <h5>{{ item.entrance }} {{ $t('floor') }}</h5>
-                    <p>{{ item.plan.area }} m<sup>2</sup></p>
-                </div>
-                <div class="plan-item">
-                    <h5>{{ price(item.prices.price) }} {{ $t('ye') }}</h5>
-                    <p v-if="!isHidePrice">{{ price(item.prices.price_m2) }} {{ $t('ye') }}/m <sup>2</sup></p>
-                </div>
-                <div class="apartment-promo-icon">
-                    <img v-if="item.is_promo" src="../../../../assets/icons/bonuses.svg" alt="">
-                </div>
-            </div>
-
-        </div>
-
-
-    </div>
-</template>
-
 <script>
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-import {formatToPrice} from "@/util/reusable";
-import {directive} from 'vue-awesome-swiper'
-import 'swiper/css/swiper.css'
-import {Fancybox} from "@fancyapps/ui";
-import {mapGetters} from "vuex";
+import { formatToPrice } from "@/util/reusable";
+import { directive } from "vue-awesome-swiper";
+import "swiper/css/swiper.css";
+import { Fancybox } from "@fancyapps/ui";
+import { mapGetters } from "vuex";
 
 export default {
-    name: "PrimaryInformation",
+  name: "PrimaryInformation",
 
-    props: {
-        visible: {
-            type: Boolean,
-            default: true
+  props: {
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+    isHidePrice: {
+      type: Boolean,
+      required: false,
+    },
+    plan: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  /* COMPONENTS */
+  components: {
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
+  },
+
+  /* DIRECTIVES */
+  directives: {
+    swiper: directive,
+  },
+
+  /* DATA */
+  data() {
+    return {
+      /* SLIDER OPTION */
+      swiperOption: {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        direction: "horizontal",
+        pagination: {
+          el: ".swiper-pagination",
+          type: "bullets",
+          clickable: true,
         },
-        isHidePrice: {
-            type: Boolean,
-            required: false,
+        paginationClickable: true,
+        draggable: true,
+        loop: false,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         },
-        plan: {
-            type: Object,
-            required: true
-        }
+      },
+    };
+  },
+
+  mounted() {
+    Fancybox.bind("[data-fancybox]");
+  },
+
+  computed: {
+    ...mapGetters(["getPermission"]),
+    // price() {
+    //   return formatToPrice(this.plan.price) + ' ' + this.$t('ye')
+    // },
+
+    // squareMetrePrice() {
+    //   return formatToPrice(this.plan.price_m2) + ' ' + this.$t('ye')
+    // },
+  },
+
+  methods: {
+    openModal(item) {
+      // if (this.getPermission.apartments && this.getPermission.apartments.show) {
+      this.$emit("open-express", item);
+      // }
     },
-
-    /* COMPONENTS */
-    components: {
-        BaseArrowLeftIcon,
-        BaseArrowRightIcon,
+    price(value) {
+      return formatToPrice(value);
     },
-
-    /* DIRECTIVES */
-    directives: {
-        swiper: directive,
-    },
-
-    /* DATA */
-    data() {
-        return {
-            /* SLIDER OPTION */
-            swiperOption: {
-                slidesPerView: 1,
-                spaceBetween: 0,
-                direction: 'horizontal',
-                pagination: {
-                    el: '.swiper-pagination',
-                    type: 'bullets',
-                    clickable: true
-                },
-                paginationClickable: true,
-                draggable: true,
-                loop: false,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                }
-            },
-        }
-    },
-
-    mounted() {
-        Fancybox.bind("[data-fancybox]");
-    },
-
-    computed: {
-        ...mapGetters(["getPermission"]),
-        // price() {
-        //   return formatToPrice(this.plan.price) + ' ' + this.$t('ye')
-        // },
-
-        // squareMetrePrice() {
-        //   return formatToPrice(this.plan.price_m2) + ' ' + this.$t('ye')
-        // },
-    },
-
-    methods: {
-        openModal(item) {
-            // if (this.getPermission.apartments && this.getPermission.apartments.show) {
-            this.$emit('open-express', item)
-            // }
-        },
-        price(value) {
-            return formatToPrice(value)
-        },
-    }
-
-}
+  },
+};
 </script>
+
+<template>
+  <div class="main__content">
+    <!--   IMAGE SLIDER     -->
+    <div class="slider-content">
+      <div class="swiper" v-swiper="swiperOption">
+        <!--     MAIN CONTENT OF SLIDE       -->
+        <div class="swiper-wrapper">
+          <div
+            v-for="(image, index) in plan.images"
+            :key="index"
+            class="swiper-slide"
+          >
+            <div class="d-flex justify-content-center align-items-center">
+              <img
+                v-if="image"
+                :data-fancybox="image"
+                class="swiper-image"
+                :src="image"
+                alt="img"
+              />
+              <img
+                v-else
+                class="swiper-image"
+                :src="require('@/assets/img/no-image.jpg')"
+                alt="img"
+              />
+            </div>
+          </div>
+        </div>
+        <!--     DOTS PAGINATION       -->
+        <div class="swiper-pagination"></div>
+
+        <!--     BUTTON PREVIOUS       -->
+        <div
+          slot="button-prev"
+          class="swiper-button-prev swiper-button d-flex justify-content-center align-items-center"
+        >
+          <base-arrow-left-icon />
+        </div>
+
+        <!--     BUTTON NEXT       -->
+        <div
+          slot="button-next"
+          class="swiper-button-next swiper-button d-flex justify-content-center align-items-center"
+        >
+          <base-arrow-right-icon />
+        </div>
+      </div>
+    </div>
+
+    <!--   PRICE CONTENT     -->
+    <div class="plan-text">
+      <h5>{{ $t("apartment") }}: {{ plan.area }} М<sup>2</sup></h5>
+      <p>{{ $t("apartment_rooms", { msg: `${plan.apartments_count}` }) }}</p>
+    </div>
+
+    <div class="plans">
+      <div
+        v-for="item in plan.apartments"
+        :key="item.id"
+        class="plan-block"
+        @click="openModal(item)"
+      >
+        <div class="plan-item">
+          <h5>{{ item.entrance }} {{ $t("floor") }}</h5>
+          <p>{{ item.plan.area }} m<sup>2</sup></p>
+        </div>
+        <div class="plan-item">
+          <h5>{{ price(item.prices.price) }} {{ $t("ye") }}</h5>
+          <p v-if="!isHidePrice">
+            {{ price(item.prices.price_m2) }} {{ $t("ye") }}/m <sup>2</sup>
+          </p>
+        </div>
+        <div class="apartment-promo-icon">
+          <img
+            v-if="item.is_promo"
+            src="../../../../assets/icons/bonuses.svg"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style lang="sass" scoped>
 
@@ -287,6 +304,4 @@ export default {
 
             sup
                 color: var(--gray-500)
-
-
 </style>
