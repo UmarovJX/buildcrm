@@ -5,8 +5,13 @@ import {
   phonePrettier,
 } from "@/util/reusable";
 
+import BasePagination from "@/components/Reusable/Navigation/BasePagination.vue";
+
 export default {
   name: "ThirdStep",
+  components: {
+    BasePagination,
+  },
   props: {
     list: {
       type: Array,
@@ -55,10 +60,41 @@ export default {
           label: "contracts.view.comments",
         },
       ],
-      pagination: {},
+      pagination: {
+        current: 1,
+        perPage: 10,
+      },
     };
   },
+  computed: {
+    tableDetails() {
+      const { current, perPage } = this.pagination;
+
+      if (this.list.length) {
+        return {
+          perPage,
+          current,
+          count: Math.ceil(this.list.length / perPage),
+          items: this.list.slice((current - 1) * perPage, current * perPage),
+        };
+      }
+
+      return {
+        perPage: 0,
+        current: 0,
+        count: 0,
+        items: [],
+      };
+    },
+  },
   methods: {
+    paginateFoundItems(page) {
+      this.pagination.current = page;
+    },
+    changePerPage(perPage) {
+      this.pagination.current = 1;
+      this.pagination.perPage = perPage;
+    },
     fullName(client) {
       if (client.first_name && client.last_name && client.second_name) {
         return (
@@ -136,7 +172,7 @@ export default {
       borderless
       responsive="xl"
       sort-icon-left
-      :items="list"
+      :items="tableDetails.items"
       :fields="fields"
       class="table__list"
       :empty-text="$t('no_data')"
@@ -171,6 +207,12 @@ export default {
         <span>{{ dateFormat(data.item.data.date) }}</span>
       </template>
     </b-table>
+    <base-pagination
+      :pagination-count="tableDetails.count"
+      :pagination-current="tableDetails.current"
+      @change-page="paginateFoundItems"
+      @change-view="changePerPage"
+    />
   </div>
 </template>
 

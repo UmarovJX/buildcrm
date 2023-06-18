@@ -23,4 +23,5 @@ export const PAYMENT_TYPE = {
   "К Хуршидака": "Client_khurshidaka",
 };
 
-export const PAGINATION_COUNT = 2;
+export const PAGINATION_COUNT = 20;
+export const DEBTORS_EXCEL_FILES = "debtors_excel_files";

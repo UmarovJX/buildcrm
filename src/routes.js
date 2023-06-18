@@ -63,13 +63,11 @@ import ActivityLog from "@/components/Contracts/view/ActivityLog";
 import Settings from "@/views/Settings/Index";
 import FastPlanList from "@/views/Objects/FastPlan/List";
 import AddDrawing from "@/views/Objects/FastPlan/AddDrawing.vue";
-
 import Editor from "@/views/Editor.vue";
 
 const routes = [
   {
     path: "/",
-    name: "app-layout",
     component: AppLayout,
     children: [
       {

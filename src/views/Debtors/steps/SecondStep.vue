@@ -1,23 +1,20 @@
 <script>
+// import BaseInput from "@/components/Reusable/BaseInput";
 // import XFormSelect from "@/components/ui-components/form-select/FormSelect";
 import api from "@/services/api";
-import BaseInput from "@/components/Reusable/BaseInput";
-import { mapGetters } from "vuex";
-
+import { mapGetters, mapMutations } from "vuex";
 import "vue-select/dist/vue-select.css";
-
+import FoundContracts from "@/views/Debtors/elements/FoundContracts.vue";
+import NotFoundContracts from "@/views/Debtors/elements/NotFoundContracts.vue";
 export default {
   name: "SecondStep",
   components: {
-    BaseInput,
+    // BaseInput,
     // XFormSelect,
+    FoundContracts,
+    NotFoundContracts,
   },
-  props: {
-    importData: {
-      type: Object,
-      required: true,
-    },
-  },
+  emits: ["validate"],
   data() {
     return {
       foundItems: [],
@@ -43,12 +40,12 @@ export default {
           thClass: "theadKey",
           tdClass: "tbodyKey",
         },
-        {
-          key: "value",
-          label: "debtors.contract_system",
-          thClass: "theadValue",
-          tdClass: "tbodyValue",
-        },
+        // {
+        //   key: "value",
+        //   label: "debtors.contract_system",
+        //   thClass: "theadValue",
+        //   tdClass: "tbodyValue",
+        // },
       ],
       options: [],
       tabIndex: 0,
@@ -58,16 +55,12 @@ export default {
       allList: [],
     };
   },
-  watch: {
-    importData() {
-      console.log("Imported new one: ", this.importData);
-      this.setupOptions();
-    },
-  },
   computed: {
-    ...mapGetters({
-      getDebtorsSheets: "getDebtorsSheets",
-    }),
+    ...mapGetters([
+      "getDebtorsSheets",
+      "getNotFoundContracts",
+      "getFoundContracts",
+    ]),
     debtorsSheet() {
       if (this.getDebtorsSheets.rows) {
         return this.getDebtorsSheets.rows.slice(1);
@@ -75,11 +68,8 @@ export default {
       return [];
     },
   },
-
-  created() {
-    this.setupOptions();
-  },
   methods: {
+    ...mapMutations(["updateNotFoundOption", "updateNotFoundAlias"]),
     selectOptionSystem(itemKey, option) {
       this.notFoundItems.forEach((item, index) => {
         if (item.key === itemKey) {
@@ -96,55 +86,6 @@ export default {
       });
       this.openListId = null;
     },
-    setupOptions() {
-      this.foundItems = this.importData.found.map((item) => {
-        return {
-          key: item.contract_number,
-          value: {
-            alias: item.alias,
-            contract: item.contract_number,
-            uuid: item.uuid,
-          },
-        };
-      });
-      this.notFoundItems = this.importData.not_found.map((item) => {
-        return {
-          key: item,
-          option: [],
-          value: {
-            alias: null,
-            contract: null,
-            uuid: null,
-          },
-        };
-      });
-    },
-    searchContract(item, search) {
-      console.log(this.importData);
-      const uuid = item.key;
-      const params = {
-        contract: search,
-      };
-      api.debtorsV2
-        .searchContract(params)
-        .then((res) => {
-          this.openListId = uuid;
-          this.notFoundItems.forEach((fItem, index) => {
-            if (fItem && fItem.key === uuid) {
-              this.notFoundItems[index].option = res.data.map((item) => {
-                return {
-                  alias: item.alias || null,
-                  contract: item.contract_number || null,
-                  uuid: item.uuid || null,
-                };
-              });
-            }
-          });
-        })
-        .catch((err) => {
-          return err;
-        });
-    },
     getContractNumbers() {
       const contractFieldName = this.foundItems[0].type;
       let contractsList = [];
@@ -160,51 +101,7 @@ export default {
       return contractsList;
     },
     async validateSecondStep() {
-      let createAliases = [];
-      let updateAliases = [];
-      let { allList } = this;
-
-      if (this.foundItems && this.foundItems.length) {
-        this.foundItems.forEach((item) => {
-          updateAliases = [...updateAliases, item.value];
-        });
-      }
-
-      if (this.notFoundItems && this.notFoundItems.length) {
-        this.notFoundItems.forEach((item) => {
-          if (item.value && item.value.uuid) {
-            createAliases = [...createAliases, item.value];
-          }
-        });
-      }
-
-      if (createAliases && createAliases.length) {
-        const createBody = {
-          aliases: createAliases,
-        };
-        await api.debtorsV2
-          .createAliases(createBody)
-          .then(() => {
-            allList = [...allList, ...createAliases];
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error);
-          });
-      }
-
-      allList = [...allList, ...updateAliases];
-
-      allList.forEach((item, index) => {
-        this.debtorsSheet.forEach((sheet) => {
-          if (
-            item.alias === sheet.contract ||
-            item.contract === sheet.contract
-          ) {
-            allList[`${index}`] = Object.assign(allList[`${index}`], sheet);
-          }
-        });
-      });
-      await this.$emit("all-debtors", allList);
+      await this.$emit("validate");
     },
     iTranslate(text) {
       return this.$t(`${text}`);
@@ -225,94 +122,26 @@ export default {
           <template #title>
             <div class="custom-title">
               {{ $t("found") }}
-              <span>{{ foundItems.length }}</span>
+              <span>{{ getFoundContracts.length }}</span>
             </div>
           </template>
 
-          <!--  FILE CONTRACTS  -->
-
-          <b-table
-            :fields="foundFields"
-            :items="foundItems"
-            class="fixed-table"
-            :empty-text="$t('no_data')"
-            thead-tr-class="row__head__bottom-border"
-            tbody-tr-class="row__body__bottom-border"
-            borderless
-            fixed
-          >
-            <template #empty>
-              <span v-if="foundItems">
-                {{ $t("no_data") }}
-              </span>
-            </template>
-
-            <template #head()="data">
-              <span>{{ $t(`${data.label}`) }}</span>
-            </template>
-
-            <template #cell(key)="data">
-              <span>
-                {{ data.item.key }}
-              </span>
-            </template>
-
-            <template #cell(value)="data">
-              <span>
-                {{ data.item.value.alias || $t("no") }}
-              </span>
-            </template>
-          </b-table>
+          <found-contracts :items="getFoundContracts" />
         </b-tab>
 
         <b-tab>
           <template #title>
             <div class="custom-title">
               {{ $t("not_found") }}
-              <span>{{ notFoundItems.length }}</span>
+              <span>{{ getNotFoundContracts.length }}</span>
             </div>
           </template>
 
-          <!--  SYSTEM CONTRACTS -->
-          <b-table
-            :fields="notFoundFields"
-            :items="notFoundItems"
-            class="fixed-table"
-            :empty-text="$t('no_data')"
-            thead-tr-class="row__head__bottom-border"
-            tbody-tr-class="row__body__bottom-border"
-            borderless
-            fixed
-          >
-            <template #head()="data">
-              <span>{{ $t(`${data.label}`) }}</span>
-            </template>
-
-            <template #cell(key)="data">
-              <span>
-                {{ data.item.key }}
-              </span>
-            </template>
-
-            <template #cell(value)="data">
-              <ValidationProvider
-                v-slot="{ errors }"
-                rules="required"
-                :name="$t('contracts.name')"
-                class="cell position-relative"
-              >
-                <v-select
-                  :options="data.item.option"
-                  :filterable="false"
-                  label="contract"
-                  v-model="data.item.value.contract"
-                  @open="openListId = data.item.key"
-                  @search="searchContract(data.item, $event)"
-                  @input="selectOptionSystem(data.item.key, $event)"
-                />
-              </ValidationProvider>
-            </template>
-          </b-table>
+          <not-found-contracts
+            :items="getNotFoundContracts"
+            @update-alias="updateNotFoundAlias"
+            @update-option="updateNotFoundOption"
+          />
         </b-tab>
       </b-tabs>
     </ValidationObserver>

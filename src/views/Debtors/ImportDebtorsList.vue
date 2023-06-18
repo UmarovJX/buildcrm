@@ -1,18 +1,18 @@
 <script>
+import api from "@/services/api";
+import { mapGetters, mapMutations } from "vuex";
+import { TYPE, PAYMENT_TYPE, DEBTORS_EXCEL_FILES } from "@/constants/names";
+import { isNull, isNUNEZ } from "@/util/inspect";
+
 import AppHeader from "@/components/Header/AppHeader";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseRightIcon from "@/components/icons/BaseRightIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
-// import XFormSelect from "@/components/ui-components/form-select/FormSelect";
-import { mapGetters, mapMutations } from "vuex";
-import api from "@/services/api";
 import FirstStep from "@/views/Debtors/steps/FirstStep";
 import SecondStep from "@/views/Debtors/steps/SecondStep";
 import ThirdStep from "@/views/Debtors/steps/ThirdStep";
 import BaseModal from "@/components/Reusable/BaseModal";
-import { TYPE, PAYMENT_TYPE, PAGINATION_COUNT } from "@/constants/names";
-import BasePagination from "@/components/Reusable/Navigation/BasePagination";
 
 export default {
   name: "ImportDebtorsList",
@@ -20,8 +20,6 @@ export default {
     FirstStep,
     SecondStep,
     ThirdStep,
-    BasePagination,
-    // XFormSelect,
     BaseArrowLeftIcon,
     BaseRightIcon,
     BaseArrowRightIcon,
@@ -29,33 +27,44 @@ export default {
     BaseButton,
     BaseModal,
   },
+  // beforeRouteLeave(to, from, next) {
+  //   this.$refs["leave-modal"].openModal();
+  //   this.nextRoute = to.name;
+  //   if (this.permissionLeave) {
+  //     next();
+  //   } else {
+  //     next(false);
+  //   }
+  // },
   beforeRouteLeave(to, from, next) {
-    this.$refs["leave-modal"].openModal();
-    this.nextRoute = to.name;
-    if (this.permissionLeave) {
-      next();
-    } else {
-      next(false);
-    }
+    sessionStorage.removeItem(DEBTORS_EXCEL_FILES);
+    next();
   },
   created() {
-    window.onbeforeunload = function (e) {
-      e = e || window.event;
-      //old browsers
-      if (e) {
-        e.returnValue = "Changes you made may not be saved";
+    // window.onbeforeunload = function (e) {
+    //   e = e || window.event;
+    //   //old browsers
+    //   if (e) {
+    //     e.returnValue = "Changes you made may not be saved";
+    //   }
+    //   //safari, chrome(chrome ignores text)
+    //   return "Changes you made may not be saved";
+    // };
+    const hasNotFile = isNull(this.getDebtorsSheets.file);
+    if (hasNotFile) {
+      const fileProperties = sessionStorage.getItem(DEBTORS_EXCEL_FILES);
+      if (fileProperties) {
+        const sheets = JSON.parse(sessionStorage.getItem(DEBTORS_EXCEL_FILES));
+        this.updateDebtorsExcel(sheets, true);
       }
-      //safari, chrome(chrome ignores text)
-      return "Changes you made may not be saved";
-    };
+    }
   },
   data() {
     return {
-      tabIndex: 0,
+      tabIndex: 1,
       stepTwoDisable: false,
       stepThirdDisable: false,
       appLoading: false,
-      importContracts: {},
       resultList: [],
       listLoading: false,
       resultDebtors: [],
@@ -67,31 +76,25 @@ export default {
     ...mapGetters({
       getDebtorsSheets: "getDebtorsSheets",
       currentPagination: "getCurrentPagination",
+      getSelectAliases: "getSelectAliases",
+      getPreviewItems: "getPreviewItems",
+      getFileFields: "getFileFields",
     }),
-    paginationCount() {
-      return Math.ceil(
-        (this.getDebtorsSheets.rows.length - 1) / PAGINATION_COUNT
-      );
-    },
     haveConstructorOrder() {
       return Object.keys(this.getDebtorsSheets).length > 0;
     },
     fileName() {
-      const debt = this.getDebtorsSheets;
-      if (debt && debt.file) {
-        return this.getDebtorsSheets.file.name;
-      }
-      return "";
+      return this.getDebtorsSheets?.file?.name ?? "";
     },
   },
   methods: {
     ...mapMutations({
       setCurrentPagination: "SET_CURRENT_PAGINATION",
+      updateDebtorsExcel: "updateDebtorsExcel",
+      checkContractsMutation: "checkContracts",
+      setCreatedAlias: "setCreatedAlias",
+      generateImportTable: "generateImportTable",
     }),
-    paginate(page) {
-      this.setCurrentPagination(page);
-      this.getImportDebtorsContract();
-    },
     cancelLeave() {
       this.permissionLeave = false;
       this.$refs["leave-modal"].closeModal();
@@ -105,47 +108,47 @@ export default {
       this.$router.go(-1);
     },
     async getImportDebtorsContract() {
+      if (this.appLoading) {
+        return;
+      }
+
       const typeFieldValidation = await this.$refs[
         "first-step"
       ].validateFirstStep();
 
       if (typeFieldValidation) {
-        const body = {
-          contracts: this.$refs["first-step"].getContractNumbers(),
-        };
+        const promiseSet = [];
+        const cSet = this.$refs["first-step"].getContractNumbers();
 
-        api.debtorsV2
-          .checkImportDebtors(body)
-          .then((res) => {
+        if (cSet[0].length > 1) {
+          cSet.forEach((cs) => {
+            if (cs.length) {
+              promiseSet.push(
+                this.checkContracts({
+                  contracts: cs,
+                })
+              );
+            }
+          });
+        }
+
+        try {
+          this.appLoading = true;
+          await Promise.allSettled(promiseSet).then(() => {
             this.validationError = {
               visible: true,
               message: "Успешно",
               type: "success",
             };
-            console.log("Response: ", res.data);
-            this.importContracts = res.data;
-            // this.foundContracts = res.data.found
-            // this.notFoundContracts = res.data.not_found
 
-            if (this.tabIndex === 0) {
-              this.stepTwoDisable = false;
-              setTimeout(() => {
-                this.tabIndex = 1;
-              }, 100);
-            }
-          })
-          .catch((err) => {
-            let error = [];
-            for (const value of Object.values(err.response.data)) {
-              error = [...error, value];
-            }
-            this.validationError = {
-              visible: true,
-              message: error.join(", "),
-              type: "error",
-            };
-            this.stepTwoDisable = true;
+            this.stepTwoDisable = false;
+            setTimeout(() => {
+              this.tabIndex = 1;
+            }, 100);
           });
+        } finally {
+          this.appLoading = false;
+        }
       } else {
         this.validationError = {
           visible: true,
@@ -156,12 +159,40 @@ export default {
         this.stepTwoDisable = true;
       }
     },
+    async checkContracts(body) {
+      return await api.debtorsV2
+        .checkImportDebtors(body)
+        .then((rsp) => {
+          this.checkContractsMutation(rsp);
+        })
+        .catch((err) => {
+          let error = [];
+          for (const value of Object.values(err.response.data)) {
+            error = [...error, value];
+          }
+          this.validationError = {
+            visible: true,
+            message: error.join(", "),
+            type: "error",
+          };
+        });
+    },
     async changeTab() {
       if (this.tabIndex === 0) {
-        this.getImportDebtorsContract();
+        await this.getImportDebtorsContract();
       } else if (this.tabIndex === 1) {
-        await this.$refs["second-step"].validateSecondStep();
+        this.appLoading = true;
+        this.generateImportTable();
+        await this.sendDebtorsDetail();
       }
+    },
+    async validateSecondStep() {
+      await this.uploadAliases().then((rsp) => {
+        if (rsp.data.length > 0) {
+          this.setCreatedAlias(rsp.data);
+          this.generateImportTable();
+        }
+      });
     },
     matchPaymentType(type) {
       return PAYMENT_TYPE[type];
@@ -169,59 +200,123 @@ export default {
     matchType(type) {
       return TYPE[type];
     },
-    setDebtorsList(debtors) {
-      this.resultDebtors = debtors.map((debtor) => {
-        let existContract = this.getDebtorsSheets?.rows.find(
-          (debtorSheet) => debtorSheet["Номер Договораг №"] === debtor.alias
-        );
-        const date = new Date(existContract["Дата"]);
-        const formatDate = date.toLocaleDateString("en-US");
-        return {
-          uuid: debtor.uuid,
-          amount: existContract["Сумма оплаты"],
-          date: formatDate,
-          type: this.matchType(existContract["Тип оплаты"]),
-          payment_type: this.matchPaymentType(existContract["Способ оплаты"]),
-          comment: existContract["Примичание"],
-        };
+    async sendDebtorsDetail() {
+      if (this.getPreviewItems.length) {
+        let loopCounter = 0;
+        const rows = this.getPreviewItems;
+
+        const priceName = this.getFileFields.find(
+          (f) => f.default === "amount"
+        ).type;
+        const dateName = this.getFileFields.find(
+          (f) => f.default === "date"
+        ).type;
+        const paymentMethodName = this.getFileFields.find(
+          (f) => f.default === "payment_type"
+        ).type;
+        const typeName = this.getFileFields.find(
+          (f) => f.default === "type"
+        ).type;
+        const commentName = this.getFileFields.find(
+          (f) => f.default === "comment"
+        ).type;
+
+        const c = [[]];
+
+        for (let i = 0; i < rows.length; i++) {
+          const p = Object.assign(
+            {},
+            {
+              uuid: rows[i].value.uuid,
+              amount: rows[i].table[priceName],
+              date: rows[i].table[dateName],
+              payment_type: this.matchPaymentType(
+                rows[i].table[paymentMethodName]
+              ),
+              type: this.matchType(rows[i].table[typeName]),
+              comment: rows[i].table[commentName] ?? "",
+            }
+          );
+
+          if (isNUNEZ(p.type) && isNUNEZ(p.payment_type)) {
+            if (c[c.length - 1].length <= loopCounter % 1000) {
+              c[c.length - 1].push(p);
+            } else {
+              c.push([p]);
+            }
+          }
+
+          loopCounter++;
+        }
+
+        const promiseSet = [];
+        if (c[0].length > 1) {
+          c.forEach((cs) => {
+            if (cs.length) {
+              promiseSet.push(this.getPreviewInformation(cs));
+            }
+          });
+        }
+
+        await Promise.allSettled(promiseSet)
+          .then((rsp) => {
+            rsp.forEach((r) => {
+              r.value.data.forEach((i) => {
+                this.resultList.push(i);
+              });
+            });
+
+            this.tabIndex = 2;
+          })
+          .catch((e) => {
+            this.toastedWithErrorCode(e);
+          })
+          .finally(() => {
+            this.appLoading = false;
+          });
+      }
+    },
+    async getPreviewInformation(contracts) {
+      return await api.debtorsV2.viewImportList({
+        contracts,
       });
-
-      this.listLoading = true;
-
-      const body = {
-        contracts: this.resultDebtors,
-      };
-      api.debtorsV2
-        .viewImportList(body)
-        .then((res) => {
-          this.resultList = res.data;
-          this.tabIndex = 2;
-        })
-        .catch((err) => {
-          this.resultList = [];
-          return err;
-        })
-        .finally(() => {
-          this.listLoading = false;
+    },
+    async uploadAliases() {
+      if (this.getSelectAliases.length) {
+        return await api.debtorsV2.createAliases({
+          aliases: this.getSelectAliases,
         });
+      }
+
+      return Promise.resolve({
+        data: [],
+      });
     },
     async submitConcludeDebtors() {
-      const body = {
-        payments: this.resultDebtors,
-      };
-      await api.debtorsV2
-        .activatePayments(body)
-        .then(() => {
-          this.permissionLeave = true;
-          this.$store.dispatch("notify/openNotify", {
+      this.appLoading = true;
+      try {
+        const payments = this.resultList.map((r) => ({
+          uuid: r.uuid,
+          ...r.data,
+        }));
+
+        const resp = await api.debtorsV2.activatePayments({
+          payments,
+        });
+
+        if (resp) {
+          await this.$store.dispatch("notify/openNotify", {
             type: "success",
             duration: 3000,
+            message: resp.data.message,
           });
-          this.$router.push({ name: "debtors" });
-        })
-        .catch((err) => {
-          return err;
-        });
+          await this.$router.push({ name: "debtors" });
+        }
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.appLoading = false;
+      }
     },
   },
 };
@@ -293,16 +388,7 @@ export default {
           </template>
 
           <div v-if="tabIndex === 1">
-            <second-step
-              ref="second-step"
-              :import-data="importContracts"
-              @all-debtors="setDebtorsList"
-            />
-            <BasePagination
-              :paginationCount="paginationCount"
-              :paginationCurrent="currentPagination"
-              @change-page="paginate"
-            />
+            <second-step ref="second-step" />
           </div>
         </b-tab>
 
@@ -330,7 +416,7 @@ export default {
               @click="submitConcludeDebtors"
               class="violet-gradient"
               :text="`${$t('create_agree')}`"
-              :app-loading="appLoading"
+              :loading="appLoading"
             >
               <template #right-icon>
                 <base-arrow-right-icon fill="var(--white)" />
@@ -341,6 +427,7 @@ export default {
               :text="`${$t('next')}`"
               class="violet-gradient"
               @click="changeTab"
+              :loading="appLoading"
             >
               <template #right-icon>
                 <base-arrow-right-icon fill="var(--white)" />

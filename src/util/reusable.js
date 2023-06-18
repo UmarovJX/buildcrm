@@ -57,7 +57,7 @@ export function phonePrettier(phoneNumber) {
   return "";
 }
 
-export function debounce(fn, delay) {
+export function debounce(fn, delay = 350) {
   let timeoutID = null;
   return function () {
     clearTimeout(timeoutID);

@@ -1,14 +1,16 @@
 <script>
 import { mapGetters } from "vuex";
+import api from "@/services/api";
+import { formatToPrice, getDateProperty } from "@/util/reusable";
+import { isNUNEZ, isUndefinedOrNullOrEmpty } from "@/util/inspect";
+
+import AppHeader from "@/components/Header/AppHeader";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-import api from "@/services/api";
-import { formatToPrice, getDateProperty } from "@/util/reusable";
-import AppHeader from "@/components/Header/AppHeader";
-import { isNUNEZ, isUndefinedOrNullOrEmpty } from "@/util/inspect";
+
 import {
   hasInPaymentTypes,
   paymentTypes,
@@ -233,8 +235,6 @@ export default {
 
         const pSet = [];
 
-        console.log("bStore", bStore);
-
         bStore.forEach((bs) => {
           if (bs.length) {
             pSet.push(this.saveToDatabase(id, bs));
@@ -267,7 +267,7 @@ export default {
         const { errors } = this.$refs["form-validation"];
         for (let [key] of Object.entries(this.errors)) {
           if (!this.form[key]) {
-            this.errors[key] = errors.hasOwnProperty(key);
+            this.errors[key] = hasOwnProperty(errors, key);
           }
         }
       }

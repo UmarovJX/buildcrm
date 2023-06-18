@@ -70,7 +70,9 @@ export default {
           });
           return loopPackage;
         });
+
         sortRows.unshift(head);
+
         this.updateDebtorsExcel({
           rows: sortRows,
           file: this.excelFile,
