@@ -206,17 +206,19 @@ export default {
       const valid = await this.$refs["form"].validate();
       const objectId = this.$route.params.id;
       const planId = this.plan.id;
-      console.log(objectId, "objectId");
-      console.log(planId, "planId");
       if (valid && this.planData.images.length) {
         this.renderPositionImage();
-        const form = this.renderFormData(this.planData);
+
         if (!planId) {
+          const b = Object.assign({}, this.planData);
+          delete b.plan_id;
+          const form = this.renderFormData(b);
           await api.plans.createPlan(objectId, form).then(() => {
             this.closePlanModal();
             this.$emit("update-list");
           });
         } else {
+          const form = this.renderFormData(this.planData);
           await api.plans.updatePlan(objectId, planId, form).then(() => {
             this.closePlanModal();
             this.$emit("update-list");
