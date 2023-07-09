@@ -5,13 +5,11 @@ import {
 } from "@/util/axios-intercept";
 import { isNull } from "@/util/inspect";
 
-const instanceGenerator = (baseUrl) => {
-  console.log(baseUrl);
+const instanceGenerator = ({ baseUrl, headers = {} }) => {
   const instance = axios.create({
+    headers,
     baseURL: baseUrl,
   });
-
-  console.log(instance);
 
   instance.interceptors.request.use(axiosRequestInterceptResponse, (error) =>
     Promise.reject(error)
@@ -24,16 +22,26 @@ const instanceGenerator = (baseUrl) => {
   return instance;
 };
 
+export const axiosV1CRM = instanceGenerator({
+  // eslint-disable-next-line no-undef
+  baseUrl: process.env.VUE_APP_URL_V1_CRM,
+});
+export const axiosV2 = instanceGenerator({
+  // eslint-disable-next-line no-undef
+  baseUrl: process.env.VUE_APP_URL_V2,
+});
 // eslint-disable-next-line no-undef
-export const axiosV1CRM = instanceGenerator(process.env.VUE_APP_URL_V1_CRM);
-// eslint-disable-next-line no-undef
-export const axiosV2 = instanceGenerator(process.env.VUE_APP_URL_V2);
-// eslint-disable-next-line no-undef
-export const axiosBase = ({ baseUrl = null, endpoint = "" }) => {
+export const axiosBase = ({ baseUrl = null, endpoint = "", headers = {} }) => {
   if (isNull(baseUrl)) {
-    // eslint-disable-next-line no-undef
-    return instanceGenerator(process.env.VUE_APP_URL + endpoint);
+    return instanceGenerator({
+      headers,
+      // eslint-disable-next-line no-undef
+      baseUrl: process.env.VUE_APP_URL + endpoint,
+    });
   }
   // eslint-disable-next-line no-undef
-  return instanceGenerator(baseUrl + endpoint);
+  return instanceGenerator({
+    headers,
+    baseUrl: baseUrl + endpoint,
+  });
 };

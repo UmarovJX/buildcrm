@@ -1,11 +1,12 @@
 <script>
 import { makeProp } from "@/util/props";
-import { debounce } from "@/util/reusable";
-import { symbolLatinToCyrillic } from "@/util/language-helper";
+// import { debounce } from "@/util/reusable";
+// import { symbolLatinToCyrillic } from "@/util/language-helper";
 import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from "@/constants/props";
 import { XFormInput } from "@/components/ui-components/form-input";
 import { XModalCenter } from "@/components/ui-components/modal-center";
 import { settingsV3Api } from "@/services/settings";
+import { isEmptyObject } from "@/util/inspect";
 // import ColorPickerSwatches from "@/components/Elements/color-picker/ColorPickerSwatches.vue";
 
 export default {
@@ -58,34 +59,43 @@ export default {
       },
     };
   },
-  watch: {
-    "client.name.uz": debounce(function (nameInUz) {
-      const nameInCyrillic = symbolLatinToCyrillic(nameInUz);
-      if (this.client.name.ru !== nameInCyrillic) {
-        this.client.name.ru = nameInCyrillic;
-      }
-    }, 500),
-    "client.lastName.uz": debounce(function (nameInUz) {
-      const nameInCyrillic = symbolLatinToCyrillic(nameInUz);
-      if (this.client.lastName.ru !== nameInCyrillic) {
-        this.client.lastName.ru = nameInCyrillic;
-      }
-    }, 500),
-    "client.middleName.uz": debounce(function (nameInUz) {
-      const nameInCyrillic = symbolLatinToCyrillic(nameInUz);
-      if (this.client.middleName.ru !== nameInCyrillic) {
-        this.client.middleName.ru = nameInCyrillic;
-      }
-    }, 500),
-  },
+  // watch: {
+  // "client.name.uz": debounce(function (nameInUz) {
+  //   const nameInCyrillic = symbolLatinToCyrillic(nameInUz);
+  //   if (this.client.name.ru !== nameInCyrillic) {
+  //     this.client.name.ru = nameInCyrillic;
+  //   }
+  // }, 500),
+  // "client.lastName.uz": debounce(function (nameInUz) {
+  //   const nameInCyrillic = symbolLatinToCyrillic(nameInUz);
+  //   if (this.client.lastName.ru !== nameInCyrillic) {
+  //     this.client.lastName.ru = nameInCyrillic;
+  //   }
+  // }, 500),
+  // "client.middleName.uz": debounce(function (nameInUz) {
+  //   const nameInCyrillic = symbolLatinToCyrillic(nameInUz);
+  //   if (this.client.middleName.ru !== nameInCyrillic) {
+  //     this.client.middleName.ru = nameInCyrillic;
+  //   }
+  // }, 500),
+  // },
   created() {
     if (this.upsertType === "edit") {
-      this.fulfillIcon();
+      this.setEditData();
     } else {
       this.activateIcon();
     }
   },
   methods: {
+    setEditData() {
+      if (isEmptyObject(this.editItem)) {
+        return;
+      }
+
+      this.client.name.uz = this.editItem.first_name;
+      this.client.lastName.uz = this.editItem.last_name;
+      this.client.middleName.uz = this.editItem.middle_name;
+    },
     closeCreatingModal() {
       this.clearForm();
       this.$emit("close-creating-modal");
@@ -179,14 +189,13 @@ export default {
         ref="creating-type-observer"
         class="client-type-creating-body"
       >
-        <!--        <color-picker-swatches style="width: 100%" />-->
-
-        <!--   HOLDER'S LAST NAME UZ     -->
+        <!--   ? HOLDER'S LAST NAME UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
           name="last-name-uz-provider"
           rules="required|min:3"
           v-slot="{ errors }"
+          class="last-name-provider"
         >
           <x-form-input
             type="text"
@@ -199,59 +208,59 @@ export default {
           </span>
         </validation-provider>
 
-        <!--   HOLDER'S LAST NAME RU     -->
-        <validation-provider
-          ref="clientTypeNameVProvider"
-          name="last-name-ru-provider"
-          rules="required|min:3"
-          v-slot="{ errors }"
-        >
-          <x-form-input
-            type="text"
-            :placeholder="`${$t('last_name')} (${$t('placeholder_ru')})`"
-            class="w-100"
-            v-model="client.lastName.ru"
-          />
-          <span class="error__provider" v-if="errors[0]">
-            {{ errors[0].replace("last-name-ru-provider", $t("last_name")) }}
-          </span>
-        </validation-provider>
+        <!--   ? HOLDER'S LAST NAME RU     -->
+        <!--        <validation-provider-->
+        <!--          ref="clientTypeNameVProvider"-->
+        <!--          name="last-name-ru-provider"-->
+        <!--          rules=""-->
+        <!--          v-slot="{ errors }"-->
+        <!--        >-->
+        <!--          <x-form-input-->
+        <!--            type="text"-->
+        <!--            :placeholder="`${$t('last_name')} (${$t('placeholder_ru')})`"-->
+        <!--            class="w-100"-->
+        <!--            v-model="client.lastName.ru"-->
+        <!--          />-->
+        <!--          <span class="error__provider" v-if="errors[0]">-->
+        <!--            {{ errors[0].replace("last-name-ru-provider", $t("last_name")) }}-->
+        <!--          </span>-->
+        <!--        </validation-provider>-->
 
-        <!--   HOLDER'S NAME UZ     -->
+        <!--   ? HOLDER'S NAME UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
           name="name-uz-provider"
           rules="required|min:3"
           v-slot="{ errors }"
+          class="name-provider"
         >
           <x-form-input
             type="text"
-            :placeholder="`${$t('title')} (${$t('placeholder_uz')})`"
+            :placeholder="`${$t('name')} (${$t('placeholder_uz')})`"
             class="w-100"
             v-model="client.name.uz"
           />
           <span class="error__provider" v-if="errors[0]">
-            {{ errors[0].replace("name-uz-provider", $t("title")) }}
+            {{ errors[0].replace("name-uz-provider", $t("name")) }}
           </span>
         </validation-provider>
 
-        <!--   HOLDER'S NAME RU     -->
-        <validation-provider
-          ref="clientTypeNameVProvider"
-          name="name-ru-provider"
-          rules="required|min:3"
-          v-slot="{ errors }"
-        >
-          <x-form-input
-            type="text"
-            :placeholder="`${$t('title')} (${$t('placeholder_ru')})`"
-            class="w-100"
-            v-model="client.name.ru"
-          />
-          <span class="error__provider" v-if="errors[0]">
-            {{ errors[0].replace("name-ru-provider", $t("title")) }}
-          </span>
-        </validation-provider>
+        <!--   ? HOLDER'S NAME RU     -->
+        <!--        <validation-provider-->
+        <!--          ref="clientTypeNameVProvider"-->
+        <!--          name="name-ru-provider"-->
+        <!--          v-slot="{ errors }"-->
+        <!--        >-->
+        <!--          <x-form-input-->
+        <!--            type="text"-->
+        <!--            :placeholder="`${$t('title')} (${$t('placeholder_ru')})`"-->
+        <!--            class="w-100"-->
+        <!--            v-model="client.name.ru"-->
+        <!--          />-->
+        <!--          <span class="error__provider" v-if="errors[0]">-->
+        <!--            {{ errors[0].replace("name-ru-provider", $t("title")) }}-->
+        <!--          </span>-->
+        <!--        </validation-provider>-->
 
         <!--   HOLDER'S MIDDLE NAME UZ     -->
         <validation-provider
@@ -259,6 +268,7 @@ export default {
           name="middle-name-uz-provider"
           rules="required|min:3"
           v-slot="{ errors }"
+          class="middle-name-provider"
         >
           <x-form-input
             type="text"
@@ -273,25 +283,24 @@ export default {
           </span>
         </validation-provider>
 
-        <!--   HOLDER'S MIDDLE NAME RU     -->
-        <validation-provider
-          ref="clientTypeNameVProvider"
-          name="middle-name-ru-provider"
-          rules="required|min:3"
-          v-slot="{ errors }"
-        >
-          <x-form-input
-            type="text"
-            :placeholder="`${$t('second_name')} (${$t('placeholder_ru')})`"
-            class="w-100"
-            v-model="client.middleName.ru"
-          />
-          <span class="error__provider" v-if="errors[0]">
-            {{
-              errors[0].replace("middle-name-ru-provider", $t("second_name"))
-            }}
-          </span>
-        </validation-provider>
+        <!--   ? HOLDER'S MIDDLE NAME RU     -->
+        <!--        <validation-provider-->
+        <!--          ref="clientTypeNameVProvider"-->
+        <!--          name="middle-name-ru-provider"-->
+        <!--          v-slot="{ errors }"-->
+        <!--        >-->
+        <!--          <x-form-input-->
+        <!--            type="text"-->
+        <!--            :placeholder="`${$t('second_name')} (${$t('placeholder_ru')})`"-->
+        <!--            class="w-100"-->
+        <!--            v-model="client.middleName.ru"-->
+        <!--          />-->
+        <!--          <span class="error__provider" v-if="errors[0]">-->
+        <!--            {{-->
+        <!--              errors[0].replace("middle-name-ru-provider", $t("second_name"))-->
+        <!--            }}-->
+        <!--          </span>-->
+        <!--        </validation-provider>-->
       </validation-observer>
     </template>
   </x-modal-center>
@@ -302,10 +311,25 @@ export default {
   margin-top: 3rem;
   margin-bottom: 3rem;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   font-family: Inter, sans-serif;
   color: var(--gray-600);
+  //grid-template-areas:
+  //  "lastNameProvider middleNameProvider"
+  //  "nameProvider nameProvider";
+  //
+  //.last-name-provider {
+  //  grid-area: lastNameProvider;
+  //}
+  //
+  //.name-provider {
+  //  grid-area: nameProvider;
+  //}
+  //
+  //.middle-name-provider {
+  //  grid-area: middleNameProvider;
+  //}
 }
 
 .icons-collection-wrapper {

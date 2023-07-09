@@ -1,7 +1,7 @@
 <script>
+import { isNUNEZ } from "@/util/inspect";
 import material from "@/util/material-colors";
 import colorMixin from "@/mixins/colorPickerSwatchesMixin";
-import { isNUNEZ } from "@/util/inspect";
 
 let colorMap = [
   "red",

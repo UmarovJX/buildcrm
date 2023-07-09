@@ -1,5 +1,5 @@
 <script>
-import api from "@/services/api";
+import { settingsV3Api } from "@/services/settings";
 import { XButton } from "@/components/ui-components/button";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
@@ -20,27 +20,36 @@ export default {
       upsertType: "create",
       showCreateModal: false,
       editStorage: {},
-      clientTypes: {
+      table: {
         items: [],
+        pagination: {
+          current: 1,
+          previous: 0,
+          next: 0,
+          perPage: 10,
+          totalPage: 0,
+          totalItem: 0,
+        },
         loading: false,
       },
     };
   },
   computed: {
-    clientTypeFields() {
+    tableFields() {
       return [
         {
-          key: "icon",
-          label: "",
-        },
-        {
-          key: "name",
+          key: "title",
           label: this.$t("title"),
           formatter: (name) => name[this.$i18n.locale],
         },
         {
-          key: "is_vip",
-          label: "V.I.P",
+          key: "type",
+          label: this.$t("type"),
+          formatter: (type) => type,
+        },
+        {
+          key: "color",
+          label: this.$t("color"),
         },
         {
           key: "actions",
@@ -51,19 +60,32 @@ export default {
     },
   },
   created() {
-    this.fetchClientTypes();
+    this.fetchHolders();
   },
   methods: {
-    createStatus() {
-      this.setUpsertType("create");
-      this.openCreatingStatusModal();
+    startLoading() {
+      this.table.loading = true;
     },
-    async fetchClientTypes() {
+    finishLoading() {
+      this.table.loading = false;
+    },
+    createClientType() {
+      this.setUpsertType("create");
+      this.openCreatingClientTypeModal();
+    },
+    async fetchHolders() {
       try {
-        const { data: items } = await api.settingsV2.getClientTypes();
-        this.clientTypes.items = items;
+        this.startLoading();
+        const response = await settingsV3Api.statuses().findAll({
+          page: 1,
+          limit: 100,
+        });
+        this.table.items = response.data.result;
+        this.table.pagination = response.data.pagination;
       } catch (e) {
         this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
       }
     },
     setUpsertType(eType) {
@@ -71,32 +93,42 @@ export default {
         this.upsertType = eType;
       }
     },
-    openCreatingStatusModal() {
+    openCreatingClientTypeModal() {
       this.showCreateModal = true;
     },
-    closeCreatingStatusModal() {
+    closeCreatingClientTypeModal() {
       this.showCreateModal = false;
     },
-    statusCreated() {
-      this.closeCreatingStatusModal();
-      this.fetchClientTypes();
+    clientTypeCreated() {
+      this.closeCreatingClientTypeModal();
+      this.fetchHolders();
     },
-    async deleteStatus(typeId) {
+    async deleteClientType(typeId) {
       try {
-        await api.settingsV2.deleteClientType(typeId);
-        await this.fetchClientTypes();
+        this.startLoading();
+        await settingsV3Api.statuses().remove({
+          id: typeId,
+        });
+        await this.fetchHolders();
       } catch (e) {
         this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
       }
     },
-    async editStatus(typeId) {
+    async editClientType(id) {
       try {
-        const { data } = await api.settingsV2.getClientTypeById(typeId);
-        this.editStorage = data;
+        this.startLoading();
+        const {
+          data: { result },
+        } = await settingsV3Api.statuses().findOne({ id });
+        this.editStorage = result;
         this.setUpsertType("edit");
-        this.openCreatingStatusModal();
+        this.openCreatingClientTypeModal();
       } catch (e) {
         this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
       }
     },
   },
@@ -106,15 +138,17 @@ export default {
 <template>
   <div class="app-settings-client-type">
     <!-- TODO: CLIENT TYPES TABLE   -->
-    <div class="d-flex justify-content-between">
-      <h3 class="x-font-size-1p5 font-craftworksans color-gray-400">
+    <div class="d-flex justify-content-between mb-4">
+      <h3
+        class="x-font-size-1p5 font-craftworksans color-gray-400 d-flex align-items-center"
+      >
         {{ $t("statuses.title") }}
       </h3>
       <x-button
         variant="secondary"
         text="statuses.add"
         :bilingual="true"
-        @click="createStatus"
+        @click="createClientType"
       >
         <template #left-icon>
           <x-icon name="add" class="violet-600" />
@@ -133,9 +167,9 @@ export default {
       show-empty
       responsive
       sort-icon-left
-      :items="clientTypes.items"
-      :fields="clientTypeFields"
-      :busy="clientTypes.loading"
+      :items="table.items"
+      :fields="tableFields"
+      :busy="table.loading"
       :empty-text="$t('no_data')"
     >
       <template #table-busy>
@@ -148,8 +182,26 @@ export default {
         </span>
       </template>
 
-      <template #cell(icon)="{ item }">
-        <x-icon :name="item.icon" class="gray-400" />
+      <template #cell(color)="{ item }">
+        <span
+          style="
+            display: inline-flex;
+            height: 40px;
+            padding: 0 20px;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            color: white;
+            border-radius: 28px;
+          "
+          :style="{
+            'background-color': item.color,
+            color: item.color === '#ffffff' ? '#000000' : '#ffffff',
+          }"
+        >
+          {{ item.color }}
+        </span>
       </template>
 
       <template #cell(is_vip)="{ item }">
@@ -164,14 +216,14 @@ export default {
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
-            @click="editStatus(item.id)"
+            @click="editClientType(item.id)"
             class="bg-violet-600"
           >
             <x-icon name="edit" class="color-white" />
           </x-circular-background>
 
           <x-circular-background
-            @click="deleteStatus(item.id)"
+            @click="deleteClientType(item.id)"
             class="bg-red-600"
           >
             <x-icon name="delete" class="color-white" />
@@ -184,8 +236,8 @@ export default {
       v-if="showCreateModal"
       :upsert-type="upsertType"
       :edit-item="editStorage"
-      @close-creating-modal="closeCreatingStatusModal"
-      @client-type-created="statusCreated"
+      @close-creating-modal="closeCreatingClientTypeModal"
+      @client-type-created="clientTypeCreated"
     />
   </div>
 </template>

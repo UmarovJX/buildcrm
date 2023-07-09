@@ -1,4 +1,5 @@
 export default {
+  color: "Rang",
   statuses: {
     title: "Statuslar",
     add: "Status qo'shish",
@@ -7,6 +8,7 @@ export default {
   holders: {
     title: "Egalari",
     add: "Ega qo'shish",
+    singular: "Ega",
   },
   home: {
     title: "Asosiy",

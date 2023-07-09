@@ -83,6 +83,11 @@ export function axiosRequestInterceptResponse(config) {
     requestConfig.headers["Authorization"] = `Bearer ${access_token}`;
   }
 
+  // console.log(config.url, config.url.includes("holders"));
+  // if (config.url.includes("holders")) {
+  //   requestConfig.headers["Accept-Language"] = "";
+  // }
+
   return requestConfig;
 }
 

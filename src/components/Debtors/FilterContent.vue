@@ -135,7 +135,7 @@ export default {
       await api.contractV2
         .fetchObjectsOption()
         .then((response) => {
-          const { objects, "client-types": clientTypes } = response.data;
+          const { objects, "client-types": table } = response.data;
           this.clientTypeOptions = clientTypes.map((clientType) => ({
             value: clientType.id,
             text: clientType.name,
@@ -296,7 +296,7 @@ export default {
         />
         <!--        <bootstrap-select-->
         <!--            :class="{ 'status-type-selection' : !filter.client_type_id }"-->
-        <!--            :options="clientTypes"-->
+        <!--            :options="table"-->
         <!--            :default-value="filter.client_type_id"-->
         <!--            @select="(newValue) => filter.client_type_id = newValue"-->
         <!--        />-->

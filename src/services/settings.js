@@ -104,7 +104,10 @@ class SettingsV2 extends Core {
 class SettingsV3 extends Core {
   constructor(
     axios = axiosBase({
-      endpoint: "/v3/api",
+      endpoint: "/api",
+      headers: {
+        "Accept-Language": "",
+      },
     })
   ) {
     super(axios);

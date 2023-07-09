@@ -95,11 +95,7 @@ export default {
       await api.contractV2
         .fetchObjectsOption()
         .then((response) => {
-          const {
-            objects,
-            "client-types": clientTypes,
-            date_types,
-          } = response.data;
+          const { objects, "client-types": table, date_types } = response.data;
           this.objectOptions = objects;
           for (let [idx, status] of Object.entries(clientTypes)) {
             this.clientTypeOptions.push({

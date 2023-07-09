@@ -142,7 +142,7 @@ export default {
         <base-loading />
       </template>
 
-      <template #empty="scope" class="text-center">
+      <template #empty="scope">
         <span class="d-flex justify-content-center align-items-center">
           {{ scope["emptyText"] }}
         </span>

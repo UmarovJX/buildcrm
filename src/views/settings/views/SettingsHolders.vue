@@ -1,11 +1,10 @@
 <script>
-import api from "@/services/api";
+import { settingsV3Api } from "@/services/settings";
 import { XButton } from "@/components/ui-components/button";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import SettingsCreateHolder from "@/views/settings/components/SettingsCreateHolder.vue";
-import { settingsV3Api } from "@/services/settings";
 
 export default {
   name: "SettingsClientTypes",
@@ -19,29 +18,32 @@ export default {
   data() {
     return {
       upsertType: "create",
-      shopCreateModal: false,
+      showCreateModal: false,
       editStorage: {},
-      clientTypes: {
+      table: {
         items: [],
+        pagination: {
+          current: 1,
+          previous: 0,
+          next: 0,
+          perPage: 10,
+          totalPage: 0,
+          totalItem: 0,
+        },
         loading: false,
       },
     };
   },
   computed: {
-    clientTypeFields() {
+    tableFields() {
       return [
         {
           key: "icon",
           label: "",
         },
         {
-          key: "name",
-          label: this.$t("title"),
-          formatter: (name) => name[this.$i18n.locale],
-        },
-        {
-          key: "is_vip",
-          label: "V.I.P",
+          key: "holder",
+          label: this.$t("holders.singular"),
         },
         {
           key: "actions",
@@ -52,24 +54,32 @@ export default {
     },
   },
   created() {
-    this.fetchClientTypes();
+    this.fetchHolders();
   },
   methods: {
+    startLoading() {
+      this.table.loading = true;
+    },
+    finishLoading() {
+      this.table.loading = false;
+    },
     createClientType() {
       this.setUpsertType("create");
       this.openCreatingClientTypeModal();
     },
-    async fetchClientTypes() {
+    async fetchHolders() {
       try {
+        this.startLoading();
         const response = await settingsV3Api.holders().findAll({
           page: 1,
-          limit: 10,
+          limit: 100,
         });
-        console.log(response);
-        const { data: items } = await api.settingsV2.getClientTypes();
-        this.clientTypes.items = items;
+        this.table.items = response.data.result;
+        this.table.pagination = response.data.pagination;
       } catch (e) {
         this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
       }
     },
     setUpsertType(eType) {
@@ -78,31 +88,41 @@ export default {
       }
     },
     openCreatingClientTypeModal() {
-      this.shopCreateModal = true;
+      this.showCreateModal = true;
     },
     closeCreatingClientTypeModal() {
-      this.shopCreateModal = false;
+      this.showCreateModal = false;
     },
     clientTypeCreated() {
       this.closeCreatingClientTypeModal();
-      this.fetchClientTypes();
+      this.fetchHolders();
     },
     async deleteClientType(typeId) {
       try {
-        await api.settingsV2.deleteClientType(typeId);
-        await this.fetchClientTypes();
+        this.startLoading();
+        await settingsV3Api.holders().remove({
+          id: typeId,
+        });
+        await this.fetchHolders();
       } catch (e) {
         this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
       }
     },
-    async editClientType(typeId) {
+    async editClientType(id) {
       try {
-        const { data } = await api.settingsV2.getClientTypeById(typeId);
-        this.editStorage = data;
+        this.startLoading();
+        const {
+          data: { result },
+        } = await settingsV3Api.holders().findOne({ id });
+        this.editStorage = result;
         this.setUpsertType("edit");
         this.openCreatingClientTypeModal();
       } catch (e) {
         this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
       }
     },
   },
@@ -112,8 +132,10 @@ export default {
 <template>
   <div class="app-settings-client-type">
     <!-- TODO: CLIENT TYPES TABLE   -->
-    <div class="d-flex justify-content-between">
-      <h3 class="x-font-size-1p5 font-craftworksans color-gray-400">
+    <div class="d-flex justify-content-between mb-4">
+      <h3
+        class="x-font-size-1p5 font-craftworksans color-gray-400 d-flex align-items-center"
+      >
         {{ $t("holders.title") }}
       </h3>
       <x-button
@@ -139,9 +161,9 @@ export default {
       show-empty
       responsive
       sort-icon-left
-      :items="clientTypes.items"
-      :fields="clientTypeFields"
-      :busy="clientTypes.loading"
+      :items="table.items"
+      :fields="tableFields"
+      :busy="table.loading"
       :empty-text="$t('no_data')"
     >
       <template #table-busy>
@@ -154,17 +176,12 @@ export default {
         </span>
       </template>
 
-      <template #cell(icon)="{ item }">
-        <x-icon :name="item.icon" class="gray-400" />
-      </template>
-
-      <template #cell(is_vip)="{ item }">
-        <span
-          v-if="item['is_vip']"
-          class="border-radius-2 background-violet-100 violet-600 vip-status"
-          >V.I.P</span
-        >
-        <span v-else>{{ $t("normal_client") }}</span>
+      <template #cell(holder)="{ item }">
+        <span>
+          {{ item.last_name }}
+          {{ item.first_name }}
+          {{ item.middle_name }}
+        </span>
       </template>
 
       <template #cell(actions)="{ item }">
@@ -187,7 +204,7 @@ export default {
     </b-table>
 
     <settings-create-holder
-      v-if="shopCreateModal"
+      v-if="showCreateModal"
       :upsert-type="upsertType"
       :edit-item="editStorage"
       @close-creating-modal="closeCreatingClientTypeModal"

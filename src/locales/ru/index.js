@@ -1,4 +1,5 @@
 export default {
+  color: "Цвет",
   statuses: {
     title: "Статусы",
     add: "Добавить статус",
@@ -7,6 +8,7 @@ export default {
   holders: {
     title: "Держатели",
     add: "Добавить держателей",
+    singular: "Держатель",
   },
   home: {
     title: "Главная",

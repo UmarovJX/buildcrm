@@ -1,7 +1,6 @@
 <script>
-// import { debounce } from "@/util/reusable";
-// import { symbolLatinToCyrillic } from "@/util/language-helper";
 import { makeProp } from "@/util/props";
+import { isEmptyObject } from "@/util/inspect";
 import { settingsV3Api } from "@/services/settings";
 import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from "@/constants/props";
 import { XFormInput } from "@/components/ui-components/form-input";
@@ -24,7 +23,6 @@ export default {
       title: {
         uz: "",
         ru: "",
-        en: "",
       },
       type: "",
       color: "",
@@ -36,7 +34,6 @@ export default {
       title: {
         uz: "",
         ru: "",
-        en: "",
       },
       type: "",
       color: {
@@ -72,12 +69,21 @@ export default {
   // },
   created() {
     if (this.upsertType === "edit") {
-      this.fulfillIcon();
+      this.setEditData();
     } else {
       this.activateIcon();
     }
   },
   methods: {
+    setEditData() {
+      if (isEmptyObject(this.editItem)) {
+        return;
+      }
+
+      this.status.title = this.editItem.title;
+      this.status.type = this.editItem.type;
+      this.status.color = this.editItem.color;
+    },
     closeCreatingModal() {
       this.clearForm();
       this.$emit("close-creating-modal");
@@ -96,15 +102,13 @@ export default {
       }
     },
     async applyNewClientType() {
-      const isSatisfied = await this.$refs[
-        "creating-status-observer"
-      ].validate();
+      const isSatisfied = await this.$refs["creating-observer"].validate();
       if (isSatisfied) {
         this.startLoading();
         try {
           await settingsV3Api.statuses().create({
-            title: this.status.title,
             type: this.status.type,
+            title: this.status.title,
             color: this.status.color.hex,
           });
           this.clearForm();
@@ -117,16 +121,14 @@ export default {
       }
     },
     async editClientType() {
-      const isSatisfied = await this.$refs[
-        "creating-status-observer"
-      ].validate();
+      const isSatisfied = await this.$refs["creating-observer"].validate();
       if (isSatisfied) {
+        this.startLoading();
         try {
-          this.startLoading();
           const response = await settingsV3Api.statuses().update({
             id: this.editItem.id,
-            title: this.status.title,
             type: this.status.type,
+            title: this.status.title,
             color: this.status.color.hex,
           });
           this.clearForm();
@@ -139,7 +141,7 @@ export default {
       }
     },
     clearForm() {
-      this.status = { ...this.clientForm };
+      this.client = { ...this.clientForm };
     },
   },
 };
@@ -156,8 +158,9 @@ export default {
     :apply-button-loading="applyButtonLoading"
     :modal-container-style="{
       'max-width': '960px',
+      'max-height': '720px',
       width: '75%',
-      height: 'auto',
+      height: '100%',
       overflowY: 'scroll',
     }"
     @close="closeCreatingModal"
@@ -178,7 +181,7 @@ export default {
       <color-picker-swatches v-model="status.color" class="w-100" />
 
       <validation-observer
-        ref="creating-status-observer"
+        ref="creating-observer"
         class="client-type-creating-body"
       >
         <!--  ? STATUS TITLE UZ     -->
@@ -187,6 +190,7 @@ export default {
           name="last-name-uz-provider"
           rules="required|min:3"
           v-slot="{ errors }"
+          class="title-uz-provider"
         >
           <x-form-input
             type="text"
@@ -205,6 +209,7 @@ export default {
           name="last-name-ru-provider"
           rules="required|min:3"
           v-slot="{ errors }"
+          class="title-ru-provider"
         >
           <x-form-input
             type="text"
@@ -217,23 +222,23 @@ export default {
           </span>
         </validation-provider>
 
-        <!--  ? STATUS TITLE ENG     -->
-        <validation-provider
-          ref="clientTypeNameVProvider"
-          name="name-uz-provider"
-          rules="required|min:3"
-          v-slot="{ errors }"
-        >
-          <x-form-input
-            type="text"
-            :placeholder="`${$t('title')} (${$t('placeholder_eng')})`"
-            class="w-100"
-            v-model="status.title.en"
-          />
-          <span class="error__provider" v-if="errors[0]">
-            {{ errors[0].replace("name-uz-provider", $t("title")) }}
-          </span>
-        </validation-provider>
+        <!--        &lt;!&ndash;  ? STATUS TITLE ENG     &ndash;&gt;-->
+        <!--        <validation-provider-->
+        <!--          ref="clientTypeNameVProvider"-->
+        <!--          name="name-uz-provider"-->
+        <!--          rules="required|min:3"-->
+        <!--          v-slot="{ errors }"-->
+        <!--        >-->
+        <!--          <x-form-input-->
+        <!--            type="text"-->
+        <!--            :placeholder="`${$t('title')} (${$t('placeholder_eng')})`"-->
+        <!--            class="w-100"-->
+        <!--            v-model="status.title.en"-->
+        <!--          />-->
+        <!--          <span class="error__provider" v-if="errors[0]">-->
+        <!--            {{ errors[0].replace("name-uz-provider", $t("title")) }}-->
+        <!--          </span>-->
+        <!--        </validation-provider>-->
 
         <!--  ? STATUS TYPE    -->
         <validation-provider
@@ -241,6 +246,7 @@ export default {
           name="status_type_provider"
           rules="required|min:3"
           v-slot="{ errors }"
+          class="status-type-provider"
         >
           <x-form-input
             type="text"
@@ -259,13 +265,28 @@ export default {
 
 <style lang="scss" scoped>
 .client-type-creating-body {
-  margin-top: 2rem;
-  margin-bottom: 3rem;
+  margin-top: 1rem;
+  margin-bottom: 1em;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   font-family: Inter, sans-serif;
   color: var(--gray-600);
+  //grid-template-areas:
+  //  "titleUz titleRu"
+  //  "statusType statusType";
+  //
+  //.title-uz-provider {
+  //  grid-area: titleUz;
+  //}
+  //
+  //.title-ru-provider {
+  //  grid-area: titleRu;
+  //}
+  //
+  //.status-type-provider {
+  //  grid-area: statusType;
+  //}
 }
 
 .icons-collection-wrapper {
