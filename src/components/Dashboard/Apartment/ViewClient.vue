@@ -65,8 +65,8 @@ export default {
     },
 
     closeModal() {
-      // this.$bvModal.hide("modal-view-reserved-client");
-      // this.$refs["modal-view-reserved-client"].hide();
+      // this.$bvModal.hide("modal-view-reserved-status");
+      // this.$refs["modal-view-reserved-status"].hide();
       this.$root.$emit("bv::hide::modal", "modal-view-reserved-client");
       //this.$emit('CloseReserveInfo');
     },
@@ -78,7 +78,7 @@ export default {
   <div>
     <b-modal
       id="modal-view-reserved-client"
-      ref="modal-view-reserved-client"
+      ref="modal-view-reserved-status"
       :title="$t('apartments.list.view_client')"
       hide-footer
     >

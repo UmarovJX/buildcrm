@@ -103,7 +103,7 @@ export default {
             type: data.company.type.name.kr,
           },
 
-          client: {
+          status: {
             id: data.client.id,
             first_name: data.client.first_name,
             birth_day: data.client.birth_day,

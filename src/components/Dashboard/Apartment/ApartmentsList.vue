@@ -244,7 +244,7 @@ export default {
   methods: {
     ...mapActions(["fetchReserveClient"]),
     ...mapMutations(["updateSpecificApartment"]),
-    bookSelectedApartments(client) {
+    bookSelectedApartments(status) {
       const { values: apartments } = this.selected;
       const form = Object.assign({}, { ...client, apartments });
       delete form.apartment_id;

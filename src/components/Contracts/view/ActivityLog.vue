@@ -162,7 +162,7 @@ export default {
       this.replaceRouter({ ...query, limit });
       this.fetchActivityLog();
     },
-    getClientRole(client) {
+    getClientRole(status) {
       let language = "kirill";
       if (this.$i18n.locale === "uz") {
         language = "lotin";

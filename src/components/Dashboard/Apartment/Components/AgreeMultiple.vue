@@ -1134,7 +1134,7 @@ export default {
                     <h6 class="color-blue-darker">
                       Итого:
                       {{
-                        client.discount.id === "other"
+                        status.discount.id === "other"
                           ? apartment_edit.price
                           : getPrice()
                             | number("0,0.00", {
@@ -1176,7 +1176,7 @@ export default {
                         class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start"
                       >
                         <div class="h6 mb-0">
-                          {{ client.discount.prepay.toFixed(2) }}%
+                          {{ status.discount.prepay.toFixed(2) }}%
                         </div>
                       </div>
                     </div>
@@ -1239,7 +1239,7 @@ export default {
                         class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start"
                       >
                         <div class="h6 mb-0">
-                          {{ client.discount.prepay.toFixed(2) }}%
+                          {{ status.discount.prepay.toFixed(2) }}%
                         </div>
                       </div>
                     </div>
@@ -1263,7 +1263,7 @@ export default {
           >
             <tbody class="m-0 p-0">
               <!--                            <tr>-->
-              <!--                                <td class="px-0 py-2">Скидка - {{ client.discount.discount }}%</td>-->
+              <!--                                <td class="px-0 py-2">Скидка - {{ status.discount.discount }}%</td>-->
               <!--                                <td class="px-0 py-2 text-right">{{ getDiscount() | number('0,0.00', { 'thousandsSeparator': ' ', 'decimalSeparator': ',' }) }} {{ $t('ye') }}</td>-->
               <!--                            </tr>-->
 
@@ -1356,7 +1356,7 @@ export default {
 
                 <td>
                   {{
-                    client.discount.id === "other" && month == 0
+                    status.discount.id === "other" && month == 0
                       ? getTotalOther()
                       : getPrepay()
                         | number("0,0.00", {

@@ -38,7 +38,7 @@ export default {
     BaseCloseIcon,
     // "filter-form": Filter,
     "reserve-add": ReserveAdd,
-    // "view-client": ViewClient,
+    // "view-status": ViewClient,
     "edit-modal": EditApartment,
     // "info-manager-modal": InfoManager,
     // "agree-modal": AgreeMultiple,
@@ -448,7 +448,7 @@ export default {
       this.apartment_preview = apartment;
       this.order_id = apartment.order.id;
       // this.fetchReserveClient(this).then(() => {
-      //     this.$root.$emit("bv::show::modal", "modal-view-reserved-client");
+      //     this.$root.$emit("bv::show::modal", "modal-view-reserved-status");
       // });
     },
 
@@ -870,11 +870,11 @@ export default {
       <!--            :filtered="filter"-->
       <!--        ></filter-form>-->
 
-      <!--        <view-client-->
+      <!--        <view-status-->
       <!--            v-if="info_reserve"-->
       <!--            @CancelReserve="CloseReserveInfo"-->
       <!--            :apartment-data="apartment_preview"-->
-      <!--        ></view-client>-->
+      <!--        ></view-status>-->
 
       <edit-modal
         v-if="editPermission"

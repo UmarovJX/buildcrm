@@ -39,7 +39,7 @@ export default {
   methods: {
     ...mapActions(["fetchClients", "fetchReserveClient", "fetchClientsSearch"]),
 
-    ReserveInfo(client) {
+    ReserveInfo(status) {
       this.info_reserve = true;
       this.apartment_preview = {
         id: client.apartment_id,
@@ -48,7 +48,7 @@ export default {
       this.client_id = client.id;
 
       this.fetchReserveClient(this);
-      // this.$bvModal.show('modal-view-client');
+      // this.$bvModal.show('modal-view-status');
     },
 
     PageCallBack(pageNum) {
@@ -108,7 +108,7 @@ export default {
       });
     },
 
-    DeleteClient(client) {
+    DeleteClient(status) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text"),
@@ -239,7 +239,7 @@ export default {
             </tr>
 
             <tr
-              v-for="(client, index) in getClients"
+              v-for="(status, index) in getClients"
               :key="index"
               :class="[
                 client.status === 'booking' ? 'table-warning' : '',
@@ -247,17 +247,17 @@ export default {
               ]"
             >
               <td class="text-center">
-                {{ client.contract_number }}
+                {{ status.contract_number }}
               </td>
               <td>
-                {{ client.first_name }} {{ client.last_name }}
-                {{ client.second_name }}
+                {{ status.first_name }} {{ status.last_name }}
+                {{ status.second_name }}
               </td>
-              <td>+{{ client.phone }}</td>
+              <td>+{{ status.phone }}</td>
               <td>
                 <span v-if="client.price_apartment">
                   {{
-                    client.price_apartment
+                    status.price_apartment
                       | number("0,0.00", {
                         thousandsSeparator: " ",
                         decimalSeparator: ",",
@@ -269,18 +269,18 @@ export default {
 
               <td>
                 <span v-if="client.apartment_id">
-                  {{ client.apartment.number }}
+                  {{ status.apartment.number }}
                 </span>
               </td>
               <td>
                 <small v-if="client.status == 'cancelled'">{{
-                  client.status | getStatus("", "")
+                  status.status | getStatus("", "")
                 }}</small>
                 <small v-else>{{
-                  client.status
+                  status.status
                     | getStatus(
-                      $moment(client.buyed_date).format("DD.MM.YYYY"),
-                      $moment(client.apartment.booking_date).format(
+                      $moment(status.buyed_date).format("DD.MM.YYYY"),
+                      $moment(status.apartment.booking_date).format(
                         "DD.MM.YYYY"
                       )
                     )

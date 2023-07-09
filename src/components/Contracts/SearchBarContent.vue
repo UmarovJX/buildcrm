@@ -101,7 +101,7 @@ export default {
             date_types,
           } = response.data;
           this.objectOptions = objects;
-          for (let [idx, client] of Object.entries(clientTypes)) {
+          for (let [idx, status] of Object.entries(clientTypes)) {
             this.clientTypeOptions.push({
               value: client.id,
               text: client.name,

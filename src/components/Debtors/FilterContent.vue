@@ -253,8 +253,8 @@ export default {
           @change="changeTypeOfView"
         />
         <!--                <bootstrap-select-->
-        <!--                    ref="client-type-select"-->
-        <!--                    class="client-type"-->
+        <!--                    ref="status-type-select"-->
+        <!--                    class="status-type"-->
         <!--                    :default-value="defaultTypeOfView"-->
         <!--                    :options="viewTypes"-->
         <!--                    @select="changeTypeOfView"-->
@@ -295,7 +295,7 @@ export default {
           @input="setFilterPrice"
         />
         <!--        <bootstrap-select-->
-        <!--            :class="{ 'client-type-selection' : !filter.client_type_id }"-->
+        <!--            :class="{ 'status-type-selection' : !filter.client_type_id }"-->
         <!--            :options="clientTypes"-->
         <!--            :default-value="filter.client_type_id"-->
         <!--            @select="(newValue) => filter.client_type_id = newValue"-->

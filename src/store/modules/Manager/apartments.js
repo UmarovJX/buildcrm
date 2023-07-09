@@ -1,4 +1,4 @@
-// import router from '../../../routes'
+// import router from '../../../settings.routes.js'
 import api from "@/services/api";
 
 export default {

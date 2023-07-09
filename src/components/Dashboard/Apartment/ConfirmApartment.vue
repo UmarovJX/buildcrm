@@ -522,7 +522,7 @@ export default {
           // if(this.contract.discount_amount > 0) {
           //   console.log("DDD " + this.contract.discount_amount)
 
-          // if (this.contract.step === 1 && this.client.discount.prepay !== 100) {
+          // if (this.contract.step === 1 && this.status.discount.prepay !== 100) {
           // formData.append("months", this.month);
           // }
 
@@ -744,7 +744,7 @@ export default {
               </div>
               <!-- Изменить дата договора END -->
 
-              <!--  client form -->
+              <!--  status form -->
               <div class="col-md-12">
                 <ClientInputConfirm
                   :client="client"

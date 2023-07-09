@@ -131,7 +131,7 @@ export default {
       // console.log(type)
       // console.log(event)
 
-      // console.log(this.client.first_name.lotin.length)
+      // console.log(this.status.first_name.lotin.length)
       switch (type) {
         case "first_name":
           if (this.client.first_name.lotin.length === 0) {
@@ -494,7 +494,7 @@ export default {
       </validation-provider>
     </div>
 
-    <!-- client.birth_day -->
+    <!-- status.birth_day -->
     <div class="col-md-4">
       <validation-provider
         :name="`'${$t('apartments.agree.birth_day')}'`"
@@ -744,7 +744,7 @@ export default {
       <hr />
     </div>
 
-    <!-- client.phone -->
+    <!-- status.phone -->
     <div class="col-md-4">
       <validation-provider
         :name="`'${$t('apartments.agree.phone')}'`"
@@ -772,7 +772,7 @@ export default {
       </validation-provider>
     </div>
 
-    <!-- client.other_phone -->
+    <!-- status.other_phone -->
     <div class="col-md-4">
       <div class="mb-3">
         <label class="d-block" for="other_phone">{{

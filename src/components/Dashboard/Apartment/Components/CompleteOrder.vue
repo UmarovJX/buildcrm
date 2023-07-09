@@ -1093,7 +1093,7 @@ export default {
                     >
                       <span class="table-sm-width">
                         {{
-                          client.discount.id === "other" && month == 0
+                          status.discount.id === "other" && month == 0
                             ? getTotalOther()
                             : getPrepay()
                               | number("0,0.00", {
@@ -1324,25 +1324,25 @@ export default {
                     <tr>
                       <td class="px-0 py-2">Номер паспорта</td>
                       <td class="px-0 py-2 text-right">
-                        {{ client.passport_series }}
+                        {{ status.passport_series }}
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2">Место выдачи паспорта</td>
                       <td class="px-0 py-2 text-right">
-                        {{ client.issued_by_whom }}
+                        {{ status.issued_by_whom }}
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2">Дата выпуска пасспорта</td>
                       <td class="px-0 py-2 text-right">
-                        {{ client.date_of_issue }}
+                        {{ status.date_of_issue }}
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2">Дата рождения</td>
                       <td class="px-0 py-2 text-right">
-                        {{ client.birth_day }}
+                        {{ status.birth_day }}
                       </td>
                     </tr>
                     <tr>
@@ -1351,21 +1351,21 @@ export default {
                         class="px-0 py-2 text-right"
                         :title="`${client.last_name.kirill} ${client.first_name.kirill} ${client.second_name.kirill}`"
                       >
-                        {{ client.last_name.lotin }}
-                        {{ client.first_name.lotin }}
-                        {{ client.second_name.lotin }}
+                        {{ status.last_name.lotin }}
+                        {{ status.first_name.lotin }}
+                        {{ status.second_name.lotin }}
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2">Телефон номер</td>
                       <td class="px-0 py-2 text-right">
-                        {{ client.phone }}
+                        {{ status.phone }}
                       </td>
                     </tr>
                     <tr>
                       <td class="px-0 py-2">Дополнительный номер</td>
                       <td class="px-0 py-2 text-right">
-                        {{ client.other_phone }}
+                        {{ status.other_phone }}
                       </td>
                     </tr>
                   </tbody>
@@ -1388,7 +1388,7 @@ export default {
                 <h6 class="color-blue-darker mb-0">
                   Цена продажи:
                   {{
-                    client.discount.id === "other"
+                    status.discount.id === "other"
                       ? apartment_edit.price
                       : getApartmentItem.price
                         | number("0,0.00", {
@@ -1496,7 +1496,7 @@ export default {
                         class="col-md-2 pl-0 d-flex align-items-center justify-content-start"
                       >
                         <div class="h6 mb-0">
-                          {{ client.discount.prepay.toFixed(2) }}%
+                          {{ status.discount.prepay.toFixed(2) }}%
                         </div>
                       </div>
                     </div>

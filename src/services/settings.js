@@ -1,4 +1,4 @@
-import { axiosV1CRM, axiosV2 } from "@/services/core/base";
+import { axiosBase, axiosV1CRM, axiosV2 } from "@/services/core/base";
 import Core from "@/services/core/index";
 
 class Settings extends Core {
@@ -101,4 +101,33 @@ class SettingsV2 extends Core {
   }
 }
 
+class SettingsV3 extends Core {
+  constructor(
+    axios = axiosBase({
+      endpoint: "/v3/api",
+    })
+  ) {
+    super(axios);
+  }
+
+  base(endpoint = "") {
+    return {
+      create: (b) => this.post(endpoint + "/create", b),
+      update: (b) => this.post(endpoint + "/update", b),
+      remove: (b) => this.post(endpoint + "/remove", b),
+      findOne: (b) => this.post(endpoint + "/findOne", b),
+      findAll: (b) => this.post(endpoint + "/findAll", b),
+    };
+  }
+
+  holders(endpoint = "holders") {
+    return this.base(endpoint);
+  }
+
+  statuses(endpoint = "statuses") {
+    return this.base(endpoint);
+  }
+}
+
 export default { Settings, SettingsV2 };
+export const settingsV3Api = new SettingsV3();

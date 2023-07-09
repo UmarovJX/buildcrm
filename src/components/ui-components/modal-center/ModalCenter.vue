@@ -29,6 +29,10 @@ export default {
     showCloseButton: makeProp(PROP_TYPE_BOOLEAN, true),
     footerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
     applyButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    modalContainerClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    modalContainerStyle: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    modalBodyStyle: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    modalBodyClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
     cancelButtonClass: makeProp(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
     showExitButton: makeProp(PROP_TYPE_BOOLEAN, true),
   },
@@ -69,7 +73,11 @@ export default {
   <transition name="x-modal">
     <div class="x-modal-mask">
       <div class="x-modal-wrapper">
-        <div class="x-modal-container">
+        <div
+          class="x-modal-container"
+          :class="modalContainerClass"
+          :style="modalContainerStyle"
+        >
           <div class="x-modal-header">
             <!--?      HEADER LEFT SLOT        -->
             <slot name="header-left" />
@@ -94,7 +102,11 @@ export default {
             </x-circular-background>
           </div>
 
-          <div class="x-modal-body">
+          <div
+            class="x-modal-body"
+            :style="modalBodyStyle"
+            :class="modalBodyClass"
+          >
             <!--?      BODY SLOT        -->
             <slot name="body"></slot>
 

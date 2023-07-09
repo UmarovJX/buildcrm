@@ -1,4 +1,13 @@
 export default {
+  statuses: {
+    title: "Статусы",
+    add: "Добавить статус",
+    pick_color_for_status: "Выберите цвет для статуса",
+  },
+  holders: {
+    title: "Держатели",
+    add: "Добавить держателей",
+  },
   home: {
     title: "Главная",
   },
@@ -22,6 +31,7 @@ export default {
   add_country: "Добавить страну",
   placeholder_uz: "На Узбекском",
   placeholder_ru: "На Русском",
+  placeholder_eng: "На Английском",
   has_the_powers_of_vip: "Имеет полномочия V.I.P.",
   add_type: "Добавить тип",
   normal_client: "Oddiy mijoz",
@@ -100,6 +110,7 @@ export default {
     activate_all: "Активировать все",
     placeholder_uz: "На Узбекском",
     placeholder_ru: "На Русском",
+    placeholder_eng: "На Английском",
     slug: "Префикс имени группы",
     titles: {
       general: "Общие",
@@ -116,6 +127,36 @@ export default {
       payment_account: "Счет",
       branches: "Филиалы",
       release_note: "Премичание к релизу",
+      settings: "Настройки",
+    },
+    settings: {
+      holders: {
+        create: "Право на создание держателей",
+        update: "Право на редактирование держателей",
+        delete: "Право на удаление держателей",
+        view: "Право на просмотр страницы держателей",
+      },
+      statuses: {
+        create: "Право на создание статусов",
+        update: "Право на редактирование статусов",
+        delete: "Право на удаление статусов",
+        view: "Право просмотра страницы статусов",
+      },
+      client_types: {
+        create: "Право на создание типов клиентов",
+        update: "Право на редактирование типов клиентов",
+        delete: "Право на удаление типов клиентов",
+        view: "Право просмотра страницы типов клиентов",
+      },
+      client_countries: {
+        create: "Право на создание стран клиента",
+        update: "Право на редактирование стран клиента",
+        delete: "Право на удаление стран клиента",
+        view: "Право просмотра страницы стран клиента",
+      },
+      contracts: {
+        main_manager: "Главный менеджер",
+      },
     },
     general: {
       role_name_ru: "Название роли (RU)",
@@ -722,6 +763,7 @@ export default {
 
       placeholder_uz: "На Узбекском",
       placeholder_ru: "На Русском",
+      placeholder_eng: "На Английском",
 
       slug: "Префикс имени группы",
 

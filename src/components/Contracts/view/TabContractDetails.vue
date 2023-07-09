@@ -104,7 +104,7 @@ export default {
     getStatus(status) {
       return this.$t(`contracts.status.${status}`);
     },
-    getClientName(client) {
+    getClientName(status) {
       let language = "kirill";
       if (this.$i18n.locale === "uz") {
         language = "lotin";

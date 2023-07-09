@@ -78,7 +78,7 @@ export default {
       this.apartment_preview = apartment;
       this.client_id = apartment.client_id;
       this.fetchReserveClient(this);
-      // this.$bvModal.show('modal-view-client');
+      // this.$bvModal.show('modal-view-status');
     },
 
     CloseReserveInfo() {

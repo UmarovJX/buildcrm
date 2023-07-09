@@ -325,7 +325,7 @@ export default {
       await api.orders
         .fetchOrderClient(this.sidebarApartment.order.id)
         .then((response) => {
-          const client = response.data;
+          const status = response.data;
           this.$swal({
             title: this.$t("sweetAlert.title"),
             text: this.$t("sweetAlert.text_cancel_reserve"),

@@ -34,7 +34,7 @@ export const isPrimitive = (value) =>
 export const isArray = (value) => Array.isArray(value);
 
 // Quick object check
-// This is primarily used to tell Objects from primitive values
+// This is primarily used to tell objects from primitive values
 // when we know the value is a JSON-compliant type
 // Note object could be a complex type like array, Date, etc.
 export const isObject = (obj) => obj !== null && typeof obj === "object";

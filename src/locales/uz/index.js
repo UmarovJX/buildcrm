@@ -1,4 +1,13 @@
 export default {
+  statuses: {
+    title: "Statuslar",
+    add: "Status qo'shish",
+    pick_color_for_status: "Status uchun rangni tanlang",
+  },
+  holders: {
+    title: "Egalari",
+    add: "Ega qo'shish",
+  },
   home: {
     title: "Asosiy",
   },
@@ -22,6 +31,7 @@ export default {
   add_country: "Mamlakat qo'shish",
   placeholder_uz: "O'zbek tilida",
   placeholder_ru: "Rus tilida",
+  placeholder_eng: "Ingliz tilida",
   has_the_powers_of_vip: "V.I.P vakolatlariga ega.",
   add_type: "Tur qo'shish",
   normal_client: "Oddiy mijoz",
@@ -109,6 +119,36 @@ export default {
       payment_account: "Hisob",
       branches: "Filiallar",
       release_note: "Reliz qaydlar",
+      settings: "Sozlamalar",
+    },
+    settings: {
+      holders: {
+        create: "Ega yaratish huquqi",
+        update: "Ega tahrirlash huquqi",
+        delete: "Ega o'chirish huquqi",
+        view: "Egalar sahifasini ko'rish huquqi",
+      },
+      statuses: {
+        create: "Status yaratish huquqi",
+        update: "Status tahrir qilish huquqi",
+        delete: "Status o'chirish huquqi",
+        view: "Statuslar sahifasini ko'rish huquqi",
+      },
+      client_types: {
+        create: "Mijoz turlarini yaratish huquqi",
+        update: "Mijoz turlarini tahrirlash huquqi",
+        delete: "Mijoz turlarini o'chirish huquqi",
+        view: "Mijoz turlari sahifasini ko'rish huquqi",
+      },
+      client_countries: {
+        create: "Mijoz mamlakatlarini yaratish huquqi",
+        update: "Mijoz mamlakatlarini tahrir qilish huquqi",
+        delete: "Mijozning mamlakatlarini o'chirish huquqi",
+        view: "Mijoz mamlakatlari sahifasini ko'rish huquqi",
+      },
+      contracts: {
+        main_manager: "Bosh menejer",
+      },
     },
     general: {
       role_name_ru: "Rol (RU)",

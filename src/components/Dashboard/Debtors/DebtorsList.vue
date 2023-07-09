@@ -9,7 +9,7 @@ export default {
   components: {
     DatePicker,
     BaseBreadCrumb,
-    // 'view-client': ViewClient
+    // 'view-status': ViewClient
   },
 
   watch: {

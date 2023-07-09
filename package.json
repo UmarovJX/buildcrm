@@ -36,6 +36,7 @@
     "sass-loader": "^10",
     "swiper": "5.4.5",
     "text-mask-addons": "^3.8.0",
+    "tinycolor2": "^1.6.0",
     "uuid": "^8.3.2",
     "v-mask": "^2.3.0",
     "vee-validate": "^3.4.14",
@@ -65,15 +66,15 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@rushstack/eslint-patch": "^1.1.4",
     "@vue/cli-plugin-babel": "^4.5.12",
     "@vue/cli-service": "^4.5.12",
-    "sass": "^1.52.0",
-    "vue-template-compiler": "^2.6.12",
-    "@rushstack/eslint-patch": "^1.1.4",
+    "@vue/eslint-config-prettier": "^7.0.0",
     "eslint": "^8.22.0",
     "eslint-plugin-vue": "^9.3.0",
     "prettier": "^2.7.1",
-    "@vue/eslint-config-prettier": "^7.0.0"
+    "sass": "^1.52.0",
+    "vue-template-compiler": "^2.6.12"
   },
   "browserslist": [
     "> 1%",

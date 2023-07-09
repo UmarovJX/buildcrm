@@ -19,9 +19,9 @@ import ObjStore from "./components/Dashboard/Objects/Store";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
 import Clients from "./components/Dashboard/Clients/Index";
 import Users from "./components/Dashboard/Users/Index";
-import Roles from "./components/Dashboard/Roles/Index";
-import RolesUpdate from "./components/Dashboard/Roles/Update";
-import RolesStore from "./components/Dashboard/Roles/Store";
+import Roles from "./views/roles/Index";
+import RolesUpdate from "./views/roles/Update";
+import RolesStore from "./views/roles/Store";
 import TypePlan from "./components/Dashboard/TypePlan/Index";
 import TypePlanList from "./components/Dashboard/TypePlan/List";
 import TypePlanEdit from "./components/Dashboard/TypePlan/Edit.vue";
@@ -29,29 +29,29 @@ import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment.
 import EditApartment from "./components/Dashboard/Apartment/EditApartment";
 import Companies from "./components/Dashboard/Companies/Index";
 import CompanyDetails from "./components/Dashboard/Companies/CompanyDetails";
-// import Settings from "./components/Dashboard/Settings/Index";
+// import settings from "./components/Dashboard/settings/Index";
 import Promo from "./components/Dashboard/Objects/Promo/Index";
 import UserSettings from "./views/UserSettings";
-import Branches from "@/views/Branches/BranchesPage";
-import CreateBranchPage from "@/views/Branches/CreateBranchPage";
-import EditBranchContent from "@/views/Branches/EditBranchContent";
+import Branches from "@/views/branches/BranchesPage";
+import CreateBranchPage from "@/views/branches/CreateBranchPage";
+import EditBranchContent from "@/views/branches/EditBranchContent";
 import DealDocsTemplate from "@/components/Dashboard/Objects/DealDocsTemplate";
 import ImportPayments from "@/components/Contracts/view/ImportPayments";
-import Contracts from "@/views/Contracts/Index";
-import ContractView from "@/views/Contracts/View/Index";
-import ApartmentView from "@/views/Objects/Apartments/View/Index";
-import ObjectsView from "@/views/Objects/View/Index";
-import Debtors from "@/views/Debtors/Index";
-import CheckoutV2 from "@/views/CheckoutV2/Index";
-import ReContract from "@/views/ReContract/Index";
+import Contracts from "@/views/contracts/Index";
+import ContractView from "@/views/contracts/View/Index";
+import ApartmentView from "@/views/objects/Apartments/View/Index";
+import ObjectsView from "@/views/objects/View/Index";
+import Debtors from "@/views/debtors/Index";
+import CheckoutV2 from "@/views/checkoutV2/Index";
+import ReContract from "@/views/reContract/Index";
 import AppLayout from "@/views/AppLayout";
-import Documentation from "@/views/Documentation/documentation";
+import Documentation from "@/views/documentation/documentation";
 import Checkout from "@/views/Checkout";
-import ApartmentContract from "@/views/Objects/Apartments/View/ContractTab";
-import ApartmentCommentTab from "@/views/Objects/Apartments/View/CommentTab";
-import ReleaseNote from "@/views/ReleaseNote/Index";
-import ImportDebtorsList from "@/views/Debtors/ImportDebtorsList";
-import CheckoutContractReview from "@/views/CheckoutV2/views/CheckoutContractReview.vue";
+import ApartmentContract from "@/views/objects/Apartments/View/ContractTab";
+import ApartmentCommentTab from "@/views/objects/Apartments/View/CommentTab";
+import ReleaseNote from "@/views/releaseNote/Index";
+import ImportDebtorsList from "@/views/debtors/ImportDebtorsList";
+import CheckoutContractReview from "@/views/checkoutV2/views/CheckoutContractReview.vue";
 
 /*  CONTRACT VIEW COMPONENTS */
 import TabPaymentSchedule from "@/components/Contracts/view/TabPaymentSchedule";
@@ -60,9 +60,9 @@ import TabClientDetails from "@/components/Contracts/view/TabClientDetails";
 import TabContractDetails from "@/components/Contracts/view/TabContractDetails";
 import TabReContractDetails from "@/components/Contracts/view/TabReContractDetails";
 import ActivityLog from "@/components/Contracts/view/ActivityLog";
-import Settings from "@/views/Settings/Index";
-import FastPlanList from "@/views/Objects/FastPlan/List";
-import AddDrawing from "@/views/Objects/FastPlan/AddDrawing.vue";
+import Settings from "@/views/settings/Index";
+import FastPlanList from "@/views/objects/FastPlan/List";
+import AddDrawing from "@/views/objects/FastPlan/AddDrawing.vue";
 import Editor from "@/views/Editor.vue";
 
 const routes = [
@@ -186,13 +186,6 @@ const routes = [
         meta: {
           requiresAuth: "objects",
         },
-      },
-
-      {
-        /* SETTINGS */
-        name: "settings",
-        path: "/settings",
-        component: Settings,
       },
 
       {
@@ -558,78 +551,80 @@ const routes = [
       {
         path: "/documentation/icons",
         name: "icons",
-        component: () => import("@/views/Documentation/icons"),
+        component: () => import("@/views/documentation/icons"),
       },
       {
         path: "/documentation/sidebar",
         name: "sidebar",
-        component: () => import("@/views/Documentation/Sidebar"),
+        component: () => import("@/views/documentation/Sidebar"),
       },
       {
         path: "/documentation/topbar",
         name: "topbar",
-        component: () => import("@/views/Documentation/Topbar"),
+        component: () => import("@/views/documentation/Topbar"),
       },
       {
         path: "/documentation/buttons",
         name: "buttons",
-        component: () => import("@/views/Documentation/Buttons"),
+        component: () => import("@/views/documentation/Buttons"),
       },
       {
         path: "/documentation/text-fields",
         name: "text-fields",
-        component: () => import("@/views/Documentation/TextFields"),
+        component: () => import("@/views/documentation/TextFields"),
       },
       {
         path: "/documentation/checkbox",
         name: "checkbox",
-        component: () => import("@/views/Documentation/Checkbox"),
+        component: () => import("@/views/documentation/Checkbox"),
       },
       {
         path: "/documentation/loader",
         name: "loader",
-        component: () => import("@/views/Documentation/Loader"),
+        component: () => import("@/views/documentation/Loader"),
       },
       {
         path: "/documentation/notification",
         name: "notification",
-        component: () => import("@/views/Documentation/Notification"),
+        component: () => import("@/views/documentation/Notification"),
       },
       {
         path: "/documentation/calendar",
         name: "calendar",
-        component: () => import("@/views/Documentation/Calendar"),
+        component: () => import("@/views/documentation/Calendar"),
       },
       {
         path: "/documentation/search",
         name: "search",
-        component: () => import("@/views/Documentation/Search"),
+        component: () => import("@/views/documentation/Search"),
       },
       {
         path: "/documentation/tooltip",
         name: "tooltip",
-        component: () => import("@/views/Documentation/Tooltip"),
+        component: () => import("@/views/documentation/Tooltip"),
       },
       {
         path: "/documentation/note",
         name: "note",
-        component: () => import("@/views/Documentation/Note"),
+        component: () => import("@/views/documentation/Note"),
       },
       {
         path: "/documentation/checkmate",
         name: "checkmate",
-        component: () => import("@/views/Documentation/Checkmate"),
+        component: () => import("@/views/documentation/Checkmate"),
       },
       {
         path: "/documentation/tabs",
         name: "tabs",
-        component: () => import("@/views/Documentation/Tabs"),
+        component: () => import("@/views/documentation/Tabs"),
       },
       {
         path: "/documentation/actions",
         name: "actions",
-        component: () => import("@/views/Documentation/Actions"),
+        component: () => import("@/views/documentation/Actions"),
       },
+
+      ...settingsRoutes,
 
       {
         /* 404 PAGE */
@@ -652,7 +647,8 @@ const router = new VueRouter({
 
 let user = null;
 import Permission from "@/permission";
-import ChooseApartments from "@/views/Objects/FastPlan/ChooseApartments.vue";
+import ChooseApartments from "@/views/objects/FastPlan/ChooseApartments.vue";
+import settingsRoutes from "@/views/settings/settings.routes";
 
 router.beforeEach(async (to, from, next) => {
   const login = localStorage.getItem("auth__access__token");
