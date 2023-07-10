@@ -5,6 +5,7 @@ import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import SettingsCreateClient from "@/views/settings/components/SettingsCreateClient.vue";
 import api from "@/services/api";
+import SettingsPermission from "@/permission/settings.permission";
 
 export default {
   name: "SettingsClientTypes",
@@ -23,6 +24,12 @@ export default {
       clientTypes: {
         items: [],
         loading: false,
+      },
+      permission: {
+        view: SettingsPermission.getPermission("client_types.view"),
+        create: SettingsPermission.getPermission("client_types.create"),
+        edit: SettingsPermission.getPermission("client_types.edit"),
+        delete: SettingsPermission.getPermission("client_types.delete"),
       },
     };
   },
@@ -111,6 +118,7 @@ export default {
         {{ $t("client_types") }}
       </h3>
       <x-button
+        v-if="clientTypePermission.create"
         variant="secondary"
         text="add_type"
         :bilingual="true"
@@ -164,6 +172,7 @@ export default {
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
+            v-if="clientTypePermission.edit"
             @click="editClientType(item.id)"
             class="bg-violet-600"
           >
@@ -171,6 +180,7 @@ export default {
           </x-circular-background>
 
           <x-circular-background
+            v-if="clientTypePermission.delete"
             @click="deleteClientType(item.id)"
             class="bg-red-600"
           >

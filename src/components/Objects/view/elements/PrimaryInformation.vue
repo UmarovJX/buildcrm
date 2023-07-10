@@ -1,12 +1,12 @@
 <script>
-import PrimaryTabItem from "@/components/Objects/View/elements/PrimaryTabItem";
-import Calculator from "@/components/Objects/View/elements/Calculator";
+import PrimaryTabItem from "@/components/Objects/view/elements/PrimaryTabItem";
+import Calculator from "@/components/Objects/view/elements/Calculator";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import { formatToPrice } from "@/util/reusable";
 import { directive } from "vue-awesome-swiper";
 import "swiper/css/swiper.css";
-import PromoSection from "@/components/Objects/View/elements/PromoSection";
+import PromoSection from "@/components/Objects/view/elements/PromoSection";
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 

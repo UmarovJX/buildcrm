@@ -1,11 +1,11 @@
 <script>
 import { makeProp } from "@/util/props";
 import { isEmptyObject } from "@/util/inspect";
-import { settingsV3Api } from "@/services/settings";
 import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from "@/constants/props";
 import { XFormInput } from "@/components/ui-components/form-input";
 import { XModalCenter } from "@/components/ui-components/modal-center";
 import ColorPickerSwatches from "@/components/Elements/color-picker/ColorPickerSwatches.vue";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "SettingsCreateStatus",
@@ -106,7 +106,7 @@ export default {
       if (isSatisfied) {
         this.startLoading();
         try {
-          await settingsV3Api.statuses().create({
+          await v3ServiceApi.statuses().create({
             type: this.status.type,
             title: this.status.title,
             color: this.status.color.hex,
@@ -125,7 +125,7 @@ export default {
       if (isSatisfied) {
         this.startLoading();
         try {
-          const response = await settingsV3Api.statuses().update({
+          const response = await v3ServiceApi.statuses().update({
             id: this.editItem.id,
             type: this.status.type,
             title: this.status.title,

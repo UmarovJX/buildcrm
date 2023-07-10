@@ -1,5 +1,5 @@
 <script>
-import ApartmentComments from "@/components/Objects/View/elements/ApartmentComments";
+import ApartmentComments from "@/components/Objects/view/elements/ApartmentComments";
 import ApartmentsPermission from "@/permission/apartments";
 
 export default {

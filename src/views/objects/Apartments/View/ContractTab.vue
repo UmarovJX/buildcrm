@@ -4,22 +4,22 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import Reserve from "@/components/Dashboard/Apartment/Components/Reserve";
-import Calculator from "@/components/Objects/View/elements/Calculator";
+import Calculator from "@/components/Objects/view/elements/Calculator";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import { mapGetters, mapMutations } from "vuex";
-import PrimaryTabItem from "@/components/Objects/View/elements/PrimaryTabItem";
+import PrimaryTabItem from "@/components/Objects/view/elements/PrimaryTabItem";
 import { directive } from "vue-awesome-swiper";
 import "swiper/css/swiper.css";
 
-// import PromoSection from "@/components/objects/View/elements/PromoSection";
+// import PromoSection from "@/components/objects/view/elements/PromoSection";
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
 import PdfTemplate from "@/components/PdfTemplate";
 import { formatToPrice } from "@/util/reusable";
 import CheckoutPermission from "@/permission/checkout";
-// import BookedBlock from "@/views/objects/Apartments/View/BookedBlock";
-// import PeculiarityBox from "@/components/objects/View/elements/PeculiarityBox";
+// import BookedBlock from "@/views/objects/Apartments/view/BookedBlock";
+// import PeculiarityBox from "@/components/objects/view/elements/PeculiarityBox";
 
 export default {
   name: "ApartmentView",

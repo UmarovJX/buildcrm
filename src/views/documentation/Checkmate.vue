@@ -1,6 +1,6 @@
 <script>
 import DocHeader from "@/views/documentation/DocHeader";
-import ApartmentBox from "@/components/Objects/View/Tabs/ApartmentBox";
+import ApartmentBox from "@/components/Objects/view/Tabs/ApartmentBox";
 
 export default {
   name: "Checkmate",

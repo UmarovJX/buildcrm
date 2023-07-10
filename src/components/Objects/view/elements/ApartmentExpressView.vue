@@ -1,5 +1,5 @@
 <script>
-import PrimaryInformation from "@/components/Objects/View/elements/PrimaryInformation";
+import PrimaryInformation from "@/components/Objects/view/elements/PrimaryInformation";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
@@ -12,8 +12,11 @@ import { mapGetters, mapMutations } from "vuex";
 import api from "@/services/api";
 import PdfTemplate from "@/components/PdfTemplate";
 import CheckoutPermission from "@/permission/checkout";
-import ApartmentComments from "@/components/Objects/View/elements/ApartmentComments";
+import ApartmentComments from "@/components/Objects/view/elements/ApartmentComments";
+import { XIcon } from "@/components/ui-components/material-icons";
 import ApartmentsPermission from "@/permission/apartments";
+import { isNUNEZ } from "@/util/inspect";
+import SettingsPermission from "@/permission/settings.permission";
 
 export default {
   name: "ApartmentExpressView",
@@ -30,6 +33,7 @@ export default {
     BaseEyeIcon,
     PdfTemplate,
     ApartmentComments,
+    XIcon,
   },
 
   /* PROPS */
@@ -91,6 +95,8 @@ export default {
       bookPermission: CheckoutPermission.getBookPermission(),
       checkoutPermission: CheckoutPermission.getCheckoutCheckPermission(),
       checkoutRootPermission: CheckoutPermission.getRootPermission(),
+      statusViewPms: SettingsPermission.getPermission("apartments.status.view"),
+      holderViewPms: SettingsPermission.getPermission("apartments.holder.view"),
     };
   },
 
@@ -211,6 +217,7 @@ export default {
 
   /* METHODS */
   methods: {
+    isNUNEZ,
     ...mapMutations(["setCalculationProperties"]),
     async getComments() {
       const { object } = this.$route.params;
@@ -320,6 +327,22 @@ export default {
       this.fetchSidebarItem();
       this.getComments();
     },
+    holderTooltipTitle(holder) {
+      let title = "";
+      if (holder?.last_name && holder.last_name.trim() !== "") {
+        title += holder.last_name;
+      }
+
+      if (holder?.first_name && holder.first_name.trim() !== "") {
+        title += " " + holder.first_name;
+      }
+
+      if (holder?.middle_name && holder.middle_name.trim() !== "") {
+        title += " " + holder.middle_name;
+      }
+
+      return title.trim();
+    },
     async cancelReservation() {
       this.appLoading = true;
       await api.orders
@@ -387,10 +410,12 @@ export default {
     id="apartment-express-view"
     :backdrop-variant="variant"
   >
-    <template #default="{ hide }">
+    <template #default="{}">
       <section v-if="hasApartment && !appLoading">
         <!--  HEAD    -->
-        <div class="head d-flex justify-content-between pdf-item">
+        <div
+          class="head d-flex justify-content-between align-items-center pdf-item"
+        >
           <span class="d-flex justify-content-center align-items-center">
             <span
               @click="hideApartmentSidebar"
@@ -404,11 +429,73 @@ export default {
             </span>
           </span>
           <span
-            class="apartment__status d-flex justify-content-center align-items-center"
-            :class="`status-${status}`"
+            class="ml-2 mr-2 cursor-pointer"
+            v-if="holderViewPms && isNUNEZ(sidebarApartment.holder)"
           >
-            {{ $t(`apartments.status.${status}`) }}
+            <x-icon
+              v-b-tooltip.hover
+              size="32"
+              name="person"
+              class="light-blue-500"
+              :title="holderTooltipTitle(sidebarApartment.holder)"
+            />
           </span>
+        </div>
+
+        <div class="d-flex w-100 justify-content-end">
+          <div class="d-flex" style="font-size: 12px">
+            <span
+              v-if="statusViewPms && isNUNEZ(sidebarApartment.status)"
+              style="
+                display: inline-flex;
+                height: 40px;
+                padding: 0 20px;
+                justify-content: center;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+                color: white;
+                border-radius: 28px;
+                white-space: nowrap;
+              "
+              :style="{
+                'background-color': sidebarApartment.status.color,
+                color:
+                  sidebarApartment.status.color === '#ffffff'
+                    ? '#000000'
+                    : '#ffffff',
+                'border-radius':
+                  statusViewPms && isNUNEZ(sidebarApartment.status)
+                    ? '28px 0 0 28px'
+                    : '28px',
+              }"
+            >
+              {{ sidebarApartment.status.title[$i18n.locale] }}
+            </span>
+            <span
+              class="apartment__status d-flex justify-content-center align-items-center"
+              :class="`status-${status}`"
+              style="
+                display: inline-flex;
+                height: 40px;
+                padding: 0 20px;
+                justify-content: center;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+                border-radius: 28px;
+                white-space: nowrap;
+              "
+              :style="{
+                'border-radius':
+                  statusViewPms && isNUNEZ(sidebarApartment.status)
+                    ? '0 28px 28px 0'
+                    : '28px',
+              }"
+            >
+              {{ $t(`apartments.status.${status}`) }}
+            </span>
+          </div>
         </div>
 
         <!--  MAIN    -->

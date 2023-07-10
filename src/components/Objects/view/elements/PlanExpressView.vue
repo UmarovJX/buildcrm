@@ -1,11 +1,11 @@
 <script>
-import PlanInformation from "@/components/Objects/View/elements/PlanInformation";
+import PlanInformation from "@/components/Objects/view/elements/PlanInformation";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 // import BaseButton from "@/components/Reusable/BaseButton";
 // import BaseLoading from "@/components/Reusable/BaseLoading";
 import VueHtml2pdf from "vue-html2pdf";
 import { mapGetters } from "vuex";
-import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
+import ApartmentExpressView from "@/components/Objects/view/elements/ApartmentExpressView";
 import api from "@/services/api";
 
 export default {

@@ -17,11 +17,18 @@ import BaseCheckboxModal from "@/components/Reusable/BaseCheckboxModal";
 // import AgreeMultiple from "@/components/Dashboard/Apartment/Components/AgreeMultiple";
 // import SuccessAgree from "@/components/Dashboard/Apartment/Components/SuccessAgree";
 import { orderApartment } from "@/util/apartment";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseInput from "@/components/Reusable/BaseInput";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseCloseIcon from "@/components/icons/BaseCloseIcon";
 import { XFormSelect } from "@/components/ui-components/form-select";
+import { XIcon } from "@/components/ui-components/material-icons";
+import StatusUpsert from "@/components/Objects/elements/StatusUpsert.vue";
+import HolderUpsert from "@/components/Objects/elements/HolderUpsert.vue";
+import SettingsPermission from "@/permission/settings.permission";
+import { isNull, isNUNEZ } from "@/util/inspect";
+import { keys } from "@/util/object";
 
 export default {
   name: "ObjectTable",
@@ -36,17 +43,115 @@ export default {
     BaseInput,
     BaseButton,
     BaseCloseIcon,
-    // "filter-form": Filter,
+    XIcon,
+    HolderUpsert,
+    StatusUpsert,
     "reserve-add": ReserveAdd,
-    // "view-status": ViewClient,
     "edit-modal": EditApartment,
-    // "info-manager-modal": InfoManager,
-    // "agree-modal": AgreeMultiple,
-    // "success-agree": SuccessAgree,
   },
 
   data() {
     const showByOptions = [];
+
+    const fields = [
+      {
+        key: "check",
+        // item: BaseCheckbox,
+      },
+      {
+        key: "number",
+        label: this.$t("object.sort.number_flat"),
+        sortable: true,
+      },
+      // {
+      //   key: "building.name",
+      //   label: "ЗДАНИЯ",
+      //   sortable: true,
+      // },
+      // {
+      //   key: "block.name",
+      //   label: "КОРПУС",
+      // },
+      // {
+      //   key: "is_promo",
+      //   label: this.$t('promo.in_promo'),
+      //   sortable: true,
+      // },
+      {
+        key: "floor",
+        label: this.$t("apartments.list.floor"),
+        sortable: true,
+      },
+      {
+        key: "entrance",
+        label: this.$t("apartments.list.entrance"),
+        sortable: true,
+      },
+      {
+        key: "rooms",
+        label: "Комнатность",
+        sortable: true,
+      },
+      {
+        key: "area",
+        label: this.$t("apartments.list.area"),
+        sortable: true,
+      },
+      {
+        key: "balcony",
+        label: this.$t("objects.create.plan.balcony_area"),
+        sortable: true,
+      },
+      // {
+      //   key: "price_area",
+      //   label: this.$t('apartments.list.price'),
+      //   sortable: true,
+      // },
+      {
+        key: "price",
+        label: this.$t("apartments.list.price"),
+        sortable: true,
+      },
+      // {
+      //   key: "price_currency",
+      //   label: this.$t('apartments.list.price'),
+      //   sortable: true,
+      // },
+      {
+        key: "status",
+        label: this.$t("apartments.list.status"),
+      },
+      {
+        key: "actions",
+        label: "",
+      },
+    ];
+    const holderEditPms = SettingsPermission.getPermission(
+      "apartments.holder.edit"
+    );
+    const holderViewPms = SettingsPermission.getPermission(
+      "apartments.holder.view"
+    );
+    const statusEditPms = SettingsPermission.getPermission(
+      "apartments.status.edit"
+    );
+    const statusViewPms = SettingsPermission.getPermission(
+      "apartments.status.view"
+    );
+
+    if (holderViewPms) {
+      fields.splice(1, 0, {
+        label: "",
+        key: "holder",
+      });
+    }
+
+    // if (statusViewPms) {
+    //   fields.splice(2, 0, {
+    //     label: "",
+    //     key: "settingsStatus",
+    //   });
+    // }
 
     for (let number = 10; number <= 50; number += 10) {
       showByOptions.push({
@@ -62,6 +167,16 @@ export default {
     }
 
     return {
+      holder: {
+        show: false,
+        editStorage: {},
+      },
+      status: {
+        show: false,
+        editStorage: {},
+      },
+      showSetHolderModal: false,
+      showSetStatusModal: false,
       showByValue,
       showByOptions,
       pagination: {},
@@ -73,80 +188,7 @@ export default {
       edit: false,
       check_all: false,
       chosen: 0,
-      fields: [
-        {
-          key: "check",
-          // item: BaseCheckbox,
-        },
-        {
-          key: "number",
-          label: this.$t("object.sort.number_flat"),
-          sortable: true,
-        },
-        // {
-        //   key: "building.name",
-        //   label: "ЗДАНИЯ",
-        //   sortable: true,
-        // },
-        // {
-        //   key: "block.name",
-        //   label: "КОРПУС",
-        // },
-        // {
-        //   key: "is_promo",
-        //   label: this.$t('promo.in_promo'),
-        //   sortable: true,
-        // },
-        {
-          key: "floor",
-          label: this.$t("apartments.list.floor"),
-          sortable: true,
-        },
-        {
-          key: "entrance",
-          label: this.$t("apartments.list.entrance"),
-          sortable: true,
-        },
-        {
-          key: "rooms",
-          label: "Комнатность",
-          sortable: true,
-        },
-
-        {
-          key: "area",
-          label: this.$t("apartments.list.area"),
-          sortable: true,
-        },
-        {
-          key: "balcony",
-          label: this.$t("objects.create.plan.balcony_area"),
-          sortable: true,
-        },
-        // {
-        //   key: "price_area",
-        //   label: this.$t('apartments.list.price'),
-        //   sortable: true,
-        // },
-        {
-          key: "price",
-          label: this.$t("apartments.list.price"),
-          sortable: true,
-        },
-        // {
-        //   key: "price_currency",
-        //   label: this.$t('apartments.list.price'),
-        //   sortable: true,
-        // },
-        {
-          key: "status",
-          label: this.$t("apartments.list.status"),
-        },
-        {
-          key: "actions",
-          label: "",
-        },
-      ],
+      fields,
       sortBy: "",
       sortDesc: false,
       currentPage: 1,
@@ -165,8 +207,12 @@ export default {
       checkoutList: [],
       checkAll: false,
       editPermission: ApartmentsPermission.getApartmentEditPermission(),
-      isSoldPermission: ApartmentsPermission.getApartmentIsSoldPermission(),
       viewPermission: ApartmentsPermission.getApartmentViewPermission(),
+      isSoldPermission: ApartmentsPermission.getApartmentIsSoldPermission(),
+      holderEditPms,
+      holderViewPms,
+      statusEditPms,
+      statusViewPms,
     };
   },
 
@@ -208,12 +254,81 @@ export default {
   },
 
   methods: {
+    isNUNEZ,
+    keys,
+    isNull,
     orderApartment,
     async makeContract() {
       const ids = this.checkoutList.map((ch) => ch.id);
       this.startLoading();
       await this.orderApartment(ids);
       await this.finishLoading();
+    },
+    openSetHolderModal() {
+      this.holder.show = true;
+    },
+    closeSetHolderModal() {
+      this.holder.show = false;
+    },
+    openSetStatusModal() {
+      this.status.show = true;
+    },
+    closeSetStatusModal() {
+      this.status.show = false;
+    },
+    async setHolder(item) {
+      try {
+        this.startLoading();
+
+        const {
+          data: { result },
+        } = await v3ServiceApi.holders().findAll({
+          page: 1,
+          limit: 100,
+        });
+
+        this.holder.editStorage = {
+          ...item,
+          options: result,
+        };
+
+        this.openSetHolderModal();
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
+      }
+    },
+    updatedHolder() {
+      this.closeSetHolderModal();
+      this.fetchContractList();
+    },
+    async setStatus(item) {
+      try {
+        this.startLoading();
+
+        const {
+          data: { result },
+        } = await v3ServiceApi.statuses().findAll({
+          page: 1,
+          limit: 100,
+        });
+
+        this.status.editStorage = {
+          ...item,
+          options: result,
+        };
+
+        this.openSetStatusModal();
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
+      }
+    },
+    updatedStatus() {
+      this.closeSetStatusModal();
+      this.fetchContractList();
     },
     startLoading() {
       this.showLoading = true;
@@ -336,13 +451,11 @@ export default {
       const sortQuery = sortObjectValues(query);
       this.$router.push({ query: sortQuery });
     },
-
     changeCurrentPage(page) {
       const currentPage = this.query.page;
       if (page === currentPage) return;
       this.replaceRouter({ ...this.query, page });
     },
-
     onRowSelected(items) {
       // this.$router.push({
       //   name: "apartment-view",
@@ -350,7 +463,6 @@ export default {
       // });
       this.$emit("show-express-sidebar", items[0]);
     },
-
     sortingChanged(val) {
       this.showLoading = true;
       this.filter.filtered = true;
@@ -368,11 +480,9 @@ export default {
           element.scrollIntoView();
         });
     },
-
     moment: function () {
       return this.$moment();
     },
-
     getStatus(value) {
       switch (value) {
         case "available": {
@@ -410,7 +520,6 @@ export default {
           };
       }
     },
-
     async EditApartment() {
       this.apartment_id = 0;
       this.edit = false;
@@ -423,18 +532,15 @@ export default {
       // if (this.filter.filtered) await this.fetchApartments(this);
       // else await this.fetchApartments(this);
     },
-
     CreateReserve(id) {
       this.reserve = true;
       this.apartment_id = id;
     },
-
     // CreateReserveSuccess() {
     //     this.fetchApartments(this).then(() => {
     //         location.reload();
     //     });
     // },
-
     CloseReserveInfo() {
       this.info_reserve = false;
       this.apartment_preview = {};
@@ -442,7 +548,6 @@ export default {
       //     location.reload();
       // });
     },
-
     ReserveInfo(apartment) {
       this.info_reserve = true;
       this.apartment_preview = apartment;
@@ -451,12 +556,10 @@ export default {
       //     this.$root.$emit("bv::show::modal", "modal-view-reserved-status");
       // });
     },
-
     getInfoReserve(apartment) {
       this.info_manager = true;
       this.manager_apartment = apartment.order.user;
     },
-
     async orderHold(arr) {
       this.loading = true;
       await api.orders.holdOrder(arr).then((res) => {
@@ -473,7 +576,6 @@ export default {
         }
       });
     },
-
     goOrderHold(order_id) {
       this.selected.view = false;
       this.selected.values = [];
@@ -483,7 +585,6 @@ export default {
         params: { id: order_id[0] },
       });
     },
-
     async toggleApartmentToSale() {
       if (this.soldComment) {
         const body = {
@@ -506,11 +607,9 @@ export default {
           });
       }
     },
-
     statusHold(data) {
       return data.item.order.status === "hold";
     },
-
     allowViewWhenProcessing(data) {
       const status = data.item.order.status;
       const userId = data.item.order["user_id"];
@@ -537,7 +636,6 @@ export default {
 
       return (firstOption || secondOption || thirdOption) && status === "hold";
     },
-
     clientsView(data) {
       const firstOption =
         data.item.order.status === "booked" &&
@@ -548,7 +646,6 @@ export default {
         data.item.order.status === "booked";
       return firstOption || secondOption;
     },
-
     async filteredForm(event) {
       this.filter = event;
       this.selected.view = false;
@@ -566,6 +663,22 @@ export default {
 
       // const vm = this;
       // await this.fetchApartments(vm)
+    },
+    holderTooltipTitle(holder) {
+      let title = "";
+      if (holder?.last_name && holder.last_name.trim() !== "") {
+        title += holder.last_name;
+      }
+
+      if (holder?.first_name && holder.first_name.trim() !== "") {
+        title += " " + holder.first_name;
+      }
+
+      if (holder?.middle_name && holder.middle_name.trim() !== "") {
+        title += " " + holder.middle_name;
+      }
+
+      return title.trim();
     },
   },
 };
@@ -599,18 +712,28 @@ export default {
         <template #table-busy>
           <base-loading />
         </template>
-
-        <template #empty="scope" class="text-center">
+        <template #empty="scope">
           <span class="d-flex justify-content-center align-items-center">
             {{ scope.emptyText }}
           </span>
         </template>
-        <template #head(check)="{ item }" class="p-0">
+        <template #head(check)="{}">
           <span>
             <base-checkbox :checked="checkAll" @input="chooseAllApartment" />
           </span>
         </template>
-        <template #cell(check)="data" class="p-0">
+        <template #cell(holder)="{ item }">
+          <span class="mr-2" v-show="isNUNEZ(item.holder)">
+            <x-icon
+              v-b-tooltip.hover
+              size="24"
+              name="person"
+              class="light-blue-500"
+              :title="holderTooltipTitle(item.holder)"
+            />
+          </span>
+        </template>
+        <template #cell(check)="data">
           <span
             v-if="data.item.is_sold && data.item.order.status === 'available'"
           >
@@ -620,9 +743,9 @@ export default {
             />
           </span>
         </template>
-        <template #cell(number)="data" class="p-0">
-          <div class="d-flex position-relative">
-            <div v-if="!data.item.is_sold" class="apartments__lock">
+        <template #cell(number)="data">
+          <div class="d-flex justify-content-start position-relative">
+            <div v-if="!data.item.is_sold" class="">
               <svg
                 width="16"
                 height="16"
@@ -635,14 +758,14 @@ export default {
                 />
               </svg>
             </div>
-            <span style="padding-left: 20px">{{ data.item.number }}</span>
+            <span style="padding-left: 20px; white-space: nowrap">
+              {{ data.item.number }}
+            </span>
           </div>
         </template>
-
         <template #cell(area)="data">
           <span v-if="data.item.plan"> {{ data.item.plan.area }} м² </span>
         </template>
-
         <template #cell(balcony)="data">
           <span v-if="data.item.plan.balcony">
             {{ data.item.plan.balcony_area }} м²
@@ -652,7 +775,6 @@ export default {
             {{ $t("no") }}
           </span>
         </template>
-
         <template #cell(price)="data">
           <span
             v-if="
@@ -671,14 +793,58 @@ export default {
             {{ $t("ye") }}
           </span>
         </template>
-
-        <template #cell(status)="data">
-          <span v-if="!data.item.is_sold" class="disable">
-            {{ $t("not_for_sale") }}
-          </span>
-          <span v-else :class="getStatus(data.item.order.status).class">
-            {{ getStatus(data.item.order.status).statusText }}
-          </span>
+        <template #cell(status)="{ item }">
+          <div class="d-flex" style="font-size: 12px">
+            <span
+              v-if="statusViewPms && isNUNEZ(item.status)"
+              style="
+                display: inline-flex;
+                height: 40px;
+                padding: 0 12px;
+                justify-content: center;
+                align-items: center;
+                gap: 6px;
+                flex-shrink: 0;
+                color: white;
+                border-radius: 28px;
+                white-space: nowrap;
+              "
+              :style="{
+                'border-radius':
+                  statusViewPms && isNUNEZ(item.status)
+                    ? '28px 0 0 28px'
+                    : '28px',
+                'background-color': item.status.color,
+                color: item.status.color === '#ffffff' ? '#000000' : '#ffffff',
+              }"
+            >
+              {{ item.status.title[$i18n.locale] }}
+            </span>
+            <span
+              v-if="!item.is_sold"
+              class="disable"
+              :style="{
+                'border-radius':
+                  statusViewPms && isNUNEZ(item.status)
+                    ? '0 28px 28px 0'
+                    : '28px',
+              }"
+            >
+              {{ $t("not_for_sale") }}
+            </span>
+            <span
+              v-else
+              :class="getStatus(item.order.status).class"
+              :style="{
+                'border-radius':
+                  statusViewPms && isNUNEZ(item.status)
+                    ? '0 28px 28px 0'
+                    : '28px',
+              }"
+            >
+              {{ getStatus(item.order.status).statusText }}
+            </span>
+          </div>
         </template>
 
         <template #cell(actions)="data">
@@ -729,46 +895,6 @@ export default {
                     <i class="far fa-lock"></i> {{ $t("return_to_sale") }}
                   </b-link>
                 </template>
-
-                <!--                &lt;!&ndash;  Забронировать &ndash;&gt;-->
-                <!--                <b-link-->
-                <!--                    v-if="-->
-                <!--                                    data.item.is_sold &&-->
-                <!--                                    getPermission.apartments &&-->
-                <!--                                      getPermission.apartments.reserve &&-->
-                <!--                                      data.item.order.status === 'available'-->
-                <!--                                  "-->
-                <!--                    @click="[(reserve = true), (apartment_id = data.item.id)]"-->
-                <!--                    v-b-modal.modal-reserve-create-->
-                <!--                    class="dropdown-item dropdown-item&#45;&#45;inside"-->
-                <!--                >-->
-                <!--                  <i class="far fa-calendar-check"></i>-->
-                <!--                  {{ $t("apartments.list.book") }}-->
-                <!--                </b-link>-->
-
-                <!--                &lt;!&ndash; Посмотреть клиент  &ndash;&gt;-->
-                <!--                <b-link-->
-                <!--                    v-if="clientsView(data)"-->
-                <!--                    @click="ReserveInfo(data.item)"-->
-                <!--                    class="dropdown-item dropdown-item&#45;&#45;inside"-->
-                <!--                >-->
-                <!--                  <i class="far fa-eye"></i>-->
-                <!--                  {{ $t("apartments.list.view_client") }}-->
-                <!--                </b-link>-->
-
-                <!--                &lt;!&ndash;  Информация о менеджера  &ndash;&gt;-->
-                <!--                <b-link-->
-                <!--                    v-if="data.item.order.status === 'booked' && data.item.order.user.id !== getMe.user.id-->
-                <!--                                  "-->
-                <!--                    @click="getInfoReserve(data.item)"-->
-                <!--                    v-b-modal.modal-view-info-manager-->
-                <!--                    class="dropdown-item dropdown-item&#45;&#45;inside"-->
-                <!--                >-->
-                <!--                  <i class="far fa-info-circle"></i>-->
-                <!--                  {{ $t("apartments.list.view_manager") }}-->
-                <!--                </b-link>-->
-
-                <!--  Подробная информация  -->
                 <router-link
                   :to="{
                     name: 'apartment-view',
@@ -783,27 +909,23 @@ export default {
                   {{ $t("apartments.list.more") }}
                 </router-link>
 
-                <!-- Подробная информация  -->
+                <b-link
+                  v-if="holderEditPms"
+                  @click="setHolder(data.item)"
+                  class="dropdown-item dropdown-item--inside"
+                >
+                  <x-icon name="person" size="24" class="light-blue-500" />
+                  <span class="ml-2"> {{ $t("holders.change") }} </span>
+                </b-link>
 
-                <!--                &lt;!&ndash;  Оформить &ndash;&gt;-->
-                <!--                <b-link-->
-                <!--                    @click="orderHold([data.item.id])"-->
-                <!--                    :class="'dropdown-item dropdown-item&#45;&#45;inside'"-->
-                <!--                    v-if="allowViewWhenProcessing(data) && !statusHold(data)"-->
-                <!--                >-->
-                <!--                  <i class="far fa-ballot-check"></i>-->
-                <!--                  {{ $t("apartments.list.confirm") }}-->
-                <!--                </b-link>-->
-
-                <!--                &lt;!&ndash;  Оформить when processing  &ndash;&gt;-->
-                <!--                <b-link-->
-                <!--                    @click="goOrderHold([data.item.order.id])"-->
-                <!--                    :class="'dropdown-item dropdown-item&#45;&#45;inside'"-->
-                <!--                    v-if="allowViewWhenProcessing(data) && statusHold(data)"-->
-                <!--                >-->
-                <!--                  <i class="far fa-ballot-check"></i>-->
-                <!--                  Продолжить оформление-->
-                <!--                </b-link>-->
+                <b-link
+                  v-if="statusEditPms"
+                  @click="setStatus(data.item)"
+                  class="dropdown-item dropdown-item--inside"
+                >
+                  <x-icon name="pending_actions" size="24" class="yellow-500" />
+                  <span class="ml-2">{{ $t("statuses.change") }} </span>
+                </b-link>
               </div>
             </div>
           </div>
@@ -864,18 +986,6 @@ export default {
         @CreateReserve="CreateReserveSuccess"
       ></reserve-add>
 
-      <!--        <filter-form-->
-      <!--            v-if="getPermission.apartments && getPermission.apartments.filter"-->
-      <!--            @filteredForm="filteredForm"-->
-      <!--            :filtered="filter"-->
-      <!--        ></filter-form>-->
-
-      <!--        <view-status-->
-      <!--            v-if="info_reserve"-->
-      <!--            @CancelReserve="CloseReserveInfo"-->
-      <!--            :apartment-data="apartment_preview"-->
-      <!--        ></view-status>-->
-
       <edit-modal
         v-if="editPermission"
         :apartment="apartment_id"
@@ -928,22 +1038,21 @@ export default {
           </div>
         </template>
       </base-modal>
-
-      <!--        &lt;!&ndash;        <info-manager-modal&ndash;&gt;-->
-      <!--        &lt;!&ndash;            :manager-data="this.manager_apartment"&ndash;&gt;-->
-      <!--        &lt;!&ndash;            @ManagerInfo="ManagerInfo"&ndash;&gt;-->
-      <!--        &lt;!&ndash;        ></info-manager-modal>&ndash;&gt;-->
-
-      <!--        <agree-modal-->
-      <!--            v-if="selected.confirm"-->
-      <!--            :apartments="selected.values"-->
-      <!--            @successAgree="successAgree"-->
-      <!--            @CloseAgree="CloseAgree"-->
-      <!--        ></agree-modal>-->
-
-      <!--        <success-agree :contract="contract"></success-agree>-->
-      <!--      </div>-->
     </div>
+
+    <holder-upsert
+      v-if="holder.show"
+      :edit-item="holder.editStorage"
+      @finished="updatedHolder"
+      @close-creating-modal="closeSetHolderModal"
+    />
+
+    <status-upsert
+      v-if="status.show"
+      :edit-item="status.editStorage"
+      @finished="updatedStatus"
+      @close-creating-modal="closeSetStatusModal"
+    />
 
     <BaseCheckboxModal
       :chosen="checkedApartments.length"

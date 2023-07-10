@@ -1,12 +1,12 @@
 <script>
 import api from "@/services/api";
 import ObjectSort from "@/components/Objects/ObjectSort";
-import ObjectBlock from "@/components/Objects/View/Tabs/ObjectBlock";
-import ApartmentExpressView from "@/components/Objects/View/elements/ApartmentExpressView";
-import PlanExpressView from "@/components/Objects/View/elements/PlanExpressView";
-import ChessSquareCard from "@/components/Objects/View/Tabs/ChessSquareCard";
+import ObjectBlock from "@/components/Objects/view/Tabs/ObjectBlock";
+import ApartmentExpressView from "@/components/Objects/view/elements/ApartmentExpressView";
+import PlanExpressView from "@/components/Objects/view/elements/PlanExpressView";
+import ChessSquareCard from "@/components/Objects/view/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
-import ObjectPlan from "@/components/Objects/View/Tabs/ObjectPlan";
+import ObjectPlan from "@/components/Objects/view/Tabs/ObjectPlan";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
@@ -997,7 +997,7 @@ export default {
             <span>{{ data.item.amount }}</span>
           </template>
 
-          <template v-for="price of priceList" v-slot:cell()="data">
+          <template v-for="price of priceList" #cell()="data">
             <slot :name="price.id" v-bind="data">{{ data.item.prices }}</slot>
           </template>
         </b-table>

@@ -1,10 +1,11 @@
 <script>
-import { settingsV3Api } from "@/services/settings";
 import { XButton } from "@/components/ui-components/button";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import SettingsCreateHolder from "@/views/settings/components/SettingsCreateHolder.vue";
+import SettingsPermission from "@/permission/settings.permission";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "SettingsClientTypes",
@@ -31,6 +32,12 @@ export default {
           totalItem: 0,
         },
         loading: false,
+      },
+      permission: {
+        view: SettingsPermission.getPermission("holders.view"),
+        create: SettingsPermission.getPermission("holders.create"),
+        edit: SettingsPermission.getPermission("holders.edit"),
+        delete: SettingsPermission.getPermission("holders.delete"),
       },
     };
   },
@@ -70,7 +77,7 @@ export default {
     async fetchHolders() {
       try {
         this.startLoading();
-        const response = await settingsV3Api.holders().findAll({
+        const response = await v3ServiceApi.holders().findAll({
           page: 1,
           limit: 100,
         });
@@ -100,7 +107,7 @@ export default {
     async deleteClientType(typeId) {
       try {
         this.startLoading();
-        await settingsV3Api.holders().remove({
+        await v3ServiceApi.holders().remove({
           id: typeId,
         });
         await this.fetchHolders();
@@ -115,7 +122,7 @@ export default {
         this.startLoading();
         const {
           data: { result },
-        } = await settingsV3Api.holders().findOne({ id });
+        } = await v3ServiceApi.holders().findOne({ id });
         this.editStorage = result;
         this.setUpsertType("edit");
         this.openCreatingClientTypeModal();
@@ -139,6 +146,7 @@ export default {
         {{ $t("holders.title") }}
       </h3>
       <x-button
+        v-if="permission.create"
         variant="secondary"
         text="holders.add"
         :bilingual="true"
@@ -187,6 +195,7 @@ export default {
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
+            v-if="permission.edit"
             @click="editClientType(item.id)"
             class="bg-violet-600"
           >
@@ -194,6 +203,7 @@ export default {
           </x-circular-background>
 
           <x-circular-background
+            v-if="permission.delete"
             @click="deleteClientType(item.id)"
             class="bg-red-600"
           >

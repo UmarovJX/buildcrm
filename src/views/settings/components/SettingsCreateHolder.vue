@@ -1,20 +1,16 @@
 <script>
 import { makeProp } from "@/util/props";
-// import { debounce } from "@/util/reusable";
-// import { symbolLatinToCyrillic } from "@/util/language-helper";
+import { isEmptyObject } from "@/util/inspect";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from "@/constants/props";
 import { XFormInput } from "@/components/ui-components/form-input";
 import { XModalCenter } from "@/components/ui-components/modal-center";
-import { settingsV3Api } from "@/services/settings";
-import { isEmptyObject } from "@/util/inspect";
-// import ColorPickerSwatches from "@/components/Elements/color-picker/ColorPickerSwatches.vue";
 
 export default {
   name: "SettingsCreateClient",
   components: {
     XFormInput,
     XModalCenter,
-    // ColorPickerSwatches,
   },
   props: {
     upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
@@ -118,7 +114,7 @@ export default {
       if (isSatisfied) {
         this.startLoading();
         try {
-          await settingsV3Api.holders().create({
+          await v3ServiceApi.holders().create({
             first_name: this.client.name.uz,
             last_name: this.client.lastName.uz,
             middle_name: this.client.middleName.uz,
@@ -137,7 +133,7 @@ export default {
       if (isSatisfied) {
         this.startLoading();
         try {
-          const response = await settingsV3Api.holders().update({
+          const response = await v3ServiceApi.holders().update({
             id: this.editItem.id,
             first_name: this.client.name.uz,
             last_name: this.client.lastName.uz,
@@ -189,43 +185,6 @@ export default {
         ref="creating-type-observer"
         class="client-type-creating-body"
       >
-        <!--   ? HOLDER'S LAST NAME UZ     -->
-        <validation-provider
-          ref="clientTypeNameVProvider"
-          name="last-name-uz-provider"
-          rules="required|min:3"
-          v-slot="{ errors }"
-          class="last-name-provider"
-        >
-          <x-form-input
-            type="text"
-            :placeholder="`${$t('last_name')} (${$t('placeholder_uz')})`"
-            class="w-100"
-            v-model="client.lastName.uz"
-          />
-          <span class="error__provider" v-if="errors[0]">
-            {{ errors[0].replace("last-name-uz-provider", $t("last_name")) }}
-          </span>
-        </validation-provider>
-
-        <!--   ? HOLDER'S LAST NAME RU     -->
-        <!--        <validation-provider-->
-        <!--          ref="clientTypeNameVProvider"-->
-        <!--          name="last-name-ru-provider"-->
-        <!--          rules=""-->
-        <!--          v-slot="{ errors }"-->
-        <!--        >-->
-        <!--          <x-form-input-->
-        <!--            type="text"-->
-        <!--            :placeholder="`${$t('last_name')} (${$t('placeholder_ru')})`"-->
-        <!--            class="w-100"-->
-        <!--            v-model="client.lastName.ru"-->
-        <!--          />-->
-        <!--          <span class="error__provider" v-if="errors[0]">-->
-        <!--            {{ errors[0].replace("last-name-ru-provider", $t("last_name")) }}-->
-        <!--          </span>-->
-        <!--        </validation-provider>-->
-
         <!--   ? HOLDER'S NAME UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
@@ -262,11 +221,48 @@ export default {
         <!--          </span>-->
         <!--        </validation-provider>-->
 
-        <!--   HOLDER'S MIDDLE NAME UZ     -->
+        <!--   ? HOLDER'S LAST NAME UZ     -->
+        <validation-provider
+          ref="clientTypeNameVProvider"
+          name="last-name-uz-provider"
+          rules=""
+          v-slot="{ errors }"
+          class="last-name-provider"
+        >
+          <x-form-input
+            type="text"
+            :placeholder="`${$t('last_name')} (${$t('placeholder_uz')})`"
+            class="w-100"
+            v-model="client.lastName.uz"
+          />
+          <span class="error__provider" v-if="errors[0]">
+            {{ errors[0].replace("last-name-uz-provider", $t("last_name")) }}
+          </span>
+        </validation-provider>
+
+        <!--   ? HOLDER'S LAST NAME RU     -->
+        <!--        <validation-provider-->
+        <!--          ref="clientTypeNameVProvider"-->
+        <!--          name="last-name-ru-provider"-->
+        <!--          rules=""-->
+        <!--          v-slot="{ errors }"-->
+        <!--        >-->
+        <!--          <x-form-input-->
+        <!--            type="text"-->
+        <!--            :placeholder="`${$t('last_name')} (${$t('placeholder_ru')})`"-->
+        <!--            class="w-100"-->
+        <!--            v-model="client.lastName.ru"-->
+        <!--          />-->
+        <!--          <span class="error__provider" v-if="errors[0]">-->
+        <!--            {{ errors[0].replace("last-name-ru-provider", $t("last_name")) }}-->
+        <!--          </span>-->
+        <!--        </validation-provider>-->
+
+        <!--   ? HOLDER'S MIDDLE NAME UZ     -->
         <validation-provider
           ref="clientTypeNameVProvider"
           name="middle-name-uz-provider"
-          rules="required|min:3"
+          rules=""
           v-slot="{ errors }"
           class="middle-name-provider"
         >

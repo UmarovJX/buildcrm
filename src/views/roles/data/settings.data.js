@@ -6,12 +6,23 @@ const crud = {
 };
 
 const values = {
+  view: false,
   holders: Object.assign({}, crud),
   statuses: Object.assign({}, crud),
   client_types: Object.assign({}, crud),
   client_countries: Object.assign({}, crud),
   contracts: {
     main_manager: false,
+  },
+  apartments: {
+    holder: {
+      view: false,
+      edit: false,
+    },
+    status: {
+      view: false,
+      edit: false,
+    },
   },
 };
 
@@ -25,6 +36,22 @@ function pms(name, uuid) {
       {
         label: "roles_permission.activate_all",
         refer: "all",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.view",
+        refer: "view",
+        parent: "settings",
+      },
+
+      /**
+       ? STARTING OF
+       ! CONTRACTS
+       ? ROW
+       * */
+      {
+        label: "roles_permission.settings.contracts.main_manager",
+        refer: "contracts.main_manager",
         parent: "settings",
       },
 
@@ -46,16 +73,6 @@ function pms(name, uuid) {
       {
         label: "roles_permission.settings.holders.update",
         refer: "holders.update",
-        parent: "settings",
-      },
-      {
-        label: "roles_permission.settings.holders.delete",
-        refer: "holders.delete",
-        parent: "settings",
-      },
-      {
-        label: "roles_permission.settings.holders.delete",
-        refer: "holders.delete",
         parent: "settings",
       },
       {
@@ -89,16 +106,6 @@ function pms(name, uuid) {
         refer: "statuses.delete",
         parent: "settings",
       },
-      {
-        label: "roles_permission.settings.statuses.delete",
-        refer: "statuses.delete",
-        parent: "settings",
-      },
-      {
-        label: "roles_permission.settings.statuses.delete",
-        refer: "statuses.delete",
-        parent: "settings",
-      },
 
       /**
        ? STARTING OF
@@ -118,16 +125,6 @@ function pms(name, uuid) {
       {
         label: "roles_permission.settings.client_types.update",
         refer: "client_types.update",
-        parent: "settings",
-      },
-      {
-        label: "roles_permission.settings.client_types.delete",
-        refer: "client_types.delete",
-        parent: "settings",
-      },
-      {
-        label: "roles_permission.settings.client_types.delete",
-        refer: "client_types.delete",
         parent: "settings",
       },
       {
@@ -161,25 +158,30 @@ function pms(name, uuid) {
         refer: "client_countries.delete",
         parent: "settings",
       },
-      {
-        label: "roles_permission.settings.client_countries.delete",
-        refer: "client_countries.delete",
-        parent: "settings",
-      },
-      {
-        label: "roles_permission.settings.client_countries.delete",
-        refer: "client_countries.delete",
-        parent: "settings",
-      },
 
       /**
        ? STARTING OF
-       ! CONTRACTS
+       ! APARTMENTS
        ? ROW
        * */
       {
-        label: "roles_permission.settings.contracts.main_manager",
-        refer: "contracts.main_manager",
+        label: "roles_permission.settings.apartments.holder.view",
+        refer: "apartments.holder.view",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.apartments.holder.edit",
+        refer: "apartments.holder.edit",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.apartments.status.view",
+        refer: "apartments.status.view",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.apartments.status.edit",
+        refer: "apartments.status.edit",
         parent: "settings",
       },
     ],

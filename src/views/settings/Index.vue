@@ -1,6 +1,7 @@
 <script>
 import AppHeader from "@/components/Header/AppHeader.vue";
 import SettingsTab from "@/views/settings/components/SettingsTab.vue";
+import SettingsPermission from "@/permission/settings.permission";
 
 export default {
   name: "SettingsPage",
@@ -9,29 +10,56 @@ export default {
     SettingsTab,
   },
   data() {
+    const holdersViewPms = SettingsPermission.getPermission("holders.view");
+    const statusesViewPms = SettingsPermission.getPermission("statuses.view");
+    const clientTypesViewPms =
+      SettingsPermission.getPermission("client_types.view");
+    const countriesViewPms = SettingsPermission.getPermission(
+      "client_countries.view"
+    );
+
+    const tabs = [];
+
+    if (clientTypesViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "client_types",
+        value: "settings",
+      });
+    }
+
+    if (countriesViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "priority_countries",
+        value: "settings-countries",
+      });
+    }
+
+    if (holdersViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "holders.title",
+        value: "settings-holders",
+      });
+    }
+
+    if (statusesViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "statuses.title",
+        value: "settings-statuses",
+      });
+    }
+
+    if (this.$route.name !== tabs[0].value) {
+      this.$router.push({
+        name: tabs[0].value,
+      });
+    }
+
     return {
-      tabs: [
-        {
-          counts: 0,
-          name: "client_types",
-          value: "settings",
-        },
-        {
-          counts: 0,
-          name: "priority_countries",
-          value: "settings-countries",
-        },
-        {
-          counts: 0,
-          name: "holders.title",
-          value: "settings-holders",
-        },
-        {
-          counts: 0,
-          name: "statuses.title",
-          value: "settings-statuses",
-        },
-      ],
+      tabs,
     };
   },
   computed: {

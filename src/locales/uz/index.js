@@ -4,11 +4,16 @@ export default {
     title: "Statuslar",
     add: "Status qo'shish",
     pick_color_for_status: "Status uchun rangni tanlang",
+    select: "Statusni tanlang",
+    singular: "Status",
+    change: "Statusni o'zgartirish",
   },
   holders: {
     title: "Egalari",
     add: "Ega qo'shish",
     singular: "Ega",
+    select: "Egasini tanlang",
+    change: "Egasini o'zgartirish",
   },
   home: {
     title: "Asosiy",
@@ -38,7 +43,7 @@ export default {
   add_type: "Tur qo'shish",
   normal_client: "Oddiy mijoz",
   actions: "Amallar",
-  title: "Ism",
+  title: "Nom",
   client_types: "Mijoz turlari",
   return_all_apartments: "Barcha xonadonlarni qaytarish",
   cleaned_apartments: "O'chirilgan xonadonlar",
@@ -124,6 +129,17 @@ export default {
       settings: "Sozlamalar",
     },
     settings: {
+      view: "Sozlamalar sahifasini ko'rish huquqi",
+      apartments: {
+        holder: {
+          view: "Kvartiraning egasi kimligini ko'rish huquqi",
+          edit: "Kvartiraning egasini tahrirlash huquqi",
+        },
+        status: {
+          view: "Kvartiraning statusini ko'rish huquqi",
+          edit: "Kvartiraning statusini tahrirlash huquqi",
+        },
+      },
       holders: {
         create: "Ega yaratish huquqi",
         update: "Ega tahrirlash huquqi",

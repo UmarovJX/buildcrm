@@ -5,6 +5,7 @@ import { XCircularBackground } from "@/components/ui-components/circular-backgro
 import SettingsCreateCountry from "@/views/settings/components/SettingsCreateCountry.vue";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import api from "@/services/api";
+import SettingsPermission from "@/permission/settings.permission";
 
 export default {
   name: "SettingsCountries",
@@ -23,6 +24,12 @@ export default {
       countries: {
         items: [],
         busy: false,
+      },
+      permission: {
+        view: SettingsPermission.getPermission("client_countries.view"),
+        create: SettingsPermission.getPermission("client_countries.create"),
+        edit: SettingsPermission.getPermission("client_countries.edit"),
+        delete: SettingsPermission.getPermission("client_countries.delete"),
       },
     };
   },
@@ -111,6 +118,7 @@ export default {
         {{ $t("priority_countries") }}
       </h3>
       <x-button
+        v-if="permission.create"
         variant="secondary"
         text="add_country"
         :bilingual="true"
@@ -151,6 +159,7 @@ export default {
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
+            v-if="permission.edit"
             @click="editCountries(item)"
             class="bg-violet-600"
           >
@@ -158,6 +167,7 @@ export default {
           </x-circular-background>
 
           <x-circular-background
+            v-if="permission.delete"
             @click="deleteCountries(item.id)"
             class="bg-red-600"
           >
