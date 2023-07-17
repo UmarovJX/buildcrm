@@ -5,9 +5,8 @@ import {
 } from "@/util/axios-intercept";
 import { isNull } from "@/util/inspect";
 
-const instanceGenerator = ({ baseUrl, headers = {} }) => {
+const instanceGenerator = ({ baseUrl }) => {
   const instance = axios.create({
-    headers,
     baseURL: baseUrl,
   });
 
@@ -31,17 +30,15 @@ export const axiosV2 = instanceGenerator({
   baseUrl: process.env.VUE_APP_URL_V2,
 });
 // eslint-disable-next-line no-undef
-export const axiosBase = ({ baseUrl = null, endpoint = "", headers = {} }) => {
+export const axiosBase = ({ baseUrl = null, endpoint = "" }) => {
   if (isNull(baseUrl)) {
     return instanceGenerator({
-      headers,
       // eslint-disable-next-line no-undef
       baseUrl: process.env.VUE_APP_URL + endpoint,
     });
   }
   // eslint-disable-next-line no-undef
   return instanceGenerator({
-    headers,
     baseUrl: baseUrl + endpoint,
   });
 };

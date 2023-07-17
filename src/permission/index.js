@@ -1,3 +1,5 @@
+import { hasOwnProperty } from "@/util/object";
+
 export default class Permission {
   static permission = null;
   static user = null;
@@ -19,10 +21,19 @@ export default class Permission {
     const splitProperty = property.split(".");
     const [one, two] = splitProperty;
     if (splitProperty.length > 1) {
-      return this.permission[one][two] ?? false;
+      if (
+        hasOwnProperty(this.permission, one) &&
+        hasOwnProperty(this.permission[one], two)
+      ) {
+        return this.permission[one][two];
+      }
     } else {
-      return this.permission[one] ?? false;
+      if (hasOwnProperty(this.permission, one)) {
+        return this.permission[one];
+      }
     }
+
+    return false;
   }
 
   static hasAdminRole() {

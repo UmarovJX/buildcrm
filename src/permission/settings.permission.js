@@ -1,4 +1,6 @@
 import Permission from "@/permission/index";
+import { hasOwnProperty } from "@/util/object";
+import { isBoolean } from "@/util/inspect";
 
 export default class SettingsPermission extends Permission {
   static getValues() {
@@ -8,14 +10,35 @@ export default class SettingsPermission extends Permission {
   static getPermission(property) {
     const splitProperty = property.split(".");
     const [one, two, three] = splitProperty;
-    if (this.hasAdminRole()) return true;
-    if (splitProperty.length > 2) {
-      return this.getValues()[one][two][three] ?? false;
-    } else if (splitProperty.length > 1) {
-      return this.getValues()[one][two] ?? false;
-    } else {
-      return this.getValues()[one] ?? false;
+    const values = this.getValues();
+
+    if (isBoolean(values) && !values) {
+      return false;
     }
+
+    if (this.hasAdminRole()) {
+      return true;
+    }
+
+    if (splitProperty.length > 2) {
+      if (
+        hasOwnProperty(values, one) &&
+        hasOwnProperty(values[one], two) &&
+        hasOwnProperty(values[one][two], three)
+      ) {
+        return this.getValues()[one][two][three];
+      }
+    } else if (splitProperty.length > 1) {
+      if (hasOwnProperty(values, one) && hasOwnProperty(values[one], two)) {
+        return values[one][two];
+      }
+    } else {
+      if (hasOwnProperty(values, one)) {
+        return values[one];
+      }
+    }
+
+    return false;
   }
 
   static create() {

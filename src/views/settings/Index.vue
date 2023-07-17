@@ -52,9 +52,13 @@ export default {
       });
     }
 
-    if (this.$route.name !== tabs[0].value) {
+    if (tabs.length && this.$route.name !== tabs[0].value) {
       this.$router.push({
         name: tabs[0].value,
+      });
+    } else {
+      this.$router.push({
+        name: "home",
       });
     }
 

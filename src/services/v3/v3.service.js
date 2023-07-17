@@ -5,12 +5,13 @@ class V3Service extends Core {
   constructor(
     axios = axiosBase({
       endpoint: "/api",
+    })
+  ) {
+    super(axios, {
       headers: {
         "Accept-Language": "",
       },
-    })
-  ) {
-    super(axios);
+    });
   }
 
   base(endpoint = "") {

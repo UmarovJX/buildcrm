@@ -118,7 +118,7 @@ export default {
         {{ $t("client_types") }}
       </h3>
       <x-button
-        v-if="clientTypePermission.create"
+        v-if="permission.create"
         variant="secondary"
         text="add_type"
         :bilingual="true"
@@ -172,7 +172,7 @@ export default {
       <template #cell(actions)="{ item }">
         <div class="float-right d-flex x-gap-1 cursor-pointer">
           <x-circular-background
-            v-if="clientTypePermission.edit"
+            v-if="permission.edit"
             @click="editClientType(item.id)"
             class="bg-violet-600"
           >
@@ -180,7 +180,7 @@ export default {
           </x-circular-background>
 
           <x-circular-background
-            v-if="clientTypePermission.delete"
+            v-if="permission.delete"
             @click="deleteClientType(item.id)"
             class="bg-red-600"
           >

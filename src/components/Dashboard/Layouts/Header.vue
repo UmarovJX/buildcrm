@@ -105,14 +105,12 @@ export default {
       return false;
     },
     async getLastVersion() {
-      await api.settings
-        .getLastVersion()
-        .then((res) => {
-          this.version = res.data;
-        })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        });
+      await api.settings.getLastVersion().then((res) => {
+        this.version = res.data;
+      });
+      // .catch((error) => {
+      //   // this.toastedWithErrorCode(error);
+      // });
     },
     openVersionModal() {
       this.$refs["version-modal"].openModal();
