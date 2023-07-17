@@ -142,7 +142,7 @@ export default {
         {
           key: "client",
           label: this.$t("contracts.table.client"),
-          formatter: (status) => {
+          formatter: (client) => {
             if (client.attributes) {
               return (
                 client.attributes.last_name.lotin +
@@ -224,7 +224,7 @@ export default {
     openImportModal() {
       this.$refs["import-debtors"].openModal();
     },
-    getClientMajorPhone(status) {
+    getClientMajorPhone(client) {
       if (hasOwnProperty(client, "phones")) {
         let { phones } = client;
         if (!phones.length) {
@@ -249,7 +249,7 @@ export default {
 
       return "";
     },
-    getClientName(status) {
+    getClientName(client) {
       let language = "kirill";
 
       if (this.$i18n.locale === "uz") {
@@ -302,7 +302,7 @@ export default {
       }
       return a;
     },
-    getFullName(status) {
+    getFullName(client) {
       try {
         if (
           client &&

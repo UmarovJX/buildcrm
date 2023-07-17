@@ -113,11 +113,11 @@ export default {
     tableFields() {
       return [
         /*
-                  {
-                    key: "checkbox",
-                    label: "",
-                  },
-                */
+          {
+            key: "checkbox",
+            label: "",
+          },
+        */
         {
           key: "contract",
           label: this.$t("contracts.table.contract"),
@@ -219,7 +219,7 @@ export default {
           return "#";
         });
     },
-    getClientName(status) {
+    getClientName(client) {
       if (isUndefinedOrNullOrEmpty(client.attributes)) {
         return "";
       }
@@ -433,21 +433,21 @@ export default {
     >
       <!--   Checkbox Head    -->
       <!--
-              <template #head(checkbox)="data">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="1" y="1" width="14" height="14" rx="3" stroke="#9CA3AF" stroke-width="2"/>
-                </svg>
-              </template>
-            -->
+        <template #head(checkbox)="data">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="14" height="14" rx="3" stroke="#9CA3AF" stroke-width="2"/>
+          </svg>
+        </template>
+      -->
 
       <!--   Checkbox  Body   -->
       <!--
-             <template #cell(checkbox)="data">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="1" y="1" width="14" height="14" rx="3" stroke="#9CA3AF" stroke-width="2"/>
-              </svg>
-            </template>
-            -->
+       <template #cell(checkbox)="data">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="14" height="14" rx="3" stroke="#9CA3AF" stroke-width="2"/>
+        </svg>
+      </template>
+      -->
 
       <!--   Phone Number   -->
       <template #cell(phone)="data">

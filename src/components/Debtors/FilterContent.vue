@@ -136,7 +136,7 @@ export default {
         .fetchObjectsOption()
         .then((response) => {
           const { objects, "client-types": table } = response.data;
-          this.clientTypeOptions = clientTypes.map((clientType) => ({
+          this.clientTypeOptions = table.map((clientType) => ({
             value: clientType.id,
             text: clientType.name,
           }));

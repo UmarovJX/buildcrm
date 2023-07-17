@@ -117,7 +117,7 @@ export default {
     },
     formattingPhone: (phone) => phonePrettier(phone),
     dateReverser: (time) => formatDateWithDot(time),
-    getClientName(status) {
+    getClientName(client) {
       if (isUndefinedOrNullOrEmpty(client.attributes)) {
         return "";
       }
