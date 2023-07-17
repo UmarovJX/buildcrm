@@ -50,6 +50,11 @@ export default {
   },
   methods: {
     initPermissions() {
+      const pms = {
+        ...this.form,
+        ...this.permissions,
+      };
+
       // this.form = Object.assign({}, this.permissions, this.form)
       //
       // this.form = {
@@ -71,13 +76,13 @@ export default {
                             this.form[parentKey][key][childKey][subChildKey][
                               lastChildKey
                             ] =
-                              this.permissions[parentKey][key][childKey][
-                                subChildKey
-                              ][lastChildKey];
+                              pms[parentKey][key][childKey][subChildKey][
+                                lastChildKey
+                              ];
                           } else {
-                            return this.permissions[parentKey][key][childKey][
-                              subChildKey
-                            ][lastChildKey]
+                            return pms[parentKey][key][childKey][subChildKey][
+                              lastChildKey
+                            ]
                               ? (this.form[parentKey][key][childKey][
                                   subChildKey
                                 ][lastChildKey] = true)
@@ -88,8 +93,8 @@ export default {
                         }
                       );
                     } else {
-                      return this.permissions[parentKey][key][childKey] &&
-                        this.permissions[parentKey][key][childKey][subChildKey]
+                      return pms[parentKey][key][childKey] &&
+                        pms[parentKey][key][childKey][subChildKey]
                         ? (this.form[parentKey][key][childKey][
                             subChildKey
                           ] = true)
@@ -100,15 +105,13 @@ export default {
                   }
                 );
               } else {
-                return this.permissions[parentKey][key] &&
-                  this.permissions[parentKey][key][childKey]
+                return pms[parentKey][key] && pms[parentKey][key][childKey]
                   ? (this.form[parentKey][key][childKey] = true)
                   : (this.form[parentKey][key][childKey] = false);
               }
             });
           } else {
-            return this.permissions[parentKey] &&
-              this.permissions[parentKey][key]
+            return pms[parentKey] && pms[parentKey][key]
               ? (this.form[parentKey][key] = true)
               : (this.form[parentKey][key] = false);
           }
@@ -219,8 +222,6 @@ export default {
               case 2: {
                 // eslint-disable-next-line no-prototype-builtins
                 const hasChild = pmTabParent.hasOwnProperty(one);
-                console.log(one, "one");
-                console.log(two, "two");
                 if (hasChild) {
                   pmTabParent[one][two] = row.vBind;
                 } else {

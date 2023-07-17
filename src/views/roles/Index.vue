@@ -383,22 +383,7 @@ export default {
               this.$swal(this.$t("sweetAlert.deleted"), "", "success");
             })
             .catch((error) => {
-              if (!error.response) {
-                this.toasted("Error: Network Error", "error");
-              } else {
-                if (error.response.status === 403) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 401) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 500) {
-                  this.toasted(error.response.data.message, "error");
-                } else if (error.response.status === 404) {
-                  this.toasted(error.response.data.exception, "error");
-                } else {
-                  this.error = true;
-                  this.errors = error.response.data.errors;
-                }
-              }
+              this.toastedWithErrorCode(error);
             });
         }
       });

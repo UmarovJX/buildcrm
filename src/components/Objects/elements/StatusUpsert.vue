@@ -100,7 +100,7 @@ export default {
     cancel-button-class="w-100"
     :apply-button-loading="applyButtonLoading"
     :modal-container-style="{
-      'max-width': '960px',
+      'max-width': '720px',
       'max-height': '420px',
       width: '75%',
       height: '100%',
