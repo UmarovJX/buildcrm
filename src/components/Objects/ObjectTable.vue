@@ -914,7 +914,7 @@ export default {
                   @click="setHolder(data.item)"
                   class="dropdown-item dropdown-item--inside"
                 >
-                  <x-icon name="person" size="24" class="light-blue-500" />
+                  <x-icon name="person" size="24" class="dropdown-icon-color" />
                   <span class="ml-2"> {{ $t("holders.change") }} </span>
                 </b-link>
 
@@ -923,7 +923,11 @@ export default {
                   @click="setStatus(data.item)"
                   class="dropdown-item dropdown-item--inside"
                 >
-                  <x-icon name="pending_actions" size="24" class="yellow-500" />
+                  <x-icon
+                    name="pending_actions"
+                    size="24"
+                    class="dropdown-icon-color"
+                  />
                   <span class="ml-2">{{ $t("statuses.change") }} </span>
                 </b-link>
               </div>

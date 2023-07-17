@@ -649,6 +649,7 @@ let user = null;
 import Permission from "@/permission";
 import ChooseApartments from "@/views/objects/FastPlan/ChooseApartments.vue";
 import settingsRoutes from "@/views/settings/settings.routes";
+import { isBoolean } from "@/util/inspect";
 
 router.beforeEach(async (to, from, next) => {
   const login = localStorage.getItem("auth__access__token");
@@ -666,7 +667,12 @@ router.beforeEach(async (to, from, next) => {
           const { requiresAuth } = to.meta;
           if (requiresAuth) {
             const perm = Permission.getUserPermission(requiresAuth);
-            if (user.role === 1 || (perm && perm.view)) {
+            const hasAccess =
+              (isBoolean(perm) && perm) ||
+              user.role === 1 ||
+              (perm && perm?.view);
+
+            if (hasAccess) {
               return next();
             } else {
               return next({

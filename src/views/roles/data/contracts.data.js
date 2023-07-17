@@ -8,6 +8,7 @@ const values = {
   root: false,
   uniformity: false,
   edit: true,
+  main_manager: false,
   payments: {
     create: false,
     initial_type: {
@@ -42,9 +43,20 @@ function pms(name, uuid) {
     active: false,
     parent: "form",
     rows: [
+      /**
+       ? STARTING OF
+       ! CONTRACTS
+       ? ROW
+       * */
       {
         label: "roles_permission.activate_all",
         refer: "all",
+        parent: "contracts",
+      },
+
+      {
+        label: "roles_permission.settings.contracts.main_manager",
+        refer: "main_manager",
         parent: "contracts",
       },
       {

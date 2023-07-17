@@ -1,4 +1,5 @@
 export default {
+  deselect: "Отменить выбор",
   color: "Цвет",
   statuses: {
     title: "Статусы",

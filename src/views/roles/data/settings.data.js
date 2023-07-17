@@ -11,9 +11,6 @@ const values = {
   statuses: Object.assign({}, crud),
   client_types: Object.assign({}, crud),
   client_countries: Object.assign({}, crud),
-  contracts: {
-    main_manager: false,
-  },
   apartments: {
     holder: {
       view: false,
@@ -41,17 +38,6 @@ function pms(name, uuid) {
       {
         label: "roles_permission.settings.view",
         refer: "view",
-        parent: "settings",
-      },
-
-      /**
-       ? STARTING OF
-       ! CONTRACTS
-       ? ROW
-       * */
-      {
-        label: "roles_permission.settings.contracts.main_manager",
-        refer: "contracts.main_manager",
         parent: "settings",
       },
 

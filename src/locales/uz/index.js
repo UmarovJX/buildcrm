@@ -1,4 +1,5 @@
 export default {
+  deselect: "Tanlovni olib tashlang",
   color: "Rang",
   statuses: {
     title: "Statuslar",

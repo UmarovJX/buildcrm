@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     optionList() {
-      return this.editItem.options.map((h) => {
+      const l = this.editItem.options.map((h) => {
         let text = "";
         if (h.last_name) {
           text += h.last_name;
@@ -55,6 +55,13 @@ export default {
           text: text.trim(),
         };
       });
+
+      l.unshift({
+        text: this.$t("deselect"),
+        value: null,
+      });
+
+      return l;
     },
   },
   created() {
@@ -139,7 +146,6 @@ export default {
         <validation-provider
           ref="vProvider01"
           name="vProvider01"
-          rules="required"
           v-slot="{ errors }"
           class="name-provider"
         >

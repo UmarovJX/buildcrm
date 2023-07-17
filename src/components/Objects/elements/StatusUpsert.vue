@@ -36,12 +36,19 @@ export default {
   },
   computed: {
     optionList() {
-      return this.editItem.options.map((h) => {
+      const l = this.editItem.options.map((h) => {
         return {
           value: h.id,
           text: h.title[this.$i18n.locale],
         };
       });
+
+      l.unshift({
+        text: this.$t("deselect"),
+        value: null,
+      });
+
+      return l;
     },
   },
   created() {
@@ -126,7 +133,7 @@ export default {
         <validation-provider
           ref="vProvider01"
           name="vProvider01"
-          rules="required"
+          rules=""
           v-slot="{ errors }"
           class="name-provider"
         >

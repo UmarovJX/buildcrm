@@ -1,4 +1,5 @@
 import { hasOwnProperty } from "@/util/object";
+import { joinRolesRows } from "@/views/roles/data/_index.data";
 
 export default class Permission {
   static permission = null;
@@ -7,7 +8,11 @@ export default class Permission {
   static initializeUser(user = null) {
     if (this.user === null) {
       this.user = user;
-      this.permission = user.role.permissions;
+      const { form } = joinRolesRows("");
+      this.permission = {
+        ...form,
+        ...user.role.permissions,
+      };
     }
     return this.user;
   }
