@@ -56,10 +56,6 @@ export default {
       this.$router.push({
         name: tabs[0].value,
       });
-    } else {
-      this.$router.push({
-        name: "home",
-      });
     }
 
     return {

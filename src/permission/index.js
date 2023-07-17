@@ -18,6 +18,10 @@ export default class Permission {
   }
 
   static getUserPermission(property) {
+    if (this.hasAdminRole()) {
+      return true;
+    }
+
     const splitProperty = property.split(".");
     const [one, two] = splitProperty;
     if (splitProperty.length > 1) {

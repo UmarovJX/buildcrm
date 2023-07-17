@@ -8,16 +8,16 @@ export default class SettingsPermission extends Permission {
   }
 
   static getPermission(property) {
+    if (this.hasAdminRole()) {
+      return true;
+    }
+
     const splitProperty = property.split(".");
     const [one, two, three] = splitProperty;
     const values = this.getValues();
 
     if (isBoolean(values) && !values) {
       return false;
-    }
-
-    if (this.hasAdminRole()) {
-      return true;
     }
 
     if (splitProperty.length > 2) {
