@@ -576,7 +576,7 @@ export default {
         );
         this.initEditItems(data);
         this.$refs["client-details-observer"].fillFormInUpdateMode({
-          status: data.client,
+          client: data.client,
         });
 
         if (this.getUpdateStatus === "contract") {
@@ -640,7 +640,7 @@ export default {
           </template>
 
           <x-loading-wrapper :loading="isFetching">
-            <ch-client-details ref="status-details-observer" />
+            <ch-client-details ref="client-details-observer" />
           </x-loading-wrapper>
         </b-tab>
         <!--  ?END OF FIRST TAB    -->

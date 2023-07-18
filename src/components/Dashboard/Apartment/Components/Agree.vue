@@ -1076,7 +1076,7 @@ export default {
             <h6 class="color-blue-darker">
               Цена продажи:
               {{
-                status.discount.id === "other"
+                client.discount.id === "other"
                   ? apartment_edit.price
                   : apartment.price
                     | number("0,0.00", {
@@ -1116,7 +1116,7 @@ export default {
                         class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start"
                       >
                         <div class="h6 mb-0">
-                          {{ status.discount.prepay_to.toFixed(2) }}%
+                          {{ client.discount.prepay_to.toFixed(2) }}%
                         </div>
                       </div>
                     </div>
@@ -1175,7 +1175,7 @@ export default {
                         class="col-md-6 col-4 pl-0 d-flex align-items-center justify-content-start"
                       >
                         <div class="h6 mb-0">
-                          {{ status.discount.prepay_to.toFixed(2) }}%
+                          {{ client.discount.prepay_to.toFixed(2) }}%
                         </div>
                       </div>
                     </div>
@@ -1299,7 +1299,7 @@ export default {
 
                 <td>
                   {{
-                    status.discount.id === "other" && month == 0
+                    client.discount.id === "other" && month == 0
                       ? getTotalOther()
                       : getPrepay()
                         | number("0,0.00", {

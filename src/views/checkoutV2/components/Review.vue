@@ -8,7 +8,6 @@ import { formatToPrice } from "@/util/reusable";
 import { XBottomClipboard } from "@/components/ui-components/bottom-clipboard";
 import { XButton } from "@/components/ui-components/button";
 import { isEmptyObject } from "@/util/inspect";
-import de from "vue2-datepicker/locale/es/de";
 
 export default {
   name: "ChReviewSide",
@@ -184,7 +183,7 @@ export default {
     />
     <div class="information-block">
       <field-information
-        v-for="(status, index) in clientDetails"
+        v-for="(client, index) in clientDetails"
         :key="index"
         :bilingual="true"
         :content="client.content"
