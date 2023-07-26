@@ -16,8 +16,8 @@ import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import api from "@/services/api";
 import { checkoutV1 } from "@/services/checkout";
 import { dateProperties } from "@/util/calendar";
-import { headerItems } from "@/views/checkoutV2/helper/headerComputed";
 import { NOTIFY } from "@/constants/names";
+import { headerItems } from "@/views/checkoutV2/helper/headerComputed";
 
 export default {
   name: "Index",
@@ -427,6 +427,8 @@ export default {
           if (a.edit.prepay || a.edit.initial_price) {
             orderCtx.prepay_edited = true;
           }
+
+          // orderCtx.prepay = a.calc.prepay;
 
           if (a.calc.discount.id === "other") {
             orderCtx.apartments = [

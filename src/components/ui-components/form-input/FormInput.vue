@@ -1,6 +1,7 @@
 <script>
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
 import { isUndefinedOrNullOrEmpty, isUndefinedOrNull } from "@/util/inspect";
+import { debounce } from "@/util/reusable";
 
 const cssDefaultProperty = {
   type: String,
@@ -134,13 +135,10 @@ export default {
   },
 
   watch: {
-    inputModel: {
-      handler() {
-        this.emitValue();
-        this.toggleClearButton();
-      },
-      immediate: false,
-    },
+    inputModel: debounce(function () {
+      this.emitValue();
+      this.toggleClearButton();
+    }, 1500),
     value(valueUpdateByParent) {
       if (valueUpdateByParent !== this.inputModel) {
         this.inputModel = valueUpdateByParent;
