@@ -225,7 +225,7 @@ export default {
       calc: { monthly_payment_period },
       edit: {
         monthly_payment_period: true,
-        prepay: false,
+        prepay: true,
         initial_price: false,
       },
     });
@@ -238,6 +238,9 @@ export default {
       (gts.getInitialPrice(apmIndex) / gts.getTotal(apmIndex)) * 100,
       10
     );
+
+    console.log("prepay", prepay);
+
     commit("updateApartment", {
       idx: apmIndex,
       calc: { prepay },

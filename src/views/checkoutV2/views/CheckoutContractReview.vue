@@ -1,6 +1,5 @@
 <script>
 import AppHeader from "@/components/Header/AppHeader.vue";
-import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon.vue";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import BaseStarIcon from "@/components/icons/BaseStarIcon.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
@@ -19,7 +18,6 @@ export default {
   name: "ContractReview",
   components: {
     AppHeader,
-    BaseArrowDownIcon,
     BaseLoading,
     BaseStarIcon,
     XIcon,
@@ -150,7 +148,7 @@ export default {
 
       return "";
     },
-    getClientName(status) {
+    getClientName(client) {
       let language = "kirill";
       if (this.$i18n.locale === "uz") {
         language = "lotin";

@@ -370,7 +370,7 @@ export default {
 
     generateOrdersBody() {
       try {
-        return this.apartments.map((a, idx) => {
+        return this.apartments.map((a) => {
           const orderCtx = {
             uuid: a.order_uuid,
             discount_id: a.calc.discount.id,

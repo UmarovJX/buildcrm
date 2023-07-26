@@ -1,6 +1,5 @@
 import { isString, isUndefinedOrNullOrEmpty } from "@/util/inspect";
 import { numberFormatDecimal as fmd } from "@/util/numberHelper";
-import id from "vue2-datepicker/locale/es/id";
 
 export default {
   isCreateMode: (state) => state.componentFunction === "create",

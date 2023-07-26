@@ -7,7 +7,6 @@ import { PROP_TYPE_OBJECT } from "@/constants/props";
 
 import { XFormSelect } from "@/components/ui-components/form-select";
 import { XFormInput } from "@/components/ui-components/form-input";
-import { XIcon } from "@/components/ui-components/material-icons";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 
 export default {
@@ -16,7 +15,6 @@ export default {
     XFormSelect,
     XFormInput,
     BaseDatePicker,
-    XIcon,
   },
   props: {
     apartment: p(PROP_TYPE_OBJECT, {}),
@@ -101,7 +99,8 @@ export default {
       return true;
     },
     allowToShowFullPayment() {
-      return this.paymentDetails.prepay === 100;
+      // return this.paymentDetails.prepay === 100;
+      return false;
     },
     disableInitialPrice() {
       return this.paymentDetails.prepay === 100;
@@ -235,14 +234,14 @@ export default {
         return;
       }
       const m = monthly_payment_period.toString().trim();
-      const lts = this.getCalc().monthly_payment_period.toString().trim();
-      if (m !== lts && m !== "") {
-        this.setMonthlyPaymentPeriod({
-          apmId: this.apartment.id,
-          monthly_payment_period: parseInt(m),
-        });
-        this.refreshFieldsValue();
-      }
+      // const lts = this.getCalc().monthly_payment_period.toString().trim();
+      // if (m !== lts && m !== "") {
+      this.setMonthlyPaymentPeriod({
+        apmId: this.apartment.id,
+        monthly_payment_period: parseInt(m),
+      });
+      this.refreshFieldsValue();
+      // }
     },
     editPrepayHandler(prepay) {
       if (this.gtsEditFirstAttempt) {
