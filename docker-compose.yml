@@ -4,7 +4,7 @@ services:
   vue-app:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
     environment:
       VUE_APP_URL: ${VUE_APP_URL}
       VUE_APP_URL_V1_CRM: ${VUE_APP_URL_V1_CRM}
