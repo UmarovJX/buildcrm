@@ -6,6 +6,8 @@ dist.zip
 
 # local env files
 .env
+.env.development
+.env.production
 .env.local
 .env.*.local
 

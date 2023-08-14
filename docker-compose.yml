@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  vue-app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      VUE_APP_URL: ${VUE_APP_URL}
+      VUE_APP_URL_V1_CRM: ${VUE_APP_URL_V1_CRM}
+      VUE_APP_URL_V2: ${VUE_APP_URL_V2}
+      VUE_APP_CLIENT_SECRET: ${VUE_APP_CLIENT_SECRET}
+    ports:
+      - "8011:8090"
+    container_name: vue-ui
+    working_dir: /app
+    volumes:
+      - .:/app
