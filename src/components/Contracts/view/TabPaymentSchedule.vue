@@ -707,9 +707,9 @@ export default {
       <!--  HEADING    -->
       <div class="heading">
         <h3 class="title">
-          {{ $t("payments.payment_list") }}
+          {{ $t("payments.payment_list") }} <span class="violet-500">|</span>
           <span class="total-payments">
-            || {{ $t("payments.payment_total") }}: {{ totalPayment }}
+            {{ $t("payments.payment_total") }}: {{ totalPayment }}
             {{ $t("ye") }}
           </span>
         </h3>

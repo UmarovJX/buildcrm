@@ -1,4 +1,14 @@
 export default {
+  deleted_date: "Oʻchirilgan sana",
+  contracts_not_found: {
+    title: "Shartnomalar topilmadi",
+    description: "Boshqa qidiruv maʼlumotlarini kiritib koʻring",
+  },
+  restore_contract: "Shartnomani tiklash",
+  contract_archive_title: "Shartnomani arxivlash",
+  in_the_archive: "Arxivda",
+  move_to_archive: "Arxivga o'tkazmoq",
+  remove_from_archive: "Arxivdan chiqarmoq",
   deselect: "Tanlovni olib tashlang",
   color: "Rang",
   statuses: {
@@ -572,8 +582,10 @@ export default {
     on_payment: "To'lovda",
     closed: "Yopilgan",
     reorder: "Qayta rasmiylashtirilgan",
-    active: "Активный",
-    de_active: "Деактив",
+    active: "Faol",
+    de_active: "Faol emaas (deaktiv)",
+    archived: "Arxiv",
+    deleted: "O'chirilgan",
   },
 
   promo: {
@@ -671,7 +683,7 @@ export default {
     warning: "Ogohlantirish",
     edit_payment: "To'lovni tahrirlash",
     warn_before_delete_contract:
-      "Shartnomani oʻchirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.",
+      "Shartnomani arxivlamoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.",
     comment: "Izoh",
     comment_delete_contract: "O'chirish sababini ko'rsating",
     add_payment_successfully: "To'lovlar ro'yxatiga muvaffaqiyatli qo'shildi",
@@ -734,6 +746,7 @@ export default {
       sold: "To'lovda",
       closed: "Yopilgan",
       contract: "Sotilgan",
+      cancelled: "Bekor qilingan",
     },
 
     view: {

@@ -150,6 +150,25 @@ class ContractV2 extends Core {
   deleteComment(contractId, commentId) {
     return this.delete("contracts/" + contractId + "/comments/" + commentId);
   }
+
+  getCounts() {
+    return this.get("contracts/counts");
+  }
+
+  archive({ endpoint = "contracts" } = { endpoint: "contracts" }) {
+    return {
+      findAll: (params) =>
+        this.get(endpoint + "/archived", {
+          params,
+        }),
+      putArchive: ({ contractId, body }) =>
+        this.put(`${endpoint}/${contractId}/archive`, body),
+    };
+  }
+
+  recover({ contractId }, b = {}) {
+    return this.post(`contracts/${contractId}/recovery`, b);
+  }
 }
 
 export default {

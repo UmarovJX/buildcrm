@@ -2,7 +2,7 @@
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import SearchBarContent from "@/components/Contracts/SearchBarContent";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
-import BaseStarIcon from "@/components/icons/BaseStarIcon";
+// import BaseStarIcon from "@/components/icons/BaseStarIcon";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
@@ -21,10 +21,14 @@ import ContractsPermission from "@/permission/contract";
 import AppHeader from "@/components/Header/AppHeader";
 import {
   isNotUndefinedNullEmptyZero,
+  isNull,
   isObject,
   isPrimitive,
   isUndefinedOrNullOrEmpty,
 } from "@/util/inspect";
+import { hasOwnProperty, keys } from "@/util/object";
+import { formatDateToHM } from "@/util/date/calendar.util";
+import Permission from "@/permission";
 
 export default {
   name: "Contracts",
@@ -35,7 +39,7 @@ export default {
     SearchBarContent,
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
-    BaseStarIcon,
+    // BaseStarIcon,
     // BaseDownIcon,
     BaseLoading,
     XFormSelect: XFormSelect,
@@ -83,7 +87,22 @@ export default {
         status: "reorder",
         counts: 0,
       },
+      {
+        name: "tab_status.deleted",
+        status: "trashed",
+        counts: 0,
+      },
     ];
+
+    const hasAdminRole = Permission.hasAdminRole();
+
+    if (hasAdminRole) {
+      filterTabList.splice(filterTabList.length - 1, 0, {
+        name: "tab_status.archived",
+        status: "archived",
+        counts: 0,
+      });
+    }
 
     let { search: searchValue, limit: showByValue } = this.$route.query;
 
@@ -92,6 +111,7 @@ export default {
     }
 
     return {
+      hasAdminRole,
       showByValue,
       searchValue,
       showByOptions,
@@ -110,14 +130,44 @@ export default {
     ...mapGetters({
       permission: "getPermission",
     }),
+    statuses() {
+      if (keys(this.counts).length) {
+        return this.filterTabList.map((filterTab) => {
+          // eslint-disable-next-line no-prototype-builtins
+          const findIndex = this.counts.hasOwnProperty(filterTab.status);
+          if (findIndex) {
+            return {
+              ...filterTab,
+              counts: this.counts[filterTab.status],
+            };
+          } else if (filterTab.status === "trashed") {
+            return {
+              ...filterTab,
+              counts: this.counts.deleted,
+            };
+          }
+
+          const sum = () => {
+            let init = 0;
+            for (let [, value] of Object.entries(this.counts)) {
+              init += value;
+            }
+            return init;
+          };
+
+          if (filterTab.status === "") {
+            return {
+              ...filterTab,
+              counts: sum(),
+            };
+          }
+        });
+      }
+
+      return this.filterTabList;
+    },
     tableFields() {
-      return [
-        /*
-          {
-            key: "checkbox",
-            label: "",
-          },
-        */
+      let fields = [
         {
           key: "contract",
           label: this.$t("contracts.table.contract"),
@@ -127,8 +177,13 @@ export default {
           label: this.$t("contracts.table.client"),
         },
         {
-          key: "phone",
-          label: this.$t("contracts.table.phone_number"),
+          key: "apartmentsNumber",
+          label: this.$t("contracts.apartment_number"),
+          formatter: (v, key, item) => {
+            return item.apartments
+              .reduce((acc, app) => acc + "," + app.number, "")
+              .slice(1);
+          },
         },
         {
           key: "status",
@@ -153,6 +208,25 @@ export default {
           label: "",
         },
       ];
+
+      if (
+        hasOwnProperty(this.$route.query, "status") &&
+        ["trashed", "deleted"].includes(this.$route.query.status)
+      ) {
+        fields.splice(1, 0, {
+          key: "deleted_at",
+          label: this.$t("deleted_date"),
+          formatter: (date) => {
+            if (isNull()) {
+              return "";
+            }
+
+            return formatDateToHM(date) + "\t" + formatDateWithDot(date);
+          },
+        });
+      }
+
+      return fields;
     },
     query() {
       return Object.assign({}, this.$route.query);
@@ -173,12 +247,23 @@ export default {
       this.getContractListBySearch();
     },
   },
-  async created() {
-    await this.fetchContractList();
+  created() {
+    Promise.allSettled([
+      this.fetchContractList(),
+      this.fetchStatusesOfCounts(),
+    ]);
   },
   methods: {
     formattingPhone: (phone) => phonePrettier(phone),
     dateReverser: (time) => formatDateWithDot(time),
+    async fetchStatusesOfCounts() {
+      try {
+        const response = await api.contractV2.getCounts();
+        this.counts = response.data.result;
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      }
+    },
     limitChanged() {
       this.changeFetchLimit();
     },
@@ -205,6 +290,7 @@ export default {
       api.contract
         .downloadContract(id)
         .then(({ data, headers }) => {
+          // eslint-disable-next-line no-prototype-builtins
           const filename = headers.hasOwnProperty("x-filename")
             ? headers["x-filename"]
             : "contract";
@@ -273,6 +359,7 @@ export default {
     },
     fetchContentByStatus(status) {
       const query = Object.assign({}, this.query);
+      // eslint-disable-next-line no-prototype-builtins
       if (query.hasOwnProperty("page")) {
         delete query.page;
       }
@@ -307,6 +394,7 @@ export default {
     // },
     getContractListBySearch() {
       const { query, searchValue } = this;
+      // eslint-disable-next-line no-prototype-builtins
       const hasSearchQuery = query.hasOwnProperty("search");
       if (!hasSearchQuery) {
         this.pushRouter({
@@ -322,6 +410,7 @@ export default {
       const query = sortObjectValues(this.query);
 
       if (
+        // eslint-disable-next-line no-prototype-builtins
         query.hasOwnProperty("object_id") &&
         typeof query.object_id === "string"
       ) {
@@ -329,46 +418,32 @@ export default {
       }
 
       this.showLoading = true;
+      this.tableItems = [];
+
+      if (!this.hasAdminRole && this.$route.query.status === "archived") {
+        delete query.status;
+      }
+
       await api.contractV2
         .fetchContractsList(query)
         .then((response) => {
-          this.tableItems = response.data.items;
+          response.data.items.forEach((dataItem) => {
+            this.tableItems.push(
+              dataItem
+              // Object.assign(dataItem, {
+              //   _rowVariant: dataItem.archived ? "warning" : "light",
+              // })
+            );
+          });
           this.pagination = response.data.pagination;
-          this.counts = response.data.counts;
           this.showByValue = response.data.pagination.perPage;
-          this.initCounts();
         })
         .finally(() => {
           this.showLoading = false;
         });
     },
-    initCounts() {
-      this.filterTabList = this.filterTabList?.map((filterTab) => {
-        const findIndex = this.counts.hasOwnProperty(filterTab.status);
-        if (findIndex) {
-          return {
-            ...filterTab,
-            counts: this.counts[filterTab.status],
-          };
-        }
-
-        const sum = () => {
-          let init = 0;
-          for (let [, value] of Object.entries(this.counts)) {
-            init += value;
-          }
-          return init;
-        };
-
-        if (filterTab.status === "") {
-          return {
-            ...filterTab,
-            counts: sum(),
-          };
-        }
-      });
-    },
     searchQueryFilter(searchQuery) {
+      // eslint-disable-next-line no-prototype-builtins
       const hasQueryStatus = this.query.hasOwnProperty("status");
       if (hasQueryStatus) {
         const { status } = this.query;
@@ -404,7 +479,7 @@ export default {
 
     <!--  Tabs  -->
     <base-filter-tabs-content
-      :filter-tab-list="filterTabList"
+      :filter-tab-list="statuses"
       @get-new-content="fetchContentByStatus"
     />
 
@@ -450,10 +525,26 @@ export default {
       -->
 
       <!--   Phone Number   -->
-      <template #cell(phone)="data">
-        <span class="phone-col">{{
-          getClientMajorPhone(data.item.client.phones)
-        }}</span>
+      <!--      <template #cell(phone)="data">-->
+      <!--        <span class="phone-col">-->
+      <!--          {{ getClientMajorPhone(data.item.client.phones) }}-->
+      <!--        </span>-->
+      <!--      </template>-->
+
+      <!--!  CONTRACT NUMBER   -->
+      <template #cell(contract)="data">
+        <span class="d-flex align-items-center">
+          <x-square-background
+            v-if="data.item.archived"
+            padding="0.4"
+            class="mr-2 bg-yellow-200"
+          >
+            <x-icon name="archive" class="color-yellow-600"></x-icon>
+          </x-square-background>
+          <span>
+            {{ data.item.contract }}
+          </span>
+        </span>
       </template>
 
       <!--   Date   -->
@@ -463,7 +554,7 @@ export default {
 
       <!--   Client LFP   -->
       <template #cell(client)="{ item }">
-        <span class="d-flex">
+        <div class="d-flex">
           <div
             v-if="item.client.client_type.is_vip"
             class="d-flex align-items-center mr-1"
@@ -484,7 +575,7 @@ export default {
             </b-tooltip>
           </div>
           <span>{{ getClientName(item.client) }}</span>
-        </span>
+        </div>
       </template>
 
       <!--   Status   -->
@@ -495,7 +586,7 @@ export default {
       </template>
 
       <!--  Actions    -->
-      <template #cell(actions)="data">
+      <template #cell(actions)>
         <span v-if="downloadPermission" class="arrow__down-violet">
           <base-arrow-down-icon
             class="download__icon"
@@ -511,12 +602,12 @@ export default {
         <base-loading />
       </template>
 
-      <template #empty="scope" class="text-center">
+      <template #empty>
         <div
           class="d-flex justify-content-center align-items-center flex-column not__found"
         >
-          <p class="head">Договоры не были найдены</p>
-          <p>Попробуйте ввести другие данные для поиска</p>
+          <p class="head">{{ $t("contracts_not_found.title") }}</p>
+          <p>{{ $t("contracts_not_found.description") }}</p>
         </div>
       </template>
     </b-table>
@@ -676,7 +767,8 @@ export default {
     color: var(--yellow-600);
   }
 
-  &.closed {
+  &.closed,
+  &.cancelled {
     background-color: var(--red-100);
     color: var(--red-600);
   }

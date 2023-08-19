@@ -8,7 +8,7 @@ export default {
       required: true,
     },
   },
-  created() {
+  mounted() {
     this.setCurrentStatus();
   },
   data() {
@@ -26,6 +26,7 @@ export default {
   },
   methods: {
     getFilteredContent(status) {
+      console.log();
       this.currentStatus = status;
       this.$emit("get-new-content", status);
     },
@@ -39,6 +40,9 @@ export default {
       } else {
         this.currentStatus = "";
       }
+
+      console.log("this.currentStatus", this.currentStatus);
+      console.log(this.filterTabList);
     },
   },
 };
@@ -48,20 +52,22 @@ export default {
   <div class="tab__container">
     <div class="filter__content">
       <div
-        v-for="{ name, status, counts } in filterTabList"
-        :key="status"
-        @click="getFilteredContent(status)"
+        v-for="(fTab, index) in filterTabList"
+        :key="'status_' + index"
+        @click="getFilteredContent(fTab.status)"
         class="filter__content-item"
-        :class="[status === currentStatus ? 'filter__content-item-active' : '']"
+        :class="{
+          'filter__content-item-active': fTab.status === currentStatus,
+        }"
       >
         <div class="filter__content-item-inline">
-          <span>{{ $t(`${name}`) }}</span>
+          <span>{{ $t(`${fTab.name}`) }}</span>
           <span
-            v-if="counts"
+            v-if="fTab.counts"
             class="counts"
-            :class="{ active: status === currentStatus }"
+            :class="{ active: fTab.status === currentStatus }"
           >
-            {{ counts }}
+            {{ fTab.counts }}
           </span>
         </div>
       </div>

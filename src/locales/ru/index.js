@@ -1,4 +1,14 @@
 export default {
+  deleted_date: "Дата удаления",
+  contracts_not_found: {
+    title: "Договоры не были найдены",
+    description: "Попробуйте ввести другие данные для поиска",
+  },
+  restore_contract: "Восстановить договор",
+  contract_archive_title: "Архивирование договора",
+  in_the_archive: "В архиве",
+  move_to_archive: "Архиворовать",
+  remove_from_archive: "Разархивировать",
   deselect: "Отменить выбор",
   color: "Цвет",
   statuses: {
@@ -559,8 +569,10 @@ export default {
     on_payment: "На оплате",
     closed: "Закрыт",
     reorder: "Переоформленные",
-    active: "Faol",
-    de_active: "O'chirilgan",
+    active: "Активный",
+    de_active: "Деактив",
+    archived: "Архивировано",
+    deleted: "Удалено",
   },
 
   promo: {
@@ -723,6 +735,7 @@ export default {
       sold: "Продан",
       closed: "Закрыт",
       contract: "Оформлен",
+      cancelled: "Отменен",
     },
 
     view: {
