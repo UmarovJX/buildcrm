@@ -1,4 +1,8 @@
 export default {
+  checkout_permission_error_when_initial_set_to_zero:
+    "Невозможно внести первоначальный взнос 0 сум",
+  checkout_warning_when_initial_set_to_zero:
+    "Вы сделали первоначальный взнос 0 сумов",
   deleted_date: "Дата удаления",
   contracts_not_found: {
     title: "Договоры не были найдены",

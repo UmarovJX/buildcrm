@@ -88,4 +88,8 @@ export default {
 .error {
   background-color: var(--red-500);
 }
+
+.warning {
+  background-color: var(--yellow-500);
+}
 </style>

@@ -1,4 +1,8 @@
 export default {
+  checkout_permission_error_when_initial_set_to_zero:
+    "Boshlang'ich to'lovni 0 so'm qilish imkoniyati mavjud emas",
+  checkout_warning_when_initial_set_to_zero:
+    "Boshlang'ich to'lovni 0 so'm qildingiz",
   deleted_date: "Oʻchirilgan sana",
   contracts_not_found: {
     title: "Shartnomalar topilmadi",

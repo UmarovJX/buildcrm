@@ -49,4 +49,9 @@ export default class Permission {
     if (this.user) return this.user.role.id === 1;
     return false;
   }
+
+  static isMainManager() {
+    if (this.user) return this.user.role.id === 19;
+    return false;
+  }
 }

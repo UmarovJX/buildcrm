@@ -9,6 +9,13 @@ export default {
           message: "successfully",
           duration: 2000,
         };
+      } else if (xNotify && xNotify.type === "warning") {
+        defaultProperty = {
+          visible: true,
+          type: "warning",
+          message: "warning",
+          duration: 2000,
+        };
       } else {
         defaultProperty = {
           visible: true,

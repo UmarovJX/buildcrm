@@ -18,6 +18,7 @@ import { checkoutV1 } from "@/services/checkout";
 import { dateProperties } from "@/util/calendar";
 import { NOTIFY } from "@/constants/names";
 import { headerItems } from "@/views/checkoutV2/helper/headerComputed";
+import Permission from "@/permission";
 
 export default {
   name: "Index",
@@ -64,6 +65,7 @@ export default {
           third: true,
         },
       },
+      permission: Permission,
     };
   },
 
@@ -264,6 +266,35 @@ export default {
         isCurrentFullFilled,
         changeApmTabIndex,
       } = this.$refs["apartments-overview"];
+
+      const isInitialZero = this.apartments.some(
+        (a) => a.calc.initial_price < 1
+      );
+
+      console.log("is:", isInitialZero);
+
+      if (isInitialZero) {
+        if (this.permission.hasAdminRole() || this.permission.isMainManager()) {
+          await this.openNotify({
+            type: "warning",
+            message: this.$t("checkout_warning_when_initial_set_to_zero"),
+            duration: 6000,
+          });
+        } else {
+          await this.openNotify({
+            type: "error",
+            message: this.$t(
+              "checkout_permission_error_when_initial_set_to_zero"
+            ),
+            duration: 6000,
+          });
+          return false;
+        }
+      }
+
+      console.log(this.apartments);
+      //  main_manager_id = 19
+      // admin_id = 1
 
       const vR = await completeFields();
 
