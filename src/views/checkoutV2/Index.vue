@@ -271,8 +271,6 @@ export default {
         (a) => a.calc.initial_price < 1
       );
 
-      console.log("is:", isInitialZero);
-
       if (isInitialZero) {
         if (this.permission.hasAdminRole() || this.permission.isMainManager()) {
           await this.openNotify({
@@ -291,10 +289,6 @@ export default {
           return false;
         }
       }
-
-      console.log(this.apartments);
-      //  main_manager_id = 19
-      // admin_id = 1
 
       const vR = await completeFields();
 
