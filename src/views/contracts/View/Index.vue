@@ -347,7 +347,7 @@ export default {
       this.showLoading = false;
     },
     backNavigation() {
-      this.$router.push({ name: "contracts" });
+      this.$router.back();
     },
     refreshDetails() {
       this.fetchContractData();

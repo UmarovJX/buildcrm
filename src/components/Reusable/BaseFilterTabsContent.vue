@@ -40,9 +40,6 @@ export default {
       } else {
         this.currentStatus = "";
       }
-
-      console.log("this.currentStatus", this.currentStatus);
-      console.log(this.filterTabList);
     },
   },
 };
