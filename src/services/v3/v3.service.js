@@ -38,6 +38,23 @@ class V3Service extends Core {
       setHolder: (b) => this.post(endpoint + "/holder", b),
     };
   }
+
+  exportModule = {
+    orderFile: (b) => this.post("order/export", b),
+    orderCheckExport: (b) => this.post("order/checkExport", b),
+    orderList: (b) => this.post("order/exportApi", b),
+    orderReportFile: (b) => this.post("report/export", b),
+    checkExport: (b) => this.post("reports/checkExport", b),
+  };
+
+  reports = {
+    create: (b) => this.post("reports/create", b),
+    checkStatus: (b) => this.post("reports/check_status", b),
+    getFilePath: (b) => this.post("reports/getFile", b),
+    retryFailedReport: (b) => this.post("reports/retry", b),
+    cancel: (b) => this.post("reports/cancel", b),
+    findAll: (b) => this.post("reports/findAll", b),
+  };
 }
 
 export const v3ServiceApi = new V3Service();

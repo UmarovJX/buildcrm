@@ -1,4 +1,24 @@
 export default {
+  select_type: "Выберите тип",
+  report: {
+    title: "Отчет",
+    list: "Список отчетов",
+    status: "Статус",
+    clients: "Клиенты",
+    orders: "Заказы",
+    filter_by: "Сортировать по",
+    select_report_type: "Выберите тип отчета",
+    statuses: {
+      created: "создано",
+      processing: "обработку",
+      successful: "успешный",
+      failed: "неуспешный",
+      cancelled: "отменен",
+    },
+  },
+  from_the_date_of: "С даты",
+  to_the_date_of: "До даты",
+  download_report: "Сформировать",
   checkout_permission_error_when_initial_set_to_zero:
     "Невозможно внести первоначальный взнос 0 сум",
   checkout_warning_when_initial_set_to_zero:
@@ -284,6 +304,8 @@ export default {
       delete_comments: "Право на удаления комментов",
       create_comments: "Право на создания комментов",
       read_comments: "Право просмотра комментов",
+      download_order: "Право загрузить список заказов",
+      download_report: "Право загрузить список отчетов",
     },
     users: {
       watch_users: "Право просмотра списка пользователей",

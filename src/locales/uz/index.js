@@ -1,4 +1,24 @@
 export default {
+  select_type: "Turni tanlang",
+  report: {
+    title: "Hisobot",
+    list: "Hisobotlar ro'yxati",
+    status: "Status",
+    clients: "Mijozlar",
+    orders: "Buyurtmalar",
+    filter_by: "Bo'yicha filtrlang",
+    select_report_type: "Hisobot turini tanlang",
+    statuses: {
+      created: "yaratildi",
+      processing: "jarayonda",
+      successful: "muvaffaqiyatli",
+      failed: "muvaffaqiyatsiz",
+      cancelled: "bekor qilingan",
+    },
+  },
+  from_the_date_of: "Sanadan boshlab",
+  to_the_date_of: "Sanasigacha",
+  download_report: "Yuklab olish",
   checkout_permission_error_when_initial_set_to_zero:
     "Boshlang'ich to'lovni 0 so'm qilish imkoniyati mavjud emas",
   checkout_warning_when_initial_set_to_zero:
@@ -276,6 +296,8 @@ export default {
       create_comments: "Izohni yaratish huquqi",
       update_comments: "Izohni tahrirlash huquqi",
       delete_comments: "Izohni o'chirish huquqi",
+      download_order: "Buyurtmalar ro'yxatini yuklash huquqi",
+      download_report: "Hisobotlar ro'yxatini yuklash huquqi",
     },
     users: {
       watch_users: "Foydalanuvchilarni ko'rish huquqi",

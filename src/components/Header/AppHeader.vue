@@ -22,6 +22,7 @@ export default {
       me: "getMe",
     }),
     userCollapse() {
+      // eslint-disable-next-line no-prototype-builtins
       return this.$slots.hasOwnProperty("header-actions");
     },
     getFullName() {

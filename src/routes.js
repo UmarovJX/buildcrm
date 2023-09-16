@@ -548,80 +548,87 @@ const routes = [
         },
       },
 
+      // {
+      //   path: "/documentation/icons",
+      //   name: "icons",
+      //   component: () => import("@/views/documentation/icons"),
+      // },
+      // {
+      //   path: "/documentation/sidebar",
+      //   name: "sidebar",
+      //   component: () => import("@/views/documentation/Sidebar"),
+      // },
+      // {
+      //   path: "/documentation/topbar",
+      //   name: "topbar",
+      //   component: () => import("@/views/documentation/Topbar"),
+      // },
+      // {
+      //   path: "/documentation/buttons",
+      //   name: "buttons",
+      //   component: () => import("@/views/documentation/Buttons"),
+      // },
+      // {
+      //   path: "/documentation/text-fields",
+      //   name: "text-fields",
+      //   component: () => import("@/views/documentation/TextFields"),
+      // },
+      // {
+      //   path: "/documentation/checkbox",
+      //   name: "checkbox",
+      //   component: () => import("@/views/documentation/Checkbox"),
+      // },
+      // {
+      //   path: "/documentation/loader",
+      //   name: "loader",
+      //   component: () => import("@/views/documentation/Loader"),
+      // },
+      // {
+      //   path: "/documentation/notification",
+      //   name: "notification",
+      //   component: () => import("@/views/documentation/Notification"),
+      // },
+      // {
+      //   path: "/documentation/calendar",
+      //   name: "calendar",
+      //   component: () => import("@/views/documentation/Calendar"),
+      // },
+      // {
+      //   path: "/documentation/search",
+      //   name: "search",
+      //   component: () => import("@/views/documentation/Search"),
+      // },
+      // {
+      //   path: "/documentation/tooltip",
+      //   name: "tooltip",
+      //   component: () => import("@/views/documentation/Tooltip"),
+      // },
+      // {
+      //   path: "/documentation/note",
+      //   name: "note",
+      //   component: () => import("@/views/documentation/Note"),
+      // },
+      // {
+      //   path: "/documentation/checkmate",
+      //   name: "checkmate",
+      //   component: () => import("@/views/documentation/Checkmate"),
+      // },
+      // {
+      //   path: "/documentation/tabs",
+      //   name: "tabs",
+      //   component: () => import("@/views/documentation/Tabs"),
+      // },
+      // {
+      //   path: "/documentation/actions",
+      //   name: "actions",
+      //   component: () => import("@/views/documentation/Actions"),
+      // },
+
+      /*  !REPORTS */
       {
-        path: "/documentation/icons",
-        name: "icons",
-        component: () => import("@/views/documentation/icons"),
-      },
-      {
-        path: "/documentation/sidebar",
-        name: "sidebar",
-        component: () => import("@/views/documentation/Sidebar"),
-      },
-      {
-        path: "/documentation/topbar",
-        name: "topbar",
-        component: () => import("@/views/documentation/Topbar"),
-      },
-      {
-        path: "/documentation/buttons",
-        name: "buttons",
-        component: () => import("@/views/documentation/Buttons"),
-      },
-      {
-        path: "/documentation/text-fields",
-        name: "text-fields",
-        component: () => import("@/views/documentation/TextFields"),
-      },
-      {
-        path: "/documentation/checkbox",
-        name: "checkbox",
-        component: () => import("@/views/documentation/Checkbox"),
-      },
-      {
-        path: "/documentation/loader",
-        name: "loader",
-        component: () => import("@/views/documentation/Loader"),
-      },
-      {
-        path: "/documentation/notification",
-        name: "notification",
-        component: () => import("@/views/documentation/Notification"),
-      },
-      {
-        path: "/documentation/calendar",
-        name: "calendar",
-        component: () => import("@/views/documentation/Calendar"),
-      },
-      {
-        path: "/documentation/search",
-        name: "search",
-        component: () => import("@/views/documentation/Search"),
-      },
-      {
-        path: "/documentation/tooltip",
-        name: "tooltip",
-        component: () => import("@/views/documentation/Tooltip"),
-      },
-      {
-        path: "/documentation/note",
-        name: "note",
-        component: () => import("@/views/documentation/Note"),
-      },
-      {
-        path: "/documentation/checkmate",
-        name: "checkmate",
-        component: () => import("@/views/documentation/Checkmate"),
-      },
-      {
-        path: "/documentation/tabs",
-        name: "tabs",
-        component: () => import("@/views/documentation/Tabs"),
-      },
-      {
-        path: "/documentation/actions",
-        name: "actions",
-        component: () => import("@/views/documentation/Actions"),
+        path: "reports",
+        name: "reports",
+        component: () => import("@/views/reports/AppReports.vue"),
       },
 
       ...settingsRoutes,

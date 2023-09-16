@@ -281,6 +281,28 @@ export default {
               </div>
             </router-link>
           </li>
+          <li class="menu__item">
+            <router-link
+              :to="{ name: 'reports' }"
+              :class="
+                $route.name === 'reports' ? 'active-link' : 'inactive-link'
+              "
+            >
+              <!--                    <div class="menu__img"></div>-->
+              <!--                            <i :class="item.icon" class="menu-item__icon"></i>-->
+              <x-icon
+                name="lab_profile"
+                :color="
+                  $route.name === 'reports' ? 'var(--white)' : 'var(--gray-400)'
+                "
+              />
+              <div class="menu__item-body">
+                <div class="menu__name">
+                  {{ $t("report.title") }}
+                </div>
+              </div>
+            </router-link>
+          </li>
         </ul>
 
         <div class="menu h-auto">

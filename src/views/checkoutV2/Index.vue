@@ -428,23 +428,25 @@ export default {
           const hasEditOnInitial = a.calc.initial_payments.some(
             (initial) => initial.edit
           );
+
           if (
             a.edit.first_payment ||
             hasEditOnInitial ||
             a.calc.initial_payments.length > 1 ||
             a.edit.initial_price ||
-            a.edit.prepay
+            a.edit.prepay ||
+            a.edit.discount
           ) {
             orderCtx.initial_payments = [];
             for (let i = 0; i < a.calc.initial_payments.length; i++) {
               const p = a.calc.initial_payments[i];
               const { ymd } = dateProperties(p.month, "string");
-              const isEdited =
-                p.edit || a.edit.first_payment || a.edit.initial_price;
+              // const isEdited =
+              //   p.edit || a.edit.first_payment || a.edit.initial_price;
               orderCtx.initial_payments.push({
                 date: ymd,
                 amount: p.amount,
-                edited: (+isEdited).toString(),
+                edited: "1",
               });
             }
           }

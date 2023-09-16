@@ -34,6 +34,8 @@ const values = {
     edit: false,
     delete: false,
   },
+  download_order: false,
+  download_report: false,
 };
 
 function pms(name, uuid) {
@@ -177,6 +179,16 @@ function pms(name, uuid) {
       {
         label: "roles_permission.contracts.delete_comments",
         refer: "comments.delete",
+        parent: "contracts",
+      },
+      {
+        label: "roles_permission.contracts.download_order",
+        refer: "download_order",
+        parent: "contracts",
+      },
+      {
+        label: "roles_permission.contracts.download_report",
+        refer: "download_report",
         parent: "contracts",
       },
     ],

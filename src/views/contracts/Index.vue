@@ -29,6 +29,7 @@ import {
 import { hasOwnProperty, keys } from "@/util/object";
 import { formatDateToHM } from "@/util/date/calendar.util";
 import Permission from "@/permission";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "Contracts",
@@ -122,6 +123,21 @@ export default {
       selectMode: "single",
       selectable: true,
       counts: {},
+      importFile: {
+        requestLimit: 5 * 60,
+        fetching: false,
+        selected: null,
+        options: [
+          {
+            text: "order",
+            value: "order",
+          },
+          {
+            text: "report",
+            value: "report",
+          },
+        ],
+      },
       filterPermission: ContractsPermission.getContractsFilterPermission(),
       downloadPermission: ContractsPermission.getContractsDownloadPermission(),
     };
@@ -180,9 +196,13 @@ export default {
           key: "apartmentsNumber",
           label: this.$t("contracts.apartment_number"),
           formatter: (v, key, item) => {
-            return item.apartments
-              .reduce((acc, app) => acc + "," + app.number, "")
-              .slice(1);
+            if (hasOwnProperty(item, "apartments")) {
+              return item.apartments
+                .reduce((acc, app) => acc + "," + app.number, "")
+                .slice(1);
+            }
+
+            return "";
           },
         },
         {
@@ -245,6 +265,15 @@ export default {
     },
     searchValue() {
       this.getContractListBySearch();
+    },
+    "importFile.selected"(vSelected) {
+      if (vSelected === "order") {
+        this.importOrder();
+      }
+
+      if (vSelected === "report") {
+        this.importReport();
+      }
     },
   },
   created() {
@@ -465,6 +494,84 @@ export default {
       this.$router.push({ query: {} });
       this.$router.push({ query: sortQuery });
     },
+    async importOrder() {
+      try {
+        this.importFile.fetching = true;
+        const response = await v3ServiceApi.exportModule.orderFile({
+          type: "order_clients",
+        });
+
+        if (response.data.processing_percent < 100) {
+          setTimeout(async () => {
+            await this.importOrder();
+          }, 500);
+        }
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.importFile.fetching = false;
+        this.importFile.selected = null;
+      }
+    },
+    async importReport() {
+      try {
+        this.importFile.fetching = true;
+        const response = await v3ServiceApi.exportModule.orderReportFile({
+          type: "order_clients",
+        });
+
+        await this.checkProcessingPercent({
+          id: response.data.id,
+          userId: response.data["user_id"],
+        });
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.importFile.fetching = false;
+        this.importFile.selected = null;
+      }
+    },
+    async checkProcessingPercent({ id, userId }) {
+      try {
+        this.importFile.fetching = true;
+        const { headers, data } = await v3ServiceApi.exportModule.checkExport({
+          id,
+          user_id: userId,
+        });
+
+        console.log(headers, data);
+
+        // if (data.status === "created") {
+        //   const response = await v3ServiceApi.exportModule.orderReportFile({
+        //     type: "order_clients",
+        //   });
+        //
+        //   console.log("order", response);
+        // }
+
+        setTimeout(async () => {
+          await this.checkProcessingPercent({ id, userId });
+        }, 1000);
+
+        // if (isObject(data) && hasOwnProperty(data, "processing_percent")) {
+        //   await this.checkProcessingPercent({ id, userId });
+        // } else {
+        //   const filename = hasOwnProperty(headers, "x-filename")
+        //     ? headers["x-filename"]
+        //     : "contract";
+        //   const fileURL = window.URL.createObjectURL(new Blob([data]));
+        //   const fileLink = document.createElement("a");
+        //   fileLink.href = fileURL;
+        //   fileLink.setAttribute("download", filename);
+        //   document.body.appendChild(fileLink);
+        //   fileLink.click();
+        // }
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.importFile.fetching = false;
+      }
+    },
   },
 };
 </script>
@@ -474,6 +581,20 @@ export default {
     <app-header>
       <template #header-title>
         {{ $t("contracts.list_contracts") }}
+      </template>
+
+      <template #header-actions>
+        <b-overlay
+          :show="importFile.fetching"
+          rounded="sm"
+          variant="transparent"
+        >
+          <x-form-select
+            v-model="importFile.selected"
+            :options="importFile.options"
+            placeholder="Import"
+          />
+        </b-overlay>
       </template>
     </app-header>
 
