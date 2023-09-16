@@ -583,19 +583,19 @@ export default {
         {{ $t("contracts.list_contracts") }}
       </template>
 
-      <template #header-actions>
-        <b-overlay
-          :show="importFile.fetching"
-          rounded="sm"
-          variant="transparent"
-        >
-          <x-form-select
-            v-model="importFile.selected"
-            :options="importFile.options"
-            placeholder="Import"
-          />
-        </b-overlay>
-      </template>
+      <!--      <template #header-actions>-->
+      <!--        <b-overlay-->
+      <!--          :show="importFile.fetching"-->
+      <!--          rounded="sm"-->
+      <!--          variant="transparent"-->
+      <!--        >-->
+      <!--          <x-form-select-->
+      <!--            v-model="importFile.selected"-->
+      <!--            :options="importFile.options"-->
+      <!--            placeholder="Import"-->
+      <!--          />-->
+      <!--        </b-overlay>-->
+      <!--      </template>-->
     </app-header>
 
     <!--  Tabs  -->
