@@ -16,6 +16,8 @@ export default {
       return {
         padding: `${this.padding}${this.unit}`,
         backgroundColor: this.bgColor,
+        width: this.size,
+        height: this.size,
       };
     },
   },
@@ -25,7 +27,6 @@ export default {
 <template>
   <div
     class="circular-wrapper"
-    :class="size"
     @click="$emit('click', $event)"
     :style="circularBgStyle"
   >

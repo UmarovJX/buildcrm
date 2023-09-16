@@ -1,7 +1,9 @@
 <script>
 import { computed, getCurrentInstance, ref, watch } from "vue";
 import { useLoading } from "@/composables/useLoading";
+import { dateFormatWithDot } from "@/util/date/calendar.util";
 import { v3ServiceApi } from "@/services/v3/v3.service";
+
 import BaseModal from "@/components/Reusable/BaseModal.vue";
 import BaseButton from "@/components/Reusable/BaseButton.vue";
 import { XFormSelect } from "@/components/ui-components/form-select";
@@ -10,7 +12,7 @@ import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon.vue";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
-import { dateFormatWithDot } from "@/util/date/calendar.util";
+import { XCircularBackground } from "@/components/ui-components/circular-background";
 import AppHeader from "@/components/Header/AppHeader.vue";
 
 export default {
@@ -24,6 +26,7 @@ export default {
     BaseButton,
     BaseModal,
     XFormSelect,
+    XCircularBackground,
   },
   setup() {
     const vm = getCurrentInstance();
@@ -92,6 +95,7 @@ export default {
     const timer = ref(null);
     const filterBy = ref(null);
     const loadingFileId = ref(null);
+    const retryingFileId = ref(null);
 
     const showByOptions = [];
     for (let number = 10; number <= 50; number += 10) {
@@ -216,6 +220,18 @@ export default {
       findAll({});
     }
 
+    async function retryToDownloadFile(item) {
+      try {
+        retryingFileId.value = item.id;
+        await v3ServiceApi.reports.retryFailedReport({
+          id: item.id,
+        });
+        await findAll({ showLoading: false });
+      } finally {
+        retryingFileId.value = item.id;
+      }
+    }
+
     async function downloadReportFile() {
       const hasFormCompleted = await vObserverRef.value.validate();
       if (hasFormCompleted) {
@@ -253,6 +269,7 @@ export default {
       showByOptions,
       loadingFileId,
       filterBy,
+      retryingFileId,
 
       countOfItems,
       showPaginationComp,
@@ -263,6 +280,7 @@ export default {
       downloadReportFile,
       changeCurrentPage,
       downloadFile,
+      retryToDownloadFile,
     };
   },
 };
@@ -339,6 +357,7 @@ export default {
             variant="light"
             small
           ></b-spinner>
+
           <base-arrow-down-icon
             v-else
             class="download__icon"
@@ -347,11 +366,29 @@ export default {
             fill="#fff"
           />
         </span>
+
         <b-spinner
-          v-if="['created', 'processing'].includes(data.item.status)"
-          variant="primary"
-          label="Spinning"
+          v-if="
+            ['created', 'processing'].includes(data.item.status) ||
+            data.item.id === retryingFileId
+          "
+          :variant="
+            data.item.id === retryingFileId
+              ? 'danger'
+              : data.item.status === 'processing'
+              ? 'warning'
+              : 'primary'
+          "
         ></b-spinner>
+
+        <x-circular-background
+          v-else-if="data.item.status === 'cancelled'"
+          bg-color="var(--red-600)"
+          size="2rem"
+          @click="retryToDownloadFile(data.item)"
+        >
+          <x-icon name="refresh" color="var(--white)" class="red-600" />
+        </x-circular-background>
       </template>
 
       <!--  Busy Animation    -->
