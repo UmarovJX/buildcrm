@@ -33,7 +33,9 @@ export default {
   setup() {
     const vm = getCurrentInstance();
     const pm = Permission.getUserPermission("reports");
-    const hasViewPermission = isObject(pm) ? pm.create : false;
+
+    const hasViewPermission =
+      Permission.hasAdminRole() || (isObject(pm) ? pm.create : false);
 
     const vObserverRef = ref(null);
     const downloadModalRef = ref(null);
