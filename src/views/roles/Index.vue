@@ -46,6 +46,10 @@ export default {
           key: "actions",
           label: "",
         },
+        {
+          key: "users_page",
+          label: "",
+        },
       ],
     };
   },
@@ -165,26 +169,11 @@ export default {
           {{ getName(data.item.name) }}
         </template>
 
-        <template #cell(actions)="data">
-          <div class="d-flex align-items-center">
-            <base-button
-              @click="
-                $router.push({
-                  name: 'users',
-                  query: {
-                    role_id: data.item.id,
-                  },
-                })
-              "
-              class="d-flex align-items-center mr-4 violet-600"
-            >
-              <span class="mr-1">{{ $t("roles.users") }}</span>
-              <span class="d-flex align-items-center">
-                <x-icon name="visibility" size="18" color="var(--violet-600)" />
-              </span>
-            </base-button>
+        <template #cell(users_page)="data"> </template>
 
-            <div class="float-right">
+        <template #cell(actions)="data">
+          <div class="float-right">
+            <div class="d-flex align-items-center">
               <div
                 class="dropdown my-dropdown dropleft"
                 v-if="
@@ -222,6 +211,27 @@ export default {
                   </a>
                 </div>
               </div>
+
+              <base-button
+                @click="
+                  $router.push({
+                    name: 'users',
+                    query: {
+                      role_id: data.item.id,
+                    },
+                  })
+                "
+                class="d-flex align-items-center ml-4 violet-600"
+              >
+                <span class="mr-1">{{ $t("roles.users") }}</span>
+                <span class="d-flex align-items-center">
+                  <x-icon
+                    name="visibility"
+                    size="18"
+                    color="var(--violet-600)"
+                  />
+                </span>
+              </base-button>
             </div>
           </div>
         </template>
