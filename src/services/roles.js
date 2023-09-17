@@ -1,5 +1,5 @@
-import { axiosV1CRM } from "@/services/core/base";
 import Core from "@/services/core/index";
+import { axiosV1CRM } from "@/services/core/base";
 
 class Roles extends Core {
   constructor(axios = axiosV1CRM) {

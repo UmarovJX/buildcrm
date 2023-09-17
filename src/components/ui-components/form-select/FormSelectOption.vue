@@ -152,14 +152,17 @@ export default {
     :value="inlineOption.value"
     @click="optionClickHandle"
   >
-    <slot name="option-left" />
-    <slot name="default" />
-    <span v-if="absentDefaultSlot">
-      <span v-if="bilingual">{{ $t(inlineOption[textField]) }}</span>
-      <span v-else-if="multilingual">{{ getMultilingualValue() }}</span>
-      <span v-else>{{ inlineOption[textField] }}</span>
+    <span>
+      <slot name="option-left" />
+      <slot name="default" />
+      <span v-if="absentDefaultSlot">
+        <span v-if="bilingual">{{ $t(inlineOption[textField]) }}</span>
+        <span v-else-if="multilingual">{{ getMultilingualValue() }}</span>
+        <span v-else>{{ inlineOption[textField] }}</span>
+      </span>
+      <slot name="option-right" />
     </span>
-    <slot name="option-right" />
+
     <span v-if="showActiveCheckIcon" class="option-check-icon">
       <base-check-icon fill="#7C3AED" :width="20" :height="20" />
     </span>

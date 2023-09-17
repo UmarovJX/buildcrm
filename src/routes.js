@@ -629,6 +629,9 @@ const routes = [
         path: "reports",
         name: "reports",
         component: () => import("@/views/reports/AppReports.vue"),
+        meta: {
+          requiresAuth: "reports",
+        },
       },
 
       ...settingsRoutes,

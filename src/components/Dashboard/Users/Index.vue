@@ -14,10 +14,17 @@ import UsersPermission from "@/permission/users";
 import AppHeader from "@/components/Header/AppHeader";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
-
+import { XFormSelect } from "@/components/ui-components/form-select";
+import { XFormSelectOption } from "@/components/ui-components/form-select";
+import { XCircularBackground } from "@/components/ui-components/circular-background";
+import { hasOwnProperty } from "@/util/object";
+import { isNull } from "@/util/inspect";
 export default {
   name: "UsersPage",
   components: {
+    XFormSelectOption,
+    XCircularBackground,
+    XFormSelect,
     BasePlusIcon,
     AppHeader,
     BaseSearchInput,
@@ -29,13 +36,6 @@ export default {
     BaseFilterTabsContent,
     "create-modal": Create,
     "edit-modal": Edit,
-  },
-
-  created() {
-    this.filter = {
-      ...this.$route.query,
-    };
-    this.currentPage = Number(this.filter.page);
   },
   data() {
     const showByOptions = [];
@@ -125,6 +125,9 @@ export default {
       loading: false,
       showByValue,
       pagination: {},
+
+      rolesList: [],
+      selectRole: null,
     };
   },
   watch: {
@@ -137,23 +140,60 @@ export default {
     searchValue() {
       this.getUsersListBySearch();
     },
+    selectRole(srValue) {
+      this.$router.push({
+        query: {
+          role_id: isNull(srValue) ? undefined : srValue,
+        },
+      });
+    },
   },
   computed: {
     ...mapGetters(["getPermission"]),
-
     countOfItems() {
       return this.tableItems.length;
     },
     query() {
       return Object.assign({}, this.$route.query);
     },
+    rolesFilterOption() {
+      const { locale } = this.$i18n;
+      return this.rolesList.map((roleItem) => {
+        return {
+          value: roleItem.id,
+          text: roleItem.name[locale],
+          count: roleItem["users_count"],
+        };
+      });
+    },
   },
+  async created() {
+    this.filter = {
+      ...this.$route.query,
+    };
+    this.currentPage = Number(this.filter.page);
 
-  mounted() {
-    this.fetchUsers();
+    try {
+      this.loading = true;
+      await Promise.allSettled([this.fetchUsers(), this.fetchRoles()]);
+    } finally {
+      this.loading = false;
+    }
   },
-
   methods: {
+    async fetchRoles() {
+      const rolesRsp = await api.roles.fetchRoles();
+      this.rolesList = rolesRsp.data;
+      this.setFilterRole();
+    },
+    setFilterRole() {
+      const hasQueryOfRole = hasOwnProperty(this.$route.query, "role_id");
+      if (hasQueryOfRole) {
+        this.selectRole = this.rolesFilterOption.find(
+          (opt) => opt.value === parseInt(this.$route.query.role_id)
+        ).value;
+      }
+    },
     fetchContentByStatus(status) {
       const query = Object.assign({}, this.query);
       if (query.hasOwnProperty("page")) {
@@ -218,21 +258,14 @@ export default {
 
     async fetchUsers() {
       const query = sortObjectValues(this.query);
-      this.loading = true;
-      await api.userV2
-        .getUsersList(query)
-        .then((response) => {
-          this.tableItems = response.data.items.map((item) => ({
-            ...item,
-            toggleCollapse: false,
-          }));
-          this.pagination = response.data.pagination;
-          this.showByValue = response.data.pagination.perPage;
-          this.loading = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      await api.userV2.getUsersList(query).then((response) => {
+        this.tableItems = response.data.items.map((item) => ({
+          ...item,
+          toggleCollapse: false,
+        }));
+        this.pagination = response.data.pagination;
+        this.showByValue = response.data.pagination.perPage;
+      });
     },
 
     replaceRouter(query) {
@@ -324,6 +357,45 @@ export default {
     <app-header>
       <template #header-title>
         {{ $t("users.title") }}
+      </template>
+
+      <template #header-actions>
+        <div class="content__form__select">
+          <x-form-select
+            style="min-width: 250px"
+            v-if="rolesFilterOption.length"
+            class="w-100"
+            id="selectType"
+            v-model="selectRole"
+            value-field="value"
+            text-field="text"
+            :placeholder="`${$t('filter.by_role')}`"
+          >
+            <x-form-select-option
+              v-for="roleOption in rolesFilterOption"
+              :key="roleOption.value"
+              :id="roleOption.value"
+              :option="roleOption"
+            >
+              <span class="d-flex">
+                <span>{{ roleOption.text }}</span>
+                <span
+                  v-if="roleOption.count"
+                  class="ml-2 bg-violet-600 text-white d-flex align-items-center justify-content-center"
+                  style="
+                    font-size: 0.75rem;
+                    border-radius: 1rem;
+                    height: 1rem;
+                    min-width: 1rem;
+                    padding: 0.75rem;
+                  "
+                >
+                  <span> {{ roleOption.count }} </span>
+                </span>
+              </span>
+            </x-form-select-option>
+          </x-form-select>
+        </div>
       </template>
     </app-header>
 
@@ -604,5 +676,28 @@ export default {
   background-position: right calc(2rem / 2) center !important;
   background-size: 20px;
   background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
+}
+
+.content__form__select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--gray-100);
+  border-radius: 2rem !important;
+  border: none;
+  color: var(--gray-600);
+  position: relative;
+
+  .form__select {
+    background-color: transparent;
+    border: none;
+    color: var(--gray-600);
+    margin: 0 1rem;
+    width: 100%;
+  }
+
+  ::v-deep .x-form-select-main .x-form-select-options {
+    max-height: 200px !important;
+  }
 }
 </style>

@@ -6,6 +6,8 @@
   padding: 1rem;
   border-radius: 1rem;
   font-weight: 600;
+  display: flex;
+  justify-content: space-between;
 
   &:hover {
     background-color: var(--gray-100);
@@ -19,10 +21,11 @@
   }
 
   .option-check-icon {
-    position: absolute;
+    //display: flex;
+    //position: absolute;
     width: 20px;
     right: 18px;
-    top: 50%;
-    transform: translateY(-50%);
+    //top: 50%;
+    //transform: translateY(-50%);
   }
 }

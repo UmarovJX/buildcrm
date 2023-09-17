@@ -1,4 +1,11 @@
 export default {
+  filter: {
+    by_role: "Rol bo'yicha filtrlash",
+  },
+  reports: {
+    title: "Hisobot",
+    not_found: "Hisobotlar topilmadi",
+  },
   select_type: "Turni tanlang",
   report: {
     title: "Hisobot",
@@ -348,6 +355,10 @@ export default {
       template_download: "Shartnomani na'muna shablonini yuklash huquqi",
       template_instruction:
         "Shartnomani na'muna shablonini ko'rsatmasini ko'rish huquqi",
+    },
+    reports: {
+      create: "Право создавать отчеты",
+      view: "Hisobotlarni yaratish huquqi",
     },
   },
   user: {

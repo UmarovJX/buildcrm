@@ -14,6 +14,8 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import AppHeader from "@/components/Header/AppHeader.vue";
+import Permission from "@/permission";
+import { isObject } from "@/util/inspect";
 
 export default {
   components: {
@@ -30,6 +32,8 @@ export default {
   },
   setup() {
     const vm = getCurrentInstance();
+    const pm = Permission.getUserPermission("reports");
+    const hasViewPermission = isObject(pm) ? pm.create : false;
 
     const vObserverRef = ref(null);
     const downloadModalRef = ref(null);
@@ -142,7 +146,9 @@ export default {
     }
 
     function openModal() {
-      downloadModalRef.value.openModal();
+      if (hasViewPermission) {
+        downloadModalRef.value.openModal();
+      }
     }
 
     function closeModal() {
@@ -270,6 +276,7 @@ export default {
       loadingFileId,
       filterBy,
       retryingFileId,
+      hasViewPermission,
 
       countOfItems,
       showPaginationComp,
@@ -302,7 +309,11 @@ export default {
           />
         </div>
 
-        <base-button @click="openModal" :text="`${$t('download_report')}`">
+        <base-button
+          @click="openModal"
+          v-if="hasViewPermission"
+          :text="`${$t('download_report')}`"
+        >
           <template #left-icon>
             <x-icon
               name="add_circle"
@@ -400,7 +411,7 @@ export default {
         <div
           class="d-flex justify-content-center align-items-center flex-column not__found"
         >
-          <p class="head">{{ $t("contracts_not_found.title") }}</p>
+          <p class="head">{{ $t("reports.not_found") }}</p>
           <p>{{ $t("contracts_not_found.description") }}</p>
         </div>
       </template>

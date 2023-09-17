@@ -111,7 +111,9 @@ export default {
         hasLowerCase && hasUpperCase && hasNumber && hasSpecialChar;
     },
     initManagerRole() {
-      this.manager.role_id = this.getRoles[0].id;
+      if (this.getRoles.length && this.getRoles[0]?.id) {
+        this.manager.role_id = this.getRoles[0]?.id;
+      }
     },
     regeneratePassword() {
       const characters = [];
