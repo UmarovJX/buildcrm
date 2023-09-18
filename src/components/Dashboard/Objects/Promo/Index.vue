@@ -9,6 +9,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
 import AppHeader from "@/components/Header/AppHeader";
 import AppBreadcrumb from "@/components/AppBreadcrumb";
+import { hasOwnProperty } from "@/util/object";
 
 export default {
   name: "Promo",
@@ -67,7 +68,12 @@ export default {
         .fetchPromoList(id)
         .then((response) => {
           this.promos = response.data;
-          this.page = this.promos[0].object_name;
+          if (
+            this.promos.length &&
+            hasOwnProperty(this.promos[0], "object_name")
+          ) {
+            this.page = this.promos[0]["object_name"];
+          }
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
