@@ -155,6 +155,12 @@ export default {
 
     function closeModal() {
       downloadModalRef.value.closeModal();
+      vObserverRef.value.reset();
+      reportForm.value = {
+        dateFrom: null,
+        dateTo: null,
+        type: null,
+      };
     }
 
     function checking({ ids }) {
