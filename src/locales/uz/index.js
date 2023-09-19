@@ -1,4 +1,7 @@
 export default {
+  checkout: {
+    address_line: "Doimiy turar mazili",
+  },
   filter: {
     by_role: "Rol bo'yicha filtrlash",
   },

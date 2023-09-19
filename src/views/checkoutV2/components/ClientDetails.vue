@@ -54,6 +54,7 @@ export default {
       client_type_id: null,
       company_type_id: null,
       country_id: null,
+      address_line: "",
     };
 
     return {
@@ -386,6 +387,7 @@ export default {
             passport_issued_by: p.place_of_issue,
             passport_series: p.passport_series,
             country_id: p.country_id,
+            address_line: p.address_line,
           },
         };
       } else {
@@ -767,6 +769,22 @@ export default {
           text-field="name"
           :placeholder="$t('client_type')"
           v-model="personalData.client_type_id"
+        />
+      </validation-provider>
+
+      <!--? CLIENT_ADDRESS_LINE  -->
+      <validation-provider
+        v-if="!showLegalEntityFields"
+        :name="`${$t('checkout.address_line')}`"
+        rules="required"
+        v-slot="{ errors }"
+      >
+        <x-form-input
+          class="w-100"
+          :label="true"
+          :error="!!errors[0]"
+          v-model="personalData.address_line"
+          :placeholder="`${$t('checkout.address_line')}`"
         />
       </validation-provider>
 

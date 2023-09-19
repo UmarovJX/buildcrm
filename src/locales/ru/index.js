@@ -1,4 +1,7 @@
 export default {
+  checkout: {
+    address_line: "Место жительства",
+  },
   filter: {
     by_role: "Фильтровать по роли",
   },
