@@ -205,6 +205,7 @@ export default {
     autoFillFieldsByPassportSeries(data) {
       this.personalData.country_id = data.attributes.country.id;
       this.personalData.place_of_issue = data.attributes.passport_issued_by;
+      this.personalData.address_line = data.attributes.address_line;
       this.personalData.date_of_issue = formatDateToYMD(
         data.attributes.passport_issued_date
       );

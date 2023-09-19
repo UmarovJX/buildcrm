@@ -253,6 +253,23 @@ export default {
             />
           </div>
         </div>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 3rem;
+          "
+        >
+          <div class="w-auto client__details_info_card">
+            <label for="addressLine">{{ $t("checkout.address_line") }}</label>
+            <b-form-input
+              disabled
+              :value="client.attributes.address_line"
+              id="addressLine"
+            />
+          </div>
+        </div>
       </b-form>
     </div>
   </div>
