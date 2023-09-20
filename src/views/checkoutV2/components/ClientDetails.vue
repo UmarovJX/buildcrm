@@ -99,9 +99,11 @@ export default {
   },
 
   async created() {
-    await this.getCountriesList();
-    await this.getClientTypesList();
-    await this.fetchCompanyType();
+    await Promise.allSettled([
+      this.getCountriesList(),
+      this.getClientTypesList(),
+      this.fetchCompanyType(),
+    ]);
   },
 
   methods: {
@@ -170,6 +172,7 @@ export default {
       }
     },
     autoFillFieldsByInn(data) {
+      console.log("data", data);
       this.personalData.legal_entity.fax = data.attributes.fax;
       this.personalData.legal_entity.mfo = data.attributes.mfo;
       this.personalData.legal_entity.ndc = data.attributes.nds;
@@ -320,6 +323,10 @@ export default {
       );
     },
     getObserverFlags() {
+      console.log(
+        'this.$refs["clients-data-observer"]',
+        this.$refs["clients-data-observer"]
+      );
       return this.$refs["clients-data-observer"].flags;
     },
     async validateFields() {
@@ -428,6 +435,10 @@ export default {
         this.personalData.legal_entity.legal_address =
           client.attributes.legal_address;
         this.personalData.legal_entity.fax = client.attributes.fax;
+        this.personalData.email = client.email;
+        this.personalData.other_email = client.additional_email;
+        this.personalData.client_type_id = client.client_type.id;
+        this.personalData.company_type_id = client.attributes.company.id;
       }
     },
   },
@@ -482,13 +493,11 @@ export default {
           v-slot="{ errors }"
           rules="required"
           :name="`${$t('company_type')}`"
+          v-if="companyTypeOptions.length"
         >
           <x-form-select
-            v-if="companyTypeOptions.length"
             :error="!!errors[0]"
             :options="companyTypeOptions"
-            value-field="value"
-            text-field="text"
             :placeholder="$t('company_type')"
             v-model="personalData.company_type_id"
           />
@@ -811,31 +820,6 @@ export default {
       class="km-b-2"
     />
     <div class="clients-contact-details">
-      <!--? CLIENT_PHONE  -->
-      <validation-provider
-        :name="`${$t('phone')}`"
-        rules="required|min:4"
-        v-slot="{ errors }"
-      >
-        <x-form-input
-          class="w-100"
-          :label="true"
-          :error="!!errors[0]"
-          v-model="personalData.phone"
-          mask="+### ## ### ## ##"
-          :placeholder="`${$t('phone')}`"
-        />
-      </validation-provider>
-
-      <!--? CLIENT_ADDITIONAL_PHONE  -->
-      <x-form-input
-        class="w-100"
-        :label="true"
-        v-model="personalData.other_phone"
-        mask="+### ## ### ## ##"
-        :placeholder="`${$t('additional_phone_number')}`"
-      />
-
       <!--!  THE CONTINUATION OF THE LEGAL ENTITY FIELDS   -->
       <template v-if="showLegalEntityFields">
         <!--? LEGAL ADDRESS  -->
@@ -873,24 +857,47 @@ export default {
       </template>
       <!--!  END OF THE LEGAL ENTITY FIELDS    -->
 
-      <template v-else>
-        <!--? CLIENT_EMAIL  -->
-        <x-form-input
-          class="w-100 ch-client-email"
-          :label="true"
-          type="email"
-          v-model="personalData.email"
-          :placeholder="`${$t('email')}`"
-        />
+      <!--? CLIENT_EMAIL  -->
+      <x-form-input
+        class="w-100 ch-client-email"
+        :label="true"
+        type="email"
+        v-model="personalData.email"
+        :placeholder="`${$t('email')}`"
+      />
 
-        <!--? CLIENT_ADDITIONAL_EMAIL  -->
+      <!--? CLIENT_PHONE  -->
+      <validation-provider
+        :name="`${$t('phone')}`"
+        rules="required|min:4"
+        v-slot="{ errors }"
+      >
         <x-form-input
           class="w-100"
           :label="true"
-          v-model="personalData.other_email"
-          :placeholder="`${$t('additional_email')}`"
+          :error="!!errors[0]"
+          v-model="personalData.phone"
+          mask="+### ## ### ## ##"
+          :placeholder="`${$t('phone')}`"
         />
-      </template>
+      </validation-provider>
+
+      <!--? CLIENT_ADDITIONAL_EMAIL  -->
+      <x-form-input
+        class="w-100"
+        :label="true"
+        v-model="personalData.other_email"
+        :placeholder="`${$t('additional_email')}`"
+      />
+
+      <!--? CLIENT_ADDITIONAL_PHONE  -->
+      <x-form-input
+        class="w-100"
+        :label="true"
+        v-model="personalData.other_phone"
+        mask="+### ## ### ## ##"
+        :placeholder="`${$t('additional_phone_number')}`"
+      />
 
       <!--? CLIENT_EXTRA_PHONES_FIELD  -->
       <div

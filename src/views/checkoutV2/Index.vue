@@ -612,9 +612,10 @@ export default {
           this.turnOnValidation();
         }
       } catch (e) {
+        console.error(e);
         await this.openNotify({
           type: "error",
-          message: e.response.data.message ?? e.message,
+          message: e?.response?.data?.message ?? e.message,
         });
       } finally {
         this.finishFetching();

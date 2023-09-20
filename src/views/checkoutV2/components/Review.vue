@@ -7,7 +7,8 @@ import { mapActions, mapGetters, mapState } from "vuex";
 import { formatToPrice } from "@/util/reusable";
 import { XBottomClipboard } from "@/components/ui-components/bottom-clipboard";
 import { XButton } from "@/components/ui-components/button";
-import { isEmptyObject } from "@/util/inspect";
+import { isEmptyObject, isNUNEZ } from "@/util/inspect";
+import api from "@/services/api";
 
 export default {
   name: "ChReviewSide",
@@ -20,7 +21,12 @@ export default {
     XButton,
   },
   data() {
-    return {};
+    return {
+      companyTypes: [],
+    };
+  },
+  created() {
+    this.fetchCompanyType();
   },
   computed: {
     ...mapState("CheckoutV2", {
@@ -41,6 +47,16 @@ export default {
       let details = [];
 
       if (this.clientInfo.subject === "legal") {
+        const findCompanyType = this.companyTypes.find((typeCtx) => {
+          return typeCtx.id === this.clientInfo.attributes.company_type_id;
+        });
+
+        let companyType = "";
+
+        if (findCompanyType) {
+          companyType = findCompanyType.name[this.$i18n.locale];
+        }
+
         details = [
           {
             title: "person_type",
@@ -51,6 +67,16 @@ export default {
             title: "bank",
             content: this.clientInfo.attributes.bank_name,
             icon: "account_balance",
+          },
+          {
+            title: "company_type",
+            content: companyType,
+            icon: "label",
+          },
+          {
+            title: "company_name",
+            content: this.clientInfo.attributes.name,
+            icon: "apartment",
           },
           {
             title: "account_number",
@@ -81,6 +107,11 @@ export default {
             title: "legal_address",
             content: this.clientInfo.attributes.legal_address,
             icon: "location_on",
+          },
+          {
+            title: "checkout.address_line",
+            content: this.clientInfo.attributes.address_line,
+            icon: "home_pin",
           },
         ];
       } else {
@@ -129,15 +160,19 @@ export default {
             content: this.clientInfo.language,
             icon: "language",
           },
-          {
-            title: "phone",
-            content: this.clientInfo.phones[0].phone,
-            icon: "call",
-          },
         ];
       }
 
-      if (this.clientInfo.phones.length > 1) {
+      details.push({
+        title: "phone",
+        content: this.clientInfo.phones[0].phone,
+        icon: "call",
+      });
+
+      if (
+        this.clientInfo.phones.length > 1 &&
+        isNUNEZ(this.clientInfo.phones[1].phone)
+      ) {
         details.push({
           title: "additional_phone_number",
           content: this.clientInfo.phones[1].phone,
@@ -145,7 +180,7 @@ export default {
         });
       }
 
-      if (this.clientInfo?.email !== "") {
+      if (isNUNEZ(this.clientInfo?.email)) {
         details.push({
           title: "email",
           content: this.clientInfo.email,
@@ -153,7 +188,7 @@ export default {
         });
       }
 
-      if (this.clientInfo?.additional_email !== "") {
+      if (isNUNEZ(this.clientInfo?.additional_email)) {
         details.push({
           title: "additional_email",
           content: this.clientInfo.additional_email,
@@ -169,6 +204,16 @@ export default {
     ...mapActions("CheckoutV2", {
       returnRemovedApartments: "returnRemovedApartments",
     }),
+    async fetchCompanyType() {
+      await api.companies
+        .getCompanyType()
+        .then((response) => {
+          this.companyTypes = response.data;
+        })
+        .catch((error) => {
+          this.toastedWithErrorCode(error);
+        });
+    },
   },
 };
 </script>

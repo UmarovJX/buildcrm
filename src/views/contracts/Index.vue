@@ -344,6 +344,16 @@ export default {
       if (this.$i18n.locale === "uz") {
         language = "lotin";
       }
+
+      if (client.subject === "legal") {
+        console.log("client.attributes.company", client.attributes.company);
+        return (
+          client.attributes.company.name[this.$i18n.locale] +
+          " " +
+          client.attributes.name
+        );
+      }
+
       const { first_name, last_name, middle_name } =
         client.attributes ?? client;
       return (
@@ -456,6 +466,7 @@ export default {
       await api.contractV2
         .fetchContractsList(query)
         .then((response) => {
+          console.log(response.data.items);
           response.data.items.forEach((dataItem) => {
             this.tableItems.push(
               dataItem

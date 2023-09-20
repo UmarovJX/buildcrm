@@ -138,7 +138,7 @@ export default {
     inputModel: debounce(function () {
       this.emitValue();
       this.toggleClearButton();
-    }, 1500),
+    }, 0), //1500
     value(valueUpdateByParent) {
       if (valueUpdateByParent !== this.inputModel) {
         this.inputModel = valueUpdateByParent;

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui-components/form-select";
 import {
   isNotUndefinedNullEmptyZero,
-  isNull,
+  isNUNEZ,
   isUndefinedOrNullOrEmpty,
 } from "@/util/inspect";
 
@@ -17,6 +17,7 @@ export default {
   name: "TabClientDetails",
   components: {
     XFormSelect: XFormSelect,
+    // eslint-disable-next-line vue/no-unused-components
     XFormSelectOption: XFormSelectOption,
   },
   props: {
@@ -45,11 +46,29 @@ export default {
     permissionClientType() {
       return ContractsPermission.getContractsClientTypePermission();
     },
+    isLegalClient() {
+      return this.client.subject === "legal";
+    },
+    cAttrs() {
+      return this.client?.attributes;
+    },
+    legalClientDetails() {
+      if (this.isLegalClient) {
+        const companyType = this.cAttrs.company.name[this.$i18n.locale];
+        const companyName = this.cAttrs.name;
+        return {
+          companyName: companyType + " " + companyName,
+        };
+      }
+
+      return null;
+    },
   },
   created() {
     Promise.allSettled([this.getClientInformation(), this.fetchClientTypes()]);
   },
   methods: {
+    isNUNEZ,
     datePrettier: (time) => formatDateWithDot(time),
     getClientMajorPhone(phones) {
       if (!phones.length) {
@@ -150,20 +169,180 @@ export default {
       return "";
     },
     async changeClientType() {
-      this.startLoading();
-      await api.contractV2
-        .toggleClientType(this.contractId, this.clientTypeId)
-        .finally(() => {
-          this.finishLoading();
-        });
+      if (this.client.client_type.id !== this.clientTypeId) {
+        this.startLoading();
+        await api.contractV2
+          .toggleClientType(this.contractId, this.clientTypeId)
+          .finally(() => {
+            this.finishLoading();
+          });
+      }
     },
   },
 };
+
+const example = {
+  id: "82dfdf7a-4d47-48e4-9a23-37526f81a074",
+  subject: "legal",
+  client_type: {
+    id: 1,
+    name: {
+      uz: "Default",
+      ru: "Дефаулт",
+    },
+    icon: "person",
+    is_vip: false,
+  },
+  language: "uz",
+  phones: [
+    {
+      id: 17,
+      phone: 998909512683,
+    },
+    {
+      id: 18,
+      phone: 998909925044,
+    },
+    {
+      id: 19,
+      phone: 0,
+    },
+  ],
+  email: "ulasoft@mail.ru",
+  additional_email: "sultonovkomronbek17@gmail.com",
+  attributes: {
+    name: "NameOfCompany",
+    payment_number: "IdentityNumber",
+    bank_name: "Bank",
+    mfo: "MFONumber",
+    inn: "INN01",
+    nds: "NDC",
+    legal_address: "Mustaqillik",
+    fax: "Fax test",
+    company: {
+      id: 1,
+      name: {
+        uz: "MCHJ",
+        kr: "МЧЖ",
+        ru: "ООО",
+      },
+    },
+  },
+};
+
+console.log(example);
 </script>
 
 <template>
   <div v-if="haveClient">
-    <div class="client__details col-12 px-0">
+    <!--  ? LEGAL CLIENT    -->
+    <div v-if="isLegalClient" class="client__details col-12 px-0">
+      <div class="d-flex">
+        <h3 class="client__details__title mr-5">{{ $t("main") }}</h3>
+      </div>
+
+      <div class="d-flex">
+        <div class="client__details_info_card mr-5">
+          <label for="companyName">{{ $t("company_name") }}</label>
+          <b-form-input
+            disabled
+            :value="legalClientDetails.companyName"
+            id="companyName"
+          />
+        </div>
+        <div class="client__details_info_card">
+          <label for="birthdate">{{ $t("companies.bank_name") }}</label>
+          <b-form-input disabled :value="cAttrs.bank_name" id="birthdate" />
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="client__details_info_card mr-5">
+          <label for="payment_number">{{ $t("account_number") }}</label>
+          <b-form-input
+            disabled
+            :value="cAttrs.payment_number"
+            id="payment_number"
+          />
+        </div>
+        <div class="client__details_info_card">
+          <label for="birthdate">{{ $t("mfo") }}</label>
+          <b-form-input disabled :value="cAttrs.mfo" id="birthdate" />
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="client__details_info_card mr-5">
+          <label for="ndc">{{ $t("ndc") }}</label>
+          <b-form-input disabled :value="cAttrs.nds" id="ndc" />
+        </div>
+        <div class="client__details_info_card">
+          <label for="inn">{{ $t("inn") }}</label>
+          <b-form-input disabled :value="cAttrs.inn" id="inn" />
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <div class="client__details_info_card mr-5">
+          <label for="legal_address">{{ $t("legal_address") }}</label>
+          <b-form-input
+            disabled
+            :value="cAttrs.legal_address"
+            id="legal_address"
+          />
+        </div>
+        <div class="client__details_info_card">
+          <label for="fax">{{ $t("fax") }}</label>
+          <b-form-input disabled :value="cAttrs.fax" id="fax" />
+        </div>
+      </div>
+
+      <div class="phones-section">
+        <div class="client__details_info_card mr-5" style="padding-right: 0">
+          <label for="client_type">{{ $t("client_type") }}</label>
+          <x-form-select
+            v-if="permissionClientType && clientTypeOptions.length"
+            :label="false"
+            :disabled="!permissionClientType"
+            :options="clientTypeOptions"
+            :multilingual="true"
+            @change="changeClientType"
+            v-model="clientTypeId"
+          >
+          </x-form-select>
+        </div>
+
+        <div v-if="client.phones.length" class="client__details_info_card mr-5">
+          <label for="phone">{{ $t("phone") }}</label>
+          <b-form-input
+            disabled
+            :value="formattingPhone(client.phones[0].phone)"
+            id="phone"
+          />
+        </div>
+
+        <template v-if="client.phones.length > 1">
+          <div
+            class="client__details_info_card mr-5"
+            v-for="(extraPhone, index) in client.phones.slice(1)"
+            :key="extraPhone.id + extraPhone.phone"
+          >
+            <label :for="'additional_phone_number' + index">
+              {{ $t("additional_phone_number") }}
+            </label>
+            <b-form-input
+              v-if="isNUNEZ(extraPhone.phone)"
+              disabled
+              :value="formattingPhone(client.phones[index + 1].phone)"
+              :id="'additional_phone_number' + index"
+            />
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!--  ? PHYSICAL CLIENT    -->
+    <div v-else class="client__details col-12 px-0">
       <b-form class="client__details_info">
         <div class="d-flex">
           <h3 class="client__details__title mr-5">{{ $t("main") }}</h3>
@@ -250,23 +429,6 @@ export default {
               disabled
               id="date_of_issue"
               :value="datePrettier(client.attributes.passport_issued_date)"
-            />
-          </div>
-        </div>
-
-        <div
-          style="
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            column-gap: 3rem;
-          "
-        >
-          <div class="w-auto client__details_info_card">
-            <label for="addressLine">{{ $t("checkout.address_line") }}</label>
-            <b-form-input
-              disabled
-              :value="client.attributes.address_line"
-              id="addressLine"
             />
           </div>
         </div>
@@ -403,6 +565,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.phones-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 3rem;
 }
 
 @media screen and (max-width: 1100px) {
