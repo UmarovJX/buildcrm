@@ -297,6 +297,21 @@ console.log(example);
         </div>
       </div>
 
+      <div class="d-flex">
+        <div class="client__details_info_card mr-5">
+          <label for="email">{{ $t("email") }}</label>
+          <b-form-input disabled :value="client.email" id="email" />
+        </div>
+        <div class="client__details_info_card">
+          <label for="additional_email">{{ $t("additional_email") }}</label>
+          <b-form-input
+            disabled
+            :value="client.additional_email"
+            id="additional_email"
+          />
+        </div>
+      </div>
+
       <div class="phones-section">
         <div class="client__details_info_card mr-5" style="padding-right: 0">
           <label for="client_type">{{ $t("client_type") }}</label>
@@ -370,43 +385,68 @@ console.log(example);
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="phone">{{ $t("phone") }} ({{ $t("main") }})</label>
+            <label for="address_line">{{ $t("checkout.address_line") }}</label>
             <b-form-input
               disabled
-              :value="getClientMajorPhone(client.phones)"
-              id="phone"
+              :value="cAttrs.address_line"
+              id="address_line"
             />
           </div>
           <div class="client__details_info_card">
-            <label for="series">{{ $t("series") }}</label>
+            <label for="country">{{ $t("country") }}</label>
             <b-form-input
               disabled
-              :value="client.attributes.passport_series"
-              id="series"
+              :value="cAttrs.country.name[$i18n.locale]"
+              id="country"
             />
           </div>
         </div>
 
         <div class="d-flex">
           <div class="client__details_info_card mr-5">
-            <label for="second_number"
-              >{{ $t("phone") }} ({{ $t("extra") }})</label
-            >
-            <b-form-input
-              disabled
-              :value="getExtraPhone(client.phones)"
-              id="second_number"
-            />
+            <label for="email">{{ $t("email") }}</label>
+            <b-form-input disabled :value="client.email" id="email" />
           </div>
           <div class="client__details_info_card">
-            <label for="date_of_given_place">{{ $t("given") }}</label>
+            <label for="additional_email">{{ $t("additional_email") }}</label>
             <b-form-input
               disabled
-              type="text"
-              id="date_of_given_place"
-              :value="`${client.attributes.passport_issued_by}`"
+              :value="client.additional_email"
+              id="additional_email"
             />
           </div>
+        </div>
+
+        <div class="phones-section">
+          <div
+            v-if="client.phones.length"
+            class="client__details_info_card mr-5"
+          >
+            <label for="phone">{{ $t("phone") }}</label>
+            <b-form-input
+              disabled
+              :value="formattingPhone(client.phones[0].phone)"
+              id="phone"
+            />
+          </div>
+
+          <template v-if="client.phones.length > 1">
+            <div
+              class="client__details_info_card mr-5"
+              v-for="(extraPhone, index) in client.phones.slice(1)"
+              :key="extraPhone.id + extraPhone.phone"
+            >
+              <label :for="'additional_phone_number' + index">
+                {{ $t("additional_phone_number") }}
+              </label>
+              <b-form-input
+                v-if="isNUNEZ(extraPhone.phone)"
+                disabled
+                :value="formattingPhone(client.phones[index + 1].phone)"
+                :id="'additional_phone_number' + index"
+              />
+            </div>
+          </template>
         </div>
 
         <div class="d-flex">
