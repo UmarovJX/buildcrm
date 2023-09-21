@@ -108,11 +108,6 @@ export default {
             content: this.clientInfo.attributes.legal_address,
             icon: "location_on",
           },
-          {
-            title: "checkout.address_line",
-            content: this.clientInfo.attributes.address_line,
-            icon: "home_pin",
-          },
         ];
       } else {
         const { locale } = this.$i18n;
@@ -159,6 +154,11 @@ export default {
             title: "communication_language",
             content: this.clientInfo.language,
             icon: "language",
+          },
+          {
+            title: "checkout.address_line",
+            content: this.clientInfo.attributes.address_line,
+            icon: "home_pin",
           },
         ];
       }

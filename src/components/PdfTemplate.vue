@@ -1,11 +1,15 @@
 <script>
 import VueHtml2pdf from "vue-html2pdf";
-import { formatToPrice } from "@/util/reusable";
+import { XIcon } from "@/components/ui-components/material-icons";
+import { formatToPrice, phonePrettier } from "@/util/reusable";
+import { hasOwnProperty, keys } from "@/util/object";
+import { mapGetters } from "vuex";
 
 export default {
   name: "PdfTemplate",
   components: {
     VueHtml2pdf,
+    XIcon,
   },
   props: {
     apartment: {
@@ -55,21 +59,60 @@ export default {
           label: "total_discount",
         },
       ],
+      url: "",
     };
   },
   computed: {
+    ...mapGetters({
+      me: "getMe",
+    }),
+
     planImage() {
-      if (this.apartment.plan.image.length) {
-        return this.apartment.plan.image[0];
-      } else {
-        return `require('@/assets/img/object__img1.png')`;
+      if (this.apartment?.plan?.images?.length) {
+        return this.apartment.plan.images[0];
       }
+
+      return false;
     },
     hasBalcony() {
       return this.apartment.plan?.balcony;
     },
+    managerName() {
+      if (hasOwnProperty(this.me, "user") && keys(this.me.user).length) {
+        return this.me.user.lastName + " " + this.me.user.firstName;
+      }
+
+      return false;
+    },
+  },
+  mounted() {
+    // setTimeout(() => {
+    //   function toDataURL(src, callback, outputFormat) {
+    //     let img = new Image();
+    //     img.crossOrigin = "Anonymous";
+    //     img.onload = function () {
+    //       let canvas = document.createElement("CANVAS");
+    //       let ctx = canvas.getContext("2d");
+    //       let dataURL;
+    //       canvas.height = this.naturalHeight;
+    //       canvas.width = this.naturalWidth;
+    //       ctx.drawImage(this, 0, 0);
+    //       dataURL = canvas.toDataURL(outputFormat);
+    //       callback(dataURL);
+    //     };
+    //     img.src = src;
+    //   }
+    //
+    //   toDataURL(
+    //     "https://www.gravatar.com/avatar/d50c83cc0c6523b4d3f6085295c953e0",
+    //     function (dataUrl) {
+    //       console.log("RESULT:", dataUrl);
+    //     }
+    //   );
+    // }, 2000);
   },
   methods: {
+    phonePrettier,
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
     beforeDownloadPdf() {
       // this.showPdfContent = true
@@ -174,12 +217,18 @@ export default {
           </div>
           <div class="row">
             <div v-if="apartment.plan" class="col-12 pdf-img">
-              <!--              <img v-if="apartment.plan"-->
-              <!--                   :src="apartment.plan.image[0]" alt="plan-image">-->
+              <!--              <img-->
+              <!--                v-if="planImage"-->
+              <!--                :src="url"-->
+              <!--                id="planImage"-->
+              <!--                alt="plan-image"-->
+              <!--              />-->
               <img
                 :src="require('@/assets/img/object__img1.png')"
                 alt="xonsaroy logo"
               />
+              <canvas id="canvasImage"></canvas>
+
               <!--              <img :src="apartment.plan.image[0]" alt="">-->
               <!--              <img :src="require('@/assets/img/plan.png')" alt="plan-image">-->
             </div>
@@ -473,6 +522,14 @@ export default {
                 <p class="pdf-footer__link">
                   <img :src="require('@/assets/icons/location.svg')" alt="" />
                   {{ $t("address_office") }}
+                </p>
+                <p class="pdf-footer__link" v-if="managerName">
+                  <x-icon size="12" name="person" />
+                  {{ managerName }}
+                </p>
+                <p class="pdf-footer__link">
+                  <x-icon size="12" name="phone" />
+                  {{ phonePrettier(me.user.phone) }}
                 </p>
                 <p class="pdf-footer__link">
                   <img :src="require('@/assets/icons/phone.svg')" alt="" />

@@ -497,6 +497,7 @@ export default {
       v-if="pdfVisible"
       :apartment="apartment"
       :print-calc="printCalc"
+      :me="me"
       @has-downloaded="completePrintingProcess"
     />
   </div>

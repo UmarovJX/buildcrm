@@ -346,7 +346,6 @@ export default {
       }
 
       if (client.subject === "legal") {
-        console.log("client.attributes.company", client.attributes.company);
         return (
           client.attributes.company.name[this.$i18n.locale] +
           " " +

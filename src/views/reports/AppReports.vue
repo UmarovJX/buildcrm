@@ -144,7 +144,7 @@ export default {
     });
 
     function formatDate(dm) {
-      return dateFormatWithDot(dm, { reverse: false });
+      return dm.split("-").reverse().join(".");
     }
 
     function openModal() {

@@ -439,6 +439,7 @@ export default {
         this.personalData.other_email = client.additional_email;
         this.personalData.client_type_id = client.client_type.id;
         this.personalData.company_type_id = client.attributes.company.id;
+        this.autoFillPhones(client.phones);
       }
     },
   },

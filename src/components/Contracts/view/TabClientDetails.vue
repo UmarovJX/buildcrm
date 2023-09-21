@@ -180,57 +180,6 @@ export default {
     },
   },
 };
-
-const example = {
-  id: "82dfdf7a-4d47-48e4-9a23-37526f81a074",
-  subject: "legal",
-  client_type: {
-    id: 1,
-    name: {
-      uz: "Default",
-      ru: "Дефаулт",
-    },
-    icon: "person",
-    is_vip: false,
-  },
-  language: "uz",
-  phones: [
-    {
-      id: 17,
-      phone: 998909512683,
-    },
-    {
-      id: 18,
-      phone: 998909925044,
-    },
-    {
-      id: 19,
-      phone: 0,
-    },
-  ],
-  email: "ulasoft@mail.ru",
-  additional_email: "sultonovkomronbek17@gmail.com",
-  attributes: {
-    name: "NameOfCompany",
-    payment_number: "IdentityNumber",
-    bank_name: "Bank",
-    mfo: "MFONumber",
-    inn: "INN01",
-    nds: "NDC",
-    legal_address: "Mustaqillik",
-    fax: "Fax test",
-    company: {
-      id: 1,
-      name: {
-        uz: "MCHJ",
-        kr: "МЧЖ",
-        ru: "ООО",
-      },
-    },
-  },
-};
-
-console.log(example);
 </script>
 
 <template>

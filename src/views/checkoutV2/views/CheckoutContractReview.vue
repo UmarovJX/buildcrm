@@ -6,7 +6,11 @@ import { XIcon } from "@/components/ui-components/material-icons";
 import { XButton } from "@/components/ui-components/button";
 import { mapActions } from "vuex";
 import api from "@/services/api";
-import { isNotUndefinedNullEmptyZero, isObject } from "@/util/inspect";
+import {
+  isNotUndefinedNullEmptyZero,
+  isObject,
+  isUndefinedOrNullOrEmpty,
+} from "@/util/inspect";
 import ContractsPermission from "@/permission/contract";
 import {
   formatDateWithDot,
@@ -149,17 +153,32 @@ export default {
       return "";
     },
     getClientName(client) {
+      if (isUndefinedOrNullOrEmpty(client.attributes)) {
+        return "";
+      }
+
       let language = "kirill";
+
       if (this.$i18n.locale === "uz") {
         language = "lotin";
       }
-      const { last_name, first_name, second_name } = client.attributes;
+
+      if (client.subject === "legal") {
+        return (
+          client.attributes.company.name[this.$i18n.locale] +
+          " " +
+          client.attributes.name
+        );
+      }
+
+      const { first_name, last_name, middle_name } =
+        client.attributes ?? client;
       return (
         this.clientName(last_name, language) +
         " " +
         this.clientName(first_name, language) +
         " " +
-        this.clientName(second_name, language)
+        this.clientName(middle_name, language)
       );
     },
     contractView({ id }, index, event) {
