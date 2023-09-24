@@ -87,21 +87,32 @@ export default {
         });
     },
     deleteBranch(id) {
-      this.loading = true;
-      api.branches
-        .deleteBranch(id)
-        .then(() => {
-          const findIndex = this.branches.findIndex(
-            (branch) => branch.id === id
-          );
-          this.branches.splice(findIndex, 1);
-        })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then((result) => {
+        if (result.value) {
+          this.loading = true;
+          api.branches
+            .deleteBranch(id)
+            .then(() => {
+              const findIndex = this.branches.findIndex(
+                (branch) => branch.id === id
+              );
+              this.branches.splice(findIndex, 1);
+            })
+            .catch((error) => {
+              this.toastedWithErrorCode(error);
+            })
+            .finally(() => {
+              this.loading = false;
+            });
+        }
+      });
     },
     getFullName(item) {
       const { last_name, first_name } = item.manager;
