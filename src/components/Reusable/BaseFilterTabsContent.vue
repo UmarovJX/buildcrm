@@ -97,12 +97,9 @@ export default {
 
 .filter__content {
   position: relative;
-  display: flex;
-  align-items: center;
-  //gap: 2rem;
-
-  //margin-top: 16px;
-  //margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: 100%;
   font-family: Inter, serif;
   font-style: normal;
   font-weight: 600;
@@ -119,7 +116,7 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: 0 0.5rem;
+    padding: 0 0.75rem;
 
     p {
       margin: 0;

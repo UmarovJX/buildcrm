@@ -45,6 +45,17 @@ export default {
           label: this.$t("clients.language"),
         },
         {
+          key: "document_type",
+          label: this.$t("document_type"),
+          formatter: (type) => {
+            if (type === "legal") {
+              return this.$t("legal_entity");
+            }
+
+            return this.$t("physical_person");
+          },
+        },
+        {
           key: "created",
           label: this.$t("created_at"),
         },

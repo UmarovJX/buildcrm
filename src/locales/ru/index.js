@@ -1,4 +1,5 @@
 export default {
+  document_type: "Тип документа",
   checkout: {
     address_line: "Место жительства",
   },

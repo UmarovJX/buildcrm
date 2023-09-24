@@ -1,4 +1,5 @@
 export default {
+  document_type: "Hujjat turi",
   checkout: {
     address_line: "Doimiy turar mazili",
   },
