@@ -217,12 +217,12 @@ export default {
           </div>
           <div class="row">
             <div v-if="apartment.plan" class="col-12 pdf-img">
-              <!--              <img-->
-              <!--                v-if="planImage"-->
-              <!--                :src="url"-->
-              <!--                id="planImage"-->
-              <!--                alt="plan-image"-->
-              <!--              />-->
+              <img
+                v-if="planImage"
+                :src="planImage"
+                id="planImage"
+                alt="plan-image"
+              />
               <img
                 :src="require('@/assets/img/object__img1.png')"
                 alt="xonsaroy logo"

@@ -6,6 +6,7 @@ Vue.use(VueLang);
 const language = localStorage.locale;
 const i18n = new VueLang({
   locale: language,
+  fallbackLocale: "ru",
   messages: {
     ru,
     uz,

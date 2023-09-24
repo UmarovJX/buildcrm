@@ -217,6 +217,7 @@ export default {
       window.print();
     },
     async orderApartment() {
+      // eslint-disable-next-line vue/no-mutating-props
       this.appLoading = true;
       try {
         const apartments = [this.apartment.id];
@@ -240,6 +241,7 @@ export default {
       } catch (e) {
         this.toastedWithErrorCode(e);
       } finally {
+        // eslint-disable-next-line vue/no-mutating-props
         this.appLoading = false;
       }
     },

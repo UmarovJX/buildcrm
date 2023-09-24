@@ -46,30 +46,32 @@ export default {
 </script>
 
 <template>
-  <div class="tab__container">
-    <div class="filter__content">
-      <div
-        v-for="(fTab, index) in filterTabList"
-        :key="'status_' + index"
-        @click="getFilteredContent(fTab.status)"
-        class="filter__content-item"
-        :class="{
-          'filter__content-item-active': fTab.status === currentStatus,
-        }"
-      >
-        <div class="filter__content-item-inline">
-          <span>{{ $t(`${fTab.name}`) }}</span>
-          <span
-            v-if="fTab.counts"
-            class="counts"
-            :class="{ active: fTab.status === currentStatus }"
-          >
-            {{ fTab.counts }}
-          </span>
+  <div>
+    <div class="tab__container">
+      <div class="filter__content">
+        <div
+          v-for="(fTab, index) in filterTabList"
+          :key="'status_' + index"
+          @click="getFilteredContent(fTab.status)"
+          class="filter__content-item"
+          :class="{
+            'filter__content-item-active': fTab.status === currentStatus,
+          }"
+        >
+          <div class="filter__content-item-inline">
+            <span style="white-space: nowrap">{{ $t(`${fTab.name}`) }}</span>
+            <span
+              v-if="fTab.counts"
+              class="counts"
+              :class="{ active: fTab.status === currentStatus }"
+            >
+              {{ fTab.counts }}
+            </span>
+          </div>
+          <div class="bottom__line"></div>
         </div>
       </div>
     </div>
-    <div class="bottom__line"></div>
   </div>
 </template>
 
@@ -81,30 +83,31 @@ export default {
   color: var(--gray-600);
 }
 
+.tab__container {
+  width: 100%;
+  overflow-x: auto;
+  height: 3rem;
+
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+}
+
 .filter__content {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 2rem;
-  margin-top: 16px;
-  margin-bottom: 8px;
+  //gap: 2rem;
+
+  //margin-top: 16px;
+  //margin-bottom: 8px;
   font-family: Inter, serif;
   font-style: normal;
   font-weight: 600;
-  line-height: 22px;
+  //line-height: 22px;
   color: var(--gray-600);
-
-  //&::before {
-  //content: '';
-  //position: absolute;
-  //z-index: -1;
-  //bottom: 0;
-  //width: 100%;
-  //height: 6px;
-  //background: red;
-  //border-top-left-radius: 3px;
-  //border-top-right-radius: 3px;
-  //}
 
   &-item {
     position: relative;
@@ -115,6 +118,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    padding: 0 0.5rem;
 
     p {
       margin: 0;
@@ -128,6 +133,7 @@ export default {
       color: var(--violet-600);
 
       .filter__content-item-inline {
+        //padding: 1rem 2rem;
         span {
           color: var(--violet-600);
         }
@@ -165,6 +171,8 @@ export default {
 }
 
 .bottom__line {
+  position: absolute;
+  bottom: -16px;
   width: 100%;
   height: 6px;
   border-bottom: 8px solid var(--gray-100);
