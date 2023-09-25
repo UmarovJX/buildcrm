@@ -68,15 +68,26 @@ export default {
       this.openCreatingModal();
     },
     async deleteCountries(ctyId) {
-      try {
-        this.startAppLoading();
-        await api.settingsV2.removeCountryFromDb(ctyId);
-        await this.getCountries();
-      } catch (e) {
-        this.toastedWithErrorCode();
-      } finally {
-        this.finishAppLoading();
-      }
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then(async (result) => {
+        if (result.value) {
+          try {
+            this.startAppLoading();
+            await api.settingsV2.removeCountryFromDb(ctyId);
+            await this.getCountries();
+          } catch (e) {
+            this.toastedWithErrorCode();
+          } finally {
+            this.finishAppLoading();
+          }
+        }
+      });
     },
     startAppLoading() {
       this.countries.busy = true;

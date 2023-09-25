@@ -67,10 +67,13 @@ export default {
     },
     async fetchClientTypes() {
       try {
+        this.clientTypes.loading = true;
         const { data: items } = await api.settingsV2.getClientTypes();
         this.clientTypes.items = items;
       } catch (e) {
         this.toastedWithErrorCode(e);
+      } finally {
+        this.clientTypes.loading = false;
       }
     },
     setUpsertType(eType) {
@@ -89,12 +92,26 @@ export default {
       this.fetchClientTypes();
     },
     async deleteClientType(typeId) {
-      try {
-        await api.settingsV2.deleteClientType(typeId);
-        await this.fetchClientTypes();
-      } catch (e) {
-        this.toastedWithErrorCode(e);
-      }
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then(async (result) => {
+        if (result.value) {
+          try {
+            this.clientTypes.loading = true;
+            await api.settingsV2.deleteClientType(typeId);
+            await this.fetchClientTypes();
+          } catch (e) {
+            this.toastedWithErrorCode(e);
+          } finally {
+            this.clientTypes.loading = false;
+          }
+        }
+      });
     },
     async editClientType(typeId) {
       try {

@@ -111,17 +111,28 @@ export default {
       this.fetchHolders();
     },
     async deleteClientType(typeId) {
-      try {
-        this.startLoading();
-        await v3ServiceApi.statuses().remove({
-          id: typeId,
-        });
-        await this.fetchHolders();
-      } catch (e) {
-        this.toastedWithErrorCode(e);
-      } finally {
-        this.finishLoading();
-      }
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then(async (result) => {
+        if (result.value) {
+          try {
+            this.startLoading();
+            await v3ServiceApi.statuses().remove({
+              id: typeId,
+            });
+            await this.fetchHolders();
+          } catch (e) {
+            this.toastedWithErrorCode(e);
+          } finally {
+            this.finishLoading();
+          }
+        }
+      });
     },
     async editClientType(id) {
       try {

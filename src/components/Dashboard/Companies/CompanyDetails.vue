@@ -54,32 +54,54 @@ export default {
   },
   methods: {
     async deleteCompany() {
-      await api.companies
-        .deleteCompany(this.companyId)
-        .then((res) => {
-          this.$emit("delete-company", res);
-        })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        })
-        .finally(() => {
-          this.loading = false;
-          this.$router.push("/companies");
-        });
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then(async (result) => {
+        if (result.value) {
+          await api.companies
+            .deleteCompany(this.companyId)
+            .then((res) => {
+              this.$emit("delete-company", res);
+            })
+            .catch((error) => {
+              this.toastedWithErrorCode(error);
+            })
+            .finally(() => {
+              this.loading = false;
+              this.$router.push("/companies");
+            });
+        }
+      });
     },
     async deletePayment(companyId, paymentId) {
-      await api.companies
-        .deletePayment(companyId, paymentId)
-        // .then((res) => {
-        //   this.payments = res.data
-        // })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        })
-        .finally(() => {
-          this.loading = false;
-          this.getPaymentList();
-        });
+      this.$swal({
+        title: this.$t("sweetAlert.title"),
+        text: this.$t("sweetAlert.text"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yes"),
+      }).then(async (result) => {
+        if (result.value) {
+          await api.companies
+            .deletePayment(companyId, paymentId)
+            // .then((res) => {
+            //   this.payments = res.data
+            // })
+            .catch((error) => {
+              this.toastedWithErrorCode(error);
+            })
+            .finally(() => {
+              this.loading = false;
+              this.getPaymentList();
+            });
+        }
+      });
     },
     openEditingModal(item) {
       this.modalProperties = {

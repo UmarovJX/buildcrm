@@ -465,7 +465,6 @@ export default {
       await api.contractV2
         .fetchContractsList(query)
         .then((response) => {
-          console.log(response.data.items);
           response.data.items.forEach((dataItem) => {
             this.tableItems.push(
               dataItem

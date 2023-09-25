@@ -1,4 +1,5 @@
 export default {
+  blocks_of_the_object: "{objectName} bloklari",
   document_type: "Hujjat turi",
   checkout: {
     address_line: "Doimiy turar mazili",
@@ -498,7 +499,7 @@ export default {
   comment: "Izoh",
   initial_payment: "Boshlang'ich to'lov",
   monthly_pay: "Oylik to'lov",
-  floor: "qavat",
+  floor: "Qavat",
   paid: "To'langan",
   waiting_to_payment: "Kutilmoqda",
   partially: "Qisman to'langan",

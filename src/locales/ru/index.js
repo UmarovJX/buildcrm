@@ -1,4 +1,5 @@
 export default {
+  blocks_of_the_object: "{objectName} блоки",
   document_type: "Тип документа",
   checkout: {
     address_line: "Место жительства",

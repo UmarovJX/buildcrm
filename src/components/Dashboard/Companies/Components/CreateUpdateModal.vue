@@ -311,7 +311,7 @@ export default {
           class="mb-3"
         >
           <template #placeholder>
-            <div>djskdjsk</div>
+            <div>{{ $t("companies.type") }}</div>
           </template>
         </x-form-select>
 
