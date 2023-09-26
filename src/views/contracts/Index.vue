@@ -446,14 +446,23 @@ export default {
     },
     async fetchContractList() {
       const query = sortObjectValues(this.query);
+      const propArrayList = [
+        "object_id",
+        "blocks",
+        "floors",
+        "branch",
+        "manager",
+      ];
 
-      if (
-        // eslint-disable-next-line no-prototype-builtins
-        query.hasOwnProperty("object_id") &&
-        typeof query.object_id === "string"
-      ) {
-        query.object_id = [query.object_id];
-      }
+      propArrayList.forEach((prop) => {
+        if (
+          // eslint-disable-next-line no-prototype-builtins
+          query.hasOwnProperty(prop) &&
+          typeof query[prop] === "string"
+        ) {
+          query[prop] = [query[prop]];
+        }
+      });
 
       this.showLoading = true;
       this.tableItems = [];
@@ -615,6 +624,7 @@ export default {
 
     <!--  Search Content  -->
     <search-bar-content
+      ref="filterModal"
       v-if="filterPermission"
       @replace-router="searchQueryFilter"
       @search-by-filter="searchQueryFilter"

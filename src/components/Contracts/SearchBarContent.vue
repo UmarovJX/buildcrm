@@ -16,7 +16,13 @@ import {
   sortObjectValues,
 } from "@/util/reusable";
 import api from "@/services/api";
-import { isUndefinedOrNullOrEmpty } from "@/util/inspect";
+import {
+  isArray,
+  isNUNEZ,
+  isString,
+  isUndefinedOrNullOrEmpty,
+} from "@/util/inspect";
+import { hasOwnProperty } from "@/util/object";
 
 export default {
   name: "SearchBarContent",
@@ -34,8 +40,10 @@ export default {
   emits: ["trigger-input", "search-by-filter", "replace-router"],
   data() {
     return {
+      isFetching: false,
+      objectsFields: [],
       filter: {
-        object_id: null,
+        object_id: [],
         contract_number: null,
         date: [],
         date_type: null,
@@ -44,9 +52,15 @@ export default {
         price_to: null,
         price_from: null,
         apartment_number: [],
+        blocks: [],
+        floors: [],
+        branch: [],
+        manager: [],
       },
       dateTypeOptions: [],
+      branchOption: [],
       objectOptions: [],
+      managerOptions: [],
       clientTypeOptions: [],
       currencyOptions: [
         {
@@ -71,6 +85,37 @@ export default {
     query() {
       return Object.assign({}, this.$route.query);
     },
+    blocksOptions() {
+      let blocksOptionList = [];
+      this.objectsFields.forEach((fields) => {
+        fields.blocks.forEach((block) => {
+          blocksOptionList.push({
+            ...block,
+            name: `${fields.name} - ${block.name}`,
+          });
+        });
+      });
+
+      return blocksOptionList;
+    },
+    availableFloors() {
+      const floorsOption = [];
+      this.objectsFields.forEach((objectFields) => {
+        objectFields.floors.forEach((floor) => {
+          const idx = floorsOption.findIndex(
+            (floorOption) => floorOption.value === floor
+          );
+          if (idx === -1) {
+            floorsOption.push({
+              text: floor,
+              value: floor,
+            });
+          }
+        });
+      });
+
+      return floorsOption.sort((a, b) => a.value - b.value);
+    },
   },
   watch: {
     searchInput: debounce(function (newValue) {
@@ -80,16 +125,69 @@ export default {
       this.toggleClearIcon();
       this.triggerInputEvent();
     },
+    "filter.object_id"(newObjectId) {
+      if (newObjectId?.length) {
+        this.fetchObjectFilterFields();
+      }
+    },
   },
   mounted() {
     if (this.searchInput?.length) {
       this.toggleClearIcon();
     }
+
+    this.filterModalOpened();
+    this.fetchObjectFilterFields();
     this.fetchObjectsOption();
   },
   methods: {
+    startFetching() {
+      this.isFetching = true;
+    },
+    finishFetching() {
+      this.isFetching = false;
+    },
     getInputValue(value) {
       this.searchInput = value;
+    },
+    async getObjectFields(objectCtx) {
+      const response = await api.objectsV2.fetchObjectFields(objectCtx.id);
+      return {
+        response,
+        id: objectCtx.id,
+        name: objectCtx.name,
+      };
+    },
+    async fetchObjectFilterFields() {
+      try {
+        this.startFetching();
+        const objectPromiseFields = this.filter.object_id
+          .filter(({ id }) => {
+            const idx = this.objectsFields.findIndex(
+              (objectFields) => objectFields.id === id
+            );
+            return idx === -1;
+          })
+          .map((objectCtx) => {
+            return this.getObjectFields(objectCtx);
+          });
+
+        const rspFields = await Promise.all(objectPromiseFields);
+        rspFields.forEach(({ id: objectId, name, response }) => {
+          const hasInStack = this.objectsFields.findIndex(
+            (objField) => objField.id === objectId
+          );
+          if (hasInStack === -1) {
+            this.objectsFields.push({
+              id: objectId,
+              name,
+              ...response.data,
+            });
+          }
+        });
+      } finally {
+        this.finishFetching();
+      }
     },
     async fetchObjectsOption() {
       await api.contractV2
@@ -99,8 +197,30 @@ export default {
             objects,
             "client-types": clientTypes,
             date_types,
+            branches,
+            managers,
           } = response.data;
           this.objectOptions = objects;
+          this.branchOption = branches;
+          this.managerOptions = managers.map((m) => {
+            let text = "";
+            if (isNUNEZ(m.last_name)) {
+              text += m.last_name;
+            }
+
+            if (isNUNEZ(m.first_name)) {
+              text += " " + m.first_name;
+            }
+
+            if (isNUNEZ(m.second_name)) {
+              text += " " + m.second_name;
+            }
+
+            return {
+              id: m.id,
+              text: text.trim(),
+            };
+          });
           for (let [idx, client] of Object.entries(clientTypes)) {
             this.clientTypeOptions.push({
               value: client.id,
@@ -122,7 +242,7 @@ export default {
       const sortingValues = sortInFirstRelationship(this.filter);
       const loopQuery = Object.assign({}, this.query);
       for (let [key] of Object.entries(sortingValues)) {
-        const haveInQuery = this.query.hasOwnProperty(key);
+        const haveInQuery = hasOwnProperty(this.query, key);
         if (haveInQuery) {
           delete loopQuery[key];
         }
@@ -148,17 +268,22 @@ export default {
     },
     resetFilter() {
       this.filter = {
-        object_id: null,
+        object_id: [],
         contract_number: null,
         date: [],
-        client_type: null,
+        date_type: null,
+        client_type_id: null,
         contract_price: null,
         price_to: null,
         price_from: null,
         apartment_number: [],
+        blocks: [],
+        floors: [],
+        branch: [],
+        manager: [],
       };
     },
-    showFilterModal() {
+    async showFilterModal() {
       this.$refs["filter-modal"].show();
     },
     focusOnSearchInput() {
@@ -192,8 +317,8 @@ export default {
     filterModalOpened() {
       const haveInRouteQuery = (property) => {
         const query = Object.assign({}, this.query);
-        const hasOwnProperty = query.hasOwnProperty(property);
-        if (hasOwnProperty) return query[property];
+        const hasInQuery = hasOwnProperty(query, property);
+        if (hasInQuery) return query[property];
         return false;
       };
 
@@ -227,12 +352,23 @@ export default {
           continue;
         }
 
-        if (query && property === "client_type_id") {
+        const arrayProps = ["blocks", "floors", "branch", "manager"];
+        if (arrayProps.includes(property)) {
+          if (isArray(query)) {
+            this.filter[property] = query.map((p) => parseInt(p));
+          } else if (isString(query)) {
+            this.filter[property] = [parseInt(query)];
+          } else if (query) {
+            this.filter[property] = query;
+          }
+        } else if (query && property === "client_type_id") {
           if (!isUndefinedOrNullOrEmpty(query)) {
             this.filter[property] = parseInt(query);
           }
         } else {
-          if (query) this.filter[property] = query;
+          if (query) {
+            this.filter[property] = query;
+          }
         }
       }
     },
@@ -287,14 +423,36 @@ export default {
               :options="objectOptions"
               :placeholder="$t('contracts.object_name')"
             />
-            <!--            <base-multiselect-->
-            <!--                :default-values="filter.object_id"-->
-            <!--                :options="objectOptions"-->
-            <!--                :placeholder="`${ $t('contracts.object_name') }`"-->
-            <!--                track-by="value"-->
-            <!--                label="text"-->
-            <!--                @input="inputFilterObject"-->
-            <!--            />-->
+
+            <x-form-select
+              v-if="filter.object_id && blocksOptions.length"
+              class="mt-3"
+              value-field="id"
+              text-field="name"
+              v-model="filter.blocks"
+              :multiple="true"
+              :options="blocksOptions"
+              :placeholder="$t('promo.blocks')"
+            />
+
+            <x-form-select
+              class="mt-3"
+              v-model="filter.floors"
+              :multiple="true"
+              :options="availableFloors"
+              :placeholder="$t('floor')"
+            />
+
+            <x-form-select
+              value-field="id"
+              text-field="name"
+              v-model="filter.branch"
+              :multiple="true"
+              :options="branchOption"
+              class="mt-3"
+              :placeholder="$t('branches.title')"
+            />
+
             <!--    Filter Apartment Number      -->
             <div class="filter__inputs-input">
               <base-form-tag-input
@@ -377,6 +535,16 @@ export default {
                 class="filter__price"
               ></base-numeric-input>
             </div>
+
+            <x-form-select
+              v-model="filter.manager"
+              :options="managerOptions"
+              value-field="id"
+              text-field="text"
+              class="mt-3"
+              :multiple="true"
+              :placeholder="$t('manager')"
+            />
 
             <!--   Client Type     -->
             <x-form-select

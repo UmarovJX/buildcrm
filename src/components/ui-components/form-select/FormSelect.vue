@@ -196,7 +196,7 @@ export default {
               return _fChild.option;
             });
           }
-        } else if (typeObject(_dValue)) {
+        } else if (typeObject) {
           this.selected.push(_dValue);
         }
       } else {
@@ -432,9 +432,9 @@ export default {
             <template v-if="!hasOutputSlot">
               <slot name="output-prefix" />
               <span v-if="bilingual">{{ $t(selectList.value) }}</span>
-              <span v-else-if="multilingual">{{
-                getValueByCurrentLang(selectList.value)
-              }}</span>
+              <span v-else-if="multilingual">
+                {{ getValueByCurrentLang(selectList.value) }}
+              </span>
               <span v-else>{{ selectList.value }}</span>
               <slot name="output-suffix" />
             </template>
