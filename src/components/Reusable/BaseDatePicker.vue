@@ -3,6 +3,7 @@ import "vue2-datepicker/index.css";
 import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/locale/en";
+import { init } from "@sentry/vue";
 
 export default {
   name: "BaseDatePicker",
@@ -10,9 +11,9 @@ export default {
     DatePicker,
     BaseCalendarIcon,
   },
-  emits: ["input"],
+  emits: ["input", "select"],
   props: {
-    value: {
+    defaultValue: {
       type: [Array, String],
       default: () => [],
     },
@@ -59,14 +60,10 @@ export default {
       this.$emit("input", lastValue);
       this.$emit("select", lastValue);
     },
-    value: {
+    defaultValue: {
       immediate: true,
-      handler(value) {
-        if (value && value.length) {
-          this.dateValue = value;
-        } else {
-          this.dateValue = null;
-        }
+      handler(nextValue) {
+        this.dateValue = nextValue;
       },
     },
   },

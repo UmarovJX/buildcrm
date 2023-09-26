@@ -1,7 +1,6 @@
 <script>
 import { computed, getCurrentInstance, ref, watch } from "vue";
 import { useLoading } from "@/composables/useLoading";
-import { dateFormatWithDot } from "@/util/date/calendar.util";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 
 import BaseModal from "@/components/Reusable/BaseModal.vue";

@@ -452,6 +452,8 @@ export default {
         "floors",
         "branch",
         "manager",
+        "contract_number",
+        "apartment_number",
       ];
 
       propArrayList.forEach((prop) => {

@@ -1,4 +1,6 @@
 export default {
+  initial_payment_date: "Дата первоначального платежа",
+  monthly_payment_date: "Дата ежемесячного платежа",
   the_creator: "Создатель",
   blocks_of_the_object: "{objectName} блоки",
   document_type: "Тип документа",
@@ -515,7 +517,7 @@ export default {
   inn: "ИНН",
   mfo: "МФО",
   number: "Номер",
-  contract_number: "НОМЕР ДОГОВОРА",
+  contract_number: "Номер договора",
   contract_price: "СУММА ДОГОВОРА",
   date: "Дата",
   formed: "ОФОРМИЛ",

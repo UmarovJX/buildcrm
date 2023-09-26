@@ -23,6 +23,7 @@ import {
   isUndefinedOrNullOrEmpty,
 } from "@/util/inspect";
 import { hasOwnProperty } from "@/util/object";
+import el from "vue2-datepicker/locale/es/el";
 
 export default {
   name: "SearchBarContent",
@@ -56,6 +57,8 @@ export default {
         floors: [],
         branch: [],
         manager: [],
+        initial_payment_date: null,
+        monthly_payment_date: null,
       },
       dateTypeOptions: [],
       branchOption: [],
@@ -263,24 +266,26 @@ export default {
       this.$refs["filter-modal"].hide();
     },
     hideFilterModal() {
-      this.$refs["filter-modal"].hide();
       this.resetFilter();
+      this.$refs["filter-modal"].hide();
     },
     resetFilter() {
       this.filter = {
         object_id: [],
-        contract_number: null,
         date: [],
         date_type: null,
         client_type_id: null,
         contract_price: null,
         price_to: null,
         price_from: null,
+        contract_number: [],
         apartment_number: [],
         blocks: [],
         floors: [],
         branch: [],
         manager: [],
+        initial_payment_date: null,
+        monthly_payment_date: null,
       };
     },
     async showFilterModal() {
@@ -314,6 +319,9 @@ export default {
     setApartments(apartments) {
       this.filter.apartment_number = apartments;
     },
+    setContractNumbers(contractNumbers) {
+      this.filter.contract_number = contractNumbers;
+    },
     filterModalOpened() {
       const haveInRouteQuery = (property) => {
         const query = Object.assign({}, this.query);
@@ -324,9 +332,11 @@ export default {
 
       for (let property of Object.keys(this.filter)) {
         const query = haveInRouteQuery(property);
-        if (property === "apartment_number" && typeof query === "string") {
-          const toNumber = parseInt(query);
-          this.filter[property] = isNaN(toNumber) ? [] : [toNumber];
+        if (
+          ["apartment_number", "contract_number"].includes(property) &&
+          typeof query === "string"
+        ) {
+          this.filter[property] = [query];
           continue;
         }
 
@@ -368,6 +378,7 @@ export default {
         } else {
           if (query) {
             this.filter[property] = query;
+            console.log(property, query);
           }
         }
       }
@@ -489,9 +500,44 @@ export default {
               </base-form-tag-input>
             </div>
 
+            <div class="filter__inputs-input">
+              <base-form-tag-input
+                @set-tags="setContractNumbers"
+                :default-tags="filter.contract_number"
+                ref="base-form-tag-input"
+                :placeholder="`${$t('contract_number')}`"
+              >
+                <template #delete-content>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="10" cy="10" r="10" fill="#9CA3AF" />
+                    <path
+                      d="M13.125 6.875L6.875 13.125"
+                      stroke="white"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M6.875 6.875L13.125 13.125"
+                      stroke="white"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </template>
+              </base-form-tag-input>
+            </div>
+
             <div class="d-flex align-items-center x-gap-1 mt-3">
               <base-date-picker
-                style="width: 55%"
+                style="width: 60%"
                 :default-value="filter.date"
                 :placeholder="`${$t('contracts.agreement_date')}`"
                 @input="filter.date = $event"
@@ -501,9 +547,25 @@ export default {
                 :options="dateTypeOptions"
                 :placeholder="$t('contracts.date_type')"
                 :multilingual="true"
-                style="width: 45%"
+                style="width: 40%"
               />
             </div>
+
+            <base-date-picker
+              :range="false"
+              class="w-100 mt-3"
+              :default-value="filter.initial_payment_date"
+              :placeholder="`${$t('initial_payment_date')}`"
+              @input="filter.initial_payment_date = $event"
+            />
+
+            <base-date-picker
+              :range="false"
+              class="w-100 mt-3"
+              :default-value="filter.monthly_payment_date"
+              :placeholder="`${$t('monthly_payment_date')}`"
+              @input="filter.monthly_payment_date = $event"
+            />
 
             <!--     Apartment Price     -->
             <div class="filter__apartment__price">
@@ -615,7 +677,7 @@ export default {
     overflow-y: hidden;
     margin: 0;
     border-radius: 3.5rem 0 0 3.5rem;
-    min-width: 40rem;
+    min-width: 45rem;
 
     .modal-content {
       height: 100%;
