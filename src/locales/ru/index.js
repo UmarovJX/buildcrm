@@ -1,4 +1,5 @@
 export default {
+  the_creator: "Создатель",
   blocks_of_the_object: "{objectName} блоки",
   document_type: "Тип документа",
   checkout: {

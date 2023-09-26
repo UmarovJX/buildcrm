@@ -1,4 +1,5 @@
 export default {
+  the_creator: "Yaratuvchi",
   blocks_of_the_object: "{objectName} bloklari",
   document_type: "Hujjat turi",
   checkout: {

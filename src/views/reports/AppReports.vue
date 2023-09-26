@@ -15,7 +15,7 @@ import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import AppHeader from "@/components/Header/AppHeader.vue";
 import Permission from "@/permission";
-import { isObject } from "@/util/inspect";
+import { isNUNEZ, isObject } from "@/util/inspect";
 
 export default {
   components: {
@@ -72,6 +72,26 @@ export default {
         {
           key: "type",
           label: vm.proxy.$t("type"),
+        },
+        {
+          key: "created_by",
+          label: vm.proxy.$t("the_creator"),
+          formatter(createdBy) {
+            let name = "";
+            if (isNUNEZ(createdBy.last_name)) {
+              name += createdBy.last_name;
+            }
+
+            if (isNUNEZ(createdBy.first_name)) {
+              name += " " + createdBy.first_name;
+            }
+
+            if (isNUNEZ(createdBy.second_name)) {
+              name += " " + createdBy.second_name;
+            }
+
+            return name.trim();
+          },
         },
         {
           key: "actions",
