@@ -9,6 +9,7 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import { XFormSelect } from "@/components/ui-components/form-select";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XSquareBackground } from "@/components/ui-components/square-background";
+import ExportDropdown from "@/views/contracts/components/ExportDropdown.vue";
 import api from "@/services/api";
 import {
   formatDateWithDot,
@@ -29,11 +30,13 @@ import {
 import { hasOwnProperty, keys } from "@/util/object";
 import { formatDateToHM } from "@/util/date/calendar.util";
 import Permission from "@/permission";
-import { v3ServiceApi } from "@/services/v3/v3.service";
+import BaseButton from "@/components/Reusable/BaseButton.vue";
 
 export default {
   name: "Contracts",
   components: {
+    BaseButton,
+    ExportDropdown,
     AppHeader,
     BaseFilterTabsContent,
     BaseArrowDownIcon,
@@ -111,6 +114,14 @@ export default {
       showByValue = 20;
     }
 
+    const contractsPermission = ContractsPermission.contracts();
+
+    const permissionDownloadReport = hasAdminRole
+      ? true
+      : hasOwnProperty(contractsPermission, "download_report")
+      ? contractsPermission.download_report
+      : false;
+
     return {
       hasAdminRole,
       showByValue,
@@ -138,6 +149,7 @@ export default {
           },
         ],
       },
+      permissionDownloadReport,
       filterPermission: ContractsPermission.getContractsFilterPermission(),
       downloadPermission: ContractsPermission.getContractsDownloadPermission(),
     };
@@ -266,15 +278,15 @@ export default {
     searchValue() {
       this.getContractListBySearch();
     },
-    "importFile.selected"(vSelected) {
-      if (vSelected === "order") {
-        this.importOrder();
-      }
-
-      if (vSelected === "report") {
-        this.importReport();
-      }
-    },
+    // "importFile.selected"(vSelected) {
+    //   if (vSelected === "order") {
+    //     this.importOrder();
+    //   }
+    //
+    //   if (vSelected === "report") {
+    //     this.importReport();
+    //   }
+    // },
   },
   created() {
     Promise.allSettled([
@@ -514,84 +526,6 @@ export default {
       this.$router.push({ query: {} });
       this.$router.push({ query: sortQuery });
     },
-    async importOrder() {
-      try {
-        this.importFile.fetching = true;
-        const response = await v3ServiceApi.exportModule.orderFile({
-          type: "order_clients",
-        });
-
-        if (response.data.processing_percent < 100) {
-          setTimeout(async () => {
-            await this.importOrder();
-          }, 500);
-        }
-      } catch (e) {
-        this.toastedWithErrorCode(e);
-      } finally {
-        this.importFile.fetching = false;
-        this.importFile.selected = null;
-      }
-    },
-    async importReport() {
-      try {
-        this.importFile.fetching = true;
-        const response = await v3ServiceApi.exportModule.orderReportFile({
-          type: "order_clients",
-        });
-
-        await this.checkProcessingPercent({
-          id: response.data.id,
-          userId: response.data["user_id"],
-        });
-      } catch (e) {
-        this.toastedWithErrorCode(e);
-      } finally {
-        this.importFile.fetching = false;
-        this.importFile.selected = null;
-      }
-    },
-    async checkProcessingPercent({ id, userId }) {
-      try {
-        this.importFile.fetching = true;
-        const { headers, data } = await v3ServiceApi.exportModule.checkExport({
-          id,
-          user_id: userId,
-        });
-
-        console.log(headers, data);
-
-        // if (data.status === "created") {
-        //   const response = await v3ServiceApi.exportModule.orderReportFile({
-        //     type: "order_clients",
-        //   });
-        //
-        //   console.log("order", response);
-        // }
-
-        setTimeout(async () => {
-          await this.checkProcessingPercent({ id, userId });
-        }, 1000);
-
-        // if (isObject(data) && hasOwnProperty(data, "processing_percent")) {
-        //   await this.checkProcessingPercent({ id, userId });
-        // } else {
-        //   const filename = hasOwnProperty(headers, "x-filename")
-        //     ? headers["x-filename"]
-        //     : "contract";
-        //   const fileURL = window.URL.createObjectURL(new Blob([data]));
-        //   const fileLink = document.createElement("a");
-        //   fileLink.href = fileURL;
-        //   fileLink.setAttribute("download", filename);
-        //   document.body.appendChild(fileLink);
-        //   fileLink.click();
-        // }
-      } catch (e) {
-        this.toastedWithErrorCode(e);
-      } finally {
-        this.importFile.fetching = false;
-      }
-    },
   },
 };
 </script>
@@ -603,19 +537,9 @@ export default {
         {{ $t("contracts.list_contracts") }}
       </template>
 
-      <!--      <template #header-actions>-->
-      <!--        <b-overlay-->
-      <!--          :show="importFile.fetching"-->
-      <!--          rounded="sm"-->
-      <!--          variant="transparent"-->
-      <!--        >-->
-      <!--          <x-form-select-->
-      <!--            v-model="importFile.selected"-->
-      <!--            :options="importFile.options"-->
-      <!--            placeholder="Import"-->
-      <!--          />-->
-      <!--        </b-overlay>-->
-      <!--      </template>-->
+      <template #header-actions>
+        <export-dropdown v-if="permissionDownloadReport" />
+      </template>
     </app-header>
 
     <!--  Tabs  -->
@@ -859,7 +783,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-    background-color: var(--violet-800);
+    //background-color: var(--violet-800);
 
     svg {
       transform: scale(1.5);

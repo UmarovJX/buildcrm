@@ -378,7 +378,6 @@ export default {
         } else {
           if (query) {
             this.filter[property] = query;
-            console.log(property, query);
           }
         }
       }

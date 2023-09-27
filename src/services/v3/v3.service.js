@@ -54,6 +54,7 @@ class V3Service extends Core {
     retryFailedReport: (b) => this.post("reports/retry", b),
     cancel: (b) => this.post("reports/cancel", b),
     findAll: (b) => this.post("reports/findAll", b),
+    findAllByUser: (b) => this.post("reports/findAllByUser", b),
   };
 }
 

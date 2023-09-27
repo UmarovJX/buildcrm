@@ -34,7 +34,7 @@ const values = {
     edit: false,
     delete: false,
   },
-  download_order: false,
+  // download_order: false,
   download_report: false,
 };
 
@@ -186,11 +186,11 @@ function pms(name, uuid) {
       //   refer: "download_order",
       //   parent: "contracts",
       // },
-      // {
-      //   label: "roles_permission.contracts.download_report",
-      //   refer: "download_report",
-      //   parent: "contracts",
-      // },
+      {
+        label: "roles_permission.contracts.download_report",
+        refer: "download_report",
+        parent: "contracts",
+      },
     ],
   };
 }

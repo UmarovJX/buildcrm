@@ -1,4 +1,5 @@
 export default {
+  export: "Экспорт",
   initial_payment_date: "Dastlabki to'lov sanasi",
   monthly_payment_date: "Oylik to'lov sanasi",
   the_creator: "Yaratuvchi",
