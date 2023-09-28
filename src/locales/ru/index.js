@@ -1,5 +1,5 @@
 export default {
-  export: "Eksport",
+  export: "Экспорт",
   initial_payment_date: "Дата первоначального платежа",
   monthly_payment_date: "Дата ежемесячного платежа",
   the_creator: "Создатель",

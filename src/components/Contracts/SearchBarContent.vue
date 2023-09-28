@@ -23,7 +23,7 @@ import {
   isUndefinedOrNullOrEmpty,
 } from "@/util/inspect";
 import { hasOwnProperty } from "@/util/object";
-import el from "vue2-datepicker/locale/es/el";
+import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 
 export default {
   name: "SearchBarContent",
@@ -32,6 +32,7 @@ export default {
     BaseFilterIcon,
     BaseArrowLeftIcon,
     BaseNumericInput,
+    BaseLoading,
     BaseFormTagInput,
     // BaseMultiselect,
     BaseDatePicker,
@@ -57,8 +58,8 @@ export default {
         floors: [],
         branch: [],
         manager: [],
-        initial_payment_date: null,
-        monthly_payment_date: null,
+        initial_payment_date: [],
+        monthly_payment_date: [],
       },
       dateTypeOptions: [],
       branchOption: [],
@@ -193,53 +194,59 @@ export default {
       }
     },
     async fetchObjectsOption() {
-      await api.contractV2
-        .fetchObjectsOption()
-        .then((response) => {
-          const {
-            objects,
-            "client-types": clientTypes,
-            date_types,
-            branches,
-            managers,
-          } = response.data;
-          this.objectOptions = objects;
-          this.branchOption = branches;
-          this.managerOptions = managers.map((m) => {
-            let text = "";
-            if (isNUNEZ(m.last_name)) {
-              text += m.last_name;
-            }
+      try {
+        this.startFetching();
+        await api.contractV2
+          .fetchObjectsOption()
+          .then((response) => {
+            const {
+              objects,
+              "client-types": clientTypes,
+              date_types,
+              branches,
+              managers,
+            } = response.data;
+            this.objectOptions = objects;
+            this.branchOption = branches;
+            this.managerOptions = managers.map((m) => {
+              let text = "";
+              if (isNUNEZ(m.last_name)) {
+                text += m.last_name;
+              }
 
-            if (isNUNEZ(m.first_name)) {
-              text += " " + m.first_name;
-            }
+              if (isNUNEZ(m.first_name)) {
+                text += " " + m.first_name;
+              }
 
-            if (isNUNEZ(m.second_name)) {
-              text += " " + m.second_name;
-            }
+              if (isNUNEZ(m.second_name)) {
+                text += " " + m.second_name;
+              }
 
-            return {
-              id: m.id,
-              text: text.trim(),
-            };
-          });
-          for (let [idx, client] of Object.entries(clientTypes)) {
-            this.clientTypeOptions.push({
-              value: client.id,
-              text: client.name,
+              return {
+                id: m.id,
+                text: text.trim(),
+              };
             });
-          }
-          this.dateTypeOptions = date_types.map((item) => {
-            return {
-              value: item.type,
-              text: item.name[localStorage.locale],
-            };
+            for (let [, client] of Object.entries(clientTypes)) {
+              this.clientTypeOptions.push({
+                value: client.id,
+                text: client.name,
+              });
+            }
+
+            this.dateTypeOptions = date_types.map((item) => {
+              return {
+                value: item.type,
+                text: item.name[localStorage.locale],
+              };
+            });
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error);
           });
-        })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        });
+      } finally {
+        this.finishFetching();
+      }
     },
     clearFilter() {
       const sortingValues = sortInFirstRelationship(this.filter);
@@ -284,8 +291,8 @@ export default {
         floors: [],
         branch: [],
         manager: [],
-        initial_payment_date: null,
-        monthly_payment_date: null,
+        initial_payment_date: [],
+        monthly_payment_date: [],
       };
     },
     async showFilterModal() {
@@ -551,7 +558,6 @@ export default {
             </div>
 
             <base-date-picker
-              :range="false"
               class="w-100 mt-3"
               :default-value="filter.initial_payment_date"
               :placeholder="`${$t('initial_payment_date')}`"
@@ -559,7 +565,6 @@ export default {
             />
 
             <base-date-picker
-              :range="false"
               class="w-100 mt-3"
               :default-value="filter.monthly_payment_date"
               :placeholder="`${$t('monthly_payment_date')}`"

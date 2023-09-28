@@ -1,8 +1,4 @@
 <script>
-import { computed, getCurrentInstance, ref, watch } from "vue";
-import { useLoading } from "@/composables/useLoading";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-
 import BaseModal from "@/components/Reusable/BaseModal.vue";
 import BaseButton from "@/components/Reusable/BaseButton.vue";
 import { XFormSelect } from "@/components/ui-components/form-select";
@@ -13,8 +9,6 @@ import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import AppHeader from "@/components/Header/AppHeader.vue";
-import Permission from "@/permission";
-import { isNUNEZ, isObject } from "@/util/inspect";
 import { useReport } from "@/composables/useReport";
 
 export default {
@@ -136,7 +130,7 @@ export default {
         ></b-spinner>
 
         <x-circular-background
-          v-else-if="data.item.status === 'cancelled'"
+          v-else-if="['cancelled', 'failed'].includes(data.item.status)"
           bg-color="var(--red-600)"
           size="2rem"
           @click="retryToDownloadFile(data.item)"

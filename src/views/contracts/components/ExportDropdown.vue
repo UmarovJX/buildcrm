@@ -10,6 +10,8 @@ import { hasOwnProperty } from "@/util/object";
 import { isArray } from "@/util/inspect";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
+import { useToastError } from "@/composables/useToastError";
+import { onBeforeRouteLeave } from "vue-router/composables";
 
 export default {
   name: "ExportDropdown",
@@ -74,6 +76,7 @@ export default {
       totalPage: 0,
       totalItem: 0,
     });
+    const { toastError } = useToastError();
 
     /*
     * filter: {
@@ -148,10 +151,15 @@ export default {
 
     function joinQueries() {
       const form = {};
-      const query = vm.proxy.$route.query;
       const arrayTypes = ["object_id", "blocks", "floors", "branch", "manager"];
       const numberTypes = ["client_type_id"];
+      console.log();
+      const query = vm.proxy.$route.query;
       for (let property of Object.keys(query)) {
+        if (["page", "limit"].includes(property)) {
+          continue;
+        }
+
         const value = query[property];
 
         if (arrayTypes.includes(property)) {
@@ -184,14 +192,18 @@ export default {
       return form;
     }
 
-    async function downloadFile(id) {
+    async function downloadFile(id, $event) {
+      $event.stopPropagation();
       try {
         exportButtonBusy.value = true;
         loadingFileId.value = id;
         const filePathRsp = await v3ServiceApi.reports.getFilePath({ id });
         const fileLink = document.createElement("a");
         fileLink.href = filePathRsp.data.result["file_path"];
-        document.body.appendChild(fileLink);
+        const createDropdownItem = document.getElementById(
+          "create-dropdown-item"
+        );
+        createDropdownItem.appendChild(fileLink);
         fileLink.click();
       } finally {
         exportButtonBusy.value = false;
@@ -222,47 +234,92 @@ export default {
           ).then(async () => {
             await findAllByUser();
           });
+        } else {
+          const isAnyFailed = checkRsp.data.result.some(
+            ({ status }) => status === "failed"
+          );
+
+          if (isAnyFailed) {
+            const isCurrentFailed = checkRsp.data.result.findIndex((item) => {
+              return (
+                item.id === retryingFileId.value && item.status === "failed"
+              );
+            });
+
+            if (isCurrentFailed !== -1) {
+              retryingFileId.value = false;
+              clearInterval(timer.value);
+              timer.value = null;
+            }
+
+            await findAllByUser();
+          }
         }
       }, 3000);
     }
 
-    async function retryToDownloadFile(item) {
+    async function retryToDownloadFile(item, $event) {
+      $event.stopPropagation();
       try {
         retryingFileId.value = item.id;
         await v3ServiceApi.reports.retryFailedReport({
           id: item.id,
         });
         await findAllByUser();
+      } catch (e) {
+        retryingFileId.value = false;
       } finally {
         retryingFileId.value = item.id;
       }
     }
 
     async function createReportFile() {
-      const hasFormCompleted = await vObserverRef.value.validate();
-      if (hasFormCompleted) {
-        try {
-          isSubmitting.value = true;
-          await v3ServiceApi.reports.create({
-            type: "orders",
-            date_from: reportForm.value.dateFrom,
-            date_to: reportForm.value.dateTo,
-            filter_params: joinQueries(),
-          });
-
-          closeModal();
-          openDropdown();
-          await findAllByUser();
-        } catch (e) {
-          console.error(e);
-        } finally {
-          isSubmitting.value = false;
+      // const hasFormCompleted = await vObserverRef.value.validate();
+      // if (hasFormCompleted) {
+      try {
+        isSubmitting.value = true;
+        const query = vm.proxy.$route.query;
+        let date_from = null;
+        let date_to = null;
+        const hasDataTypeQuery =
+          hasOwnProperty(query, "date_type") &&
+          query.date_type === "created_at";
+        const hasDateQuery =
+          hasOwnProperty(query, "date") && isArray(query.date);
+        if (hasDataTypeQuery && hasDateQuery) {
+          date_from = query.date[0];
+          date_to = query.date.length > 1 ? query.date[1] : query.date[0];
         }
+
+        await v3ServiceApi.reports.create({
+          date_to,
+          date_from,
+          type: "orders",
+          filter_params: joinQueries(),
+        });
+
+        // closeModal();
+        openDropdown();
+        await findAllByUser();
+      } catch (e) {
+        toastError(e);
+        console.error(e);
+      } finally {
+        isSubmitting.value = false;
       }
+      // }
     }
+
+    function beforeHideDropdown() {}
 
     onMounted(async () => {
       await findAllByUser();
+    });
+
+    onBeforeRouteLeave((to, from, next) => {
+      clearInterval(timer.value);
+      timer.value = null;
+      next();
     });
 
     return {
@@ -284,6 +341,7 @@ export default {
       downloadFile,
       retryToDownloadFile,
       createReportFile,
+      beforeHideDropdown,
     };
   },
 };
@@ -293,6 +351,7 @@ export default {
   <div>
     <b-overlay :show="false" rounded="sm" variant="transparent">
       <b-dropdown
+        @hide="beforeHideDropdown"
         right
         variant="link"
         toggle-class="text-decoration-none m-0 p-0"
@@ -316,18 +375,21 @@ export default {
           </base-button>
         </template>
 
-        <b-dropdown-text>
+        <b-dropdown-text id="create-dropdown-item">
           <span class="d-flex justify-content-end">
             <span
-              @click="openModal"
+              @click="createReportFile"
               class="d-flex align-items-center x-gap-1 bg-gray-200 px-4 py-2 border-radius-1 cursor-pointer"
             >
               <span class="d-flex align-items-center color-gray-700">
                 {{ $t("download_report") }}
               </span>
               <span class="arrow__down-violet download-csv-icon">
-                <!--                    <b-spinner variant="light" small></b-spinner>-->
+                <span class="arrow__down-violet" v-if="isSubmitting">
+                  <b-spinner variant="light" small></b-spinner>
+                </span>
                 <x-icon
+                  v-else
                   name="add_circle"
                   :size="24"
                   class="violet-600"
@@ -340,98 +402,97 @@ export default {
 
         <b-dropdown-divider />
 
-        <b-dropdown-form class="export-form">
-          <b-dropdown-text>
-            <b-table
-              sticky-header
-              borderless
-              responsive
-              :items="list"
-              :fields="tableFields"
-              class="table__list"
-              :empty-text="$t('no_data')"
-              thead-tr-class="row__head__bottom-border"
-              tbody-tr-class="row__body__bottom-border cursor-pointer"
-              show-empty
-              sort-icon-left
-            >
-              <template #cell(type)="data">
-                <span class="text-capitalize">
-                  {{ $t(`report.${data.item.type}`) }}
-                </span>
-              </template>
+        <b-dropdown-text id="b-table-container" class="export-form">
+          <b-table
+            sticky-header
+            borderless
+            responsive
+            :items="list"
+            :fields="tableFields"
+            class="table__list"
+            :empty-text="$t('no_data')"
+            thead-tr-class="row__head__bottom-border"
+            tbody-tr-class="row__body__bottom-border cursor-pointer"
+            show-empty
+            sort-icon-left
+          >
+            <template #cell(type)="data">
+              <span class="text-capitalize">
+                {{ $t(`report.${data.item.type}`) }}
+              </span>
+            </template>
 
-              <template #cell(status)="{ item }">
-                <span
-                  class="current__status text-capitalize"
-                  :class="item.status"
-                >
-                  {{ $t(`report.statuses.${item.status}`) }}
-                </span>
-              </template>
+            <template #cell(status)="{ item }">
+              <span
+                class="current__status text-capitalize"
+                :class="item.status"
+              >
+                {{ $t(`report.statuses.${item.status}`) }}
+              </span>
+            </template>
 
-              <!--  Actions    -->
-              <template #cell(actions)="data">
-                <span
-                  v-if="data.item.status === 'successful'"
-                  class="arrow__down-violet"
-                  @click="downloadFile(data.item.id)"
-                >
-                  <b-spinner
-                    v-if="data.item.id === loadingFileId"
-                    variant="light"
-                    small
-                  ></b-spinner>
-
-                  <base-arrow-down-icon
-                    v-else
-                    class="download__icon"
-                    :width="20"
-                    :height="20"
-                    fill="#fff"
-                  />
-                </span>
-
+            <!--  Actions    -->
+            <template #cell(actions)="data">
+              <span
+                id="action-download"
+                v-if="data.item.status === 'successful'"
+                class="arrow__down-violet"
+                @click="downloadFile(data.item.id, $event)"
+              >
                 <b-spinner
-                  v-if="
-                    ['created', 'processing'].includes(data.item.status) ||
-                    data.item.id === retryingFileId
-                  "
-                  :variant="
-                    data.item.id === retryingFileId
-                      ? 'danger'
-                      : data.item.status === 'processing'
-                      ? 'warning'
-                      : 'primary'
-                  "
+                  v-if="data.item.id === loadingFileId"
+                  variant="light"
+                  small
                 ></b-spinner>
 
-                <x-circular-background
-                  v-else-if="data.item.status === 'cancelled'"
-                  bg-color="var(--red-600)"
-                  size="2rem"
-                  @click="retryToDownloadFile(data.item)"
-                >
-                  <x-icon name="refresh" color="var(--white)" class="red-600" />
-                </x-circular-background>
-              </template>
+                <base-arrow-down-icon
+                  v-else
+                  class="download__icon"
+                  :width="20"
+                  :height="20"
+                  fill="#fff"
+                />
+              </span>
 
-              <!--  Busy Animation    -->
-              <template #table-busy>
-                <base-loading />
-              </template>
+              <b-spinner
+                v-if="
+                  ['created', 'processing'].includes(data.item.status) ||
+                  data.item.id === retryingFileId
+                "
+                :variant="
+                  data.item.id === retryingFileId
+                    ? 'danger'
+                    : data.item.status === 'processing'
+                    ? 'warning'
+                    : 'primary'
+                "
+              ></b-spinner>
 
-              <template #empty>
-                <div
-                  class="d-flex justify-content-center align-items-center flex-column not__found"
-                >
-                  <p class="head">{{ $t("reports.not_found") }}</p>
-                  <p>{{ $t("contracts_not_found.description") }}</p>
-                </div>
-              </template>
-            </b-table>
-          </b-dropdown-text>
-        </b-dropdown-form>
+              <x-circular-background
+                v-else-if="['cancelled', 'failed'].includes(data.item.status)"
+                bg-color="var(--red-600)"
+                size="2rem"
+                @click="retryToDownloadFile(data.item, $event)"
+              >
+                <x-icon name="refresh" color="var(--white)" class="red-600" />
+              </x-circular-background>
+            </template>
+
+            <!--  Busy Animation    -->
+            <template #table-busy>
+              <base-loading />
+            </template>
+
+            <template #empty>
+              <div
+                class="d-flex justify-content-center align-items-center flex-column not__found"
+              >
+                <p class="head">{{ $t("reports.not_found") }}</p>
+                <p>{{ $t("contracts_not_found.description") }}</p>
+              </div>
+            </template>
+          </b-table>
+        </b-dropdown-text>
       </b-dropdown>
     </b-overlay>
 

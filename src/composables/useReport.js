@@ -4,6 +4,7 @@ import { isNUNEZ, isObject } from "@/util/inspect";
 import { useLoading } from "@/composables/useLoading";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 import { keys } from "@/util/object";
+import { onBeforeRouteLeave } from "vue-router/composables";
 
 export function useReport({ immediate = false } = { immediate: false }) {
   const vm = getCurrentInstance();
@@ -185,6 +186,24 @@ export function useReport({ immediate = false } = { immediate: false }) {
             await findAll({ showLoading: false });
           }
         );
+      } else {
+        const isAnyFailed = checkRsp.data.result.some(
+          ({ status }) => status === "failed"
+        );
+
+        if (isAnyFailed) {
+          const isCurrentFailed = checkRsp.data.result.findIndex((item) => {
+            return item.id === retryingFileId.value && item.status === "failed";
+          });
+
+          if (isCurrentFailed !== -1) {
+            retryingFileId.value = false;
+            clearInterval(timer.value);
+            timer.value = null;
+          }
+
+          await findAll();
+        }
       }
     }, 3000);
   }
@@ -249,6 +268,8 @@ export function useReport({ immediate = false } = { immediate: false }) {
         id: item.id,
       });
       await findAll({ showLoading: false });
+    } catch (e) {
+      retryingFileId.value = false;
     } finally {
       retryingFileId.value = item.id;
     }
@@ -279,6 +300,12 @@ export function useReport({ immediate = false } = { immediate: false }) {
   if (immediate) {
     findAll({});
   }
+
+  onBeforeRouteLeave((to, from, next) => {
+    clearInterval(timer.value);
+    timer.value = null;
+    next();
+  });
 
   return {
     list,

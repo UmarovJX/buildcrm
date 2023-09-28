@@ -30,12 +30,10 @@ import {
 import { hasOwnProperty, keys } from "@/util/object";
 import { formatDateToHM } from "@/util/date/calendar.util";
 import Permission from "@/permission";
-import BaseButton from "@/components/Reusable/BaseButton.vue";
 
 export default {
   name: "Contracts",
   components: {
-    BaseButton,
     ExportDropdown,
     AppHeader,
     BaseFilterTabsContent,
