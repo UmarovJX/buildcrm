@@ -195,7 +195,7 @@ class ObjectsV2 extends Core {
   constructor(axios = axiosV2) {
     super(axios);
   }
-
+  
   updateObject(objectId, body) {
     return this.put(`objects/${objectId}`, body);
   }
@@ -242,6 +242,19 @@ class ObjectsV2 extends Core {
     return this.get(`apartments/objects/${object}`, { params });
   }
 
+  fetchObjectParkings(object, params) {
+    return this.get(`apartments/objects/${object}/parkings`, { params })
+  }
+  fetchObjectParkingsStatusList(object){
+    return this.get(`apartments/objects/${object}/parkings/statuses`)
+  }
+
+  fetchParkingView(object, id){
+    return this.get(`apartments/objects/${object}/parkings/${id}`);
+  }
+  fetchParkingFilterFields(object){
+    return this.get(`apartments/objects/${object}/parkings/filter-fields`);
+  }
   reContract(id) {
     return this.post(`/v2/contracts/${id}/reorder`);
   }

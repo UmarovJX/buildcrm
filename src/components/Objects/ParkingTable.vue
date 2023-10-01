@@ -60,7 +60,7 @@ export default {
       },
       {
         key: "number",
-        label: this.$t("object.sort.number_flat"),
+        label: this.$t("number"),
         sortable: true,
       },
       // {
@@ -83,40 +83,10 @@ export default {
         sortable: true,
       },
       {
-        key: "entrance",
-        label: this.$t("apartments.list.entrance"),
-        sortable: true,
-      },
-      {
-        key: "rooms",
-        label: "Комнатность",
-        sortable: true,
-      },
-      {
-        key: "area",
-        label: this.$t("apartments.list.area"),
-        sortable: true,
-      },
-      {
-        key: "balcony",
-        label: this.$t("objects.create.plan.balcony_area"),
-        sortable: true,
-      },
-      // {
-      //   key: "price_area",
-      //   label: this.$t('apartments.list.price'),
-      //   sortable: true,
-      // },
-      {
         key: "price",
         label: this.$t("apartments.list.price"),
         sortable: true,
       },
-      // {
-      //   key: "price_currency",
-      //   label: this.$t('apartments.list.price'),
-      //   sortable: true,
-      // },
       {
         key: "status",
         label: this.$t("apartments.list.status"),
@@ -219,6 +189,7 @@ export default {
   async created() {
     this.filter = this.query;
     this.currentPage = Number(this.filter.page);
+    // await this.fetchParkingStatusList();
     await this.fetchContractList();
   },
   computed: {
@@ -261,7 +232,7 @@ export default {
     async makeContract() {
       const ids = this.checkoutList.map((ch) => ch.id);
       this.startLoading();
-      await this.orderApartment(ids, 'apartment');
+      await this.orderApartment(ids, 'parking');
       await this.finishLoading();
     },
     openSetHolderModal() {
@@ -407,9 +378,9 @@ export default {
       const { object } = this.$route.params;
       this.checkAll = false;
       await api.objectsV2
-        .fetchObjectApartments(object, query)
+        .fetchObjectParkings(object, query)
         .then((response) => {
-          this.$emit("counter", response.data.counts);
+          //this.$emit("counter", response.data.counts);
           this.pagination = response.data.pagination;
           this.showByValue = response.data.pagination.perPage;
           this.apartments = response.data.items.map((item) => {
@@ -461,7 +432,8 @@ export default {
       //   name: "apartment-view",
       //   params: {object: this.$route.params.object, id: items[0].id},
       // });
-      this.$emit("show-express-sidebar", items[0]);
+      this.$emit("show-parking-details", items[0]);
+      console.log(items[0]);
     },
     sortingChanged(val) {
       this.showLoading = true;
@@ -784,7 +756,7 @@ export default {
             "
           >
             {{
-              data.item.prices.price
+              data.item.price
                 | number("0,0.00", {
                   thousandsSeparator: " ",
                   decimalSeparator: ",",
@@ -987,9 +959,8 @@ export default {
           (getPermission.apartments && getPermission.apartments.reserve)
         "
         :apartment="apartment_id"
-        @CreateReserve="CreateReserveSuccess"
       ></reserve-add>
-
+      <!-- @CreateReserve="CreateReserveSuccess" -->
       <edit-modal
         v-if="editPermission"
         :apartment="apartment_id"

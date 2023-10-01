@@ -221,7 +221,7 @@ export default {
       this.appLoading = true;
       try {
         const apartments = [this.apartment.id];
-        const { data } = await api.orders.holdOrder(apartments);
+        const { data } = await api.orders.holdOrder(apartments, "apartment");
         if (data) {
           const objectId = data.orders[0].apartment.object.id;
           await this.$router.push({

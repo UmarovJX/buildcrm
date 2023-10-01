@@ -1,5 +1,5 @@
 <script>
-import PrimaryInformation from "@/components/Objects/view/elements/PrimaryInformation";
+import ParkingInformation from "@/components/Objects/view/elements/ParkingInformation";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BasePrintIcon from "@/components/icons/BasePrintIcon";
 import BaseButton from "@/components/Reusable/BaseButton";
@@ -19,7 +19,7 @@ import { isNUNEZ } from "@/util/inspect";
 import SettingsPermission from "@/permission/settings.permission";
 
 export default {
-  name: "ApartmentExpressView",
+  name: "ParkingExpressView",
 
   /* COMPONENTS */
   components: {
@@ -27,7 +27,7 @@ export default {
     BasePrintIcon,
     BaseLoading,
     BaseArrowLeftIcon,
-    PrimaryInformation,
+    ParkingInformation,
     BaseMinusCircleIcon,
     Reserve,
     BaseEyeIcon,
@@ -50,10 +50,14 @@ export default {
       type: String,
       default: "",
     },
+    objectName: {
+      type: String,
+      default: "",
+    },
   },
 
   /* EMITS */
-  emits: ["hide-apartment-sidebar-view", "update-content"],
+  emits: ["hide-parking-details", "update-content"],
 
   /* DATA */
   data() {
@@ -117,10 +121,10 @@ export default {
             this.apartmentCommentsPermission &&
             this.apartmentCommentsPermission.view
           ) {
-            this.getComments();
+            // this.getComments();
           }
         } else {
-          this.$emit("hide-apartment-sidebar-view");
+          this.$emit("hide-parking-details");
         }
       },
     },
@@ -219,21 +223,21 @@ export default {
   methods: {
     isNUNEZ,
     ...mapMutations(["setCalculationProperties"]),
-    async getComments() {
-      const { object } = this.$route.params;
-      this.commentLoading = true;
-      await api.apartmentsV2
-        .getApartmentComments(object, this.apartment.uuid)
-        .then((res) => {
-          this.commentsData = res.data;
-        })
-        .catch((err) => {
-          this.toasted(err.message, "error");
-        })
-        .finally(() => {
-          this.commentLoading = false;
-        });
-    },
+    // async getComments() {
+    //   const { object } = this.$route.params;
+    //   this.commentLoading = true;
+    //   await api.apartmentsV2
+    //     .getApartmentComments(object, this.apartment.uuid)
+    //     .then((res) => {
+    //       this.commentsData = res.data;
+    //     })
+    //     .catch((err) => {
+    //       this.toasted(err.message, "error");
+    //     })
+    //     .finally(() => {
+    //       this.commentLoading = false;
+    //     });
+    // },
     printPdf() {
       this.pdfVisible = true;
       this.$refs.html2Pdf.generatePdf();
@@ -265,10 +269,16 @@ export default {
     async fetchSidebarItem() {
       this.appLoading = true;
       const { object } = this.$route.params;
-      await api.apartmentsV2
-        .getApartmentView(object, this.apartmentUuid)
+      await api.objectsV2
+        .fetchParkingView(object, this.apartmentUuid)
         .then((response) => {
-          this.sidebarApartment = response.data;
+          const result = response.data.result;
+          result.plan = {
+            images: [
+              "https://xny-dev.s3.eu-central-1.amazonaws.com/noimage.jpeg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAYMIYEECJQTMLFHO7%2F20230929%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20230929T155102Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Signature=6005ea8c7fb5c995339025e4f24d3add432501a56104d122e7db1333fc95ca78",
+            ],
+          };
+          this.sidebarApartment = result;
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
@@ -282,30 +292,24 @@ export default {
     },
     printApartmentInformation() {
       const { object, block, entrance, number } = this.sidebarApartment;
-      this.htmlToPdfOptions.filename =
-        object.name + " , " + block.name + " , " + entrance + "/" + number;
+      // this.htmlToPdfOptions.filename =
+      //   object.name + " , " + block.name + " , " + entrance + "/" + number;
       this.$refs.html2Pdf.generatePdf();
     },
     async orderApartment() {
       this.appLoading = true;
       try {
         const apartments = [this.sidebarApartment.id];
-        const { data } = await api.orders.holdOrder(apartments, 'apartment');
+        const { data } = await api.orders.holdOrder(apartments, "parking");
         if (data) {
-          const objectId = data.orders[0].apartment.object.id;
+          const objectId = this.$route.params.object;
           await this.$router.push({
-            name: "checkout-v2",
+            name: "checkout-v2-parking",
             params: {
               id: data.uuid,
               object: objectId,
             },
           });
-          /*await this.$router.push({
-            name: "checkout",
-            params: {
-              id: data.uuid
-            }
-          })*/
         }
       } catch (e) {
         this.toastedWithErrorCode(e);
@@ -315,17 +319,17 @@ export default {
     },
     continueApartmentOrder() {
       this.$router.push({
-        name: "checkout-v2",
+        name: "checkout-v2-parking",
         params: {
           id: this.sidebarApartment.order.id,
-          object: this.apartment.object.id,
+          object: this.$route.params.object,
         },
       });
     },
     updateContent() {
       this.$emit("update-content");
       this.fetchSidebarItem();
-      this.getComments();
+      // this.getComments();
     },
     holderTooltipTitle(holder) {
       let title = "";
@@ -424,21 +428,9 @@ export default {
               <base-arrow-left-icon :width="32" :height="32" />
             </span>
             <span class="section__title">
-              {{ sidebarApartment.object.name }} ,
-              {{ sidebarApartment.block.name }}
+              {{ objectName }},
+              {{ sidebarApartment.building.name }}
             </span>
-          </span>
-          <span
-            class="ml-2 mr-2 cursor-pointer"
-            v-if="holderViewPms && isNUNEZ(sidebarApartment.holder)"
-          >
-            <x-icon
-              v-b-tooltip.hover
-              size="32"
-              name="person"
-              class="light-blue-500"
-              :title="holderTooltipTitle(sidebarApartment.holder)"
-            />
           </span>
         </div>
 
@@ -499,13 +491,13 @@ export default {
         </div>
 
         <!--  MAIN    -->
-        <primary-information
+        <parking-information
           class="pdf-item"
           :apartment="sidebarApartment"
           @for-print="getCalc"
         />
 
-        <apartment-comments
+        <!-- <apartment-comments
           v-if="apartmentCommentsPermission.view"
           :comments-data="commentsData"
           @update-comments="getComments"
@@ -513,7 +505,7 @@ export default {
           :express-view="true"
           :permissions="apartmentCommentsPermission"
           :apartment-uuid="apartmentUuid"
-        />
+        /> -->
 
         <!--   ACTIONS     -->
         <div class="action-block">
@@ -522,7 +514,7 @@ export default {
             :to="{
               name: 'apartment-view',
               params: {
-                object: sidebarApartment.object.id,
+                object: $route.params.object,
                 id: apartment.uuid,
               },
             }"
@@ -561,7 +553,7 @@ export default {
           />
 
           <!--       MAKE A RESERVATION       -->
-          <base-button
+          <!-- <base-button
             v-if="permission.reserve"
             @click="showReservationModal = true"
             :text="`${$t('apartments.list.book')}`"
@@ -570,15 +562,15 @@ export default {
             <template #left-icon>
               <base-minus-circle-icon :square="20" fill="#4B5563" />
             </template>
-          </base-button>
+          </base-button> -->
 
           <!-- CANCEL RESERVE -->
-          <base-button
+          <!-- <base-button
             v-if="permission.cancelReserve"
             :text="`${$t('apartments.list.cancel_reserve')}`"
             class="reserve__button"
             @click="cancelReservation"
-          />
+          /> -->
 
           <!--     CONTRACT VIEW         -->
           <router-link
@@ -595,7 +587,7 @@ export default {
           </router-link>
 
           <!--PRINT-->
-          <button
+          <!-- <button
             id="print"
             @click="printApartmentInformation"
             class="print__button bg-gray-100 d-flex justify-content-center align-items-center"
@@ -606,7 +598,7 @@ export default {
             <p class="tooltip-text">
               {{ $t("apartments.view.print") }}
             </p>
-          </b-tooltip>
+          </b-tooltip> -->
         </div>
       </section>
 
@@ -617,12 +609,12 @@ export default {
         @CreateReserve="updateContent"
       />
 
-      <PdfTemplate
+      <!-- <PdfTemplate
         v-if="visible && Object.keys(sidebarApartment).length"
         ref="html2Pdf"
         :apartment="sidebarApartment"
         :print-calc="printCalc"
-      />
+      /> -->
 
       <!--  LOADING    -->
       <base-loading class="h-100" v-if="appLoading" />

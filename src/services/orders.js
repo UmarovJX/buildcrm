@@ -6,8 +6,8 @@ class OrdersV1 extends Core {
     super(axios);
   }
 
-  holdOrder(apartments) {
-    return this.post("checkout", { apartments });
+  holdOrder(data, type) {
+    return this.post("checkout", { [type + 's']: data, type });
   }
 
   deleteOrderHold(uuid) {
