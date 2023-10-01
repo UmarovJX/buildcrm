@@ -81,6 +81,7 @@ export default {
         rooms: [],
         floors: [],
         number: [],
+        buildings: [],
       },
       currencyOptions: ["UZS", "USD"],
       areaOptions: "M2",
@@ -92,6 +93,10 @@ export default {
     ...mapGetters(["getPermission"]),
     query() {
       return Object.assign({}, this.$route.query);
+    },
+    buildingsRender(){
+      if (!this.filterFields.buildings) return [];
+      return this.form.buildings.map(id=>this.filterFields.buildings.find(el=>el.id===id).name)
     },
     apartmentsFilterPermission() {
       return ApartmentsPermission.getApartmentsPermission("filter");
@@ -316,8 +321,46 @@ export default {
         </base-form-tag-input>
       </div>
 
+      <!--Здания-->
+      <b-dropdown left v-if="filterFields.buildings">
+        <template
+          v-if="form.buildings && form.buildings.length"
+          #button-content
+        >
+          <div class="input-block">
+            <span class="input-label">{{ $t("object.sort.building") }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(buildingsRender) }}
+            </p>
+          </div>
+        </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t("object.sort.building") }}
+          </p>
+        </template>
+        <b-dropdown-text href="#">
+          <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="checkbox-group-2"
+              v-model="form.buildings"
+              :aria-describedby="ariaDescribedby"
+              name="flavour-2"
+            >
+              <b-form-checkbox
+                v-for="option in filterFields.buildings"
+                :key="option.name"
+                :value="option.id"
+              >
+                {{ option.name }}
+              </b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-dropdown-text>
+      </b-dropdown>
+
       <!--   Комнат    -->
-      <b-dropdown left>
+      <b-dropdown left v-if="filterFields.rooms">
         <template v-if="form.rooms && form.rooms.length" #button-content>
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.flat") }}</span>
@@ -352,7 +395,7 @@ export default {
       </b-dropdown>
 
       <!--  Этаж    -->
-      <b-dropdown left>
+      <b-dropdown left v-if="filterFields.floors">
         <template v-if="form.floors && form.floors.length" #button-content>
           <div class="input-block">
             <span class="input-label">{{ $t("object.level") }}</span>
@@ -390,7 +433,7 @@ export default {
       </b-dropdown>
 
       <!--   Блок    -->
-      <b-dropdown left>
+      <b-dropdown left v-if="filterFields.blocks">
         <template v-if="form.blocks && form.blocks.length" #button-content>
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.block") }}</span>
@@ -433,7 +476,7 @@ export default {
       </b-dropdown>
 
       <!--   Жилая площадь    -->
-      <b-dropdown v-show="sortBar" left>
+      <b-dropdown v-show="sortBar" left v-if="filterFields.area">
         <template v-if="form.area && form.area.length" #button-content>
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.area") }}</span>

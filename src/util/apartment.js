@@ -1,8 +1,8 @@
 import api from "@/services/api";
 
-export async function orderApartment(ids) {
+export async function orderApartment(ids, type) {
   try {
-    const { data } = await api.orders.holdOrder(ids);
+    const { data } = await api.orders.holdOrder(ids, type);
     if (data) {
       // const objectId = data.orders[0].apartment.object.id
       // await this.$router.push({
@@ -16,7 +16,7 @@ export async function orderApartment(ids) {
         name: "checkout-v2",
         params: {
           id: data.uuid,
-          object: data.orders[0].apartment.object.id,
+          object: data.orders[0][type].object.id,
         },
       });
       // await this.$router.push({

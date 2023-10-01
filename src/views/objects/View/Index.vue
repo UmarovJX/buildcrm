@@ -3,9 +3,11 @@ import api from "@/services/api";
 import ObjectSort from "@/components/Objects/ObjectSort";
 import ObjectBlock from "@/components/Objects/view/Tabs/ObjectBlock";
 import ApartmentExpressView from "@/components/Objects/view/elements/ApartmentExpressView";
+import ParkingExpressView from "@/components/Objects/view/elements/ParkingExpressView";
 import PlanExpressView from "@/components/Objects/view/elements/PlanExpressView";
 import ChessSquareCard from "@/components/Objects/view/Tabs/ChessSquareCard";
 import ObjectTable from "@/components/Objects/ObjectTable";
+import ParkingTable from "@/components/Objects/ParkingTable";
 import ObjectPlan from "@/components/Objects/view/Tabs/ObjectPlan";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
@@ -27,10 +29,12 @@ export default {
     BaseArrowLeft,
     ChessSquareCard,
     ObjectTable,
+    ParkingTable,
     ObjectSort,
     ObjectBlock,
     ObjectPlan,
     ApartmentExpressView,
+    ParkingExpressView,
     PlanExpressView,
     BaseButton,
     BaseModal,
@@ -47,6 +51,10 @@ export default {
         item: {},
       },
       planView: {
+        toggle: false,
+        item: {},
+      },
+      parkingView: {
         toggle: false,
         item: {},
       },
@@ -94,6 +102,34 @@ export default {
           value: "unavailable",
         },
       ],
+      apartmentStatusList: [
+        {
+          label: this.$t("object.status.available"),
+          class: "teal",
+          value: "available",
+        },
+        {
+          label: this.$t("object.status.booked"),
+          class: "yellow",
+          value: "booked",
+        },
+        {
+          label: this.$t("object.status.contract"),
+          class: "blue",
+          value: "contract",
+        },
+        {
+          label: this.$t("object.status.sold"),
+          class: "gray",
+          value: "sold",
+        },
+        {
+          label: this.$t("object.status.disable"),
+          class: "disabled",
+          value: "unavailable",
+        },
+      ],
+      parkingStatusList: [],
       statusFilter: [],
       filter: [],
       filterFields: {},
@@ -131,6 +167,14 @@ export default {
           buttonIcon: "BaseChessPlan",
           title: this.$t("object.plan"),
           view: "plan",
+        },
+        {
+          id: 6,
+          param: "chess",
+          name: "ParkingTable",
+          buttonIcon: "BaseChessList",
+          title: this.$t("object.parking"),
+          view: "list",
         },
       ],
       otherPrices: [],
@@ -255,12 +299,21 @@ export default {
           this.chessApartments = this.filterItems(query, this.chessApartments);
           this.filtered = true;
         }
-        this.getAllApartment();
+        if (this.currentTab !== "ParkingTable") {
+          this.getAllApartment();
+        }
       },
       immediate: true,
     },
     currentTab() {
       this.initRelatedToComponent();
+      this.fetchFilterFields();
+
+      if (this.currentTab == "ParkingTable") {
+        this.fetchParkingStatusList();
+      } else {
+        this.statusList = this.apartmentStatusList;
+      }
     },
   },
   mounted() {
@@ -288,6 +341,23 @@ export default {
     this.getBlockName();
   },
   methods: {
+    async fetchParkingStatusList() {
+      const { object } = this.$route.params;
+
+      const res = await api.objectsV2.fetchObjectParkingsStatusList(object);
+      const response = res.data;
+      console.log(response);
+      this.statusList = response.map((el) => ({
+        label: el.name[this.$i18n.locale],
+        class: el.color,
+        value: el.status,
+      }));
+      const statusCounterNew = {};
+      response.forEach((el) => {
+        statusCounterNew[el.status] = el.count;
+      });
+      this.statusCounter = statusCounterNew;
+    },
     async fetchNecessary() {
       if (ApartmentsPermission.getApartmentsPermission("filter")) {
         await this.fetchFilterFields();
@@ -485,20 +555,34 @@ export default {
       }
     },
     async fetchFilterFields() {
-      if (this.filterFields.length) return;
+      //if (this.filterFields.length) return;
 
       const { object } = this.$route.params;
-      await api.objectsV2
-        .fetchObjectFields(object)
-        .then((response) => {
-          this.filterFields = response.data;
-        })
-        .catch((err) => {
-          this.toastedWithErrorCode(err);
-        })
-        .finally(() => {
-          this.finishLoading = true;
-        });
+      if (this.currentTab !== "ParkingTable") {
+        await api.objectsV2
+          .fetchObjectFields(object)
+          .then((response) => {
+            this.filterFields = response.data;
+          })
+          .catch((err) => {
+            this.toastedWithErrorCode(err);
+          })
+          .finally(() => {
+            this.finishLoading = true;
+          });
+      } else {
+        await api.objectsV2
+          .fetchParkingFilterFields(object)
+          .then((response) => {
+            this.filterFields = response.data;
+          })
+          .catch((err) => {
+            this.toastedWithErrorCode(err);
+          })
+          .finally(() => {
+            this.finishLoading = true;
+          });
+      }
     },
     changeTab({ name }) {
       this.currentTab = name;
@@ -868,20 +952,29 @@ export default {
         });
     },
     apartmentExpressReview(item) {
-      // const itemNotOpen = item.uuid !== this.expressView.item.uuid
-      // if (itemNotOpen) {
       if (item) {
         this.expressView.item = item;
         this.expressView.toggle = true;
       }
-      // }
     },
     planExpressReview(item) {
-      this.planView.item = item;
-      this.planView.toggle = true;
+      if (item) {
+        this.planView.item = item;
+        this.planView.toggle = true;
+      }
     },
+    parkingExpressReview(item) {
+      if (item) {
+        this.parkingView.item = item;
+        this.parkingView.toggle = true;
+      }
+    },
+
     hideApartmentSidebarView() {
       this.expressView.toggle = false;
+    },
+    hideParkingSidebarView() {
+      this.parkingView.toggle = false;
     },
     hidePlanSidebarView() {
       this.planView.toggle = false;
@@ -1014,6 +1107,7 @@ export default {
       :is-hide-price="isHidePrice"
       @counter="countGet"
       @show-express-sidebar="apartmentExpressReview"
+      @show-parking-details="parkingExpressReview"
       @show-plan-sidebar="planExpressReview"
     />
 
@@ -1024,6 +1118,15 @@ export default {
       :apartmentUuid="expressView.item.uuid"
       @update-content="fetchNecessary"
       @hide-apartment-sidebar-view="hideApartmentSidebarView"
+    />
+
+    <!-- Parking QUICK VIEW   -->
+    <parking-express-view
+      :visible="parkingView.toggle"
+      :object-name="objectName"
+      :apartment="parkingView.item"
+      :apartmentUuid="parkingView.item.id"
+      @hide-parking-details="hideParkingSidebarView"
     />
 
     <plan-express-view
