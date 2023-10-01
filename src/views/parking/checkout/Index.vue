@@ -80,7 +80,7 @@ export default {
   },
 
   computed: {
-    ...mapState("CheckoutV2", [
+    ...mapState("ParkingCheckout", [
       "apartments",
       "created_by",
       "contract_number",
@@ -91,7 +91,7 @@ export default {
       "clientData",
       "componentFunction",
     ]),
-    ...mapGetters("CheckoutV2", [
+    ...mapGetters("ParkingCheckout", [
       "isCreateMode",
       "isUpdateMode",
       "getUpdateStatus",
@@ -104,12 +104,12 @@ export default {
   },
 
   methods: {
-    ...mapMutations("CheckoutV2", [
+    ...mapMutations("ParkingCheckout", [
       "reset",
       "setClientData",
       "setFunctionType",
     ]),
-    ...mapActions("CheckoutV2", [
+    ...mapActions("ParkingCheckout", [
       "setup",
       "initEditItems",
       "changeFirstAttempt",
@@ -122,11 +122,32 @@ export default {
         const orderId = this.$route.params.id;
         const { data } = await api.orders.fetchCheckoutData(orderId);
         if (data) {
+          const orders = data.orders.map((order) => {
+            const { uuid, parking } = order;
+
+            const apartment = parking;
+
+            apartment.plan = {
+              id: uuid,
+              area: 1,
+              balcony: false,
+              balcony_area: 0,
+              images: [parking.upload.path],
+            };
+
+            return {
+              ...order,
+              apartment,
+            };
+          });
+
+          data.orders = orders;
+
           const context = {
             order: data,
             uuid: data.uuid,
             expiry_at: data.expiry_at,
-            orders: data.orders,
+            orders,
           };
           this.expiry_at = data.expiry_at;
           await this.setup(context);
@@ -135,7 +156,7 @@ export default {
         }
       } catch (e) {
         this.toastedWithErrorCode(e);
-        this.redirect();
+        // this.redirect();
       } finally {
         this.finishFetching();
       }
@@ -342,7 +363,7 @@ export default {
       } catch (e) {
         await this.openNotify({
           type: "error",
-          message: e.response.data.message ?? e.message,
+          message: e?.response?.data?.message ?? e.message,
         });
       }
     },
@@ -678,7 +699,7 @@ export default {
         <!--   ?SECOND TAB 2  -->
         <b-tab :disabled="actionTracker.disable.second">
           <template #title>
-            <tab-title :step="2" :content="$t('apartment_detail')" />
+            <tab-title :step="2" :content="$t('parking_detail')" />
           </template>
 
           <ch-apartments-overview

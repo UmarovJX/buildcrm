@@ -41,6 +41,7 @@ import notify from "@/store/modules/Notification/index";
 import checkout from "@/store/modules/Checkout";
 import CheckoutV2 from "@/store/modules/CheckoutV2";
 import Pagination from "./modules/pagination";
+import ParkingCheckout from "@/views/parking/checkout/store";
 
 Vue.use(Vuex);
 
@@ -85,5 +86,6 @@ export default new Vuex.Store({
     FastPlan,
     Promo,
     Pagination,
+    ParkingCheckout,
   },
 });

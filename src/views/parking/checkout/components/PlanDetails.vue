@@ -38,7 +38,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("CheckoutV2", {
+    ...mapActions("ParkingCheckout", {
       removeApartment: "removeApartment",
     }),
   },
@@ -55,16 +55,16 @@ export default {
       <span class="apd-section-name gray-600">
         {{ apartment.building.name }}
       </span>
-      <span class="apd-section-slash gray-400">/</span>
-      <span class="apd-section-name gray-600">
-        {{ apartment.block.name }}
-      </span>
+      <!--      <span class="apd-section-slash gray-400">/</span>-->
+      <!--      <span class="apd-section-name gray-600">-->
+      <!--        {{ apartment.block.name }}-->
+      <!--      </span>-->
     </div>
     <div class="apd-information">
       <field-information
         :bilingual="true"
         :content="apartment.number"
-        title="apartment_number"
+        title="parking_number"
         icon-name="door_open"
       />
       <field-information
@@ -73,55 +73,55 @@ export default {
         title="floor"
         icon-name="stairs"
       />
-      <field-information
-        :bilingual="true"
-        :content="apartment.rooms"
-        title="number_of_rooms"
-        icon-name="door_front"
-      />
-      <field-information
-        :bilingual="true"
-        :content="apartment.block.floors"
-        title="number_of_blocks"
-        icon-name="domain"
-      />
-      <field-information
-        :bilingual="true"
-        title="area"
-        icon-name="activity_zone"
-      >
-        <template #content> {{ apartment.plan.area }} M<sup>2</sup> </template>
-      </field-information>
-      <field-information
-        :bilingual="true"
-        :content="apartment.floor"
-        title="balcony"
-        icon-name="balcony"
-      >
-        <template #content>
-          {{ apartment.plan.balcony_area }} M<sup>2</sup>
-        </template>
-      </field-information>
-      <field-information
-        :bilingual="true"
-        title="object.complete"
-        icon-name="precision_manufacturing"
-      >
-        <template #content>
-          {{ buildDate }}
-        </template>
-      </field-information>
+      <!--      <field-information-->
+      <!--        :bilingual="true"-->
+      <!--        :content="apartment.rooms"-->
+      <!--        title="number_of_rooms"-->
+      <!--        icon-name="door_front"-->
+      <!--      />-->
+      <!--      <field-information-->
+      <!--        :bilingual="true"-->
+      <!--        :content="apartment.block.floors"-->
+      <!--        title="number_of_blocks"-->
+      <!--        icon-name="domain"-->
+      <!--      />-->
+      <!--      <field-information-->
+      <!--        :bilingual="true"-->
+      <!--        title="area"-->
+      <!--        icon-name="activity_zone"-->
+      <!--      >-->
+      <!--        <template #content> {{ apartment.plan.area }} M<sup>2</sup> </template>-->
+      <!--      </field-information>-->
+      <!--      <field-information-->
+      <!--        :bilingual="true"-->
+      <!--        :content="apartment.floor"-->
+      <!--        title="balcony"-->
+      <!--        icon-name="balcony"-->
+      <!--      >-->
+      <!--        <template #content>-->
+      <!--          {{ apartment.plan.balcony_area }} M<sup>2</sup>-->
+      <!--        </template>-->
+      <!--      </field-information>-->
+      <!--      <field-information-->
+      <!--        :bilingual="true"-->
+      <!--        title="object.complete"-->
+      <!--        icon-name="precision_manufacturing"-->
+      <!--      >-->
+      <!--        <template #content>-->
+      <!--          {{ buildDate }}-->
+      <!--        </template>-->
+      <!--      </field-information>-->
     </div>
 
-    <!--    <base-button-->
-    <!--        v-if="remove"-->
-    <!--        :text="`${ $t('remove_apartment') }`"-->
-    <!--        @click="removeApartment({apmId:apartment.id})"-->
-    <!--    >-->
-    <!--      <template #left-icon>-->
-    <!--        <x-icon name="remove" color="var(&#45;&#45;violet-600)"></x-icon>-->
-    <!--      </template>-->
-    <!--    </base-button>-->
+    <base-button
+      v-if="remove"
+      :text="`${$t('remove_apartment')}`"
+      @click="removeApartment({ apmId: apartment.id })"
+    >
+      <template #left-icon>
+        <x-icon name="remove" color="var(--violet-600)"></x-icon>
+      </template>
+    </base-button>
   </div>
 </template>
 

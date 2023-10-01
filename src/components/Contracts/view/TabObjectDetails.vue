@@ -26,11 +26,14 @@ export default {
   },
   computed: {
     coordinates() {
-      const { latitude, longitude } = this.order?.object?.location;
+      const { latitude, longitude } = this.order.object.location;
       return [latitude, longitude];
     },
+    isParkingType() {
+      return this.order.type === "parking";
+    },
   },
-  created() {
+  mounted() {
     this.fetchObjectDetails();
   },
   methods: {
@@ -41,6 +44,10 @@ export default {
       return this.haveApartment && item.apartment?.plan;
     },
     imageUrl(item) {
+      if (this.isParkingType) {
+        return "";
+      }
+
       // console.log(item, 'item');
       const { apartment } = item;
       // console.log(apartment, 'apartment');
@@ -80,7 +87,6 @@ export default {
       await api.contractV2
         .getContractApartments(id)
         .then((response) => {
-          // console.log(response.data, 'response.data');
           this.apartment = response.data;
         })
         .catch((error) => {
@@ -108,21 +114,108 @@ export default {
 
 <template>
   <div class="custom__container">
-    <div v-for="item in apartment" :key="item.id" class="row">
-      <div class="object__details_layout col-5">
-        <div class="object__details_layout_img">
-          <img
-            v-if="imageUrl(item)"
-            :src="imageUrl(item)"
-            alt="apartment image"
-          />
-          <img
-            v-else
-            :src="require('@/assets/img/no-image.jpg')"
-            alt="apartment image"
-          />
+    <div v-if="isParkingType">
+      <div
+        v-for="parking in order.parkings"
+        :key="parking.uuid"
+        class="parking__layout"
+      >
+        <!--?   PARKING NUMBER    -->
+        <div class="object__details_info_card d-flex align-items-center w-100">
+          <div class="object__details_info_card_icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+              <path
+                d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                fill="#7C3AED"
+              />
+            </svg>
+          </div>
+
+          <div class="object__details_info_card_text">
+            <span>{{ $t("contracts.object_name") }}</span>
+            <span>{{ order.object.name }}</span>
+          </div>
         </div>
-        <button @click="openMapModal">
+
+        <!--?   PARKING NUMBER    -->
+        <div class="object__details_info_card d-flex align-items-center w-100">
+          <div class="object__details_info_card_icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+              <path
+                d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                fill="#7C3AED"
+              />
+            </svg>
+          </div>
+
+          <div class="object__details_info_card_text">
+            <span>{{ $t("parking_number") }}</span>
+            <span>{{ parking.number }}</span>
+          </div>
+        </div>
+
+        <!--?   PARKING FLOOR    -->
+        <div class="object__details_info_card d-flex align-items-center">
+          <div class="object__details_info_card_icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+              <path
+                d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                fill="#7C3AED"
+              />
+            </svg>
+          </div>
+          <div class="object__details_info_card_text">
+            <span>{{ $t("floor") }}</span>
+            <span>{{ parking.floor }}</span>
+          </div>
+        </div>
+
+        <div class="object__details_info_card d-flex align-items-center">
+          <div class="object__details_info_card_icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+              <path
+                d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                fill="#7C3AED"
+              />
+            </svg>
+          </div>
+          <div class="object__details_info_card_text">
+            <span>{{ $t("object.complete") }}</span>
+            <span>
+              {{ buildingDate(order.object.build_date) }}
+            </span>
+          </div>
+        </div>
+
+        <button @click="openMapModal" class="">
           <svg
             width="20"
             height="20"
@@ -140,240 +233,278 @@ export default {
           {{ $t("view_map") }}
         </button>
       </div>
+    </div>
 
-      <div class="object__details_info col-6" v-if="haveApartment(item)">
-        <div class="breadcrumb__head">
-          <span class="name">
-            {{ item.building.name }}
-          </span>
-          <span class="slash"> / </span>
-          <span class="name">
-            {{ item.block.name }}
-          </span>
+    <template v-else>
+      <div v-for="item in apartment" :key="item.id" class="row">
+        <div class="object__details_layout col-5">
+          <div class="object__details_layout_img">
+            <img
+              v-if="imageUrl(item)"
+              :src="imageUrl(item)"
+              alt="apartment image"
+            />
+            <img
+              v-else
+              :src="require('@/assets/img/no-image.jpg')"
+              alt="apartment image"
+            />
+          </div>
+          <button @click="openMapModal">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M3.4395 1.66675H16.5592C17.539 1.66675 18.3327 2.48429 18.3327 3.49363V4.76988C18.3327 5.25952 18.1413 5.72972 17.8016 6.07265L12.3807 11.5559C12.2872 11.6514 12.1602 11.7044 12.029 11.7035L7.49013 11.6894C7.35199 11.6894 7.22071 11.6302 7.12633 11.5268L2.14478 6.0479C1.83676 5.70939 1.66602 5.26217 1.66602 4.79816V3.49451C1.66602 2.48518 2.45967 1.66675 3.4395 1.66675ZM7.73277 13.1869L11.7782 13.1992C12.0305 13.2001 12.2347 13.4114 12.2347 13.6703V15.9462C12.2347 16.206 12.0871 16.4411 11.8572 16.5498L8.18493 18.2742C8.09913 18.314 8.00819 18.3334 7.91724 18.3334C7.79626 18.3334 7.67528 18.2981 7.56975 18.2282C7.38528 18.1063 7.27374 17.8959 7.27374 17.6705V13.6579C7.27374 13.3972 7.47966 13.186 7.73277 13.1869Z"
+                fill="#7C3AED"
+              />
+            </svg>
+            {{ $t("view_map") }}
+          </button>
         </div>
-        <span class="breadcrumb__location">{{ item.object.name }}</span>
 
-        <div class="object__details_info_cards">
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.sort.block") }}</span>
-              <span>{{ item.block.name }}</span>
-            </div>
+        <div class="object__details_info col-6" v-if="haveApartment(item)">
+          <div class="breadcrumb__head">
+            <span class="name">
+              {{ item.building.name }}
+            </span>
+            <span class="slash"> / </span>
+            <span class="name">
+              {{ item.block.name }}
+            </span>
           </div>
+          <span class="breadcrumb__location">{{ item.object.name }}</span>
 
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.entrance") }}</span>
-              <span>{{ item.apartment.entrance }}</span>
-            </div>
-          </div>
-
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.level") }}</span>
-              <span>{{ item.apartment.floor }}</span>
-            </div>
-          </div>
-
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.number_level") }}</span>
-              <span>{{ item.apartment.floors }}</span>
-            </div>
-          </div>
-
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.flat") }}</span>
-              <span>
-                {{ item.apartment.number }}
-              </span>
-            </div>
-          </div>
-
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.number_flat") }}</span>
-              <span>
-                {{ item.apartment.rooms }}
-              </span>
-            </div>
-          </div>
-
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
-            </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.area") }}</span>
-              <span class="d-flex">
-                <span v-if="havePlan(item)" class="mr-2 font-normal">
-                  {{ parseFloat(item.apartment.plan.area).toFixed(1) }}</span
+          <div class="object__details_info_cards">
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                <span class="lowercase">м2</span>
-              </span>
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.sort.block") }}</span>
+                <span>{{ item.block.name }}</span>
+              </div>
             </div>
-          </div>
 
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.entrance") }}</span>
+                <span>{{ item.apartment.entrance }}</span>
+              </div>
             </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.balcony") }}</span>
-              <span
-                v-if="havePlan(item) && item.apartment.plan.balcony"
-                class="d-flex font-normal"
-              >
-                <span class="mr-2">{{
-                  parseFloat(item.apartment.plan.balcony_area).toFixed(1)
-                }}</span>
-                <span class="lowercase">м2</span>
-              </span>
-              <span v-else>Нет</span>
-            </div>
-          </div>
 
-          <div class="object__details_info_card d-flex align-items-center">
-            <div class="object__details_info_card_icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="24" height="24" rx="12" fill="#EDE9FE" />
-                <path
-                  d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
-                  fill="#7C3AED"
-                />
-              </svg>
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.level") }}</span>
+                <span>{{ item.apartment.floor }}</span>
+              </div>
             </div>
-            <div class="object__details_info_card_text">
-              <span>{{ $t("object.complete") }}</span>
-              <span>
-                {{ buildingDate(item.object.build_date) }}
-              </span>
+
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.number_level") }}</span>
+                <span>{{ item.apartment.floors }}</span>
+              </div>
+            </div>
+
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.flat") }}</span>
+                <span>
+                  {{ item.apartment.number }}
+                </span>
+              </div>
+            </div>
+
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.number_flat") }}</span>
+                <span>
+                  {{ item.apartment.rooms }}
+                </span>
+              </div>
+            </div>
+
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.area") }}</span>
+                <span class="d-flex">
+                  <span v-if="havePlan(item)" class="mr-2 font-normal">
+                    {{ parseFloat(item.apartment.plan.area).toFixed(1) }}</span
+                  >
+                  <span class="lowercase">м2</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.balcony") }}</span>
+                <span
+                  v-if="havePlan(item) && item.apartment.plan.balcony"
+                  class="d-flex font-normal"
+                >
+                  <span class="mr-2">
+                    {{
+                      parseFloat(item.apartment.plan.balcony_area).toFixed(1)
+                    }}
+                  </span>
+                  <span class="lowercase">м2</span>
+                </span>
+                <span v-else>Нет</span>
+              </div>
+            </div>
+
+            <div class="object__details_info_card d-flex align-items-center">
+              <div class="object__details_info_card_icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="24" height="24" rx="12" fill="#EDE9FE" />
+                  <path
+                    d="M10.3345 17.123V15.334C10.3345 14.8806 10.7031 14.5123 11.1597 14.5095H12.8363C13.295 14.5095 13.6668 14.8786 13.6668 15.334V17.1178C13.6668 17.511 13.9863 17.8305 14.3824 17.8334H15.5262C16.0604 17.8348 16.5733 17.625 16.9515 17.2505C17.3297 16.8759 17.5423 16.3674 17.5423 15.837V10.7552C17.5423 10.3267 17.351 9.92033 17.02 9.64546L13.1341 6.56007C12.4548 6.0204 11.4846 6.03784 10.8255 6.60156L7.02307 9.64546C6.67642 9.91223 6.46922 10.3198 6.45898 10.7552V15.8318C6.45898 16.9372 7.36162 17.8334 8.47509 17.8334H9.59282C9.7835 17.8348 9.96685 17.7605 10.1022 17.6272C10.2375 17.4938 10.3136 17.3123 10.3136 17.123H10.3345Z"
+                    fill="#7C3AED"
+                  />
+                </svg>
+              </div>
+              <div class="object__details_info_card_text">
+                <span>{{ $t("object.complete") }}</span>
+                <span>
+                  {{ buildingDate(item.object.build_date) }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </template>
 
     <!--  LOCATION APARTMENT ON THE MAP  -->
     <base-modal ref="map-modal">
@@ -462,6 +593,21 @@ export default {
     svg {
       margin-right: 18px;
     }
+  }
+}
+
+button {
+  width: 100%;
+  height: 56px;
+  border-radius: 32px !important;
+  border: none !important;
+  font-size: 16px;
+  font-weight: 600;
+  background: #f3f4f6 !important;
+  color: #4b5563 !important;
+
+  svg {
+    margin-right: 18px;
   }
 }
 
@@ -559,6 +705,23 @@ export default {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+  }
+}
+
+.parking__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 1rem;
+
+  .card {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 16px;
+    margin-bottom: 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 32px;
+    letter-spacing: 1px;
   }
 }
 

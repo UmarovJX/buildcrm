@@ -261,7 +261,7 @@ export default {
     async makeContract() {
       const ids = this.checkoutList.map((ch) => ch.id);
       this.startLoading();
-      await this.orderApartment(ids, 'apartment');
+      await this.orderApartment(ids, "apartment");
       await this.finishLoading();
     },
     openSetHolderModal() {
@@ -536,11 +536,11 @@ export default {
       this.reserve = true;
       this.apartment_id = id;
     },
-    // CreateReserveSuccess() {
-    //     this.fetchApartments(this).then(() => {
-    //         location.reload();
-    //     });
-    // },
+    CreateReserveSuccess() {
+      this.fetchApartments(this).then(() => {
+        location.reload();
+      });
+    },
     CloseReserveInfo() {
       this.info_reserve = false;
       this.apartment_preview = {};

@@ -38,7 +38,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("CheckoutV2", {
+    ...mapState("ParkingCheckout", {
       stateContractNumber: "contract_number",
     }),
   },
@@ -67,7 +67,7 @@ export default {
     this.contractNumber = this.apartment.contract_number;
   },
   methods: {
-    ...mapActions("CheckoutV2", [
+    ...mapActions("ParkingCheckout", [
       "changeContractNumber",
       "updateApmContractDate",
     ]),

@@ -107,7 +107,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations("CheckoutV2", ["setCountryList", "setClientTypeList"]),
+    ...mapMutations("ParkingCheckout", ["setCountryList", "setClientTypeList"]),
     clientDebounce() {
       if (this.personalData.passport_series) {
         if (this.timeoutId !== null) {

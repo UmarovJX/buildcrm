@@ -34,7 +34,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("CheckoutV2", {
+    ...mapGetters("ParkingCheckout", {
       apartments: "gtsApartments",
       findApmIdx: "findApmIdx",
     }),
@@ -66,7 +66,7 @@ export default {
       this.apartments[this.overviewApmTabIndex]?.validate?.valid;
   },
   methods: {
-    ...mapMutations("CheckoutV2", ["updateApartment", "reset"]),
+    ...mapMutations("ParkingCheckout", ["updateApartment", "reset"]),
     apnName(number) {
       return this.$t("apartment") + " №" + number;
     },

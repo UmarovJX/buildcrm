@@ -55,13 +55,12 @@ export function headerItems() {
     h.breadcrumbs.push({
       content: {
         type: "string",
-        path: this.$t("apartment") + " " + apmTitles,
+        path: this.$t("parking") + " " + apmTitles,
       },
       route: {
-        name: "apartment-view",
+        name: "apartments",
         params: {
           object: object.id,
-          id: apartments[0].id,
         },
       },
     });
@@ -69,12 +68,12 @@ export function headerItems() {
 
   if (this.isCreateMode) {
     h.pageInfo = {
-      title: this.$t("apartment_make_contract"),
+      title: this.$t("parking_make_contract"),
       titleHighlight: apmTitles,
     };
   } else {
     h.pageInfo = {
-      title: this.$t("edit_apartment"),
+      title: this.$t("edit_parking"),
       titleHighlight: apmTitles,
     };
   }

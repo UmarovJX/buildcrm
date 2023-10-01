@@ -29,12 +29,12 @@ export default {
     this.fetchCompanyType();
   },
   computed: {
-    ...mapState("CheckoutV2", {
+    ...mapState("ParkingCheckout", {
       clientInfo: "clientData",
       clientTypeList: "clientTypeList",
       countryList: "countryList",
     }),
-    ...mapGetters("CheckoutV2", {
+    ...mapGetters("ParkingCheckout", {
       apartments: "gtsApartments",
       totalForAll: "totalForAll",
       trashCount: "trashCount",
@@ -201,7 +201,7 @@ export default {
   },
   methods: {
     prettier: formatToPrice,
-    ...mapActions("CheckoutV2", {
+    ...mapActions("ParkingCheckout", {
       returnRemovedApartments: "returnRemovedApartments",
     }),
     async fetchCompanyType() {
@@ -244,7 +244,7 @@ export default {
       >
         <section-title
           :bilingual="true"
-          :title="$t('apartment') + ' ' + apartment.number"
+          :title="$t('parking_number') + ' ' + apartment.number"
           class="km-b-2"
         />
         <div class="apn-result__item-content">

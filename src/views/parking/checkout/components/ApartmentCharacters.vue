@@ -46,7 +46,7 @@ export default {
   <div>
     <section-title
       :bilingual="true"
-      title="characteristics_of_the_apartment"
+      title="characteristics_of_the_parking"
       class="km-b-2"
     />
     <div class="apd-characters-wrapper">

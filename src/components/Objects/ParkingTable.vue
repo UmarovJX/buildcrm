@@ -232,7 +232,7 @@ export default {
     async makeContract() {
       const ids = this.checkoutList.map((ch) => ch.id);
       this.startLoading();
-      await this.orderApartment(ids, 'parking');
+      await this.orderApartment(ids, "parking", "parking-checkout");
       await this.finishLoading();
     },
     openSetHolderModal() {
@@ -433,7 +433,6 @@ export default {
       //   params: {object: this.$route.params.object, id: items[0].id},
       // });
       this.$emit("show-parking-details", items[0]);
-      console.log(items[0]);
     },
     sortingChanged(val) {
       this.showLoading = true;
@@ -1032,6 +1031,7 @@ export default {
     <BaseCheckboxModal
       :chosen="checkedApartments.length"
       @go-to-contract="makeContract"
+      :btn-text="`${$t('registration_of_parking_lots')}`"
     />
   </div>
 </template>

@@ -51,7 +51,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("CheckoutV2", [
+    ...mapGetters("ParkingCheckout", [
       "getApm",
       "apartmentArea",
       "findApmIdx",
@@ -132,7 +132,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("CheckoutV2", [
+    ...mapActions("ParkingCheckout", [
       "updateApmDiscount",
       "setMonthlyPaymentPeriod",
       "editPrepay",
@@ -146,7 +146,7 @@ export default {
       "turnInitialEditStateOn",
       "turnInitialEditStateOff",
     ]),
-    ...mapMutations("CheckoutV2", ["updateApartment"]),
+    ...mapMutations("ParkingCheckout", ["updateApartment"]),
     focusTotalDiscount() {
       this.focusOnFieldHandler("total_discount");
       this.disableInitialForChange();
@@ -281,9 +281,9 @@ export default {
         return;
       }
       if (this.getCalc().total_discount !== total_discount) {
-        const discount_per_m2 = fmd(total_discount / this.getCalc().plan.area);
+        // const discount_per_m2 = fmd(total_discount / this.getCalc().plan.area);
         this.updateDiscountMtd({
-          discount_per_m2,
+          discount_per_m2: total_discount,
           total_discount,
         });
       }
@@ -293,10 +293,10 @@ export default {
         return;
       }
       if (this.getCalc().discount_per_m2 !== discount_per_m2) {
-        const total_discount = fmd(discount_per_m2 * this.getCalc().plan.area);
+        // const total_discount = fmd(discount_per_m2 * this.getCalc().plan.area);
         this.updateDiscountMtd({
           discount_per_m2,
-          total_discount,
+          total_discount: discount_per_m2,
         });
       }
     },
@@ -420,26 +420,26 @@ export default {
     </validation-provider>
 
     <!--? PRICE PER M2 -->
-    <validation-provider
-      v-if="showAnotherPriceFields"
-      v-slot="{ errors }"
-      rules="required|min_value:0"
-      :name="`${$t('price_m2')}`"
-      class="cw-price-m2"
-    >
-      <x-form-input
-        type="number"
-        v-model="paymentDetails.price_m2"
-        :currency-symbol="true"
-        :label="true"
-        :precision="2"
-        :error="!!errors[0]"
-        :placeholder="`${$t('price_m2')}`"
-        class="w-100"
-        @input="updateIndividualPrice('price_m2')"
-        @focus="focusOnFieldHandler('price_m2')"
-      />
-    </validation-provider>
+    <!--    <validation-provider-->
+    <!--      v-if="showAnotherPriceFields"-->
+    <!--      v-slot="{ errors }"-->
+    <!--      rules="required|min_value:0"-->
+    <!--      :name="`${$t('price_m2')}`"-->
+    <!--      class="cw-price-m2"-->
+    <!--    >-->
+    <!--      <x-form-input-->
+    <!--        type="number"-->
+    <!--        v-model="paymentDetails.price_m2"-->
+    <!--        :currency-symbol="true"-->
+    <!--        :label="true"-->
+    <!--        :precision="2"-->
+    <!--        :error="!!errors[0]"-->
+    <!--        :placeholder="`${$t('price_m2')}`"-->
+    <!--        class="w-100"-->
+    <!--        @input="updateIndividualPrice('price_m2')"-->
+    <!--        @focus="focusOnFieldHandler('price_m2')"-->
+    <!--      />-->
+    <!--    </validation-provider>-->
     <!--! END OF ANOTHER PRICE FIELDS -->
 
     <!--? INSTALLMENT PLAN  -->
@@ -538,26 +538,26 @@ export default {
     </validation-provider>
 
     <!--? DISCOUNT_PER_M2  -->
-    <validation-provider
-      v-slot="{ errors }"
-      :name="`${$t('discount_per_m2')}`"
-      class="cw-discount-per-m2"
-    >
-      <x-form-input
-        type="number"
-        v-model="paymentDetails.discount_per_m2"
-        :currency-symbol="true"
-        :label="true"
-        :precision="2"
-        :error="!!errors[0]"
-        class="w-100"
-        :max="maxDiscountEachSquare"
-        :placeholder="`${$t('discount_per_m2')}`"
-        @input="addDiscountEachSquare"
-        @focus="focusDiscountEachSquare"
-        @blur="blurDiscountEachSquare"
-      />
-    </validation-provider>
+    <!--    <validation-provider-->
+    <!--      v-slot="{ errors }"-->
+    <!--      :name="`${$t('discount_per_m2')}`"-->
+    <!--      class="cw-discount-per-m2"-->
+    <!--    >-->
+    <!--      <x-form-input-->
+    <!--        type="number"-->
+    <!--        v-model="paymentDetails.discount_per_m2"-->
+    <!--        :currency-symbol="true"-->
+    <!--        :label="true"-->
+    <!--        :precision="2"-->
+    <!--        :error="!!errors[0]"-->
+    <!--        class="w-100"-->
+    <!--        :max="maxDiscountEachSquare"-->
+    <!--        :placeholder="`${$t('discount_per_m2')}`"-->
+    <!--        @input="addDiscountEachSquare"-->
+    <!--        @focus="focusDiscountEachSquare"-->
+    <!--        @blur="blurDiscountEachSquare"-->
+    <!--      />-->
+    <!--    </validation-provider>-->
 
     <!--? FIRST_PAYMENT_DATE  -->
     <validation-provider
@@ -606,7 +606,8 @@ export default {
     "cv-cell-1 cv-cell-1"
     "cv-cell-2 cv-cell-2"
     "cv-cell-3 cv-cell-4"
-    "cv-cell-5 cv-cell-6"
+    "cv-cell-5 cv-cell-5"
+    //"cv-cell-5 cv-cell-6"
     "cv-cell-7 cv-cell-7"
     "cv-cell-8 cv-cell-8";
   gap: 1rem;
@@ -617,8 +618,7 @@ export default {
       "cv-cell-1 cv-cell-1"
       "cv-cell-2 cv-cell-2"
       "cv-cell-3 cv-cell-4"
-      "cv-st-price cv-price-m2"
-      "cv-cell-5 cv-cell-6"
+      "cv-st-price cv-cell-5"
       "cv-cell-7 cv-cell-7"
       "cv-cell-8 cv-cell-8";
 

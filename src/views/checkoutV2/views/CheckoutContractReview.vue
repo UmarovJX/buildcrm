@@ -111,7 +111,7 @@ export default {
     async fetchContractList() {
       this.startLoading();
       const filterParams = {
-        object_id: [this.$route.params.object],
+        // object_id: [this.$route.params.object],
         contract_number: this.$route.params.ids.split(","),
         limit: 50,
       };

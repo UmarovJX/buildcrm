@@ -65,6 +65,9 @@ import FastPlanList from "@/views/objects/FastPlan/List";
 import AddDrawing from "@/views/objects/FastPlan/AddDrawing.vue";
 import Editor from "@/views/Editor.vue";
 
+/*? PARKING ROUTES*/
+import ParkingCheckout from "@/views/parking/checkout/Index.vue";
+
 const routes = [
   {
     path: "/",
@@ -85,15 +88,27 @@ const routes = [
       },
 
       {
-        path: "/checkout-v2/:object/apartment/:id/order",
-        name: "checkout-v2",
-        component: CheckoutV2,
-      },
-
-      {
         path: "/review/:object/contract/review/:ids",
         name: "checkout-contract-review",
         component: CheckoutContractReview,
+      },
+
+      {
+        path: "/parking/:object/checkout/:id",
+        name: "parking-checkout",
+        component: ParkingCheckout,
+      },
+
+      {
+        path: "/parking/:object/checkout/:id/update",
+        name: "parking-checkout-update",
+        component: ParkingCheckout,
+      },
+
+      {
+        path: "/checkout-v2/:object/apartment/:id/order",
+        name: "checkout-v2",
+        component: CheckoutV2,
       },
 
       {

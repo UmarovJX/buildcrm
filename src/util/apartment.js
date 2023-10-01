@@ -1,6 +1,6 @@
 import api from "@/services/api";
 
-export async function orderApartment(ids, type) {
+export async function orderApartment(ids, type, name = "checkout-v2") {
   try {
     const { data } = await api.orders.holdOrder(ids, type);
     if (data) {
@@ -13,7 +13,7 @@ export async function orderApartment(ids, type) {
       //     }
       // })
       await this.$router.push({
-        name: "checkout-v2",
+        name,
         params: {
           id: data.uuid,
           object: data.orders[0][type].object.id,

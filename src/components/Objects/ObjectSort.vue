@@ -14,10 +14,12 @@ import { sortInFirstRelationship } from "@/util/reusable";
 import { sessionStorageGetItem } from "@/util/storage";
 import { mapGetters } from "vuex";
 import ApartmentsPermission from "@/permission/apartments";
+import { XIcon } from "@/components/ui-components/material-icons";
 
 export default {
   name: "ObjectSort",
   components: {
+    XIcon,
     XFormSelect: XFormSelect,
     BaseChessOne,
     BaseChessTwo,
@@ -94,9 +96,11 @@ export default {
     query() {
       return Object.assign({}, this.$route.query);
     },
-    buildingsRender(){
+    buildingsRender() {
       if (!this.filterFields.buildings) return [];
-      return this.form.buildings.map(id=>this.filterFields.buildings.find(el=>el.id===id).name)
+      return this.form.buildings.map(
+        (id) => this.filterFields.buildings.find((el) => el.id === id).name
+      );
     },
     apartmentsFilterPermission() {
       return ApartmentsPermission.getApartmentsPermission("filter");
@@ -594,7 +598,13 @@ export default {
         :text="tab.title"
       >
         <template #left-icon>
+          <x-icon
+            v-if="tab.buttonIcon === 'local_parking'"
+            name="local_parking"
+            :class="[currentTab.name === tab.name ? '' : 'color-gray-400']"
+          ></x-icon>
           <component
+            v-else
             :is="tab.buttonIcon"
             :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"
           />

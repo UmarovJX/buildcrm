@@ -206,13 +206,16 @@ export default {
           key: "apartmentsNumber",
           label: this.$t("contracts.apartment_number"),
           formatter: (v, key, item) => {
-            if (hasOwnProperty(item, "apartments")) {
-              return item.apartments
-                .reduce((acc, app) => acc + "," + app.number, "")
-                .slice(1);
+            let list = [];
+            if (item.type === "parking") {
+              list = item.parkings;
+            } else {
+              list = item.apartments;
             }
 
-            return "";
+            return list
+              .reduce((acc, app) => acc + "," + app.number, "")
+              .slice(1);
           },
         },
         {
@@ -227,7 +230,7 @@ export default {
         {
           key: "object",
           label: this.$t("contracts.table.object"),
-          formatter: (object) => object.name,
+          formatter: (object) => object?.name,
         },
         {
           key: "date",
@@ -604,6 +607,13 @@ export default {
             class="mr-2 bg-yellow-200"
           >
             <x-icon name="archive" class="color-yellow-600"></x-icon>
+          </x-square-background>
+          <x-square-background
+            v-if="data.item.type === 'parking'"
+            padding="0.4"
+            class="mr-2 bg-violet-600"
+          >
+            <x-icon name="local_parking" class="color-yellow-400"></x-icon>
           </x-square-background>
           <span>
             {{ data.item.contract }}

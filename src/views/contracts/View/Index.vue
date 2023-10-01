@@ -352,6 +352,19 @@ export default {
     refreshDetails() {
       this.fetchContractData();
     },
+    openEditPage() {
+      const name =
+        this.order.type === "parking"
+          ? "parking-checkout-update"
+          : "checkout-v2-update";
+      this.$router.push({
+        name,
+        params: {
+          id: this.$route.params.id,
+          object: this.order.object.id,
+        },
+      });
+    },
   },
 };
 </script>
@@ -429,16 +442,7 @@ export default {
                 </div>
                 {{ $t("contracts.view.download_contract") }}
               </b-dropdown-item>
-              <b-dropdown-item
-                v-if="editPermission"
-                :to="{
-                  name: 'checkout-v2-update',
-                  params: {
-                    id: $route.params.id,
-                    object: order.object.id,
-                  },
-                }"
-              >
+              <b-dropdown-item v-if="editPermission" @click="openEditPage">
                 <div>
                   <svg
                     width="24"

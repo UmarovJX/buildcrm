@@ -111,7 +111,7 @@ export default {
     async fetchContractList() {
       this.startLoading();
       const filterParams = {
-        object_id: [this.$route.params.object],
+        // object_id: [this.$route.params.object],
         contract_number: this.$route.params.ids.split(","),
         limit: 50,
       };
@@ -262,9 +262,9 @@ export default {
     >
       <!--   Phone Number   -->
       <template #cell(phone)="data">
-        <span class="phone-col">{{
-          getClientMajorPhone(data.item.client.phones)
-        }}</span>
+        <span class="phone-col">
+          {{ getClientMajorPhone(data.item.client.phones) }}
+        </span>
       </template>
 
       <!--   Date   -->

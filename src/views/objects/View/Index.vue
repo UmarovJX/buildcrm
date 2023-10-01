@@ -172,7 +172,7 @@ export default {
           id: 6,
           param: "chess",
           name: "ParkingTable",
-          buttonIcon: "BaseChessList",
+          buttonIcon: "local_parking",
           title: this.$t("object.parking"),
           view: "list",
         },
@@ -346,7 +346,6 @@ export default {
 
       const res = await api.objectsV2.fetchObjectParkingsStatusList(object);
       const response = res.data;
-      console.log(response);
       this.statusList = response.map((el) => ({
         label: el.name[this.$i18n.locale],
         class: el.color,

@@ -304,7 +304,7 @@ export default {
         if (data) {
           const objectId = this.$route.params.object;
           await this.$router.push({
-            name: "checkout-v2-parking",
+            name: "parking-checkout",
             params: {
               id: data.uuid,
               object: objectId,
@@ -319,7 +319,7 @@ export default {
     },
     continueApartmentOrder() {
       this.$router.push({
-        name: "checkout-v2-parking",
+        name: "parking-checkout",
         params: {
           id: this.sidebarApartment.order.id,
           object: this.$route.params.object,

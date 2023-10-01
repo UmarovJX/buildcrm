@@ -71,7 +71,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("CheckoutV2", [
+    ...mapActions("ParkingCheckout", [
       "addNewPaymentSchedule",
       "editPaymentSchedule",
       "deletePaymentSchedule",
@@ -303,14 +303,14 @@ export default {
 ::v-deep .table.b-table > tfoot > tr > [aria-sort="ascending"] {
   background-position: right calc(2rem / 2) center !important;
   background-size: 20px;
-  background-image: url("../../../assets/icons/icon-arrow-down.svg") !important;
+  background-image: url("../../../../assets/icons/icon-arrow-down.svg") !important;
 }
 
 ::v-deep .table.b-table > thead > tr > [aria-sort="descending"],
 ::v-deep .table.b-table > tfoot > tr > [aria-sort="descending"] {
   background-position: right calc(2rem / 2) center !important;
   background-size: 20px;
-  background-image: url("../../../assets/icons/icon-arrow-up.svg") !important;
+  background-image: url("../../../../assets/icons/icon-arrow-up.svg") !important;
 }
 
 .action-buttons {
