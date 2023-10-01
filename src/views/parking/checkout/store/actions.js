@@ -2,6 +2,7 @@ import { dateProperties } from "@/util/calendar";
 import { numberFormatDecimal as fmd } from "@/util/numberHelper";
 import { isNotUndefinedNullEmptyZero } from "@/util/inspect";
 import { setAppropriateCreditMonth } from "@/util/checkout";
+import { flag } from "jsdom/lib/jsdom/living/xmlhttprequest-symbols";
 
 export default {
   initEditItems({ state, getters: gts, dispatch }, data) {
@@ -211,7 +212,7 @@ export default {
     commit("updateApartment", {
       idx,
       apm: { discount },
-      edit: { prepay: false, initial_price: false },
+      edit: { prepay: false, initial_price: false, first_payment: false },
       calc: { discount, prepay: discount.prepay },
     });
     dispatch("rerenderApm", { idx });

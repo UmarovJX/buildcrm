@@ -123,17 +123,14 @@ export default {
   getInitialPrice: (state, gts) => (idx) => {
     const apartment = gts.getApm({ idx });
 
-    if (
-      (apartment.edit.initial_price || apartment.edit.first_payment) &&
-      gts.getMonth(idx)
-    ) {
-      if (apartment.calc.initial_price.toString() === "") {
-        return 0;
-      }
-      if (apartment.calc.prepay !== 100) {
-        return apartment.calc.initial_price;
-      }
-    }
+    // if (apartment.edit.initial_price && gts.getMonth(idx)) {
+    //   if (apartment.calc.initial_price.toString() === "") {
+    //     return 0;
+    //   }
+    //   if (apartment.calc.prepay !== 100) {
+    //     return apartment.calc.initial_price;
+    //   }
+    // }
 
     if (apartment.calc.prepay === 0) {
       return 0;
@@ -155,7 +152,6 @@ export default {
         return gts.getTotal(idx);
       }
       case "percent": {
-        console.log("prepay", gts.getPrepay(idx));
         // return gts.calculateTotalPriceByDefault(idx) * gts.getPrepay(idx) / 100 - gts.getDiscount(idx)
         return (gts.getTotal(idx) * gts.getPrepay(idx)) / 100;
       }
@@ -194,7 +190,6 @@ export default {
   },
   calcProperties: (state, gts) => (idx) => {
     const calc = { ...gts.gtsApartments[idx].calc };
-
     calc.total = fmd(gts.getTotal(idx));
     calc.monthly_payment = fmd(gts.getMonthlyPaymentAmount(idx));
     calc.initial_price = fmd(gts.getInitialPrice(idx));
