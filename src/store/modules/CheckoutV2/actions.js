@@ -4,7 +4,7 @@ import { isNotUndefinedNullEmptyZero } from "@/util/inspect";
 import { setAppropriateCreditMonth } from "@/util/checkout";
 
 export default {
-  initEditItems({ state, getters: gts, commit, dispatch }, data) {
+  initEditItems({ state, getters: gts, dispatch }, data) {
     try {
       const { payments_details } = data;
 
