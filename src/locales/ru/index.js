@@ -2,6 +2,7 @@ export default {
   registration_of_parking_lots: "Оформить парковки",
   export: "Экспорт",
   parking: "Парковка",
+  parkings: "Парковки",
   initial_payment_date: "Дата первоначального платежа",
   monthly_payment_date: "Дата ежемесячного платежа",
   the_creator: "Создатель",
@@ -1255,6 +1256,9 @@ export default {
       clone_apartments: "Клонировать этаж",
       clone: "Клонировать",
       choose_clone: "С какого этажа клонировать?",
+      parking: {
+        add: "Добавить парковку",
+      },
 
       plan: {
         name: "Планировка",
@@ -1359,6 +1363,8 @@ export default {
   },
 
   sweetAlert: {
+    error: "Ошибка!!!",
+    choose_building: "Укажите Здание!",
     title: "Вы уверены что хотите выполнить это действие?",
     text: "Вы действительно хотите удалить?",
     text_copy_block: "Вы действительно хотите клонировать этаж?",

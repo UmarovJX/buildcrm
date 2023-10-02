@@ -180,6 +180,16 @@ export default {
                   </span>
                 </router-link>
 
+                <router-link
+                  :to="{ name: 'type-parking-view', params: { id: object.id } }"
+                  :class="'dropdown-item'"
+                >
+                  <i class="fal fa-parking"></i>
+                  <span>
+                    {{ $t("parkings") }}
+                  </span>
+                </router-link>
+
                 <b-link
                   class="dropdown-item"
                   v-if="logoUploadPermission"

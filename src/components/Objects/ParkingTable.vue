@@ -31,7 +31,7 @@ import { isNull, isNUNEZ } from "@/util/inspect";
 import { keys } from "@/util/object";
 
 export default {
-  name: "ObjectTable",
+  name: "ParkingTable",
   components: {
     BaseCheckboxModal,
     BaseCheckbox,

@@ -25,6 +25,9 @@ import RolesStore from "./views/roles/Store";
 import TypePlan from "./components/Dashboard/TypePlan/Index";
 import TypePlanList from "./components/Dashboard/TypePlan/List";
 import TypePlanEdit from "./components/Dashboard/TypePlan/Edit.vue";
+
+import TypeParkingList from "./components/Dashboard/TypeParking/List";
+
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment.vue";
 import EditApartment from "./components/Dashboard/Apartment/EditApartment";
 import Companies from "./components/Dashboard/Companies/Index";
@@ -509,6 +512,15 @@ const routes = [
         name: "type-plan-edit",
         path: "/type/layouts/:object/edit/:id",
         component: TypePlanEdit,
+        meta: {
+          requiresAuth: "plans",
+        },
+      },
+      {
+        /* TYPE Parking VIEW */
+        name: "type-parking-view",
+        path: "/type/parkings/view/:id",
+        component: TypeParkingList,
         meta: {
           requiresAuth: "plans",
         },
