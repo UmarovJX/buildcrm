@@ -1171,6 +1171,7 @@ export default {
       block: "Blok",
       building: "Binolar",
       number_flat: "Kvartira raqami",
+      number_parking: "Avtoturargoh raqami",
       number_rooms: "Xonalar soni",
       apply: "Qo'llash",
       clear: "Tozalash",

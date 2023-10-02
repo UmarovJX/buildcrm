@@ -510,7 +510,7 @@ export default {
         <!--   ACTIONS     -->
         <div class="action-block">
           <!-- VIEW MORE-->
-          <router-link
+          <!-- <router-link
             :to="{
               name: 'apartment-view',
               params: {
@@ -528,7 +528,7 @@ export default {
                 <base-eye-icon :square="20" fill="#fff" />
               </template>
             </base-button>
-          </router-link>
+          </router-link> -->
 
           <b-tooltip target="learnMore" triggers="hover">
             <p class="tooltip-text">

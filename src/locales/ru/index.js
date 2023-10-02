@@ -1187,6 +1187,7 @@ export default {
       block: "Блок",
       building: "Здание",
       number_flat: "Номер квартиры",
+      number_parking: "Номер парковки",
       number_rooms: "Номер помещения",
       apply: "Применить",
       clear: "Очистить",

@@ -92,6 +92,14 @@ export default {
     };
   },
   computed: {
+    showDetailButton() {
+      return this.$route.query.currentTab !== "ParkingTable";
+    },
+    numberPlaceHolder() {
+      return this.$route.query.currentTab === "ParkingTable"
+        ? this.$t("object.sort.number_parking")
+        : this.$t("object.sort.number_flat");
+    },
     ...mapGetters(["getPermission"]),
     query() {
       return Object.assign({}, this.$route.query);
@@ -294,7 +302,7 @@ export default {
         <base-form-tag-input
           ref="base-form-tag-input"
           :default-tags="defaultApartments"
-          :placeholder="`${$t('object.sort.number_flat')}`"
+          :placeholder="numberPlaceHolder"
           @set-tags="setApartmentNumbers"
         >
           <template #delete-content>
@@ -574,6 +582,7 @@ export default {
       </div>
 
       <div
+        v-if="showDetailButton"
         class="detail-button"
         @click="openBar"
         :class="sortBar ? 'active' : ''"

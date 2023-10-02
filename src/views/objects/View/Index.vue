@@ -63,7 +63,7 @@ export default {
       planLoading: false,
       apartments: [],
       plans: [],
-      currentTab: "ObjectTable",
+      currentTab: this.$route.query.currentTab || "ObjectTable",
       priceList: [],
       priceFields: [
         {
@@ -305,9 +305,15 @@ export default {
       },
       immediate: true,
     },
-    currentTab() {
+    currentTab(value) {
       this.initRelatedToComponent();
       this.fetchFilterFields();
+      this.$router.push({
+        query: {
+          page: 1,
+          currentTab: value,
+        },
+      });
 
       if (this.currentTab == "ParkingTable") {
         this.fetchParkingStatusList();
@@ -328,13 +334,19 @@ export default {
 
     if (
       historyTab &&
-      !this.checkedPermissionTab.filter((item) => item.name === historyTab)
+      this.checkedPermissionTab.filter((item) => item.name === historyTab)
+        .length !== 0
     ) {
       this.currentTab = historyTab;
     } else {
       this.changeTab(this.checkedPermissionTab[0]);
     }
 
+    if (this.currentTab == "ParkingTable") {
+      this.fetchParkingStatusList();
+    } else {
+      this.statusList = this.apartmentStatusList;
+    }
     setTimeout(() => {
       this.getAllApartment();
     }, 100);

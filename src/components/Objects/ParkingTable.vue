@@ -57,35 +57,20 @@ export default {
       {
         key: "check",
         // item: BaseCheckbox,
+        thStyle: { width: "50px" },
       },
       {
         key: "number",
         label: this.$t("number"),
         sortable: true,
       },
-      // {
-      //   key: "building.name",
-      //   label: "ЗДАНИЯ",
-      //   sortable: true,
-      // },
-      // {
-      //   key: "block.name",
-      //   label: "КОРПУС",
-      // },
-      // {
-      //   key: "is_promo",
-      //   label: this.$t('promo.in_promo'),
-      //   sortable: true,
-      // },
       {
         key: "floor",
         label: this.$t("apartments.list.floor"),
-        sortable: true,
       },
       {
         key: "price",
         label: this.$t("apartments.list.price"),
-        sortable: true,
       },
       {
         key: "status",
