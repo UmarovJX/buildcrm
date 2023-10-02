@@ -1,6 +1,7 @@
 export default {
   registration_of_parking_lots: "Avtoturargohlarni ro'yxatdan o'tkazish",
   parking: "Avtoturargoh",
+  parkings: "Avtoturargohlar",
   export: "Eksport",
   initial_payment_date: "Dastlabki to'lov sanasi",
   monthly_payment_date: "Oylik to'lov sanasi",
@@ -1238,7 +1239,9 @@ export default {
       clone_apartments: "Qavatni ko'paytirish",
       clone: "Ko'paytirish",
       choose_clone: "Qaysi qavatdan ko'chirilsin?",
-
+      parking: {
+        add: "Добавить парковку",
+      },
       plan: {
         name: "Xonadon rejasi",
         area: "Maydon",
@@ -1351,6 +1354,9 @@ export default {
   },
 
   sweetAlert: {
+    choose_building: "Bino Tanlang!",
+    error: "Hatolik!!!",
+
     title: "Bu ishni amalga oshirishga aminmisiz?",
     text: "O'chirilsinmi?",
     text_copy_block: "Qavatni ko'chirishni hohlaysizmi?",

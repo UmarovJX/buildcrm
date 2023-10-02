@@ -14,6 +14,8 @@ import Clients from "@/services/clients";
 import Roles from "@/services/roles";
 import Accountants from "@/services/accountants";
 import Promo from "@/services/promo";
+import Uploads from "@/services/uploads";
+import Parkings from "@/services/parkings";
 
 export const debtorsV2 = new Debtors.DebtorsV2();
 
@@ -44,4 +46,7 @@ export default {
   apartments: new Apartments.ApartmentsV1(),
   apartmentsV2: new Apartments.ApartmentsV2(),
   accountants: new Accountants(),
+
+  uploadsV3: new Uploads.UploadsV3(),
+  parkingsV3: new Parkings.ParkingsV3(),
 };
