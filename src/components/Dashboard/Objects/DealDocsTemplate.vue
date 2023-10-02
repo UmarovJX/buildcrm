@@ -191,6 +191,14 @@ export default {
               type="reissue"
             />
           </b-tab>
+          <b-tab :title="$t('parking')">
+            <base-contract-list-table
+              @update-loading="updateLoading"
+              @update-content="getDealTemplateList"
+              :contracts="reissueContracts"
+              type="parking"
+            />
+          </b-tab>
         </b-tabs>
       </b-card>
     </div>

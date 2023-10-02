@@ -22,6 +22,7 @@ export default {
         { value: "sale", text: this.$t("objects.sale") },
         { value: "reserve", text: this.$t("objects.booking") },
         { value: "reissue", text: this.$t("contract_regeneration") },
+        { value: "parking", text: this.$t("parking") },
       ],
       options: [
         { text: "uz", value: "uz" },
