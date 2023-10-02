@@ -240,7 +240,10 @@ export default {
       </div>
 
       <!--       Monthly Payment          -->
-      <div v-if="discount.amount > 0" class="d-flex justify-content-between">
+      <div
+        v-if="discount.amount > 0 && showMonthlyCalculation"
+        class="d-flex justify-content-between"
+      >
         <span class="property d-block color-gray-400">
           {{ $t("monthly_pay") }}
         </span>
