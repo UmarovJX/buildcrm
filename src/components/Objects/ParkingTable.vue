@@ -543,23 +543,17 @@ export default {
     },
     async toggleApartmentToSale() {
       if (this.soldComment) {
-        const body = {
-          comment: this.soldComment,
-        };
-        const id = this.$route.params.object;
-        const apartmentUID = this.reSoldItem.id;
-        await api.apartmentsV2
-          .isAvailableToSold(id, apartmentUID, body)
-          .then((response) => {
-            const updatingIndex = this.apartments.findIndex(
-              (apartment) => apartment.id === response.data.id
-            );
-            if (updatingIndex !== -1) {
-              this.apartments.splice(updatingIndex, 1, response.data);
-            }
+        const d = new FormData();
+        d.append("comment", this.soldComment);
+        d.append("uuid", this.reSoldItem.id);
+        await api.parkingsV3
+          .changeIsSold(d)
+          .catch((e) => {
+            this.toastedWithErrorCode(e);
           })
           .finally(() => {
             this.closeSoldModal();
+            this.fetchContractList();
           });
       }
     },
@@ -804,7 +798,10 @@ export default {
         </template>
 
         <template #cell(actions)="data">
-          <div class="float-right">
+          <div
+            class="float-right"
+            v-if="!data.item.is_sold || data.item.order.status === 'available'"
+          >
             <div class="dropdown my-dropdown dropleft">
               <button
                 type="button"
@@ -817,14 +814,14 @@ export default {
               <div class="dropdown-menu">
                 <template v-if="hasPermission">
                   <!-- Редактировать -->
-                  <b-link
+                  <!-- <b-link
                     v-if="editPermission"
                     class="dropdown-item dropdown-item--inside"
                     @click="[(edit = true), (apartment_id = data.item.id)]"
                     v-b-modal.modal-edit
                   >
                     <i class="far fa-pencil"></i> {{ $t("edit") }}
-                  </b-link>
+                  </b-link> -->
 
                   <!--        Вернуть к продаже          -->
                   <b-link
@@ -851,7 +848,7 @@ export default {
                     <i class="far fa-lock"></i> {{ $t("return_to_sale") }}
                   </b-link>
                 </template>
-                <router-link
+                <!-- <router-link
                   :to="{
                     name: 'apartment-view',
                     params: {
@@ -863,18 +860,18 @@ export default {
                 >
                   <i class="far fa-eye"></i>
                   {{ $t("apartments.list.more") }}
-                </router-link>
+                </router-link> -->
 
-                <b-link
+                <!-- <b-link
                   v-if="holderEditPms"
                   @click="setHolder(data.item)"
                   class="dropdown-item dropdown-item--inside"
                 >
                   <x-icon name="person" size="24" class="dropdown-icon-color" />
                   <span class="ml-2"> {{ $t("holders.change") }} </span>
-                </b-link>
+                </b-link> -->
 
-                <b-link
+                <!-- <b-link
                   v-if="statusEditPms"
                   @click="setStatus(data.item)"
                   class="dropdown-item dropdown-item--inside"
@@ -885,7 +882,7 @@ export default {
                     class="dropdown-icon-color"
                   />
                   <span class="ml-2">{{ $t("statuses.change") }} </span>
-                </b-link>
+                </b-link> -->
               </div>
             </div>
           </div>
