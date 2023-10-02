@@ -126,13 +126,17 @@ export default {
             const { uuid, parking } = order;
 
             const apartment = parking;
+            let images = [];
+            if (parking.upload) {
+              images = [parking.upload.path];
+            }
 
             apartment.plan = {
               id: uuid,
               area: 1,
               balcony: false,
               balcony_area: 0,
-              images: [parking.upload.path],
+              images,
             };
 
             return {

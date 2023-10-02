@@ -23,12 +23,17 @@ export default {
       ({ status, contract_number, apartment: apm, uuid, parking }) => {
         apm = parking;
 
+        let images = [];
+        if (parking.upload) {
+          images = [parking.upload.path];
+        }
+
         apm.plan = {
           id: uuid,
           area: 1,
           balcony: false,
           balcony_area: 0,
-          images: [parking.upload.path],
+          images,
         };
 
         const discount = apm.discounts[0];

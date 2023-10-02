@@ -69,6 +69,18 @@ export default {
     statusSold() {
       return this.apartment.order.status === "sold";
     },
+    parkingImages() {
+      const { upload } = this.apartment;
+      if (
+        upload &&
+        upload.path &&
+        this.apartment.upload.path.startsWith("https")
+      ) {
+        return [this.apartment.upload.path];
+      }
+
+      return [];
+    },
   },
 
   methods: {
@@ -105,7 +117,7 @@ export default {
         <!--     MAIN CONTENT OF SLIDE       -->
         <div class="swiper-wrapper">
           <div
-            v-for="(image, index) in [apartment.upload.path]"
+            v-for="(image, index) in parkingImages"
             :key="index"
             class="swiper-slide"
           >
@@ -119,6 +131,15 @@ export default {
               />
               <img
                 v-else
+                class="swiper-image"
+                :src="require('@/assets/img/no-image.jpg')"
+                alt="img-no"
+              />
+            </div>
+          </div>
+          <div v-if="!parkingImages.length" class="swiper-slide">
+            <div class="d-flex justify-content-center align-items-center">
+              <img
                 class="swiper-image"
                 :src="require('@/assets/img/no-image.jpg')"
                 alt="img-no"
@@ -165,7 +186,6 @@ export default {
       </b-tab>
 
       <b-tab :title="$t('type_payment')">
-
         <ParkingCalculator @for-print="forPrint" :apartment="apartment" />
 
         <PromoSection :promo="apartment.promo" />
