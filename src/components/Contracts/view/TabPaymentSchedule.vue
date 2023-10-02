@@ -1345,7 +1345,7 @@ export default {
 
     .empty__scope {
       font-size: 1.5rem;
-      min-height: 30rem;
+      min-height: 5rem;
     }
   }
 
