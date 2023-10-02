@@ -66,8 +66,8 @@ class ContractV2 extends Core {
     return this.get("contracts/" + id + "/price-details");
   }
 
-  getContractApartments(id) {
-    return this.get("contracts/" + id + "/apartments");
+  getContractObjectDetails(id, type) {
+    return this.get(`contracts/${id}/${type}`);
   }
 
   fetchPaymentSchedule(id, params) {
