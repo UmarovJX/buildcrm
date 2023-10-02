@@ -67,6 +67,11 @@ export default {
         (contract) => contract.category === "reissue"
       );
     },
+    parkingContracts() {
+      return this.contracts.filter(
+        (contract) => contract.category === "parking"
+      );
+    },
   },
   async created() {
     await this.getDealTemplateList();
@@ -195,7 +200,7 @@ export default {
             <base-contract-list-table
               @update-loading="updateLoading"
               @update-content="getDealTemplateList"
-              :contracts="reissueContracts"
+              :contracts="parkingContracts"
               type="parking"
             />
           </b-tab>

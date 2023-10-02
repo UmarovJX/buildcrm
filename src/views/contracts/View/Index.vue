@@ -213,7 +213,7 @@ export default {
     },
     tabChange(currentTabs) {
       const index = this.tabs.filter((item) => item.id === currentTabs);
-      this.$router.push({ name: index[0].route });
+      this.$router.replace({ name: index[0].route });
     },
     checkLocales(name) {
       if (localStorage.locale) return name[localStorage.locale];
