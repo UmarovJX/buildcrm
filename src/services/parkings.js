@@ -19,6 +19,9 @@ class ParkingsV3 extends Core {
   removeParking(body) {
     return this.post(`parking/remove`, body);
   }
+  changeIsSold(body) {
+    return this.post(`parking/isSold`, body);
+  }
 }
 
 export default {
