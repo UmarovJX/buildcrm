@@ -92,8 +92,8 @@ export default {
     };
   },
   computed: {
-    showDetailButton() {
-      return this.$route.query.currentTab !== "ParkingTable";
+    isParkingTable() {
+      return this.$route.query.currentTab === "ParkingTable";
     },
     numberPlaceHolder() {
       return this.$route.query.currentTab === "ParkingTable"
@@ -193,10 +193,12 @@ export default {
       const values = sortInFirstRelationship(this.form);
       const params = this.$route.params;
       const statusQuery = this.query.status;
+      const currentTab = this.query.currentTab;
       let routeQuery = values;
       if (statusQuery) {
         routeQuery.status = statusQuery;
       }
+      routeQuery.currentTab = currentTab;
       this.$router.push({
         query: routeQuery,
         params,
@@ -523,7 +525,7 @@ export default {
       </b-dropdown>
 
       <!--  Сум  От / До  -->
-      <div v-show="sortBar" class="filter__apartment__price">
+      <div v-show="sortBar && !isParkingTable" class="filter__apartment__price">
         <!--        <b-form-select-->
         <!--            v-model="currency"-->
         <!--            :options="currencyOptions"-->
@@ -561,7 +563,7 @@ export default {
       </div>
 
       <!--  Area from / to  -->
-      <div v-show="sortBar" class="filter__apartment__price">
+      <div v-show="sortBar && !isParkingTable" class="filter__apartment__price">
         <div class="filter-value">
           <span>m<sup>2</sup></span>
         </div>
@@ -582,7 +584,7 @@ export default {
       </div>
 
       <div
-        v-if="showDetailButton"
+        v-if="!isParkingTable"
         class="detail-button"
         @click="openBar"
         :class="sortBar ? 'active' : ''"
