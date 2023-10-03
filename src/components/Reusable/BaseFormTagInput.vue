@@ -15,6 +15,7 @@ export default {
     defaultTags: {
       type: Array,
       required: false,
+      default: () => [],
     },
   },
   data() {

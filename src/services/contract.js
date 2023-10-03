@@ -151,8 +151,8 @@ class ContractV2 extends Core {
     return this.delete("contracts/" + contractId + "/comments/" + commentId);
   }
 
-  getCounts() {
-    return this.get("contracts/counts");
+  getCounts(params) {
+    return this.get("contracts/counts", { params });
   }
 
   archive({ endpoint = "contracts" } = { endpoint: "contracts" }) {

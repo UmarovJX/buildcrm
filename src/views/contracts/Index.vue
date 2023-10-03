@@ -290,17 +290,15 @@ export default {
     // },
   },
   created() {
-    Promise.allSettled([
-      this.fetchContractList(),
-      this.fetchStatusesOfCounts(),
-    ]);
+    Promise.allSettled([this.fetchContractList()]);
   },
   methods: {
     formattingPhone: (phone) => phonePrettier(phone),
     dateReverser: (time) => formatDateWithDot(time),
     async fetchStatusesOfCounts() {
+      const query = this.createQuery();
       try {
-        const response = await api.contractV2.getCounts();
+        const response = await api.contractV2.getCounts(query);
         this.counts = response.data.result;
       } catch (e) {
         this.toastedWithErrorCode(e);
@@ -457,7 +455,7 @@ export default {
       query.search = searchValue;
       this.pushRouter(query);
     },
-    async fetchContractList() {
+    createQuery() {
       const query = sortObjectValues(this.query);
       const propArrayList = [
         "object_id",
@@ -479,13 +477,18 @@ export default {
         }
       });
 
-      this.showLoading = true;
-      this.tableItems = [];
-
       if (!this.hasAdminRole && this.$route.query.status === "archived") {
         delete query.status;
       }
+      return query;
+    },
+    async fetchContractList() {
+      const query = this.createQuery();
 
+      this.showLoading = true;
+      this.tableItems = [];
+
+      this.fetchStatusesOfCounts();
       await api.contractV2
         .fetchContractsList(query)
         .then((response) => {
