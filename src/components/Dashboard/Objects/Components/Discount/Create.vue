@@ -39,6 +39,8 @@ export default {
     // },
     error: false,
     errors: [],
+    type_sort: 0,
+    typeSortOptions: ["apartment", "parking"],
 
     tariffIndex: 0,
     floors: [],
@@ -85,6 +87,7 @@ export default {
     //     this.editDiscount()
     //   }
     // },
+
     visible: {
       immediate: true,
       handler(val) {
@@ -111,15 +114,19 @@ export default {
   methods: {
     editDiscount() {
       if (Object.keys(this.discount).length) {
-        const { prepay, type, amount, prices } = this.discount;
+        const { prepay, type, amount, prices, type_sort } = this.discount;
         this.tariff.prepay = prepay;
 
         if (type === "percent") {
           this.tariffIndex = 1;
           this.tariff.discount = amount;
-        } else {
+        } else if (type === "fixed") {
           this.tariffIndex = 0;
+        } else {
+          this.tariffIndex = 2;
         }
+        const i = this.typeSortOptions.findIndex((el) => el === type_sort);
+        this.type_sort = i === -1 ? 0 : i;
         if (prices.length) {
           prices.forEach((item) => {
             if (item.type === "default") {
@@ -280,7 +287,7 @@ export default {
           amount: discount,
         };
       }
-
+      filteredData.type_sort = this.typeSortOptions[this.type_sort];
       if (checkTariff && !Object.keys(this.discount).length) {
         try {
           await api.objects
@@ -403,11 +410,25 @@ export default {
               {{ errors[0] }}
             </span>
           </ValidationProvider>
-          <p class="create-tab__name">
-            {{ $t("objects.create.tariff.type") }}
-          </p>
         </div>
 
+        <p class="create-tab__name">
+          {{ $t("objects.create.tariff.type") }}
+        </p>
+        <b-tabs
+          v-model="type_sort"
+          pills
+          nav-class="tariff-header"
+          content-class="tariff-item"
+          id="tariff"
+        >
+          <b-tab :title="$t('apartment')"> </b-tab>
+          <b-tab :title="$t('parking')"> </b-tab>
+        </b-tabs>
+
+        <p class="create-tab__name">
+          {{ $t("objects.create.tariff.type") }}
+        </p>
         <b-tabs
           v-model="tariffIndex"
           pills
@@ -415,7 +436,7 @@ export default {
           content-class="tariff-item"
           id="tariff"
         >
-          <b-tab :title="$t('objects.create.tariff.fixed')" active>
+          <b-tab :title="$t('objects.create.tariff.fixed')">
             <div class="price-block">
               <h5 class="create-title">
                 {{ $t("objects.create.tariff.price") }}
