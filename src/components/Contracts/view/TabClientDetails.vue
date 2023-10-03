@@ -421,6 +421,22 @@ export default {
             />
           </div>
         </div>
+        <div class="d-flex">
+          <div
+            class="client__details_info_card mr-5 opacity-0"
+            style="padding-right: 0"
+          ></div>
+          <div class="client__details_info_card">
+            <label for="place_of_issue">{{
+              $t("apartments.agree.issued_by_whom")
+            }}</label>
+            <b-form-input
+              disabled
+              id="place_of_issue"
+              :value="client.attributes.passport_issued_by"
+            />
+          </div>
+        </div>
       </b-form>
     </div>
   </div>
@@ -556,6 +572,9 @@ export default {
   justify-content: space-between;
 }
 
+.opacity-0 {
+  opacity: 0;
+}
 .phones-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
