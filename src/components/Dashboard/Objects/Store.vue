@@ -10,8 +10,11 @@ import AppBreadcrumb from "@/components/AppBreadcrumb";
 import { mapGetters, mapActions } from "vuex";
 import api from "@/services/api";
 import BaseTabPicker from "@/components/Reusable/BaseTabPicker";
+import { XIcon } from "@/components/ui-components/material-icons";
+
 export default {
   components: {
+    XIcon,
     BaseTabPicker,
     "type-plan-create": TypePlanCreateModal,
     "building-store": BuildingStore,
@@ -219,7 +222,7 @@ export default {
       this.discounts = event;
     },
 
-    RemoveDiscount(discount, index) {
+    RemoveDiscount(discount) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text"),
@@ -235,7 +238,7 @@ export default {
             .then((response) => {
               this.getLoading = false;
               if (response.status === 204) {
-                this.discounts.splice(index, 1);
+                this.getDiscounts();
               }
             })
             .catch((error) => {
@@ -823,6 +826,16 @@ export default {
                               <i class="far fa-trash"></i>
                             </button>
                           </div>
+                          <span class="pl-3">
+                            <span
+                              v-if="
+                                currentType === 'all' &&
+                                discount.type_sort === 'parking'
+                              "
+                              >Parking</span
+                            >
+                            <span v-else style="opacity: 0">Parking</span>
+                          </span>
                         </div>
                       </div>
                     </div>
