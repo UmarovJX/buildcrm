@@ -4,6 +4,7 @@ import "@fancyapps/ui/dist/fancybox.css";
 import { mapGetters, mapMutations } from "vuex";
 import api from "@/services/api";
 import CreateModal from "@/components/Dashboard/TypeParking/Components/CreateModal";
+import CreateModalMultiple from "@/components/Dashboard/TypeParking/Components/CreateModalMultiple";
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseEditIcon from "@/components/icons/BaseEditIcon";
 import PlansPermission from "@/permission/plans";
@@ -25,6 +26,7 @@ export default {
     BaseLoadingContent,
     BaseDeleteIcon,
     CreateModal,
+    CreateModalMultiple,
     BaseSearchInput,
     BaseButton,
     BaseEditIcon,
@@ -218,7 +220,7 @@ export default {
         img: null,
         building_id: null,
       };
-      this.$refs["create-update"].openPlanModal();
+      this.$refs["create-multiple"].openPlanModal();
     },
 
     closeDeletePlanModal() {
@@ -390,6 +392,12 @@ export default {
 
       <create-modal
         ref="create-update"
+        @update-list="updateList"
+        @clear-field="clearModal"
+        :parking="parking"
+      />
+      <create-modal-multiple
+        ref="create-multiple"
         @update-list="updateList"
         @clear-field="clearModal"
         :parking="parking"

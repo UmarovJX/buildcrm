@@ -9,16 +9,19 @@ import PlansPermission from "@/permission/plans";
 import UploadLogo from "./Components/UploadLogo";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import AppHeader from "@/components/Header/AppHeader";
+import { XButton } from "@/components/ui-components/button";
 
 export default {
   name: "Objects",
   components: {
+    XButton,
     AppHeader,
     UploadLogo,
     BaseDotsIcon,
   },
 
   data: () => ({
+    archived: false,
     object_id: 0,
     filter: {
       rooms: [],
@@ -52,9 +55,58 @@ export default {
     activeContent() {
       return this.$t("objects.title");
     },
+
+    archivedButtonText() {
+      return this.archived
+        ? this.$t("objects.active")
+        : this.$t("objects.archived");
+    },
   },
 
   methods: {
+    async setArchive() {
+      this.archived = !this.archived;
+      this.getLoading = true;
+      await this.fetchObjects(this);
+      this.getLoading = false;
+    },
+    archiveObject(item) {
+      const d = new FormData();
+      d.append("id", item.id);
+
+      this.$swal({
+        title: this.$t(item.name),
+        text: this.archived
+          ? this.$t("sweetAlert.want_unarchive")
+          : this.$t("sweetAlert.want_archive"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yesPure"),
+      }).then((result) => {
+        if (result.value) {
+          this.getLoading = true;
+          api.objectsV3
+            .setArchive(d)
+            .then((response) => {
+              this.fetchObjects(this).then(() => {
+                this.getLoading = false;
+              });
+              this.$swal(
+                response.data.result.is_archive
+                  ? this.$t("sweetAlert.archived")
+                  : this.$t("sweetAlert.unarchived"),
+                "",
+                "success"
+              );
+            })
+            .catch((error) => {
+              this.getLoading = false;
+              this.toastedWithErrorCode(error);
+            });
+        }
+      });
+    },
     ...mapActions(["fetchObjects"]),
     createBlock() {
       this.$router.push({ name: "objectsStore" });
@@ -118,6 +170,18 @@ export default {
         {{ $t("objects.title") }}
       </template>
     </app-header>
+    <div class="search__content">
+      <div></div>
+      <div class="d-flex x-gap-1">
+        <x-button
+          left-icon="search"
+          color-icon="primary"
+          @click="setArchive"
+          :text="archivedButtonText"
+          variant="primary"
+        />
+      </div>
+    </div>
     <div class="object-cards">
       <template v-if="viewPermission">
         <div class="card" v-for="(object, index) in getObjects" :key="index">
@@ -149,6 +213,11 @@ export default {
                 >
                   <i class="fas fa-pen"></i> {{ $t("edit") }}
                 </router-link>
+
+                <b-link class="dropdown-item" @click="archiveObject(object)">
+                  <i class="fas fa-archive"></i>
+                  {{ archived ? $t("unarchiveV") : $t("archiveV") }}
+                </b-link>
 
                 <!--                <router-link-->
                 <!--                    v-if="getPermission.objects.update"-->
@@ -249,6 +318,20 @@ export default {
                   v-html="
                     $t('price_from_m2', {
                       msg: `${priceFormat(object.apartment_price_m2)}`,
+                    })
+                  "
+                />
+              </div>
+              <div class="card-block">
+                <p class="card-block__title">
+                  {{ object.parking_count }} {{ $t("objects.view_parkings") }}
+                </p>
+                <p
+                  v-if="!object.is_hide_m2_price"
+                  class="card-block__subtitle"
+                  v-html="
+                    $t('price_from_m2', {
+                      msg: `${priceFormat(object.parking_initial_price)}`,
                     })
                   "
                 />
@@ -448,5 +531,12 @@ export default {
       }
     }
   }
+}
+
+.search__content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
 }
 </style>

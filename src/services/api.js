@@ -33,6 +33,8 @@ export default {
   clientsV2: new Clients.ClientsV2(),
   objects: new Objects.ObjectsV1Crm(),
   objectsV2: new Objects.ObjectsV2(),
+  objectsV3: new Objects.ObjectsV3(),
+
   debtors: new Debtors.DebtorsV1(),
   debtorsV2: new Debtors.DebtorsV2(),
   contract: new Contract.Contract(),

@@ -4,9 +4,13 @@ export default {
   actions: {
     async fetchObjects(ctx, vm) {
       ctx.commit("updateLoading", true, { root: true });
+      ctx.commit("updateObjects", []);
+
       try {
-        const response = await api.objects.fetchOldObjects();
-        const objects = response.data;
+        let response;
+        if (vm.archived) response = await api.objectsV3.getArchivedObjects();
+        else response = await api.objectsV3.getObjects();
+        const objects = response.data.result;
         ctx.commit("updateObjects", objects);
       } catch (error) {
         if (!error.response) {

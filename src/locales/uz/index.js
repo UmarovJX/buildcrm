@@ -1,4 +1,6 @@
 export default {
+  archiveV: "Arhivlash",
+  unarchiveV: "Arhivdan olish",
   registration_of_parking_lots: "Avtoturargohlarni ro'yxatdan o'tkazish",
   parking: "Avtoturargoh",
   parkings: "Avtoturargohlar",
@@ -1196,6 +1198,8 @@ export default {
   },
 
   objects: {
+    archived: "Arxivlangan",
+    active: "Aktiv",
     title: "Obyektlar",
     apartments: "Xonadonlar",
     address: "Manzil",
@@ -1211,6 +1215,7 @@ export default {
     unfinished_contract: "Tugallanmagan shartnomalar",
     view_apartments: "xonadonlar",
     view_level: "qavatlar",
+    view_parkings: "avtoturargohlar",
     showM2Price: "M2 narxini kursatish",
     hasParking: "Avtoturargoh",
 
@@ -1357,6 +1362,11 @@ export default {
   },
 
   sweetAlert: {
+    want_archive: "Arhivlashni hohlaysizmi?",
+    want_unarchive: "Arhivdan olishni hohlaysizmi?",
+    archived: "Arhivlandi!",
+    unarchived: "Arhivdan olindi!",
+    add_image: "Rasm qushing!",
     choose_building: "Bino Tanlang!",
     error: "Hatolik!!!",
 
@@ -1367,6 +1377,7 @@ export default {
     yes_close: "Xa, yopilsin",
     yes_agree: "Xa, amalga oshirilsin",
     yes_clone: "Xa, ko'paytirilsin",
+    yesPure: "Xa",
     no: "",
     deleted: "O'chirildi!",
     text_cancel_contract: "Shartnomani rostdan bekor qilmoqchimisiz?",

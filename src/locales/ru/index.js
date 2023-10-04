@@ -1,4 +1,6 @@
 export default {
+  archiveV: "Архивировать",
+  unarchiveV: "Разархивировать",
   registration_of_parking_lots: "Оформить парковки",
   export: "Экспорт",
   parking: "Парковка",
@@ -1212,6 +1214,8 @@ export default {
   },
 
   objects: {
+    archived: "Архивированные",
+    active: "Активные",
     title: "Объекты",
     apartments: "Квартиры",
     address: "Адрес",
@@ -1227,8 +1231,9 @@ export default {
     unfinished_contract: "Незавершенный контракт",
     view_apartments: "квартиры",
     view_level: "этажей",
-    showM2Price: 'Скрыть цену по m2',
-    hasParking: 'Наличие парковки',
+    view_parkings: "парковок",
+    showM2Price: "Скрыть цену по m2",
+    hasParking: "Наличие парковки",
 
     deal_template: {
       name: "Шаблон договора",
@@ -1365,6 +1370,11 @@ export default {
   },
 
   sweetAlert: {
+    want_archive: "Вы уверены что хотите архивировать?",
+    want_unarchive: "Вы уверены что хотите разархивировать?",
+    archived: "Архивировано!",
+    unarchived: "Разархивировано!",
+    add_image: "Добавьте изображение!",
     error: "Ошибка!!!",
     choose_building: "Укажите Здание!",
     title: "Вы уверены что хотите выполнить это действие?",
@@ -1374,6 +1384,7 @@ export default {
     yes_close: "Да, закрыть",
     yes_agree: "Да, заключить",
     yes_clone: "Да, клонировать",
+    yesPure: "Да",
     no: "",
     deleted: "Удалено!",
     text_cancel_contract: "Вы действительно хотите расторгнуть договор?",

@@ -13,6 +13,9 @@ class ParkingsV3 extends Core {
   createParking(body) {
     return this.post(`parking/create`, body);
   }
+  createParkingMultiple(body) {
+    return this.post(`parking/createMultiple`, body);
+  }
   updateParking(body) {
     return this.post(`parking/update`, body);
   }
