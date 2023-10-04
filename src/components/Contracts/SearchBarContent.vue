@@ -257,10 +257,7 @@ export default {
     },
     clearFilter() {
       this.resetFilter();
-      const loopQuery = Object.assign(
-        {},
-        { page: this.query.page, limit: this.query.limit }
-      );
+      const loopQuery = Object.assign({}, { page: 1, limit: this.query.limit });
 
       this.$emit("replace-router", loopQuery);
       this.$refs["base-form-tag-input"].clear();
@@ -275,6 +272,7 @@ export default {
         ...this.filter,
         object_id,
       });
+      sortingQuery.page = 1;
       this.$emit("search-by-filter", sortInFirstRelationship(sortingQuery));
       this.$refs["filter-modal"].hide();
     },
@@ -378,10 +376,11 @@ export default {
           continue;
         }
 
-        const arrayProps = ["blocks", "floors", "branch", "created_by"];
+        const arrayProps = ["blocks", "floors", "branch", "created_by", "type"];
         if (arrayProps.includes(property)) {
           if (isArray(query)) {
-            this.filter[property] = query.map((p) => parseInt(p));
+            if (property === "type") this.filter[property] = query;
+            else this.filter[property] = query.map((p) => parseInt(p));
           } else if (isString(query)) {
             this.filter[property] = [parseInt(query)];
           } else if (query) {

@@ -465,6 +465,7 @@ export default {
         "manager",
         "contract_number",
         "apartment_number",
+        "type",
       ];
 
       propArrayList.forEach((prop) => {
