@@ -49,10 +49,11 @@ export default {
 
       slug: null,
       slug_parking: null,
-      parking_building_date: null,
+      parking_build_date: null,
       build_date: null,
       company_id: 0,
       is_hide_m2_price: false,
+      is_parking: false,
       credit_month: 18,
       draft: false,
     },
@@ -301,7 +302,7 @@ export default {
 
         if (status === 200) {
           this.object = {};
-          this.object = data;
+          this.object = { ...data, is_parking: !!data.is_parking };
         }
 
         this.getLoading = false;
@@ -509,15 +510,15 @@ export default {
 
               <!-- parking Build Date -->
               <div class="mb-3">
-                <label for="parking_building_date" class="form-label">
-                  {{ $t("parking_building_date") }}
+                <label for="parking_build_date" class="form-label">
+                  {{ $t("parking_build_date") }}
                 </label>
                 <input
                   type="date"
                   class="form-control"
-                  id="parking_building_date"
-                  v-model="object.parking_building_date"
-                  :placeholder="$t('objects.placeholder.parking_building_date')"
+                  id="parking_build_date"
+                  v-model="object.parking_build_date"
+                  :placeholder="$t('objects.placeholder.parking_build_date')"
                 />
               </div>
               <!-- Build Date -->
@@ -574,7 +575,12 @@ export default {
               <!-- m2 price -->
               <div class="mb-3">
                 <b-form-checkbox v-model="object.is_hide_m2_price" switch>
-                  Скрыть цену по m2
+                  {{ $t("objects.showM2Price") }}
+                </b-form-checkbox>
+              </div>
+              <div class="mb-3">
+                <b-form-checkbox v-model="object.is_parking" switch>
+                  {{ $t("objects.hasParking") }}
                 </b-form-checkbox>
               </div>
             </div>

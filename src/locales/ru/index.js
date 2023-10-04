@@ -1227,6 +1227,8 @@ export default {
     unfinished_contract: "Незавершенный контракт",
     view_apartments: "квартиры",
     view_level: "этажей",
+    showM2Price: 'Скрыть цену по m2',
+    hasParking: 'Наличие парковки',
 
     deal_template: {
       name: "Шаблон договора",

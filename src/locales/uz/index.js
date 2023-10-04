@@ -1211,6 +1211,8 @@ export default {
     unfinished_contract: "Tugallanmagan shartnomalar",
     view_apartments: "xonadonlar",
     view_level: "qavatlar",
+    showM2Price: "M2 narxini kursatish",
+    hasParking: "Avtoturargoh",
 
     deal_template: {
       name: "Shartoma andozasi",
