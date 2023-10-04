@@ -174,7 +174,7 @@ export default {
       }
     },
     imagePath(item) {
-      if (item && item.upload_id) return item.upload_id.path;
+      if (item && item.upload) return item.upload.path;
       return null;
     },
     clearModal() {
