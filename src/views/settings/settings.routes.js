@@ -36,6 +36,23 @@ export default [
           requiresAuth: "settings.statuses",
         },
       },
+      {
+        path: "languages",
+        name: "settings-languages",
+        component: () => import("@/views/settings/views/SettingsLanguages.vue"),
+        meta: {
+          requiresAuth: "settings.languages",
+        },
+      },
+      {
+        path: "translations",
+        name: "settings-translations",
+        component: () =>
+          import("@/views/settings/views/SettingsTranslations.vue"),
+        meta: {
+          requiresAuth: "settings.translations",
+        },
+      },
     ],
   },
 ];

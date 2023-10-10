@@ -10,6 +10,7 @@ import { XFormSelect } from "@/components/ui-components/form-select";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XSquareBackground } from "@/components/ui-components/square-background";
 import ExportDropdown from "@/views/contracts/components/ExportDropdown.vue";
+import ApproverList from "@/views/contracts/components/ApproverList.vue";
 import api from "@/services/api";
 import {
   formatDateWithDot,
@@ -34,6 +35,7 @@ import Permission from "@/permission";
 export default {
   name: "Contracts",
   components: {
+    ApproverList,
     ExportDropdown,
     AppHeader,
     BaseFilterTabsContent,
@@ -82,6 +84,11 @@ export default {
       {
         name: "tab_status.closed",
         status: "closed",
+        counts: 0,
+      },
+      {
+        name: "tab_status.is_expired",
+        status: "is_expired",
         counts: 0,
       },
       {
@@ -493,14 +500,17 @@ export default {
       await api.contractV2
         .fetchContractsList(query)
         .then((response) => {
-          response.data.items.forEach((dataItem) => {
-            this.tableItems.push(
-              dataItem
-              // Object.assign(dataItem, {
-              //   _rowVariant: dataItem.archived ? "warning" : "light",
-              // })
-            );
-          });
+          this.tableItems = response.data.items;
+
+          // .forEach((dataItem) => {
+          //   this.tableItems.push(
+          //     dataItem
+          //     // Object.assign(dataItem, {
+          //     //   _rowVariant: dataItem.archived ? "warning" : "light",
+          //     // })
+          //   );
+          // });
+
           this.pagination = response.data.pagination;
           this.showByValue = response.data.pagination.perPage;
         })
@@ -622,6 +632,7 @@ export default {
           <span>
             {{ data.item.contract }}
           </span>
+          <approver-list :approvers="data.item.approved" />
         </span>
       </template>
 

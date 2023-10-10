@@ -16,6 +16,8 @@ import Accountants from "@/services/accountants";
 import Promo from "@/services/promo";
 import Uploads from "@/services/uploads";
 import Parkings from "@/services/parkings";
+import Languages from "@/services/languages";
+import Translations from "@/services/translations";
 
 export const debtorsV2 = new Debtors.DebtorsV2();
 
@@ -51,4 +53,6 @@ export default {
 
   uploadsV3: new Uploads.UploadsV3(),
   parkingsV3: new Parkings.ParkingsV3(),
+  languagesV3: new Languages.LanguagesV3(),
+  translationsV3: new Translations.TranslationsV3(),
 };

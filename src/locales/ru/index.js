@@ -1,4 +1,5 @@
 export default {
+  languages: "Языки",
   archiveV: "Архивировать",
   unarchiveV: "Разархивировать",
   registration_of_parking_lots: "Оформить парковки",
@@ -551,6 +552,7 @@ export default {
   apartment_rooms: "Найдено { msg } помещений",
   price_monthly: "{month} месяцев от {price} сумов",
   total_discount: "Общая скидка",
+  total_discount_percent: "Общая скидка в %",
   starting_price: "Начальная цена",
   characters: "Характеристики",
   clear: "Очистить",
@@ -630,6 +632,7 @@ export default {
     de_active: "Деактив",
     archived: "Архивировано",
     deleted: "Удалено",
+    is_expired: "expired",
   },
 
   promo: {

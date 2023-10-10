@@ -98,7 +98,7 @@ export default {
 .filter__content {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(9, 1fr);
   width: 100%;
   font-family: Inter, serif;
   font-style: normal;

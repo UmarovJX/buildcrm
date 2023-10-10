@@ -828,7 +828,6 @@ export default {
           v-slot="{ errors }"
           rules="required|min:3"
           :name="`${$t('legal_address')}`"
-          class="ch-legal-address"
         >
           <x-form-input
             :label="true"

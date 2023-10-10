@@ -472,6 +472,15 @@ export default {
           {{ pricePrettier(totalDiscount, 2) }} {{ $t("ye") }}
         </span>
       </div>
+      <!--      Total Percent Discount          -->
+      <div class="d-flex justify-content-between">
+        <span class="property d-block color-gray-400">
+          {{ $t("total_discount_percent") }}
+        </span>
+        <span class="price d-block color-gray-600">
+          {{ pricePrettier((totalDiscount * 100) / calc.total, 2) }}%
+        </span>
+      </div>
 
       <!--      Total Price          -->
       <div class="d-flex justify-content-between">

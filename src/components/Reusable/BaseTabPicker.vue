@@ -111,6 +111,7 @@ export default {
     align-items: center;
     flex-direction: column;
     padding: 0 0.75rem;
+    min-width: 100px;
 
     p {
       margin: 0;

@@ -9,18 +9,22 @@ import PlansPermission from "@/permission/plans";
 import UploadLogo from "./Components/UploadLogo";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import AppHeader from "@/components/Header/AppHeader";
-import { XButton } from "@/components/ui-components/button";
+import Permission from "@/permission";
+import BaseButton from "@/components/Reusable/BaseButton.vue";
+import { XIcon } from "@/components/ui-components/material-icons";
 
 export default {
   name: "Objects",
   components: {
-    XButton,
+    XIcon,
+    BaseButton,
     AppHeader,
     UploadLogo,
     BaseDotsIcon,
   },
 
   data: () => ({
+    permission: Permission,
     archived: false,
     object_id: 0,
     filter: {
@@ -60,6 +64,9 @@ export default {
       return this.archived
         ? this.$t("objects.active")
         : this.$t("objects.archived");
+    },
+    archivedButtonIcon() {
+      return this.archived ? "unarchive" : "inventory_2";
     },
   },
 
@@ -169,18 +176,26 @@ export default {
       <template #header-title>
         {{ $t("objects.title") }}
       </template>
+      <template #header-actions>
+        <base-button
+          @click="setArchive"
+          :text="archivedButtonText"
+          v-if="permission.hasAdminRole()"
+        >
+          <template #left-icon>
+            <x-icon
+              :name="archivedButtonIcon"
+              :size="20"
+              class="violet-600"
+              color="var(--violet-600)"
+            />
+          </template>
+        </base-button>
+      </template>
     </app-header>
     <div class="search__content">
       <div></div>
-      <div class="d-flex x-gap-1">
-        <x-button
-          left-icon="search"
-          color-icon="primary"
-          @click="setArchive"
-          :text="archivedButtonText"
-          variant="primary"
-        />
-      </div>
+      <div class="d-flex x-gap-1"></div>
     </div>
     <div class="object-cards">
       <template v-if="viewPermission">
@@ -322,15 +337,14 @@ export default {
                   "
                 />
               </div>
-              <div class="card-block">
+              <div class="card-block" v-if="object.is_parking">
                 <p class="card-block__title">
                   {{ object.parking_count }} {{ $t("objects.view_parkings") }}
                 </p>
                 <p
-                  v-if="!object.is_hide_m2_price"
                   class="card-block__subtitle"
                   v-html="
-                    $t('price_from_m2', {
+                    $t('price_from', {
                       msg: `${priceFormat(object.parking_initial_price)}`,
                     })
                   "
@@ -349,7 +363,7 @@ export default {
           </router-link>
         </div>
       </template>
-      <div class="card" v-if="createPermission">
+      <div class="card" v-if="createPermission && !archived">
         <div class="card-body card-empty" @click="createBlock">
           <img :src="require('@/assets/icons/icon-plus.svg')" alt="" />
           <p>{{ $t("object_create") }}</p>

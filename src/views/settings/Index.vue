@@ -51,6 +51,20 @@ export default {
         value: "settings-statuses",
       });
     }
+    if (statusesViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "languages",
+        value: "settings-languages",
+      });
+    }
+    if (statusesViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "translations",
+        value: "settings-translations",
+      });
+    }
 
     if (tabs.length && this.$route.name !== tabs[0].value) {
       this.$router.push({

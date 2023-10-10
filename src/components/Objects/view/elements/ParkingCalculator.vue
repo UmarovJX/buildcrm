@@ -214,15 +214,6 @@ export default {
           {{ pricePrettier(apartment.price, 2) }} {{ $t("ye") }}
         </span>
       </div>
-      <!--      Total Discount          -->
-      <div class="d-flex justify-content-between">
-        <span class="property d-block color-gray-400">
-          {{ $t("total_discount") }}
-        </span>
-        <span class="price d-block color-gray-600">
-          {{ pricePrettier(totalDiscount, 2) }} {{ $t("ye") }}
-        </span>
-      </div>
 
       <div class="d-flex justify-content-between">
         <span class="property d-block color-gray-400">
@@ -236,6 +227,24 @@ export default {
         </span>
         <span v-else class="price d-block color-gray-600">
           {{ pricePrettier(prepay, 2) }} {{ $t("ye") }}
+        </span>
+      </div>
+      <!--      Total Discount          -->
+      <div class="d-flex justify-content-between">
+        <span class="property d-block color-gray-400">
+          {{ $t("total_discount") }}
+        </span>
+        <span class="price d-block color-gray-600">
+          {{ pricePrettier(totalDiscount, 2) }} {{ $t("ye") }}
+        </span>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <span class="property d-block color-gray-400">
+          {{ $t("total_discount_percent") }}
+        </span>
+        <span class="price d-block color-gray-600">
+          {{ pricePrettier((totalDiscount * 100) / apartment.price, 2) }}%
         </span>
       </div>
 

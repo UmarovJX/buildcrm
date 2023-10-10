@@ -1,4 +1,5 @@
 export default {
+  languages: "Tillar",
   archiveV: "Arhivlash",
   unarchiveV: "Arhivdan olish",
   registration_of_parking_lots: "Avtoturargohlarni ro'yxatdan o'tkazish",
@@ -562,6 +563,7 @@ export default {
   apartment_rooms: `{msg} ta xonadon topildi`,
   price_monthly: "{month} oy {price} so'm dan",
   total_discount: "Umumiy chegirma",
+  total_discount_percent: "Umumiy chegirma %",
   starting_price: "Boshlang'ich narxi",
   characters: "Xususiyatlari",
   clear: "Tozalash",
@@ -641,6 +643,7 @@ export default {
     de_active: "Faol emaas (deaktiv)",
     archived: "Arxiv",
     deleted: "O'chirilgan",
+    is_expired: "expired",
   },
 
   promo: {
