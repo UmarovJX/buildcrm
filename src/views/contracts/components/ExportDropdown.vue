@@ -281,14 +281,14 @@ export default {
         const query = vm.proxy.$route.query;
         let date_from = null;
         let date_to = null;
-        const hasDataTypeQuery =
-          hasOwnProperty(query, "date_type") &&
-          query.date_type === "created_at";
+        // const hasDataTypeQuery =
+        //   hasOwnProperty(query, "date_type") &&
+        //   query.date_type === "created_at";
         const hasDateQuery =
           hasOwnProperty(query, "date") && isArray(query.date);
-        if (hasDataTypeQuery && hasDateQuery) {
+        if (hasDateQuery) {
           date_from = query.date[0];
-          date_to = query.date.length > 1 ? query.date[1] : query.date[0];
+          date_to = query.date[1] || query.date[0];
         }
 
         await v3ServiceApi.reports.create({

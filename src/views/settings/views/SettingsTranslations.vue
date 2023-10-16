@@ -8,10 +8,12 @@ import { XCircularBackground } from "@/components/ui-components/circular-backgro
 import SettingsCreateTranslation from "@/views/settings/components/SettingsCreateTranslation.vue";
 import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
 import { XFormInput } from "@/components/ui-components/form-input";
+import SettingsUpdateTranslationTags from "@/views/settings/components/SettingsUpdateTranslationTags.vue";
 
 export default {
   name: "SettingsStatuses",
   components: {
+    SettingsUpdateTranslationTags,
     XFormInput,
     BaseTabPicker,
     BaseLoading,
@@ -26,7 +28,9 @@ export default {
       currentLang: "",
       upsertType: "create",
       showCreateModal: false,
+      showEditTagModal: false,
       editStorage: {},
+      editTags: {},
       table: {
         items: [],
         pagination: {
@@ -53,10 +57,13 @@ export default {
         {
           key: "key",
           label: this.$t("key"),
-          thStyle: "width: 150px",
           class: "wwwww",
         },
-        { key: "tags", label: "tags", thStyle: "width: 150px" },
+        {
+          key: "tags",
+          label: "tags",
+          thStyle: "width: 200px",
+        },
         { key: "value." + this.currentLang, label: "Translation" },
         {
           key: "actions",
@@ -83,9 +90,9 @@ export default {
     finishLoading() {
       this.table.loading = false;
     },
-    createClientType() {
+    createTranslation() {
       this.setUpsertType("create");
-      this.openCreatingClientTypeModal();
+      this.openTranslationCreationModal();
     },
     async fetchItems() {
       try {
@@ -110,14 +117,25 @@ export default {
         this.upsertType = eType;
       }
     },
-    openCreatingClientTypeModal() {
+    openTranslationCreationModal() {
       this.showCreateModal = true;
     },
-    closeCreatingClientTypeModal() {
+    closeTranslationCreationModal() {
       this.showCreateModal = false;
     },
-    clientTypeCreated() {
-      this.closeCreatingClientTypeModal();
+    openEditTagsModal() {
+      this.showEditTagModal = true;
+    },
+    closeEditTagsModal() {
+      this.showEditTagModal = false;
+    },
+
+    translationCreated() {
+      this.closeTranslationCreationModal();
+      this.fetchItems();
+    },
+    tagsUpdated() {
+      this.closeEditTagsModal();
       this.fetchItems();
     },
     async deleteItem(typeId) {
@@ -143,6 +161,10 @@ export default {
           }
         }
       });
+    },
+    updateTags(item) {
+      this.editTags = item;
+      this.showEditTagModal = true;
     },
     async saveTranslation(i) {
       const item = this.table.items[i];
@@ -191,7 +213,7 @@ export default {
         variant="secondary"
         text="Add translation"
         :bilingual="true"
-        @click="createClientType"
+        @click="createTranslation"
       >
         <template #left-icon>
           <x-icon name="add" class="violet-600" />
@@ -226,11 +248,24 @@ export default {
       </template>
 
       <template #cell(tags)="{ item }">
-        <div v-for="tag in item.tags" :key="tag" class="mt-3">
-          <span
-            class="border-radius-2 background-violet-100 violet-600 translation-tag"
-            >{{ tag }}</span
-          >
+        <div class="d-flex align-items-center" title="Edit Tags">
+          <div class="mr-1 cursor-pointer">
+            <x-circular-background
+              v-if="permission.edit"
+              @click="updateTags(item)"
+              class="bg-violet-600"
+            >
+              <x-icon name="edit" class="color-white" />
+            </x-circular-background>
+          </div>
+          <div>
+            <div v-for="tag in item.tags" :key="tag" class="tag">
+              <span
+                class="border-radius-2 background-violet-100 violet-600 translation-tag"
+                >{{ tag }}</span
+              >
+            </div>
+          </div>
         </div>
       </template>
       <template #[`cell(value.${currentLang})`]="{ item, index }">
@@ -255,25 +290,23 @@ export default {
               <x-icon name="edit" class="color-white" />
             </x-circular-background>
           </div>
-
-          <!-- <x-circular-background
-            v-if="permission.delete"
-            @click="deleteItem(item.id)"
-            class="bg-red-600"
-          >
-            <x-icon name="delete" class="color-white" />
-          </x-circular-background> -->
         </div>
       </template>
     </b-table>
+    <settings-update-translation-tags
+      v-if="showEditTagModal"
+      :edit-item="editTags"
+      @close-modal="closeEditTagsModal"
+      @tags-updated="tagsUpdated"
+    ></settings-update-translation-tags>
 
     <settings-create-translation
       :all-languages="allLangs"
       v-if="showCreateModal"
       :upsert-type="upsertType"
       :edit-item="editStorage"
-      @close-creating-modal="closeCreatingClientTypeModal"
-      @client-type-created="clientTypeCreated"
+      @close-creating-modal="closeTranslationCreationModal"
+      @client-type-created="translationCreated"
     />
   </div>
 </template>
@@ -289,5 +322,8 @@ export default {
 }
 .row-opacity {
   opacity: 0.2;
+}
+.tag:not(:first-child) {
+  margin-top: 10px;
 }
 </style>

@@ -412,9 +412,9 @@ export default {
           'k-content-flex': selectList,
         }"
       >
-        <div :class="{ 'k-form-option-label': showLabel }">
+        <div :class="{ 'k-form-option-label': showLabel }" class="placeholder">
           <slot name="placeholder" />
-          <span v-if="showPlaceholder">
+          <span v-if="showPlaceholder" class="placeholder">
             {{ localePlaceholder }}
           </span>
         </div>
@@ -467,3 +467,8 @@ export default {
 </template>
 
 <style lang="scss" src="./form-select.scss" scoped />
+<style lang="scss" scoped>
+.placeholder {
+  color: var(--gray-400);
+}
+</style>

@@ -42,6 +42,10 @@ export default {
       middle_name: { kirill: null, lotin: null },
       extra_phones: [],
       legal_entity: {
+        first_name: { kirill: null, lotin: null },
+        last_name: { kirill: null, lotin: null },
+        middle_name: { kirill: null, lotin: null },
+        oked: "",
         company_name: null,
         bank: null,
         account_number: null,
@@ -186,6 +190,10 @@ export default {
       this.personalData.email = data.email;
       this.personalData.other_email = data.additional_email;
       this.personalData.client_type_id = data.client_type.id;
+      this.personalData.legal_entity.first_name = data.attributes.first_name;
+      this.personalData.legal_entity.last_name = data.attributes.last_name;
+      this.personalData.legal_entity.middle_name = data.attributes.middle_name;
+      this.personalData.legal_entity.oked = data.attributes.oked;
       this.autoFillPhones(data.phones);
     },
     async getClientByPassport() {
@@ -403,6 +411,10 @@ export default {
           subject: "legal",
           ...common,
           attributes: {
+            first_name: p.legal_entity.first_name,
+            last_name: p.legal_entity.last_name,
+            middle_name: p.legal_entity.middle_name,
+            oked: p.legal_entity.oked,
             name: p.legal_entity.company_name,
             payment_number: p.legal_entity.account_number,
             bank_name: p.legal_entity.bank,
@@ -439,6 +451,13 @@ export default {
         this.personalData.other_email = client.additional_email;
         this.personalData.client_type_id = client.client_type.id;
         this.personalData.company_type_id = client.attributes.company.id;
+        this.personalData.legal_entity.first_name =
+          client.attributes.first_name;
+        this.personalData.legal_entity.last_name = client.attributes.last_name;
+        this.personalData.legal_entity.middle_name =
+          client.attributes.middle_name;
+        this.personalData.legal_entity.oked = client.attributes.oked;
+
         this.autoFillPhones(client.phones);
       }
     },
@@ -520,6 +539,102 @@ export default {
           />
         </validation-provider>
 
+        <!--? CLIENT_LAST_NAME_CYRILLIC  -->
+        <validation-provider
+          :name="`${$t('last_name')} (${$t('cyrillic_shortcut')}.)`"
+          rules="required|min:1"
+          v-slot="{ errors }"
+        >
+          <x-form-input
+            :label="true"
+            class="w-100"
+            :error="!!errors[0]"
+            v-model="personalData.legal_entity.last_name.kirill"
+            @input="translateLatin('last_name', $event)"
+            :placeholder="`${$t('last_name')} (${$t('cyrillic_shortcut')}.)`"
+          />
+        </validation-provider>
+
+        <!--? CLIENT_LAST_NAME_LATIN  -->
+        <validation-provider
+          :name="`${$t('last_name')} (${$t('latin_shortcut')}.)`"
+          rules="required|min:1"
+          v-slot="{ errors }"
+        >
+          <x-form-input
+            class="w-100"
+            :label="true"
+            :error="!!errors[0]"
+            v-model="personalData.legal_entity.last_name.lotin"
+            @input="translateCyrillic('last_name', $event)"
+            :placeholder="`${$t('last_name')} (${$t('latin_shortcut')}.)`"
+          />
+        </validation-provider>
+
+        <!--? CLIENT_FIRST_NAME_CYRILLIC  -->
+        <validation-provider
+          :name="`${$t('name')} (${$t('cyrillic_shortcut')}.)`"
+          rules="required|min:1"
+          v-slot="{ errors }"
+        >
+          <x-form-input
+            class="w-100"
+            :label="true"
+            :error="!!errors[0]"
+            v-model="personalData.legal_entity.first_name.kirill"
+            @input="translateLatin('first_name', $event)"
+            :placeholder="`${$t('name')} (${$t('cyrillic_shortcut')}.)`"
+          />
+        </validation-provider>
+
+        <!--? CLIENT_FIRST_NAME_CYRILLIC  -->
+        <validation-provider
+          :name="`${$t('name')} (${$t('latin_shortcut')}.)`"
+          rules="required|min:1"
+          v-slot="{ errors }"
+        >
+          <x-form-input
+            class="w-100"
+            :label="true"
+            :error="!!errors[0]"
+            v-model="personalData.legal_entity.first_name.lotin"
+            @input="translateCyrillic('first_name', $event)"
+            :placeholder="`${$t('name')} (${$t('latin_shortcut')}.)`"
+          />
+        </validation-provider>
+
+        <!--? CLIENT_SECOND_NAME_LATIN  -->
+        <validation-provider
+          :name="`${$t('second_name')} (${$t('cyrillic_shortcut')}.)`"
+          rules="required|min:1"
+          v-slot="{ errors }"
+        >
+          <x-form-input
+            class="w-100"
+            :label="true"
+            :error="!!errors[0]"
+            v-model="personalData.legal_entity.middle_name.kirill"
+            @input="translateLatin('second_name', $event)"
+            :placeholder="`${$t('second_name')} (${$t('cyrillic_shortcut')}.)`"
+          />
+        </validation-provider>
+
+        <!--? CLIENT_SECOND_NAME_LATIN  -->
+        <validation-provider
+          :name="`${$t('second_name')} (${$t('latin_shortcut')}.)`"
+          rules="required|min:1"
+          v-slot="{ errors }"
+        >
+          <x-form-input
+            class="w-100"
+            :label="true"
+            :error="!!errors[0]"
+            v-model="personalData.legal_entity.middle_name.lotin"
+            @input="translateCyrillic('second_name', $event)"
+            :placeholder="`${$t('second_name')} (${$t('latin_shortcut')}.)`"
+          />
+        </validation-provider>
+
         <!--? BANK  -->
         <validation-provider
           v-slot="{ errors }"
@@ -551,7 +666,6 @@ export default {
             :placeholder="`${$t('account_number')}`"
           />
         </validation-provider>
-
         <!--? MFO  -->
         <validation-provider
           v-slot="{ errors }"
@@ -581,6 +695,21 @@ export default {
             :error="!!errors[0]"
             v-model="personalData.legal_entity.ndc"
             :placeholder="`${$t('ndc')}`"
+          />
+        </validation-provider>
+        <!--? OKED  -->
+        <validation-provider
+          v-slot="{ errors }"
+          rules="required|min:3"
+          :name="`${$t('oked')}`"
+        >
+          <x-form-input
+            :label="true"
+            type="text"
+            class="w-100"
+            :error="!!errors[0]"
+            v-model="personalData.legal_entity.oked"
+            :placeholder="`${$t('oked')}`"
           />
         </validation-provider>
       </template>
@@ -883,12 +1012,12 @@ export default {
       </validation-provider>
 
       <!--? CLIENT_ADDITIONAL_EMAIL  -->
-      <x-form-input
+      <!-- <x-form-input
         class="w-100"
         :label="true"
         v-model="personalData.other_email"
         :placeholder="`${$t('additional_email')}`"
-      />
+      /> -->
 
       <!--? CLIENT_ADDITIONAL_PHONE  -->
       <x-form-input

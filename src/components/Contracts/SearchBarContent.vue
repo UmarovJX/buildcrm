@@ -5,6 +5,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import BaseCheckbox from "@/components/Reusable/BaseCheckbox2";
 // import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import { XFormSelect } from "@/components/ui-components/form-select";
 import "vue2-datepicker/index.css";
@@ -29,6 +30,7 @@ export default {
   name: "SearchBarContent",
   components: {
     XFormSelect: XFormSelect,
+    BaseCheckbox,
     BaseFilterIcon,
     BaseArrowLeftIcon,
     BaseNumericInput,
@@ -45,6 +47,8 @@ export default {
       isFetching: false,
       objectsFields: [],
       filter: {
+        is_expired: false,
+        is_duplicate: false,
         object_id: [],
         contract_number: null,
         date: [],
@@ -281,6 +285,8 @@ export default {
     },
     resetFilter() {
       this.filter = {
+        is_expired: false,
+        is_duplicate: false,
         object_id: [],
         date: [],
         type: [],
@@ -641,6 +647,21 @@ export default {
               :placeholder="$t('contracts.client_type')"
               :multilingual="true"
             />
+
+            <div class="mt-3">
+              <base-checkbox
+                v-model="filter.is_expired"
+                :label="$t('contract_is_expired')"
+              >
+              </base-checkbox>
+            </div>
+            <div class="mt-3">
+              <base-checkbox
+                v-model="filter.is_duplicate"
+                :label="$t('contract_is_duplicate')"
+              >
+              </base-checkbox>
+            </div>
 
             <!--              <b-form-select-->
             <!--                  v-model="filter.client_type_id"-->

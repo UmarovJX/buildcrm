@@ -1,4 +1,52 @@
 export default {
+  common: {
+    apartment: "Квартира",
+    phone: "Телефон:",
+    month: {
+      january: "Январь",
+      february: "Февраль",
+      march: "Март",
+      april: "Апрель",
+      may: "Май",
+      june: "Июнь",
+      july: "Июль",
+      august: "Август",
+      september: "Сентябрь",
+      october: "Октябрь",
+      november: "Ноябрь",
+      december: "Декабрь",
+    },
+  },
+  pdf: {
+    manager: "Менеджер по продажам",
+    creation_date: "Дата создания информационного листа",
+    variants: "Варианты оплаты и система скидок*",
+    table: {
+      variants: "Вариант оплаты",
+      m2_price: "Цена продажи за квадрат",
+      full_price: "Общая цена",
+      discount_percent: "Скидка в процентах",
+      discount_amount: "Общая скидка",
+      discounted_price: "Цена со скидкой",
+      variant_value: "{val}% предоплаты",
+    },
+    detail: {
+      title_type: "Тип оплаты",
+      title_value: "Сумма оплаты",
+      first: "Первоначальная",
+      monthly: "Ежемесячная",
+      last: "Дата последнего платежа",
+    },
+    monthly_title:
+      "График оплаты (количество месяцев: {month}) с {prepay}% предоплатой",
+    disclaimer1:
+      "*Вся информация действительна на дату создания информационного листа.",
+    disclaimer2:
+      "Перед заключение договора, просим уточнять всю информацию в офисах продаж",
+  },
+
+  contract_is_expired: "Просроченные договоры",
+  contract_is_duplicate: "Дубликат договоры",
   languages: "Языки",
   archiveV: "Архивировать",
   unarchiveV: "Разархивировать",
@@ -112,6 +160,7 @@ export default {
   legal_address: "Юридический адрес",
   ndc: "НДС",
   account_number: "Номер счета",
+  oked: "ОКЭД",
   bank: "Банк",
   company_name: "Название фирмы",
   client_information: "Информация о клиенте",
@@ -1072,7 +1121,7 @@ export default {
       number_of_blocks: "Этажность блока", // asd
       object: "Объект", // asd
       address: "Адрес", // asd
-      completion_date: "Дата завершения строительства", // asd
+      completion_date: "Дата завершения", // asd
       price_for_m2: "Цена продажы за м2", // asd
       discount_per_m2: "Скидка за м2", // asd
       discount_all: "Общая скидка",

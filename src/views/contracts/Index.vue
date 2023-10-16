@@ -86,11 +86,11 @@ export default {
         status: "closed",
         counts: 0,
       },
-      {
-        name: "tab_status.is_expired",
-        status: "is_expired",
-        counts: 0,
-      },
+      // {
+      //   name: "tab_status.is_expired",
+      //   status: "is_expired",
+      //   counts: 0,
+      // },
       {
         name: "tab_status.reorder",
         status: "reorder",
@@ -632,7 +632,7 @@ export default {
           <span>
             {{ data.item.contract }}
           </span>
-          <approver-list :approvers="data.item.approved" />
+          <!-- <approver-list :approvers="data.item.approved" /> -->
         </span>
       </template>
 

@@ -426,7 +426,7 @@ export default {
             class="color-yellow-400"
           ></x-icon>
         </x-square-background>
-        <approver-list :approvers="order.approved" v-if="order.approved" />
+        <!-- <approver-list :approvers="order.approved" v-if="order.approved" /> -->
       </template>
       <template #header-actions>
         <div v-if="hasAction">

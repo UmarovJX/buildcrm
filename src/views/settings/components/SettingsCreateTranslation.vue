@@ -209,7 +209,6 @@ export default {
           v-for="lang in allLanguages"
           :key="lang"
           :name="`www`"
-          rules="required"
           class="title-uz-provider"
         >
           <x-form-input

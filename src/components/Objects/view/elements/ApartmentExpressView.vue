@@ -10,7 +10,7 @@ import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
 import { formatToPrice } from "@/util/reusable";
 import { mapGetters, mapMutations } from "vuex";
 import api from "@/services/api";
-import PdfTemplate from "@/components/PdfTemplate";
+import PdfTemplate from "@/components/PdfTemplate2";
 import CheckoutPermission from "@/permission/checkout";
 import ApartmentComments from "@/components/Objects/view/elements/ApartmentComments";
 import { XIcon } from "@/components/ui-components/material-icons";

@@ -192,7 +192,7 @@ export default {
       sortBy: "",
       sortDesc: false,
       currentPage: 1,
-      showLoading: false,
+      showLoading: true,
       selectMode: "single",
       unfinishedContracts: [],
       contract: {},
@@ -219,7 +219,6 @@ export default {
   async created() {
     this.filter = this.query;
     this.currentPage = Number(this.filter.page);
-    await this.fetchContractList();
   },
   computed: {
     ...mapGetters(["getPermission", "getMe"]),
