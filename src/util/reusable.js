@@ -110,6 +110,12 @@ export function sortInFirstRelationship(obj) {
         loopPackage[key] = value;
       }
     }
+    if (key === "is_expired" && value === true) {
+      loopPackage[key] = +value;
+    }
+    if (key === "is_duplicate" && value === true) {
+      loopPackage[key] = +value;
+    }
   }
   return loopPackage;
 }

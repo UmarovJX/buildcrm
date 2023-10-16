@@ -9,16 +9,23 @@ import PlansPermission from "@/permission/plans";
 import UploadLogo from "./Components/UploadLogo";
 import BaseDotsIcon from "@/components/icons/BaseDotsIcon";
 import AppHeader from "@/components/Header/AppHeader";
+import Permission from "@/permission";
+import BaseButton from "@/components/Reusable/BaseButton.vue";
+import { XIcon } from "@/components/ui-components/material-icons";
 
 export default {
   name: "Objects",
   components: {
+    XIcon,
+    BaseButton,
     AppHeader,
     UploadLogo,
     BaseDotsIcon,
   },
 
   data: () => ({
+    permission: Permission,
+    archived: false,
     object_id: 0,
     filter: {
       rooms: [],
@@ -52,9 +59,61 @@ export default {
     activeContent() {
       return this.$t("objects.title");
     },
+
+    archivedButtonText() {
+      return this.archived
+        ? this.$t("objects.active")
+        : this.$t("objects.archived");
+    },
+    archivedButtonIcon() {
+      return this.archived ? "unarchive" : "inventory_2";
+    },
   },
 
   methods: {
+    async setArchive() {
+      this.archived = !this.archived;
+      this.getLoading = true;
+      await this.fetchObjects(this);
+      this.getLoading = false;
+    },
+    archiveObject(item) {
+      const d = new FormData();
+      d.append("id", item.id);
+
+      this.$swal({
+        title: this.$t(item.name),
+        text: this.archived
+          ? this.$t("sweetAlert.want_unarchive")
+          : this.$t("sweetAlert.want_archive"),
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: this.$t("cancel"),
+        confirmButtonText: this.$t("sweetAlert.yesPure"),
+      }).then((result) => {
+        if (result.value) {
+          this.getLoading = true;
+          api.objectsV3
+            .setArchive(d)
+            .then((response) => {
+              this.fetchObjects(this).then(() => {
+                this.getLoading = false;
+              });
+              this.$swal(
+                response.data.result.is_archive
+                  ? this.$t("sweetAlert.archived")
+                  : this.$t("sweetAlert.unarchived"),
+                "",
+                "success"
+              );
+            })
+            .catch((error) => {
+              this.getLoading = false;
+              this.toastedWithErrorCode(error);
+            });
+        }
+      });
+    },
     ...mapActions(["fetchObjects"]),
     createBlock() {
       this.$router.push({ name: "objectsStore" });
@@ -117,7 +176,27 @@ export default {
       <template #header-title>
         {{ $t("objects.title") }}
       </template>
+      <template #header-actions>
+        <base-button
+          @click="setArchive"
+          :text="archivedButtonText"
+          v-if="permission.hasAdminRole()"
+        >
+          <template #left-icon>
+            <x-icon
+              :name="archivedButtonIcon"
+              :size="20"
+              class="violet-600"
+              color="var(--violet-600)"
+            />
+          </template>
+        </base-button>
+      </template>
     </app-header>
+    <div class="search__content">
+      <div></div>
+      <div class="d-flex x-gap-1"></div>
+    </div>
     <div class="object-cards">
       <template v-if="viewPermission">
         <div class="card" v-for="(object, index) in getObjects" :key="index">
@@ -149,6 +228,11 @@ export default {
                 >
                   <i class="fas fa-pen"></i> {{ $t("edit") }}
                 </router-link>
+
+                <b-link class="dropdown-item" @click="archiveObject(object)">
+                  <i class="fas fa-archive"></i>
+                  {{ archived ? $t("unarchiveV") : $t("archiveV") }}
+                </b-link>
 
                 <!--                <router-link-->
                 <!--                    v-if="getPermission.objects.update"-->
@@ -253,6 +337,19 @@ export default {
                   "
                 />
               </div>
+              <div class="card-block" v-if="object.is_parking">
+                <p class="card-block__title">
+                  {{ object.parking_count }} {{ $t("objects.view_parkings") }}
+                </p>
+                <p
+                  class="card-block__subtitle"
+                  v-html="
+                    $t('price_from', {
+                      msg: `${priceFormat(object.parking_initial_price)}`,
+                    })
+                  "
+                />
+              </div>
             </div>
           </router-link>
 
@@ -266,7 +363,7 @@ export default {
           </router-link>
         </div>
       </template>
-      <div class="card" v-if="createPermission">
+      <div class="card" v-if="createPermission && !archived">
         <div class="card-body card-empty" @click="createBlock">
           <img :src="require('@/assets/icons/icon-plus.svg')" alt="" />
           <p>{{ $t("object_create") }}</p>
@@ -448,5 +545,12 @@ export default {
       }
     }
   }
+}
+
+.search__content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
 }
 </style>

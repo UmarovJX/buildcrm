@@ -1,5 +1,22 @@
 import { axiosV1CRM, axiosV2 } from "@/services/core/base";
 import Core from "@/services/core/index";
+import { v3ServiceApi } from "@/services/v3/v3.service.js";
+
+class ObjectsV3 extends Core {
+  constructor(axios = v3ServiceApi) {
+    super(axios);
+  }
+
+  getObjects() {
+    return this.get("objects");
+  }
+  getArchivedObjects() {
+    return this.get("objects/archiveList");
+  }
+  setArchive(body) {
+    return this.post("objects/isArchive", body);
+  }
+}
 
 class ObjectsV1Crm extends Core {
   constructor(axios = axiosV1CRM) {
@@ -275,4 +292,5 @@ class ObjectsV2 extends Core {
 export default {
   ObjectsV1Crm,
   ObjectsV2,
+  ObjectsV3,
 };

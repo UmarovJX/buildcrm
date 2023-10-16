@@ -20,10 +20,14 @@ export default {
       type: Object,
       default: () => {},
     },
+    imgData: {
+      type: String,
+    },
   },
   emits: ["has-downloaded"],
   data() {
     return {
+      img: "",
       showPdfContent: false,
       htmlToPdfOptions: {
         margin: 0,
@@ -34,7 +38,7 @@ export default {
         //   letterRendering: true,
         //   useCORS: true
         // },
-        // image: {type: 'png', quality: 0.99},
+        image: { type: "png", quality: 0.99 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       },
       discountField: [
@@ -85,32 +89,8 @@ export default {
       return false;
     },
   },
-  mounted() {
-    // setTimeout(() => {
-    //   function toDataURL(src, callback, outputFormat) {
-    //     let img = new Image();
-    //     img.crossOrigin = "Anonymous";
-    //     img.onload = function () {
-    //       let canvas = document.createElement("CANVAS");
-    //       let ctx = canvas.getContext("2d");
-    //       let dataURL;
-    //       canvas.height = this.naturalHeight;
-    //       canvas.width = this.naturalWidth;
-    //       ctx.drawImage(this, 0, 0);
-    //       dataURL = canvas.toDataURL(outputFormat);
-    //       callback(dataURL);
-    //     };
-    //     img.src = src;
-    //   }
-    //
-    //   toDataURL(
-    //     "https://www.gravatar.com/avatar/d50c83cc0c6523b4d3f6085295c953e0",
-    //     function (dataUrl) {
-    //       console.log("RESULT:", dataUrl);
-    //     }
-    //   );
-    // }, 2000);
-  },
+  mounted() {},
+
   methods: {
     phonePrettier,
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
@@ -217,17 +197,12 @@ export default {
           </div>
           <div class="row">
             <div v-if="apartment.plan" class="col-12 pdf-img">
-              <img
-                v-if="planImage"
-                :src="planImage"
-                id="planImage"
-                alt="plan-image"
-              />
-              <img
+              <img :src="imgData" id="planImage" alt="plan-image" />
+              <!-- <img
                 :src="require('@/assets/img/object__img1.png')"
                 alt="xonsaroy logo"
               />
-              <canvas id="canvasImage"></canvas>
+              <canvas id="canvasImage"></canvas> -->
 
               <!--              <img :src="apartment.plan.image[0]" alt="">-->
               <!--              <img :src="require('@/assets/img/plan.png')" alt="plan-image">-->

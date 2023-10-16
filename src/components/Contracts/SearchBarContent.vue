@@ -5,6 +5,7 @@ import BaseButton from "@/components/Reusable/BaseButton";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseNumericInput from "@/components/Reusable/BaseNumericInput";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import BaseCheckbox from "@/components/Reusable/BaseCheckbox2";
 // import BaseMultiselect from "@/components/Reusable/BaseMultiselect";
 import { XFormSelect } from "@/components/ui-components/form-select";
 import "vue2-datepicker/index.css";
@@ -29,6 +30,7 @@ export default {
   name: "SearchBarContent",
   components: {
     XFormSelect: XFormSelect,
+    BaseCheckbox,
     BaseFilterIcon,
     BaseArrowLeftIcon,
     BaseNumericInput,
@@ -45,9 +47,12 @@ export default {
       isFetching: false,
       objectsFields: [],
       filter: {
+        is_expired: false,
+        is_duplicate: false,
         object_id: [],
         contract_number: null,
         date: [],
+        type: [],
         date_type: null,
         client_type_id: null,
         contract_price: null,
@@ -57,11 +62,12 @@ export default {
         blocks: [],
         floors: [],
         branch: [],
-        manager: [],
+        created_by: [],
         initial_payment_date: [],
         monthly_payment_date: [],
       },
       dateTypeOptions: [],
+      typeOptions: [],
       branchOption: [],
       objectOptions: [],
       managerOptions: [],
@@ -205,7 +211,12 @@ export default {
               date_types,
               branches,
               managers,
+              types,
             } = response.data;
+            this.typeOptions = types.map((el) => ({
+              id: el.type,
+              name: el.name[this.$i18n.locale],
+            }));
             this.objectOptions = objects;
             this.branchOption = branches;
             this.managerOptions = managers.map((m) => {
@@ -249,17 +260,13 @@ export default {
       }
     },
     clearFilter() {
-      const sortingValues = sortInFirstRelationship(this.filter);
-      const loopQuery = Object.assign({}, this.query);
-      for (let [key] of Object.entries(sortingValues)) {
-        const haveInQuery = hasOwnProperty(this.query, key);
-        if (haveInQuery) {
-          delete loopQuery[key];
-        }
-      }
+      this.resetFilter();
+      const loopQuery = Object.assign({}, { page: 1, limit: this.query.limit });
+
       this.$emit("replace-router", loopQuery);
-      this.hideFilterModal();
       this.$refs["base-form-tag-input"].clear();
+
+      this.hideFilterModal();
     },
     searchByFilterField() {
       const object_id = this.filter.object_id
@@ -269,17 +276,20 @@ export default {
         ...this.filter,
         object_id,
       });
+      sortingQuery.page = 1;
       this.$emit("search-by-filter", sortInFirstRelationship(sortingQuery));
       this.$refs["filter-modal"].hide();
     },
     hideFilterModal() {
-      this.resetFilter();
       this.$refs["filter-modal"].hide();
     },
     resetFilter() {
       this.filter = {
+        is_expired: false,
+        is_duplicate: false,
         object_id: [],
         date: [],
+        type: [],
         date_type: null,
         client_type_id: null,
         contract_price: null,
@@ -290,12 +300,15 @@ export default {
         blocks: [],
         floors: [],
         branch: [],
-        manager: [],
+        created_by: [],
         initial_payment_date: [],
         monthly_payment_date: [],
       };
     },
     async showFilterModal() {
+      this.filter.date = this.query.date || [];
+      this.filter.monthly_payment_date = this.query.monthly_payment_date || [];
+      this.filter.initial_payment_date = this.query.initial_payment_date || [];
       this.$refs["filter-modal"].show();
     },
     focusOnSearchInput() {
@@ -369,10 +382,11 @@ export default {
           continue;
         }
 
-        const arrayProps = ["blocks", "floors", "branch", "manager"];
+        const arrayProps = ["blocks", "floors", "branch", "created_by", "type"];
         if (arrayProps.includes(property)) {
           if (isArray(query)) {
-            this.filter[property] = query.map((p) => parseInt(p));
+            if (property === "type") this.filter[property] = query;
+            else this.filter[property] = query.map((p) => parseInt(p));
           } else if (isString(query)) {
             this.filter[property] = [parseInt(query)];
           } else if (query) {
@@ -470,6 +484,16 @@ export default {
               :placeholder="$t('branches.title')"
             />
 
+            <x-form-select
+              value-field="id"
+              text-field="name"
+              v-model="filter.type"
+              :multiple="true"
+              :options="typeOptions"
+              class="mt-3"
+              :placeholder="$t('type')"
+            />
+
             <!--    Filter Apartment Number      -->
             <div class="filter__inputs-input">
               <base-form-tag-input
@@ -543,6 +567,7 @@ export default {
 
             <div class="d-flex align-items-center x-gap-1 mt-3">
               <base-date-picker
+                :value="filter.date"
                 style="width: 60%"
                 :default-value="filter.date"
                 :placeholder="`${$t('contracts.agreement_date')}`"
@@ -558,6 +583,7 @@ export default {
             </div>
 
             <base-date-picker
+              :value="filter.initial_payment_date"
               class="w-100 mt-3"
               :default-value="filter.initial_payment_date"
               :placeholder="`${$t('initial_payment_date')}`"
@@ -565,6 +591,7 @@ export default {
             />
 
             <base-date-picker
+              :value="filter.monthly_payment_date"
               class="w-100 mt-3"
               :default-value="filter.monthly_payment_date"
               :placeholder="`${$t('monthly_payment_date')}`"
@@ -603,7 +630,7 @@ export default {
             </div>
 
             <x-form-select
-              v-model="filter.manager"
+              v-model="filter.created_by"
               :options="managerOptions"
               value-field="id"
               text-field="text"
@@ -620,6 +647,21 @@ export default {
               :placeholder="$t('contracts.client_type')"
               :multilingual="true"
             />
+
+            <div class="mt-3">
+              <base-checkbox
+                v-model="filter.is_expired"
+                :label="$t('contract_is_expired')"
+              >
+              </base-checkbox>
+            </div>
+            <div class="mt-3">
+              <base-checkbox
+                v-model="filter.is_duplicate"
+                :label="$t('contract_is_duplicate')"
+              >
+              </base-checkbox>
+            </div>
 
             <!--              <b-form-select-->
             <!--                  v-model="filter.client_type_id"-->

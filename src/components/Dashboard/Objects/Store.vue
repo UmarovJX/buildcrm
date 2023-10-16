@@ -9,9 +9,13 @@ import AppHeader from "@/components/Header/AppHeader";
 import AppBreadcrumb from "@/components/AppBreadcrumb";
 import { mapGetters, mapActions } from "vuex";
 import api from "@/services/api";
+import BaseTabPicker from "@/components/Reusable/BaseTabPicker";
+import { XIcon } from "@/components/ui-components/material-icons";
 
 export default {
   components: {
+    XIcon,
+    BaseTabPicker,
     "type-plan-create": TypePlanCreateModal,
     "building-store": BuildingStore,
     "buildings-list": BuildingList,
@@ -35,14 +39,21 @@ export default {
   },
 
   data: () => ({
+    typesOptions: ["apartment", "parking"],
+    currentType: "all",
     object: {
       id: null,
       name: null,
       address: null,
       full_address: null,
+
+      slug: null,
+      slug_parking: null,
+      parking_build_date: null,
       build_date: null,
       company_id: 0,
       is_hide_m2_price: false,
+      is_parking: false,
       credit_month: 18,
       draft: false,
     },
@@ -95,6 +106,11 @@ export default {
   }),
 
   computed: {
+    filteredDiscounts() {
+      if (this.currentType === "all") return this.discounts;
+      else
+        return this.discounts.filter((el) => el.type_sort === this.currentType);
+    },
     ...mapGetters(["getCurrency", "getCompanies"]),
     breadCrumbs() {
       return [
@@ -184,9 +200,9 @@ export default {
       }
     },
 
-    SaveDiscount(event) {
+    SaveDiscount() {
       this.disabled.discount.create = false;
-      this.discounts.push(event);
+      this.getDiscounts();
     },
 
     editDiscount(discount) {
@@ -207,7 +223,7 @@ export default {
       this.discounts = event;
     },
 
-    RemoveDiscount(discount, index) {
+    RemoveDiscount(discount) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
         text: this.$t("sweetAlert.text"),
@@ -223,7 +239,7 @@ export default {
             .then((response) => {
               this.getLoading = false;
               if (response.status === 204) {
-                this.discounts.splice(index, 1);
+                this.getDiscounts();
               }
             })
             .catch((error) => {
@@ -286,7 +302,7 @@ export default {
 
         if (status === 200) {
           this.object = {};
-          this.object = data;
+          this.object = { ...data, is_parking: !!data.is_parking };
         }
 
         this.getLoading = false;
@@ -417,8 +433,10 @@ export default {
 
       <div class="card">
         <div class="card-content" v-if="step === 1">
+          <!-- OBJECT FORM -->
           <form @submit.prevent="requestObject">
             <div class="card-body">
+              <!-- NAME -->
               <div class="mb-3">
                 <label for="name" class="form-label">
                   {{ $t("objects.create.name") }}
@@ -432,7 +450,7 @@ export default {
                   :placeholder="$t('objects.placeholder.name')"
                 />
               </div>
-
+              <!-- ADDRESS -->
               <div class="mb-3">
                 <label for="address" class="form-label">
                   {{ $t("objects.address") }}
@@ -446,7 +464,7 @@ export default {
                   :placeholder="$t('objects.placeholder.address')"
                 />
               </div>
-
+              <!-- FULLADDRESS -->
               <div class="mb-3">
                 <label for="address_full" class="form-label">
                   {{ $t("objects.full_address") }}
@@ -461,6 +479,49 @@ export default {
                 />
               </div>
 
+              <!-- SLUG -->
+              <div class="mb-3">
+                <label for="slug" class="form-label">
+                  {{ $t("slug") }}
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="slug"
+                  v-model="object.slug"
+                  required
+                  :placeholder="$t('slug')"
+                />
+              </div>
+              <!-- SLUG parking-->
+              <div class="mb-3">
+                <label for="slug_parking" class="form-label">
+                  {{ $t("slug_parking") }}
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="slug_parking"
+                  v-model="object.slug_parking"
+                  required
+                  :placeholder="$t('slug_parking')"
+                />
+              </div>
+
+              <!-- parking Build Date -->
+              <div class="mb-3">
+                <label for="parking_build_date" class="form-label">
+                  {{ $t("parking_build_date") }}
+                </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="parking_build_date"
+                  v-model="object.parking_build_date"
+                  :placeholder="$t('objects.placeholder.parking_build_date')"
+                />
+              </div>
+              <!-- Build Date -->
               <div class="mb-3">
                 <label for="date_build" class="form-label">
                   {{ $t("objects.build_date") }}
@@ -489,7 +550,7 @@ export default {
               <!--                    :placeholder="$t('objects.placeholder.credit_month')"-->
               <!--                />-->
               <!--              </div>-->
-
+              <!-- COMPANIES -->
               <div class="mb-3">
                 <label class="form-label" for="companies">
                   {{ $t("companies.title") }}
@@ -507,13 +568,19 @@ export default {
                     :key="index"
                     :value="company.id"
                   >
-                    {{ company.type.ru }} "{{ company.name }}"
+                    {{ company.type[$i18n.locale] }} "{{ company.name }}"
                   </option>
                 </select>
               </div>
+              <!-- m2 price -->
               <div class="mb-3">
                 <b-form-checkbox v-model="object.is_hide_m2_price" switch>
-                  Скрыть цену по m2
+                  {{ $t("objects.showM2Price") }}
+                </b-form-checkbox>
+              </div>
+              <div class="mb-3">
+                <b-form-checkbox v-model="object.is_parking" switch>
+                  {{ $t("objects.hasParking") }}
                 </b-form-checkbox>
               </div>
             </div>
@@ -685,9 +752,14 @@ export default {
           </div>
 
           <div class="card-body">
+            <base-tab-picker
+              :options="typesOptions"
+              :current="currentType"
+              @tab-selected="currentType = $event"
+            ></base-tab-picker>
             <div
               class="discount mt-4 mb-4"
-              v-for="(discount, index) in discounts"
+              v-for="(discount, index) in filteredDiscounts"
               :key="index"
             >
               <div class="container px-0 mx-0">
@@ -760,6 +832,16 @@ export default {
                               <i class="far fa-trash"></i>
                             </button>
                           </div>
+                          <span class="pl-3">
+                            <span
+                              v-if="
+                                currentType === 'all' &&
+                                discount.type_sort === 'parking'
+                              "
+                              >Parking</span
+                            >
+                            <span v-else style="opacity: 0">Parking</span>
+                          </span>
                         </div>
                       </div>
                     </div>

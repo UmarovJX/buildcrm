@@ -16,6 +16,8 @@ import Accountants from "@/services/accountants";
 import Promo from "@/services/promo";
 import Uploads from "@/services/uploads";
 import Parkings from "@/services/parkings";
+import Languages from "@/services/languages";
+import Translations from "@/services/translations";
 
 export const debtorsV2 = new Debtors.DebtorsV2();
 
@@ -33,6 +35,8 @@ export default {
   clientsV2: new Clients.ClientsV2(),
   objects: new Objects.ObjectsV1Crm(),
   objectsV2: new Objects.ObjectsV2(),
+  objectsV3: new Objects.ObjectsV3(),
+
   debtors: new Debtors.DebtorsV1(),
   debtorsV2: new Debtors.DebtorsV2(),
   contract: new Contract.Contract(),
@@ -49,4 +53,6 @@ export default {
 
   uploadsV3: new Uploads.UploadsV3(),
   parkingsV3: new Parkings.ParkingsV3(),
+  languagesV3: new Languages.LanguagesV3(),
+  translationsV3: new Translations.TranslationsV3(),
 };

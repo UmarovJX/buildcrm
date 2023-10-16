@@ -52,6 +52,7 @@ export default {
   },
   data() {
     return {
+      imgDataUrl: "",
       /* SLIDER OPTION */
       swiperOption: {
         slidesPerView: 1,
@@ -185,8 +186,37 @@ export default {
   // async created() {
   //     await this.fetchApartmentView()
   // },
-
+  watch: {
+    apartment() {
+      if (this.apartment?.plan?.images)
+        this.toDataUrl(this.apartment.plan.images[0])
+          .then((url) => (this.imgDataUrl = url))
+          .catch((er) => console.log("error", er));
+    },
+  },
   methods: {
+    async toDataUrl(url) {
+      //Convert to base64
+      return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          var reader = new FileReader();
+          reader.onloadend = function () {
+            resolve(reader.result);
+          };
+          reader.readAsDataURL(xhr.response);
+        };
+        xhr.onerror = () => {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText,
+          });
+        };
+        xhr.open("GET", url);
+        xhr.responseType = "blob";
+        xhr.send();
+      });
+    },
     ...mapMutations(["setCalculationProperties"]),
     getCalc(value) {
       this.printCalc = value;
@@ -497,6 +527,7 @@ export default {
     <PdfTemplate
       ref="html2Pdf"
       v-if="pdfVisible"
+      :imgData="imgDataUrl"
       :apartment="apartment"
       :print-calc="printCalc"
       :me="me"

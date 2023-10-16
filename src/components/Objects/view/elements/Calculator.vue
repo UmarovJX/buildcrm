@@ -54,6 +54,7 @@ export default {
   },
   mounted() {
     this.calc.month = this.apartment?.object?.credit_month;
+    this.monthlyPaymentDuration = this.apartment?.object?.credit_month;
     this.upHillForPrint();
   },
   watch: {
@@ -139,7 +140,7 @@ export default {
         Number.isNaN(this.calc.month) ||
         this.calc.month === null
       ) {
-        this.calc.month = 12;
+        this.calc.month = this.monthlyPaymentDuration;
       }
       this.upHillForPrint();
     },
@@ -446,10 +447,7 @@ export default {
       </div>
 
       <!--       Monthly Payment          -->
-      <div
-        v-if="discount.amount > 0 && !apartment.object.is_hide_m2_price"
-        class="d-flex justify-content-between"
-      >
+      <div v-if="discount.prepay < 100" class="d-flex justify-content-between">
         <span class="property d-block color-gray-400">
           {{ $t("monthly_pay") }}
         </span>
@@ -470,6 +468,17 @@ export default {
         </span>
         <span class="price d-block color-gray-600">
           {{ pricePrettier(totalDiscount, 2) }} {{ $t("ye") }}
+        </span>
+      </div>
+      <!--      Total Percent Discount          -->
+      <div class="d-flex justify-content-between">
+        <span class="property d-block color-gray-400">
+          {{ $t("total_discount_percent") }}
+        </span>
+        <span class="price d-block color-gray-600">
+          {{
+            pricePrettier((totalDiscount * 100) / apartment.prices.price, 2)
+          }}%
         </span>
       </div>
 

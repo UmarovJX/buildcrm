@@ -17,10 +17,12 @@ import { XSquareBackground } from "@/components/ui-components/square-background"
 import { XModalCenter } from "@/components/ui-components/modal-center";
 import { XFormInput } from "@/components/ui-components/form-input";
 import Permission from "@/permission";
+import ApproverList from "@/views/contracts/components/ApproverList.vue";
 
 export default {
   name: "ContractView",
   components: {
+    ApproverList,
     XFormInput,
     XModalCenter,
     XSquareBackground,
@@ -413,6 +415,18 @@ export default {
           <x-icon name="archive" class="color-yellow-600"></x-icon>
           <span class="ml-1">{{ $t("in_the_archive") }}</span>
         </x-square-background>
+        <x-square-background
+          v-if="order.type === 'parking'"
+          padding="0.4"
+          class="mr-2 bg-violet-600"
+        >
+          <x-icon
+            size="40"
+            name="local_parking"
+            class="color-yellow-400"
+          ></x-icon>
+        </x-square-background>
+        <!-- <approver-list :approvers="order.approved" v-if="order.approved" /> -->
       </template>
       <template #header-actions>
         <div v-if="hasAction">
@@ -874,7 +888,7 @@ export default {
   font-size: 16px;
   min-width: max-content;
   padding: 1rem 3rem;
-  margin: 0 2rem;
+  margin: 0 1rem 0 2rem;
 }
 
 .status {

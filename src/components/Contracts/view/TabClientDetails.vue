@@ -145,13 +145,13 @@ export default {
       if (this.$i18n.locale === "uz") {
         language = "lotin";
       }
-      const { first_name, last_name, second_name } = client.attributes;
+      const { first_name, last_name, middle_name } = client.attributes;
       return (
         this.clientName(last_name, language) +
         " " +
         this.clientName(first_name, language) +
         " " +
-        this.clientName(second_name, language)
+        this.clientName(middle_name, language)
       );
     },
 
@@ -204,7 +204,32 @@ export default {
           <b-form-input disabled :value="cAttrs.bank_name" id="birthdate" />
         </div>
       </div>
+      <!--  -->
+      <div class="d-flex">
+        <div class="client__details_info_card mr-5">
+          <label for="FIO">{{ $t("fio") }}</label>
+          <b-form-input
+            disabled
+            :value="getClientName(client)"
+            id="companyName"
+          />
+        </div>
 
+        <div class="client__details_info_card" style="padding-right: 0">
+          <label for="client_type">{{ $t("client_type") }}</label>
+          <x-form-select
+            v-if="permissionClientType && clientTypeOptions.length"
+            :label="false"
+            :disabled="!permissionClientType"
+            :options="clientTypeOptions"
+            :multilingual="true"
+            @change="changeClientType"
+            v-model="clientTypeId"
+          >
+          </x-form-select>
+        </div>
+      </div>
+      <!--  -->
       <div class="d-flex">
         <div class="client__details_info_card mr-5">
           <label for="payment_number">{{ $t("account_number") }}</label>
@@ -262,20 +287,6 @@ export default {
       </div>
 
       <div class="phones-section">
-        <div class="client__details_info_card mr-5" style="padding-right: 0">
-          <label for="client_type">{{ $t("client_type") }}</label>
-          <x-form-select
-            v-if="permissionClientType && clientTypeOptions.length"
-            :label="false"
-            :disabled="!permissionClientType"
-            :options="clientTypeOptions"
-            :multilingual="true"
-            @change="changeClientType"
-            v-model="clientTypeId"
-          >
-          </x-form-select>
-        </div>
-
         <div v-if="client.phones.length" class="client__details_info_card mr-5">
           <label for="phone">{{ $t("phone") }}</label>
           <b-form-input
@@ -328,40 +339,6 @@ export default {
               disabled
               :value="datePrettier(client.attributes.date_of_birth)"
               id="birthdate"
-            />
-          </div>
-        </div>
-
-        <div class="d-flex">
-          <div class="client__details_info_card mr-5">
-            <label for="address_line">{{ $t("checkout.address_line") }}</label>
-            <b-form-input
-              disabled
-              :value="cAttrs.address_line"
-              id="address_line"
-            />
-          </div>
-          <div class="client__details_info_card">
-            <label for="country">{{ $t("country") }}</label>
-            <b-form-input
-              disabled
-              :value="cAttrs.country.name[$i18n.locale]"
-              id="country"
-            />
-          </div>
-        </div>
-
-        <div class="d-flex">
-          <div class="client__details_info_card mr-5">
-            <label for="email">{{ $t("email") }}</label>
-            <b-form-input disabled :value="client.email" id="email" />
-          </div>
-          <div class="client__details_info_card">
-            <label for="additional_email">{{ $t("additional_email") }}</label>
-            <b-form-input
-              disabled
-              :value="client.additional_email"
-              id="additional_email"
             />
           </div>
         </div>
@@ -420,6 +397,68 @@ export default {
               :value="datePrettier(client.attributes.passport_issued_date)"
             />
           </div>
+        </div>
+        <div class="d-flex">
+          <div class="client__details_info_card mr-5">
+            <label for="address_line">{{ $t("checkout.address_line") }}</label>
+            <b-form-input
+              disabled
+              :value="cAttrs.address_line"
+              id="address_line"
+            />
+          </div>
+          <div class="client__details_info_card">
+            <label for="country">{{ $t("country") }}</label>
+            <b-form-input
+              disabled
+              :value="cAttrs.country.name[$i18n.locale]"
+              id="country"
+            />
+          </div>
+        </div>
+
+        <div class="d-flex">
+          <div class="client__details_info_card mr-5">
+            <label for="email">{{ $t("email") }}</label>
+            <b-form-input disabled :value="client.email" id="email" />
+          </div>
+          <div class="client__details_info_card">
+            <label for="additional_email">{{ $t("additional_email") }}</label>
+            <b-form-input
+              disabled
+              :value="client.additional_email"
+              id="additional_email"
+            />
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="client__details_info_card mr-5">
+            <label for="place_of_issue">{{
+              $t("apartments.agree.passport_series")
+            }}</label>
+            <b-form-input
+              disabled
+              id="place_of_issue"
+              :value="client.attributes.passport_series"
+            />
+          </div>
+          <div class="client__details_info_card">
+            <label for="passport_issued_by">{{
+              $t("apartments.agree.issued_by_whom")
+            }}</label>
+            <b-form-input
+              disabled
+              id="passport_issued_by"
+              :value="client.attributes.passport_issued_by"
+            />
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="client__details_info_card mr-5">
+            <label for="language">{{ $t("language") }}</label>
+            <b-form-input disabled id="language" :value="client.language" />
+          </div>
+          <div class="client__details_info_card opacity-0"></div>
         </div>
       </b-form>
     </div>
@@ -556,6 +595,9 @@ export default {
   justify-content: space-between;
 }
 
+.opacity-0 {
+  opacity: 0;
+}
 .phones-section {
   display: grid;
   grid-template-columns: 1fr 1fr;

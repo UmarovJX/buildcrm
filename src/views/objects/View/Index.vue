@@ -134,6 +134,7 @@ export default {
       filter: [],
       filterFields: {},
       objectName: "",
+      is_parking: false,
       isHidePrice: false,
       componentTabs: [
         {
@@ -143,6 +144,7 @@ export default {
           buttonIcon: "BaseChessList",
           title: this.$t("object.list"),
           view: "list",
+          show: true,
         },
         {
           id: 2,
@@ -151,6 +153,7 @@ export default {
           buttonIcon: "BaseChessOne",
           title: this.$t("object.chess") + " 1.0",
           view: "architecture",
+          show: true,
         },
         {
           id: 3,
@@ -159,6 +162,7 @@ export default {
           buttonIcon: "BaseChessTwo",
           title: this.$t("object.chess") + " 2.0",
           view: "chess",
+          show: true,
         },
         {
           id: 5,
@@ -167,6 +171,7 @@ export default {
           buttonIcon: "BaseChessPlan",
           title: this.$t("object.plan"),
           view: "plan",
+          show: true,
         },
         {
           id: 6,
@@ -175,6 +180,7 @@ export default {
           buttonIcon: "local_parking",
           title: this.$t("object.parking"),
           view: "list",
+          show: true,
         },
       ],
       otherPrices: [],
@@ -225,6 +231,9 @@ export default {
       }
       if (!ApartmentsPermission.getApartmentPlanPermission()) {
         result = result.filter((item) => item.view !== "plan");
+      }
+      if (!this.is_parking) {
+        result = result.filter((item) => item.name !== "ParkingTable");
       }
       return result;
     },
@@ -878,6 +887,7 @@ export default {
         .getObjectName(id)
         .then((res) => {
           this.objectName = res.data.name;
+          this.is_parking = res.data.is_parking;
           this.isHidePrice = res.data.is_hide_m2_price;
         })
         .catch((err) => {

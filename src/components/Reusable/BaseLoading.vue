@@ -50,7 +50,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 40rem;
+  min-height: 20rem;
 
   &-main {
     animation: 1.5s spin infinite linear;

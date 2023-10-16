@@ -10,7 +10,7 @@ import BaseEyeIcon from "@/components/icons/BaseEyeIcon";
 import { formatToPrice } from "@/util/reusable";
 import { mapGetters, mapMutations } from "vuex";
 import api from "@/services/api";
-import PdfTemplate from "@/components/PdfTemplate";
+import PdfTemplate from "@/components/PdfTemplate2";
 import CheckoutPermission from "@/permission/checkout";
 import ApartmentComments from "@/components/Objects/view/elements/ApartmentComments";
 import { XIcon } from "@/components/ui-components/material-icons";
@@ -64,6 +64,7 @@ export default {
       delete: ApartmentsPermission.getApartmentCommentsDeletePermission(),
     };
     return {
+      imgDataUrl: "",
       apartmentCommentsPermission,
       htmlToPdfOptions: {
         margin: 6,
@@ -214,9 +215,42 @@ export default {
       return context;
     },
   },
+  watch: {
+    sidebarApartment() {
+      this.imgDataUrl = "";
+      if (this.sidebarApartment?.plan?.images)
+        this.toDataUrl(this.sidebarApartment.plan.images[0])
+          .then((url) => {
+            this.imgDataUrl = url;
+          })
+          .catch((er) => console.log("error", er));
+    },
+  },
 
   /* METHODS */
   methods: {
+    async toDataUrl(url) {
+      //Convert to base64
+      return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          var reader = new FileReader();
+          reader.onloadend = function () {
+            resolve(reader.result);
+          };
+          reader.readAsDataURL(xhr.response);
+        };
+        xhr.onerror = () => {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText,
+          });
+        };
+        xhr.open("GET", url);
+        xhr.responseType = "blob";
+        xhr.send();
+      });
+    },
     isNUNEZ,
     ...mapMutations(["setCalculationProperties"]),
     async getComments() {
@@ -290,7 +324,7 @@ export default {
       this.appLoading = true;
       try {
         const apartments = [this.sidebarApartment.id];
-        const { data } = await api.orders.holdOrder(apartments, 'apartment');
+        const { data } = await api.orders.holdOrder(apartments, "apartment");
         if (data) {
           const objectId = data.orders[0].apartment.object.id;
           await this.$router.push({
@@ -622,6 +656,7 @@ export default {
         ref="html2Pdf"
         :apartment="sidebarApartment"
         :print-calc="printCalc"
+        :imgData="imgDataUrl"
       />
 
       <!--  LOADING    -->

@@ -1,4 +1,54 @@
 export default {
+  common: {
+    apartment: "Xonadon",
+    phone: "Телефон:",
+    month: {
+      january: "Yanvar",
+      february: "Fevral",
+      march: "Mart",
+      april: "Aprel",
+      may: "May",
+      june: "Iyun",
+      july: "Iyul",
+      august: "Avgust",
+      september: "Sentyabr",
+      october: "Oktyabr",
+      november: "Noyabr",
+      december: "Dekabr",
+    },
+  },
+  pdf: {
+    manager: "Менеджер по продажам",
+    creation_date: "Дата создания информационного листа",
+    variants: "Варианты оплаты и система скидок*",
+    table: {
+      variants: "Вариант оплаты",
+      m2_price: "Цена продажи за квадрат",
+      full_price: "Общая цена",
+      discount_percent: "Скидка в процентах",
+      discount_amount: "Общая скидка",
+      discounted_price: "Цена со скидкой",
+      variant_value: "{val}% предоплаты",
+    },
+    detail: {
+      title_type: "Тип оплаты",
+      title_value: "Сумма оплаты",
+      first: "Первоначальная",
+      monthly: "Ежемесячная",
+      last: "Дата последнего платежа",
+    },
+    monthly_title:
+      "График оплаты (количество месяцев: {month}) с {prepay}% предоплатой",
+    disclaimer1:
+      "*Вся информация действительна на дату создания информационного листа.",
+    disclaimer2:
+      "Перед заключение договора, просим уточнять всю информацию в офисах продаж",
+  },
+  contract_is_expired: "Просроченные договоры",
+  contract_is_duplicate: "Дубликат договоры",
+  languages: "Tillar",
+  archiveV: "Arhivlash",
+  unarchiveV: "Arhivdan olish",
   registration_of_parking_lots: "Avtoturargohlarni ro'yxatdan o'tkazish",
   parking: "Avtoturargoh",
   parkings: "Avtoturargohlar",
@@ -109,6 +159,7 @@ export default {
   legal_address: "Yuridik manzil",
   ndc: "NDS",
   account_number: "Hisob raqami",
+  oked: "ОКЭД",
   bank: "Bank",
   company_name: "Firma nomi",
   client_information: "Mijoz haqida ma'lumot",
@@ -560,6 +611,7 @@ export default {
   apartment_rooms: `{msg} ta xonadon topildi`,
   price_monthly: "{month} oy {price} so'm dan",
   total_discount: "Umumiy chegirma",
+  total_discount_percent: "Umumiy chegirma %",
   starting_price: "Boshlang'ich narxi",
   characters: "Xususiyatlari",
   clear: "Tozalash",
@@ -639,6 +691,7 @@ export default {
     de_active: "Faol emaas (deaktiv)",
     archived: "Arxiv",
     deleted: "O'chirilgan",
+    is_expired: "expired",
   },
 
   promo: {
@@ -1196,6 +1249,8 @@ export default {
   },
 
   objects: {
+    archived: "Arxivlangan",
+    active: "Aktiv",
     title: "Obyektlar",
     apartments: "Xonadonlar",
     address: "Manzil",
@@ -1211,6 +1266,9 @@ export default {
     unfinished_contract: "Tugallanmagan shartnomalar",
     view_apartments: "xonadonlar",
     view_level: "qavatlar",
+    view_parkings: "avtoturargohlar",
+    showM2Price: "M2 narxini kursatish",
+    hasParking: "Avtoturargoh",
 
     deal_template: {
       name: "Shartoma andozasi",
@@ -1355,6 +1413,11 @@ export default {
   },
 
   sweetAlert: {
+    want_archive: "Arhivlashni hohlaysizmi?",
+    want_unarchive: "Arhivdan olishni hohlaysizmi?",
+    archived: "Arhivlandi!",
+    unarchived: "Arhivdan olindi!",
+    add_image: "Rasm qushing!",
     choose_building: "Bino Tanlang!",
     error: "Hatolik!!!",
 
@@ -1365,6 +1428,7 @@ export default {
     yes_close: "Xa, yopilsin",
     yes_agree: "Xa, amalga oshirilsin",
     yes_clone: "Xa, ko'paytirilsin",
+    yesPure: "Xa",
     no: "",
     deleted: "O'chirildi!",
     text_cancel_contract: "Shartnomani rostdan bekor qilmoqchimisiz?",
