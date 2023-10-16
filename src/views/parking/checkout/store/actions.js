@@ -10,7 +10,7 @@ export default {
       const { payments_details } = data;
 
       if (data.status === "sold") {
-        state.apartments = data.apartments.map((apm) => {
+        state.apartments = data.parkings.map((apm) => {
           const discount = apm.discounts[0];
 
           return {
@@ -47,11 +47,27 @@ export default {
         return;
       }
 
-      state.apartments = data.apartments.map((apartment) => {
+      state.apartments = data.parkings.map((apartment) => {
         const discount =
           apartment.discounts.find((d) => {
             return d.id === data["payments_details"].discount.id;
           }) ?? apartment.discounts[0];
+
+        let images = [];
+        if (apartment.upload) {
+          images = [apartment.upload.path];
+        }
+
+        const plan = {
+          id: apartment.id,
+          area: 1,
+          balcony: false,
+          balcony_area: 0,
+          images,
+        }
+
+        const price = apartment.price;
+        const price_m2 = apartment.price;
 
         return {
           status: data.status,
@@ -60,15 +76,16 @@ export default {
           order_uuid: data.id,
           uuid: apartment.id,
           ...apartment,
-          price_m2: 1, // new
+          plan,
+          price_m2, // new
           calc: {
             ...state.schema.calc,
             first_payment_date: data.first_payment_date,
             payment_date: data.payment_date,
-            price: apartment.price,
+            price,
             // price_m2: apartment.price_m2,
-            price_m2: 1,
-            plan: apartment.plan,
+            price_m2,
+            plan,
             month: payments_details.month,
             contract_number: data.contract_number,
             contract_date: data.contract_date,
@@ -77,9 +94,9 @@ export default {
             prepay: discount.prepay,
 
             other: {
-              starting_price: apartment.price,
+              starting_price: price,
               // price_m2: apartment.price_m2,
-              price_m2: 1,
+              price_m2,
             },
           },
           edit: state.schema.edit,
@@ -88,7 +105,7 @@ export default {
       });
 
       dispatch("changeFirstAttempt", {
-        apmId: data.apartments[0].id,
+        apmId: data.parkings[0].id,
         firstAttempt: true,
       });
 
