@@ -258,7 +258,10 @@ export default {
             <router-link
               :to="{ name: item.action }"
               :class="
-                $route.name === item.action ? 'active-link' : 'inactive-link'
+                $route.name === item.action ||
+                $route.meta.parent === item.action
+                  ? 'active-link'
+                  : 'inactive-link'
               "
             >
               <!--                    <div class="menu__img"></div>-->
@@ -266,7 +269,8 @@ export default {
               <x-icon
                 :name="item.icon"
                 :color="
-                  $route.name === item.action
+                  $route.name === item.action ||
+                  $route.meta.parent === item.action
                     ? 'var(--white)'
                     : 'var(--gray-400)'
                 "
