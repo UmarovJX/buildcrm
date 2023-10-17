@@ -56,6 +56,19 @@ class V3Service extends Core {
     findAll: (b) => this.post("reports/findAll", b),
     findAllByUser: (b) => this.post("reports/findAllByUser", b),
   };
+
+  botObjects = {
+    create: (b) => this.post("bot-object/create", b),
+    fetchObjects: (b) => this.post("bot-object/index", b),
+    update: (b) => this.post("bot-object/update", b),
+    remove: (b) => this.post("bot-object/remove", b),
+  };
+  botPages = {
+    create: (b) => this.post("bot-page/create", b),
+    fetchPages: (b) => this.post("bot-page/index", b),
+    update: (b) => this.post("bot-page/update", b),
+    remove: (b) => this.post("bot-page/remove", b),
+  };
 }
 
 export const v3ServiceApi = new V3Service();

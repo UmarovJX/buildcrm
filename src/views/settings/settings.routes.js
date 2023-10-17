@@ -18,6 +18,7 @@ export default [
         component: () => import("@/views/settings/views/SettingsCountries.vue"),
         meta: {
           requiresAuth: "settings.client_countries",
+          parent: "settings",
         },
       },
       {
@@ -26,6 +27,7 @@ export default [
         component: () => import("@/views/settings/views/SettingsHolders.vue"),
         meta: {
           requiresAuth: "settings.holders",
+          parent: "settings",
         },
       },
       {
@@ -34,6 +36,7 @@ export default [
         component: () => import("@/views/settings/views/SettingsStatuses.vue"),
         meta: {
           requiresAuth: "settings.statuses",
+          parent: "settings",
         },
       },
       {
@@ -42,6 +45,7 @@ export default [
         component: () => import("@/views/settings/views/SettingsLanguages.vue"),
         meta: {
           requiresAuth: "settings.languages",
+          parent: "settings",
         },
       },
       {
@@ -51,6 +55,7 @@ export default [
           import("@/views/settings/views/SettingsTranslations.vue"),
         meta: {
           requiresAuth: "settings.translations",
+          parent: "settings",
         },
       },
     ],

@@ -287,6 +287,10 @@ export default {
       </div>
 
       <div class="phones-section">
+        <div class="client__details_info_card mr-5">
+          <label for="fax">{{ $t("oked") }}</label>
+          <b-form-input disabled :value="cAttrs.oked" id="fax" />
+        </div>
         <div v-if="client.phones.length" class="client__details_info_card mr-5">
           <label for="phone">{{ $t("phone") }}</label>
           <b-form-input

@@ -51,11 +51,12 @@ export default {
     };
   },
   mounted() {
-    this.calc.month = 12; // this.apartment?.object?.credit_month;
+    this.calc.month = +this.discount.installment_month || 1; // this.apartment?.object?.credit_month;
     this.upHillForPrint();
   },
   watch: {
     discount() {
+      this.calc.month = +this.discount.installment_month || 1; // this.apartment?.object?.credit_month;
       this.upHillForPrint();
     },
   },

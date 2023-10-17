@@ -17,6 +17,11 @@ export default {
       december: "Декабрь",
     },
   },
+  bot: {
+    title: "Бот",
+    pages: "Страницы",
+    objects: "Объекты",
+  },
   pdf: {
     manager: "Менеджер по продажам",
     creation_date: "Дата создания информационного листа",

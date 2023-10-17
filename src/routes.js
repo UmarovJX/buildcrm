@@ -662,6 +662,7 @@ const routes = [
       },
 
       ...settingsRoutes,
+      ...botRoutes,
 
       {
         /* 404 PAGE */
@@ -686,6 +687,7 @@ let user = null;
 import Permission from "@/permission";
 import ChooseApartments from "@/views/objects/FastPlan/ChooseApartments.vue";
 import settingsRoutes from "@/views/settings/settings.routes";
+import botRoutes from "@/views/bot/bot.routes";
 import { isBoolean } from "@/util/inspect";
 
 router.beforeEach(async (to, from, next) => {
