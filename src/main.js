@@ -82,7 +82,7 @@ Vue.use(Toasted, {
 });
 
 Vue.use(VueYandexMetrika, {
-  id: 86876647,
+  id: 95343388,
   router,
   env: process.env.NODE_ENV,
   options: {

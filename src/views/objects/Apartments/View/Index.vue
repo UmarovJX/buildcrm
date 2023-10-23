@@ -96,9 +96,9 @@ export default {
     },
     tabChange(current, prev) {
       if (current && !prev) {
-        this.$router.push({ name: "apartment-view-comment" });
+        this.$router.replace({ name: "apartment-view-comment" });
       } else {
-        this.$router.push({ name: "apartment-view" });
+        this.$router.replace({ name: "apartment-view" });
       }
     },
   },
@@ -110,15 +110,7 @@ export default {
     <app-header>
       <template #header-breadcrumb>
         <div class="header-navigation d-flex align-items-center">
-          <div
-            class="go__back"
-            @click="
-              $router.push({
-                name: 'apartments',
-                params: { object: $route.params.object },
-              })
-            "
-          >
+          <div class="go__back" @click="$router.go(-1)">
             <base-arrow-left :width="32" :height="32"></base-arrow-left>
           </div>
           <div class="breadcrumb__content">

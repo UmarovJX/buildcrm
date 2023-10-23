@@ -119,6 +119,7 @@ export default {
       finishLoading && this.setRouteQuery();
     },
     currentTab(val) {
+      this.clearFilter();
       this.$emit("current-tab", val);
     },
     form: {
@@ -132,10 +133,24 @@ export default {
 
   async created() {
     this.initSelectedApartments();
+    const query = this.$route.query;
+    for (const val of [
+      "floors",
+      "buildings",
+      "area",
+      "blocks",
+      "number",
+      "rooms",
+    ]) {
+      if (query[val]) {
+        if (Array.isArray(query[val])) this.form[val] = query[val];
+        else this.form[val] = [query[val]];
+      }
+    }
   },
 
   methods: {
-    filterDebounce(debounceDuration = 500) {
+    filterDebounce(debounceDuration = 1000) {
       if (this.timeoutId !== null) {
         clearTimeout(this.timeoutId);
       }
@@ -153,6 +168,17 @@ export default {
       let output = "";
       for (let i = 0; i < selectedArray.length; i++) {
         output += selectedArray[i][outputBy] + ",";
+      }
+      if (output.slice(-1) === ",") {
+        output = output.slice(0, -1);
+      }
+      return output;
+    },
+    blockOutput(arr, outputBy = "name") {
+      let output = "";
+      for (let i = 0; i < arr.length; i++) {
+        const b = this.filterFields.blocks.find((el) => el.id == arr[i]);
+        output += b[outputBy] + ",";
       }
       if (output.slice(-1) === ",") {
         output = output.slice(0, -1);
@@ -194,7 +220,9 @@ export default {
       const params = this.$route.params;
       const statusQuery = this.query.status;
       const currentTab = this.query.currentTab;
-      let routeQuery = values;
+      let routeQuery = { ...values };
+      routeQuery.limit = this.query.limit;
+      routeQuery.page = 1;
       if (statusQuery) {
         routeQuery.status = statusQuery;
       }
@@ -267,7 +295,6 @@ export default {
         const value = filterQuery["number"];
         const isQueryPrimitive =
           typeof value === "number" || typeof value === "string";
-        // console.log(isQueryPrimitive, 'isQueryPrimitive');
 
         if (isQueryPrimitive) {
           this.defaultApartments = [value];
@@ -282,9 +309,15 @@ export default {
     },
     clearFilter() {
       this.form = clearObjectProperties(this.form);
+      this.clearButton = false;
+
       this.clearApartments();
       this.$emit("clear-status");
-      const query = {};
+      const query = {
+        limit: this.query.limit,
+        page: 1,
+        currentTab: this.query.currentTab,
+      };
       this.$router.push({
         query,
       });
@@ -334,80 +367,6 @@ export default {
           </template>
         </base-form-tag-input>
       </div>
-
-      <!--Здания-->
-      <b-dropdown left v-if="filterFields.buildings">
-        <template
-          v-if="form.buildings && form.buildings.length"
-          #button-content
-        >
-          <div class="input-block">
-            <span class="input-label">{{ $t("object.sort.building") }}</span>
-            <p class="input-text">
-              {{ formatSelectPlaceholder(buildingsRender) }}
-            </p>
-          </div>
-        </template>
-        <template v-else #button-content>
-          <p class="default-label">
-            {{ $t("object.sort.building") }}
-          </p>
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="form.buildings"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
-            >
-              <b-form-checkbox
-                v-for="option in filterFields.buildings"
-                :key="option.name"
-                :value="option.id"
-              >
-                {{ option.name }}
-              </b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-
-      <!--   Комнат    -->
-      <b-dropdown left v-if="filterFields.rooms">
-        <template v-if="form.rooms && form.rooms.length" #button-content>
-          <div class="input-block">
-            <span class="input-label">{{ $t("object.sort.flat") }}</span>
-            <p class="input-text">
-              {{ formatSelectPlaceholder(form.rooms) }}
-            </p>
-          </div>
-        </template>
-        <template v-else #button-content>
-          <p class="default-label">
-            {{ $t("object.sort.flat") }}
-          </p>
-        </template>
-        <b-dropdown-text href="#">
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="form.rooms"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
-            >
-              <b-form-checkbox
-                v-for="option in filterFields.rooms"
-                :key="option"
-                :value="option"
-              >
-                {{ option }}
-              </b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-dropdown-text>
-      </b-dropdown>
-
       <!--  Этаж    -->
       <b-dropdown left v-if="filterFields.floors">
         <template v-if="form.floors && form.floors.length" #button-content>
@@ -452,7 +411,7 @@ export default {
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.block") }}</span>
             <p class="input-text">
-              {{ selectOutput(form.blocks) }}
+              {{ blockOutput(form.blocks) }}
             </p>
           </div>
         </template>
@@ -488,9 +447,46 @@ export default {
           </b-form-group>
         </b-dropdown-text>
       </b-dropdown>
+      <!--Здания-->
+      <b-dropdown left v-if="filterFields.buildings">
+        <template
+          v-if="form.buildings && form.buildings.length"
+          #button-content
+        >
+          <div class="input-block">
+            <span class="input-label">{{ $t("object.sort.building") }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(buildingsRender) }}
+            </p>
+          </div>
+        </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t("object.sort.building") }}
+          </p>
+        </template>
+        <b-dropdown-text href="#">
+          <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="checkbox-group-2"
+              v-model="form.buildings"
+              :aria-describedby="ariaDescribedby"
+              name="flavour-2"
+            >
+              <b-form-checkbox
+                v-for="option in filterFields.buildings"
+                :key="option.name"
+                :value="option.id"
+              >
+                {{ option.name }}
+              </b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-dropdown-text>
+      </b-dropdown>
 
       <!--   Жилая площадь    -->
-      <b-dropdown v-show="sortBar" left v-if="filterFields.area">
+      <b-dropdown left v-if="filterFields.area">
         <template v-if="form.area && form.area.length" #button-content>
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.area") }}</span>
@@ -524,13 +520,44 @@ export default {
         </b-dropdown-text>
       </b-dropdown>
 
+      <!--   Комнат    -->
+      <b-dropdown left v-if="filterFields.rooms">
+        <template v-if="form.rooms && form.rooms.length" #button-content>
+          <div class="input-block">
+            <span class="input-label">{{ $t("object.sort.flat") }}</span>
+            <p class="input-text">
+              {{ formatSelectPlaceholder(form.rooms) }}
+            </p>
+          </div>
+        </template>
+        <template v-else #button-content>
+          <p class="default-label">
+            {{ $t("object.sort.flat") }}
+          </p>
+        </template>
+        <b-dropdown-text href="#">
+          <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="checkbox-group-2"
+              v-model="form.rooms"
+              :aria-describedby="ariaDescribedby"
+              name="flavour-2"
+            >
+              <b-form-checkbox
+                v-for="option in filterFields.rooms"
+                :key="option"
+                :value="option"
+              >
+                {{ option }}
+              </b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+        </b-dropdown-text>
+      </b-dropdown>
+
       <!--  Сум  От / До  -->
-      <div v-show="sortBar && !isParkingTable" class="filter__apartment__price">
-        <!--        <b-form-select-->
-        <!--            v-model="currency"-->
-        <!--            :options="currencyOptions"-->
-        <!--            class="inline price__currency"-->
-        <!--        />-->
+      <!-- <div v-show="sortBar && !isParkingTable" class="filter__apartment__price">
+
         <x-form-select
           :label="false"
           v-model="currency"
@@ -560,10 +587,10 @@ export default {
           :placeholder="`${$t('to')}`"
           class="filter__price"
         ></base-numeric-input>
-      </div>
+      </div> -->
 
       <!--  Area from / to  -->
-      <div v-show="sortBar && !isParkingTable" class="filter__apartment__price">
+      <!-- <div v-show="sortBar && !isParkingTable" class="filter__apartment__price">
         <div class="filter-value">
           <span>m<sup>2</sup></span>
         </div>
@@ -581,16 +608,16 @@ export default {
           :permission-change="true"
           @input="form.area_to = $event"
         ></base-price-input>
-      </div>
+      </div> -->
 
-      <div
+      <!-- <div
         v-if="!isParkingTable"
         class="detail-button"
         @click="openBar"
         :class="sortBar ? 'active' : ''"
       >
         <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'" />
-      </div>
+      </div> -->
 
       <base-button
         v-if="clearButton"

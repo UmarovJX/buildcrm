@@ -9,6 +9,9 @@ class Branches extends Core {
   getBranchesList() {
     return this.get("branches");
   }
+  getDeletedBranchesList() {
+    return this.get("branches/trashed");
+  }
 
   addNewBranch(body) {
     return this.post("branches", body);

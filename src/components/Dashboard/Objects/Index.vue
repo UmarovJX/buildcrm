@@ -297,7 +297,11 @@ export default {
           <router-link
             class="card-body"
             :event="apartmentsViewPermission ? 'click' : ''"
-            :to="{ name: 'apartments', params: { object: object.id } }"
+            :to="{
+              name: 'apartments',
+              params: { object: object.id },
+              query: { limit: 20, page: 1 },
+            }"
           >
             <div class="card-top">
               <div class="card-top__content">

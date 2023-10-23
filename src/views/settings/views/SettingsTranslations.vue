@@ -9,10 +9,12 @@ import SettingsCreateTranslation from "@/views/settings/components/SettingsCreat
 import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
 import { XFormInput } from "@/components/ui-components/form-input";
 import SettingsUpdateTranslationTags from "@/views/settings/components/SettingsUpdateTranslationTags.vue";
+import BaseButton from "@/components/Reusable/BaseButton";
 
 export default {
   name: "SettingsStatuses",
   components: {
+    BaseButton,
     SettingsUpdateTranslationTags,
     XFormInput,
     BaseTabPicker,
@@ -24,7 +26,9 @@ export default {
   },
   data() {
     return {
+      showByValue: 100,
       allLangs: [],
+      pagination: {},
       currentLang: "",
       upsertType: "create",
       showCreateModal: false,
@@ -81,6 +85,37 @@ export default {
     this.fetchItems();
   },
   methods: {
+    saveAllTranslations() {
+      this.table.loading = true;
+      api.translationsV3
+        .bulkSave({ items: this.table.items })
+        .then(() => {
+          this.$toasted.show(`All translations were succesfully updated`, {
+            type: "success",
+          });
+          this.fetchItems();
+        })
+        .catch(() => {
+          this.toastedWithErrorCode(
+            "Somewthing went wrong on updating records"
+          );
+          this.table.loading = false;
+        });
+    },
+    changeFetchLimit() {
+      const query = {
+        ...this.query,
+        page: this.query.page || 1,
+      };
+      const limit = this.showByValue;
+      this.pushRouter({ ...query, limit });
+    },
+
+    changeCurrentPage(page) {
+      const currentPage = this.query.page;
+      if (page === currentPage) return;
+      this.replaceRouter({ ...this.query, page });
+    },
     setTab(e) {
       this.currentLang = e;
     },
@@ -99,7 +134,7 @@ export default {
         this.startLoading();
         const response = await api.translationsV3.getTranslations({
           page: 1,
-          limit: 100,
+          limit: this.showByValue,
         });
         this.table.items = response.data.result.map((el) => ({
           ...el,
@@ -287,12 +322,62 @@ export default {
               @click="saveTranslation(index)"
               class="bg-violet-600"
             >
-              <x-icon name="edit" class="color-white" />
+              <x-icon name="save" class="color-white" />
             </x-circular-background>
           </div>
         </div>
       </template>
     </b-table>
+    <div class="pagination__vue">
+      <!--   Pagination   -->
+      <vue-paginate
+        v-if="!table.loading && pagination.total"
+        :page-count="pagination.total"
+        :value="pagination.current"
+        :container-class="'container'"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :next-class="'page-item'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-link-class="'page-link'"
+        @change-page="changeCurrentPage"
+      >
+        <template #next-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-right-icon />
+          </span>
+        </template>
+
+        <template #prev-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-left-icon />
+          </span>
+        </template>
+      </vue-paginate>
+
+      <!--  Show By Select    -->
+      <!-- <div class="show__by">
+        <x-form-select
+          :label="false"
+          :options="showByOptions"
+          v-model="showByValue"
+          @change="limitChanged"
+        >
+          <template #output-prefix>
+            <span class="show-by-description">
+              {{ $t("contracts.show_by") }}:
+            </span>
+          </template>
+        </x-form-select>
+      </div> -->
+      <base-button
+        class="float-right"
+        design="violet-gradient px-5"
+        :text="$t('Save All')"
+        @click="saveAllTranslations"
+      />
+    </div>
     <settings-update-translation-tags
       v-if="showEditTagModal"
       :edit-item="editTags"

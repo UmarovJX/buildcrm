@@ -7,10 +7,12 @@ import TemplatesPermission from "@/permission/templates";
 import AppHeader from "@/components/Header/AppHeader";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePlusIcon from "@/components/icons/BasePlusIcon";
+import BaseTabPicker from "@/components/Reusable/BaseTabPicker";
 
 export default {
   name: "BranchesPage",
   components: {
+    BaseTabPicker,
     AppHeader,
     BaseButton,
     BasePlusIcon,
@@ -18,6 +20,8 @@ export default {
   },
   data() {
     return {
+      tabOptions: ["active", "deleted"],
+      currentTab: "active",
       createPermission: BranchesPermission.getBranchesCreatePermission(),
       editPermission: BranchesPermission.getBranchesEditPermission(),
       deletePermission: BranchesPermission.getBranchesDeletePermission(),
@@ -68,14 +72,25 @@ export default {
   async created() {
     await this.getBranchesList();
   },
+  watch: {
+    currentTab() {
+      this.getBranchesList();
+    },
+  },
   methods: {
+    changeTab(e) {
+      this.currentTab = e;
+    },
     createBranch() {
       this.$router.push({ name: "create-branch" });
     },
     async getBranchesList() {
       this.loading = true;
-      await api.branches
-        .getBranchesList()
+      await api.branches[
+        this.currentTab === "active"
+          ? "getBranchesList"
+          : "getDeletedBranchesList"
+      ]()
         .then((response) => {
           this.branches = response.data;
         })
@@ -89,26 +104,25 @@ export default {
     deleteBranch(id) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
+        text: this.$t(
+          this.currentTab === "active"
+            ? "sweetAlert.want_delete"
+            : "sweetAlert.want_undelete"
+        ),
         icon: "warning",
         showCancelButton: true,
         cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
+        confirmButtonText: this.$t("sweetAlert.yesPure"),
       }).then((result) => {
         if (result.value) {
           this.loading = true;
           api.branches
             .deleteBranch(id)
             .then(() => {
-              const findIndex = this.branches.findIndex(
-                (branch) => branch.id === id
-              );
-              this.branches.splice(findIndex, 1);
+              this.getBranchesList();
             })
             .catch((error) => {
               this.toastedWithErrorCode(error);
-            })
-            .finally(() => {
               this.loading = false;
             });
         }
@@ -142,6 +156,12 @@ export default {
       </template>
     </app-header>
 
+    <base-tab-picker
+      :options="tabOptions"
+      :current="currentTab"
+      noAll
+      @tab-selected="changeTab"
+    ></base-tab-picker>
     <div>
       <!--            <branches-bread-crumbs/>-->
 
@@ -241,8 +261,11 @@ export default {
                     <span>
                       <i class="far fa-trash"></i>
                     </span>
-                    <span class="ml-2">
+                    <span class="ml-2" v-if="currentTab === 'active'">
                       {{ $t("delete") }}
+                    </span>
+                    <span class="ml-2" v-else>
+                      {{ $t("undelete") }}
                     </span>
                   </button>
                 </div>

@@ -309,6 +309,8 @@ export default {
           this.filtered = true;
         }
         if (this.currentTab !== "ParkingTable") {
+          this.chessApartments = this.filterItems(query, this.chessApartments);
+
           this.getAllApartment();
         }
       },
@@ -319,6 +321,7 @@ export default {
       this.fetchFilterFields();
       this.$router.push({
         query: {
+          ...this.query,
           page: 1,
           currentTab: value,
         },
@@ -329,6 +332,7 @@ export default {
       } else {
         this.statusList = this.apartmentStatusList;
       }
+      this.fetchNecessary();
     },
   },
   mounted() {
@@ -364,6 +368,7 @@ export default {
   methods: {
     async fetchParkingStatusList() {
       const { object } = this.$route.params;
+      this.statusCounter = {};
 
       const res = await api.objectsV2.fetchObjectParkingsStatusList(object);
       const response = res.data;
@@ -607,6 +612,13 @@ export default {
     changeTab({ name }) {
       this.currentTab = name;
       const { object } = this.$route.params;
+      this.$router.replace({
+        query: {
+          currentTab: this.currentTab,
+          page: 1,
+          limit: this.query.limit,
+        },
+      });
       sessionStorageSetItem(`object_history_of_tab_${object}`, this.currentTab);
     },
     clearStatus() {

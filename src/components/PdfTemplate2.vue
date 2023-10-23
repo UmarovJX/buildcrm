@@ -14,7 +14,7 @@ function addMonths(n) {
 }
 
 export default {
-  name: "PdfTemplate",
+  name: "PdfTemplate2",
   components: {
     VueHtml2pdf,
   },
@@ -108,6 +108,9 @@ export default {
       }
       if (disc.prepay === 100) return this.apartment.price;
       else return disc.amount * this.apartment.plan?.area;
+    },
+    firstPayment(disc) {
+      return (this.discountedPrice(disc) * disc.prepay) / 100;
     },
     fullDiscount(disc) {
       if (disc.id === this.printCalc.discount.id) {
@@ -203,12 +206,14 @@ export default {
       >
         <div>
           <div class="row d-flex align-items-center justify-content-between">
-            <div class="header">
+            <div class="header mt-1 mb-1">
               <div class="object">{{ apartment.object.name }}</div>
               <div class="apartment_data">
                 {{ $t("common.apartment") }} {{ apartment.number }}
               </div>
-              <div class="detail">{{ apartment.object.address }}</div>
+              <div class="detail">
+                {{ apartment.object.address }}
+              </div>
               <div class="detail">
                 {{ $t("pdf.creation_date") }}:
                 {{ new Date().toLocaleDateString("ru") }}
@@ -332,153 +337,249 @@ export default {
           </div>
         </div>
       </div>
-      <div class="html2pdf__page-break pdf-page">
-        <div class="row d-flex align-items-center justify-content-between">
-          <div class="header">
-            <div class="object">{{ apartment.object.name }}</div>
-            <div class="apartment_data">
-              {{ $t("common.apartment") }} {{ apartment.number }}
+      <div
+        class="html2pdf__page-break pdf-page d-flex align-items-center justify-content-between"
+      >
+        <div>
+          <div class="row d-flex align-items-center justify-content-between">
+            <div class="header mt-1 mb-1">
+              <div class="object">{{ apartment.object.name }}</div>
+              <div class="apartment_data">
+                {{ $t("common.apartment") }} {{ apartment.number }}
+              </div>
+              <div class="detail">{{ apartment.object.address }}</div>
+              <div class="detail">
+                {{ $t("pdf.creation_date") }}:
+                {{ new Date().toLocaleDateString("ru") }}
+              </div>
+              <div class="detail">
+                {{ $t("pdf.manager") }} <b>{{ managerName }}</b>
+              </div>
+              <div class="detail">
+                {{ $t("common.phone") }}
+                <b>{{ formatPhoneNumber(me.user?.phone) }}</b>
+              </div>
             </div>
-            <div class="detail">{{ apartment.object.address }}</div>
-            <div class="detail">
-              {{ $t("pdf.creation_date") }}:
-              {{ new Date().toLocaleDateString("ru") }}
-            </div>
-            <div class="detail">
-              {{ $t("pdf.manager") }} <b>{{ managerName }}</b>
-            </div>
-            <div class="detail">
-              {{ $t("common.phone") }}
-              <b>{{ formatPhoneNumber(me.user?.phone) }}</b>
-            </div>
+            <img
+              class="header_logo"
+              :src="require('@/assets/img/xonsaroy_sariq.png')"
+              alt=""
+            />
           </div>
-          <img
-            class="header_logo"
-            :src="require('@/assets/img/xonsaroy_sariq.png')"
-            alt=""
-          />
-        </div>
-        <!-- TABLE HEADER -->
-        <div class="row">
-          <div class="section_title pb-2">
-            {{ $t("pdf.variants") }}
-          </div>
-        </div>
-        <div class="row fix borderb pb-2 align-items-center">
-          <div class="col-2 table_title">{{ $t("pdf.table.variants") }}</div>
-          <div class="col-2 table_title">{{ $t("pdf.table.m2_price") }}</div>
-          <div class="col-2 table_title">{{ $t("pdf.table.full_price") }}</div>
-          <div class="col-2 table_title">
-            {{ $t("pdf.table.discount_percent") }}
-          </div>
-          <div class="col-2 table_title">
-            {{ $t("pdf.table.discount_amount") }}
-          </div>
-          <div class="col-2 table_title">
-            {{ $t("pdf.table.discounted_price") }}
-          </div>
-        </div>
-        <!-- DISCOUNTS -->
-        <div
-          class="row fix borderb pt-2 pb-2"
-          v-for="(disc, i) in apartment.discounts"
-          :key="disc.id + '_' + i"
-        >
-          <div class="col-2 table_value table_black">
-            {{ $t("pdf.table.variant_value", { val: disc.prepay }) }}
-          </div>
-          <div class="col-2 table_value table_black">
-            {{ pricePrettier(m2Price(disc), 2) }}
-          </div>
-          <div class="col-2 table_value table_green">
-            {{ pricePrettier(apartment.prices?.price, 2) }}
-          </div>
-          <div class="col-2 table_value table_purple">
-            {{
-              pricePrettier(
-                (fullDiscount(disc) / apartment.prices.price) * 100,
-                2
-              )
-            }}
-            %
-          </div>
-          <div class="col-2 table_value table_black">
-            {{ pricePrettier(fullDiscount(disc), 2) }}
-          </div>
-          <div class="col-2 table_value table_purple">
-            {{ pricePrettier(discountedPrice(disc), 2) }}
-          </div>
-        </div>
-
-        <div class="mb-4"></div>
-        <!-- DISCOUNT DETAILS -->
-        <div class="" v-for="disc in filteredDiscounts" :key="disc.id">
+          <!-- TABLE HEADER -->
           <div class="row">
             <div class="section_title pb-2">
-              {{
-                $t("pdf.monthly_title", {
-                  month: printCalc.month,
-                  prepay: disc.prepay,
-                })
-              }}
+              {{ $t("pdf.variants") }}
             </div>
           </div>
-          <div class="row borderb pb-1 align-items-center">
-            <div class="col-6 detail_title">
-              {{ $t("pdf.detail.title_type") }}
+          <div class="row fix borderb pb-2 align-items-center">
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_title'
+              "
+            >
+              {{ $t("pdf.table.variants") }}
             </div>
-            <div class="col-6 detail_title">
-              {{ $t("pdf.detail.title_value") }}
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_title'
+              "
+              v-if="!apartment?.object.is_hide_m2_price"
+            >
+              {{ $t("pdf.table.m2_price") }}
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_title'
+              "
+            >
+              {{ $t("pdf.table.full_price") }}
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_title'
+              "
+            >
+              {{ $t("pdf.table.first") }}
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_title'
+              "
+            >
+              {{ $t("pdf.table.discount_percent") }}
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_title'
+              "
+            >
+              {{ $t("pdf.table.discount_amount") }}
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_title'
+              "
+            >
+              {{ $t("pdf.table.discounted_price") }}
             </div>
           </div>
-          <div class="row borderb pt-1 pb-1">
-            <div class="col-6 detail_row">
-              {{ $t("pdf.detail.first") }}
+          <!-- DISCOUNTS -->
+          <div
+            class="row fix borderb pt-2 pb-2"
+            v-for="(disc, i) in apartment.discounts"
+            :key="disc.id + '_' + i"
+          >
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_value table_black'
+              "
+            >
+              {{ $t("pdf.table.variant_value", { val: disc.prepay }) }}
             </div>
-            <div class="col-6 detail_row">
-              {{
-                pricePrettier((discountedPrice(disc) * disc.prepay) / 100, 2)
-              }}
-              {{ $t("ye") }}
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_value table_black'
+              "
+              v-if="!apartment?.object.is_hide_m2_price"
+            >
+              {{ pricePrettier(m2Price(disc), 2) }}
             </div>
-          </div>
-          <div class="row pt-1 pb-1">
-            <div class="col-6 detail_row">
-              {{ $t("pdf.detail.monthly") }}
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_value table_green'
+              "
+            >
+              {{ pricePrettier(apartment.prices?.price, 2) }}
             </div>
-            <div class="col-6 detail_row">
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_value table_black'
+              "
+            >
+              {{ pricePrettier(firstPayment(disc), 2) }}
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_value table_purple'
+              "
+            >
               {{
                 pricePrettier(
-                  (discountedPrice(disc) * (100 - disc.prepay)) /
-                    100 /
-                    printCalc.month,
+                  (fullDiscount(disc) / apartment.prices.price) * 100,
                   2
                 )
               }}
-              {{ $t("ye") }}
+              %
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_value table_black'
+              "
+            >
+              {{ pricePrettier(fullDiscount(disc), 2) }}
+            </div>
+            <div
+              :class="
+                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
+                ' table_value table_purple'
+              "
+            >
+              {{ pricePrettier(discountedPrice(disc), 2) }}
             </div>
           </div>
-          <div class="row last_payment mt-1 mb-3">
-            {{ $t("pdf.detail.last") }}:
-            {{ $t("common.month." + lastPaymentMonth.toLowerCase()) }},
-            {{ lastPaymentYear }}
+
+          <div class="mb-4"></div>
+          <div style="padding-left: 15px; padding-right: 15px">
+            <!-- DISCOUNT DETAILS -->
+            <div class="" v-for="disc in filteredDiscounts" :key="disc.id">
+              <div class="row">
+                <div class="section_title pb-2">
+                  {{
+                    $t("pdf.monthly_title", {
+                      month: printCalc.month,
+                      prepay: disc.prepay,
+                    })
+                  }}
+                </div>
+              </div>
+              <div class="row borderb pb-1 align-items-center">
+                <div class="col-6 detail_title">
+                  {{ $t("pdf.detail.title_type") }}
+                </div>
+                <div class="col-6 detail_title">
+                  {{ $t("pdf.detail.title_value") }}
+                </div>
+              </div>
+              <div class="row borderb pt-1 pb-1">
+                <div class="col-6 detail_row">
+                  {{ $t("pdf.detail.first") }}
+                </div>
+                <div class="col-6 detail_row">
+                  {{
+                    pricePrettier(
+                      (discountedPrice(disc) * disc.prepay) / 100,
+                      2
+                    )
+                  }}
+                  {{ $t("ye") }}
+                </div>
+              </div>
+              <div class="row pt-1 pb-1">
+                <div class="col-6 detail_row">
+                  {{ $t("pdf.detail.monthly") }}
+                </div>
+                <div class="col-6 detail_row">
+                  {{
+                    pricePrettier(
+                      (discountedPrice(disc) * (100 - disc.prepay)) /
+                        100 /
+                        printCalc.month,
+                      2
+                    )
+                  }}
+                  {{ $t("ye") }}
+                </div>
+              </div>
+              <div class="row last_payment mt-1 mb-3">
+                {{ $t("pdf.detail.last") }}:
+                {{ $t("common.month." + lastPaymentMonth.toLowerCase()) }},
+                {{ lastPaymentYear }}
+              </div>
+            </div>
+          </div>
+
+          <div class="row disclaimer mb-2">
+            {{ $t("pdf.disclaimer1") }}
+            <br />
+            {{ $t("pdf.disclaimer2") }}
           </div>
         </div>
-        <div class="row disclaimer mb-2">
-          {{ $t("pdf.disclaimer1") }}
-          <br />
-          {{ $t("pdf.disclaimer2") }}
-        </div>
-        <div class="footer pt-4">
-          <div class="qr">
-            <img :src="require('@/assets/icons/qr_web.svg')" alt="" />
-            <img :src="require('@/assets/icons/qr_instagram.svg')" alt="" />
-            <img :src="require('@/assets/icons/qr_telegram.svg')" alt="" />
-          </div>
-          <div>
-            <div class="section_title">OOO “Xonsaroy”</div>
-            <div class="address">
-              г. Ташкент, Юнусобадский район, улица Янги Шахар, дом 64а
+        <div class="w-100">
+          <div class="footer pt-4">
+            <div class="qr">
+              <img :src="require('@/assets/icons/qr_web.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_instagram.svg')" alt="" />
+              <img :src="require('@/assets/icons/qr_telegram.svg')" alt="" />
+            </div>
+            <div>
+              <div class="section_title">OOO “Xonsaroy”</div>
+              <div class="address">
+                г. Ташкент, Юнусобадский район, улица Янги Шахар, дом 64а
+              </div>
             </div>
           </div>
         </div>
@@ -488,6 +589,12 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.col-1_6 {
+  width: 16.6666%;
+}
+.col-1_7 {
+  width: 14.2857%;
+}
 .address {
   color: #828183;
   font-family: Ruberoid;
@@ -545,7 +652,7 @@ export default {
 .table_title {
   color: #999;
   font-family: Ruberoid;
-  font-size: 16px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -573,13 +680,14 @@ export default {
 
 .header {
   font-family: Ruberoid;
+  max-width: 450px;
   &_logo {
     width: 250px;
     height: auto;
   }
   .object {
     font-family: Ruberoid;
-    margin-top: 20px;
+    margin-top: 15px;
     color: #6e28d7;
     font-size: 32px;
     font-style: normal;
@@ -610,7 +718,7 @@ export default {
   font-family: Ruberoid;
   display: flex;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 15px;
   padding: 0;
   .title {
     font-family: Ruberoid;
@@ -619,7 +727,6 @@ export default {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    margin-bottom: 5px;
   }
   .value {
     font-family: Ruberoid;
@@ -646,7 +753,7 @@ export default {
 }
 .pdf-page {
   position: relative;
-  padding: 60px;
+  padding: 50px;
   padding-top: 0;
   height: 1120px;
   background-color: #fff;

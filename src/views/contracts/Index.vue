@@ -128,6 +128,7 @@ export default {
       : false;
 
     return {
+      timeout: null,
       hasAdminRole,
       showByValue,
       searchValue,
@@ -224,10 +225,12 @@ export default {
               .reduce((acc, app) => acc + "," + app.number, "")
               .slice(1);
           },
+          thStyle: "width: 110px",
         },
         {
           key: "status",
           label: this.$t("contracts.table.status"),
+          thStyle: "width: 90px",
         },
         {
           key: "payments.transaction_price",
@@ -238,6 +241,12 @@ export default {
           key: "object",
           label: this.$t("contracts.table.object"),
           formatter: (object) => object?.name,
+        },
+        {
+          key: "created",
+          label: this.$t("roles.manager"),
+          formatter: (created) =>
+            created?.first_name + " " + created?.last_name,
         },
         {
           key: "date",
@@ -420,7 +429,7 @@ export default {
         delete query.page;
       }
 
-      this.replaceRouter({ ...query, status });
+      this.replaceRouter({ limit: this.showByValue, ...query, status });
     },
     changeCurrentPage(page) {
       const currentPage = this.query.page;
@@ -491,32 +500,31 @@ export default {
       return query;
     },
     async fetchContractList() {
-      const query = this.createQuery();
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+      this.timeout = setTimeout(async () => {
+        this.timeout = null;
+        const query = this.createQuery();
 
-      this.showLoading = true;
-      this.tableItems = [];
+        this.showLoading = true;
+        this.tableItems = [];
 
-      this.fetchStatusesOfCounts();
-      await api.contractV2
-        .fetchContractsList(query)
-        .then((response) => {
-          this.tableItems = response.data.items;
+        this.fetchStatusesOfCounts();
+        await api.contractV2
+          .fetchContractsList(query)
+          .then((response) => {
+            if (!this.timeout) {
+              this.tableItems = response.data.items;
 
-          // .forEach((dataItem) => {
-          //   this.tableItems.push(
-          //     dataItem
-          //     // Object.assign(dataItem, {
-          //     //   _rowVariant: dataItem.archived ? "warning" : "light",
-          //     // })
-          //   );
-          // });
-
-          this.pagination = response.data.pagination;
-          this.showByValue = response.data.pagination.perPage;
-        })
-        .finally(() => {
-          this.showLoading = false;
-        });
+              this.pagination = response.data.pagination;
+              this.showByValue = response.data.pagination.perPage;
+            }
+          })
+          .finally(() => {
+            this.showLoading = false;
+          });
+      }, 500);
     },
     searchQueryFilter(searchQuery) {
       // eslint-disable-next-line no-prototype-builtins
@@ -832,9 +840,9 @@ export default {
   justify-content: center;
   //justify-content: flex-start;
   align-items: center;
-  min-width: 11rem;
+  min-width: 9rem;
   border-radius: 2rem;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 0.5rem;
 
   &.sold {
     background-color: var(--green-100);
