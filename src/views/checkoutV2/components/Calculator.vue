@@ -201,6 +201,8 @@ export default {
         other,
       } = this.getCalc();
 
+
+
       this.paymentDetails = {
         monthly_payment_period,
         discount: discount.id,
@@ -301,6 +303,16 @@ export default {
       }
     },
     updateDiscountMtd({ total_discount, discount_per_m2 }) {
+
+      this.updateApartment({
+        idx: this.findApmIdx(this.apartment.id),
+        edit: {
+          first_attempt:false,
+          first_payment:false,
+          initial_price: false,
+        },
+      });
+
       this.updateDiscount({
         apmId: this.apartment.id,
         discount_per_m2,
