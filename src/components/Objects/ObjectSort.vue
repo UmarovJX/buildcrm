@@ -8,13 +8,14 @@ import BaseChessPlan from "@/components/icons/BaseChessPlan";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import { XFormSelect } from "@/components/ui-components/form-select";
-import { clearObjectProperties } from "@/util/reusable";
-import { sortInFirstRelationship } from "@/util/reusable";
-import { sessionStorageGetItem } from "@/util/storage";
-import { mapGetters } from "vuex";
+import {XFormSelect} from "@/components/ui-components/form-select";
+import {clearObjectProperties} from "@/util/reusable";
+import {sortInFirstRelationship} from "@/util/reusable";
+import {sessionStorageGetItem} from "@/util/storage";
+import {mapGetters} from "vuex";
 import ApartmentsPermission from "@/permission/apartments";
-import { XIcon } from "@/components/ui-components/material-icons";
+import {XIcon} from "@/components/ui-components/material-icons";
+import {isArray} from "@/util/inspect";
 
 export default {
   name: "ObjectSort",
@@ -48,7 +49,7 @@ export default {
   },
   emits: ["filter-values"],
   data() {
-    const { object } = this.$route.params;
+    const {object} = this.$route.params;
     const historyTab = sessionStorageGetItem(`object_history_of_tab_${object}`);
     let currentTab = {
       id: 4,
@@ -97,8 +98,8 @@ export default {
     },
     numberPlaceHolder() {
       return this.$route.query.currentTab === "ParkingTable"
-        ? this.$t("object.sort.number_parking")
-        : this.$t("object.sort.number_flat");
+          ? this.$t("object.sort.number_parking")
+          : this.$t("object.sort.number_flat");
     },
     ...mapGetters(["getPermission"]),
     query() {
@@ -107,7 +108,7 @@ export default {
     buildingsRender() {
       if (!this.filterFields.buildings) return [];
       return this.form.buildings.map(
-        (id) => this.filterFields.buildings.find((el) => el.id === id).name
+          (id) => this.filterFields.buildings.find((el) => el.id === id).name
       );
     },
     apartmentsFilterPermission() {
@@ -132,6 +133,7 @@ export default {
 
   async created() {
     this.initSelectedApartments();
+    this.setRouteQueries()
   },
 
   methods: {
@@ -143,10 +145,58 @@ export default {
         this.filterApartments();
       }, debounceDuration);
     },
+    setRouteQueries() {
+      const query = this.$route.query
+      const f = Object.assign({},this.form)
+      // status: null,
+      //     price_m2: 0,
+      //     price_from: 0,
+      //     price_to: 0,
+      //     area_from: 0,
+      //     area_to: 0,
+      //     blocks: [],
+      //     area: [],
+      //     rooms: [],
+      //     floors: [],
+      //     number: [],
+      //     buildings: [],
+      const stringTypes = ['status']
+      const numberTypes = ['price_m2','price_from','price_to','area_from','area_to']
+      const arrayTypes = ['blocks', 'area', 'rooms', 'floors', 'number', 'buildings']
+      for (let [p, v] of Object.entries(this.form)) {
+        if(query.hasOwnProperty(p)){
+          if(numberTypes.includes(p) && parseFloat(query[p])){
+            f[p] = parseFloat(query[p])
+          }
+
+          if(stringTypes.includes(p)){
+            f[p] = query[p]
+          }
+
+          if(arrayTypes.includes(p)){
+            if(isArray(query[p])){
+              if(p === 'number'){
+                f[p] = query[p]
+              } else {
+                f[p] = query[p].map(p => parseFloat(p))
+              }
+            } else {
+              if(p === 'number'){
+                f[p] = [query[p]]
+              } else {
+                f[p] = [parseFloat(query[p])]
+              }
+            }
+          }
+        }
+      }
+
+      this.form = f
+    },
     selectOutput(array, outputBy = "name") {
       const selectedArray = array.map((arr) => {
         const fullContext = this.filterFields.blocks.find(
-          (block) => block.id === arr
+            (block) => block.id === arr
         );
         return fullContext ?? arr;
       });
@@ -223,30 +273,30 @@ export default {
           if (property === "blocks") {
             const values = filterQuery[property];
             const isQueryPrimitive =
-              typeof values === "number" || typeof values === "string";
+                typeof values === "number" || typeof values === "string";
             if (isQueryPrimitive) {
               loopPackage[property] = this.filterFields.blocks
-                .filter((block) => {
-                  return block.id.toString() === values.toString();
-                })
-                .map((block) => block.id);
+                  .filter((block) => {
+                    return block.id.toString() === values.toString();
+                  })
+                  .map((block) => block.id);
             } else {
               loopPackage[property] = this.filterFields.blocks
-                .filter((block) => {
-                  return (
-                    values.findIndex((value) => value === block.id.toString()) >
-                    -1
-                  );
-                })
-                .map((block) => block.id);
+                  .filter((block) => {
+                    return (
+                        values.findIndex((value) => value === block.id.toString()) >
+                        -1
+                    );
+                  })
+                  .map((block) => block.id);
             }
           } else {
             const queryValue = filterQuery[property];
             const formValue = this.form[property];
             const isQueryPrimitive =
-              typeof queryValue === "number" || typeof queryValue === "string";
+                typeof queryValue === "number" || typeof queryValue === "string";
             const isArray =
-              Array.isArray(formValue) && typeof formValue === "object";
+                Array.isArray(formValue) && typeof formValue === "object";
             if (isArray && isQueryPrimitive) {
               loopPackage[property] = [queryValue];
             } else {
@@ -257,7 +307,7 @@ export default {
       });
 
       if (Object.keys(loopPackage).length) {
-        this.form = { ...this.form, ...loopPackage };
+        this.form = {...this.form, ...loopPackage};
       }
     },
     initSelectedApartments() {
@@ -266,7 +316,7 @@ export default {
       if (hasApartments) {
         const value = filterQuery["number"];
         const isQueryPrimitive =
-          typeof value === "number" || typeof value === "string";
+            typeof value === "number" || typeof value === "string";
         // console.log(isQueryPrimitive, 'isQueryPrimitive');
 
         if (isQueryPrimitive) {
@@ -302,33 +352,33 @@ export default {
       <!--   Номер квартиры   -->
       <div class="filter__inputs-input">
         <base-form-tag-input
-          ref="base-form-tag-input"
-          :default-tags="defaultApartments"
-          :placeholder="numberPlaceHolder"
-          @set-tags="setApartmentNumbers"
+            ref="base-form-tag-input"
+            :default-tags="defaultApartments"
+            :placeholder="numberPlaceHolder"
+            @set-tags="setApartmentNumbers"
         >
           <template #delete-content>
             <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="10" cy="10" r="10" fill="#9CA3AF" />
+              <circle cx="10" cy="10" r="10" fill="#9CA3AF"/>
               <path
-                d="M13.125 6.875L6.875 13.125"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                  d="M13.125 6.875L6.875 13.125"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
               />
               <path
-                d="M6.875 6.875L13.125 13.125"
-                stroke="white"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                  d="M6.875 6.875L13.125 13.125"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
               />
             </svg>
           </template>
@@ -338,8 +388,8 @@ export default {
       <!--Здания-->
       <b-dropdown left v-if="filterFields.buildings">
         <template
-          v-if="form.buildings && form.buildings.length"
-          #button-content
+            v-if="form.buildings && form.buildings.length"
+            #button-content
         >
           <div class="input-block">
             <span class="input-label">{{ $t("object.sort.building") }}</span>
@@ -356,15 +406,15 @@ export default {
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="form.buildings"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
+                id="checkbox-group-2"
+                v-model="form.buildings"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
             >
               <b-form-checkbox
-                v-for="option in filterFields.buildings"
-                :key="option.name"
-                :value="option.id"
+                  v-for="option in filterFields.buildings"
+                  :key="option.name"
+                  :value="option.id"
               >
                 {{ option.name }}
               </b-form-checkbox>
@@ -391,15 +441,15 @@ export default {
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="form.rooms"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
+                id="checkbox-group-2"
+                v-model="form.rooms"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
             >
               <b-form-checkbox
-                v-for="option in filterFields.rooms"
-                :key="option"
-                :value="option"
+                  v-for="option in filterFields.rooms"
+                  :key="option"
+                  :value="option"
               >
                 {{ option }}
               </b-form-checkbox>
@@ -429,15 +479,15 @@ export default {
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="form.floors"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
+                id="checkbox-group-2"
+                v-model="form.floors"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
             >
               <b-form-checkbox
-                v-for="option in filterFields.floors"
-                :key="option"
-                :value="option"
+                  v-for="option in filterFields.floors"
+                  :key="option"
+                  :value="option"
               >
                 {{ option }}
               </b-form-checkbox>
@@ -465,15 +515,15 @@ export default {
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="form.blocks"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
+                id="checkbox-group-2"
+                v-model="form.blocks"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
             >
               <b-form-checkbox
-                v-for="option in filterFields.blocks"
-                :key="option.id"
-                :value="option.id"
+                  v-for="option in filterFields.blocks"
+                  :key="option.id"
+                  :value="option.id"
               >
                 <div class="w-100 d-flex justify-content-between">
                   <div>
@@ -507,15 +557,15 @@ export default {
         <b-dropdown-text href="#">
           <b-form-group v-slot="{ ariaDescribedby }">
             <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="form.area"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
+                id="checkbox-group-2"
+                v-model="form.area"
+                :aria-describedby="ariaDescribedby"
+                name="flavour-2"
             >
               <b-form-checkbox
-                v-for="option in filterFields.area"
-                :key="option"
-                :value="option"
+                  v-for="option in filterFields.area"
+                  :key="option"
+                  :value="option"
               >
                 {{ option }} m<sup>2</sup>
               </b-form-checkbox>
@@ -532,33 +582,33 @@ export default {
         <!--            class="inline price__currency"-->
         <!--        />-->
         <x-form-select
-          :label="false"
-          v-model="currency"
-          :options="currencyOptions"
+            :label="false"
+            v-model="currency"
+            :options="currencyOptions"
         />
 
         <base-numeric-input
-          v-model.number="form.price_from"
-          :currency="` `"
-          :precision="2"
-          :minus="false"
-          :value="null"
-          currency-symbol-position="suffix"
-          separator="space"
-          :placeholder="`${$t('from')}`"
-          class="filter__price"
+            v-model.number="form.price_from"
+            :currency="` `"
+            :precision="2"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            :placeholder="`${$t('from')}`"
+            class="filter__price"
         ></base-numeric-input>
 
         <base-numeric-input
-          v-model.number="form.price_to"
-          :currency="` `"
-          :precision="2"
-          :minus="false"
-          :value="null"
-          currency-symbol-position="suffix"
-          separator="space"
-          :placeholder="`${$t('to')}`"
-          class="filter__price"
+            v-model.number="form.price_to"
+            :currency="` `"
+            :precision="2"
+            :minus="false"
+            :value="null"
+            currency-symbol-position="suffix"
+            separator="space"
+            :placeholder="`${$t('to')}`"
+            class="filter__price"
         ></base-numeric-input>
       </div>
 
@@ -568,56 +618,56 @@ export default {
           <span>m<sup>2</sup></span>
         </div>
         <base-price-input
-          class="filter__price"
-          :value="form.area_from"
-          :placeholder="`${$t('from')}`"
-          :permission-change="true"
-          @input="form.area_from = $event"
+            class="filter__price"
+            :value="form.area_from"
+            :placeholder="`${$t('from')}`"
+            :permission-change="true"
+            @input="form.area_from = $event"
         ></base-price-input>
         <base-price-input
-          class="filter__price"
-          :value="form.area_to"
-          :placeholder="`${$t('to')}`"
-          :permission-change="true"
-          @input="form.area_to = $event"
+            class="filter__price"
+            :value="form.area_to"
+            :placeholder="`${$t('to')}`"
+            :permission-change="true"
+            @input="form.area_to = $event"
         ></base-price-input>
       </div>
 
       <div
-        v-if="!isParkingTable"
-        class="detail-button"
-        @click="openBar"
-        :class="sortBar ? 'active' : ''"
+          v-if="!isParkingTable"
+          class="detail-button"
+          @click="openBar"
+          :class="sortBar ? 'active' : ''"
       >
-        <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'" />
+        <base-details-icon :fill="sortBar ? '#fff' : '#7C3AED'"/>
       </div>
 
       <base-button
-        v-if="clearButton"
-        @click="clearFilter"
-        :text="$t('clear')"
-        design="violet-gradient"
+          v-if="clearButton"
+          @click="clearFilter"
+          :text="$t('clear')"
+          design="violet-gradient"
       />
     </div>
 
     <div class="chess-tab">
       <base-button
-        v-for="tab in tabs"
-        :key="tab.id"
-        :class="{ active: currentTab.name === tab.name }"
-        @click="changeProduct(tab)"
-        :text="tab.title"
+          v-for="tab in tabs"
+          :key="tab.id"
+          :class="{ active: currentTab.name === tab.name }"
+          @click="changeProduct(tab)"
+          :text="tab.title"
       >
         <template #left-icon>
           <x-icon
-            v-if="tab.buttonIcon === 'local_parking'"
-            name="local_parking"
-            :class="[currentTab.name === tab.name ? '' : 'color-gray-400']"
+              v-if="tab.buttonIcon === 'local_parking'"
+              name="local_parking"
+              :class="[currentTab.name === tab.name ? '' : 'color-gray-400']"
           ></x-icon>
           <component
-            v-else
-            :is="tab.buttonIcon"
-            :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"
+              v-else
+              :is="tab.buttonIcon"
+              :fill="currentTab.name === tab.name ? '#F9FAFB' : undefined"
           />
         </template>
       </base-button>

@@ -319,6 +319,7 @@ export default {
       this.fetchFilterFields();
       this.$router.push({
         query: {
+          ...this.$route.query,
           page: 1,
           currentTab: value,
         },
@@ -326,8 +327,13 @@ export default {
 
       if (this.currentTab == "ParkingTable") {
         this.fetchParkingStatusList();
-      } else {
+      }
+      else {
         this.statusList = this.apartmentStatusList;
+      }
+
+      if(this.currentTab === 'ObjectTable'){
+        this.fetchNecessary()
       }
     },
   },
