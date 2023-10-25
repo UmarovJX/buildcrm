@@ -37,6 +37,11 @@ function pms(name, uuid) {
         refer: "delete",
         parent: "users",
       },
+      {
+        label: "Unblock_Users",
+        refer: "unblock",
+        parent: "users",
+      },
     ],
   };
 }

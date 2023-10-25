@@ -166,39 +166,15 @@ export default {
       permission: "getPermission",
     }),
     statuses() {
+      if (keys(this.counts).length) {
+        return this.filterTabList.map((filterTab) => {
+          return {
+            ...filterTab,
+            counts: this.counts[filterTab.name.split(".")[1]],
+          };
+        });
+      }
       return this.filterTabList;
-      // if (keys(this.counts).length) {
-      //   return this.filterTabList.map((filterTab) => {
-      //   eslint-disable-next-line no-prototype-builtins
-      //     const findIndex = this.counts.hasOwnProperty(filterTab.status);
-      //     if (findIndex) {
-      //       return {
-      //         ...filterTab,
-      //         counts: this.counts[filterTab.status],
-      //       };
-      //     } else if (filterTab.status === "trashed") {
-      //       return {
-      //         ...filterTab,
-      //         counts: this.counts.deleted,
-      //       };
-      //     }
-
-      //     const sum = () => {
-      //       let init = 0;
-      //       for (let [, value] of Object.entries(this.counts)) {
-      //         init += value;
-      //       }
-      //       return init;
-      //     };
-
-      //     if (filterTab.status === "") {
-      //       return {
-      //         ...filterTab,
-      //         counts: sum(),
-      //       };
-      //     }
-      //   });
-      // }
     },
     tableFields() {
       let fields = [
@@ -307,6 +283,14 @@ export default {
   },
   created() {
     Promise.allSettled([this.fetchContractList()]);
+
+    this.currentTab = this.query.is_archive
+      ? "is_archive"
+      : this.query.is_trashed
+      ? "is_trashed"
+      : this.query.is_reorder
+      ? "is_reorder"
+      : "";
   },
   methods: {
     formattingPhone: (phone) => phonePrettier(phone),
@@ -432,8 +416,11 @@ export default {
       ["is_reorder", "is_archive", "is_trashed"].forEach((el) => {
         delete query[el];
       });
-
-      this.replaceRouter({ limit: this.showByValue, ...query, [status]: 1 });
+      const newQuery = { limit: this.showByValue, ...query };
+      if (status) {
+        newQuery[status] = 1;
+      }
+      this.replaceRouter(newQuery);
     },
     changeCurrentPage(page) {
       const currentPage = this.query.page;
@@ -482,10 +469,12 @@ export default {
         "blocks",
         "floors",
         "branch",
-        "manager",
+        "created_by",
         "contract_number",
         "apartment_number",
         "type",
+        "created_by",
+        "statuses",
       ];
 
       propArrayList.forEach((prop) => {

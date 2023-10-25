@@ -64,4 +64,7 @@ export default class ApartmentsPermission extends Permission {
   static getApartmentCommentsDeletePermission() {
     return this.getApartmentsPermission("comments.delete");
   }
+  static getApartmentHidePricePermission() {
+    return this.getApartmentsPermission("hidePrice");
+  }
 }

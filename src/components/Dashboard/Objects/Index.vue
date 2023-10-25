@@ -15,7 +15,7 @@ import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import HidePriceButton from "@/components/Reusable/HidePriceButton.vue";
 
-import { useHideM2 } from "@/composables/useHideM2";
+import { useShowPrice } from "@/composables/useShowPrice";
 
 export default {
   name: "Objects",
@@ -174,7 +174,7 @@ export default {
     },
   },
   setup() {
-    return useHideM2();
+    return useShowPrice();
   },
 };
 </script>

@@ -3,7 +3,7 @@ import VueHtml2pdf from "vue-html2pdf";
 import { formatToPrice, phonePrettier } from "@/util/reusable";
 import { hasOwnProperty, keys } from "@/util/object";
 import { mapGetters } from "vuex";
-import { useHideM2 } from "@/composables/useHideM2";
+import { useShowPrice } from "@/composables/useShowPrice";
 
 function addMonths(n) {
   const date = new Date();
@@ -21,7 +21,7 @@ export default {
     VueHtml2pdf,
   },
   setup() {
-    return useHideM2();
+    return useShowPrice();
   },
   props: {
     apartment: {

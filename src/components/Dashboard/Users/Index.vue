@@ -494,11 +494,20 @@ export default {
           </span>
         </template>
         <template #cell(blocked_at)="data">
-          <div class="relative" v-if="data.item.blocked_at">
-            <x-circular-background class="bg-red-500">
-              <x-icon name="lock" class="color-white" size="20" />
+          <div class="d-flex" v-if="data.item.blocked_at">
+            <x-circular-background
+              class="bg-red-500 p-1"
+              :id="'blocked_' + data.item.id"
+            >
+              <x-icon name="lock" class="color-white" size="18" />
             </x-circular-background>
-            <div class="block-info">Blocked at {{ data.item.blocked_at }}</div>
+            <b-tooltip
+              :target="'blocked_' + data.item.id"
+              triggers="hover"
+              variant="secondary"
+            >
+              Заблокирован <br />{{ data.item.blocked_at }}
+            </b-tooltip>
           </div>
         </template>
 
@@ -560,7 +569,7 @@ export default {
                   class="dropdown-item dropdown-item--inside"
                   v-b-modal.modal-edit
                 >
-                  <i class="fas fa-pen"></i>
+                  <i class="far fa-pen"></i>
                   {{ $t("edit") }}
                 </b-button>
                 <b-button
@@ -569,8 +578,8 @@ export default {
                   class="dropdown-item dropdown-item--inside"
                   v-b-modal.modal-edit
                 >
-                  <i class="fas fa-pen"></i>
-                  {{ $t("edit") }}
+                  <i class="far fa-unlock"></i>
+                  Разблокировать 
                 </b-button>
 
                 <b-button

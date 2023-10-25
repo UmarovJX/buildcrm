@@ -5,12 +5,12 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import { XFormSelect } from "@/components/ui-components/form-select";
 import { mapGetters } from "vuex";
 import CheckoutPermission from "@/permission/checkout";
-import { useHideM2 } from "@/composables/useHideM2";
+import { useShowPrice } from "@/composables/useShowPrice";
 
 export default {
   name: "Calculator",
   setup() {
-    return useHideM2();
+    return useShowPrice();
   },
   components: {
     // BaseSelect,

@@ -224,7 +224,11 @@ export default {
                 name: el.name[this.$i18n.locale],
               }));
               this.objectOptions = objects;
-              this.statusOptions = statuses;
+              this.statusOptions = statuses.map((el) => ({
+                value: el.type,
+                name: el.name[this.$i18n.locale],
+              }));
+
               this.branchOption = branches;
               this.managerOptions = managers.map((m) => {
                 let text = "";
@@ -285,6 +289,7 @@ export default {
         object_id,
       });
       sortingQuery.page = 1;
+      console.log(sortingQuery);
       this.$emit("search-by-filter", sortInFirstRelationship(sortingQuery));
       this.$refs["filter-modal"].hide();
     },
@@ -396,11 +401,12 @@ export default {
           "branch",
           "created_by",
           "type",
-          "status",
+          "statuses",
         ];
         if (arrayProps.includes(property)) {
           if (isArray(query)) {
-            if (property === "type") this.filter[property] = query;
+            if (property === "type" || property === "statuses")
+              this.filter[property] = query;
             else this.filter[property] = query.map((p) => parseInt(p));
           } else if (isString(query)) {
             this.filter[property] = [parseInt(query)];
@@ -464,8 +470,19 @@ export default {
 
         <div class="modal__content-main">
           <div class="filter__inputs">
+            <!-- STATUS -->
+            <x-form-select
+              class="mt-4"
+              value-field="value"
+              text-field="name"
+              v-model="filter.statuses"
+              :multiple="true"
+              :options="statusOptions"
+              :placeholder="$t('contracts.table.status')"
+            />
             <x-form-select
               value-field="id"
+              class="mt-3"
               text-field="name"
               getter="full"
               v-model="filter.object_id"
@@ -666,17 +683,6 @@ export default {
               :placeholder="$t('contracts.client_type')"
               :multilingual="true"
             />
-            <!-- STATUS -->
-            <x-form-select
-              class="mt-4"
-              value-field="id"
-              text-field="name"
-              getter="full"
-              v-model="filter.statuses"
-              :multiple="true"
-              :options="statusOptions"
-              :placeholder="$t('contracts.table.status')"
-            />
 
             <div class="mt-3">
               <base-checkbox
@@ -716,7 +722,7 @@ export default {
             <base-button
               @click="clearFilter"
               :fixed="true"
-              design="transparent"
+              design="release-info"
               :text="`${$t('contracts.reset_filter')}`"
             />
             <base-button
@@ -862,8 +868,20 @@ export default {
 
 .modal__footer {
   display: flex;
+  align-items: end;
+  width: 590px;
+  height: 200px;
   column-gap: 0.5rem;
   padding-bottom: 3rem;
+  position: fixed;
+  bottom: 0px;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 1) 40%,
+    rgba(255, 255, 255, 0.8) 80%,
+    rgba(255, 255, 255, 0)
+  );
 }
 
 ::v-deep .filter__inputs-tag {
