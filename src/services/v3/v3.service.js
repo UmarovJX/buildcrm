@@ -55,6 +55,7 @@ class V3Service extends Core {
     cancel: (b) => this.post("reports/cancel", b),
     findAll: (b) => this.post("reports/findAll", b),
     findAllByUser: (b) => this.post("reports/findAllByUser", b),
+    fetchTypeOptions: () => this.post("reports/types"),
   };
 
   botObjects = {

@@ -233,6 +233,8 @@ export default {
                 <x-form-select
                   class="w-100"
                   id="selectType"
+                  value-field="value"
+                  text-field="text"
                   v-model="reportForm.type"
                   :options="typeOptions"
                   :placeholder="`${$t('select_type')}`"

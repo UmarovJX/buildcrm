@@ -17,12 +17,15 @@ import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import { XFormSelect } from "@/components/ui-components/form-select";
 import { XFormSelectOption } from "@/components/ui-components/form-select";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
+import { XIcon } from "@/components/ui-components/material-icons";
+
 import { hasOwnProperty } from "@/util/object";
 import { isNull } from "@/util/inspect";
 export default {
   name: "UsersPage",
   components: {
     XFormSelectOption,
+    XIcon,
     XCircularBackground,
     XFormSelect,
     BasePlusIcon,
@@ -70,6 +73,7 @@ export default {
       createPermission: UsersPermission.getUsersCreatePermission(),
       editPermission: UsersPermission.getUsersEditPermission(),
       deletePermission: UsersPermission.getUsersDeletePermission(),
+      unblockPermission: UsersPermission.getUsersUnblockPermission(),
       searchValue,
       showByOptions,
       filterTabList,
@@ -87,6 +91,10 @@ export default {
         {
           key: "id",
           label: "id",
+        },
+        {
+          key: "blocked_at",
+          label: "",
         },
         {
           key: "first_name",
@@ -305,6 +313,25 @@ export default {
 
       return value;
     },
+    unblockUser(user) {
+      this.loading = true;
+      api.userV2
+        .removeUserBlock(user.id)
+        .then((res) => {
+          this.toasted(res.data.message, "success");
+          this.fetchUsers();
+          this.loading = false;
+        })
+        .catch((error) => {
+          this.loading = false;
+          if (!error.response) {
+            this.toasted("Error: Network Error", "error");
+          } else {
+            this.toasted(error.response.data.error, "error");
+          }
+          this.loading = false;
+        });
+    },
 
     deleteUser(user) {
       this.$swal({
@@ -466,6 +493,14 @@ export default {
             {{ data.item.id }}
           </span>
         </template>
+        <template #cell(blocked_at)="data">
+          <div class="relative" v-if="data.item.blocked_at">
+            <x-circular-background class="bg-red-500">
+              <x-icon name="lock" class="color-white" size="20" />
+            </x-circular-background>
+            <div class="block-info">Blocked at {{ data.item.blocked_at }}</div>
+          </div>
+        </template>
 
         <template #cell(first_name)="data">
           {{ data.item.first_name }} {{ data.item.last_name }}
@@ -522,6 +557,15 @@ export default {
                 <b-button
                   v-if="editPermission"
                   @click="clickManager(data)"
+                  class="dropdown-item dropdown-item--inside"
+                  v-b-modal.modal-edit
+                >
+                  <i class="fas fa-pen"></i>
+                  {{ $t("edit") }}
+                </b-button>
+                <b-button
+                  v-if="unblockPermission && data.item.blocked_at"
+                  @click="unblockUser(data.item)"
                   class="dropdown-item dropdown-item--inside"
                   v-b-modal.modal-edit
                 >
@@ -601,6 +645,18 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/utils/pagination";
+.relative {
+  position: relative;
+}
+.block-info {
+  border-radius: 10%;
+  width: fit-content;
+  position: absolute;
+  top: 100%;
+  display: none;
+  background-color: var(--blue-100);
+  padding: 0.3rem 2rem;
+}
 
 .search__content {
   margin-top: 0;

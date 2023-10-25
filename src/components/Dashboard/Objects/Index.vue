@@ -12,10 +12,16 @@ import AppHeader from "@/components/Header/AppHeader";
 import Permission from "@/permission";
 import BaseButton from "@/components/Reusable/BaseButton.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
+import { XCircularBackground } from "@/components/ui-components/circular-background";
+import HidePriceButton from "@/components/Reusable/HidePriceButton.vue";
+
+import { useHideM2 } from "@/composables/useHideM2";
 
 export default {
   name: "Objects",
   components: {
+    HidePriceButton,
+    XCircularBackground,
     XIcon,
     BaseButton,
     AppHeader,
@@ -167,6 +173,9 @@ export default {
       });
     },
   },
+  setup() {
+    return useHideM2();
+  },
 };
 </script>
 
@@ -177,6 +186,7 @@ export default {
         {{ $t("objects.title") }}
       </template>
       <template #header-actions>
+        <hide-price-button></hide-price-button>
         <base-button
           @click="setArchive"
           :text="archivedButtonText"
@@ -319,7 +329,7 @@ export default {
                   {{ object.apartments_count }}
                   {{ $t("objects.view_apartments") }}
                 </p>
-                <p class="card-block__subtitle price">
+                <p class="card-block__subtitle price" v-if="showPrice">
                   {{
                     $t("price_from", {
                       msg: priceFormat(object.apartment_price),
@@ -332,7 +342,7 @@ export default {
                   {{ object.floors_count }} {{ $t("objects.view_level") }}
                 </p>
                 <p
-                  v-if="!object.is_hide_m2_price"
+                  v-if="!object.is_hide_m2_price && showPrice"
                   class="card-block__subtitle"
                   v-html="
                     $t('price_from_m2', {
@@ -346,6 +356,7 @@ export default {
                   {{ object.parking_count }} {{ $t("objects.view_parkings") }}
                 </p>
                 <p
+                  v-if="showPrice"
                   class="card-block__subtitle"
                   v-html="
                     $t('price_from', {

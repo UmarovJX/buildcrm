@@ -3,6 +3,8 @@ import VueHtml2pdf from "vue-html2pdf";
 import { formatToPrice, phonePrettier } from "@/util/reusable";
 import { hasOwnProperty, keys } from "@/util/object";
 import { mapGetters } from "vuex";
+import { useHideM2 } from "@/composables/useHideM2";
+
 function addMonths(n) {
   const date = new Date();
   const m = date.getMonth();
@@ -17,6 +19,9 @@ export default {
   name: "PdfTemplate2",
   components: {
     VueHtml2pdf,
+  },
+  setup() {
+    return useHideM2();
   },
   props: {
     apartment: {
@@ -372,60 +377,68 @@ export default {
               {{ $t("pdf.variants") }}
             </div>
           </div>
+
           <div class="row fix borderb pb-2 align-items-center">
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_title'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_title'
               "
             >
               {{ $t("pdf.table.variants") }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_title'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_title'
               "
-              v-if="!apartment?.object.is_hide_m2_price"
+              v-if="!apartment?.object.is_hide_m2_price && showPrice"
             >
               {{ $t("pdf.table.m2_price") }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_title'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_title'
               "
             >
               {{ $t("pdf.table.full_price") }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_title'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_title'
               "
             >
               {{ $t("pdf.table.first") }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_title'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_title'
               "
             >
               {{ $t("pdf.table.discount_percent") }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_title'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_title'
               "
             >
               {{ $t("pdf.table.discount_amount") }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_title'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_title'
               "
             >
               {{ $t("pdf.table.discounted_price") }}
@@ -439,41 +452,46 @@ export default {
           >
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_value table_black'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_value table_black'
               "
             >
               {{ $t("pdf.table.variant_value", { val: disc.prepay }) }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_value table_black'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_value table_black'
               "
-              v-if="!apartment?.object.is_hide_m2_price"
+              v-if="!apartment?.object.is_hide_m2_price && showPrice"
             >
               {{ pricePrettier(m2Price(disc), 2) }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_value table_green'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_value table_green'
               "
             >
               {{ pricePrettier(apartment.prices?.price, 2) }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_value table_black'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_value table_black'
               "
             >
               {{ pricePrettier(firstPayment(disc), 2) }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_value table_purple'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_value table_purple'
               "
             >
               {{
@@ -486,16 +504,18 @@ export default {
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_value table_black'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_value table_black'
               "
             >
               {{ pricePrettier(fullDiscount(disc), 2) }}
             </div>
             <div
               :class="
-                (!apartment?.object.is_hide_m2_price ? 'col-1_7' : 'col-1_6') +
-                ' table_value table_purple'
+                (!apartment?.object.is_hide_m2_price && showPrice
+                  ? 'col-1_7'
+                  : 'col-1_6') + ' table_value table_purple'
               "
             >
               {{ pricePrettier(discountedPrice(disc), 2) }}
@@ -590,10 +610,14 @@ export default {
 
 <style lang="scss" scoped>
 .col-1_6 {
-  width: 16.6666%;
+  width: 15.8%;
+}
+.col-1_6:not(:first-child),
+.col-1_7:not(:first-child) {
+  margin-left: 1%;
 }
 .col-1_7 {
-  width: 14.2857%;
+  width: 13.4%;
 }
 .address {
   color: #828183;
@@ -614,7 +638,7 @@ export default {
 .disclaimer {
   color: #828183;
   font-family: Ruberoid;
-  font-size: 10px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: 160%; /* 16px */
@@ -622,7 +646,7 @@ export default {
 .last_payment {
   color: #222;
   font-family: Ruberoid;
-  font-size: 16px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -630,7 +654,7 @@ export default {
 .detail_row {
   color: #222;
   font-family: Ruberoid;
-  font-size: 10px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -639,7 +663,7 @@ export default {
 .detail_title {
   color: #999;
   font-family: Ruberoid;
-  font-size: 20px;
+  font-size: 15px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -746,7 +770,7 @@ export default {
 .section_title {
   color: #6e28d7;
   font-family: Ruberoid;
-  font-size: 20px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 700;
   line-height: 120%; /* 19.2px */

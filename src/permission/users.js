@@ -31,4 +31,7 @@ export default class UsersPermission extends Permission {
   static getUsersDeletePermission() {
     return this.getUsersPermission("delete");
   }
+  static getUsersUnblockPermission() {
+    return this.getUsersPermission("unblock");
+  }
 }

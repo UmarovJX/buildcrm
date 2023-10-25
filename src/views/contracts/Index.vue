@@ -1,5 +1,5 @@
 <script>
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
+import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent2";
 import SearchBarContent from "@/components/Contracts/SearchBarContent";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 // import BaseStarIcon from "@/components/icons/BaseStarIcon";
@@ -66,26 +66,26 @@ export default {
         status: "",
         counts: 0,
       },
-      {
-        name: "tab_status.booked",
-        status: "booked",
-        counts: 0,
-      },
-      {
-        name: "tab_status.sold",
-        status: "contract",
-        counts: 0,
-      },
-      {
-        name: "tab_status.on_payment",
-        status: "sold",
-        counts: 0,
-      },
-      {
-        name: "tab_status.closed",
-        status: "closed",
-        counts: 0,
-      },
+      // {
+      //   name: "tab_status.booked",
+      //   status: "booked",
+      //   counts: 0,
+      // },
+      // {
+      //   name: "tab_status.sold",
+      //   status: "contract",
+      //   counts: 0,
+      // },
+      // {
+      //   name: "tab_status.on_payment",
+      //   status: "sold",
+      //   counts: 0,
+      // },
+      // {
+      //   name: "tab_status.closed",
+      //   status: "closed",
+      //   counts: 0,
+      // },
       // {
       //   name: "tab_status.is_expired",
       //   status: "is_expired",
@@ -93,12 +93,12 @@ export default {
       // },
       {
         name: "tab_status.reorder",
-        status: "reorder",
+        status: "is_reorder",
         counts: 0,
       },
       {
         name: "tab_status.deleted",
-        status: "trashed",
+        status: "is_trashed",
         counts: 0,
       },
     ];
@@ -108,7 +108,7 @@ export default {
     if (hasAdminRole) {
       filterTabList.splice(filterTabList.length - 1, 0, {
         name: "tab_status.archived",
-        status: "archived",
+        status: "is_archive",
         counts: 0,
       });
     }
@@ -128,6 +128,7 @@ export default {
       : false;
 
     return {
+      currentTab: "",
       timeout: null,
       hasAdminRole,
       showByValue,
@@ -165,40 +166,39 @@ export default {
       permission: "getPermission",
     }),
     statuses() {
-      if (keys(this.counts).length) {
-        return this.filterTabList.map((filterTab) => {
-          // eslint-disable-next-line no-prototype-builtins
-          const findIndex = this.counts.hasOwnProperty(filterTab.status);
-          if (findIndex) {
-            return {
-              ...filterTab,
-              counts: this.counts[filterTab.status],
-            };
-          } else if (filterTab.status === "trashed") {
-            return {
-              ...filterTab,
-              counts: this.counts.deleted,
-            };
-          }
-
-          const sum = () => {
-            let init = 0;
-            for (let [, value] of Object.entries(this.counts)) {
-              init += value;
-            }
-            return init;
-          };
-
-          if (filterTab.status === "") {
-            return {
-              ...filterTab,
-              counts: sum(),
-            };
-          }
-        });
-      }
-
       return this.filterTabList;
+      // if (keys(this.counts).length) {
+      //   return this.filterTabList.map((filterTab) => {
+      //   eslint-disable-next-line no-prototype-builtins
+      //     const findIndex = this.counts.hasOwnProperty(filterTab.status);
+      //     if (findIndex) {
+      //       return {
+      //         ...filterTab,
+      //         counts: this.counts[filterTab.status],
+      //       };
+      //     } else if (filterTab.status === "trashed") {
+      //       return {
+      //         ...filterTab,
+      //         counts: this.counts.deleted,
+      //       };
+      //     }
+
+      //     const sum = () => {
+      //       let init = 0;
+      //       for (let [, value] of Object.entries(this.counts)) {
+      //         init += value;
+      //       }
+      //       return init;
+      //     };
+
+      //     if (filterTab.status === "") {
+      //       return {
+      //         ...filterTab,
+      //         counts: sum(),
+      //       };
+      //     }
+      //   });
+      // }
     },
     tableFields() {
       let fields = [
@@ -423,13 +423,17 @@ export default {
       return "";
     },
     fetchContentByStatus(status) {
+      this.currentTab = status;
       const query = Object.assign({}, this.query);
       // eslint-disable-next-line no-prototype-builtins
       if (query.hasOwnProperty("page")) {
         delete query.page;
       }
+      ["is_reorder", "is_archive", "is_trashed"].forEach((el) => {
+        delete query[el];
+      });
 
-      this.replaceRouter({ limit: this.showByValue, ...query, status });
+      this.replaceRouter({ limit: this.showByValue, ...query, [status]: 1 });
     },
     changeCurrentPage(page) {
       const currentPage = this.query.page;
@@ -567,6 +571,8 @@ export default {
 
     <!--  Tabs  -->
     <base-filter-tabs-content
+      v-if="filterPermission"
+      :current="currentTab"
       :filter-tab-list="statuses"
       @get-new-content="fetchContentByStatus"
     />
@@ -574,11 +580,9 @@ export default {
     <!--  Search Content  -->
     <search-bar-content
       ref="filterModal"
-      v-if="filterPermission"
       @replace-router="searchQueryFilter"
       @search-by-filter="searchQueryFilter"
     />
-
     <!--  Table List -->
     <b-table
       sticky-header
@@ -708,7 +712,6 @@ export default {
         </div>
       </template>
     </b-table>
-
     <div v-if="!showLoading && countOfItems" class="pagination__vue">
       <!--   Pagination   -->
       <vue-paginate

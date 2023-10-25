@@ -17,12 +17,14 @@ import { XIcon } from "@/components/ui-components/material-icons";
 import ApartmentsPermission from "@/permission/apartments";
 import { isNUNEZ } from "@/util/inspect";
 import SettingsPermission from "@/permission/settings.permission";
+import HidePriceButton from "@/components/Reusable/HidePriceButton.vue";
 
 export default {
   name: "ApartmentExpressView",
 
   /* COMPONENTS */
   components: {
+    HidePriceButton,
     BaseButton,
     BasePrintIcon,
     BaseLoading,
@@ -479,6 +481,7 @@ export default {
               :title="holderTooltipTitle(sidebarApartment.holder)"
             />
           </span>
+          <hide-price-button></hide-price-button>
         </div>
 
         <div class="d-flex w-100 justify-content-end">
@@ -640,7 +643,7 @@ export default {
             @click="printApartmentInformation"
             class="print__button bg-gray-100 d-flex justify-content-center align-items-center"
           >
-            <base-loading v-if="isDownloading" :height="40"/>
+            <base-loading v-if="isDownloading" :height="40" />
             <base-print-icon v-else :square="20" fill="#4B5563" />
           </button>
           <b-tooltip target="print" triggers="hover">
