@@ -347,14 +347,14 @@ export default {
           this.setIndividualPrice({
             index,
             price_m2,
-            starting_price: fmd(price_m2 * this.apartmentArea(index)),
+            starting_price: fmd(price_m2 * this.apartmentArea(index),10),
           });
         }
       } else {
         if (this.apartment.price !== starting_price) {
           this.setIndividualPrice({
             index,
-            price_m2: fmd(starting_price / this.apartmentArea(index)),
+            price_m2: fmd(starting_price / this.apartmentArea(index),10),
             starting_price,
           });
         }

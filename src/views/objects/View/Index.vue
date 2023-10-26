@@ -325,7 +325,7 @@ export default {
         },
       });
 
-      if (this.currentTab == "ParkingTable") {
+      if (this.currentTab === "ParkingTable") {
         this.fetchParkingStatusList();
       }
       else {
@@ -357,7 +357,7 @@ export default {
       this.changeTab(this.checkedPermissionTab[0]);
     }
 
-    if (this.currentTab == "ParkingTable") {
+    if (this.currentTab === "ParkingTable") {
       this.fetchParkingStatusList();
     } else {
       this.statusList = this.apartmentStatusList;
@@ -404,16 +404,21 @@ export default {
             (_obj) => _obj.id === _b.building.id
           );
           if (idx !== -1) {
-            this.gridApartments[idx].blocks.push(_b.block);
-            return;
-          }
-        }
+            const blockIdx = this.gridApartments[idx].blocks.findIndex(block => {
+             return block.id === _b.block.id
+            })
 
-        this.gridApartments.push({
-          id: _b.building.id,
-          name: _b.building.name,
-          blocks: [_b.block],
-        });
+            if(blockIdx === -1){
+              this.gridApartments[idx].blocks.push(_b.block);
+            }
+          }
+        } else {
+          this.gridApartments.push({
+            id: _b.building.id,
+            name: _b.building.name,
+            blocks: [_b.block],
+          });
+        }
 
         if (this.hasQuery) {
           this.compareStatus(this.query);
@@ -421,6 +426,7 @@ export default {
             this.query,
             this.gridApartments
           );
+
         } else {
           this.chessApartments = this.gridApartments;
         }
