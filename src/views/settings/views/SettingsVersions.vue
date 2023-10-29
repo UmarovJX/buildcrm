@@ -1,40 +1,41 @@
 <script>
 import api from "@/services/api";
-import { v3ServiceApi } from "@/services/v3/v3.service";
-
-import Permission from "@/permission";
+import SettingsPermission from "@/permission/settings.permission";
 import { XButton } from "@/components/ui-components/button";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
-import CreateBotObject from "@/views/bot/components/CreateBotObject.vue";
+import SettingsCreateVersion from "@/views/settings/components/SettingsCreateVersion.vue";
 import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
-import { XFormInput } from "@/components/ui-components/form-input";
 
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
+
+
 export default {
-  name: "SettingsStatuses",
+  name: "SettingsVersions",
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
-    CreateBotObject,
-    XFormInput,
+
     BaseTabPicker,
     BaseLoading,
     XButton,
     XIcon,
     XCircularBackground,
+    SettingsCreateVersion,
   },
   data() {
     return {
+      showByValue: 10,
       allLangs: [],
+      pagination: {},
       currentLang: "",
       upsertType: "create",
       showCreateModal: false,
+      showEditTagModal: false,
       editStorage: {},
       editTags: {},
-      loadings: {},
       table: {
         items: [],
         pagination: {
@@ -48,29 +49,34 @@ export default {
         loading: false,
       },
       permission: {
-        create: Permission.getUserPermission("bot.create"),
-        update: Permission.getUserPermission("bot.update"),
+        view: SettingsPermission.getPermission("versions.view"),
+        create: SettingsPermission.getPermission("versions.create"),
+        edit: SettingsPermission.getPermission("versions.edit"),
+        delete: SettingsPermission.getPermission("versions.delete"),
       },
     };
   },
   computed: {
     tableFields() {
-      return [
+      const fields = [
         {
-          key: "title",
-          label: this.$t("bot.table_title"),
-          thStyle: "width: 25%",
+          key: "version",
+          label: this.$t("version"),
         },
-        {
-          key: "description",
-          label: this.$t("bot.description"),
-        },
-        {
-          key: "position",
-          label: this.$t("bot.position"),
-          thStyle: "width: 25%",
-        },
+        // {
+        //   key: "tags",
+        //   label: "tags",
+        //   thStyle: "width: 200px",
+        // },
       ];
+      if (this.permission.edit) {
+        fields.push({
+          key: "actions",
+          label: "",
+          thStyle: "width: 100px",
+        });
+      }
+      return fields;
     },
   },
   created() {
@@ -81,6 +87,20 @@ export default {
     this.fetchItems();
   },
   methods: {
+    changeFetchLimit() {
+      const query = {
+        ...this.query,
+        page: this.query.page || 1,
+      };
+      const limit = this.showByValue;
+      this.pushRouter({ ...query, limit });
+    },
+
+    changeCurrentPage(page) {
+      const currentPage = this.query.page;
+      if (page === currentPage) return;
+      this.replaceRouter({ ...this.query, page });
+    },
     setTab(e) {
       this.currentLang = e;
     },
@@ -90,17 +110,20 @@ export default {
     finishLoading() {
       this.table.loading = false;
     },
-    create() {
-      this.openCreateModal();
+    createVersion() {
+      this.setUpsertType("create");
+      this.openVersionCreationModal();
     },
     async fetchItems() {
       try {
         this.startLoading();
-        const response = await v3ServiceApi.botObjects.fetchObjects({
-          page: this.$route.query.page || 1,
-          limit: 20,
+        const response = await api.settings.getVersionList({
+          page: 1,
+          limit: this.showByValue,
         });
-        this.table.items = response.data.result;
+        this.table.items = response.data.items.map((el) => ({
+          ...el,
+        }));
         this.table.pagination = response.data.pagination;
       } catch (e) {
         this.toastedWithErrorCode(e);
@@ -108,16 +131,20 @@ export default {
         this.finishLoading();
       }
     },
-
-    openCreateModal() {
+    setUpsertType(eType) {
+      if (["create", "edit"].includes(eType)) {
+        this.upsertType = eType;
+      }
+    },
+    openVersionCreationModal() {
       this.showCreateModal = true;
     },
-    closeCreateModal() {
+    closeVersionCreationModal() {
       this.showCreateModal = false;
     },
 
-    botPageCreated() {
-      this.closeCreateModal();
+    translationCreated() {
+      this.closeVersionCreationModal();
       this.fetchItems();
     },
 
@@ -133,9 +160,7 @@ export default {
         if (result.value) {
           try {
             this.startLoading();
-            await api.translationsV3.removeTranslation({
-              id: typeId,
-            });
+            await api.settings.deleteVersion(typeId);
             await this.fetchItems();
           } catch (e) {
             this.toastedWithErrorCode(e);
@@ -145,25 +170,15 @@ export default {
         }
       });
     },
-    updateTags(item) {
-      this.editTags = item;
-      this.showEditTagModal = true;
-    },
-    async update(item) {
-      if (this.loadings[item.id]) return;
-      this.$set(this.loadings, item.id, true);
-      v3ServiceApi.botObjects
-        .update(item)
-        .then(() =>
-          this.$toasted.show(
-            `Bot Object for ID "${item.id}" succesfully updated`,
-            {
-              type: "success",
-            }
-          )
-        )
-        .catch((err) => this.toastedWithErrorCode(err))
-        .finally(() => this.$set(this.loadings, item.id, false));
+
+    async editVersion(item) {
+      try {
+        this.editStorage = item;
+        this.setUpsertType("edit");
+        this.openVersionCreationModal();
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      }
     },
   },
 };
@@ -187,9 +202,9 @@ export default {
       <x-button
         v-if="permission.create"
         variant="secondary"
-        text="Add Bot Object"
+        text="Add Version"
         :bilingual="true"
-        @click="create"
+        @click="createVersion"
       >
         <template #left-icon>
           <x-icon name="add" class="violet-600" />
@@ -223,46 +238,22 @@ export default {
         </span>
       </template>
 
-      <template #cell(title)="{ index }">
-        <div class="d-flex align-items-center">
-          <x-form-input
-            :readonly="!permission.update"
-            type="text"
-            :placeholder="$t('bot.table_title')"
-            class="w-100"
-            v-model="table.items[index].title[currentLang]"
-          />
-        </div>
-      </template>
-      <template #cell(description)="{ index }">
-        <div class="d-flex align-items-center">
-          <x-form-input
-            :readonly="!permission.update"
-            type="text"
-            :placeholder="$t('bot.description')"
-            class="w-100"
-            v-model="table.items[index].description[currentLang]"
-          />
-        </div>
-      </template>
-      <template #cell(position)="{ item, index }">
-        <div class="d-flex align-items-center">
-          <x-form-input
-            :readonly="!permission.update"
-            type="number"
-            :placeholder="$t('bot.position')"
-            class="w-100"
-            v-model="table.items[index].position"
-          />
-          <div
-            :style="loadings[item.id] ? 'opacity: 0.5' : ''"
-            title="save"
-            class="ml-1 cursor-pointer"
-          >
+      <template #cell(actions)="{ item }">
+        <div class="float-right d-flex x-gap-1 cursor-pointer">
+          <div :style="item.loading ? 'opacity: 0.5' : ''" title="save">
             <x-circular-background
-              @click="update(item)"
+              v-if="permission.delete"
+              @click="deleteItem(item.id)"
+              class="bg-red-600"
+            >
+              <x-icon name="delete" class="color-white" />
+            </x-circular-background>
+          </div>
+          <div :style="item.loading ? 'opacity: 0.5' : ''" title="save">
+            <x-circular-background
+              v-if="permission.edit"
+              @click="editVersion(item)"
               class="bg-violet-600"
-              v-if="permission.update"
             >
               <x-icon name="edit" class="color-white" />
             </x-circular-background>
@@ -273,8 +264,8 @@ export default {
     <div class="pagination__vue">
       <!--   Pagination   -->
       <vue-paginate
-        v-if="!table.loading && table.pagination.totalPage"
-        :page-count="table.pagination.totalPage"
+        v-if="!table.loading && table.pagination.total"
+        :page-count="table.pagination.total"
         :value="table.pagination.current"
         :container-class="'container'"
         :page-class="'page-item'"
@@ -314,12 +305,15 @@ export default {
         </x-form-select>
       </div> -->
     </div>
-    <create-bot-object
-      :all-languages="allLangs"
+
+    <settings-create-version
+      :all-langs="allLangs"
       v-if="showCreateModal"
-      @bot-page-created="botPageCreated"
-      @close-modal="closeCreateModal"
-    ></create-bot-object>
+      :upsert-type="upsertType"
+      :edit-item="editStorage"
+      @close-creating-modal="closeVersionCreationModal"
+      @client-type-created="translationCreated"
+    />
   </div>
 </template>
 

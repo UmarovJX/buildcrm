@@ -21,6 +21,7 @@ export default {
     const languagesViewPms = SettingsPermission.getPermission("languages.view");
     const translationsViewPms =
       SettingsPermission.getPermission("translations.view");
+    const versionsViewPms = SettingsPermission.getPermission("versions.view");
 
     const tabs = [];
 
@@ -69,10 +70,11 @@ export default {
         value: "settings-translations",
       });
     }
-
-    if (tabs.length && this.$route.name !== tabs[0].value) {
-      this.$router.push({
-        name: tabs[0].value,
+    if (versionsViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "versions",
+        value: "settings-versions",
       });
     }
 

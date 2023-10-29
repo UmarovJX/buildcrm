@@ -58,6 +58,15 @@ export default [
           parent: "settings",
         },
       },
+      {
+        path: "versions",
+        name: "settings-versions",
+        component: () => import("@/views/settings/views/SettingsVersions.vue"),
+        meta: {
+          requiresAuth: "settings.versions",
+          parent: "settings",
+        },
+      },
     ],
   },
 ];
