@@ -461,7 +461,7 @@ export default {
             orderCtx.apartments = [
               {
                 id: a.id,
-                price: a.calc.price,
+                price: a.calc.base_price,
               },
             ];
           }

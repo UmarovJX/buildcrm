@@ -375,7 +375,7 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    width: 16.5rem;
+    min-width: 16.5rem;
     height: 96px;
     background-color: var(--gray-50);
     font-family: Inter, sans-serif;
@@ -605,7 +605,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 4rem;
+  min-width: 6rem;
   width: auto;
   height: 56px;
   background-color: var(--gray-50);
@@ -670,8 +670,9 @@ export default {
   &-item {
     color: var(--teal-500);
     //width: 100%;
-    min-width: 4rem;
-    width: 4rem;
+    //width: max-content;
+    min-width: 6rem;
+    width: 6rem;
     height: 3.5rem;
     background-color: var(--gray-50);
     //border: 1px solid var(--gray-100);

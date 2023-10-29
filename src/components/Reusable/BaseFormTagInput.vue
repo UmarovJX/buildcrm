@@ -90,7 +90,6 @@ export default {
       v-model="tagInput"
       class="tag-input__text"
       @keydown.enter="addTag"
-      @keydown.188="addTag"
       @keydown.delete="removeLastTag"
       :class="{ 'tag-input-active': this.tagInput.length > 0 }"
     />
