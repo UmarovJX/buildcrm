@@ -10,10 +10,14 @@ import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
 import { XFormInput } from "@/components/ui-components/form-input";
 import SettingsUpdateTranslationTags from "@/views/settings/components/SettingsUpdateTranslationTags.vue";
 import BaseButton from "@/components/Reusable/BaseButton";
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 
 export default {
   name: "SettingsStatuses",
   components: {
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
     BaseButton,
     SettingsUpdateTranslationTags,
     XFormInput,
@@ -48,16 +52,16 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("statuses.view"),
-        create: SettingsPermission.getPermission("statuses.create"),
-        edit: SettingsPermission.getPermission("statuses.edit"),
-        delete: SettingsPermission.getPermission("statuses.delete"),
+        view: SettingsPermission.getPermission("translations.view"),
+        create: SettingsPermission.getPermission("translations.create"),
+        edit: SettingsPermission.getPermission("translations.edit"),
+        delete: SettingsPermission.getPermission("translations.delete"),
       },
     };
   },
   computed: {
     tableFields() {
-      return [
+      const fields = [
         {
           key: "key",
           label: this.$t("key"),
@@ -69,12 +73,15 @@ export default {
           thStyle: "width: 200px",
         },
         { key: "value." + this.currentLang, label: "Translation" },
-        {
+      ];
+      if (this.permission.edit) {
+        fields.push({
           key: "actions",
           label: "",
           thStyle: "width: 100px",
-        },
-      ];
+        });
+      }
+      return fields;
     },
   },
   created() {
@@ -306,6 +313,7 @@ export default {
       <template #[`cell(value.${currentLang})`]="{ item, index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            :readonly="!permission.edit"
             type="text"
             :placeholder="item.key"
             class="w-100"
@@ -331,9 +339,9 @@ export default {
     <div class="pagination__vue">
       <!--   Pagination   -->
       <vue-paginate
-        v-if="!table.loading && pagination.total"
-        :page-count="pagination.total"
-        :value="pagination.current"
+        v-if="!table.loading && table.pagination.totalPage"
+        :page-count="table.pagination.totalPage"
+        :value="table.pagination.current"
         :container-class="'container'"
         :page-class="'page-item'"
         :page-link-class="'page-link'"
@@ -372,6 +380,7 @@ export default {
         </x-form-select>
       </div> -->
       <base-button
+        v-if="permission.edit"
         class="float-right"
         design="violet-gradient px-5"
         :text="$t('Save All')"
@@ -397,6 +406,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/scss/utils/pagination";
+
 @import "@/assets/scss/utils/b-table-redesign.scss";
 @import "@/views/settings/assets/crudTable.scss";
 .translation-tag {

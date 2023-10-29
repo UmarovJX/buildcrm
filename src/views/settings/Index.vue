@@ -18,6 +18,10 @@ export default {
       "client_countries.view"
     );
 
+    const languagesViewPms = SettingsPermission.getPermission("languages.view");
+    const translationsViewPms =
+      SettingsPermission.getPermission("translations.view");
+
     const tabs = [];
 
     if (clientTypesViewPms) {
@@ -51,14 +55,14 @@ export default {
         value: "settings-statuses",
       });
     }
-    if (statusesViewPms) {
+    if (languagesViewPms) {
       tabs.push({
         counts: 0,
         name: "languages",
         value: "settings-languages",
       });
     }
-    if (statusesViewPms) {
+    if (translationsViewPms) {
       tabs.push({
         counts: 0,
         name: "translations",

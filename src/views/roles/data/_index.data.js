@@ -15,6 +15,7 @@ import paynetAccountData from "@/views/roles/data/paynetAccount.data";
 import branchesData from "@/views/roles/data/branches.data";
 import settingsData from "@/views/roles/data/settings.data";
 import reportsData from "@/views/roles/data/reports.data";
+import botData from "@/views/roles/data/bot.data";
 
 export function joinRolesRows({ name }) {
   const { values: generalVs, permission: generalPms } = generalData(
@@ -68,6 +69,7 @@ export function joinRolesRows({ name }) {
     name,
     uuid()
   );
+  const { values: botVs, permission: botPms } = botData(name, uuid());
 
   const form = {
     general: generalVs,
@@ -86,6 +88,7 @@ export function joinRolesRows({ name }) {
     branches: branchesVs,
     settings: settingsVs,
     reports: reportsVs,
+    bot: botVs,
   };
 
   const permissionTabs = [
@@ -105,6 +108,7 @@ export function joinRolesRows({ name }) {
     branchesPms,
     settingsPms,
     reportsPms,
+    botPms,
   ];
 
   const row = {

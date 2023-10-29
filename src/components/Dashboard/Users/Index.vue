@@ -316,7 +316,7 @@ export default {
     unblockUser(user) {
       this.loading = true;
       api.userV2
-        .removeUserBlock(user.id)
+        .removeUserBlock(user.uuid)
         .then((res) => {
           this.toasted(res.data.message, "success");
           this.fetchUsers();
@@ -336,11 +336,10 @@ export default {
     deleteUser(user) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
         icon: "warning",
         showCancelButton: true,
         cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
+        confirmButtonText: this.$t("sweetAlert.yesPure"),
       }).then((result) => {
         if (result.value) {
           this.loading = true;
@@ -351,7 +350,7 @@ export default {
               this.toasted(response.data.message, "success");
               this.fetchUsers();
               this.loading = false;
-              this.$swal(this.$t("sweetAlert.deleted"), "", "success");
+              this.$swal(this.$t("sweetAlert.success"), "", "success");
             })
             .catch((error) => {
               this.loading = false;
@@ -579,7 +578,7 @@ export default {
                   v-b-modal.modal-edit
                 >
                   <i class="far fa-unlock"></i>
-                  Разблокировать 
+                  Разблокировать
                 </b-button>
 
                 <b-button
@@ -587,7 +586,16 @@ export default {
                   class="dropdown-item dropdown-item--inside"
                   @click="deleteUser(data.item.uuid)"
                 >
-                  <i class="far fa-trash"></i> {{ $t("delete") }}
+                  <i
+                    class="far fa-trash-undo"
+                    v-if="query.status === 'deactivated'"
+                  ></i>
+                  <i class="far fa-trash" v-else></i>
+                  {{
+                    query.status === "deactivated"
+                      ? $t("undelete")
+                      : $t("delete")
+                  }}
                 </b-button>
               </div>
             </div>

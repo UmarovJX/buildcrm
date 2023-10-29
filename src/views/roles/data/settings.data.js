@@ -21,6 +21,9 @@ const values = {
       edit: false,
     },
   },
+  languages: Object.assign({}, crud),
+  translations: Object.assign({}, crud),
+  versions: Object.assign({}, crud),
 };
 
 function pms(name, uuid) {
@@ -168,6 +171,83 @@ function pms(name, uuid) {
       {
         label: "roles_permission.settings.apartments.status.edit",
         refer: "apartments.status.edit",
+        parent: "settings",
+      },
+
+      /**
+       ? STARTING OF
+       ! Languages
+       ? ROW
+       * */
+      {
+        label: "roles_permission.settings.languages.view",
+        refer: "languages.view",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.languages.create",
+        refer: "languages.create",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.languages.edit",
+        refer: "languages.edit",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.languages.delete",
+        refer: "languages.delete",
+        parent: "settings",
+      },
+
+      /**
+       ? STARTING OF
+       ! Translations
+       ? ROW
+       * */
+      {
+        label: "roles_permission.settings.translations.view",
+        refer: "translations.view",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.translations.create",
+        refer: "translations.create",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.translations.edit",
+        refer: "translations.edit",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.translations.delete",
+        refer: "translations.delete",
+        parent: "settings",
+      },
+      /**
+       ? STARTING OF
+       ! Version
+       ? ROW
+       * */
+      {
+        label: "roles_permission.settings.versions.view",
+        refer: "versions.view",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.versions.create",
+        refer: "versions.create",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.versions.edit",
+        refer: "versions.edit",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.versions.delete",
+        refer: "versions.delete",
         parent: "settings",
       },
     ],

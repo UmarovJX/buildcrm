@@ -225,6 +225,10 @@ export default {
     placeholder_uz: "O'zbek tilida",
     placeholder_ru: "Rus tilida",
     slug: "Guruh nomi prefiksi",
+    view: "Право на просмотр",
+    create: "Право на создание",
+    update: "Право на редактирование",
+    delete: "Право на удаление",
     titles: {
       general: "Umumiy",
       objects: "Obyektal",
@@ -1382,6 +1386,8 @@ export default {
 
     placeholder: {
       name: "Obyekt nomi",
+      is_sold: "Доступность к продаже",
+
       address: "Obyekt manzili",
       full_address: "Shartnoma uchun manzil",
 

@@ -2,7 +2,7 @@
 import api from "@/services/api";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 
-import SettingsPermission from "@/permission/settings.permission";
+import Permission from "@/permission";
 import { XButton } from "@/components/ui-components/button";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
@@ -44,10 +44,8 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("statuses.view"),
-        create: SettingsPermission.getPermission("statuses.create"),
-        edit: SettingsPermission.getPermission("statuses.edit"),
-        delete: SettingsPermission.getPermission("statuses.delete"),
+        create: Permission.getUserPermission("bot.create"),
+        update: Permission.getUserPermission("bot.update"),
       },
     };
   },
@@ -183,6 +181,7 @@ export default {
         @tab-selected="setTab"
       ></base-tab-picker>
       <x-button
+        v-if="permission.create"
         variant="secondary"
         text="Add Bot Page"
         :bilingual="true"
@@ -223,6 +222,7 @@ export default {
       <template #cell(title)="{ index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            :readonly="!permission.update"
             type="text"
             :placeholder="$t('bot.table_title')"
             class="w-100"
@@ -233,6 +233,7 @@ export default {
       <template #cell(description)="{ index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            :readonly="!permission.update"
             type="text"
             :placeholder="$t('bot.description')"
             class="w-100"
@@ -243,6 +244,7 @@ export default {
       <template #cell(slug)="{ item, index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            :readonly="!permission.update"
             type="text"
             :placeholder="$t('bot.slug')"
             class="w-100"
@@ -253,7 +255,11 @@ export default {
             title="save"
             class="ml-1 cursor-pointer"
           >
-            <x-circular-background @click="update(item)" class="bg-violet-600">
+            <x-circular-background
+              @click="update(item)"
+              class="bg-violet-600"
+              v-if="permission.update"
+            >
               <x-icon name="edit" class="color-white" />
             </x-circular-background>
           </div>

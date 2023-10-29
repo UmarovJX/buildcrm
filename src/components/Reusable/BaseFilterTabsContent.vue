@@ -26,7 +26,6 @@ export default {
   },
   methods: {
     getFilteredContent(status) {
-      console.log();
       this.currentStatus = status;
       this.$emit("get-new-content", status);
     },

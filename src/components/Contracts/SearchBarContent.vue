@@ -870,7 +870,7 @@ export default {
   display: flex;
   align-items: end;
   width: 590px;
-  height: 200px;
+  height: 150px;
   column-gap: 0.5rem;
   padding-bottom: 3rem;
   position: fixed;

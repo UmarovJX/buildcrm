@@ -34,16 +34,16 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("statuses.view"),
-        create: SettingsPermission.getPermission("statuses.create"),
-        edit: SettingsPermission.getPermission("statuses.edit"),
-        delete: SettingsPermission.getPermission("statuses.delete"),
+        view: SettingsPermission.getPermission("languages.view"),
+        create: SettingsPermission.getPermission("languages.create"),
+        edit: SettingsPermission.getPermission("languages.edit"),
+        delete: SettingsPermission.getPermission("languages.delete"),
       },
     };
   },
   computed: {
     tableFields() {
-      return [
+      const fields = [
         {
           key: "name",
           label: this.$t("title"),
@@ -57,12 +57,15 @@ export default {
           key: "is_published",
           label: this.$t("is_published"),
         },
-        {
+      ];
+      if (this.permission.edit) {
+        fields.push({
           key: "actions",
           label: this.$t("actions"),
           class: "float-right",
-        },
-      ];
+        });
+      }
+      return fields;
     },
   },
   created() {
