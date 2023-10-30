@@ -6,12 +6,19 @@ import { PROP_TYPE_OBJECT, PROP_TYPE_STRING } from "@/constants/props";
 import { XFormInput } from "@/components/ui-components/form-input";
 import { XModalCenter } from "@/components/ui-components/modal-center";
 import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
+import BaseCheckbox from "@/components/Reusable/BaseCheckbox2";
 
 import { VueEditor } from "vue2-editor";
 
 export default {
   name: "SettingsCreateVersion",
-  components: { BaseTabPicker, VueEditor, XFormInput, XModalCenter },
+  components: {
+    BaseCheckbox,
+    BaseTabPicker,
+    VueEditor,
+    XFormInput,
+    XModalCenter,
+  },
   props: {
     upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
       return ["create", "edit"].includes(type);
@@ -19,6 +26,7 @@ export default {
     editItem: makeProp(PROP_TYPE_OBJECT, {
       id: undefined,
       version: "",
+      published: false,
       latest: {},
       fixed: {},
     }),
@@ -33,6 +41,7 @@ export default {
       version: "",
       latest: {},
       fixed: {},
+      published: false,
       error: {
         active: false,
         message: undefined,
@@ -53,6 +62,7 @@ export default {
       this.setEditData();
     }
   },
+
   methods: {
     setTab(e) {
       this.currentLang = e;
@@ -65,6 +75,7 @@ export default {
       this.item.version = this.editItem.version;
       this.item.latest = { ...this.editItem.latest };
       this.item.fixed = { ...this.editItem.fixed };
+      this.item.published = +this.editItem.published;
     },
     closeCreatingModal() {
       this.clearForm();
@@ -85,6 +96,7 @@ export default {
           version: this.item.version,
           latest: this.item.latest,
           fixed: this.item.fixed,
+          published: this.item.published,
         };
 
         try {
@@ -157,7 +169,7 @@ export default {
         >
           <x-form-input
             type="text"
-            :placeholder="$t('name')"
+            :placeholder="$t('version')"
             class="w-100"
             v-model="item.version"
           />
@@ -166,6 +178,10 @@ export default {
           </span>
         </validation-provider>
       </validation-observer>
+      <div class="mt-4 mb-4">
+        <base-checkbox v-model="item.published" :label="$t('published')">
+        </base-checkbox>
+      </div>
 
       <base-tab-picker
         :options="allLangs"

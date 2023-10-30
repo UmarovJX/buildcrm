@@ -6,11 +6,9 @@ import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
 import SettingsCreateVersion from "@/views/settings/components/SettingsCreateVersion.vue";
-import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
 
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
-
 
 export default {
   name: "SettingsVersions",
@@ -18,7 +16,6 @@ export default {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
 
-    BaseTabPicker,
     BaseLoading,
     XButton,
     XIcon,
@@ -57,11 +54,26 @@ export default {
     };
   },
   computed: {
+    query() {
+      return this.$route.query;
+    },
     tableFields() {
       const fields = [
         {
+          key: "id",
+          label: this.$t("id"),
+        },
+        {
           key: "version",
           label: this.$t("version"),
+        },
+        {
+          key: "published",
+          label: this.$t("published"),
+        },
+        {
+          key: "created_at",
+          label: this.$t("created_at"),
         },
         // {
         //   key: "tags",
@@ -79,6 +91,11 @@ export default {
       return fields;
     },
   },
+  watch: {
+    query() {
+      this.fetchItems();
+    },
+  },
   created() {
     api.languagesV3.getAllLanguages().then((res) => {
       this.allLangs.push(...res.data.result);
@@ -93,13 +110,13 @@ export default {
         page: this.query.page || 1,
       };
       const limit = this.showByValue;
-      this.pushRouter({ ...query, limit });
+      this.$router.replace({ query: { ...query, limit } });
     },
 
     changeCurrentPage(page) {
       const currentPage = this.query.page;
       if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
+      this.$router.replace({ query: { ...this.query, page } });
     },
     setTab(e) {
       this.currentLang = e;
@@ -118,8 +135,8 @@ export default {
       try {
         this.startLoading();
         const response = await api.settings.getVersionList({
-          page: 1,
-          limit: this.showByValue,
+          page: this.query.page || 1,
+          limit: this.query.limit || this.showByValue,
         });
         this.table.items = response.data.items.map((el) => ({
           ...el,
@@ -187,18 +204,13 @@ export default {
 <template>
   <div class="app-settings-client-type">
     <!-- TODO: CLIENT TYPES TABLE   -->
-    <div class="d-flex justify-content-between mb-4">
+    <div class="d-flex mb-4 justify-content-end">
       <!-- <h3
         class="x-font-size-1p5 font-craftworksans color-gray-400 d-flex align-items-center"
       >
         {{ $t("translations") }}
       </h3> -->
-      <base-tab-picker
-        :options="allLangs"
-        noAll
-        :current="currentLang"
-        @tab-selected="setTab"
-      ></base-tab-picker>
+
       <x-button
         v-if="permission.create"
         variant="secondary"
@@ -236,6 +248,19 @@ export default {
         <span class="d-flex justify-content-center align-items-center">
           {{ scope["emptyText"] }}
         </span>
+      </template>
+
+      <template #cell(published)="{ item }">
+        <div v-if="item.published" class="d-flex x-gap-1 cursor-pointer">
+          <x-circular-background class="bg-violet-600">
+            <x-icon name="check" class="color-white" />
+          </x-circular-background>
+        </div>
+      </template>
+      <template #cell(created_at)="{ item }">
+        <div>{{ new Date(item.created_at).toLocaleDateString("ru") }}</div>
+        <div>{{ new Date(item.created_at).toLocaleTimeString("ru") }}</div>
+        <div></div>
       </template>
 
       <template #cell(actions)="{ item }">
