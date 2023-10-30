@@ -22,6 +22,8 @@ export default {
     const translationsViewPms =
       SettingsPermission.getPermission("translations.view");
     const versionsViewPms = SettingsPermission.getPermission("versions.view");
+    const facilitiesViewPms =
+      SettingsPermission.getPermission("facilities.view");
 
     const tabs = [];
 
@@ -75,6 +77,13 @@ export default {
         counts: 0,
         name: "versions",
         value: "settings-versions",
+      });
+    }
+    if (facilitiesViewPms) {
+      tabs.push({
+        counts: 0,
+        name: "facilities",
+        value: "settings-facilities",
       });
     }
 

@@ -24,6 +24,7 @@ const values = {
   languages: Object.assign({}, crud),
   translations: Object.assign({}, crud),
   versions: Object.assign({}, crud),
+  facilities: Object.assign({}, crud),
 };
 
 function pms(name, uuid) {
@@ -248,6 +249,31 @@ function pms(name, uuid) {
       {
         label: "roles_permission.settings.versions.delete",
         refer: "versions.delete",
+        parent: "settings",
+      },
+      /**
+       ? STARTING OF
+       ! Facility
+       ? ROW
+       * */
+      {
+        label: "roles_permission.settings.facilities.view",
+        refer: "facilities.view",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.facilities.create",
+        refer: "facilities.create",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.facilities.edit",
+        refer: "facilities.edit",
+        parent: "settings",
+      },
+      {
+        label: "roles_permission.settings.facilities.delete",
+        refer: "facilities.delete",
         parent: "settings",
       },
     ],

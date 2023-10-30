@@ -70,6 +70,12 @@ class V3Service extends Core {
     update: (b) => this.post("bot-page/update", b),
     remove: (b) => this.post("bot-page/remove", b),
   };
+  facility = {
+    create: (b) => this.post("facility/create", b),
+    fetch: (b) => this.post("facility/index", b),
+    update: (b) => this.post("facility/update", b),
+    remove: (b) => this.post("facility/remove", b),
+  };
 }
 
 export const v3ServiceApi = new V3Service();
