@@ -91,45 +91,45 @@ export default {
     async saveItem() {
       if (this.applyButtonLoading) return;
       const isSatisfied = await this.$refs["creating-observer"].validate();
-      if (isSatisfied) {
-        this.startLoading();
-        if (this.old_upload) {
-          const d = new FormData();
-          d.append("id", this.old_upload);
-          await api.uploadsV3.removeUpload();
-        }
+      try {
+        if (isSatisfied) {
+          this.startLoading();
+          if (this.old_upload) {
+            const d = new FormData();
+            d.append("id", this.old_upload);
+            await api.uploadsV3.removeUpload(d);
+          }
 
-        if (this.item.img instanceof File) {
-          const d = new FormData();
-          d.append("type", "file");
-          d.append("attachment", this.item.img);
-          const res = await api.uploadsV3.createUpload(d);
-          this.new_upload = res.data.result.id;
-        }
+          if (this.item.img instanceof File) {
+            const d = new FormData();
+            d.append("type", "file");
+            d.append("attachment", this.item.img);
+            const res = await api.uploadsV3.createUpload(d);
+            this.new_upload = res.data.result.id;
+          }
 
-        const d = {
-          name: this.item.name,
-          upload_id: this.new_upload
-            ? this.new_upload
-            : !this.old_upload
-            ? this.editItem.upload_id
-            : null,
-        };
-        if (this.upsertType === "edit") {
-          d.id = this.editItem.id;
-        }
-        try {
+          const d = {
+            name: this.item.name,
+            upload_id: this.new_upload
+              ? this.new_upload
+              : !this.old_upload
+              ? this.editItem.upload_id
+              : null,
+          };
+          if (this.upsertType === "edit") {
+            d.id = this.editItem.id;
+          }
+
           await v3ServiceApi.facility[
             this.upsertType === "edit" ? "update" : "create"
           ](d);
-
           this.clearForm();
           this.$emit("client-type-created");
-        } catch (e) {
-          this.toastedWithErrorCode(e);
-        } finally {
-          this.finishLoading();
         }
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
       }
     },
     clearForm() {

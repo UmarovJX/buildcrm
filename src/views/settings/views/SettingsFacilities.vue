@@ -251,8 +251,14 @@ export default {
       </template>
 
       <template #cell(upload)="{ item }">
-        <!-- <img :src="item.upload.path" alt=""> -->
-        upload.path: {{ item.upload.path }}
+        <img
+          :src="item.upload.path"
+          style="cursor: pointer; object-fit: contain"
+          width="60"
+          height="60"
+          alt="plan_image"
+          fluid
+        />
       </template>
 
       <template #cell(actions)="{ item }">

@@ -231,9 +231,9 @@ export default {
         uuid: item.id,
         floor: item.floor,
         number: item.number,
-        upload_id: item.upload_id?.id,
+        upload_id: item.upload?.id,
         price: item.price,
-        img: item.upload_id?.path,
+        img: item.upload?.path,
         building_id: item.building.id,
       };
       console.log("prop", this.parking);
