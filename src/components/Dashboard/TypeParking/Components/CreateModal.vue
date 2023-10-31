@@ -101,9 +101,7 @@ export default {
   },
   computed: {
     submitText() {
-      return this.planData.uuid
-        ? this.$t("save")
-        : this.$t("add");
+      return this.planData.uuid ? this.$t("save") : this.$t("add");
     },
     modalTitle() {
       return this.planData.uuid
@@ -211,7 +209,7 @@ export default {
         if (this.oldUploadIdToDelete) {
           const d = new FormData();
           d.append("id", this.oldUploadIdToDelete);
-          await api.uploadsV3.removeUpload();
+          await api.uploadsV3.removeUpload(d);
         }
         if (this.planData.img && this.planData.img.path instanceof File) {
           const d = new FormData();

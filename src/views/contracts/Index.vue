@@ -1,5 +1,5 @@
 <script>
-import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
+import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent2";
 import SearchBarContent from "@/components/Contracts/SearchBarContent";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
 // import BaseStarIcon from "@/components/icons/BaseStarIcon";
@@ -66,26 +66,26 @@ export default {
         status: "",
         counts: 0,
       },
-      {
-        name: "tab_status.booked",
-        status: "booked",
-        counts: 0,
-      },
-      {
-        name: "tab_status.sold",
-        status: "contract",
-        counts: 0,
-      },
-      {
-        name: "tab_status.on_payment",
-        status: "sold",
-        counts: 0,
-      },
-      {
-        name: "tab_status.closed",
-        status: "closed",
-        counts: 0,
-      },
+      // {
+      //   name: "tab_status.booked",
+      //   status: "booked",
+      //   counts: 0,
+      // },
+      // {
+      //   name: "tab_status.sold",
+      //   status: "contract",
+      //   counts: 0,
+      // },
+      // {
+      //   name: "tab_status.on_payment",
+      //   status: "sold",
+      //   counts: 0,
+      // },
+      // {
+      //   name: "tab_status.closed",
+      //   status: "closed",
+      //   counts: 0,
+      // },
       // {
       //   name: "tab_status.is_expired",
       //   status: "is_expired",
@@ -93,12 +93,12 @@ export default {
       // },
       {
         name: "tab_status.reorder",
-        status: "reorder",
+        status: "is_reorder",
         counts: 0,
       },
       {
         name: "tab_status.deleted",
-        status: "trashed",
+        status: "is_trashed",
         counts: 0,
       },
     ];
@@ -108,7 +108,7 @@ export default {
     if (hasAdminRole) {
       filterTabList.splice(filterTabList.length - 1, 0, {
         name: "tab_status.archived",
-        status: "archived",
+        status: "is_archive",
         counts: 0,
       });
     }
@@ -128,6 +128,8 @@ export default {
       : false;
 
     return {
+      currentTab: "",
+      timeout: null,
       hasAdminRole,
       showByValue,
       searchValue,
@@ -166,37 +168,12 @@ export default {
     statuses() {
       if (keys(this.counts).length) {
         return this.filterTabList.map((filterTab) => {
-          // eslint-disable-next-line no-prototype-builtins
-          const findIndex = this.counts.hasOwnProperty(filterTab.status);
-          if (findIndex) {
-            return {
-              ...filterTab,
-              counts: this.counts[filterTab.status],
-            };
-          } else if (filterTab.status === "trashed") {
-            return {
-              ...filterTab,
-              counts: this.counts.deleted,
-            };
-          }
-
-          const sum = () => {
-            let init = 0;
-            for (let [, value] of Object.entries(this.counts)) {
-              init += value;
-            }
-            return init;
+          return {
+            ...filterTab,
+            counts: this.counts[filterTab.name.split(".")[1]],
           };
-
-          if (filterTab.status === "") {
-            return {
-              ...filterTab,
-              counts: sum(),
-            };
-          }
         });
       }
-
       return this.filterTabList;
     },
     tableFields() {
@@ -224,10 +201,12 @@ export default {
               .reduce((acc, app) => acc + "," + app.number, "")
               .slice(1);
           },
+          thStyle: "width: 110px",
         },
         {
           key: "status",
           label: this.$t("contracts.table.status"),
+          thStyle: "width: 90px",
         },
         {
           key: "payments.transaction_price",
@@ -238,6 +217,12 @@ export default {
           key: "object",
           label: this.$t("contracts.table.object"),
           formatter: (object) => object?.name,
+        },
+        {
+          key: "created",
+          label: this.$t("roles.manager"),
+          formatter: (created) =>
+            created?.first_name + " " + created?.last_name,
         },
         {
           key: "date",
@@ -298,6 +283,14 @@ export default {
   },
   created() {
     Promise.allSettled([this.fetchContractList()]);
+
+    this.currentTab = this.query.is_archive
+      ? "is_archive"
+      : this.query.is_trashed
+      ? "is_trashed"
+      : this.query.is_reorder
+      ? "is_reorder"
+      : "";
   },
   methods: {
     formattingPhone: (phone) => phonePrettier(phone),
@@ -414,13 +407,20 @@ export default {
       return "";
     },
     fetchContentByStatus(status) {
+      this.currentTab = status;
       const query = Object.assign({}, this.query);
       // eslint-disable-next-line no-prototype-builtins
       if (query.hasOwnProperty("page")) {
         delete query.page;
       }
-
-      this.replaceRouter({ ...query, status });
+      ["is_reorder", "is_archive", "is_trashed"].forEach((el) => {
+        delete query[el];
+      });
+      const newQuery = { limit: this.showByValue, ...query };
+      if (status) {
+        newQuery[status] = 1;
+      }
+      this.replaceRouter(newQuery);
     },
     changeCurrentPage(page) {
       const currentPage = this.query.page;
@@ -469,10 +469,12 @@ export default {
         "blocks",
         "floors",
         "branch",
-        "manager",
+        "created_by",
         "contract_number",
         "apartment_number",
         "type",
+        "created_by",
+        "statuses",
       ];
 
       propArrayList.forEach((prop) => {
@@ -491,32 +493,31 @@ export default {
       return query;
     },
     async fetchContractList() {
-      const query = this.createQuery();
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+      this.timeout = setTimeout(async () => {
+        this.timeout = null;
+        const query = this.createQuery();
 
-      this.showLoading = true;
-      this.tableItems = [];
+        this.showLoading = true;
+        this.tableItems = [];
 
-      this.fetchStatusesOfCounts();
-      await api.contractV2
-        .fetchContractsList(query)
-        .then((response) => {
-          this.tableItems = response.data.items;
+        this.fetchStatusesOfCounts();
+        await api.contractV2
+          .fetchContractsList(query)
+          .then((response) => {
+            if (!this.timeout) {
+              this.tableItems = response.data.items;
 
-          // .forEach((dataItem) => {
-          //   this.tableItems.push(
-          //     dataItem
-          //     // Object.assign(dataItem, {
-          //     //   _rowVariant: dataItem.archived ? "warning" : "light",
-          //     // })
-          //   );
-          // });
-
-          this.pagination = response.data.pagination;
-          this.showByValue = response.data.pagination.perPage;
-        })
-        .finally(() => {
-          this.showLoading = false;
-        });
+              this.pagination = response.data.pagination;
+              this.showByValue = response.data.pagination.perPage;
+            }
+          })
+          .finally(() => {
+            this.showLoading = false;
+          });
+      }, 500);
     },
     searchQueryFilter(searchQuery) {
       // eslint-disable-next-line no-prototype-builtins
@@ -559,6 +560,8 @@ export default {
 
     <!--  Tabs  -->
     <base-filter-tabs-content
+      v-if="filterPermission"
+      :current="currentTab"
       :filter-tab-list="statuses"
       @get-new-content="fetchContentByStatus"
     />
@@ -566,11 +569,9 @@ export default {
     <!--  Search Content  -->
     <search-bar-content
       ref="filterModal"
-      v-if="filterPermission"
       @replace-router="searchQueryFilter"
       @search-by-filter="searchQueryFilter"
     />
-
     <!--  Table List -->
     <b-table
       sticky-header
@@ -700,7 +701,6 @@ export default {
         </div>
       </template>
     </b-table>
-
     <div v-if="!showLoading && countOfItems" class="pagination__vue">
       <!--   Pagination   -->
       <vue-paginate
@@ -832,9 +832,9 @@ export default {
   justify-content: center;
   //justify-content: flex-start;
   align-items: center;
-  min-width: 11rem;
+  min-width: 9rem;
   border-radius: 2rem;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 0.5rem;
 
   &.sold {
     background-color: var(--green-100);

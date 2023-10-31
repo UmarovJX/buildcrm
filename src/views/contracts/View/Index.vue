@@ -293,9 +293,7 @@ export default {
         await api.contractV2
           .deleteContract(id, body)
           .then(() => {
-            this.$router.push({
-              name: "contracts",
-            });
+            this.$router.go(-1);
             this.$swal({
               title: this.$t("successfully"),
               icon: "success",

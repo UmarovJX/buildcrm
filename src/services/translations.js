@@ -15,6 +15,9 @@ class TranslationsV3 extends Core {
   updateTranslation(body) {
     return this.post(`translation/update`, body);
   }
+  bulkSave(body) {
+    return this.post("translation/bulkSave", body);
+  }
   removeTranslation(body) {
     return this.post(`translation/remove`, body);
   }

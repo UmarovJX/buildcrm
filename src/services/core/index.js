@@ -5,6 +5,7 @@ class Core {
   }
 
   get(url, config = this._config) {
+    console.log(config);
     return this._axios.get(url, config).catch((error) => Promise.reject(error));
   }
 

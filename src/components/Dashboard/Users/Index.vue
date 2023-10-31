@@ -17,12 +17,15 @@ import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent";
 import { XFormSelect } from "@/components/ui-components/form-select";
 import { XFormSelectOption } from "@/components/ui-components/form-select";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
+import { XIcon } from "@/components/ui-components/material-icons";
+
 import { hasOwnProperty } from "@/util/object";
 import { isNull } from "@/util/inspect";
 export default {
   name: "UsersPage",
   components: {
     XFormSelectOption,
+    XIcon,
     XCircularBackground,
     XFormSelect,
     BasePlusIcon,
@@ -70,6 +73,7 @@ export default {
       createPermission: UsersPermission.getUsersCreatePermission(),
       editPermission: UsersPermission.getUsersEditPermission(),
       deletePermission: UsersPermission.getUsersDeletePermission(),
+      unblockPermission: UsersPermission.getUsersUnblockPermission(),
       searchValue,
       showByOptions,
       filterTabList,
@@ -87,6 +91,10 @@ export default {
         {
           key: "id",
           label: "id",
+        },
+        {
+          key: "blocked_at",
+          label: "",
         },
         {
           key: "first_name",
@@ -305,15 +313,33 @@ export default {
 
       return value;
     },
+    unblockUser(user) {
+      this.loading = true;
+      api.userV2
+        .removeUserBlock(user.uuid)
+        .then((res) => {
+          this.toasted(res.data.message, "success");
+          this.fetchUsers();
+          this.loading = false;
+        })
+        .catch((error) => {
+          this.loading = false;
+          if (!error.response) {
+            this.toasted("Error: Network Error", "error");
+          } else {
+            this.toasted(error.response.data.error, "error");
+          }
+          this.loading = false;
+        });
+    },
 
     deleteUser(user) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
         icon: "warning",
         showCancelButton: true,
         cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
+        confirmButtonText: this.$t("sweetAlert.yesPure"),
       }).then((result) => {
         if (result.value) {
           this.loading = true;
@@ -324,7 +350,7 @@ export default {
               this.toasted(response.data.message, "success");
               this.fetchUsers();
               this.loading = false;
-              this.$swal(this.$t("sweetAlert.deleted"), "", "success");
+              this.$swal(this.$t("sweetAlert.success"), "", "success");
             })
             .catch((error) => {
               this.loading = false;
@@ -466,6 +492,23 @@ export default {
             {{ data.item.id }}
           </span>
         </template>
+        <template #cell(blocked_at)="data">
+          <div class="d-flex" v-if="data.item.blocked_at">
+            <x-circular-background
+              class="bg-red-500 p-1"
+              :id="'blocked_' + data.item.id"
+            >
+              <x-icon name="lock" class="color-white" size="18" />
+            </x-circular-background>
+            <b-tooltip
+              :target="'blocked_' + data.item.id"
+              triggers="hover"
+              variant="secondary"
+            >
+              Заблокирован <br />{{ data.item.blocked_at }}
+            </b-tooltip>
+          </div>
+        </template>
 
         <template #cell(first_name)="data">
           {{ data.item.first_name }} {{ data.item.last_name }}
@@ -525,8 +568,17 @@ export default {
                   class="dropdown-item dropdown-item--inside"
                   v-b-modal.modal-edit
                 >
-                  <i class="fas fa-pen"></i>
+                  <i class="far fa-pen"></i>
                   {{ $t("edit") }}
+                </b-button>
+                <b-button
+                  v-if="unblockPermission && data.item.blocked_at"
+                  @click="unblockUser(data.item)"
+                  class="dropdown-item dropdown-item--inside"
+                  v-b-modal.modal-edit
+                >
+                  <i class="far fa-unlock"></i>
+                  Разблокировать
                 </b-button>
 
                 <b-button
@@ -534,7 +586,16 @@ export default {
                   class="dropdown-item dropdown-item--inside"
                   @click="deleteUser(data.item.uuid)"
                 >
-                  <i class="far fa-trash"></i> {{ $t("delete") }}
+                  <i
+                    class="far fa-trash-undo"
+                    v-if="query.status === 'deactivated'"
+                  ></i>
+                  <i class="far fa-trash" v-else></i>
+                  {{
+                    query.status === "deactivated"
+                      ? $t("undelete")
+                      : $t("delete")
+                  }}
                 </b-button>
               </div>
             </div>
@@ -601,6 +662,18 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/utils/pagination";
+.relative {
+  position: relative;
+}
+.block-info {
+  border-radius: 10%;
+  width: fit-content;
+  position: absolute;
+  top: 100%;
+  display: none;
+  background-color: var(--blue-100);
+  padding: 0.3rem 2rem;
+}
 
 .search__content {
   margin-top: 0;

@@ -17,12 +17,14 @@ import { XIcon } from "@/components/ui-components/material-icons";
 import ApartmentsPermission from "@/permission/apartments";
 import { isNUNEZ } from "@/util/inspect";
 import SettingsPermission from "@/permission/settings.permission";
+import HidePriceButton from "@/components/Reusable/HidePriceButton.vue";
 
 export default {
   name: "ApartmentExpressView",
 
   /* COMPONENTS */
   components: {
+    HidePriceButton,
     BaseButton,
     BasePrintIcon,
     BaseLoading,
@@ -64,6 +66,7 @@ export default {
       delete: ApartmentsPermission.getApartmentCommentsDeletePermission(),
     };
     return {
+      isDownloading: false,
       imgDataUrl: "",
       apartmentCommentsPermission,
       htmlToPdfOptions: {
@@ -229,6 +232,9 @@ export default {
 
   /* METHODS */
   methods: {
+    completePrintingProcess() {
+      this.isDownloading = false;
+    },
     async toDataUrl(url) {
       //Convert to base64
       return new Promise((resolve, reject) => {
@@ -315,6 +321,7 @@ export default {
       this.$emit("hide-apartment-sidebar-view");
     },
     printApartmentInformation() {
+      this.isDownloading = true;
       const { object, block, entrance, number } = this.sidebarApartment;
       this.htmlToPdfOptions.filename =
         object.name + " , " + block.name + " , " + entrance + "/" + number;
@@ -474,6 +481,7 @@ export default {
               :title="holderTooltipTitle(sidebarApartment.holder)"
             />
           </span>
+          <hide-price-button></hide-price-button>
         </div>
 
         <div class="d-flex w-100 justify-content-end">
@@ -630,11 +638,13 @@ export default {
 
           <!--PRINT-->
           <button
+            :disabled="isDownloading"
             id="print"
             @click="printApartmentInformation"
             class="print__button bg-gray-100 d-flex justify-content-center align-items-center"
           >
-            <base-print-icon :square="20" fill="#4B5563" />
+            <base-loading v-if="isDownloading" :height="40" />
+            <base-print-icon v-else :square="20" fill="#4B5563" />
           </button>
           <b-tooltip target="print" triggers="hover">
             <p class="tooltip-text">
@@ -645,11 +655,11 @@ export default {
       </section>
 
       <!--  MAKE A RESERVATION MODAL    -->
-      <reserve
+      <!-- <reserve
         v-if="showReservationModal"
         :apartment="sidebarApartment.uuid"
         @CreateReserve="updateContent"
-      />
+      /> -->
 
       <PdfTemplate
         v-if="visible && Object.keys(sidebarApartment).length"
@@ -657,6 +667,7 @@ export default {
         :apartment="sidebarApartment"
         :print-calc="printCalc"
         :imgData="imgDataUrl"
+        @has-downloaded="completePrintingProcess"
       />
 
       <!--  LOADING    -->

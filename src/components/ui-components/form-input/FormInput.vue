@@ -59,6 +59,10 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    readonly: {
+      type: Boolean,
+      default: () => false,
+    },
     autocomplete: {
       type: String,
       default: "on",
@@ -185,6 +189,7 @@ export default {
       :minus="false"
       :value="null"
       :disabled="disable"
+      :readonly="readonly"
       :currency="currency"
       :placeholder="placeholder"
       :field-style="inputFieldStyle"
@@ -202,6 +207,7 @@ export default {
       v-else-if="mask !== ''"
       :type="type"
       v-model="inputModel"
+      :readonly="readonly"
       ref="base-input"
       id="base-input-mask"
       v-mask="mask"
@@ -214,6 +220,7 @@ export default {
     />
     <input
       v-else
+      :readonly="readonly"
       :type="type"
       v-model="inputModel"
       id="base-input"
@@ -226,7 +233,7 @@ export default {
     />
 
     <span
-      v-show="showClearIcon && !disable"
+      v-show="showClearIcon && !disable && !readonly"
       class="clear__icon"
       @click="clearSearchInput"
     >

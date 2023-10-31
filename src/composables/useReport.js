@@ -5,9 +5,11 @@ import { useLoading } from "@/composables/useLoading";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 import { keys } from "@/util/object";
 import { onBeforeRouteLeave } from "vue-router/composables";
+import i18n from "@/locales";
 
 export function useReport({ immediate = false } = { immediate: false }) {
   const vm = getCurrentInstance();
+  console.log("test", i18n.locale);
   const pm = Permission.getUserPermission("reports");
 
   const hasViewPermission =
@@ -82,18 +84,23 @@ export function useReport({ immediate = false } = { immediate: false }) {
     type: null,
   });
   const { isFetching, startFetching, finishFetching } = useLoading();
-  const typeOptions = computed(() => {
-    return [
-      {
-        value: "orders",
-        text: vm.proxy.$t("report.orders"),
-      },
-      {
-        value: "clients",
-        text: vm.proxy.$t("report.clients"),
-      },
-    ];
-  });
+  const typeOptionsRaw = ref([]);
+  v3ServiceApi.reports
+    .fetchTypeOptions()
+    .then((res) => {
+      typeOptionsRaw.value = res.data;
+    })
+    .catch((e) => {
+      e;
+    });
+
+  const typeOptions = computed(() =>
+    typeOptionsRaw.value.map((el) => ({
+      value: el.value,
+      text: el.name[i18n.locale],
+    }))
+  );
+
   const timer = ref(null);
   const filterBy = ref(null);
   const loadingFileId = ref(null);

@@ -9,9 +9,13 @@ import "swiper/css/swiper.css";
 import PromoSection from "@/components/Objects/view/elements/PromoSection";
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
+import { useShowPrice } from "@/composables/useShowPrice";
 
 export default {
   name: "PrimaryInformation",
+  setup() {
+    return useShowPrice();
+  },
   props: {
     visible: {
       type: Boolean,
@@ -166,7 +170,7 @@ export default {
           class="price__section d-flex justify-content-between align-items-center"
         >
           <span
-            v-if="!apartment.object.is_hide_m2_price"
+            v-if="!apartment.object.is_hide_m2_price && showPrice"
             class="price__section-square-amount"
           >
             {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>
@@ -186,7 +190,7 @@ export default {
           class="price__section d-flex justify-content-between align-items-center"
         >
           <span
-            v-if="!apartment.object.is_hide_m2_price"
+            v-if="!apartment.object.is_hide_m2_price && showPrice"
             class="price__section-square-amount"
           >
             {{ squareMetrePrice }} / m<sup class="color-gray-400">2</sup>

@@ -2,10 +2,12 @@
 import { mapGetters } from "vuex";
 import Apartments from "./Apartments";
 import api from "@/services/api";
+import BaseCheckbox from "@/components/Reusable/BaseCheckbox2";
 
 export default {
   name: "EditBlock",
   components: {
+    BaseCheckbox,
     apartments: Apartments,
   },
   props: {
@@ -50,7 +52,16 @@ export default {
         }
       }
     },
-
+    "block.is_sold": function () {
+      if (this.block.id !== null) {
+        this.disabled.create = true;
+        this.block.is_sold = +this.block.is_sold;
+        this.updateBlock();
+        if (this.block.name.length > 0 && this.block.floor > 0) {
+          this.settings.btn_save = true;
+        }
+      }
+    },
     "block.apartments": function () {
       if (this.block.id != null) {
         this.setGroupApartments();
@@ -451,6 +462,16 @@ export default {
                   class="my-form__input"
                   type="text"
                 />
+              </div>
+            </div>
+            <!-- BLOCK SOLD -->
+            <div class="col-12">
+              <div class="mb-3">
+                <base-checkbox
+                  v-model="block.is_sold"
+                  :label="$t('objects.placeholder.is_sold')"
+                >
+                </base-checkbox>
               </div>
             </div>
             <div class="col-lg-9">

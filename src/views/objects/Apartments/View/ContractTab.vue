@@ -15,7 +15,7 @@ import "swiper/css/swiper.css";
 // import PromoSection from "@/components/objects/view/elements/PromoSection";
 import { Fancybox } from "@fancyapps/ui";
 import "@fancyapps/ui/dist/fancybox.css";
-import PdfTemplate from "@/components/PdfTemplate";
+import PdfTemplate from "@/components/PdfTemplate2";
 import { formatToPrice } from "@/util/reusable";
 import CheckoutPermission from "@/permission/checkout";
 // import BookedBlock from "@/views/objects/Apartments/view/BookedBlock";
@@ -52,6 +52,7 @@ export default {
   },
   data() {
     return {
+      isDownloading: false,
       imgDataUrl: "",
       /* SLIDER OPTION */
       swiperOption: {
@@ -190,7 +191,8 @@ export default {
     apartment() {
       if (this.apartment?.plan?.images)
         this.toDataUrl(this.apartment.plan.images[0])
-          .then((url) => (this.imgDataUrl = url))
+          .then((url) => this.toDataUrl(url))
+          .then((d) => (this.imgDataUrl = d))
           .catch((er) => console.log("error", er));
     },
   },
@@ -224,12 +226,14 @@ export default {
     },
     printPdf() {
       this.pdfVisible = true;
+      this.isDownloading = true;
       setTimeout(() => {
         this.$refs.html2Pdf.generatePdf();
       }, 10);
     },
     completePrintingProcess() {
       this.pdfVisible = false;
+      this.isDownloading = false;
     },
     // async fetchApartmentView() {
     //     this.appLoading = true
@@ -468,12 +472,12 @@ export default {
 
               <!--       MAKE A RESERVATION       -->
               <!--              v-if="permission.reserve"-->
-              <base-button
+              <!-- <base-button
                 v-if="permission.reserve"
                 @click="showReservationModal = true"
                 :text="`${$t('apartments.list.book')}`"
                 v-b-modal.modal-reserve-create
-              />
+              /> -->
 
               <!--     CONTRACT VIEW         -->
               <router-link
@@ -491,18 +495,20 @@ export default {
 
               <!-- CANCEL RESERVE -->
               <!--              v-if="permission.cancelReserve"-->
-              <base-button
+              <!-- <base-button
                 v-if="permission.cancelReserve"
                 @click="cancelReservation"
                 :text="`${$t('apartments.list.cancel_reserve')}`"
-              />
+              /> -->
 
               <button
                 id="print"
+                :disabled="isDownloading"
                 @click="printPdf"
                 class="print__button bg-gray-100 d-flex justify-content-center align-items-center"
               >
-                <base-print-icon :square="20" fill="#4B5563" />
+                <base-loading v-if="isDownloading" :height="40" />
+                <base-print-icon v-else :square="20" fill="#4B5563" />
               </button>
             </div>
           </div>
@@ -516,11 +522,11 @@ export default {
     </div>
 
     <!--  MAKE A RESERVATION MODAL    -->
-    <reserve
+    <!-- <reserve
       v-if="showReservationModal"
       :apartment="apartment.id"
       @CreateReserve="updateContent"
-    />
+    /> -->
 
     <!--  LOADING    -->
     <base-loading v-if="appLoading" />

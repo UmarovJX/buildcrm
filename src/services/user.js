@@ -88,6 +88,9 @@ class UserV2 extends Core {
   addNewUserToDB(body) {
     return this.post(`users`, body);
   }
+  removeUserBlock(id) {
+    return this.put(`users/remove-block/${id}`);
+  }
 }
 
 export default {

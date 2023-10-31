@@ -29,6 +29,7 @@ export default {
     table: {
       variants: "Вариант оплаты",
       m2_price: "Цена продажи за квадрат",
+      first: "Первый платеж",
       full_price: "Общая цена",
       discount_percent: "Скидка в процентах",
       discount_amount: "Общая скидка",
@@ -234,6 +235,10 @@ export default {
     placeholder_ru: "На Русском",
     placeholder_eng: "На Английском",
     slug: "Префикс имени группы",
+    view: "Право на просмотр",
+    create: "Право на создание",
+    update: "Право на редактирование",
+    delete: "Право на удаление",
     titles: {
       general: "Общие",
       objects: "Объекты",
@@ -469,6 +474,7 @@ export default {
   add: "Добавить",
   id: "Id",
   delete: "Удалить",
+  undelete: "Восстановить",
   action: "Действие",
   search: "Найти",
   save: "Сохранить",
@@ -1401,6 +1407,7 @@ export default {
 
     placeholder: {
       name: "Названия объекта",
+      is_sold: "Доступность к продаже",
       address: "Адрес объекта",
       full_address: "Адрес для договора",
 
@@ -1429,6 +1436,8 @@ export default {
   sweetAlert: {
     want_archive: "Вы уверены что хотите архивировать?",
     want_unarchive: "Вы уверены что хотите разархивировать?",
+    want_delete: "Вы действительно хотите удалить?",
+    want_undelete: "Вы действительно хотите восстановить?",
     archived: "Архивировано!",
     unarchived: "Разархивировано!",
     add_image: "Добавьте изображение!",

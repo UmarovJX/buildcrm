@@ -5,9 +5,13 @@ import BasePriceInput from "@/components/Reusable/BasePriceInput";
 import { XFormSelect } from "@/components/ui-components/form-select";
 import { mapGetters } from "vuex";
 import CheckoutPermission from "@/permission/checkout";
+import { useShowPrice } from "@/composables/useShowPrice";
 
 export default {
   name: "Calculator",
+  setup() {
+    return useShowPrice();
+  },
   components: {
     // BaseSelect,
     XFormSelect: XFormSelect,
@@ -53,8 +57,9 @@ export default {
     };
   },
   mounted() {
-    this.calc.month = this.apartment?.object?.credit_month;
-    this.monthlyPaymentDuration = this.apartment?.object?.credit_month;
+    this.calc.month = this.apartment?.discounts[0].installment_month || 12;
+    this.monthlyPaymentDuration =
+      this.apartment?.discounts[0].installment_month || 12;
     this.upHillForPrint();
   },
   watch: {
@@ -132,7 +137,7 @@ export default {
       this.calc.debt = this.getDebt();
       this.calc.total = this.getTotal();
       this.calc.base_price = this.getBasePrice();
-      this.calc.month = this.discount.installment_month;
+      this.calc.month = this.discount.installment_month || 12;
       this.calc.total_discount = this.totalDiscount;
       this.calc.less_price = this.lessPrice;
       if (
@@ -419,7 +424,7 @@ export default {
 
       <!--      Price for meters square          -->
       <div
-        v-if="!apartment.object.is_hide_m2_price"
+        v-if="!apartment.object.is_hide_m2_price && showPrice"
         class="d-flex justify-content-between"
       >
         <span class="property d-block color-gray-400">

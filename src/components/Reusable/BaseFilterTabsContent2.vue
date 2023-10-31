@@ -1,44 +1,32 @@
 <script>
 export default {
-  name: "BaseFilterTabsContent",
+  name: "BaseFilterTabsContent2",
   emits: ["get-new-content"],
   props: {
     filterTabList: {
       type: Array,
       required: true,
     },
+    current: {
+      type: String,
+      required: true,
+    },
   },
   mounted() {
-    this.setCurrentStatus();
-  },
-  data() {
-    return {
-      currentStatus: "",
-    };
+    console.log(this.filterTabList);
   },
   watch: {
-    "$route.query": {
-      handler: function () {
-        this.setCurrentStatus();
+    current: {
+      handler(v) {
+        console.log(v);
       },
       deep: true,
     },
   },
   methods: {
     getFilteredContent(status) {
-      this.currentStatus = status;
+      console.log(status);
       this.$emit("get-new-content", status);
-    },
-    setCurrentStatus() {
-      const { query } = this.$route;
-      const hasQueryAndStatus = Object.keys(query).length > 0 && query.status;
-      if (hasQueryAndStatus) {
-        this.currentStatus = query.status;
-      } else if (this.filterTabList && this.filterTabList[0]) {
-        this.currentStatus = this.filterTabList[0].status;
-      } else {
-        this.currentStatus = "";
-      }
     },
   },
 };
@@ -54,7 +42,7 @@ export default {
           @click="getFilteredContent(fTab.status)"
           class="filter__content-item"
           :class="{
-            'filter__content-item-active': fTab.status === currentStatus,
+            'filter__content-item-active': fTab.status === current,
           }"
         >
           <div class="filter__content-item-inline">
@@ -62,7 +50,7 @@ export default {
             <span
               v-if="fTab.counts"
               class="counts"
-              :class="{ active: fTab.status === currentStatus }"
+              :class="{ active: fTab.status === current }"
             >
               {{ fTab.counts }}
             </span>

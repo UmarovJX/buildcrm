@@ -30,6 +30,7 @@ export default {
       variants: "Вариант оплаты",
       m2_price: "Цена продажи за квадрат",
       full_price: "Общая цена",
+      first: "Первый платеж",
       discount_percent: "Скидка в процентах",
       discount_amount: "Общая скидка",
       discounted_price: "Цена со скидкой",
@@ -224,6 +225,10 @@ export default {
     placeholder_uz: "O'zbek tilida",
     placeholder_ru: "Rus tilida",
     slug: "Guruh nomi prefiksi",
+    view: "Право на просмотр",
+    create: "Право на создание",
+    update: "Право на редактирование",
+    delete: "Право на удаление",
     titles: {
       general: "Umumiy",
       objects: "Obyektal",
@@ -482,6 +487,7 @@ export default {
   recheck: "Tekshirish ",
   add: "Qo'shish",
   delete: "O'chirish",
+  undelete: "Восстановить",
   action: "Xarakat",
   search: "Qidirish",
   save: "Saqlash",
@@ -1380,6 +1386,8 @@ export default {
 
     placeholder: {
       name: "Obyekt nomi",
+      is_sold: "Доступность к продаже",
+
       address: "Obyekt manzili",
       full_address: "Shartnoma uchun manzil",
 
@@ -1420,6 +1428,8 @@ export default {
   sweetAlert: {
     want_archive: "Arhivlashni hohlaysizmi?",
     want_unarchive: "Arhivdan olishni hohlaysizmi?",
+    want_delete: "Вы действительно хотите удалить?",
+    want_undelete: "Вы действительно хотите восстановить?",
     archived: "Arhivlandi!",
     unarchived: "Arhivdan olindi!",
     add_image: "Rasm qushing!",

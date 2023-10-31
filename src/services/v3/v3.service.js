@@ -55,6 +55,7 @@ class V3Service extends Core {
     cancel: (b) => this.post("reports/cancel", b),
     findAll: (b) => this.post("reports/findAll", b),
     findAllByUser: (b) => this.post("reports/findAllByUser", b),
+    fetchTypeOptions: () => this.post("reports/types"),
   };
 
   botObjects = {
@@ -68,6 +69,12 @@ class V3Service extends Core {
     fetchPages: (b) => this.post("bot-page/index", b),
     update: (b) => this.post("bot-page/update", b),
     remove: (b) => this.post("bot-page/remove", b),
+  };
+  facility = {
+    create: (b) => this.post("facility/create", b),
+    fetch: (b) => this.post("facility/index", b),
+    update: (b) => this.post("facility/update", b),
+    remove: (b) => this.post("facility/remove", b),
   };
 }
 

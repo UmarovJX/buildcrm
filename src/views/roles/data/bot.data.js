@@ -8,39 +8,34 @@ const values = {
 function pms(name, uuid) {
   return {
     id: uuid,
-    title: "roles_permission.titles.users",
+    title: "Bot",
     active: false,
     parent: "form",
     rows: [
       {
         label: "roles_permission.activate_all",
         refer: "all",
-        parent: "users",
+        parent: "bot",
       },
       {
-        label: "roles_permission.users.watch_users",
+        label: "roles_permission.view",
         refer: "view",
-        parent: "users",
+        parent: "bot",
       },
       {
-        label: "roles_permission.users.create_user",
+        label: "roles_permission.create",
         refer: "create",
-        parent: "users",
+        parent: "bot",
       },
       {
-        label: "roles_permission.users.edit_user",
+        label: "roles_permission.edit",
         refer: "edit",
-        parent: "users",
+        parent: "bot",
       },
       {
-        label: "roles_permission.users.delete_user",
+        label: "roles_permission.delete",
         refer: "delete",
-        parent: "users",
-      },
-      {
-        label: "Unblock_Users",
-        refer: "unblock",
-        parent: "users",
+        parent: "bot",
       },
     ],
   };

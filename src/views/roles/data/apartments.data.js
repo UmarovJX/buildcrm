@@ -55,6 +55,11 @@ function pms(name, uuid) {
         parent: "apartments",
       },
       {
+        label: "Hide__Price",
+        refer: "hidePrice",
+        parent: "apartments",
+      },
+      {
         label: "roles_permission.apartments.filter_apartments",
         refer: "filter",
         parent: "apartments",

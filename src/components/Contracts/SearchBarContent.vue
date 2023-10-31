@@ -25,6 +25,7 @@ import {
 } from "@/util/inspect";
 import { hasOwnProperty } from "@/util/object";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
+import ContractsPermission from "@/permission/contract";
 
 export default {
   name: "SearchBarContent",
@@ -47,6 +48,7 @@ export default {
       isFetching: false,
       objectsFields: [],
       filter: {
+        statuses: [],
         is_expired: false,
         is_duplicate: false,
         object_id: [],
@@ -70,6 +72,7 @@ export default {
       typeOptions: [],
       branchOption: [],
       objectOptions: [],
+      statusOptions: [],
       managerOptions: [],
       clientTypeOptions: [],
       currencyOptions: [
@@ -89,6 +92,7 @@ export default {
       contractDate: null,
       contractPrice: null,
       currency: this.$t("uzs"),
+      filterPermission: ContractsPermission.getContractsFilterPermission(),
     };
   },
   computed: {
@@ -202,59 +206,67 @@ export default {
     async fetchObjectsOption() {
       try {
         this.startFetching();
-        await api.contractV2
-          .fetchObjectsOption()
-          .then((response) => {
-            const {
-              objects,
-              "client-types": clientTypes,
-              date_types,
-              branches,
-              managers,
-              types,
-            } = response.data;
-            this.typeOptions = types.map((el) => ({
-              id: el.type,
-              name: el.name[this.$i18n.locale],
-            }));
-            this.objectOptions = objects;
-            this.branchOption = branches;
-            this.managerOptions = managers.map((m) => {
-              let text = "";
-              if (isNUNEZ(m.last_name)) {
-                text += m.last_name;
-              }
+        if (this.filterPermission) {
+          await api.contractV2
+            .fetchObjectsOption()
+            .then((response) => {
+              const {
+                objects,
+                "client-types": clientTypes,
+                date_types,
+                branches,
+                managers,
+                types,
+                statuses,
+              } = response.data;
+              this.typeOptions = types.map((el) => ({
+                id: el.type,
+                name: el.name[this.$i18n.locale],
+              }));
+              this.objectOptions = objects;
+              this.statusOptions = statuses.map((el) => ({
+                value: el.type,
+                name: el.name[this.$i18n.locale],
+              }));
 
-              if (isNUNEZ(m.first_name)) {
-                text += " " + m.first_name;
-              }
+              this.branchOption = branches;
+              this.managerOptions = managers.map((m) => {
+                let text = "";
+                if (isNUNEZ(m.last_name)) {
+                  text += m.last_name;
+                }
 
-              if (isNUNEZ(m.second_name)) {
-                text += " " + m.second_name;
-              }
+                if (isNUNEZ(m.first_name)) {
+                  text += " " + m.first_name;
+                }
 
-              return {
-                id: m.id,
-                text: text.trim(),
-              };
-            });
-            for (let [, client] of Object.entries(clientTypes)) {
-              this.clientTypeOptions.push({
-                value: client.id,
-                text: client.name,
+                if (isNUNEZ(m.second_name)) {
+                  text += " " + m.second_name;
+                }
+
+                return {
+                  id: m.id,
+                  text: text.trim(),
+                };
               });
-            }
+              for (let [, client] of Object.entries(clientTypes)) {
+                this.clientTypeOptions.push({
+                  value: client.id,
+                  text: client.name,
+                });
+              }
 
-            this.dateTypeOptions = date_types.map((item) => {
-              return {
-                value: item.type,
-                text: item.name[localStorage.locale],
-              };
+              this.dateTypeOptions = date_types.map((item) => {
+                return {
+                  value: item.type,
+                  text: item.name[localStorage.locale],
+                };
+              });
+            })
+            .catch((error) => {
+              this.toastedWithErrorCode(error);
             });
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error);
-          });
+        }
       } finally {
         this.finishFetching();
       }
@@ -277,6 +289,7 @@ export default {
         object_id,
       });
       sortingQuery.page = 1;
+      console.log(sortingQuery);
       this.$emit("search-by-filter", sortInFirstRelationship(sortingQuery));
       this.$refs["filter-modal"].hide();
     },
@@ -382,10 +395,18 @@ export default {
           continue;
         }
 
-        const arrayProps = ["blocks", "floors", "branch", "created_by", "type"];
+        const arrayProps = [
+          "blocks",
+          "floors",
+          "branch",
+          "created_by",
+          "type",
+          "statuses",
+        ];
         if (arrayProps.includes(property)) {
           if (isArray(query)) {
-            if (property === "type") this.filter[property] = query;
+            if (property === "type" || property === "statuses")
+              this.filter[property] = query;
             else this.filter[property] = query.map((p) => parseInt(p));
           } else if (isString(query)) {
             this.filter[property] = [parseInt(query)];
@@ -414,7 +435,11 @@ export default {
       :placeholder="`${$t('contract_number_or_full_name')}`"
       @trigger-input="getInputValue"
     />
-    <base-button @click="showFilterModal" :text="`${$t('contracts.filter')}`">
+    <base-button
+      @click="showFilterModal"
+      :text="`${$t('contracts.filter')}`"
+      v-if="filterPermission"
+    >
       <template #left-icon>
         <base-filter-icon fill="#7C3AED" />
       </template>
@@ -445,8 +470,19 @@ export default {
 
         <div class="modal__content-main">
           <div class="filter__inputs">
+            <!-- STATUS -->
+            <x-form-select
+              class="mt-4"
+              value-field="value"
+              text-field="name"
+              v-model="filter.statuses"
+              :multiple="true"
+              :options="statusOptions"
+              :placeholder="$t('contracts.table.status')"
+            />
             <x-form-select
               value-field="id"
+              class="mt-3"
               text-field="name"
               getter="full"
               v-model="filter.object_id"
@@ -686,7 +722,7 @@ export default {
             <base-button
               @click="clearFilter"
               :fixed="true"
-              design="transparent"
+              design="release-info"
               :text="`${$t('contracts.reset_filter')}`"
             />
             <base-button
@@ -832,8 +868,20 @@ export default {
 
 .modal__footer {
   display: flex;
+  align-items: end;
+  width: 590px;
+  height: 150px;
   column-gap: 0.5rem;
   padding-bottom: 3rem;
+  position: fixed;
+  bottom: 0px;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 1) 40%,
+    rgba(255, 255, 255, 0.8) 80%,
+    rgba(255, 255, 255, 0)
+  );
 }
 
 ::v-deep .filter__inputs-tag {

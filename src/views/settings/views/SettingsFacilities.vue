@@ -1,36 +1,31 @@
 <script>
+import { v3ServiceApi } from "@/services/v3/v3.service";
 import api from "@/services/api";
 import SettingsPermission from "@/permission/settings.permission";
 import { XButton } from "@/components/ui-components/button";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XCircularBackground } from "@/components/ui-components/circular-background";
-import SettingsCreateTranslation from "@/views/settings/components/SettingsCreateTranslation.vue";
-import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
-import { XFormInput } from "@/components/ui-components/form-input";
-import SettingsUpdateTranslationTags from "@/views/settings/components/SettingsUpdateTranslationTags.vue";
-import BaseButton from "@/components/Reusable/BaseButton";
+import SettingsCreateFacility from "@/views/settings/components/SettingsCreateFacility.vue";
+
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 
 export default {
-  name: "SettingsStatuses",
+  name: "SettingsFacilities",
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
-    BaseButton,
-    SettingsUpdateTranslationTags,
-    XFormInput,
-    BaseTabPicker,
+
     BaseLoading,
     XButton,
     XIcon,
     XCircularBackground,
-    SettingsCreateTranslation,
+    SettingsCreateFacility,
   },
   data() {
     return {
-      showByValue: 100,
+      showByValue: 10,
       allLangs: [],
       pagination: {},
       currentLang: "",
@@ -52,27 +47,34 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("translations.view"),
-        create: SettingsPermission.getPermission("translations.create"),
-        edit: SettingsPermission.getPermission("translations.edit"),
-        delete: SettingsPermission.getPermission("translations.delete"),
+        view: SettingsPermission.getPermission("facilities.view"),
+        create: SettingsPermission.getPermission("facilities.create"),
+        edit: SettingsPermission.getPermission("facilities.edit"),
+        delete: SettingsPermission.getPermission("facilities.delete"),
       },
     };
   },
   computed: {
+    query() {
+      return this.$route.query;
+    },
     tableFields() {
       const fields = [
         {
-          key: "key",
-          label: this.$t("key"),
-          class: "wwwww",
+          key: "name",
+          label: this.$t("name"),
+          formatter: (name) => name[this.$i18n.locale],
         },
         {
-          key: "tags",
-          label: "tags",
-          thStyle: "width: 200px",
+          key: "upload",
+          label: this.$t("image"),
         },
-        { key: "value." + this.currentLang, label: "Translation" },
+
+        // {
+        //   key: "tags",
+        //   label: "tags",
+        //   thStyle: "width: 200px",
+        // },
       ];
       if (this.permission.edit) {
         fields.push({
@@ -84,6 +86,11 @@ export default {
       return fields;
     },
   },
+  watch: {
+    query() {
+      this.fetchItems();
+    },
+  },
   created() {
     api.languagesV3.getAllLanguages().then((res) => {
       this.allLangs.push(...res.data.result);
@@ -92,36 +99,19 @@ export default {
     this.fetchItems();
   },
   methods: {
-    saveAllTranslations() {
-      this.table.loading = true;
-      api.translationsV3
-        .bulkSave({ items: this.table.items })
-        .then(() => {
-          this.$toasted.show(`All translations were succesfully updated`, {
-            type: "success",
-          });
-          this.fetchItems();
-        })
-        .catch(() => {
-          this.toastedWithErrorCode(
-            "Somewthing went wrong on updating records"
-          );
-          this.table.loading = false;
-        });
-    },
     changeFetchLimit() {
       const query = {
         ...this.query,
         page: this.query.page || 1,
       };
       const limit = this.showByValue;
-      this.pushRouter({ ...query, limit });
+      this.$router.replace({ query: { ...query, limit } });
     },
 
     changeCurrentPage(page) {
       const currentPage = this.query.page;
       if (page === currentPage) return;
-      this.replaceRouter({ ...this.query, page });
+      this.$router.replace({ query: { ...this.query, page } });
     },
     setTab(e) {
       this.currentLang = e;
@@ -132,20 +122,19 @@ export default {
     finishLoading() {
       this.table.loading = false;
     },
-    createTranslation() {
+    createVersion() {
       this.setUpsertType("create");
-      this.openTranslationCreationModal();
+      this.openVersionCreationModal();
     },
     async fetchItems() {
       try {
         this.startLoading();
-        const response = await api.translationsV3.getTranslations({
-          page: 1,
-          limit: this.showByValue,
+        const response = await v3ServiceApi.facility.fetch({
+          page: this.query.page || 1,
+          limit: this.query.limit || this.showByValue,
         });
         this.table.items = response.data.result.map((el) => ({
           ...el,
-          loading: false,
         }));
         this.table.pagination = response.data.pagination;
       } catch (e) {
@@ -159,27 +148,18 @@ export default {
         this.upsertType = eType;
       }
     },
-    openTranslationCreationModal() {
+    openVersionCreationModal() {
       this.showCreateModal = true;
     },
-    closeTranslationCreationModal() {
+    closeVersionCreationModal() {
       this.showCreateModal = false;
-    },
-    openEditTagsModal() {
-      this.showEditTagModal = true;
-    },
-    closeEditTagsModal() {
-      this.showEditTagModal = false;
     },
 
     translationCreated() {
-      this.closeTranslationCreationModal();
+      this.closeVersionCreationModal();
       this.fetchItems();
     },
-    tagsUpdated() {
-      this.closeEditTagsModal();
-      this.fetchItems();
-    },
+
     async deleteItem(typeId) {
       this.$swal({
         title: this.$t("sweetAlert.title"),
@@ -192,9 +172,7 @@ export default {
         if (result.value) {
           try {
             this.startLoading();
-            await api.translationsV3.removeTranslation({
-              id: typeId,
-            });
+            await v3ServiceApi.facility.remove({ id: typeId });
             await this.fetchItems();
           } catch (e) {
             this.toastedWithErrorCode(e);
@@ -204,32 +182,20 @@ export default {
         }
       });
     },
-    updateTags(item) {
-      this.editTags = item;
-      this.showEditTagModal = true;
-    },
-    async saveTranslation(i) {
-      const item = this.table.items[i];
-      if (item.loading) return console.log("fast");
-      const d = {
-        id: item.id,
-        key: item.key,
-        value: item.value,
-        tags: item.tags,
-      };
-      item.loading = true;
-      api.translationsV3
-        .updateTranslation(d)
-        .then(() =>
-          this.$toasted.show(
-            `Translation for key "${this.table.items[i].key}" succesfully updated`,
-            {
-              type: "success",
-            }
-          )
-        )
-        .catch((err) => this.toastedWithErrorCode(err))
-        .finally(() => (item.loading = false));
+
+    async editItem(item) {
+      try {
+        this.editStorage = {
+          id: item.id,
+          name: item.name,
+          upload_id: item.upload.id,
+          img: item.upload.path,
+        };
+        this.setUpsertType("edit");
+        this.openVersionCreationModal();
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      }
     },
   },
 };
@@ -238,24 +204,19 @@ export default {
 <template>
   <div class="app-settings-client-type">
     <!-- TODO: CLIENT TYPES TABLE   -->
-    <div class="d-flex justify-content-between mb-4">
+    <div class="d-flex mb-4 justify-content-end">
       <!-- <h3
         class="x-font-size-1p5 font-craftworksans color-gray-400 d-flex align-items-center"
       >
         {{ $t("translations") }}
       </h3> -->
-      <base-tab-picker
-        :options="allLangs"
-        noAll
-        :current="currentLang"
-        @tab-selected="setTab"
-      ></base-tab-picker>
+
       <x-button
         v-if="permission.create"
         variant="secondary"
-        text="Add translation"
+        text="Add Facility"
         :bilingual="true"
-        @click="createTranslation"
+        @click="createVersion"
       >
         <template #left-icon>
           <x-icon name="add" class="violet-600" />
@@ -289,48 +250,35 @@ export default {
         </span>
       </template>
 
-      <template #cell(tags)="{ item }">
-        <div class="d-flex align-items-center" title="Edit Tags">
-          <div class="mr-1 cursor-pointer">
-            <x-circular-background
-              v-if="permission.edit"
-              @click="updateTags(item)"
-              class="bg-violet-600"
-            >
-              <x-icon name="edit" class="color-white" />
-            </x-circular-background>
-          </div>
-          <div>
-            <div v-for="tag in item.tags" :key="tag" class="tag">
-              <span
-                class="border-radius-2 background-violet-100 violet-600 translation-tag"
-                >{{ tag }}</span
-              >
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #[`cell(value.${currentLang})`]="{ item, index }">
-        <div class="d-flex align-items-center">
-          <x-form-input
-            :readonly="!permission.edit"
-            type="text"
-            :placeholder="item.key"
-            class="w-100"
-            v-model="table.items[index].value[currentLang]"
-          />
-        </div>
+      <template #cell(upload)="{ item }">
+        <img
+          :src="item.upload.path"
+          style="cursor: pointer; object-fit: contain"
+          width="60"
+          height="60"
+          alt="plan_image"
+          fluid
+        />
       </template>
 
-      <template #cell(actions)="{ item, index }">
-        <div class="float-right d-flex x-gap-1 cursor-pointer flex-column">
+      <template #cell(actions)="{ item }">
+        <div class="float-right d-flex x-gap-1 cursor-pointer">
+          <div :style="item.loading ? 'opacity: 0.5' : ''" title="save">
+            <x-circular-background
+              v-if="permission.delete"
+              @click="deleteItem(item.id)"
+              class="bg-red-600"
+            >
+              <x-icon name="delete" class="color-white" />
+            </x-circular-background>
+          </div>
           <div :style="item.loading ? 'opacity: 0.5' : ''" title="save">
             <x-circular-background
               v-if="permission.edit"
-              @click="saveTranslation(index)"
+              @click="editItem(item)"
               class="bg-violet-600"
             >
-              <x-icon name="save" class="color-white" />
+              <x-icon name="edit" class="color-white" />
             </x-circular-background>
           </div>
         </div>
@@ -379,27 +327,14 @@ export default {
           </template>
         </x-form-select>
       </div> -->
-      <base-button
-        v-if="permission.edit"
-        class="float-right"
-        design="violet-gradient px-5"
-        :text="$t('Save All')"
-        @click="saveAllTranslations"
-      />
     </div>
-    <settings-update-translation-tags
-      v-if="showEditTagModal"
-      :edit-item="editTags"
-      @close-modal="closeEditTagsModal"
-      @tags-updated="tagsUpdated"
-    ></settings-update-translation-tags>
 
-    <settings-create-translation
-      :all-languages="allLangs"
+    <settings-create-facility
+      :all-langs="allLangs"
       v-if="showCreateModal"
       :upsert-type="upsertType"
       :edit-item="editStorage"
-      @close-creating-modal="closeTranslationCreationModal"
+      @close-creating-modal="closeVersionCreationModal"
       @client-type-created="translationCreated"
     />
   </div>

@@ -2,7 +2,7 @@
 import api from "@/services/api";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 
-import SettingsPermission from "@/permission/settings.permission";
+import Permission from "@/permission";
 import { XButton } from "@/components/ui-components/button";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
@@ -11,9 +11,13 @@ import CreateBotObject from "@/views/bot/components/CreateBotObject.vue";
 import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
 import { XFormInput } from "@/components/ui-components/form-input";
 
+import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 export default {
   name: "SettingsStatuses",
   components: {
+    BaseArrowLeftIcon,
+    BaseArrowRightIcon,
     CreateBotObject,
     XFormInput,
     BaseTabPicker,
@@ -44,10 +48,8 @@ export default {
         loading: false,
       },
       permission: {
-        view: SettingsPermission.getPermission("statuses.view"),
-        create: SettingsPermission.getPermission("statuses.create"),
-        edit: SettingsPermission.getPermission("statuses.edit"),
-        delete: SettingsPermission.getPermission("statuses.delete"),
+        create: Permission.getUserPermission("bot.create"),
+        update: Permission.getUserPermission("bot.update"),
       },
     };
   },
@@ -183,8 +185,9 @@ export default {
         @tab-selected="setTab"
       ></base-tab-picker>
       <x-button
+        v-if="permission.create"
         variant="secondary"
-        text="Add Bot Page"
+        text="Add Bot Object"
         :bilingual="true"
         @click="create"
       >
@@ -223,6 +226,7 @@ export default {
       <template #cell(title)="{ index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            :readonly="!permission.update"
             type="text"
             :placeholder="$t('bot.table_title')"
             class="w-100"
@@ -233,6 +237,7 @@ export default {
       <template #cell(description)="{ index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            :readonly="!permission.update"
             type="text"
             :placeholder="$t('bot.description')"
             class="w-100"
@@ -243,6 +248,7 @@ export default {
       <template #cell(position)="{ item, index }">
         <div class="d-flex align-items-center">
           <x-form-input
+            :readonly="!permission.update"
             type="number"
             :placeholder="$t('bot.position')"
             class="w-100"
@@ -253,13 +259,61 @@ export default {
             title="save"
             class="ml-1 cursor-pointer"
           >
-            <x-circular-background @click="update(item)" class="bg-violet-600">
+            <x-circular-background
+              @click="update(item)"
+              class="bg-violet-600"
+              v-if="permission.update"
+            >
               <x-icon name="edit" class="color-white" />
             </x-circular-background>
           </div>
         </div>
       </template>
     </b-table>
+    <div class="pagination__vue">
+      <!--   Pagination   -->
+      <vue-paginate
+        v-if="!table.loading && table.pagination.totalPage"
+        :page-count="table.pagination.totalPage"
+        :value="table.pagination.current"
+        :container-class="'container'"
+        :page-class="'page-item'"
+        :page-link-class="'page-link'"
+        :next-class="'page-item'"
+        :prev-class="'page-item'"
+        :prev-link-class="'page-link'"
+        :next-link-class="'page-link'"
+        @change-page="changeCurrentPage"
+      >
+        <template #next-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-right-icon />
+          </span>
+        </template>
+
+        <template #prev-content>
+          <span class="d-flex align-items-center justify-content-center">
+            <base-arrow-left-icon />
+          </span>
+        </template>
+      </vue-paginate>
+
+      <!--  Show By Select    -->
+      <!-- <div class="show__by">
+        <x-form-select
+          :label="false"
+          :options="showByOptions"
+          v-model="showByValue"
+          @change="limitChanged"
+        >
+          <template #output-prefix>
+            <span class="show-by-description">
+              {{ $t("contracts.show_by") }}:
+            </span>
+          </template>
+        </x-form-select>
+      </div> -->
+    </div>
     <create-bot-object
       :all-languages="allLangs"
       v-if="showCreateModal"
@@ -270,6 +324,8 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/scss/utils/pagination";
+
 @import "@/assets/scss/utils/b-table-redesign.scss";
 @import "@/views/settings/assets/crudTable.scss";
 .translation-tag {
