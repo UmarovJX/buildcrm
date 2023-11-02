@@ -54,6 +54,8 @@ export default {
       ApartmentsPermission.getApartmentsPermission("view"),
     promosViewPermission: PromosPermission.getPromosViewPermission(),
     plansViewPermission: PlansPermission.getPlansViewPermission(),
+    manageFacilitiesPermission:
+      ObjectsPermission.getObjectsPermission("manage_facilities"),
   }),
 
   mounted() {
@@ -281,6 +283,16 @@ export default {
                   <i class="fal fa-parking"></i>
                   <span>
                     {{ $t("parkings") }}
+                  </span>
+                </router-link>
+                <router-link
+                  v-if="manageFacilitiesPermission"
+                  :to="{ name: 'facilities', params: { object: object.id } }"
+                  :class="'dropdown-item'"
+                >
+                  <i class="fal fa-map-marker-alt"></i>
+                  <span>
+                    {{ $t("Facilities") }}
                   </span>
                 </router-link>
 

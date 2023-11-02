@@ -27,6 +27,8 @@ import TypePlanList from "./components/Dashboard/TypePlan/List";
 import TypePlanEdit from "./components/Dashboard/TypePlan/Edit.vue";
 
 import TypeParkingList from "./components/Dashboard/TypeParking/List";
+import Facilities from "@/views/facilities/Index";
+import FacilitiesShow from "@/views/facilities/Show";
 
 import ConfirmApartment from "./components/Dashboard/Apartment/ConfirmApartment.vue";
 import EditApartment from "./components/Dashboard/Apartment/EditApartment";
@@ -70,6 +72,9 @@ import Editor from "@/views/Editor.vue";
 
 /*? PARKING ROUTES*/
 import ParkingCheckout from "@/views/parking/checkout/Index.vue";
+
+import BadContracts from "@/views/contracts/BadContracts";
+import BadContractDetails from "@/views/contracts/BadContractDetails";
 
 const routes = [
   {
@@ -387,6 +392,24 @@ const routes = [
           requiresAuth: "contracts",
         },
       },
+      {
+        name: "bad-contracts",
+        path: "/contracts/issues",
+        component: BadContracts,
+        meta: {
+          requiresAuth: "contracts",
+          parent: "contracts",
+        },
+      },
+      {
+        name: "bad-contract-details",
+        path: "/contracts/issues/:contract",
+        component: BadContractDetails,
+        meta: {
+          requiresAuth: "contracts",
+          parent: "contracts",
+        },
+      },
 
       {
         /* CONTRACTS VIEW */
@@ -523,6 +546,24 @@ const routes = [
         component: TypeParkingList,
         meta: {
           requiresAuth: "plans",
+        },
+      },
+      {
+        /* FACILITIES */
+        name: "facilities",
+        path: "/facilities/:object",
+        component: Facilities,
+        meta: {
+          requiresAuth: "objects.manage_facilities",
+        },
+      },
+      {
+        /* FACILITIES */
+        name: "facilities-show",
+        path: "/facilities/show/:object",
+        component: FacilitiesShow,
+        meta: {
+          requiresAuth: "apartments",
         },
       },
 

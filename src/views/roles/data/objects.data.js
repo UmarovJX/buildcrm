@@ -4,6 +4,7 @@ const values = {
   edit: false,
   delete: false,
   upload_logo: false,
+  manage_facilities: false,
 };
 
 function pms(name, uuid) {
@@ -41,6 +42,11 @@ function pms(name, uuid) {
       {
         label: "roles_permission.objects.download_logo",
         refer: "upload_logo",
+        parent: "objects",
+      },
+      {
+        label: "roles_permission.objects.manage_facilities",
+        refer: "manage_facilities",
         parent: "objects",
       },
     ],

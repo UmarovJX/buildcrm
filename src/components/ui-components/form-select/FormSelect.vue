@@ -68,7 +68,7 @@ export default {
     optionWrapperStyle() {
       if (!this.open) {
         return {
-          visibility: "hidden",
+          display: "none",
         };
       }
       return {};
@@ -159,14 +159,15 @@ export default {
   },
   methods: {
     findOutputPosition() {
-      // const windowHeight = window.innerHeight;
-      // const formSelectRect =
-      //   this.$refs["x-form-select"].getBoundingClientRect();
-      // const { height: optionsTotalHeight } =
-      //   this.$refs["k-form-options-wrapper"].getBoundingClientRect();
-      // const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom;
-      // this.showBottomToTop =
-      //   distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight;
+      const windowHeight = window.innerHeight;
+      const formSelectRect =
+        this.$refs["x-form-select"].getBoundingClientRect();
+      const { height: optionsTotalHeight } =
+        this.$refs["k-form-options-wrapper"].getBoundingClientRect();
+      const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom;
+      this.showBottomToTop =
+        distanceCellBetweenBottom <
+        formSelectRect.height + optionsTotalHeight + 100;
     },
     lunch() {
       const { textField, valueField } = this;

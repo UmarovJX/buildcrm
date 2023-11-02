@@ -31,10 +31,13 @@ import {
 import { hasOwnProperty, keys } from "@/util/object";
 import { formatDateToHM } from "@/util/date/calendar.util";
 import Permission from "@/permission";
+import BaseButton from "@/components/Reusable/BaseButton";
+import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "Contracts",
   components: {
+    BaseButton,
     ApproverList,
     ExportDropdown,
     AppHeader,
@@ -159,6 +162,7 @@ export default {
       permissionDownloadReport,
       filterPermission: ContractsPermission.getContractsFilterPermission(),
       downloadPermission: ContractsPermission.getContractsDownloadPermission(),
+      paymentHistorySC: null,
     };
   },
   computed: {
@@ -291,8 +295,15 @@ export default {
       : this.query.is_reorder
       ? "is_reorder"
       : "";
+
+    v3ServiceApi.orders.getPaymentHistoryStatusCount().then((res) => {
+      this.paymentHistorySC = res.data;
+    });
   },
   methods: {
+    goToBadContracts() {
+      this.$router.push({ name: "bad-contracts" });
+    },
     formattingPhone: (phone) => phonePrettier(phone),
     dateReverser: (time) => formatDateWithDot(time),
     async fetchStatusesOfCounts() {
@@ -554,6 +565,16 @@ export default {
       </template>
 
       <template #header-actions>
+        <div
+          v-if="
+            paymentHistorySC &&
+            (paymentHistorySC.problematic_contract_count > 0 ||
+              paymentHistorySC.without_contract_count > 0)
+          "
+        >
+          <base-button @click="goToBadContracts" text="Bad Contracts">
+          </base-button>
+        </div>
         <export-dropdown v-if="permissionDownloadReport" />
       </template>
     </app-header>

@@ -478,6 +478,35 @@ export default {
                   :placeholder="$t('objects.placeholder.full_address')"
                 />
               </div>
+              <div class="mb-1">Location</div>
+              <div class="row mb-3">
+                <div class="col-4">
+                  <label for="latitude" class="form-label">
+                    {{ $t("Latitude") }}
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="latitude"
+                    v-model="object.location.latitude"
+                    required
+                    :placeholder="$t('latitude')"
+                  />
+                </div>
+                <div class="col-4">
+                  <label for="longitude" class="form-label">
+                    {{ $t("Longitude") }}
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="longitude"
+                    v-model="object.location.longitude"
+                    required
+                    :placeholder="$t('longitude')"
+                  />
+                </div>
+              </div>
 
               <!-- SLUG -->
               <div class="mb-3">
@@ -581,6 +610,11 @@ export default {
               <div class="mb-3">
                 <b-form-checkbox v-model="object.is_parking" switch>
                   {{ $t("objects.hasParking") }}
+                </b-form-checkbox>
+              </div>
+              <div class="mb-3">
+                <b-form-checkbox v-model="object.is_map" switch>
+                  {{ $t("objects.isMap") }}
                 </b-form-checkbox>
               </div>
             </div>

@@ -84,6 +84,7 @@ Vue.use(Toasted, {
 Vue.use(VueYandexMetrika, {
   id: 95343388,
   router,
+  // eslint-disable-next-line no-undef
   env: process.env.NODE_ENV,
   options: {
     clickmap: true,

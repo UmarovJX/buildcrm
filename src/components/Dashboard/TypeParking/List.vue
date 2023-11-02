@@ -346,7 +346,6 @@ export default {
           </template>
         </b-table>
         <div class="pagination__vue" v-if="!showLoading && totalPage">
-          <!--   Pagination   -->
           <vue-paginate
             :page-count="totalPage"
             :value="page"
@@ -372,7 +371,6 @@ export default {
             </template>
           </vue-paginate>
 
-          <!--  Show By Select    -->
           <div class="show__by">
             <x-form-select
               :label="false"
