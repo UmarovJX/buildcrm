@@ -83,6 +83,12 @@ class V3Service extends Core {
     findAll: (b) => this.post("orders/payment-history/findAll", b),
     findByContract: (b) =>
       this.post("orders/payment-history/findByContract", b),
+    contractFilterList: (b) => this.post("orders/contractFilterList", b),
+    bulkUpdate: (c, id) =>
+      this.put(
+        `orders/payment-history/bulkUpdate?contract=${c}&order_uuid=${id}`
+      ),
+    statisticsTotal: () => this.post("orders/payment-history/statisticsTotal"),
   };
 }
 

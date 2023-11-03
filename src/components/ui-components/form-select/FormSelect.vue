@@ -157,6 +157,9 @@ export default {
     this.lunch();
     this.findOutputPosition();
   },
+  beforeUpdate() {
+    this.findOutputPosition();
+  },
   methods: {
     findOutputPosition() {
       const windowHeight = window.innerHeight;
@@ -167,7 +170,8 @@ export default {
       const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom;
       this.showBottomToTop =
         distanceCellBetweenBottom <
-        formSelectRect.height + optionsTotalHeight + 100;
+        formSelectRect.height * this.options.length + 50;
+      // distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight;
     },
     lunch() {
       const { textField, valueField } = this;
