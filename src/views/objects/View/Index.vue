@@ -19,10 +19,13 @@ import { mapGetters } from "vuex";
 import { isPrimitiveValue } from "@/util/reusable";
 import { sessionStorageGetItem, sessionStorageSetItem } from "@/util/storage";
 import AppHeader from "@/components/Header/AppHeader";
-
+import { XIcon } from "@/components/ui-components/material-icons";
+import { XCircularBackground } from "@/components/ui-components/circular-background";
 export default {
   name: "Objects",
   components: {
+    XIcon,
+    XCircularBackground,
     AppHeader,
     BaseCloseIcon,
     BaseArrowRight,
@@ -329,13 +332,12 @@ export default {
 
       if (this.currentTab === "ParkingTable") {
         this.fetchParkingStatusList();
-      }
-      else {
+      } else {
         this.statusList = this.apartmentStatusList;
       }
 
-      if(this.currentTab === 'ObjectTable'){
-        this.fetchNecessary()
+      if (this.currentTab === "ObjectTable") {
+        this.fetchNecessary();
       }
     },
   },
@@ -370,6 +372,12 @@ export default {
     this.getBlockName();
   },
   methods: {
+    showFacilities() {
+      this.$router.push({
+        name: "facilities-show",
+        params: { object: this.$route.params.object },
+      });
+    },
     async fetchParkingStatusList() {
       const { object } = this.$route.params;
       this.statusCounter = {};
@@ -407,11 +415,13 @@ export default {
             (_obj) => _obj.id === _b.building.id
           );
           if (idx !== -1) {
-            const blockIdx = this.gridApartments[idx].blocks.findIndex(block => {
-             return block.id === _b.block.id
-            })
+            const blockIdx = this.gridApartments[idx].blocks.findIndex(
+              (block) => {
+                return block.id === _b.block.id;
+              }
+            );
 
-            if(blockIdx === -1){
+            if (blockIdx === -1) {
               this.gridApartments[idx].blocks.push(_b.block);
             }
           }
@@ -429,7 +439,6 @@ export default {
             this.query,
             this.gridApartments
           );
-
         } else {
           this.chessApartments = this.gridApartments;
         }
@@ -1046,6 +1055,20 @@ export default {
               </div>
             </div>
           </div>
+        </div>
+      </template>
+
+      <template #header-actions>
+        <div>
+          <base-button
+            @click="showFacilities"
+            text="Map"
+            design="violet-gradient"
+          >
+            <template #left-icon>
+              <i class="fas fa-map-marker-alt" style="font-size: 20px"></i>
+            </template>
+          </base-button>
         </div>
       </template>
     </app-header>

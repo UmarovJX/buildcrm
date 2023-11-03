@@ -16,6 +16,13 @@ class ObjectsV3 extends Core {
   setArchive(body) {
     return this.post("objects/isArchive", body);
   }
+
+  getFacilities(body) {
+    return this.post("objects/show", body);
+  }
+  attachFacilities(body) {
+    return this.post("objects/attachFacilities", body);
+  }
 }
 
 class ObjectsV1Crm extends Core {

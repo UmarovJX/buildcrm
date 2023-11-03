@@ -76,6 +76,20 @@ class V3Service extends Core {
     update: (b) => this.post("facility/update", b),
     remove: (b) => this.post("facility/remove", b),
   };
+
+  orders = {
+    getPaymentHistoryStatusCount: () =>
+      this.post("orders/payment-history/statusCount"),
+    findAll: (b) => this.post("orders/payment-history/findAll", b),
+    findByContract: (b) =>
+      this.post("orders/payment-history/findByContract", b),
+    contractFilterList: (b) => this.post("orders/contractFilterList", b),
+    bulkUpdate: (c, id) =>
+      this.put(
+        `orders/payment-history/bulkUpdate?contract=${c}&order_uuid=${id}`
+      ),
+    statisticsTotal: () => this.post("orders/payment-history/statisticsTotal"),
+  };
 }
 
 export const v3ServiceApi = new V3Service();
