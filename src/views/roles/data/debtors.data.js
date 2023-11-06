@@ -1,5 +1,6 @@
 const values = {
   view: false,
+  manage_issues: false,
   // import: false
 };
 
@@ -18,6 +19,11 @@ function pms(name, uuid) {
       {
         label: "roles_permission.debtors.watch_debtors",
         refer: "view",
+        parent: "debtors",
+      },
+      {
+        label: "Работа с проблемными платежами",
+        refer: "manage_issues",
         parent: "debtors",
       },
     ],

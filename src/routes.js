@@ -73,8 +73,8 @@ import Editor from "@/views/Editor.vue";
 /*? PARKING ROUTES*/
 import ParkingCheckout from "@/views/parking/checkout/Index.vue";
 
-import BadContracts from "@/views/contracts/BadContracts";
-import BadContractDetails from "@/views/contracts/BadContractDetails";
+import BadContracts from "@/views/debtors/BadContracts";
+import BadContractDetails from "@/views/debtors/BadContractDetails";
 
 const routes = [
   {
@@ -394,20 +394,20 @@ const routes = [
       },
       {
         name: "bad-contracts",
-        path: "/contracts/issues",
+        path: "/debtors/issues",
         component: BadContracts,
         meta: {
           requiresAuth: "contracts",
-          parent: "contracts",
+          parent: "debtors",
         },
       },
       {
         name: "bad-contract-details",
-        path: "/contracts/issues/:contract",
+        path: "/debtors/issues/:contract",
         component: BadContractDetails,
         meta: {
           requiresAuth: "contracts",
-          parent: "contracts",
+          parent: "debtors",
         },
       },
 

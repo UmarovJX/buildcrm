@@ -28,6 +28,8 @@ import {
   isUndefinedOrNullOrEmpty,
 } from "@/util/inspect";
 import { hasOwnProperty } from "@/util/object";
+import { v3ServiceApi } from "@/services/v3/v3.service";
+import DebtorsPermission from "@/permission/debtors";
 
 export default {
   name: "Debtors",
@@ -47,7 +49,10 @@ export default {
   },
   data() {
     const query = Object.assign({}, this.$route.query);
-    const hasStarterMoment = query.hasOwnProperty("starter_moment");
+    const hasStarterMoment = Object.prototype.hasOwnProperty.call(
+      query,
+      "starter_moment"
+    );
     let sortBy = query.sort_by;
     let orderBy = query.order_by;
 
@@ -91,6 +96,7 @@ export default {
       query.type_of_view ?? "list"; /* list / month / week / day */
 
     return {
+      paymentHistorySC: null,
       table,
       list: {
         items: [],
@@ -129,6 +135,9 @@ export default {
       typeOfView,
       lastParams: null,
       appLoading: false,
+
+      manageIssuesPermission:
+        DebtorsPermission.getDebtorsPermission("manage_issues"),
     };
   },
   computed: {
@@ -143,13 +152,14 @@ export default {
           key: "client",
           label: this.$t("contracts.table.client"),
           formatter: (client) => {
-            if (client.attributes) {
+            if (client.attributes.last_name) {
               return (
                 client.attributes.last_name.lotin +
                 " " +
                 client.attributes.first_name.lotin
               );
             }
+            if (client.attributes.name) return client.attributes.name;
             return "";
           },
           sortable: true,
@@ -218,8 +228,15 @@ export default {
   created() {
     this.initStarterMoment();
     this.initDebtorUi();
+
+    v3ServiceApi.orders.getPaymentHistoryStatusCount().then((res) => {
+      this.paymentHistorySC = res.data;
+    });
   },
   methods: {
+    goToBadContracts() {
+      this.$router.push({ name: "bad-contracts" });
+    },
     isNotUndefinedNullEmptyZero,
     openImportModal() {
       this.$refs["import-debtors"].openModal();
@@ -269,7 +286,7 @@ export default {
         }
         return "";
       }
-
+      if (client.attributes.name) return client.attributes.name;
       const { first_name, last_name, middle_name } = client.attributes;
       return (
         this.clientName(last_name, language) +
@@ -377,7 +394,10 @@ export default {
       this.initDebtorUi();
     },
     initStarterMoment() {
-      const hasStarterTime = this.query.hasOwnProperty("starter_moment");
+      const hasStarterTime = Object.prototype.hasOwnProperty.call(
+        this.query,
+        "starter_moment"
+      );
       if (!hasStarterTime) {
         const starter_moment = formatDateToYMD(new Date());
         this.changeRouterQuery({ starter_moment });
@@ -414,9 +434,18 @@ export default {
       } else {
         params.limit = this.tablePagination.limit;
         params.page = this.tablePagination.current;
-        const hasSortBy = this.query.hasOwnProperty("sort_by");
-        const hasOrderBy = this.query.hasOwnProperty("order_by");
-        const hasSearchQuery = this.query.hasOwnProperty("search");
+        const hasSortBy = Object.prototype.hasOwnProperty.call(
+          this.query,
+          "sort_by"
+        );
+        const hasOrderBy = Object.prototype.hasOwnProperty.call(
+          this.query,
+          "order_by"
+        );
+        const hasSearchQuery = Object.prototype.hasOwnProperty.call(
+          this.query,
+          "search"
+        );
 
         if (hasSortBy) {
           params.sort_by = this.query.sort_by;
@@ -763,6 +792,17 @@ export default {
         {{ $t("debtors.title") }}
       </template>
       <template #header-actions>
+        <div
+          v-if="
+            manageIssuesPermission &&
+            paymentHistorySC &&
+            (paymentHistorySC.problematic_contract_count > 0 ||
+              paymentHistorySC.without_contract_count > 0)
+          "
+        >
+          <base-button @click="goToBadContracts" text="Bad Contracts">
+          </base-button>
+        </div>
         <base-button
           @click="openImportModal"
           :text="$t('debtors.import_debtors')"
@@ -838,6 +878,7 @@ export default {
         </template>
 
         <!--  SHOW EMPTY MESSAGE WHEN CONTENT NOT FOUND   -->
+        <!-- eslint-disable-next-line vue/no-useless-template-attributes -->
         <template class="text-center" #empty>
           <div
             class="d-flex justify-content-center align-items-center flex-column not__found"

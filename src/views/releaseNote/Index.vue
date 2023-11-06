@@ -444,10 +444,10 @@ export default {
         </div>
       </template>
       <template #footer>
-        <div class="release-info-footer">
+        <!-- <div class="release-info-footer">
           <BaseQuestionsIcon :height="20" :width="20" />
           <p>{{ $t("release_note.userComment") }}</p>
-        </div>
+        </div> -->
       </template>
     </base-modal>
 
