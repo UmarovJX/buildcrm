@@ -52,7 +52,10 @@ export default {
 
       totalPage: 0,
       showByValue: +this.$route.query.limit || 20,
-      showByOptions: [5, 10, 20, 30].map((el) => ({ value: el, text: el })),
+      showByOptions: [10, 20, 30, 40, 50].map((el) => ({
+        value: el,
+        text: el,
+      })),
 
       fields: [
         {
