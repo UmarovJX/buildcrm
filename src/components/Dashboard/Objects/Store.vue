@@ -302,7 +302,11 @@ export default {
 
         if (status === 200) {
           this.object = {};
-          this.object = { ...data, is_parking: !!data.is_parking };
+          this.object = {
+            ...data,
+            is_parking: !!data.is_parking,
+            location: data.location || {},
+          };
         }
 
         this.getLoading = false;

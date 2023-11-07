@@ -115,11 +115,7 @@ export default {
       });
     }
 
-    let { search: searchValue, limit: showByValue } = this.$route.query;
-
-    if (!showByValue) {
-      showByValue = 20;
-    }
+    let { search: searchValue, limit: showByValue = 20 } = this.$route.query;
 
     const contractsPermission = ContractsPermission.contracts();
 
@@ -130,6 +126,7 @@ export default {
       : false;
 
     return {
+      hack: true,
       currentTab: "",
       timeout: null,
       hasAdminRole,
@@ -284,8 +281,7 @@ export default {
     // },
   },
   created() {
-    Promise.allSettled([this.fetchContractList()]);
-
+    this.fetchContractList();
     this.currentTab = this.query.is_archive
       ? "is_archive"
       : this.query.is_trashed
@@ -307,6 +303,10 @@ export default {
       }
     },
     limitChanged() {
+      if (this.hack) {
+        this.hack = false;
+        return;
+      }
       this.changeFetchLimit();
     },
     checkLocales(name) {
@@ -513,7 +513,6 @@ export default {
               this.tableItems = response.data.items;
 
               this.pagination = response.data.pagination;
-              this.showByValue = response.data.pagination.perPage;
             }
           })
           .finally(() => {
