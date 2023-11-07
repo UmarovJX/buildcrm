@@ -139,6 +139,7 @@ export default {
       objectName: "",
       is_parking: false,
       isHidePrice: false,
+      is_map: false,
       componentTabs: [
         {
           id: 4,
@@ -920,6 +921,7 @@ export default {
           this.objectName = res.data.name;
           this.is_parking = res.data.is_parking;
           this.isHidePrice = res.data.is_hide_m2_price;
+          this.is_map = res.data.is_map;
         })
         .catch((err) => {
           return err;
@@ -1059,7 +1061,7 @@ export default {
       </template>
 
       <template #header-actions>
-        <div>
+        <div v-if="is_map">
           <base-button
             @click="showFacilities"
             text="Map"
