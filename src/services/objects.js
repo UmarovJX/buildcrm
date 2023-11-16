@@ -265,7 +265,9 @@ class ObjectsV2 extends Core {
   fetchObjectApartments(object, params) {
     return this.get(`apartments/objects/${object}`, { params });
   }
-
+  fetchObjectApartmentsCounts(object, params) {
+    return this.get(`apartments/objects/${object}/counts`, { params });
+  }
   fetchObjectParkings(object, params) {
     return this.get(`apartments/objects/${object}/parkings`, { params });
   }

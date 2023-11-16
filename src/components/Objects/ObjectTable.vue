@@ -168,7 +168,6 @@ export default {
 
     return {
       timeout: null,
-      oldCounts: {},
       holder: {
         show: false,
         editStorage: {},
@@ -413,17 +412,12 @@ export default {
 
         const { object } = this.$route.params;
         this.checkAll = false;
-        // const clearCounts = {};
-        // for (const key in this.oldCounts) {
-        //   clearCounts[key] = 0;
-        // }
+
         this.$emit("counter", {});
         await api.objectsV2
           .fetchObjectApartments(object, query)
           .then((response) => {
             if (!this.timeout) {
-              this.$emit("counter", response.data.counts);
-              this.oldCounts = response.data.counts;
               this.pagination = response.data.pagination;
               this.showByValue = response.data.pagination.perPage;
               this.apartments = response.data.items.map((item) => {

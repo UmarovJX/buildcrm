@@ -314,8 +314,7 @@ export default {
         }
         if (this.currentTab !== "ParkingTable") {
           this.chessApartments = this.filterItems(query, this.chessApartments);
-
-          this.getAllApartment();
+          this.getApartmentCounts();
         }
       },
       immediate: true,
@@ -347,6 +346,7 @@ export default {
   },
   created() {
     this.fetchNecessary();
+    this.getApartmentCounts();
 
     const historyTab = sessionStorageGetItem(
       "object_history_of_tab_" + this.$route.params.object
@@ -367,9 +367,7 @@ export default {
     } else {
       this.statusList = this.apartmentStatusList;
     }
-    setTimeout(() => {
-      this.getAllApartment();
-    }, 100);
+
     this.getBlockName();
   },
   methods: {
@@ -378,6 +376,12 @@ export default {
         name: "facilities-show",
         params: { object: this.$route.params.object },
       });
+    },
+    getApartmentCounts() {
+      this.statusCounter = {};
+      api.objectsV2
+        .fetchObjectApartmentsCounts(this.$route.params.object, this.query)
+        .then(({ data }) => (this.statusCounter = data.result));
     },
     async fetchParkingStatusList() {
       const { object } = this.$route.params;
@@ -408,8 +412,6 @@ export default {
     },
     async getBlockItems(blocks) {
       const { object } = this.$route.params;
-      let idx = 0;
-
       const setObjectMap = (_b) => {
         if (this.gridApartments.length) {
           const idx = this.gridApartments.findIndex(
@@ -446,114 +448,21 @@ export default {
       };
 
       async function fetchGrid() {
-        await api.objectsV2
-          .getOptimizeApartments(object, blocks[idx])
-          .then(({ data }) => {
-            setObjectMap(data);
-            idx++;
-            if (idx < blocks.length) {
-              fetchGrid();
-            }
-          });
+        const calls = [...blocks.keys()].map((i) =>
+          api.objectsV2.getOptimizeApartments(object, blocks[i])
+        );
+        await Promise.all(calls).then((responses) => {
+          responses.forEach(({ data }) => setObjectMap(data));
+        });
       }
 
-      await fetchGrid();
+      fetchGrid();
     },
     async getGridOptimizationItems() {
       const _bs = this.filterFields.blocks.map((b) => b.id);
       await this.getBlockItems(_bs);
     },
-    countGet(value) {
-      if (!this.accessToFilter) {
-        this.statusCounter = value;
-      } else {
-        this.getAllApartment();
-      }
-    },
-    getAllApartment() {
-      this.statusCounter = {
-        unavailable: 0,
-        available: 0,
-        contract: 0,
-        sold: 0,
-        booked: 0,
-        hold: 0,
-        none: 0,
-      };
-      if (this.filtered) {
-        this.chessApartments.map((item) => {
-          item.blocks.map((block) => {
-            if (block.blockActive) {
-              block.floors.map((floor) => {
-                if (floor.floorActive) {
-                  floor.apartments.map((apartment) => {
-                    if (apartment.apartmentActive) {
-                      if (apartment["is_sold"]) {
-                        switch (apartment.order.status) {
-                          case "available": {
-                            return (this.statusCounter.available += 1);
-                          }
-                          case "hold": {
-                            return (this.statusCounter.hold += 1);
-                          }
-                          case "sold":
-                          case "closed": {
-                            return (this.statusCounter.sold += 1);
-                          }
-                          case "booked": {
-                            return (this.statusCounter.booked += 1);
-                          }
-                          case "contract": {
-                            return (this.statusCounter.contract += 1);
-                          }
-                          default:
-                            return (this.statusCounter.none += 1);
-                        }
-                      } else {
-                        this.statusCounter.unavailable += 1;
-                      }
-                    }
-                  });
-                }
-              });
-            }
-          });
-        });
-      } else {
-        this.chessApartments.map((item) => {
-          item.blocks.map((block) => {
-            block.floors.map((floor) => {
-              floor.apartments.map((apartment) => {
-                if (apartment["is_sold"]) {
-                  switch (apartment.order.status) {
-                    case "available": {
-                      return (this.statusCounter.available += 1);
-                    }
-                    case "hold": {
-                      return (this.statusCounter.hold += 1);
-                    }
-                    case "sold":
-                    case "closed": {
-                      return (this.statusCounter.sold += 1);
-                    }
-                    case "booked": {
-                      return (this.statusCounter.booked += 1);
-                    }
-                    case "contract": {
-                      return (this.statusCounter.contract += 1);
-                    }
-                    default:
-                      return (this.statusCounter.none += 1);
-                  }
-                } else {
-                  this.statusCounter.unavailable += 1;
-                }
-              });
-            });
-          });
-        });
-      }
-    },
+
     cellAttributes(slot) {
       return ["#cell(" + slot.id + ')="data"'];
     },
@@ -565,9 +474,6 @@ export default {
       api.objectsV2.fetchObjectPrice(object).then((response) => {
         this.priceList = response.data;
         response.data.map((item) => {
-          // console.log(item.prepay);
-          // this.otherPrices = [...this.otherPrices, ...item.prices.filter(price => price.type === 'other_price')]
-          // this.defaultPrices = [...this.defaultPrices, ...item.prices.filter(price => price.type === 'default')]
           this.priceFields = [
             ...this.priceFields,
             {
@@ -688,7 +594,10 @@ export default {
 
       return localApartments.map((mainConstructor) => {
         let filterBlocks;
-        const hasBlocks = filter.hasOwnProperty("blocks");
+        const hasBlocks = Object.prototype.hasOwnProperty.call(
+          filter,
+          "blocks"
+        );
         if (hasBlocks) {
           filterBlocks = mainConstructor.blocks.map((block) => {
             if (typeof filter.blocks === "string") {
@@ -727,7 +636,10 @@ export default {
 
         filterBlocks = filterBlocks.map((filterBlock) => {
           let filterFloors = filterBlock.floors;
-          const hasFloorsQuery = filter.hasOwnProperty("floors");
+          const hasFloorsQuery = Object.prototype.hasOwnProperty.call(
+            filter,
+            "floors"
+          );
           if (hasFloorsQuery) {
             if (typeof filter.floors === "string") {
               filter.floors = [filter.floors];
@@ -945,7 +857,6 @@ export default {
           this.toastedWithErrorCode(err);
         })
         .finally(() => {
-          this.getAllApartment();
           this.getLoading = false;
         });
     },
@@ -1173,7 +1084,6 @@ export default {
       :is="currentTab"
       :apartments="apartmentsByTabs"
       :is-hide-price="isHidePrice"
-      @counter="countGet"
       @show-express-sidebar="apartmentExpressReview"
       @show-parking-details="parkingExpressReview"
       @show-plan-sidebar="planExpressReview"
