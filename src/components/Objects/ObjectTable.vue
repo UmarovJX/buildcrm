@@ -383,69 +383,61 @@ export default {
       this.changeFetchLimit();
     },
     async fetchContractList() {
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-      }
+      this.showLoading = true;
+      let query = sortObjectValues(this.query);
+      const queryArrayFareList = [
+        "status",
+        "area",
+        "rooms",
+        "floors",
+        "number",
+        "object",
+        "blocks",
+      ];
 
-      this.timeout = setTimeout(async () => {
-        this.timeout = null;
-        this.showLoading = true;
-        let query = sortObjectValues(this.query);
-        const queryArrayFareList = [
-          "status",
-          "area",
-          "rooms",
-          "floors",
-          "number",
-          "object",
-          "blocks",
-        ];
+      const queryPair = Object.entries(query);
+      queryPair.forEach(([key, value]) => {
+        const isNotPrimitive = queryArrayFareList.includes(key);
+        const valueFare = isPrimitiveValue(value);
+        if (isNotPrimitive && valueFare) {
+          query[key] = [value];
+        }
+      });
 
-        const queryPair = Object.entries(query);
-        queryPair.forEach(([key, value]) => {
-          const isNotPrimitive = queryArrayFareList.includes(key);
-          const valueFare = isPrimitiveValue(value);
-          if (isNotPrimitive && valueFare) {
-            query[key] = [value];
+      const { object } = this.$route.params;
+      this.checkAll = false;
+
+      await api.objectsV2
+        .fetchObjectApartments(object, query)
+        .then((response) => {
+          if (!this.timeout) {
+            this.pagination = response.data.pagination;
+            this.showByValue = response.data.pagination.perPage;
+            this.apartments = response.data.items.map((item) => {
+              const isChecked = this.checkoutList.find(
+                (ch) => ch.id === item.id
+              );
+              if (isChecked) {
+                return {
+                  ...item,
+                  checked: true,
+                };
+              } else {
+                return {
+                  ...item,
+                  checked: false,
+                };
+              }
+            });
+            this.checkAll = this.apartments.every((apm) => apm.checked);
           }
+        })
+        .catch((err) => {
+          this.toastedWithErrorCode(err);
+        })
+        .finally(() => {
+          this.showLoading = false;
         });
-
-        const { object } = this.$route.params;
-        this.checkAll = false;
-
-        this.$emit("counter", {});
-        await api.objectsV2
-          .fetchObjectApartments(object, query)
-          .then((response) => {
-            if (!this.timeout) {
-              this.pagination = response.data.pagination;
-              this.showByValue = response.data.pagination.perPage;
-              this.apartments = response.data.items.map((item) => {
-                const isChecked = this.checkoutList.find(
-                  (ch) => ch.id === item.id
-                );
-                if (isChecked) {
-                  return {
-                    ...item,
-                    checked: true,
-                  };
-                } else {
-                  return {
-                    ...item,
-                    checked: false,
-                  };
-                }
-              });
-              this.checkAll = this.apartments.every((apm) => apm.checked);
-            }
-          })
-          .catch((err) => {
-            this.toastedWithErrorCode(err);
-          })
-          .finally(() => {
-            this.showLoading = false;
-          });
-      }, 1000);
     },
     changeFetchLimit() {
       const query = {

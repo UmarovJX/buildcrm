@@ -10,25 +10,17 @@ export default {
     SettingsTab,
   },
   data() {
-    // const holdersViewPms = SettingsPermission.getPermission("holders.view");
-    // const statusesViewPms = SettingsPermission.getPermission("statuses.view");
-    // const clientTypesViewPms =
-    //   SettingsPermission.getPermission("client_types.view");
-    // const countriesViewPms = SettingsPermission.getPermission(
-    //   "client_countries.view"
-    // );
-
     const tabs = [
       {
         counts: 0,
         name: "bot.pages",
         value: "bot",
       },
-      {
-        counts: 0,
-        name: "bot.objects",
-        value: "bot-objects",
-      },
+      // {
+      //   counts: 0,
+      //   name: "bot.objects",
+      //   value: "bot-objects",
+      // },
     ];
 
     return {

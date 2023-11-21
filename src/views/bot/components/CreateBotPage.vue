@@ -1,19 +1,27 @@
 <script>
 import { XFormInput } from "@/components/ui-components/form-input";
+import { makeProp } from "@/util/props";
+import { PROP_TYPE_STRING, PROP_TYPE_OBJECT } from "@/constants/props";
 import { XModalCenter } from "@/components/ui-components/modal-center";
 import api from "@/services/api";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 
-import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
-
 export default {
   name: "CreateBotPage",
   components: {
-    BaseFormTagInput,
     XFormInput,
     XModalCenter,
   },
   props: {
+    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
+      return ["create", "edit"].includes(type);
+    }),
+    editItem: makeProp(PROP_TYPE_OBJECT, {
+      id: undefined,
+      slug: "",
+      title: {},
+      description: {},
+    }),
     allLanguages: {
       type: Array,
       required: true,
@@ -25,6 +33,7 @@ export default {
       slug: "",
       title: {},
       description: {},
+      id: "",
     };
     return {
       applyButtonLoading: false,
@@ -42,7 +51,14 @@ export default {
   //     }
   //   }, 500),
   // },
-  created() {},
+  created() {
+    if (this.upsertType == "edit") {
+      this.item.id = this.editItem.id;
+      this.item.slug = this.editItem.slug;
+      this.item.title = { ...this.editItem.title };
+      this.item.description = { ...this.editItem.description };
+    }
+  },
   methods: {
     closeCreatingModal() {
       this.clearForm();
@@ -60,7 +76,11 @@ export default {
       if (isSatisfied) {
         this.startLoading();
         try {
-          await v3ServiceApi.botPages.create(this.item);
+          if (this.upsertType === "create") {
+            await v3ServiceApi.botPages.create(this.item);
+          } else {
+            await v3ServiceApi.botPages.update(this.item);
+          }
           this.clearForm();
           this.$emit("bot-page-created");
         } catch (e) {
@@ -138,16 +158,18 @@ export default {
         </h3>
         <validation-provider
           v-for="lang in allLanguages"
-          :key="lang"
+          :key="'title' + lang"
           :name="`title_` + lang"
           class="title-uz-provider"
         >
-          <x-form-input
-            type="text"
-            :placeholder="`title ${lang}`"
-            class="w-100"
-            v-model="item.title[lang]"
-          />
+          <div class="ta-wrapper">
+            <textarea
+              name=""
+              :id="'title' + lang"
+              rows="5"
+              v-model="item.title[lang]"
+            ></textarea>
+          </div>
         </validation-provider>
 
         <h3 class="mt-4 mb-2 status-pick-color-title">
@@ -155,16 +177,18 @@ export default {
         </h3>
         <validation-provider
           v-for="lang in allLanguages"
-          :key="lang"
+          :key="'description_' + lang"
           :name="`title_` + lang"
           class="title-uz-provider"
         >
-          <x-form-input
-            type="text"
-            :placeholder="`title ${lang}`"
-            class="w-100"
-            v-model="item.description[lang]"
-          />
+          <div class="ta-wrapper">
+            <textarea
+              name=""
+              :id="'title' + lang"
+              rows="10"
+              v-model="item.description[lang]"
+            ></textarea>
+          </div>
         </validation-provider>
       </validation-observer>
     </template>
@@ -172,6 +196,16 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+textarea {
+  border: none;
+  background-color: var(--gray-100);
+  width: 100%;
+}
+.ta-wrapper {
+  background-color: var(--gray-100);
+  padding: 1rem;
+  border-radius: 2rem;
+}
 .filter__inputs {
   margin-top: 2rem;
   margin-bottom: 3rem;

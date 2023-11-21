@@ -306,7 +306,7 @@ export default {
       }
     },
     "$route.query": {
-      async handler(query) {
+      async handler(query, oq) {
         this.compareStatus(query);
         if (this.accessToFilter) {
           this.chessApartments = this.filterItems(query, this.chessApartments);
@@ -314,31 +314,35 @@ export default {
         }
         if (this.currentTab !== "ParkingTable") {
           this.chessApartments = this.filterItems(query, this.chessApartments);
+
           this.getApartmentCounts();
         }
       },
       immediate: true,
     },
-    currentTab(value) {
-      this.initRelatedToComponent();
-      this.fetchFilterFields();
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          page: 1,
-          currentTab: value,
-        },
-      });
+    currentTab: {
+      handler(value) {
+        this.initRelatedToComponent();
+        this.fetchFilterFields();
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            page: 1,
+            currentTab: value,
+          },
+        });
 
-      if (this.currentTab === "ParkingTable") {
-        this.fetchParkingStatusList();
-      } else {
-        this.statusList = this.apartmentStatusList;
-      }
+        if (this.currentTab === "ParkingTable") {
+          this.fetchParkingStatusList();
+        } else {
+          this.statusList = this.apartmentStatusList;
+        }
 
-      if (this.currentTab === "ObjectTable") {
-        this.fetchNecessary();
-      }
+        if (this.currentTab === "ObjectTable") {
+          this.fetchNecessary();
+        }
+      },
+      immediate: false,
     },
   },
   mounted() {
@@ -346,7 +350,6 @@ export default {
   },
   created() {
     this.fetchNecessary();
-    this.getApartmentCounts();
 
     const historyTab = sessionStorageGetItem(
       "object_history_of_tab_" + this.$route.params.object
@@ -446,17 +449,19 @@ export default {
           this.chessApartments = this.gridApartments;
         }
       };
-
+      const tmp = this;
       async function fetchGrid() {
+        tmp.getLoading = true;
         const calls = [...blocks.keys()].map((i) =>
           api.objectsV2.getOptimizeApartments(object, blocks[i])
         );
         await Promise.all(calls).then((responses) => {
           responses.forEach(({ data }) => setObjectMap(data));
         });
+        tmp.getLoading = false;
       }
-
-      fetchGrid();
+      if (["ChessSquareCard", "ObjectBlock"].includes(this.currentTab))
+        fetchGrid();
     },
     async getGridOptimizationItems() {
       const _bs = this.filterFields.blocks.map((b) => b.id);

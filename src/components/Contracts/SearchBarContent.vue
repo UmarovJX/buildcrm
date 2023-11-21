@@ -800,7 +800,7 @@ export default {
     .filter__inputs {
       margin-top: 2rem;
       margin-bottom: 3rem;
-
+      padding-bottom: 150px;
       .input__date.mx-datepicker.mx-datepicker-range {
         width: 60% !important;
       }

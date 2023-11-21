@@ -15,7 +15,7 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 
 export default {
-  name: "SettingsStatuses",
+  name: "BotPage",
   components: {
     BaseArrowLeftIcon,
     BaseArrowRightIcon,
@@ -51,6 +51,7 @@ export default {
       permission: {
         create: Permission.getUserPermission("bot.create"),
         update: Permission.getUserPermission("bot.update"),
+        delete: Permission.getUserPermission("bot.delete"),
       },
     };
   },
@@ -70,6 +71,11 @@ export default {
           key: "slug",
           label: this.$t("bot.slug"),
           thStyle: "width: 25%",
+        },
+        {
+          key: "actions",
+          label: "",
+          thStyle: "width: 100px",
         },
       ];
     },
@@ -92,6 +98,7 @@ export default {
       this.table.loading = false;
     },
     create() {
+      this.upsertType = "create";
       this.openCreateModal();
     },
     async fetchItems() {
@@ -122,49 +129,50 @@ export default {
       this.fetchItems();
     },
 
-    async deleteItem(typeId) {
-      this.$swal({
-        title: this.$t("sweetAlert.title"),
-        text: this.$t("sweetAlert.text"),
-        icon: "warning",
-        showCancelButton: true,
-        cancelButtonText: this.$t("cancel"),
-        confirmButtonText: this.$t("sweetAlert.yes"),
-      }).then(async (result) => {
-        if (result.value) {
-          try {
-            this.startLoading();
-            await api.translationsV3.removeTranslation({
-              id: typeId,
-            });
-            await this.fetchItems();
-          } catch (e) {
-            this.toastedWithErrorCode(e);
-          } finally {
-            this.finishLoading();
-          }
-        }
-      });
-    },
+    // async deleteItem(typeId) {
+    //   this.$swal({
+    //     title: this.$t("sweetAlert.title"),
+    //     text: this.$t("sweetAlert.text"),
+    //     icon: "warning",
+    //     showCancelButton: true,
+    //     cancelButtonText: this.$t("cancel"),
+    //     confirmButtonText: this.$t("sweetAlert.yes"),
+    //   }).then(async (result) => {
+    //     if (result.value) {
+    //       try {
+    //         this.startLoading();
+    //         await api.translationsV3.removeTranslation({
+    //           id: typeId,
+    //         });
+    //         await this.fetchItems();
+    //       } catch (e) {
+    //         this.toastedWithErrorCode(e);
+    //       } finally {
+    //         this.finishLoading();
+    //       }
+    //     }
+    //   });
+    // },
     updateTags(item) {
       this.editTags = item;
       this.showEditTagModal = true;
     },
     async update(item) {
-      if (this.loadings[item.id]) return;
-      this.$set(this.loadings, item.id, true);
-      v3ServiceApi.botPages
-        .update(item)
-        .then(() =>
-          this.$toasted.show(
-            `Bot Page for ID "${item.id}" succesfully updated`,
-            {
-              type: "success",
-            }
-          )
-        )
-        .catch((err) => this.toastedWithErrorCode(err))
-        .finally(() => this.$set(this.loadings, item.id, false));
+      this.editStorage = item;
+      this.upsertType = "edit";
+      this.openCreateModal();
+    },
+    async deleteItem(item) {
+      console.log(item);
+      try {
+        this.startLoading();
+        await v3ServiceApi.botPages.remove(item);
+        await this.fetchItems();
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      } finally {
+        this.finishLoading();
+      }
     },
   },
 };
@@ -224,50 +232,40 @@ export default {
         </span>
       </template>
 
-      <template #cell(title)="{ index }">
+      <template #cell(title)="{ item }">
+        <div class="" v-html="item.title[currentLang]"></div>
+      </template>
+      <template #cell(description)="{ item }">
+        <div
+          class=""
+          v-html="item.description[currentLang].replaceAll('\n', '<br>')"
+        ></div>
+      </template>
+      <template #cell(slug)="{ item }">
         <div class="d-flex align-items-center">
-          <x-form-input
-            :readonly="!permission.update"
-            type="text"
-            :placeholder="$t('bot.table_title')"
-            class="w-100"
-            v-model="table.items[index].title[currentLang]"
-          />
+          {{ item.slug }}
         </div>
       </template>
-      <template #cell(description)="{ index }">
-        <div class="d-flex align-items-center">
-          <x-form-input
-            :readonly="!permission.update"
-            type="text"
-            :placeholder="$t('bot.description')"
-            class="w-100"
-            v-model="table.items[index].description[currentLang]"
-          />
-        </div>
-      </template>
-      <template #cell(slug)="{ item, index }">
-        <div class="d-flex align-items-center">
-          <x-form-input
-            :readonly="!permission.update"
-            type="text"
-            :placeholder="$t('bot.slug')"
-            class="w-100"
-            v-model="table.items[index].slug"
-          />
-          <div
-            :style="loadings[item.id] ? 'opacity: 0.5' : ''"
-            title="save"
-            class="ml-1 cursor-pointer"
+      <template #cell(actions)="{ item }">
+        <div
+          :style="loadings[item.id] ? 'opacity: 0.5' : ''"
+          title="save"
+          class="ml-1 cursor-pointer d-flex"
+        >
+          <x-circular-background
+            @click="update(item)"
+            class="bg-violet-600"
+            v-if="permission.update"
           >
-            <x-circular-background
-              @click="update(item)"
-              class="bg-violet-600"
-              v-if="permission.update"
-            >
-              <x-icon name="edit" class="color-white" />
-            </x-circular-background>
-          </div>
+            <x-icon name="edit" class="color-white" />
+          </x-circular-background>
+          <x-circular-background
+            @click="deleteItem(item)"
+            class="bg-red-600 ml-2"
+            v-if="permission.delete"
+          >
+            <x-icon name="delete" class="color-white" />
+          </x-circular-background>
         </div>
       </template>
     </b-table>
@@ -318,6 +316,8 @@ export default {
     <create-bot-page
       :all-languages="allLangs"
       v-if="showCreateModal"
+      :upsert-type="upsertType"
+      :edit-item="editStorage"
       @bot-page-created="botPageCreated"
       @close-modal="closeCreateModal"
     ></create-bot-page>

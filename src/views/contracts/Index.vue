@@ -261,6 +261,18 @@ export default {
     },
   },
   watch: {
+    showByValue(n, o) {
+      console.log(n);
+      console.log(o);
+      const isNotUpdate = n === null || n === o;
+      if (isNotUpdate) return;
+      const localQuery = {
+        ...this.query,
+        page: 1,
+      };
+      const limit = n;
+      this.replaceRouter({ ...localQuery, limit });
+    },
     "$route.query": {
       handler: function () {
         this.fetchContractList();
@@ -302,12 +314,12 @@ export default {
         this.toastedWithErrorCode(e);
       }
     },
-    limitChanged() {
+    limitChanged(e) {
       if (this.hack) {
         this.hack = false;
         return;
       }
-      this.changeFetchLimit();
+      // this.changeFetchLimit(e);
     },
     checkLocales(name) {
       if (localStorage.locale) return name[localStorage.locale];
@@ -429,11 +441,14 @@ export default {
       if (page === currentPage) return;
       this.replaceRouter({ ...this.query, page });
     },
-    changeFetchLimit() {
+    changeFetchLimit(e) {
+      console.log(e);
+      console.log(this.showByValue.toString());
       const { query } = this;
       const isNotUpdate =
+        !this.query.limit ||
         query.limit?.toString() === this.showByValue.toString();
-      if (isPrimitive(query.limit) && isNotUpdate) return;
+      if (isNotUpdate) return;
       const localQuery = {
         ...this.query,
         page: 1,
