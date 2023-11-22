@@ -5,10 +5,12 @@ import { PROP_TYPE_STRING, PROP_TYPE_OBJECT } from "@/constants/props";
 import { XModalCenter } from "@/components/ui-components/modal-center";
 import api from "@/services/api";
 import { v3ServiceApi } from "@/services/v3/v3.service";
+import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
 
 export default {
   name: "CreateBotPage",
   components: {
+    BaseTabPicker,
     XFormInput,
     XModalCenter,
   },
@@ -36,6 +38,7 @@ export default {
       id: "",
     };
     return {
+      currentLang: this.allLanguages[0],
       applyButtonLoading: false,
       form,
       item: {
@@ -60,6 +63,9 @@ export default {
     }
   },
   methods: {
+    setTab(e) {
+      this.currentLang = e;
+    },
     closeCreatingModal() {
       this.clearForm();
       this.$emit("close-modal");
@@ -152,41 +158,35 @@ export default {
             {{ errors[0].replace("slug", $t("title")) }}
           </span>
         </validation-provider>
+        <base-tab-picker
+          :options="allLanguages"
+          noAll
+          :current="currentLang"
+          @tab-selected="setTab"
+        ></base-tab-picker>
 
         <h3 class="mt-4 mb-2 status-pick-color-title">
           {{ $t("Title") }}
         </h3>
-        <validation-provider
-          v-for="lang in allLanguages"
-          :key="'title' + lang"
-          :name="`title_` + lang"
-          class="title-uz-provider"
-        >
-          <div class="ta-wrapper">
-            <textarea
-              name=""
-              :id="'title' + lang"
-              rows="5"
-              v-model="item.title[lang]"
-            ></textarea>
-          </div>
+        <validation-provider :name="`title`" class="title-uz-provider">
+          <x-form-input
+            type="text"
+            :placeholder="$t('version')"
+            class="w-100"
+            v-model="item.title[currentLang]"
+          />
         </validation-provider>
 
         <h3 class="mt-4 mb-2 status-pick-color-title">
           {{ $t("Description") }}
         </h3>
-        <validation-provider
-          v-for="lang in allLanguages"
-          :key="'description_' + lang"
-          :name="`title_` + lang"
-          class="title-uz-provider"
-        >
+        <validation-provider :name="`title_`" class="title-uz-provider">
           <div class="ta-wrapper">
             <textarea
               name=""
-              :id="'title' + lang"
+              :id="'title'"
               rows="10"
-              v-model="item.description[lang]"
+              v-model="item.description[currentLang]"
             ></textarea>
           </div>
         </validation-provider>

@@ -187,12 +187,13 @@ export default {
       >
         {{ $t("translations") }}
       </h3> -->
-      <base-tab-picker
+      <!-- <base-tab-picker
         :options="allLangs"
         noAll
         :current="currentLang"
         @tab-selected="setTab"
-      ></base-tab-picker>
+      ></base-tab-picker> -->
+      <div></div>
       <x-button
         v-if="permission.create"
         variant="secondary"
@@ -233,12 +234,12 @@ export default {
       </template>
 
       <template #cell(title)="{ item }">
-        <div class="" v-html="item.title[currentLang]"></div>
+        <div class="" v-html="item.title[$i18n.locale]"></div>
       </template>
       <template #cell(description)="{ item }">
         <div
           class=""
-          v-html="item.description[currentLang].replaceAll('\n', '<br>')"
+          v-html="item.description[$i18n.locale].replaceAll('\n', '<br>')"
         ></div>
       </template>
       <template #cell(slug)="{ item }">
