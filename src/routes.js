@@ -17,7 +17,8 @@ import Dashboard from "./components/Dashboard/Home";
 import Objects from "./components/Dashboard/Objects/Index";
 import ObjStore from "./components/Dashboard/Objects/Store";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
-import Clients from "./components/Dashboard/Clients/Index";
+import Clients from "./views/clients/Index";
+import ClientView from "./views/clients/View";
 import Users from "./components/Dashboard/Users/Index";
 import Roles from "./views/roles/Index";
 import RolesUpdate from "./views/roles/Update";
@@ -378,6 +379,15 @@ const routes = [
         name: "clients",
         path: "/clients",
         component: Clients,
+        meta: {
+          requiresAuth: "clients",
+        },
+      },
+      {
+        /* CLIENTS */
+        name: "client-view",
+        path: "/clients/:uuid",
+        component: ClientView,
         meta: {
           requiresAuth: "clients",
         },
