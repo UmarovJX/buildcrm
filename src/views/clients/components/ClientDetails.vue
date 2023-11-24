@@ -504,6 +504,7 @@ export default {
           :name="`${$t('person_type')}`"
         >
           <x-form-select
+            disabled
             :bilingual="true"
             :error="!!errors[0]"
             :placeholder="$t('person_type')"
@@ -519,8 +520,10 @@ export default {
             v-slot="{ errors }"
             rules="required|min:3"
             :name="`${$t('inn')}`"
+            disable
           >
             <x-form-input
+              disabled
               :label="true"
               type="text"
               class="w-100"
@@ -748,6 +751,7 @@ export default {
             :name="`${$t('passport_series_example')}`"
           >
             <x-form-input
+              disabled
               :label="true"
               class="w-100"
               :error="!!errors[0]"

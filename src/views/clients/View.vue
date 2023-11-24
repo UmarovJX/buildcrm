@@ -416,6 +416,15 @@ export default {
             }}</span>
           </div>
           <!-------------->
+          <div class="row mb-2">
+            <span class="bottom__info col-5"> Адрес </span>
+            <span class="price col-7">{{
+              client.subject === "legal"
+                ? client.attributes.legal_address
+                : client.attributes.adrress_line
+            }}</span>
+          </div>
+          <!-------------->
         </div>
       </div>
       <!--  Tabs  -->

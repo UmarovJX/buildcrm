@@ -34,6 +34,7 @@ export default {
       showLoading: false,
       counts: { active: 0, no_active: 0 },
       search: this.$route.query.search || "",
+      phone: this.$route.query.phone || "",
       currentTab: this.$route.query.is_active == 0 ? "no_active" : "active",
       clientType: "physical",
       clientOptions: [
@@ -138,6 +139,17 @@ export default {
         this.$router.replace({ query });
       }, 500);
     },
+    handlePhoneSearch(value) {
+      this.phone = value;
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      this.timeout = setTimeout(() => {
+        const query = this.createQuery();
+        this.$router.replace({ query });
+      }, 500);
+    },
     clientName(item) {
       const locale = this.$i18n.locale;
       let lang = "lotin";
@@ -227,6 +239,11 @@ export default {
         delete query.subject;
         delete query.field;
       }
+      if (this.phone) {
+        query.phone = this.phone;
+      } else {
+        delete query.phone;
+      }
       return query;
     },
   },
@@ -259,6 +276,13 @@ export default {
           class="w-100"
           :placeholder="searchPlaceholder"
           @trigger-input="getInputValue"
+        />
+      </div>
+      <div class="col-9">
+        <BaseSearchInput
+          class="w-100"
+          placeholder="Номер телефона"
+          @trigger-input="handlePhoneSearch"
         />
       </div>
       <div class="col-3">
