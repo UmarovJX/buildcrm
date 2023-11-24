@@ -4,12 +4,14 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import { XFormSelect } from "@/components/ui-components/form-select";
+import { XFormInput } from "@/components/ui-components/form-input";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XSquareBackground } from "@/components/ui-components/square-background";
 import ExportDropdown from "@/views/contracts/components/ExportDropdown.vue";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 
 import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
+import BaseInput from "@/components/Reusable/BaseInput2";
 
 import { phonePrettier } from "@/util/reusable";
 import AppHeader from "@/components/Header/AppHeader";
@@ -17,7 +19,9 @@ import AppHeader from "@/components/Header/AppHeader";
 export default {
   name: "Clients",
   components: {
+    BaseInput,
     BaseSearchInput,
+    XFormInput,
     ExportDropdown,
     AppHeader,
     BaseFilterTabsContent,
@@ -34,7 +38,6 @@ export default {
       showLoading: false,
       counts: { active: 0, no_active: 0 },
       search: this.$route.query.search || "",
-      phone: this.$route.query.phone || "",
       currentTab: this.$route.query.is_active == 0 ? "no_active" : "active",
       clientType: "physical",
       clientOptions: [
@@ -45,6 +48,15 @@ export default {
       pagination: {},
       showByValue: this.$route.query.limit || 20,
       showByOptions: [10, 20, 30, 40, 50].map((e) => ({ value: e, text: e })),
+      searchOptions: [
+        { value: "contract", text: "Договор" },
+        { value: "phone", text: "Телефон" },
+      ],
+      searchValue: this.$route.query.phone ? "phone" : "contract",
+      searchString:
+        (this.searchValue === "order"
+          ? this.$route.query.contract_number
+          : this.$route.query.phone) || "",
     };
   },
   computed: {
@@ -101,6 +113,33 @@ export default {
     },
   },
   watch: {
+    search() {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      this.timeout = setTimeout(() => {
+        const query = this.createQuery();
+        this.$router.replace({ query });
+      }, 500);
+    },
+    searchString() {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      this.timeout = setTimeout(() => {
+        const query = this.createQuery();
+        this.$router.replace({ query });
+      }, 500);
+    },
+    searchValue(v) {
+      if (!v)
+        setTimeout(() => {
+          this.searchValue = "contract";
+        }, 0);
+      this.searchString = "";
+    },
     clientType() {
       if (this.search) {
         this.fetchData();
@@ -128,28 +167,6 @@ export default {
     this.fetchCounts();
   },
   methods: {
-    getInputValue(value) {
-      this.search = value;
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-      }
-
-      this.timeout = setTimeout(() => {
-        const query = this.createQuery();
-        this.$router.replace({ query });
-      }, 500);
-    },
-    handlePhoneSearch(value) {
-      this.phone = value;
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-      }
-
-      this.timeout = setTimeout(() => {
-        const query = this.createQuery();
-        this.$router.replace({ query });
-      }, 500);
-    },
     clientName(item) {
       const locale = this.$i18n.locale;
       let lang = "lotin";
@@ -239,11 +256,14 @@ export default {
         delete query.subject;
         delete query.field;
       }
-      if (this.phone) {
-        query.phone = this.phone;
-      } else {
-        delete query.phone;
+      delete query.contract_number;
+      delete query.phone;
+      if (this.searchString) {
+        if (this.searchValue === "contract")
+          query.contract_number = this.searchString;
+        else query.phone = this.searchString;
       }
+
       return query;
     },
   },
@@ -270,30 +290,53 @@ export default {
     />
 
     <!--  Search Content  -->
-    <div class="row mt-4">
-      <div class="col-5">
-        <BaseSearchInput
-          class="w-100"
-          :placeholder="searchPlaceholder"
-          @trigger-input="getInputValue"
-        />
+    <div class="row mt-4 align-items-stretch">
+      <div class="col-9">
+        <div class="row">
+          <div class="col-6">
+            <div class="filter__apartment__price">
+              <x-form-select
+                :label="false"
+                :options="searchOptions"
+                v-model="searchValue"
+              />
+              <div class="middle__position flex-grow-1">
+                <base-input
+                  class="w-100"
+                  :placeholder="
+                    searchValue === 'contract'
+                      ? 'Номер договора'
+                      : 'Номер телефона'
+                  "
+                  v-model="searchString"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="filter__apartment__price">
+              <base-input
+                class="w-100"
+                :placeholder="searchPlaceholder"
+                v-model="search"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-5">
-        <BaseSearchInput
-          class="w-100"
-          placeholder="Номер телефона"
-          @trigger-input="handlePhoneSearch"
-        />
-      </div>
-      <div class="col-2">
-        <x-form-select
-          value-field="value"
-          text-field="name"
-          v-model="clientType"
-          :multiple="false"
-          :options="clientOptions"
-          :placeholder="$t('Тип клиента')"
-        />
+
+      <div class="col-3">
+        <div class="filter__apartment__price">
+          <x-form-select
+            value-field="value"
+            text-field="name"
+            v-model="clientType"
+            :multiple="false"
+            :options="clientOptions"
+            :placeholder="$t('Тип клиента')"
+            class="w-100"
+          />
+        </div>
       </div>
     </div>
     <!--  Table List -->
@@ -314,7 +357,7 @@ export default {
       <template #cell(name)="{ item }">
         <div class="d-flex align-items-center" @click="clientView(item)">
           <div
-            v-if="item.client_type.is_vip"
+            v-if="item.client_type?.is_vip"
             class="d-flex align-items-center mr-1"
           >
             <x-square-background
@@ -627,5 +670,61 @@ export default {
 
 .show-by-description {
   color: var(--gray-400);
+}
+
+.filter__apartment__price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 20rem;
+  min-height: 4rem;
+  background-color: var(--gray-100);
+  border-radius: 2rem;
+  width: 100%;
+  border: none;
+  color: var(--gray-600);
+  position: relative;
+
+  .middle__position {
+    align-self: stretch;
+    min-height: 4rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    border-left: 2px solid var(--gray-200);
+  }
+
+  ::placeholder {
+    color: var(--gray-600);
+    opacity: 1;
+  }
+
+  .placeholder {
+    color: var(--gray-600);
+  }
+
+  .input__date {
+    margin-left: 0.5rem;
+    background-color: transparent;
+    border: none;
+    width: auto;
+  }
+
+  .inline {
+    background-color: transparent;
+    border: none;
+    color: var(--gray-600);
+    padding: 0;
+
+    .disabled__option {
+      color: var(--gray-100) !important;
+    }
+  }
+
+  .price__currency {
+    min-width: 6rem;
+    height: 100%;
+    //padding-left: 1rem;
+  }
 }
 </style>

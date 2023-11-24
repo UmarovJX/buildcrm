@@ -5,6 +5,7 @@ import { XIcon } from "@/components/ui-components/material-icons";
 import SectionTitle from "@/views/checkoutV2/elements/SectionTitle";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BaseButton from "@/components/Reusable/BaseButton";
+import BaseInput from "@/components/Reusable/BaseInput";
 import {
   symbolLatinToCyrillic,
   symbolCyrillicToLatin,
@@ -17,6 +18,7 @@ import { isNotUndefinedNullEmptyZero } from "@/util/inspect";
 export default {
   name: "CheckoutClientDetails",
   components: {
+    BaseInput,
     XIcon,
     XFormSelect: XFormSelect,
     XFormInput,
@@ -62,6 +64,8 @@ export default {
     };
 
     return {
+      client: {},
+
       companyTypes: [],
       autoFill: false,
       countriesList: [],
@@ -82,6 +86,13 @@ export default {
   },
 
   computed: {
+    cType() {
+      const t = {
+        legal: "Юридическое лицо",
+        physical: "Физическое лицо",
+      };
+      return t[this.client.subject];
+    },
     ...mapGetters("CheckoutV2", ["isUpdateMode"]),
     companyTypeOptions() {
       return this.companyTypes.map(({ id, name }) => {
@@ -439,6 +450,7 @@ export default {
       }
     },
     fillFormInUpdateMode({ client }) {
+      this.client = client;
       if (this.isPhysicalClient(client.subject)) {
         this.personalData.subject = 1;
         this.personalData.passport_series = client.attributes.passport_series;
@@ -503,13 +515,14 @@ export default {
           rules="required"
           :name="`${$t('person_type')}`"
         >
-          <x-form-select
-            disabled
+          <base-input
+            disable
             :bilingual="true"
             :error="!!errors[0]"
             :placeholder="$t('person_type')"
             :options="subjectOptions"
-            v-model="personalData.subject"
+            :value="cType"
+            class="w-100"
           />
         </validation-provider>
 
@@ -520,17 +533,15 @@ export default {
             v-slot="{ errors }"
             rules="required|min:3"
             :name="`${$t('inn')}`"
-            disable
           >
-            <x-form-input
-              disabled
+            <base-input
+              disable
               :label="true"
               type="text"
               class="w-100"
               :placeholder="`${$t('inn')}`"
               :error="!!errors[0]"
-              v-model="personalData.legal_entity.inn"
-              @input="fetchLegalDadaByInn"
+              :value="personalData.legal_entity.inn"
             />
           </validation-provider>
 
@@ -750,14 +761,13 @@ export default {
             rules="required|min:5"
             :name="`${$t('passport_series_example')}`"
           >
-            <x-form-input
-              disabled
+            <base-input
+              disable
               :label="true"
               class="w-100"
               :error="!!errors[0]"
-              :placeholder="`${$t('passport_series_example')}`"
-              v-model="personalData.passport_series"
-              @input="clientDebounce"
+              :placeholder="`${$t('passport_series')}`"
+              :value="personalData.passport_series"
             />
           </validation-provider>
 
