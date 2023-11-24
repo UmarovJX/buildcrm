@@ -421,7 +421,7 @@ export default {
             <span class="price col-7">{{
               client.subject === "legal"
                 ? client.attributes.legal_address
-                : client.attributes.adrress_line
+                : client.attributes.address_line
             }}</span>
           </div>
           <!-------------->

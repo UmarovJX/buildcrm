@@ -271,21 +271,21 @@ export default {
 
     <!--  Search Content  -->
     <div class="row mt-4">
-      <div class="col-9">
+      <div class="col-5">
         <BaseSearchInput
           class="w-100"
           :placeholder="searchPlaceholder"
           @trigger-input="getInputValue"
         />
       </div>
-      <div class="col-9">
+      <div class="col-5">
         <BaseSearchInput
           class="w-100"
           placeholder="Номер телефона"
           @trigger-input="handlePhoneSearch"
         />
       </div>
-      <div class="col-3">
+      <div class="col-2">
         <x-form-select
           value-field="value"
           text-field="name"
