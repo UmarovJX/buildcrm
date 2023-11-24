@@ -16,7 +16,7 @@ export default {
 
   mutations: {
     updateMenus(state, result) {
-      state.menus = [...result, { icon: "group", action: "clients" }];
+      state.menus = result;
     },
   },
 
