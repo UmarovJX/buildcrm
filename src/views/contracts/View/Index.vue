@@ -137,11 +137,13 @@ export default {
       );
     },
     editPermission() {
-      return (
-        ContractsPermission.getContractsEditPermission() &&
-        (this.order.status === "sold" || this.order.status === "contract") &&
-        this.order.updating.can
-      );
+      // return (
+      //   ContractsPermission.getContractsEditPermission() &&
+      //   (this.order.status === "sold" || this.order.status === "contract") &&
+      //   this.order.updating.can
+      // );
+
+      return ContractsPermission.getContractsEditPermission()
     },
     hasConstructorOrder() {
       return Object.keys(this.order).length > 0;
