@@ -32,9 +32,9 @@ export default {
     return {
       timeout: null,
       showLoading: false,
-      counts: { active: 10, no_active: 0 },
+      counts: { active: 0, no_active: 0 },
       search: this.$route.query.search || "",
-      currentTab: this.$route.query.is_active == 1 ? "active" : "no_active",
+      currentTab: this.$route.query.is_active == 0 ? "no_active" : "active",
       clientType: "physical",
       clientOptions: [
         { value: "physical", name: "Физическое лицо" },
@@ -48,8 +48,12 @@ export default {
   },
   computed: {
     statuses() {
+      const t = {
+        active: "Активные",
+        no_active: "Неактивные",
+      };
       return ["active", "no_active"].map((el) => ({
-        name: el,
+        name: t[el],
         status: el,
         counts: this.counts[el],
       }));
@@ -76,6 +80,7 @@ export default {
           key: "language",
           label: "Язык",
           formatter: (l) => this.$t(l),
+          thStyle: "width: 100px;",
         },
         {
           key: "phones",
@@ -84,10 +89,12 @@ export default {
         {
           key: "order_counts",
           label: "Количество заказов",
+          thStyle: "width: 150px;",
         },
         {
           key: "telegram_account_counts",
           label: "Телеграмм аккануты",
+          thStyle: "width: 150px;",
         },
       ];
     },

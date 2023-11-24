@@ -7,16 +7,19 @@ import XFormSelect from "@/components/ui-components/form-select/FormSelect.vue";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XSquareBackground } from "@/components/ui-components/square-background";
 import { v3ServiceApi } from "@/services/v3/v3.service";
+import api from "@/services/api";
 import {
   phonePrettier,
   formatToPrice,
   formatDateWithDot,
 } from "@/util/reusable";
 import BaseFilterTabsContent from "@/components/Reusable/BaseFilterTabsContent2";
+import BaseButton from "@/components/Reusable/BaseButton.vue";
 
 export default {
   name: "ClientView",
   components: {
+    BaseButton,
     BaseFilterTabsContent,
     XSquareBackground,
     XFormSelect,
@@ -122,11 +125,16 @@ export default {
         },
       ],
       items: [],
+
+      showEditForm: false,
+      clientTypesList: [],
+      countriesList: [],
     };
   },
   created() {
     this.fetchData();
     this.fetchSecondaryData();
+    Promise.all([this.getClientTypesList(), this.getCountriesList()]);
   },
 
   watch: {
@@ -152,6 +160,9 @@ export default {
     },
   },
   computed: {
+    showEditButton() {
+      return this.clientTypesList.length > 0 && this.countriesList.length > 0;
+    },
     fields() {
       return this[this.currentTab + "Fields"];
     },
@@ -235,7 +246,6 @@ export default {
           this.showSecondaryLoading = false;
         });
     },
-
     contractView({ id }) {
       if (this.currentTab === "telegramAccounts") return;
       this.$router.push({
@@ -244,6 +254,33 @@ export default {
           id,
         },
       });
+    },
+    openEditModal() {
+      this.$router.push({
+        name: "client-edit",
+      });
+    },
+    async getCountriesList() {
+      try {
+        const { data: countriesList } = await api.settingsV2.fetchCountries();
+        this.countriesList = countriesList.map((cty) => ({
+          value: cty.id,
+          text: cty.name.uz,
+        }));
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      }
+    },
+    async getClientTypesList() {
+      try {
+        const { data: clientTypesList } = await api.settingsV2.getClientTypes();
+        this.clientTypesList = clientTypesList.map(({ name, id }) => ({
+          text: name[this.$i18n.locale],
+          value: id,
+        }));
+      } catch (e) {
+        this.toastedWithErrorCode(e);
+      }
     },
   },
 };
@@ -262,7 +299,22 @@ export default {
         </div>
       </template>
       <template #header-status> </template>
-      <template #header-actions> </template>
+      <template #header-actions>
+        <base-button
+          text="Редактировать"
+          @click="openEditModal"
+          v-if="showEditButton"
+        >
+          <template #left-icon>
+            <x-icon
+              name="edit"
+              :size="20"
+              class="violet-600"
+              color="var(--violet-600)"
+            />
+          </template>
+        </base-button>
+      </template>
     </AppHeader>
 
     <base-loading v-if="showLoading" />
@@ -303,20 +355,21 @@ export default {
         <div class="currency__chart currency__chart">
           <span class="card-title">Платежи</span>
           <div class="row mb-2">
-            <span class="bottom__info col-5"> Всего платежей </span>
-            <span class="price col-7">{{
-              client.total_payments.total_payments
-            }}</span>
-          </div>
-          <!-------------->
-          <div class="row mb-2">
-            <span class="bottom__info col-5">Общая сумма платежей </span>
+            <span class="bottom__info col-5">Общая сумма договоров </span>
             <span class="price col-7">{{
               formatPrice(client.total_payments.transaction_prices) +
               ` ${$t("ye")}`
             }}</span>
           </div>
           <!-------------->
+          <div class="row mb-2">
+            <span class="bottom__info col-5"> Всего платежей </span>
+            <span class="price col-7">{{
+              client.total_payments.total_payments
+            }}</span>
+          </div>
+          <!-------------->
+
           <div class="row mb-2">
             <span class="bottom__info col-5"> Общая задолженность </span>
             <span class="price col-7">{{
@@ -478,6 +531,13 @@ export default {
         </div>
       </div>
     </template>
+    <client-edit
+      v-if="showEditForm"
+      :edit-item="client"
+      :client-options="clientTypesList"
+      :country-options="countriesList"
+      @close-creating-modal="showEditForm = false"
+    ></client-edit>
   </div>
 </template>
 
