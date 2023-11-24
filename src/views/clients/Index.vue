@@ -4,13 +4,11 @@ import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRightIcon from "@/components/icons/BaseArrowRightIcon";
 import BaseLoading from "@/components/Reusable/BaseLoading";
 import { XFormSelect } from "@/components/ui-components/form-select";
-import { XFormInput } from "@/components/ui-components/form-input";
 import { XIcon } from "@/components/ui-components/material-icons";
 import { XSquareBackground } from "@/components/ui-components/square-background";
 import ExportDropdown from "@/views/contracts/components/ExportDropdown.vue";
 import { v3ServiceApi } from "@/services/v3/v3.service";
 
-import BaseSearchInput from "@/components/Reusable/BaseSearchInput";
 import BaseInput from "@/components/Reusable/BaseInput2";
 
 import { phonePrettier } from "@/util/reusable";
@@ -20,8 +18,7 @@ export default {
   name: "Clients",
   components: {
     BaseInput,
-    BaseSearchInput,
-    XFormInput,
+
     ExportDropdown,
     AppHeader,
     BaseFilterTabsContent,
@@ -37,7 +34,7 @@ export default {
       timeout: null,
       showLoading: false,
       counts: { active: 0, no_active: 0 },
-      search: this.$route.query.search || "",
+      search: this.$route.query.field || "",
       currentTab: this.$route.query.is_active == 0 ? "no_active" : "active",
       clientType: "physical",
       clientOptions: [
@@ -54,7 +51,7 @@ export default {
       ],
       searchValue: this.$route.query.phone ? "phone" : "contract",
       searchString:
-        (this.searchValue === "order"
+        ((this.$route.query.phone ? "phone" : "contract") === "contract"
           ? this.$route.query.contract_number
           : this.$route.query.phone) || "",
     };
@@ -103,6 +100,7 @@ export default {
           key: "order_counts",
           label: "Количество заказов",
           thStyle: "width: 150px;",
+          sortable: true,
         },
         {
           key: "telegram_account_counts",
@@ -167,6 +165,12 @@ export default {
     this.fetchCounts();
   },
   methods: {
+    handleSort(e) {
+      const query = this.createQuery();
+      query.sortBy = e.sortBy;
+      query.orderBy = e.sortDesc ? "desc" : "asc";
+      this.$router.replace({ query });
+    },
     clientName(item) {
       const locale = this.$i18n.locale;
       let lang = "lotin";
@@ -353,6 +357,7 @@ export default {
       tbody-tr-class="row__body__bottom-border cursor-pointer"
       show-empty
       sort-icon-left
+      @sort-changed="handleSort"
     >
       <template #cell(name)="{ item }">
         <div class="d-flex align-items-center" @click="clientView(item)">

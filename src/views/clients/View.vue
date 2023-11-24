@@ -365,7 +365,7 @@ export default {
           <div class="row mb-2">
             <span class="bottom__info col-5"> Всего платежей </span>
             <span class="price col-7">{{
-              client.total_payments.total_payments
+              formatPrice(client.total_payments.total_payments) + ` ${$t("ye")}`
             }}</span>
           </div>
           <!-------------->
