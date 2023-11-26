@@ -18,3 +18,12 @@ export function setAppropriateCreditMonth(state, apm, discount) {
 
   return creditMonth;
 }
+
+export function calculateInstallments(totalAmount, numMonths) {
+  const monthlyPayment = totalAmount / numMonths;
+  const roundedMonthlyPayment = Math.round(monthlyPayment);
+  const remainingBalance = totalAmount - (roundedMonthlyPayment * numMonths);
+  const adjustedMonthlyPayment = roundedMonthlyPayment + Math.ceil(remainingBalance / numMonths);
+  const lastMonthPayment = totalAmount - (adjustedMonthlyPayment * (numMonths - 1));
+  return { adjustedMonthlyPayment, lastMonthPayment };
+}

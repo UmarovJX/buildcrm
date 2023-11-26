@@ -172,7 +172,6 @@ export default {
       }
     },
     autoFillFieldsByInn(data) {
-      console.log("data", data);
       this.personalData.legal_entity.fax = data.attributes.fax;
       this.personalData.legal_entity.mfo = data.attributes.mfo;
       this.personalData.legal_entity.ndc = data.attributes.nds;

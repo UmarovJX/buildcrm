@@ -12,7 +12,11 @@ export default {
     }
   },
   initOtherProperties(state, context) {
-    const { uuid, expiry_at, created_by } = context;
+    const { uuid, expiry_at, created_by, version } = context;
+
+    /*? ADD VERSION */
+    state.version = version
+
     state.uuid = uuid;
     state.order = context;
     state.expiry_at = expiry_at;

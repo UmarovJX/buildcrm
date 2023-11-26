@@ -73,6 +73,7 @@ export default {
   contract_number: null,
   expiry_at: null,
   uuid: null,
+  version: 2,
   order: {},
   comment: "",
   trashStorage: [],

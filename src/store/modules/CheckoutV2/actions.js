@@ -1,50 +1,54 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
-import {setAppropriateCreditMonth} from "@/util/checkout";
+import {calculateInstallments, setAppropriateCreditMonth} from "@/util/checkout";
 
 export default {
     initEditItems({state, getters: gts, dispatch}, data) {
         try {
             const {payments_details} = data;
+            state.version = data.version
 
-            if (data.status === "sold") {
-                state.apartments = data.apartments.map((apm) => {
-                    const discount = apm.discounts[0];
-
-                    return {
-                        ...apm,
-                        status: data.status,
-                        contract_number: data.contract_number,
-                        contract_date: data.contract_date,
-                        order_uuid: data.id,
-                        uuid: apm.id,
-                        edit: state.schema.edit,
-                        calc: {
-                            ...state.schema.calc,
-                            first_payment_date: data.first_payment_date,
-                            payment_date: data.payment_date,
-                            price: apm.price,
-                            price_m2: apm.price_m2,
-                            plan: apm.plan,
-                            contract_number: data.contract_number,
-                            contract_date: data.contract_date,
-                            discount: apm.discounts[0],
-                            prepay: apm.discounts[0].prepay,
-                            monthly_payment_period: setAppropriateCreditMonth(
-                                state,
-                                apm,
-                                discount
-                            ),
-                            other: {
-                                starting_price: apm.price,
-                                price_m2: apm.price_m2,
-                            },
-                        },
-                    };
-                });
-                return;
-            }
+            /*! OUTDATED */
+            // if (version === 1) {
+            //     if (data.status === "sold") {
+            //         state.apartments = data.apartments.map((apm) => {
+            //             const discount = apm.discounts[0];
+            //
+            //             return {
+            //                 ...apm,
+            //                 status: data.status,
+            //                 contract_number: data.contract_number,
+            //                 contract_date: data.contract_date,
+            //                 order_uuid: data.id,
+            //                 uuid: apm.id,
+            //                 edit: state.schema.edit,
+            //                 calc: {
+            //                     ...state.schema.calc,
+            //                     first_payment_date: data.first_payment_date,
+            //                     payment_date: data.payment_date,
+            //                     price: apm.price,
+            //                     price_m2: apm.price_m2,
+            //                     plan: apm.plan,
+            //                     contract_number: data.contract_number,
+            //                     contract_date: data.contract_date,
+            //                     discount: apm.discounts[0],
+            //                     prepay: apm.discounts[0].prepay,
+            //                     monthly_payment_period: setAppropriateCreditMonth(
+            //                         state,
+            //                         apm,
+            //                         discount
+            //                     ),
+            //                     other: {
+            //                         starting_price: apm.price,
+            //                         price_m2: apm.price_m2,
+            //                     },
+            //                 },
+            //             };
+            //         });
+            //         return;
+            //     }
+            // }
 
             state.apartments = data.apartments.map((apartment) => {
                 let discount =
@@ -58,7 +62,6 @@ export default {
                         id: "other",
                         prepay: 30
                     };
-
 
                 return {
                     status: data.status,
@@ -256,8 +259,6 @@ export default {
             10
         );
 
-        console.log("prepay", prepay);
-
         commit("updateApartment", {
             idx: apmIndex,
             calc: {prepay},
@@ -386,32 +387,44 @@ export default {
     },
     monthlyPaymentsSetter({state, getters: gts, dispatch}, {index, uuid}) {
         const idx = index ?? gts.findApmIdx(uuid);
-        const monthlyPaymentAmount = gts.getMonthlyPaymentAmount(idx);
-        if (monthlyPaymentAmount && gts.getPrepay(idx) !== 100) {
-            const {payment_date, monthly_payment_period} =
-                state.apartments[idx].calc;
-            let today = payment_date ? new Date(payment_date) : new Date();
-            const {
-                year: todayYear,
-                month: todayMonth,
-                dayOfMonth: todayDate,
-            } = dateProperties(today);
-            const lastDateOfCurrentMonth = new Date(
-                todayYear,
-                todayMonth + 1,
-                0
-            ).getDate();
-            let calculateByLastDay = todayDate === lastDateOfCurrentMonth;
-            dispatch("monthlySetter", {idx, credit_months: []});
-            let dCredit = {
-                amount: fmd(monthlyPaymentAmount),
-                edit: false,
-                edited: false,
-                month: today,
-                type: "monthly",
-            };
+        const {payment_date, monthly_payment_period} =
+            state.apartments[idx].calc;
+        let today = payment_date ? new Date(payment_date) : new Date();
+        const {
+            year: todayYear,
+            month: todayMonth,
+            dayOfMonth: todayDate,
+        } = dateProperties(today);
+        const lastDateOfCurrentMonth = new Date(
+            todayYear,
+            todayMonth + 1,
+            0
+        ).getDate();
+        let calculateByLastDay = todayDate === lastDateOfCurrentMonth;
+        dispatch("monthlySetter", {idx, credit_months: []});
+        let dCredit = {
+            amount: fmd(gts.getMonthlyPaymentAmount(idx)),
+            edit: false,
+            edited: false,
+            month: today,
+            type: "monthly",
+        };
+
+        const prepay = gts.getPrepay(idx)
+        const numsMonth = gts.getMonth(idx)
+        const monthlyTotal = gts.getMonthlyTotalPrice(idx)
+
+        const {adjustedMonthlyPayment, lastMonthPayment} =
+            calculateInstallments(monthlyTotal, numsMonth)
+
+        if (state.version === 2) {
+            dCredit.amount = fmd(adjustedMonthlyPayment)
+        }
+
+        if (numsMonth > 0 && prepay !== 100) {
             if (monthly_payment_period > 0) {
-                for (let i = 0; i < monthly_payment_period; i++) {
+                const loopPeriod = state.version === 2 ? numsMonth - 1 : numsMonth
+                for (let i = 0; i < loopPeriod; i++) {
                     const lastDayOfMonth = new Date(todayYear, todayMonth + i + 1, 0);
                     if (i === 0) {
                         dCredit.month = calculateByLastDay
@@ -423,7 +436,24 @@ export default {
                             : today.setMonth(today.getMonth() + 1);
                     }
                     state.apartments[idx].calc.credit_months.push({...dCredit});
-                    // dispatch('monthlyAdditionSetter', {idx, payment: creditMonth})
+                }
+
+                if (state.version === 2) {
+                    const lastDayOfMonth = new Date(todayYear, todayMonth + 1, 0);
+                    if (numsMonth === 1) {
+                        dCredit.month = calculateByLastDay
+                            ? lastDayOfMonth
+                            : today.setMonth(today.getMonth());
+                    } else {
+                        dCredit.month = calculateByLastDay
+                            ? lastDayOfMonth
+                            : today.setMonth(today.getMonth() + 1);
+                    }
+
+                    state.apartments[idx].calc.credit_months.push({
+                        ...dCredit,
+                        amount: fmd(lastMonthPayment)
+                    });
                 }
             }
         } else {

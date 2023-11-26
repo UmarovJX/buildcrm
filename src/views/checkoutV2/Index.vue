@@ -1,5 +1,5 @@
 <script>
-import { XIcon } from "@/components/ui-components/material-icons";
+import {XIcon} from "@/components/ui-components/material-icons";
 import BaseButton from "@/components/Reusable/BaseButton";
 import CountDown from "@/components/Reusable/CountDown";
 import AppHeader from "@/components/Header/AppHeader";
@@ -8,16 +8,16 @@ import ChClientDetails from "@/views/checkoutV2/components/ClientDetails";
 import ChApartmentsOverview from "@/views/checkoutV2/components/ApartmentsOverview";
 import ChReview from "@/views/checkoutV2/components/Review";
 import AppBreadcrumb from "@/components/AppBreadcrumb";
-import { XModalCenter } from "@/components/ui-components/modal-center";
-import { XFormInput } from "@/components/ui-components/form-input";
-import { XLoadingWrapper } from "@/components/ui-components/loading";
-import { XCircularBackground } from "@/components/ui-components/circular-background";
-import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
+import {XModalCenter} from "@/components/ui-components/modal-center";
+import {XFormInput} from "@/components/ui-components/form-input";
+import {XLoadingWrapper} from "@/components/ui-components/loading";
+import {XCircularBackground} from "@/components/ui-components/circular-background";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import api from "@/services/api";
-import { checkoutV1 } from "@/services/checkout";
-import { dateProperties } from "@/util/calendar";
-import { NOTIFY } from "@/constants/names";
-import { headerItems } from "@/views/checkoutV2/helper/headerComputed";
+import {checkoutV1} from "@/services/checkout";
+import {dateProperties} from "@/util/calendar";
+import {NOTIFY} from "@/constants/names";
+import {headerItems} from "@/views/checkoutV2/helper/headerComputed";
 import Permission from "@/permission";
 
 export default {
@@ -90,6 +90,7 @@ export default {
       "trashStorage",
       "clientData",
       "componentFunction",
+      "version"
     ]),
     ...mapGetters("CheckoutV2", [
       "isCreateMode",
@@ -120,7 +121,7 @@ export default {
       try {
         this.startFetching();
         const orderId = this.$route.params.id;
-        const { data } = await api.orders.fetchCheckoutData(orderId);
+        const {data} = await api.orders.fetchCheckoutData(orderId);
         if (data) {
           const context = {
             order: data,
@@ -152,16 +153,16 @@ export default {
 
     startCounter() {
       this.expiry_at = this.$moment(this.expiry_at)
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+          .utcOffset("+0500")
+          .format("YYYY-MM-DD H:mm:ss");
 
       const current = this.$moment(new Date())
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+          .utcOffset("+0500")
+          .format("YYYY-MM-DD H:mm:ss");
 
       const expired = this.$moment(this.order.expiry_at)
-        .utcOffset("+0500")
-        .format("YYYY-MM-DD H:mm:ss");
+          .utcOffset("+0500")
+          .format("YYYY-MM-DD H:mm:ss");
 
       const time = new Date(current) - new Date(expired);
       if (time > 0) {
@@ -194,16 +195,16 @@ export default {
       try {
         this.startSubmitting();
         await api.orders
-          .deleteOrderHold(this.order.uuid)
-          .then(() => {
-            this.$router.push({
-              name: "apartments",
-              params: {
-                object: this.$route.params.object,
-              },
-            });
-          })
-          .catch(() => this.redirect());
+            .deleteOrderHold(this.order.uuid)
+            .then(() => {
+              this.$router.push({
+                name: "apartments",
+                params: {
+                  object: this.$route.params.object,
+                },
+              });
+            })
+            .catch(() => this.redirect());
       } catch (error) {
         this.redirect();
         this.toastedWithErrorCode(error);
@@ -223,7 +224,7 @@ export default {
         try {
           this.startSubmitting();
           const clientForm = clientDetailsRef.sendForm();
-          const { data } = await api.clientsV2.createClient(clientForm);
+          const {data} = await api.clientsV2.createClient(clientForm);
           if (data) {
             this.setClientData({
               ...clientForm,
@@ -268,7 +269,7 @@ export default {
       } = this.$refs["apartments-overview"];
 
       const isInitialZero = this.apartments.some(
-        (a) => a.calc.initial_price < 1
+          (a) => a.calc.initial_price < 1
       );
 
       if (isInitialZero) {
@@ -282,7 +283,7 @@ export default {
           await this.openNotify({
             type: "error",
             message: this.$t(
-              "checkout_permission_error_when_initial_set_to_zero"
+                "checkout_permission_error_when_initial_set_to_zero"
             ),
             duration: 6000,
           });
@@ -311,34 +312,44 @@ export default {
 
     async submitOnUpdate() {
       try {
-        const { order_uuid } = this.apartments[0];
-        if (this.getUpdateStatus === "contract") {
-          this.handleActionTracker({
-            step: "second",
-            condition: true,
-          });
-          this.permissionToNavigate("second");
-          this.$nextTick(() => this.changeStepState(1));
-        } else if (this.getUpdateStatus === "sold") {
-          this.startSubmitting();
-          await api.contractV2
-            .orderUpdate(order_uuid, {
-              client_id: this.clientData.id,
-            })
-            .then(async () => {
-              await this.$router.push({
-                name: "contracts-view",
-                params: { id: this.$route.params.id },
-              });
+        /* ? ENABLE TO EDIT IN ALL STATUS */
+        this.handleActionTracker({
+          step: "second",
+          condition: true,
+        });
+        this.permissionToNavigate("second");
+        this.$nextTick(() => this.changeStepState(1));
 
-              await this.openNotify({
-                type: NOTIFY.type.success,
-                message: this.$t("changes_successfully_saved"),
-                duration: 6000,
-              });
-            })
-            .finally(() => this.finishSubmitting());
-        }
+
+        /* ? PREVIOUS RULE */
+        // const {order_uuid} = this.apartments[0];
+        // if (this.getUpdateStatus === "contract") {
+        //   this.handleActionTracker({
+        //     step: "second",
+        //     condition: true,
+        //   });
+        //   this.permissionToNavigate("second");
+        //   this.$nextTick(() => this.changeStepState(1));
+        // } else if (this.getUpdateStatus === "sold") {
+        //   this.startSubmitting();
+        //   await api.contractV2
+        //       .orderUpdate(order_uuid, {
+        //         client_id: this.clientData.id,
+        //       })
+        //       .then(async () => {
+        //         await this.$router.push({
+        //           name: "contracts-view",
+        //           params: {id: this.$route.params.id},
+        //         });
+        //
+        //         await this.openNotify({
+        //           type: NOTIFY.type.success,
+        //           message: this.$t("changes_successfully_saved"),
+        //           duration: 6000,
+        //         });
+        //       })
+        //       .finally(() => this.finishSubmitting());
+        // }
       } catch (e) {
         await this.openNotify({
           type: "error",
@@ -416,7 +427,7 @@ export default {
             orderCtx.monthly = [];
             for (let i = 0; i < a.calc.credit_months.length; i++) {
               const p = a.calc.credit_months[i];
-              const { ymd } = dateProperties(p.month, "string");
+              const {ymd} = dateProperties(p.month, "string");
               orderCtx.monthly.push({
                 date: ymd,
                 amount: p.amount,
@@ -426,21 +437,21 @@ export default {
           }
 
           const hasEditOnInitial = a.calc.initial_payments.some(
-            (initial) => initial.edit
+              (initial) => initial.edit
           );
 
           if (
-            a.edit.first_payment ||
-            hasEditOnInitial ||
-            a.calc.initial_payments.length > 1 ||
-            a.edit.initial_price ||
-            a.edit.prepay ||
-            a.edit.discount
+              a.edit.first_payment ||
+              hasEditOnInitial ||
+              a.calc.initial_payments.length > 1 ||
+              a.edit.initial_price ||
+              a.edit.prepay ||
+              a.edit.discount
           ) {
             orderCtx.initial_payments = [];
             for (let i = 0; i < a.calc.initial_payments.length; i++) {
               const p = a.calc.initial_payments[i];
-              const { ymd } = dateProperties(p.month, "string");
+              const {ymd} = dateProperties(p.month, "string");
               // const isEdited =
               //   p.edit || a.edit.first_payment || a.edit.initial_price;
               orderCtx.initial_payments.push({
@@ -482,26 +493,26 @@ export default {
         this.startSubmitting();
         if (this.isUpdateMode && this.getUpdateStatus === "contract") {
           await api.contractV2
-            .contractOrderUpdate(this.apartments[0].order_uuid, {
-              ...this.generateOrdersBody()[0],
-              client_id: this.clientData.id,
-            })
-            .then(() => {
-              this.$router.push({
-                name: "contracts-view",
-                params: {
-                  id: this.$route.params.id,
-                },
-              });
+              .contractOrderUpdate(this.apartments[0].order_uuid, {
+                ...this.generateOrdersBody()[0],
+                client_id: this.clientData.id,
+              })
+              .then(() => {
+                this.$router.push({
+                  name: "contracts-view",
+                  params: {
+                    id: this.$route.params.id,
+                  },
+                });
 
-              this.openNotify({
-                type: NOTIFY.type.success,
-                message: this.$t("changes_successfully_saved"),
-                duration: 6000,
+                this.openNotify({
+                  type: NOTIFY.type.success,
+                  message: this.$t("changes_successfully_saved"),
+                  duration: 6000,
+                });
               });
-            });
         } else {
-          const { data } = await checkoutV1.authenticateApartments({
+          const {data} = await checkoutV1.authenticateApartments({
             uuid: this.$route.params.id,
             body: {
               orders: this.generateOrdersBody(),
@@ -528,7 +539,7 @@ export default {
       }
     },
 
-    handleActionTracker({ step, condition }) {
+    handleActionTracker({step, condition}) {
       this.actionTracker.allowNavigate[step] = condition;
     },
 
@@ -548,20 +559,20 @@ export default {
       switch (position) {
         case "second": {
           const isValid =
-            this.getAllowNavProperty("second") &&
-            this.$refs["client-details-observer"].getObserverFlags().valid;
+              this.getAllowNavProperty("second") &&
+              this.$refs["client-details-observer"].getObserverFlags().valid;
           this.navigationPmHandler("second", !isValid);
           break;
         }
         case "third": {
           const isValid =
-            this.$refs["client-details-observer"].getObserverFlags().passed;
+              this.$refs["client-details-observer"].getObserverFlags().passed;
           if (!isValid) {
             this.navigationPmHandler("third", true);
           } else {
             const thirdState =
-              this.getAllowNavProperty("second") &&
-              this.apartments.some((apm) => !apm.validate.valid);
+                this.getAllowNavProperty("second") &&
+                this.apartments.some((apm) => !apm.validate.valid);
             this.navigationPmHandler("third", thirdState);
           }
           break;
@@ -600,8 +611,8 @@ export default {
     async fetchUpdateClientData() {
       try {
         this.startFetching();
-        const { data } = await api.contractV2.getUpdateContractView(
-          this.$route.params.id
+        const {data} = await api.contractV2.getUpdateContractView(
+            this.$route.params.id
         );
         this.initEditItems(data);
         this.$refs["client-details-observer"].fillFormInUpdateMode({
@@ -635,22 +646,22 @@ export default {
     <app-header ref="app-header">
       <template #header-breadcrumb>
         <app-breadcrumb
-          :page="headerItems.page"
-          :page-info="headerItems.pageInfo"
-          :breadcrumbs="headerItems.breadcrumbs"
-          :go-back-method="deactivateOrder"
+            :page="headerItems.page"
+            :page-info="headerItems.pageInfo"
+            :breadcrumbs="headerItems.breadcrumbs"
+            :go-back-method="deactivateOrder"
         />
       </template>
       <template v-if="isCreateMode && expiry_at" #header-actions>
         <div
-          :class="flexCenter"
-          class="checkout-timer background-violet-gradient mr-2"
+            :class="flexCenter"
+            class="checkout-timer background-violet-gradient mr-2"
         >
           <CountDown
-            :deadline="expiry_at"
-            :showDays="false"
-            :showHours="false"
-            @timeElapsed="expiredConfirm"
+              :deadline="expiry_at"
+              :showDays="false"
+              :showHours="false"
+              @timeElapsed="expiredConfirm"
           />
         </div>
       </template>
@@ -658,19 +669,19 @@ export default {
 
     <div class="app-checkout-main">
       <b-tabs
-        pills
-        v-model="stepStateIdx"
-        content-class="app-tabs-content"
-        nav-class="app-tabs-content-header"
+          pills
+          v-model="stepStateIdx"
+          content-class="app-tabs-content"
+          nav-class="app-tabs-content-header"
       >
         <!--  ?FIRST TAB 1   -->
         <b-tab active>
           <template #title>
-            <tab-title :step="1" :content="$t('client_details')" />
+            <tab-title :step="1" :content="$t('client_details')"/>
           </template>
 
           <x-loading-wrapper :loading="isFetching">
-            <ch-client-details ref="client-details-observer" />
+            <ch-client-details ref="client-details-observer"/>
           </x-loading-wrapper>
         </b-tab>
         <!--  ?END OF FIRST TAB    -->
@@ -678,12 +689,12 @@ export default {
         <!--   ?SECOND TAB 2  -->
         <b-tab :disabled="actionTracker.disable.second">
           <template #title>
-            <tab-title :step="2" :content="$t('apartment_detail')" />
+            <tab-title :step="2" :content="$t('apartment_detail')"/>
           </template>
 
           <ch-apartments-overview
-            ref="apartments-overview"
-            @go-review="showReviewSection"
+              ref="apartments-overview"
+              @go-review="showReviewSection"
           />
         </b-tab>
         <!--   ?END OF SECOND TAB   -->
@@ -692,13 +703,13 @@ export default {
         <b-tab :disabled="actionTracker.disable.third">
           <template #title>
             <tab-title
-              :step="3"
-              :content="$t('preview')"
-              :show-right-icon="false"
+                :step="3"
+                :content="$t('preview')"
+                :show-right-icon="false"
             />
           </template>
 
-          <ch-review />
+          <ch-review/>
         </b-tab>
         <!--   ?END OF THIRD TAB   -->
 
@@ -707,16 +718,16 @@ export default {
           <div class="d-flex justify-content-end align-items-center w-100">
             <div :class="flexCenter">
               <base-button
-                :text="`${$t('next')}`"
-                :loading="isSubmitting"
-                class="violet-gradient"
-                @click="moveToNextForm"
+                  :text="`${$t('next')}`"
+                  :loading="isSubmitting"
+                  class="violet-gradient"
+                  @click="moveToNextForm"
               >
                 <template #right-icon>
                   <x-icon
-                    name="keyboard_arrow_right"
-                    size="32"
-                    class="color-white"
+                      name="keyboard_arrow_right"
+                      size="32"
+                      class="color-white"
                   />
                 </template>
               </base-button>
@@ -728,17 +739,17 @@ export default {
 
     <!--  COMMENT MODAL  -->
     <x-modal-center
-      v-if="userComment.showModal"
-      :bilingual="true"
-      cancel-button-text="cancel"
-      apply-button-class="w-100"
-      cancel-button-class="w-100"
-      apply-button-text="create_agree"
-      footer-class="d-flex justify-content-between x-gap-1"
-      :apply-button-loading="isSubmitting"
-      @close="closeCommentModal"
-      @cancel="closeCommentModal"
-      @apply="authenticateApartments"
+        v-if="userComment.showModal"
+        :bilingual="true"
+        cancel-button-text="cancel"
+        apply-button-class="w-100"
+        cancel-button-class="w-100"
+        apply-button-text="create_agree"
+        footer-class="d-flex justify-content-between x-gap-1"
+        :apply-button-loading="isSubmitting"
+        @close="closeCommentModal"
+        @cancel="closeCommentModal"
+        @apply="authenticateApartments"
     >
       <template #header>
         <h3 class="x-font-size-36px font-craftworksans color-gray-600">
@@ -752,10 +763,10 @@ export default {
             {{ $t("comment_required_to_complete") }}
           </div>
           <x-form-input
-            class="w-100"
-            :label="true"
-            v-model="userComment.vBind"
-            :placeholder="`${$t('commentary')}`"
+              class="w-100"
+              :label="true"
+              v-model="userComment.vBind"
+              :placeholder="`${$t('commentary')}`"
           />
         </div>
       </template>
@@ -763,25 +774,25 @@ export default {
 
     <!--  WARNING MODAL BEFORE LEAVE  -->
     <x-modal-center
-      v-if="showWarningModal"
-      :bilingual="true"
-      :show-exit-button="false"
-      apply-button-class="w-100"
-      cancel-button-class="w-100"
-      cancel-button-text="no_cancel"
-      apply-button-text="yes_cancel"
-      footer-class="d-flex justify-content-between x-gap-1"
-      :apply-button-loading="isSubmitting"
-      @close="hideWarningModal"
-      @cancel="hideWarningModal"
-      @apply="expiredConfirm"
+        v-if="showWarningModal"
+        :bilingual="true"
+        :show-exit-button="false"
+        apply-button-class="w-100"
+        cancel-button-class="w-100"
+        cancel-button-text="no_cancel"
+        apply-button-text="yes_cancel"
+        footer-class="d-flex justify-content-between x-gap-1"
+        :apply-button-loading="isSubmitting"
+        @close="hideWarningModal"
+        @cancel="hideWarningModal"
+        @apply="expiredConfirm"
     >
       <template #header>
         <h3
-          class="x-font-size-36px font-craftworksans color-gray-600 d-flex align-items-center"
+            class="x-font-size-36px font-craftworksans color-gray-600 d-flex align-items-center"
         >
           <x-circular-background class="bg-red-300 mr-2">
-            <x-icon name="priority_high" class="red-500" />
+            <x-icon name="priority_high" class="red-500"/>
           </x-circular-background>
           <span class="d-block">
             {{ $t("create_agree_apartments") }}
