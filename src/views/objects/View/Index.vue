@@ -561,6 +561,12 @@ export default {
             if (blockIdx === -1) {
               this.gridApartments[idx].blocks.push(_b.block);
             }
+          } else {
+            this.gridApartments.push({
+              id: _b.building.id,
+              name: _b.building.name,
+              blocks: [_b.block],
+            });
           }
         } else {
           this.gridApartments.push({
@@ -580,6 +586,7 @@ export default {
           this.chessApartments = this.gridApartments;
         }
       };
+      const that = this;
       const tmp = this;
       async function fetchGrid() {
         tmp.getLoading = true;
@@ -587,6 +594,8 @@ export default {
           api.objectsV2.getOptimizeApartments(object, blocks[i])
         );
         await Promise.all(calls).then((responses) => {
+          console.log(responses.map((e) => e.data));
+          console.log(that.gridApartments);
           responses.forEach(({ data }) => setObjectMap(data));
         });
         tmp.getLoading = false;
