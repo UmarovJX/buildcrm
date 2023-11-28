@@ -389,6 +389,78 @@ export default {
         initialMonth.month = calculateByLastDay ? lastDayOfMonth : new Date(today);
         dispatch("initialAdditionSetter", {idx, payment: initialMonth});
     },
+    creditMonthsSetter({getters: gts, dispatch}, {uuid}) {
+        const idx = gts.findApmIdx(uuid);
+        const apm = gts.getApm({idx});
+        if (gts.getMonthlyPaymentAmount(idx) && gts.getPrepay(idx) !== 100) {
+            const {payment_date, monthly_payment_period} = apm.calc;
+            let today = payment_date ? new Date(payment_date) : new Date();
+            const {
+                year: todayYear,
+                month: todayMonth,
+                dayOfMonth: todayDate,
+            } = dateProperties(today);
+            const lastDateOfCurrentMonth = new Date(
+                todayYear,
+                todayMonth + 1,
+                0
+            ).getDate();
+            let calculateByLastDay = todayDate === lastDateOfCurrentMonth;
+            dispatch("monthlySetter", {idx, credit_months: []});
+            if (monthly_payment_period > 0) {
+                const prepay = gts.getPrepay(idx)
+                const numsMonth = gts.getMonth(idx)
+                const monthlyTotal = gts.getMonthlyTotalPrice(idx)
+
+                const {adjustedMonthlyPayment, lastMonthPayment} =
+                    calculateMonthlyPayment(monthlyTotal, numsMonth)
+
+                const creditMonth = {
+                    // amount: fmd(gts.getMonthlyPaymentAmount(idx)),
+                    amount: fmd(adjustedMonthlyPayment),
+                    edit: false,
+                    edited: false,
+                    month: today,
+                    type: "monthly",
+                };
+
+                for (let i = 0; i < monthly_payment_period - 1; i++) {
+                    const lastDayOfMonth = new Date(todayYear, todayMonth + i + 1, 0);
+                    if (i === 0) {
+                        creditMonth.month = calculateByLastDay
+                            ? lastDayOfMonth
+                            : today.setMonth(today.getMonth());
+                    } else {
+                        creditMonth.month = calculateByLastDay
+                            ? lastDayOfMonth
+                            : today.setMonth(today.getMonth() + 1);
+                    }
+                    dispatch("monthlyAdditionSetter", {idx, payment: creditMonth});
+                }
+
+                const lastDayOfMonth = new Date(todayYear, todayMonth + 1, 0);
+                if (numsMonth === 1) {
+                    creditMonth.month = calculateByLastDay
+                        ? lastDayOfMonth
+                        : today.setMonth(today.getMonth());
+                } else {
+                    creditMonth.month = calculateByLastDay
+                        ? lastDayOfMonth
+                        : today.setMonth(today.getMonth() + 1);
+                }
+
+                dispatch("monthlyAdditionSetter", {
+                    idx,
+                    payment: {
+                        ...creditMonth,
+                        amount: fmd(lastMonthPayment)
+                    }
+                });
+            }
+        } else {
+            dispatch("monthlySetter", {idx, credit_months: []});
+        }
+    },
     monthlyPaymentsSetter({state, getters: gts, dispatch}, {index, uuid}) {
         const idx = index ?? gts.findApmIdx(uuid);
         const {payment_date, monthly_payment_period} =
@@ -472,50 +544,6 @@ export default {
             ...payment,
             month: payment.month,
         });
-    },
-    creditMonthsSetter({getters: gts, dispatch}, {uuid}) {
-        const idx = gts.findApmIdx(uuid);
-        const apm = gts.getApm({idx});
-        if (gts.getMonthlyPaymentAmount(idx) && gts.getPrepay(idx) !== 100) {
-            const {payment_date, monthly_payment_period} = apm.calc;
-            let today = payment_date ? new Date(payment_date) : new Date();
-            const {
-                year: todayYear,
-                month: todayMonth,
-                dayOfMonth: todayDate,
-            } = dateProperties(today);
-            const lastDateOfCurrentMonth = new Date(
-                todayYear,
-                todayMonth + 1,
-                0
-            ).getDate();
-            let calculateByLastDay = todayDate === lastDateOfCurrentMonth;
-            dispatch("monthlySetter", {idx, credit_months: []});
-            if (monthly_payment_period > 0) {
-                for (let i = 0; i < monthly_payment_period; i++) {
-                    const creditMonth = {
-                        amount: fmd(gts.getMonthlyPaymentAmount(idx)),
-                        edit: false,
-                        edited: false,
-                        month: today,
-                        type: "monthly",
-                    };
-                    const lastDayOfMonth = new Date(todayYear, todayMonth + i + 1, 0);
-                    if (i === 0) {
-                        creditMonth.month = calculateByLastDay
-                            ? lastDayOfMonth
-                            : today.setMonth(today.getMonth());
-                    } else {
-                        creditMonth.month = calculateByLastDay
-                            ? lastDayOfMonth
-                            : today.setMonth(today.getMonth() + 1);
-                    }
-                    dispatch("monthlyAdditionSetter", {idx, payment: creditMonth});
-                }
-            }
-        } else {
-            dispatch("monthlySetter", {idx, credit_months: []});
-        }
     },
     editSchedule({state}, {idx, payment}) {
         const {amount, type, month, tracker} = payment;
