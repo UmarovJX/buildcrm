@@ -1,7 +1,7 @@
 import {dateProperties} from "@/util/calendar";
 import {numberFormatDecimal as fmd} from "@/util/numberHelper";
 import {isNotUndefinedNullEmptyZero} from "@/util/inspect";
-import {calculateInstallments} from "@/util/checkout";
+import {calculateInstallments, calculateMonthlyPayment} from "@/util/checkout";
 
 export default {
     initEditItems({state, getters: gts, dispatch}, data) {
@@ -419,7 +419,7 @@ export default {
         const monthlyTotal = gts.getMonthlyTotalPrice(idx)
 
         const {adjustedMonthlyPayment, lastMonthPayment} =
-            calculateInstallments(monthlyTotal, numsMonth)
+            calculateMonthlyPayment(monthlyTotal, numsMonth)
 
         if (state.version === 2) {
             dCredit.amount = fmd(adjustedMonthlyPayment)
