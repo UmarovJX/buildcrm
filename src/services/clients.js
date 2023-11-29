@@ -1,4 +1,4 @@
-import { axiosV1CRM, axiosV2 } from "@/services/core/base";
+import {axiosApiV2, axiosV1CRM} from "@/services/core/base";
 import Core from "@/services/core/index";
 
 class Clients extends Core {
@@ -36,7 +36,7 @@ class Clients extends Core {
 }
 
 class ClientsV2 extends Core {
-  constructor(axios = axiosV2) {
+  constructor(axios = axiosApiV2) {
     super(axios);
   }
 
@@ -51,11 +51,11 @@ class ClientsV2 extends Core {
   }
 
   fetchClients(page) {
-    return this.get(`api/clients?page=${page}`);
+    return this.get(`clients?page=${page}`);
   }
 
   searchClient(search, page) {
-    return this.get(`api/clients/search?page=${page}&search=${search}`);
+    return this.get(`clients/search?page=${page}&search=${search}`);
   }
 
   fetchReserveClient(orderId) {
@@ -67,11 +67,11 @@ class ClientsV2 extends Core {
   }
 
   cancelContract(clientId, body) {
-    return this.post(`api/clients/terminate/${clientId}`, body);
+    return this.post(`clients/terminate/${clientId}`, body);
   }
 
   deleteClientFromDB(client) {
-    return this.get(`api/clients/destroy/${client}`);
+    return this.get(`clients/destroy/${client}`);
   }
 }
 

@@ -29,6 +29,12 @@ export const axiosV2 = instanceGenerator({
   // eslint-disable-next-line no-undef
   baseUrl: process.env.VUE_APP_URL_V2,
 });
+
+export const axiosApiV2 = instanceGenerator({
+  // eslint-disable-next-line no-undef
+  baseUrl: process.env.VUE_APP_URL + '/api/v2',
+});
+
 // eslint-disable-next-line no-undef
 export const axiosBase = ({ baseUrl = null, endpoint = "" }) => {
   if (isNull(baseUrl)) {
