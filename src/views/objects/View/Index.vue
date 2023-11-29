@@ -199,6 +199,16 @@ export default {
         none: 0,
         closed: 0,
       },
+      counts:{
+        unavailable: 0,
+        available: 0,
+        contract: 0,
+        sold: 0,
+        booked: 0,
+        hold: 0,
+        none: 0,
+        closed: 0,
+      },
       filtered: false,
       gridApartments: [],
       chessApartments: [],
@@ -464,7 +474,10 @@ export default {
     },
     countGet(value) {
       if (!this.accessToFilter) {
-        this.statusCounter = value;
+        this.statusCounter = {
+          ...this.statusCounter,
+          ...value
+        };
       } else {
         this.getAllApartment();
       }

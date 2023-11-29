@@ -28,9 +28,8 @@ export function calculateInstallments(totalAmount, numMonths) {
     return {adjustedMonthlyPayment, lastMonthPayment};
 }
 
-
 export function calculateMonthlyPayment(total, month) {
-    let degree = Math.floor(total.toString().length / 3);
+    let degree = Math.floor(parseInt(total).toString().length / 3);
 
     let adjustedMonthlyPayment = Math.ceil(
         total / (Math.pow(10, degree) * month)

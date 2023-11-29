@@ -868,13 +868,13 @@ export default {
 
 .modal__footer {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   width: 590px;
   height: 150px;
   column-gap: 0.5rem;
   padding-bottom: 3rem;
   position: fixed;
-  bottom: 0px;
+  bottom: 0;
   background: linear-gradient(
     to top,
     rgba(255, 255, 255, 1),
