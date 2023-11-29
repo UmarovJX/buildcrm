@@ -32,7 +32,6 @@ import { hasOwnProperty, keys } from "@/util/object";
 import { formatDateToHM } from "@/util/date/calendar.util";
 import Permission from "@/permission";
 import BaseButton from "@/components/Reusable/BaseButton";
-import { v3ServiceApi } from "@/services/v3/v3.service";
 
 export default {
   name: "Contracts",
@@ -116,11 +115,7 @@ export default {
       });
     }
 
-    let { search: searchValue, limit: showByValue } = this.$route.query;
-
-    if (!showByValue) {
-      showByValue = 20;
-    }
+    let { search: searchValue, limit: showByValue = 20 } = this.$route.query;
 
     const contractsPermission = ContractsPermission.contracts();
 
@@ -131,6 +126,7 @@ export default {
       : false;
 
     return {
+      hack: true,
       currentTab: "",
       timeout: null,
       hasAdminRole,
@@ -162,7 +158,6 @@ export default {
       permissionDownloadReport,
       filterPermission: ContractsPermission.getContractsFilterPermission(),
       downloadPermission: ContractsPermission.getContractsDownloadPermission(),
-      paymentHistorySC: null,
     };
   },
   computed: {
@@ -266,6 +261,18 @@ export default {
     },
   },
   watch: {
+    showByValue(n, o) {
+      console.log(n);
+      console.log(o);
+      const isNotUpdate = n === null || n === o;
+      if (isNotUpdate) return;
+      const localQuery = {
+        ...this.query,
+        page: 1,
+      };
+      const limit = n;
+      this.replaceRouter({ ...localQuery, limit });
+    },
     "$route.query": {
       handler: function () {
         this.fetchContractList();
@@ -286,8 +293,7 @@ export default {
     // },
   },
   created() {
-    Promise.allSettled([this.fetchContractList()]);
-
+    this.fetchContractList();
     this.currentTab = this.query.is_archive
       ? "is_archive"
       : this.query.is_trashed
@@ -295,15 +301,8 @@ export default {
       : this.query.is_reorder
       ? "is_reorder"
       : "";
-
-    v3ServiceApi.orders.getPaymentHistoryStatusCount().then((res) => {
-      this.paymentHistorySC = res.data;
-    });
   },
   methods: {
-    goToBadContracts() {
-      this.$router.push({ name: "bad-contracts" });
-    },
     formattingPhone: (phone) => phonePrettier(phone),
     dateReverser: (time) => formatDateWithDot(time),
     async fetchStatusesOfCounts() {
@@ -315,8 +314,12 @@ export default {
         this.toastedWithErrorCode(e);
       }
     },
-    limitChanged() {
-      this.changeFetchLimit();
+    limitChanged(e) {
+      if (this.hack) {
+        this.hack = false;
+        return;
+      }
+      // this.changeFetchLimit(e);
     },
     checkLocales(name) {
       if (localStorage.locale) return name[localStorage.locale];
@@ -438,11 +441,14 @@ export default {
       if (page === currentPage) return;
       this.replaceRouter({ ...this.query, page });
     },
-    changeFetchLimit() {
+    changeFetchLimit(e) {
+      console.log(e);
+      console.log(this.showByValue.toString());
       const { query } = this;
       const isNotUpdate =
+        !this.query.limit ||
         query.limit?.toString() === this.showByValue.toString();
-      if (isPrimitive(query.limit) && isNotUpdate) return;
+      if (isNotUpdate) return;
       const localQuery = {
         ...this.query,
         page: 1,
@@ -522,7 +528,6 @@ export default {
               this.tableItems = response.data.items;
 
               this.pagination = response.data.pagination;
-              this.showByValue = response.data.pagination.perPage;
             }
           })
           .finally(() => {
@@ -565,16 +570,6 @@ export default {
       </template>
 
       <template #header-actions>
-        <div
-          v-if="
-            paymentHistorySC &&
-            (paymentHistorySC.problematic_contract_count > 0 ||
-              paymentHistorySC.without_contract_count > 0)
-          "
-        >
-          <base-button @click="goToBadContracts" text="Bad Contracts">
-          </base-button>
-        </div>
         <export-dropdown v-if="permissionDownloadReport" />
       </template>
     </app-header>

@@ -22,6 +22,10 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@/assets/scss/main.scss";
 
 import vSelect from "vue-select";
+import VueApexCharts from "vue-apexcharts";
+Vue.use(VueApexCharts);
+
+Vue.component("apexchart", VueApexCharts);
 
 Vue.component("v-select", vSelect);
 

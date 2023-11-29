@@ -329,6 +329,7 @@ export default {
       v-if="version && Object.keys(version).length"
       ref="version-modal"
       design="release-info"
+      main-class="m-0"
     >
       <template #header>
         <div class="release-info-header">
@@ -341,8 +342,8 @@ export default {
       <template #main>
         <div class="release-info-main">
           <div class="release-info-main-block">
-            <p class="release-info-main-block-release">{{ version.version }}</p>
-            <p class="release-info-main-block-date">
+            <p class="release-info-main-block-release m-0">{{ version.version }}</p>
+            <p class="release-info-main-block-date m-0">
               {{ dateFormat(version.created_at) }}
             </p>
           </div>
@@ -353,7 +354,7 @@ export default {
               {{ $t("release_note.new") }}
             </div>
             <div>
-              <p class="release-edited" v-html="checkLocale(version.latest)" />
+              <p class="release-edited m-0" v-html="checkLocale(version.latest)" />
             </div>
           </div>
           <div v-if="version && version.fixed" class="release-info-main-block">
@@ -363,16 +364,16 @@ export default {
               {{ $t("edited") }}
             </div>
             <div>
-              <p class="release-new" v-html="checkLocale(version.fixed)" />
+              <p class="release-new m-0" v-html="checkLocale(version.fixed)" />
             </div>
           </div>
         </div>
       </template>
       <template #footer>
-        <div class="release-info-footer">
+        <!-- <div class="release-info-footer">
           <base-questions-icon :height="20" :width="20" />
           <p>{{ $t("release_note.userComment") }}</p>
-        </div>
+        </div> -->
       </template>
     </base-modal>
   </div>
@@ -409,12 +410,12 @@ export default {
   &-main {
     display: flex;
     flex-direction: column;
-    gap: 56px;
+    gap: 20px;
 
     &-block {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 10px;
 
       &-date {
         font-family: "Inter", serif;

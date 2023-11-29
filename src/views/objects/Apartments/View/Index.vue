@@ -4,10 +4,12 @@ import BaseArrowLeft from "@/components/icons/BaseArrowLeftIcon";
 import BaseArrowRight from "@/components/icons/BaseArrowRightIcon";
 import AppHeader from "@/components/Header/AppHeader";
 import ApartmentsPermission from "@/permission/apartments";
+import HidePriceButton from "@/components/Reusable/HidePriceButton.vue";
 
 export default {
   name: "Index",
   components: {
+    HidePriceButton,
     AppHeader,
     BaseArrowLeft,
     BaseArrowRight,
@@ -128,6 +130,9 @@ export default {
             </div>
           </div>
         </div>
+      </template>
+      <template #header-actions>
+        <hide-price-button></hide-price-button>
       </template>
       <template #header-status>
         <div

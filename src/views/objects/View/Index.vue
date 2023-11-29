@@ -49,6 +49,137 @@ export default {
   },
   data() {
     return {
+      // series: [
+      //   {
+      //     name: "2020",
+      //     data: [90, 50, 20, 45, 50, 30, 70],
+      //   },
+      // ],
+      // chartOptions: {
+      //   chart: {
+      //     height: 90,
+      //     parentHeightOffset: 0,
+      //     type: "bar",
+      //     toolbar: { show: false },
+      //   },
+      //   tooltip: { enabled: false },
+      //   plotOptions: {
+      //     bar: {
+      //       barHeight: "100%",
+      //       columnWidth: "5px",
+      //       startingShape: "rounded",
+      //       endingShape: "rounded",
+      //       borderRadius: 2,
+      //       colors: {
+      //         backgroundBarColors: [
+      //           "teal",
+      //           "teal",
+      //           "teal",
+      //           "teal",
+      //           "teal",
+      //           "teal",
+      //           "teal",
+      //         ],
+      //         backgroundBarRadius: 4,
+      //       },
+      //     },
+      //   },
+      //   colors: ["#00ff00"],
+      //   grid: {
+      //     show: false,
+      //     padding: {
+      //       top: -30,
+      //       left: -16,
+      //       bottom: 0,
+      //       right: -6,
+      //     },
+      //   },
+      //   dataLabels: { enabled: false },
+      //   legend: { show: false },
+      //   xaxis: {
+      //     categories: ["M", "T", "W", "T", "F", "S", "S"],
+      //     axisBorder: { show: false },
+      //     axisTicks: { show: false },
+      //     labels: { show: false },
+      //   },
+      //   yaxis: { labels: { show: false } },
+      //   responsive: [
+      //     {
+      //       breakpoint: 100,
+      //       options: {
+      //         plotOptions: {
+      //           bar: {
+      //             columnWidth: "40%",
+      //             borderRadius: 4,
+      //           },
+      //         },
+      //       },
+      //     },
+      //     {
+      //       breakpoint: 1368,
+      //       options: { plotOptions: { bar: { columnWidth: "48%" } } },
+      //     },
+      //     {
+      //       breakpoint: 1264,
+      //       options: {
+      //         plotOptions: {
+      //           bar: {
+      //             borderRadius: 6,
+      //             columnWidth: "30%",
+      //             colors: { backgroundBarRadius: 6 },
+      //           },
+      //         },
+      //       },
+      //     },
+      //     {
+      //       breakpoint: 960,
+      //       options: {
+      //         plotOptions: {
+      //           bar: {
+      //             columnWidth: "35%",
+      //             borderRadius: 6,
+      //           },
+      //         },
+      //       },
+      //     },
+      //     {
+      //       breakpoint: 883,
+      //       options: { plotOptions: { bar: { columnWidth: "40%" } } },
+      //     },
+      //     {
+      //       breakpoint: 768,
+      //       options: { plotOptions: { bar: { columnWidth: "25%" } } },
+      //     },
+      //     {
+      //       breakpoint: 600,
+      //       options: {
+      //         plotOptions: {
+      //           bar: { borderRadius: 9 },
+      //           colors: { backgroundBarRadius: 9 },
+      //         },
+      //       },
+      //     },
+      //     {
+      //       breakpoint: 479,
+      //       options: {
+      //         plotOptions: {
+      //           bar: { borderRadius: 6 },
+      //           colors: { backgroundBarRadius: 9 },
+      //         },
+      //         grid: {
+      //           padding: {
+      //             right: -15,
+      //             left: -15,
+      //           },
+      //         },
+      //       },
+      //     },
+      //     {
+      //       breakpoint: 376,
+      //       options: { plotOptions: { bar: { borderRadius: 6 } } },
+      //     },
+      //   ],
+      // },
       expressView: {
         toggle: false,
         item: {},
@@ -139,6 +270,7 @@ export default {
       objectName: "",
       is_parking: false,
       isHidePrice: false,
+      is_map: false,
       componentTabs: [
         {
           id: 4,
@@ -315,7 +447,7 @@ export default {
       }
     },
     "$route.query": {
-      async handler(query) {
+      async handler(query, oq) {
         this.compareStatus(query);
         if (this.accessToFilter) {
           this.chessApartments = this.filterItems(query, this.chessApartments);
@@ -324,31 +456,34 @@ export default {
         if (this.currentTab !== "ParkingTable") {
           this.chessApartments = this.filterItems(query, this.chessApartments);
 
-          this.getAllApartment();
+          this.getApartmentCounts();
         }
       },
       immediate: true,
     },
-    currentTab(value) {
-      this.initRelatedToComponent();
-      this.fetchFilterFields();
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          page: 1,
-          currentTab: value,
-        },
-      });
+    currentTab: {
+      handler(value) {
+        this.initRelatedToComponent();
+        this.fetchFilterFields();
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            page: 1,
+            currentTab: value,
+          },
+        });
 
-      if (this.currentTab === "ParkingTable") {
-        this.fetchParkingStatusList();
-      } else {
-        this.statusList = this.apartmentStatusList;
-      }
+        if (this.currentTab === "ParkingTable") {
+          this.fetchParkingStatusList();
+        } else {
+          this.statusList = this.apartmentStatusList;
+        }
 
-      if (this.currentTab === "ObjectTable") {
-        this.fetchNecessary();
-      }
+        if (this.currentTab === "ObjectTable") {
+          this.fetchNecessary();
+        }
+      },
+      immediate: false,
     },
   },
   mounted() {
@@ -376,9 +511,7 @@ export default {
     } else {
       this.statusList = this.apartmentStatusList;
     }
-    setTimeout(() => {
-      this.getAllApartment();
-    }, 100);
+
     this.getBlockName();
   },
   methods: {
@@ -387,6 +520,12 @@ export default {
         name: "facilities-show",
         params: { object: this.$route.params.object },
       });
+    },
+    getApartmentCounts() {
+      this.statusCounter = {};
+      api.objectsV2
+        .fetchObjectApartmentsCounts(this.$route.params.object, this.query)
+        .then(({ data }) => (this.statusCounter = data.result));
     },
     async fetchParkingStatusList() {
       const { object } = this.$route.params;
@@ -417,8 +556,6 @@ export default {
     },
     async getBlockItems(blocks) {
       const { object } = this.$route.params;
-      let idx = 0;
-
       const setObjectMap = (_b) => {
         if (this.gridApartments.length) {
           const idx = this.gridApartments.findIndex(
@@ -434,6 +571,12 @@ export default {
             if (blockIdx === -1) {
               this.gridApartments[idx].blocks.push(_b.block);
             }
+          } else {
+            this.gridApartments.push({
+              id: _b.building.id,
+              name: _b.building.name,
+              blocks: [_b.block],
+            });
           }
         } else {
           this.gridApartments.push({
@@ -453,119 +596,28 @@ export default {
           this.chessApartments = this.gridApartments;
         }
       };
-
+      const that = this;
+      const tmp = this;
       async function fetchGrid() {
-        await api.objectsV2
-          .getOptimizeApartments(object, blocks[idx])
-          .then(({ data }) => {
-            setObjectMap(data);
-            idx++;
-            if (idx < blocks.length) {
-              fetchGrid();
-            }
-          });
+        tmp.getLoading = true;
+        const calls = [...blocks.keys()].map((i) =>
+          api.objectsV2.getOptimizeApartments(object, blocks[i])
+        );
+        await Promise.all(calls).then((responses) => {
+          console.log(responses.map((e) => e.data));
+          console.log(that.gridApartments);
+          responses.forEach(({ data }) => setObjectMap(data));
+        });
+        tmp.getLoading = false;
       }
-
-      await fetchGrid();
+      if (["ChessSquareCard", "ObjectBlock"].includes(this.currentTab))
+        fetchGrid();
     },
     async getGridOptimizationItems() {
       const _bs = this.filterFields.blocks.map((b) => b.id);
       await this.getBlockItems(_bs);
     },
-    countGet(value) {
-      if (!this.accessToFilter) {
-        this.statusCounter = {
-          ...this.statusCounter,
-          ...value
-        };
-      } else {
-        this.getAllApartment();
-      }
-    },
-    getAllApartment() {
-      this.statusCounter = {
-        unavailable: 0,
-        available: 0,
-        contract: 0,
-        sold: 0,
-        booked: 0,
-        hold: 0,
-        none: 0,
-      };
-      if (this.filtered) {
-        this.chessApartments.map((item) => {
-          item.blocks.map((block) => {
-            if (block.blockActive) {
-              block.floors.map((floor) => {
-                if (floor.floorActive) {
-                  floor.apartments.map((apartment) => {
-                    if (apartment.apartmentActive) {
-                      if (apartment["is_sold"]) {
-                        switch (apartment.order.status) {
-                          case "available": {
-                            return (this.statusCounter.available += 1);
-                          }
-                          case "hold": {
-                            return (this.statusCounter.hold += 1);
-                          }
-                          case "sold":
-                          case "closed": {
-                            return (this.statusCounter.sold += 1);
-                          }
-                          case "booked": {
-                            return (this.statusCounter.booked += 1);
-                          }
-                          case "contract": {
-                            return (this.statusCounter.contract += 1);
-                          }
-                          default:
-                            return (this.statusCounter.none += 1);
-                        }
-                      } else {
-                        this.statusCounter.unavailable += 1;
-                      }
-                    }
-                  });
-                }
-              });
-            }
-          });
-        });
-      } else {
-        this.chessApartments.map((item) => {
-          item.blocks.map((block) => {
-            block.floors.map((floor) => {
-              floor.apartments.map((apartment) => {
-                if (apartment["is_sold"]) {
-                  switch (apartment.order.status) {
-                    case "available": {
-                      return (this.statusCounter.available += 1);
-                    }
-                    case "hold": {
-                      return (this.statusCounter.hold += 1);
-                    }
-                    case "sold":
-                    case "closed": {
-                      return (this.statusCounter.sold += 1);
-                    }
-                    case "booked": {
-                      return (this.statusCounter.booked += 1);
-                    }
-                    case "contract": {
-                      return (this.statusCounter.contract += 1);
-                    }
-                    default:
-                      return (this.statusCounter.none += 1);
-                  }
-                } else {
-                  this.statusCounter.unavailable += 1;
-                }
-              });
-            });
-          });
-        });
-      }
-    },
+
     cellAttributes(slot) {
       return ["#cell(" + slot.id + ')="data"'];
     },
@@ -577,9 +629,6 @@ export default {
       api.objectsV2.fetchObjectPrice(object).then((response) => {
         this.priceList = response.data;
         response.data.map((item) => {
-          // console.log(item.prepay);
-          // this.otherPrices = [...this.otherPrices, ...item.prices.filter(price => price.type === 'other_price')]
-          // this.defaultPrices = [...this.defaultPrices, ...item.prices.filter(price => price.type === 'default')]
           this.priceFields = [
             ...this.priceFields,
             {
@@ -700,7 +749,10 @@ export default {
 
       return localApartments.map((mainConstructor) => {
         let filterBlocks;
-        const hasBlocks = filter.hasOwnProperty("blocks");
+        const hasBlocks = Object.prototype.hasOwnProperty.call(
+          filter,
+          "blocks"
+        );
         if (hasBlocks) {
           filterBlocks = mainConstructor.blocks.map((block) => {
             if (typeof filter.blocks === "string") {
@@ -739,7 +791,10 @@ export default {
 
         filterBlocks = filterBlocks.map((filterBlock) => {
           let filterFloors = filterBlock.floors;
-          const hasFloorsQuery = filter.hasOwnProperty("floors");
+          const hasFloorsQuery = Object.prototype.hasOwnProperty.call(
+            filter,
+            "floors"
+          );
           if (hasFloorsQuery) {
             if (typeof filter.floors === "string") {
               filter.floors = [filter.floors];
@@ -933,6 +988,7 @@ export default {
           this.objectName = res.data.name;
           this.is_parking = res.data.is_parking;
           this.isHidePrice = res.data.is_hide_m2_price;
+          this.is_map = res.data.is_map;
         })
         .catch((err) => {
           return err;
@@ -956,7 +1012,6 @@ export default {
           this.toastedWithErrorCode(err);
         })
         .finally(() => {
-          this.getAllApartment();
           this.getLoading = false;
         });
     },
@@ -1072,7 +1127,7 @@ export default {
       </template>
 
       <template #header-actions>
-        <div>
+        <div v-if="is_map">
           <base-button
             @click="showFacilities"
             text="Map"
@@ -1085,25 +1140,33 @@ export default {
         </div>
       </template>
     </app-header>
+    <!-- <div class="row">
+      <div class="col-2">
+        <div class="card p-2">
+          <apexchart
+            :options="chartOptions"
+            :series="series"
+            :height="90"
+          ></apexchart>
+        </div>
+      </div>
+    </div>
+    <b-card>
+      <div class="pb-4">
+        <h5 class="text-h5">Order</h5>
+        <span class="text-sm text-disabled">Last week</span>
+      </div>
 
-    <!--  Header Navigation  -->
-    <!--        <div v-if="finishFetching && objectName.length" class="navigation__content justify-content-between">-->
-    <!--            <div class="d-flex align-items-center">-->
-    <!--                <router-link class="go__back" :to="{name: 'objects'}">-->
-    <!--                    <base-arrow-left :width="32" :height="32"></base-arrow-left>-->
-    <!--                </router-link>-->
-    <!--                <span class="breadcrumb__content">-->
-    <!--                  <span class="d-flex align-items-center">-->
-    <!--                    <span class="mr-2">{{ $t('objects.title') }}</span>-->
-    <!--                    <base-arrow-right :width="16" :height="16"/>-->
-    <!--                    <span class="ml-2">{{ objectName }}</span>-->
-    <!--                  </span>-->
-    <!--                  <span class="head">-->
-    <!--                    <span class="contract__number">{{ objectName }}</span>-->
-    <!--                  </span>-->
-    <!--                </span>-->
-    <!--            </div>-->
-    <!--        </div>-->
+      <apexchart
+        :options="chartOptions"
+        :series="series"
+        :height="90"
+      ></apexchart>
+      <div class="d-flex align-center justify-space-between">
+        <h4 class="text-h4 text-center">124k</h4>
+        <span class="text-sm text-success"> +12.6% </span>
+      </div>
+    </b-card> -->
 
     <object-sort
       :filter-fields="filterFields"
@@ -1184,7 +1247,6 @@ export default {
       :is="currentTab"
       :apartments="apartmentsByTabs"
       :is-hide-price="isHidePrice"
-      @counter="countGet"
       @show-express-sidebar="apartmentExpressReview"
       @show-parking-details="parkingExpressReview"
       @show-plan-sidebar="planExpressReview"

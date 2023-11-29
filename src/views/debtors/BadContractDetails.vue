@@ -34,33 +34,28 @@ export default {
         },
         {
           key: "status",
-          label: this.$t("Status"),
+          label: this.$t("Статус"),
+          formatter: (el) => this.getTranslations(el),
         },
         {
           key: "amount",
-          label: this.$t("amount"),
+          label: this.$t("Сумма"),
         },
         {
           key: "date_paid",
-          label: this.$t("date_paid"),
+          label: this.$t("Дата оплаты"),
           formatter: (date_paid) =>
             new Date(date_paid).toLocaleDateString(this.$i18n.locale),
         },
         {
           key: "type",
-          label: this.$t("type"),
+          label: this.$t("Тип"),
+          formatter: (el) => this.getTranslations(el),
         },
         {
           key: "payment_method",
-          label: this.$t("payment_method"),
-        },
-        {
-          key: "amount",
-          label: this.$t("amount"),
-        },
-        {
-          key: "amount",
-          label: this.$t("amount"),
+          label: this.$t("Метод оплаты"),
+          formatter: (el) => this.getTranslations(el),
         },
       ],
       deletePlan: {
@@ -80,6 +75,22 @@ export default {
     this.fetchItems();
   },
   methods: {
+    getTranslations(el) {
+      const d = {
+        paid: "Оплачено",
+
+        initial_payment: "1 взнос",
+        monthly: "Eжемесячный",
+        all: "Общий",
+
+        transfer: "Перечисление",
+        cash: "Наличные",
+        plastic_card: "Пластиковая карта",
+        recalculation: "Перерасчет",
+        to_khurshidaka: "К Хуршидака",
+      };
+      return d[el];
+    },
     ...mapMutations(["updateLoading"]),
     async fetchItems() {
       const contract = this.$route.params.contract;
@@ -105,7 +116,7 @@ export default {
         <div class="go__back" @click="$router.go(-1)">
           <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
         </div>
-        {{ $t("contracts.title") }}
+        {{ $t("Оплаты по договору: ") }} {{ $route.params.contract }}
       </template>
     </app-header>
 

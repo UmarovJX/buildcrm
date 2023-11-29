@@ -90,6 +90,13 @@ class V3Service extends Core {
       ),
     statisticsTotal: () => this.post("orders/payment-history/statisticsTotal"),
   };
+  clients = {
+    getCount: () => this.post("clients/getCount"),
+    findAll: (b) => this.post("clients", b),
+    findOne: (b) => this.post("clients/findOne", b),
+    orders: (b) => this.post("clients/orders", b),
+    telegramAccounts: (b) => this.post("clients/telegramAccounts", b),
+  };
 }
 
 export const v3ServiceApi = new V3Service();

@@ -12,6 +12,7 @@ export default {
     },
     wrapperClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
     wrapperStyle: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
+    mainClass: p(PROP_TYPE_ARRAY_OBJECT_STRING, ""),
   },
   data() {
     return {
@@ -56,7 +57,7 @@ export default {
       <div>
         <slot name="header" />
       </div>
-      <div class="main">
+      <div class="main" :class="mainClass">
         <slot name="main" />
       </div>
       <div>

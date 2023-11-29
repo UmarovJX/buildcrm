@@ -52,22 +52,25 @@ export default {
 
       totalPage: 0,
       showByValue: +this.$route.query.limit || 20,
-      showByOptions: [5, 10, 20, 30].map((el) => ({ value: el, text: el })),
+      showByOptions: [10, 20, 30, 40, 50].map((el) => ({
+        value: el,
+        text: el,
+      })),
 
       fields: [
         {
           key: "contract",
-          label: this.$t("Contract №"),
+          label: this.$t("Договор"),
           thStyle: "width: 20%",
         },
         {
           key: "count",
-          label: this.$t("Count"),
+          label: this.$t("Кол-во оплат"),
           thStyle: "width: 20%",
         },
         {
           key: "total_amount",
-          label: this.$t("Total Amount"),
+          label: this.$t("Общая сумма"),
           thStyle: "width: 20%",
         },
         {
@@ -83,12 +86,12 @@ export default {
         },
         {
           key: "count",
-          label: "Count",
+          label: "Количество",
           thStyle: "text-align: right;",
         },
         {
           key: "sum",
-          label: "Sum",
+          label: "Общая сумма",
           thStyle: "text-align: right;",
         },
       ],
@@ -141,10 +144,15 @@ export default {
       this.showOptions = false;
     },
     fetchStatistics() {
+      const l = {
+        total: "Всего",
+        success: "Успешные",
+        failed: "Неуспешные",
+      };
       v3ServiceApi.orders.statisticsTotal().then(
         (res) =>
           (this.statistics = ["total", "success", "failed"].map((el) => ({
-            name: el,
+            name: l[el],
             count: res.data.result.count[el],
             sum: res.data.result.sum[el],
           })))
@@ -233,11 +241,11 @@ export default {
         <div class="go__back" @click="$router.go(-1)">
           <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>
         </div>
-        {{ $t("Проблемные договоры") }}
+        {{ $t("Проблемные Оплаты") }}
       </template>
       <template #header-actions>
         <div class="statistics position-relative">
-          <base-button text="Statistics" id="statistics"> </base-button>
+          <base-button text="Статистика" id="statistics"> </base-button>
           <div
             class="statistics-detail position-absolute options-container"
             style="

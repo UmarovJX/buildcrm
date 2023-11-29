@@ -16,6 +16,7 @@ import branchesData from "@/views/roles/data/branches.data";
 import settingsData from "@/views/roles/data/settings.data";
 import reportsData from "@/views/roles/data/reports.data";
 import botData from "@/views/roles/data/bot.data";
+import clients from "@/views/roles/data/clients";
 
 export function joinRolesRows({ name }) {
   const { values: generalVs, permission: generalPms } = generalData(
@@ -70,6 +71,7 @@ export function joinRolesRows({ name }) {
     uuid()
   );
   const { values: botVs, permission: botPms } = botData(name, uuid());
+  const { values: clientsVS, permission: clientsPms } = clients(name, uuid());
 
   const form = {
     general: generalVs,
@@ -89,6 +91,7 @@ export function joinRolesRows({ name }) {
     settings: settingsVs,
     reports: reportsVs,
     bot: botVs,
+    clients: clientsVS,
   };
 
   const permissionTabs = [
@@ -109,6 +112,7 @@ export function joinRolesRows({ name }) {
     settingsPms,
     reportsPms,
     botPms,
+    clientsPms,
   ];
 
   const row = {

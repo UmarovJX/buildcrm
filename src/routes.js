@@ -17,7 +17,9 @@ import Dashboard from "./components/Dashboard/Home";
 import Objects from "./components/Dashboard/Objects/Index";
 import ObjStore from "./components/Dashboard/Objects/Store";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";
-import Clients from "./components/Dashboard/Clients/Index";
+import Clients from "./views/clients/Index";
+import ClientView from "./views/clients/View";
+import ClientEdit from "./views/clients/EDit";
 import Users from "./components/Dashboard/Users/Index";
 import Roles from "./views/roles/Index";
 import RolesUpdate from "./views/roles/Update";
@@ -73,8 +75,8 @@ import Editor from "@/views/Editor.vue";
 /*? PARKING ROUTES*/
 import ParkingCheckout from "@/views/parking/checkout/Index.vue";
 
-import BadContracts from "@/views/contracts/BadContracts";
-import BadContractDetails from "@/views/contracts/BadContractDetails";
+import BadContracts from "@/views/debtors/BadContracts";
+import BadContractDetails from "@/views/debtors/BadContractDetails";
 
 const routes = [
   {
@@ -382,6 +384,24 @@ const routes = [
           requiresAuth: "clients",
         },
       },
+      {
+        /* CLIENTS */
+        name: "client-view",
+        path: "/clients/:uuid",
+        component: ClientView,
+        meta: {
+          requiresAuth: "clients",
+        },
+      },
+      {
+        /* CLIENTS */
+        name: "client-edit",
+        path: "/clients/:uuid/edit",
+        component: ClientEdit,
+        meta: {
+          requiresAuth: "clients",
+        },
+      },
 
       {
         /* CONTRACTS */
@@ -394,20 +414,20 @@ const routes = [
       },
       {
         name: "bad-contracts",
-        path: "/contracts/issues",
+        path: "/debtors/issues",
         component: BadContracts,
         meta: {
           requiresAuth: "contracts",
-          parent: "contracts",
+          parent: "debtors",
         },
       },
       {
         name: "bad-contract-details",
-        path: "/contracts/issues/:contract",
+        path: "/debtors/issues/:contract",
         component: BadContractDetails,
         meta: {
           requiresAuth: "contracts",
-          parent: "contracts",
+          parent: "debtors",
         },
       },
 

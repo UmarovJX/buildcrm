@@ -1,16 +1,11 @@
 <script>
 import api from "@/services/api";
-import { yandexMap, ymapMarker } from "vue-yandex-maps";
-import BaseModal from "@/components/Reusable/BaseModal";
-import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
+import { XIcon } from "@/components/ui-components/material-icons";
 
 export default {
   name: "TabObjectDetails",
   components: {
-    BaseModal,
-    yandexMap,
-    yandexMarker: ymapMarker,
-    BaseArrowLeftIcon,
+    XIcon,
   },
   props: {
     order: {
@@ -38,6 +33,15 @@ export default {
     this.fetchObjectDetails();
   },
   methods: {
+    toApartmentDetails() {
+      this.$router.push({
+        name: "apartment-view",
+        params: {
+          object: this.apartment[0].object.id,
+          id: this.apartment[0].id,
+        },
+      });
+    },
     haveApartment(item) {
       return Object.keys(item).length;
     },
@@ -104,6 +108,7 @@ export default {
           } else {
             this.apartment = response.data;
           }
+          console.log(this.apartment);
         })
         .catch((error) => {
           this.toastedWithErrorCode(error);
@@ -117,12 +122,6 @@ export default {
     },
     finishLoading() {
       this.$emit("finish-loading");
-    },
-    closeMapModal() {
-      this.$refs["map-modal"].closeModal();
-    },
-    openMapModal() {
-      this.$refs["map-modal"].openModal();
     },
   },
 };
@@ -145,23 +144,6 @@ export default {
               alt="parking image"
             />
           </div>
-          <button @click="openMapModal">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M3.4395 1.66675H16.5592C17.539 1.66675 18.3327 2.48429 18.3327 3.49363V4.76988C18.3327 5.25952 18.1413 5.72972 17.8016 6.07265L12.3807 11.5559C12.2872 11.6514 12.1602 11.7044 12.029 11.7035L7.49013 11.6894C7.35199 11.6894 7.22071 11.6302 7.12633 11.5268L2.14478 6.0479C1.83676 5.70939 1.66602 5.26217 1.66602 4.79816V3.49451C1.66602 2.48518 2.45967 1.66675 3.4395 1.66675ZM7.73277 13.1869L11.7782 13.1992C12.0305 13.2001 12.2347 13.4114 12.2347 13.6703V15.9462C12.2347 16.206 12.0871 16.4411 11.8572 16.5498L8.18493 18.2742C8.09913 18.314 8.00819 18.3334 7.91724 18.3334C7.79626 18.3334 7.67528 18.2981 7.56975 18.2282C7.38528 18.1063 7.27374 17.8959 7.27374 17.6705V13.6579C7.27374 13.3972 7.47966 13.186 7.73277 13.1869Z"
-                fill="#7C3AED"
-              />
-            </svg>
-            {{ $t("view_map") }}
-          </button>
         </div>
 
         <div class="object__details_info col-6" v-if="haveApartment(item)">
@@ -236,22 +218,18 @@ export default {
               alt="apartment image"
             />
           </div>
-          <button @click="openMapModal">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M3.4395 1.66675H16.5592C17.539 1.66675 18.3327 2.48429 18.3327 3.49363V4.76988C18.3327 5.25952 18.1413 5.72972 17.8016 6.07265L12.3807 11.5559C12.2872 11.6514 12.1602 11.7044 12.029 11.7035L7.49013 11.6894C7.35199 11.6894 7.22071 11.6302 7.12633 11.5268L2.14478 6.0479C1.83676 5.70939 1.66602 5.26217 1.66602 4.79816V3.49451C1.66602 2.48518 2.45967 1.66675 3.4395 1.66675ZM7.73277 13.1869L11.7782 13.1992C12.0305 13.2001 12.2347 13.4114 12.2347 13.6703V15.9462C12.2347 16.206 12.0871 16.4411 11.8572 16.5498L8.18493 18.2742C8.09913 18.314 8.00819 18.3334 7.91724 18.3334C7.79626 18.3334 7.67528 18.2981 7.56975 18.2282C7.38528 18.1063 7.27374 17.8959 7.27374 17.6705V13.6579C7.27374 13.3972 7.47966 13.186 7.73277 13.1869Z"
-                fill="#7C3AED"
-              />
-            </svg>
-            {{ $t("view_map") }}
+          <button
+            class="d-flex align-items-center justify-content-center"
+            @click="toApartmentDetails"
+          >
+            <x-icon
+              name="visibility"
+              :size="24"
+              class="mr-4"
+              color="var(--violet-600)"
+              style="user-select: none"
+            />
+            {{ $t("Подробная информация") }}
           </button>
         </div>
 
@@ -424,7 +402,12 @@ export default {
                 <span>{{ $t("object.area") }}</span>
                 <span class="d-flex">
                   <span v-if="havePlan(item)" class="mr-2 font-normal">
-                    {{ parseFloat(item.apartment.plan.area).toFixed(1) }}</span
+                    {{
+                      parseFloat(item.apartment.plan.area).toLocaleString(
+                        "en-GB",
+                        { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                      )
+                    }}</span
                   >
                   <span class="lowercase">м2</span>
                 </span>
@@ -455,7 +438,12 @@ export default {
                 >
                   <span class="mr-2">
                     {{
-                      parseFloat(item.apartment.plan.balcony_area).toFixed(1)
+                      parseFloat(
+                        item.apartment.plan.balcony_area
+                      ).toLocaleString("en-GB", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
                     }}
                   </span>
                   <span class="lowercase">м2</span>
@@ -491,39 +479,6 @@ export default {
         </div>
       </div>
     </template>
-
-    <!--  LOCATION APARTMENT ON THE MAP  -->
-    <base-modal ref="map-modal">
-      <template #header>
-        <!--   GO BACK     -->
-        <span class="d-flex align-items-center">
-          <span class="go__back" @click="closeMapModal">
-            <base-arrow-left-icon
-              :width="32"
-              :height="32"
-            ></base-arrow-left-icon>
-          </span>
-          <!--    TITLE      -->
-          <span class="title">{{ $t("object_map") }}</span>
-        </span>
-      </template>
-
-      <template #main>
-        <div class="yandex__content">
-          <yandex-map
-            :coords="coordinates"
-            zoom="18"
-            ymap-class="yandex__content-map"
-          >
-            <yandexMarker
-              :coords="coordinates"
-              marker-id="123123"
-              marker-type="placemark"
-            />
-          </yandex-map>
-        </div>
-      </template>
-    </base-modal>
   </div>
 </template>
 

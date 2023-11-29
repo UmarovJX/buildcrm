@@ -1,19 +1,29 @@
 <script>
 import { XFormInput } from "@/components/ui-components/form-input";
+import { makeProp } from "@/util/props";
+import { PROP_TYPE_STRING, PROP_TYPE_OBJECT } from "@/constants/props";
 import { XModalCenter } from "@/components/ui-components/modal-center";
 import api from "@/services/api";
 import { v3ServiceApi } from "@/services/v3/v3.service";
-
-import BaseFormTagInput from "@/components/Reusable/BaseFormTagInput";
+import BaseTabPicker from "@/components/Reusable/BaseTabPicker.vue";
 
 export default {
   name: "CreateBotPage",
   components: {
-    BaseFormTagInput,
+    BaseTabPicker,
     XFormInput,
     XModalCenter,
   },
   props: {
+    upsertType: makeProp(PROP_TYPE_STRING, "create", (type) => {
+      return ["create", "edit"].includes(type);
+    }),
+    editItem: makeProp(PROP_TYPE_OBJECT, {
+      id: undefined,
+      slug: "",
+      title: {},
+      description: {},
+    }),
     allLanguages: {
       type: Array,
       required: true,
@@ -25,8 +35,10 @@ export default {
       slug: "",
       title: {},
       description: {},
+      id: "",
     };
     return {
+      currentLang: this.allLanguages[0],
       applyButtonLoading: false,
       form,
       item: {
@@ -42,8 +54,18 @@ export default {
   //     }
   //   }, 500),
   // },
-  created() {},
+  created() {
+    if (this.upsertType == "edit") {
+      this.item.id = this.editItem.id;
+      this.item.slug = this.editItem.slug;
+      this.item.title = { ...this.editItem.title };
+      this.item.description = { ...this.editItem.description };
+    }
+  },
   methods: {
+    setTab(e) {
+      this.currentLang = e;
+    },
     closeCreatingModal() {
       this.clearForm();
       this.$emit("close-modal");
@@ -60,7 +82,11 @@ export default {
       if (isSatisfied) {
         this.startLoading();
         try {
-          await v3ServiceApi.botPages.create(this.item);
+          if (this.upsertType === "create") {
+            await v3ServiceApi.botPages.create(this.item);
+          } else {
+            await v3ServiceApi.botPages.update(this.item);
+          }
           this.clearForm();
           this.$emit("bot-page-created");
         } catch (e) {
@@ -132,39 +158,37 @@ export default {
             {{ errors[0].replace("slug", $t("title")) }}
           </span>
         </validation-provider>
+        <base-tab-picker
+          :options="allLanguages"
+          noAll
+          :current="currentLang"
+          @tab-selected="setTab"
+        ></base-tab-picker>
 
         <h3 class="mt-4 mb-2 status-pick-color-title">
           {{ $t("Title") }}
         </h3>
-        <validation-provider
-          v-for="lang in allLanguages"
-          :key="lang"
-          :name="`title_` + lang"
-          class="title-uz-provider"
-        >
+        <validation-provider :name="`title`" class="title-uz-provider">
           <x-form-input
             type="text"
-            :placeholder="`title ${lang}`"
+            :placeholder="$t('version')"
             class="w-100"
-            v-model="item.title[lang]"
+            v-model="item.title[currentLang]"
           />
         </validation-provider>
 
         <h3 class="mt-4 mb-2 status-pick-color-title">
           {{ $t("Description") }}
         </h3>
-        <validation-provider
-          v-for="lang in allLanguages"
-          :key="lang"
-          :name="`title_` + lang"
-          class="title-uz-provider"
-        >
-          <x-form-input
-            type="text"
-            :placeholder="`title ${lang}`"
-            class="w-100"
-            v-model="item.description[lang]"
-          />
+        <validation-provider :name="`title_`" class="title-uz-provider">
+          <div class="ta-wrapper">
+            <textarea
+              name=""
+              :id="'title'"
+              rows="10"
+              v-model="item.description[currentLang]"
+            ></textarea>
+          </div>
         </validation-provider>
       </validation-observer>
     </template>
@@ -172,6 +196,16 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+textarea {
+  border: none;
+  background-color: var(--gray-100);
+  width: 100%;
+}
+.ta-wrapper {
+  background-color: var(--gray-100);
+  padding: 1rem;
+  border-radius: 2rem;
+}
 .filter__inputs {
   margin-top: 2rem;
   margin-bottom: 3rem;

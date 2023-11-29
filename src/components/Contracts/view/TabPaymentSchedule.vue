@@ -374,12 +374,22 @@ export default {
         return ContractsPermission.getContractsInitialEditPermission();
       else if (type === "monthly")
         return ContractsPermission.getContractsMonthlyEditPermission();
+      else if (type === "all")
+        return (
+          ContractsPermission.getContractsInitialEditPermission() &&
+          ContractsPermission.getContractsMonthlyEditPermission()
+        );
     },
     userInteractionDelete(type) {
       if (type === "initial_payment")
         return ContractsPermission.getContractsInitialDeletePermission();
       else if (type === "monthly")
         return ContractsPermission.getContractsMonthlyDeletePermission();
+      else if (type === "all")
+        return (
+          ContractsPermission.getContractsInitialDeletePermission() &&
+          ContractsPermission.getContractsMonthlyDeletePermission()
+        );
     },
     refreshDetails() {
       this.fetchItems();
