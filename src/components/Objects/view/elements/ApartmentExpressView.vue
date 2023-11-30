@@ -359,7 +359,7 @@ export default {
         name: "checkout-v2",
         params: {
           id: this.sidebarApartment.order.id,
-          object: this.apartment.object.id,
+          object: this.sidebarApartment.object.id,
         },
       });
     },

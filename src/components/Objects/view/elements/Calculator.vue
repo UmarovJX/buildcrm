@@ -37,6 +37,7 @@ export default {
         price_for_m2: 0,
         discount_price: 0,
         monthly_price: 0,
+        last_month_price: 0,
         prepay: 0,
         debt: 0,
         total: 0,
@@ -134,6 +135,7 @@ export default {
       this.monthly_price = isNaN(this.calc.monthly_price)
         ? 0
         : this.calc.monthly_price;
+      this.calc.last_month_price = this.getLastMonth();
       this.calc.debt = this.getDebt();
       this.calc.total = this.getTotal();
       this.calc.base_price = this.getBasePrice();
@@ -190,6 +192,7 @@ export default {
     changeDiscount_month() {
       this.monthlyPaymentDuration = this.calc.month;
       this.monthly_price = this.getMonth();
+      this.calc.last_month_price = this.getLastMonth();
       this.upHillForPrint();
     },
     upHillForPrint() {
@@ -243,7 +246,27 @@ export default {
     },
     getMonth() {
       if (this.calc.month) {
-        return (this.getTotal() - this.getPrepay()) / this.calc.month;
+        let degree = Math.floor(
+          parseInt(this.getTotal() - this.getPrepay()).toString().length / 3
+        );
+
+        let adjustedMonthlyPayment =
+          Math.ceil(
+            (this.getTotal() - this.getPrepay()) /
+              (Math.pow(10, degree) * this.calc.month)
+          ) * Math.pow(10, degree);
+
+        return adjustedMonthlyPayment; //(this.getTotal() - this.getPrepay()) / this.calc.month;
+      }
+      return 0;
+    },
+    getLastMonth() {
+      if (this.calc.month) {
+        return (
+          this.getTotal() -
+          this.getPrepay() -
+          this.getMonth() * (this.calc.month - 1)
+        );
       }
       return 0;
     },
@@ -377,7 +400,6 @@ export default {
         </div>
         <div class="square-price font-inter color-gray-600 font-weight-600">
           {{ $t("by_price", { price: `${pricePrettier(monthly_price, 2)}` }) }}
-          <!--          По {{ pricePrettier(monthly_price, 2) }} сум-->
         </div>
       </div>
 
@@ -460,13 +482,16 @@ export default {
           {{ pricePrettier(monthly_price, 2) }} {{ $t("ye") }}
         </span>
       </div>
+      <!--       Monthly Payment          -->
+      <div v-if="discount.prepay < 100" class="d-flex justify-content-between">
+        <span class="property d-block color-gray-400">
+          {{ $t("Последняя") }}
+        </span>
+        <span class="price d-block color-gray-600">
+          {{ pricePrettier(calc.last_month_price, 2) }} {{ $t("ye") }}
+        </span>
+      </div>
 
-      <!--                <div v-if="discount.amount > 0" class="d-flex justify-content-between">-->
-      <!--                  <span class="property d-block color-gray-400">{{ $t('contracts.view.remainder') }}</span>-->
-      <!--                  <span class="price d-block color-gray-600">{{ pricePrettier(calc.debt) }} {{ $t('ye') }}</span>-->
-      <!--                </div>-->
-
-      <!--      Total Discount          -->
       <div class="d-flex justify-content-between">
         <span class="property d-block color-gray-400">
           {{ $t("total_discount") }}
