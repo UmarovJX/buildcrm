@@ -147,8 +147,9 @@ export default {
       //   return ContractsPermission.getContractsEditPermission()
       // }
 
+
       return ContractsPermission.getContractsEditPermission() &&
-      this.order.status !== "closed"
+      this.order.status !== "cancelled"
     },
     hasConstructorOrder() {
       return Object.keys(this.order).length > 0;
