@@ -32,7 +32,7 @@ export const axiosV2 = instanceGenerator({
 
 export const stats = instanceGenerator({
   // eslint-disable-next-line no-undef
-  baseUrl: "https://5b0654df-8e7d-42f7-b1f0-2b781a571682.mock.pstmn.io",
+  baseUrl: "https://8eee3f1c-d230-40d6-8b61-cd4b6141024a.mock.pstmn.io",
 });
 export const axiosApiV2 = instanceGenerator({
   // eslint-disable-next-line no-undef
