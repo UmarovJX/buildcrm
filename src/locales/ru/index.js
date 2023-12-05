@@ -1,4 +1,7 @@
 export default {
+    assignor:'Цедент',
+    assignee: "Цессионарий",
+
     percentage_of_recontract: "Процент переоформление",
     common: {
         apartment: "Квартира",
