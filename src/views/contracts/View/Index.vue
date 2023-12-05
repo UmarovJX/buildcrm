@@ -147,7 +147,8 @@ export default {
       //   return ContractsPermission.getContractsEditPermission()
       // }
 
-      return ContractsPermission.getContractsEditPermission()
+      return ContractsPermission.getContractsEditPermission() &&
+      this.order.status !== "closed"
     },
     hasConstructorOrder() {
       return Object.keys(this.order).length > 0;
