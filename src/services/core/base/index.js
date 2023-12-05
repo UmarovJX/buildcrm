@@ -30,9 +30,13 @@ export const axiosV2 = instanceGenerator({
   baseUrl: process.env.VUE_APP_URL_V2,
 });
 
+export const stats = instanceGenerator({
+  // eslint-disable-next-line no-undef
+  baseUrl: "https://5b0654df-8e7d-42f7-b1f0-2b781a571682.mock.pstmn.io",
+});
 export const axiosApiV2 = instanceGenerator({
   // eslint-disable-next-line no-undef
-  baseUrl: process.env.VUE_APP_URL + '/api/v2',
+  baseUrl: process.env.VUE_APP_URL + "/api/v2",
 });
 
 // eslint-disable-next-line no-undef
