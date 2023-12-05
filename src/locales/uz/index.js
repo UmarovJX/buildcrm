@@ -1,4 +1,7 @@
 export default {
+  recontract: {
+    percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
+  },
   common: {
     apartment: "Xonadon",
     phone: "Телефон:",

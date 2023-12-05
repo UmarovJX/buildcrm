@@ -1,6 +1,6 @@
 <script>
 import BaseTimesCircleIcon from "@/components/icons/BaseTimesCircleIcon";
-import { debounce } from "@/util/reusable";
+import {debounce} from "@/util/reusable";
 import BaseUpIcon from "@/components/icons/BaseUpIcon";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 
@@ -53,6 +53,8 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    height: cssDefaultProperty,
+    width: cssDefaultProperty,
     margin: cssDefaultProperty,
     padding: cssDefaultProperty,
     paddingLeft: cssDefaultProperty,
@@ -62,7 +64,7 @@ export default {
     marginTop: cssDefaultProperty,
     marginBottom: cssDefaultProperty,
     marginLeft: cssDefaultProperty,
-    marginRight: cssDefaultProperty,
+    marginRight: cssDefaultProperty
   },
   data() {
     return {
@@ -81,6 +83,8 @@ export default {
     },
     inputFieldStyle() {
       const {
+        height,
+        width,
         margin,
         padding,
         paddingLeft,
@@ -93,6 +97,8 @@ export default {
         marginRight,
       } = this;
       return {
+        height,
+        width,
         margin,
         padding,
         paddingLeft,
@@ -166,66 +172,67 @@ export default {
       </span>
     </div>
     <input
-      v-if="counter"
-      v-model="searchInput"
-      :type="type"
-      :disabled="disable"
-      id="base-input"
-      ref="base-input"
-      :placeholder="placeholder"
-      @input="triggerInputEvent"
+        v-if="counter"
+        v-model="searchInput"
+        :type="type"
+        :disabled="disable"
+        id="base-input"
+        ref="base-input"
+        :placeholder="placeholder"
+        @input="triggerInputEvent"
     />
 
     <base-numeric-input
-      v-else-if="type === 'number'"
-      :currency="currency"
-      :minus="false"
-      :value="null"
-      :disabled="disable"
-      currency-symbol-position="suffix"
-      separator="space"
-      :placeholder="placeholder"
-      ref="base-input"
-      :field-style="inputFieldStyle"
-      @input="triggerNumberEvent"
+        v-else-if="type === 'number'"
+        :currency="currency"
+        :minus="false"
+        :value="null"
+        :disabled="disable"
+        currency-symbol-position="suffix"
+        separator="space"
+        :placeholder="placeholder"
+        ref="base-input"
+        :field-style="inputFieldStyle"
+        v-model="searchInput"
+        @input="triggerNumberEvent"
     />
     <input
-      v-else-if="!mask"
-      v-model="searchInput"
-      :type="type"
-      :disabled="disable"
-      id="base-input"
-      ref="base-input"
-      :style="inputFieldStyle"
-      :placeholder="placeholder"
-      @input="triggerInputEvent"
+        v-else-if="!mask"
+        v-model="searchInput"
+        :type="type"
+        :disabled="disable"
+        id="base-input"
+        ref="base-input"
+        :style="inputFieldStyle"
+        :placeholder="placeholder"
+        @input="triggerInputEvent"
     />
 
     <input
-      v-else
-      v-model="searchInput"
-      :type="type"
-      v-mask="mask"
-      :disabled="disable"
-      id="base-input-mask"
-      ref="base-input"
-      :style="inputFieldStyle"
-      :placeholder="placeholder"
-      @input="triggerInputEvent"
+        v-else
+        v-model="searchInput"
+        :type="type"
+        v-mask="mask"
+        :disabled="disable"
+        id="base-input-mask"
+        ref="base-input"
+        :style="inputFieldStyle"
+        :placeholder="placeholder"
+        @input="triggerInputEvent"
     />
     <span
-      v-if="showClearIcon && !disable"
-      class="clear__icon"
-      @click="clearSearchInput"
+        v-if="showClearIcon && !disable"
+        class="clear__icon"
+        @click="clearSearchInput"
     >
-      <base-times-circle-icon />
+      <base-times-circle-icon/>
     </span>
     <div v-if="counter" class="spin__icon">
       <div @click="increment">
-        <base-up-icon />
+        <base-up-icon/>
       </div>
       <div @click="decrement">
-        <base-down-icon />
+        <base-down-icon/>
       </div>
     </div>
   </div>

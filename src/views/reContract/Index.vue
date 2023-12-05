@@ -6,9 +6,12 @@ import BaseDatePicker from "@/components/Reusable/BaseDatePicker";
 import BaseArrowLeftIcon from "@/components/icons/BaseArrowLeftIcon";
 import BaseSelect from "@/components/Reusable/BaseSelect";
 import api from "@/services/api";
-import { formatDateWithDot, phonePrettier } from "@/util/reusable";
-import { XFormSelect } from "@/components/ui-components/form-select";
+import {formatDateWithDot, phonePrettier} from "@/util/reusable";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import AppHeader from "@/components/Header/AppHeader.vue";
+import {addZero, dateProperties} from "@/util/date/calendar.util";
+import {NOTIFY} from "@/constants/names";
+import {mapActions} from "vuex";
 
 export default {
   name: "ReContract",
@@ -24,12 +27,22 @@ export default {
   },
 
   data() {
+    const {
+      month,
+      dayOfMonth,
+      year
+    } = dateProperties(new Date())
+
+    const contractDate = `${year}-${addZero(month)}-${addZero(dayOfMonth)}`
+
     return {
+      saving: false,
       tabIndex: 0,
       tabBtnText: "next",
       oldClient: {},
       newClient: {
         attributes: {
+          address_line: "",
           first_name: {
             lotin: "",
             kirill: "",
@@ -51,17 +64,18 @@ export default {
         client_type_id: null,
         email: "",
         phones: [
-          { id: null, phone: null },
-          { id: null, phone: null },
+          {id: null, phone: null},
+          {id: null, phone: null},
         ],
         language: "uz",
         subject: "physical",
       },
       contract: {
-        date: null,
+        date: contractDate,
         reorder_type_id: null,
         agreement_number: "",
         client_uuid: null,
+        percent: 100,
       },
       client_id: "",
       order: {},
@@ -101,7 +115,7 @@ export default {
   },
   computed: {
     clientTypeOptions() {
-      return this.clientTypesList.map(({ name, id }) => ({
+      return this.clientTypesList.map(({name, id}) => ({
         text: name[this.$i18n.locale],
         value: id,
       }));
@@ -109,9 +123,11 @@ export default {
   },
 
   methods: {
+    ...mapActions("notify", ["openNotify"]),
+
     async getClientTypesList() {
       try {
-        const { data: clientTypesList } = await api.settingsV2.getClientTypes();
+        const {data: clientTypesList} = await api.settingsV2.getClientTypes();
         this.clientTypesList = clientTypesList;
       } catch (e) {
         this.toastedWithErrorCode(e);
@@ -119,7 +135,7 @@ export default {
     },
     async getCountriesList() {
       try {
-        const { data: countriesList } = await api.settingsV2.fetchCountries();
+        const {data: countriesList} = await api.settingsV2.fetchCountries();
         this.nationList = countriesList.map((cty) => ({
           value: cty.id,
           text: cty.name.uz,
@@ -149,12 +165,22 @@ export default {
     async validateClientForm() {
       const isValid = await this.$refs["client-form"].validate();
       if (isValid) {
-        if (!this.client_id) {
-          this.confirmClient();
+        try {
+          this.saving = true
+          const saveRsp = await this.confirmClient()
+          this.client_id = saveRsp.data.id
+
+          this.tabIndex = 1;
+          this.tabBtnText = "re_contract";
+          this.contractBtn = false;
+        } catch (e) {
+          await this.openNotify({
+            type: NOTIFY.type.error,
+            message: e?.response?.data?.message ?? e,
+          });
+        } finally {
+          this.saving = false
         }
-        this.tabIndex = 1;
-        this.tabBtnText = "re_contract";
-        this.contractBtn = false;
       }
     },
 
@@ -179,52 +205,56 @@ export default {
       }
     },
 
-    fetchClientSeries(value) {
-      if (value && value.length === 9) {
-        api.clients
-          .fetchClientData(value)
-          .then((res) => {
-            const { data } = res;
-            if (data.id !== null) {
-              this.newClient = {
-                ...this.newClient,
-                attributes: {
-                  first_name: data.first_name ?? {
-                    lotin: null,
-                    kirill: null,
-                  },
-                  last_name: data.last_name ?? {
-                    lotin: null,
-                    kirill: null,
-                  },
-                  middle_name: data.middle_name ?? {
-                    lotin: null,
-                    kirill: null,
-                  },
-                  country_id: data.attributes.country,
-                  passport_issued_by: data.attributes.passport_issued_by,
-                  passport_issued_date: data.attributes.passport_issued_date,
-                  date_of_birth: data.attributes.date_of_birth,
-                  passport_series: data.attributes.passport_series,
-                },
-                language: data.language,
-                phones: [
-                  {
-                    id: data.phones[0].id,
-                    phone: this.phone(data.phones[0].phone),
-                  },
-                  {
-                    id: data.phones[0].id,
-                    phone: this.phone(data.phones[1].phone),
-                  },
-                ],
-                discount: { id: null },
-              };
-            }
-          })
-          .catch((error) => {
-            this.toastedWithErrorCode(error);
-          });
+    async fetchClientSeries(field) {
+      if (field && field.length === 9) {
+        const {data} = await api.clientsV2.getClientBySearch({
+          params: {
+            field,
+            subject: "physical",
+          },
+        });
+
+        if (data.id !== null) {
+          this.newClient = {
+            ...this.newClient,
+            attributes: {
+              address_line: data.attributes?.address_line ?? '',
+              first_name: {
+                lotin: null,
+                kirill: null,
+                ...data.attributes.first_name
+              },
+              last_name: {
+                lotin: null,
+                kirill: null,
+                ...data.attributes.last_name
+              },
+              middle_name: {
+                lotin: null,
+                kirill: null,
+                ...data.attributes.last_name
+              },
+              country_id: data.attributes.country.id,
+              passport_issued_by: data.attributes.passport_issued_by,
+              passport_issued_date: data.attributes.passport_issued_date,
+              date_of_birth: data.attributes.date_of_birth,
+              passport_series: data.attributes.passport_series,
+            },
+            language: data.language,
+            client_type_id: data.client_type.id,
+            phones: [
+              {
+                id: data.phones[0].id,
+                phone: this.phone(data.phones[0].phone),
+              },
+              {
+                id: data.phones[0].id,
+                phone: this.phone(data.phones[1].phone),
+              },
+            ],
+            discount: {id: null},
+          };
+        }
       }
     },
 
@@ -248,19 +278,19 @@ export default {
           case "first_name":
             if (!this.newClient.attributes.first_name.kirill) {
               this.newClient.attributes.first_name.kirill =
-                this.symbolLatinToCyrillic(event);
+                  this.symbolLatinToCyrillic(event);
             }
             break;
           case "last_name":
             if (!this.newClient.attributes.last_name.kirill) {
               this.newClient.attributes.last_name.kirill =
-                this.symbolLatinToCyrillic(event);
+                  this.symbolLatinToCyrillic(event);
             }
             break;
           case "second_name":
             if (!this.newClient.attributes.middle_name.kirill) {
               this.newClient.attributes.middle_name.kirill =
-                this.symbolLatinToCyrillic(event);
+                  this.symbolLatinToCyrillic(event);
             }
             break;
         }
@@ -276,19 +306,19 @@ export default {
           case "first_name":
             if (!this.newClient.attributes.first_name.lotin) {
               this.newClient.attributes.first_name.lotin =
-                this.symbolCyrillicToLatin(event);
+                  this.symbolCyrillicToLatin(event);
             }
             break;
           case "last_name":
             if (!this.newClient.attributes.last_name.lotin) {
               this.newClient.attributes.last_name.lotin =
-                this.symbolCyrillicToLatin(event);
+                  this.symbolCyrillicToLatin(event);
             }
             break;
           case "second_name":
             if (!this.newClient.attributes.middle_name.lotin) {
               this.newClient.attributes.middle_name.lotin =
-                this.symbolCyrillicToLatin(event);
+                  this.symbolCyrillicToLatin(event);
             }
             break;
         }
@@ -492,8 +522,8 @@ export default {
 
     symbolIsCyrillic(event) {
       return event
-        .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
-        .replace(/(\..*?)\..*/g, "$1");
+          .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
+          .replace(/(\..*?)\..*/g, "$1");
     },
 
     symbolIsLatin(event) {
@@ -507,36 +537,36 @@ export default {
     async fetchOldClient() {
       const id = this.$route.params.id;
       await api.contractV2
-        .reOrderDetails(id)
-        .then((res) => {
-          this.oldClient = res.data.client;
-          this.order = res.data.order;
-          this.types = res.data.types.map((item) => {
-            return {
-              value: item.id,
-              text: item.name[localStorage.locale],
-            };
-          });
-        })
-        .catch((err) => err);
+          .reOrderDetails(id)
+          .then((res) => {
+            this.oldClient = res.data.client;
+            this.order = res.data.order;
+            this.types = res.data.types.map((item) => {
+              return {
+                value: item.id,
+                text: item.name[localStorage.locale],
+              };
+            });
+          })
+          .catch((err) => err);
     },
 
-    confirmClient() {
+    async confirmClient() {
       let other_phone = "";
       let phone = "";
       if (typeof this.newClient.other_phone === "string") {
         other_phone = parseInt(
-          this.newClient.other_phone
-            .replaceAll(" ", "")
-            .replaceAll("+", "")
-            .trim()
+            this.newClient.other_phone
+                .replaceAll(" ", "")
+                .replaceAll("+", "")
+                .trim()
         );
       } else {
         other_phone = this.newClient.other_phone;
       }
       if (typeof this.newClient.phone === "string") {
         phone = parseInt(
-          this.newClient.phone.replaceAll(" ", "").replaceAll("+", "").trim()
+            this.newClient.phone.replaceAll(" ", "").replaceAll("+", "").trim()
         );
       } else {
         phone = this.newClient.phone;
@@ -547,44 +577,43 @@ export default {
         phone,
       };
 
-      api.clientsV2
-        .createClient(data)
-        .then((res) => {
-          this.client_id = res.data.id;
-        })
-        .catch((err) => {
-          return err;
-        })
-        .finally(() => {});
+      return await api.clientsV2.createClient(data)
     },
 
     confirmContract() {
       this.contract.client_uuid = this.client_id;
+      const body = Object.assign({}, this.contract)
+
+      body.percent = parseFloat(
+          (body.percent / 100).toFixed(2)
+      )
+
       api.contractV2
-        .reOrderConfirm(this.order.uuid, this.contract)
-        .then(() => {
-          this.client_id = "";
-          this.$router.push({
-            name: "contracts-view",
-            params: { id: this.$route.params.id },
-          });
-        })
-        .catch((error) => {
-          if (error.response.status === 406) {
+          .reOrderConfirm(this.order.uuid, body)
+          .then(() => {
+            this.client_id = "";
+            this.$router.replace({
+              name: "contracts-view",
+              params: {id: this.$route.params.id},
+            });
+          })
+          .catch((error) => {
+            if (error.response.status === 406) {
+              this.$toasted.show(error.response.data.message, {
+                type: "error",
+              });
+              this.client_id = "";
+              this.$router.replace({
+                name: "contracts-view",
+                params: {id: this.$route.params.id},
+              });
+            }
             this.$toasted.show(error.response.data.message, {
               type: "error",
             });
-            this.client_id = "";
-            this.$router.push({
-              name: "contracts-view",
-              params: { id: this.$route.params.id },
-            });
-          }
-          this.$toasted.show(error.response.data.message, {
-            type: "error",
+          })
+          .finally(() => {
           });
-        })
-        .finally(() => {});
     },
 
     async tabActivated(newTabIndex, oldTabIndex) {
@@ -618,12 +647,12 @@ export default {
     </app-header>
 
     <b-tabs
-      pills
-      v-model="tabIndex"
-      v-on:activate-tab="tabActivated"
-      nav-class="reContract-header"
-      content-class="reContract"
-      id="reContract"
+        pills
+        v-model="tabIndex"
+        v-on:activate-tab="tabActivated"
+        nav-class="reContract-header"
+        content-class="reContract"
+        id="reContract"
     >
       <b-tab active>
         <template #title>
@@ -631,30 +660,30 @@ export default {
             <span>1</span>
             <p>Детали цессионарий</p>
             <div class="next-icon">
-              <img :src="require('@/assets/icons/icon-right.svg')" alt="" />
+              <img :src="require('@/assets/icons/icon-right.svg')" alt=""/>
             </div>
           </div>
         </template>
 
-        <ValidationObserver tag="form" class="assignee" ref="status-form">
+        <ValidationObserver tag="form" class="assignee" ref="client-form">
           <div class="row">
             <div class="col-6">
               <div class="assignee-header">
                 <p class="assignee-header__title">Цедент</p>
                 <span
-                  class="custom-tooltip"
-                  style="cursor: pointer"
-                  id="assignee-tooltip"
+                    class="custom-tooltip"
+                    style="cursor: pointer"
+                    id="assignee-tooltip"
                 >
                   <img
-                    :src="require('@/assets/icons/icon-questions__circle.svg')"
-                    alt=""
+                      :src="require('@/assets/icons/icon-questions__circle.svg')"
+                      alt=""
                   />
                   <b-tooltip
-                    custom-class="custom-tooltip"
-                    target="assignee-tooltip"
-                    triggers="hover"
-                    variant="secondary"
+                      custom-class="custom-tooltip"
+                      target="assignee-tooltip"
+                      triggers="hover"
+                      variant="secondary"
                   >
                     Цедент – это участник договора цессии, который в рамках
                     договора цессии уступает иному лицу свое право требования.
@@ -666,21 +695,21 @@ export default {
               <div class="assignee-header">
                 <p class="assignee-header__title">цессионарий</p>
                 <span
-                  class="custom-tooltip"
-                  style="cursor: pointer"
-                  id="session-tooltip"
+                    class="custom-tooltip"
+                    style="cursor: pointer"
+                    id="session-tooltip"
                 >
                   <img
-                    :src="require('@/assets/icons/icon-questions__circle.svg')"
-                    alt=""
+                      :src="require('@/assets/icons/icon-questions__circle.svg')"
+                      alt=""
                   />
                 </span>
                 <b-tooltip
-                  style="width: 400px !important"
-                  custom-class="custom-tooltip"
-                  target="session-tooltip"
-                  variant="secondary"
-                  triggers="hover"
+                    style="width: 400px !important"
+                    custom-class="custom-tooltip"
+                    target="session-tooltip"
+                    variant="secondary"
+                    triggers="hover"
                 >
                   Цессионарий – участник договора цессии, приобретающий право,
                   уступаемое цедентом.
@@ -694,8 +723,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("series") }}</label>
                   <b-form-input
-                    disabled
-                    :value="oldClient.attributes['passport_series']"
+                      disabled
+                      :value="oldClient.attributes['passport_series']"
                   />
                 </div>
               </div>
@@ -703,20 +732,20 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required|min:9"
-                  class="cell"
-                  :name="`${$t('series')}`"
-                  v-slot="{ errors }"
+                    rules="required|min:9"
+                    class="cell"
+                    :name="`${$t('series')}`"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    type="text"
-                    mask="AA#######"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="$t('series')"
-                    @input="fetchClientSeries"
-                    v-model="newClient.attributes['passport_series']"
+                      :class="{ error: errors[0] }"
+                      type="text"
+                      mask="AA#######"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="$t('series')"
+                      @input="fetchClientSeries"
+                      v-model="newClient.attributes['passport_series']"
                   />
                 </ValidationProvider>
               </div>
@@ -728,8 +757,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("user.last_name") }}</label>
                   <b-form-input
-                    disabled
-                    :value="nameDivide(oldClient.attributes.last_name)"
+                      disabled
+                      :value="nameDivide(oldClient.attributes.last_name)"
                   />
                 </div>
               </div>
@@ -737,37 +766,37 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required|min:2"
-                  class="cell mr-2"
-                  :name="`${$t('user.last_name') + ' ' + $t('lotin_compress')}`"
-                  v-slot="{ errors }"
+                    rules="required|min:2"
+                    class="cell mr-2"
+                    :name="`${$t('user.last_name') + ' ' + $t('lotin_compress')}`"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    class="client__details_info_card mr-2"
-                    :label="true"
-                    :placeholder="`${
+                      :class="{ error: errors[0] }"
+                      class="client__details_info_card mr-2"
+                      :label="true"
+                      :placeholder="`${
                       $t('user.last_name') + ' ' + $t('lotin_compress')
                     }`"
-                    v-model="newClient.attributes.middle_name.lotin"
-                    @input="translateCyrillic('second_name', $event)"
+                      v-model="newClient.attributes.middle_name.lotin"
+                      @input="translateCyrillic('second_name', $event)"
                   />
                 </ValidationProvider>
                 <ValidationProvider
-                  rules="required|min:2"
-                  class="cell"
-                  :name="`${$t('user.last_name')}`"
-                  v-slot="{ errors }"
+                    rules="required|min:2"
+                    class="cell"
+                    :name="`${$t('user.last_name')}`"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="`${
+                      :class="{ error: errors[0] }"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="`${
                       $t('user.last_name') + ' ' + $t('cyrill_compress')
                     }`"
-                    v-model="newClient.attributes.middle_name.kirill"
-                    @input="translateLatin('second_name', $event)"
+                      v-model="newClient.attributes.middle_name.kirill"
+                      @input="translateLatin('second_name', $event)"
                   />
                 </ValidationProvider>
               </div>
@@ -779,8 +808,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("user.first_name") }}</label>
                   <b-form-input
-                    disabled
-                    :value="nameDivide(oldClient.attributes.first_name)"
+                      disabled
+                      :value="nameDivide(oldClient.attributes.first_name)"
                   />
                 </div>
               </div>
@@ -788,39 +817,39 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required|min:2"
-                  class="cell mr-2"
-                  :name="`${$t('user.first_name')}`"
-                  v-slot="{ errors }"
+                    rules="required|min:2"
+                    class="cell mr-2"
+                    :name="`${$t('user.first_name')}`"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="`${
+                      :class="{ error: errors[0] }"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="`${
                       $t('user.first_name') + ' ' + $t('lotin_compress')
                     }`"
-                    v-model="newClient.attributes.first_name.lotin"
-                    @input="translateCyrillic('first_name', $event)"
+                      v-model="newClient.attributes.first_name.lotin"
+                      @input="translateCyrillic('first_name', $event)"
                   />
                 </ValidationProvider>
                 <ValidationProvider
-                  rules="required|min:2"
-                  class="cell"
-                  :name="`${
+                    rules="required|min:2"
+                    class="cell"
+                    :name="`${
                     $t('user.first_name') + ' ' + $t('cyrill_compress')
                   }`"
-                  v-slot="{ errors }"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="`${
+                      :class="{ error: errors[0] }"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="`${
                       $t('user.first_name') + ' ' + $t('cyrill_compress')
                     }`"
-                    v-model="newClient.attributes.first_name.kirill"
-                    @input="translateLatin('first_name', $event)"
+                      v-model="newClient.attributes.first_name.kirill"
+                      @input="translateLatin('first_name', $event)"
                   />
                 </ValidationProvider>
               </div>
@@ -832,8 +861,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("user.second_name") }}</label>
                   <b-form-input
-                    disabled
-                    :value="nameDivide(oldClient.attributes.middle_name)"
+                      disabled
+                      :value="nameDivide(oldClient.attributes.middle_name)"
                   />
                 </div>
               </div>
@@ -841,41 +870,41 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required|min:2"
-                  class="cell mr-2"
-                  :name="`${
+                    rules="required|min:2"
+                    class="cell mr-2"
+                    :name="`${
                     $t('user.second_name') + ' ' + $t('lotin_compress')
                   }`"
-                  v-slot="{ errors }"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    class="client__details_info_card mr-2"
-                    :label="true"
-                    :placeholder="`${
+                      :class="{ error: errors[0] }"
+                      class="client__details_info_card mr-2"
+                      :label="true"
+                      :placeholder="`${
                       $t('user.second_name') + ' ' + $t('lotin_compress')
                     }`"
-                    v-model="newClient.attributes.last_name.lotin"
-                    @input="translateCyrillic('last_name', $event)"
+                      v-model="newClient.attributes.last_name.lotin"
+                      @input="translateCyrillic('last_name', $event)"
                   />
                 </ValidationProvider>
                 <ValidationProvider
-                  rules="required|min:2"
-                  class="cell"
-                  :name="`${
+                    rules="required|min:2"
+                    class="cell"
+                    :name="`${
                     $t('user.second_name') + ' ' + $t('cyrill_compress')
                   }`"
-                  v-slot="{ errors }"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="`${
+                      :class="{ error: errors[0] }"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="`${
                       $t('user.second_name') + ' ' + $t('cyrill_compress')
                     }`"
-                    v-model="newClient.attributes.last_name.kirill"
-                    @input="translateLatin('last_name', $event)"
+                      v-model="newClient.attributes.last_name.kirill"
+                      @input="translateLatin('last_name', $event)"
                   />
                 </ValidationProvider>
               </div>
@@ -888,8 +917,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("apartments.agree.issued_by_whom") }}</label>
                   <b-form-input
-                    disabled
-                    :value="oldClient.attributes['passport_issued_by']"
+                      disabled
+                      :value="oldClient.attributes['passport_issued_by']"
                   />
                 </div>
               </div>
@@ -897,17 +926,17 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="`${$t('apartments.agree.issued_by_whom')}`"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="`${$t('apartments.agree.issued_by_whom')}`"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="$t('apartments.agree.issued_by_whom')"
-                    v-model="newClient.attributes['passport_issued_by']"
+                      :class="{ error: errors[0] }"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="$t('apartments.agree.issued_by_whom')"
+                      v-model="newClient.attributes['passport_issued_by']"
                   />
                 </ValidationProvider>
               </div>
@@ -919,8 +948,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("apartments.agree.date_of_issue") }}</label>
                   <b-form-input
-                    disabled
-                    :value="
+                      disabled
+                      :value="
                       checkDate(oldClient.attributes['passport_issued_date'])
                     "
                   />
@@ -930,17 +959,17 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="`${$t('apartments.agree.date_of_issue')}`"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="`${$t('apartments.agree.date_of_issue')}`"
+                    v-slot="{ errors }"
                 >
                   <base-date-picker
-                    class="data-picker"
-                    :range="false"
-                    :default-value="newClient.attributes.passport_issued_date"
-                    :placeholder="$t('apartments.agree.date_of_issue')"
-                    v-model="newClient.attributes.passport_issued_date"
+                      class="data-picker"
+                      :range="false"
+                      :default-value="newClient.attributes.passport_issued_date"
+                      :placeholder="$t('apartments.agree.date_of_issue')"
+                      v-model="newClient.attributes.passport_issued_date"
                   />
                   <span class="error__provider" v-if="errors[0]">
                     {{ errors[0] }}
@@ -955,8 +984,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("birth_day") }}</label>
                   <b-form-input
-                    disabled
-                    :value="checkDate(oldClient.attributes['date_of_birth'])"
+                      disabled
+                      :value="checkDate(oldClient.attributes['date_of_birth'])"
                   />
                 </div>
               </div>
@@ -964,17 +993,17 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="`${$t('birth_day')}`"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="`${$t('birth_day')}`"
+                    v-slot="{ errors }"
                 >
                   <base-date-picker
-                    class="data-picker"
-                    :range="false"
-                    :default-value="newClient.attributes.date_of_birth"
-                    :placeholder="$t('birth_day')"
-                    v-model="newClient.attributes.date_of_birth"
+                      class="data-picker"
+                      :range="false"
+                      :default-value="newClient.attributes.date_of_birth"
+                      :placeholder="$t('birth_day')"
+                      v-model="newClient.attributes.date_of_birth"
                   />
                   <span class="error__provider" v-if="errors[0]">
                     {{ errors[0] }}
@@ -989,8 +1018,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("nation") }}</label>
                   <b-form-input
-                    disabled
-                    :value="checkCountry(oldClient.attributes.country)"
+                      disabled
+                      :value="checkCountry(oldClient.attributes.country)"
                   />
                 </div>
               </div>
@@ -998,18 +1027,18 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="$t('nation')"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="$t('nation')"
+                    v-slot="{ errors }"
                 >
                   <x-form-select
-                    class="select"
-                    :error="!!errors[0]"
-                    v-model="newClient.attributes.country_id"
-                    :options="nationList"
-                    :placeholder="$t('nation')"
-                    :multilingual="true"
+                      class="select"
+                      :error="!!errors[0]"
+                      v-model="newClient.attributes.country_id"
+                      :options="nationList"
+                      :placeholder="$t('nation')"
+                      :multilingual="true"
                   />
                 </ValidationProvider>
               </div>
@@ -1021,8 +1050,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("number") }} ({{ $t("main_number") }})</label>
                   <b-form-input
-                    disabled
-                    :value="phone(oldClient.phones[0].phone)"
+                      disabled
+                      :value="phone(oldClient.phones[0].phone)"
                   />
                 </div>
               </div>
@@ -1030,19 +1059,19 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required|min:12"
-                  class="cell"
-                  :name="`${$t('number')} (${$t('main_number')})`"
-                  v-slot="{ errors }"
+                    rules="required|min:12"
+                    class="cell"
+                    :name="`${$t('number')} (${$t('main_number')})`"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    mask="+### ## ### ## ##"
-                    type="tel"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="`${$t('number')} (${$t('main_number')})`"
-                    v-model="newClient.phones[0].phone"
+                      :class="{ error: errors[0] }"
+                      mask="+### ## ### ## ##"
+                      type="tel"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="`${$t('number')} (${$t('main_number')})`"
+                      v-model="newClient.phones[0].phone"
                   />
                 </ValidationProvider>
               </div>
@@ -1054,8 +1083,8 @@ export default {
                 <div class="client__details_info_card">
                   <label>{{ $t("number") }} ({{ $t("extra") }})</label>
                   <b-form-input
-                    disabled
-                    :value="phone(oldClient.phones[1].phone)"
+                      disabled
+                      :value="phone(oldClient.phones[1].phone)"
                   />
                 </div>
               </div>
@@ -1063,32 +1092,33 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required|min:12"
-                  class="cell"
-                  :name="`${$t('number')} (${$t('extra')})`"
-                  v-slot="{ errors }"
+                    rules="required|min:12"
+                    class="cell"
+                    :name="`${$t('number')} (${$t('extra')})`"
+                    v-slot="{ errors }"
                 >
                   <base-input
-                    :class="{ error: errors[0] }"
-                    type="tel"
-                    mask="+### ## ### ## ##"
-                    class="client__details_info_card"
-                    :label="true"
-                    :placeholder="`${$t('number')} (${$t('extra')})`"
-                    v-model="newClient.phones[1].phone"
+                      :class="{ error: errors[0] }"
+                      type="tel"
+                      mask="+### ## ### ## ##"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="`${$t('number')} (${$t('extra')})`"
+                      v-model="newClient.phones[1].phone"
                   />
                 </ValidationProvider>
               </div>
             </div>
           </div>
+
           <div class="row">
             <div class="col-6">
               <div class="assignee-item">
                 <div class="client__details_info_card">
                   <label>{{ $t("language") }} </label>
                   <b-form-input
-                    disabled
-                    :value="checkLang(oldClient['language'])"
+                      disabled
+                      :value="checkLang(oldClient['language'])"
                   />
                 </div>
               </div>
@@ -1096,30 +1126,31 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="`${$t('reason_recontract')}`"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="`${$t('reason_recontract')}`"
+                    v-slot="{ errors }"
                 >
                   <x-form-select
-                    class="select"
-                    :error="!!errors[0]"
-                    v-model="newClient.language"
-                    :options="languages"
-                    :placeholder="$t('clients.language')"
+                      class="select"
+                      :error="!!errors[0]"
+                      v-model="newClient.language"
+                      :options="languages"
+                      :placeholder="$t('clients.language')"
                   />
                 </ValidationProvider>
               </div>
             </div>
           </div>
+
           <div class="row">
             <div class="col-6">
               <div class="assignee-item">
                 <div class="client__details_info_card">
                   <label>{{ $t("client_type") }}</label>
                   <b-form-input
-                    disabled
-                    :value="checkClientType(oldClient.client_type)"
+                      disabled
+                      :value="checkClientType(oldClient.client_type)"
                   />
                 </div>
               </div>
@@ -1127,26 +1158,62 @@ export default {
             <div class="col-6">
               <div class="assignee-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="`${$t('client_type')}`"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="`${$t('client_type')}`"
+                    v-slot="{ errors }"
                 >
                   <x-form-select
-                    v-if="clientTypesList.length"
-                    class="select"
-                    :error="!!errors[0]"
-                    value-field="id"
-                    text-field="name"
-                    :multilingual="true"
-                    v-model="newClient.client_type_id"
-                    :options="clientTypesList"
-                    :placeholder="$t('client_type')"
+                      v-if="clientTypesList.length"
+                      class="select"
+                      :error="!!errors[0]"
+                      value-field="id"
+                      text-field="name"
+                      :multilingual="true"
+                      v-model="newClient.client_type_id"
+                      :options="clientTypesList"
+                      :placeholder="$t('client_type')"
                   />
                 </ValidationProvider>
               </div>
             </div>
           </div>
+
+          <!--?         ADDRESS FIELD          -->
+          <div class="row">
+            <div class="col-6">
+              <div class="assignee-item">
+                <div class="client__details_info_card">
+                  <label>{{ $t("checkout.address_line") }}</label>
+                  <b-form-input
+                      disabled
+                      :value="oldClient.attributes.address_line"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="assignee-item">
+                <ValidationProvider
+                    rules="required|min:12"
+                    class="cell"
+                    :name="`${ $t('checkout.address_line')} )`"
+                    v-slot="{ errors }"
+                >
+                  <base-input
+                      :class="{ error: errors[0] }"
+                      type="text"
+                      class="client__details_info_card"
+                      :label="true"
+                      :placeholder="`${ $t('checkout.address_line')} `"
+                      v-model="newClient.attributes.address_line"
+                  />
+                </ValidationProvider>
+              </div>
+            </div>
+          </div>
+          <!--?         END OF ADDRESS FIELD          -->
+
         </ValidationObserver>
       </b-tab>
 
@@ -1163,17 +1230,17 @@ export default {
             <div class="col-6">
               <div class="agree-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="`${$t('create_date')}`"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="`${$t('create_date')}`"
+                    v-slot="{ errors }"
                 >
                   <base-date-picker
-                    class="data-picker"
-                    :range="false"
-                    :default-value="contract.date"
-                    :placeholder="$t('create_date')"
-                    v-model="contract.date"
+                      class="data-picker"
+                      :range="false"
+                      :default-value="contract.date"
+                      :placeholder="$t('create_date')"
+                      v-model="contract.date"
                   />
                   <span class="error__provider" v-if="errors[0]">
                     {{ errors[0] }}
@@ -1186,24 +1253,24 @@ export default {
                 <div class="input-price-group">
                   <!-- PRICE FROM   -->
                   <base-input
-                    :label="true"
-                    :disable="true"
-                    :placeholder="$t('payments.contract')"
-                    v-model="order.contract"
-                    :top-placeholder="true"
-                    class="price-from"
+                      :label="true"
+                      :disable="true"
+                      :placeholder="$t('payments.contract')"
+                      v-model="order.contract"
+                      :top-placeholder="true"
+                      class="price-from"
                   />
                   <!--  PRICE TO  -->
                   <base-input
-                    :class="{ error: !contract.agreement_number }"
-                    :label="true"
-                    style="border-radius: 0 2rem 2rem 0"
-                    :currency="`${$t('ye')}`"
-                    :placeholder="$t('number_agree')"
-                    v-model="contract.agreement_number"
-                    :top-placeholder="true"
-                    :permission-change="true"
-                    class="price-to"
+                      :class="{ error: !contract.agreement_number }"
+                      :label="true"
+                      style="border-radius: 0 2rem 2rem 0"
+                      :currency="`${$t('ye')}`"
+                      :placeholder="$t('number_agree')"
+                      v-model="contract.agreement_number"
+                      :top-placeholder="true"
+                      :permission-change="true"
+                      class="price-to"
                   />
                 </div>
               </div>
@@ -1212,18 +1279,41 @@ export default {
             <div class="col-6">
               <div class="agree-item">
                 <ValidationProvider
-                  rules="required"
-                  class="cell"
-                  :name="`${$t('reason_recontract')}`"
-                  v-slot="{ errors }"
+                    rules="required"
+                    class="cell"
+                    :name="`${$t('reason_recontract')}`"
+                    v-slot="{ errors }"
                 >
                   <x-form-select
-                    class="select"
-                    :error="!!errors[0]"
-                    v-model="contract.reorder_type_id"
-                    :options="types"
-                    :placeholder="$t('reason_recontract')"
-                    :multilingual="true"
+                      class="select"
+                      :error="!!errors[0]"
+                      v-model="contract.reorder_type_id"
+                      :options="types"
+                      :placeholder="$t('reason_recontract')"
+                      :multilingual="true"
+                  />
+                </ValidationProvider>
+              </div>
+            </div>
+
+            <!--? RE-CONTRACT PERCENTAGE           -->
+            <div class="col-6">
+              <div class="assignee-item">
+                <ValidationProvider
+                    rules="required|min:0"
+                    class="cell"
+                    :name="`${$t('percentage_of_recontract')}`"
+                    v-slot="{ errors }"
+                >
+                  <base-input
+                      height="auto"
+                      :class="{ error: errors[0] }"
+                      type="number"
+                      class="client__details_info_card"
+                      :label="true"
+
+                      :placeholder="`${ $t('percentage_of_recontract') }`"
+                      v-model="contract.percent"
                   />
                 </ValidationProvider>
               </div>
@@ -1235,33 +1325,34 @@ export default {
       <template #tabs-end>
         <b-nav-item role="presentation" href="#">
           <base-button
-            v-show="tabIndex !== 0"
-            type="div"
-            @click="backTab"
-            :text="$t(`back`)"
-            style="margin-right: 0.5rem"
+              v-show="tabIndex !== 0"
+              type="div"
+              @click="backTab"
+              :text="$t(`back`)"
+              style="margin-right: 0.5rem"
           >
             <template #left-icon>
-              <BaseArrowLeftIcon fill="#7C3AED" :width="20" :height="20" />
+              <BaseArrowLeftIcon fill="#7C3AED" :width="20" :height="20"/>
             </template>
           </base-button>
 
           <base-button
-            v-show="tabIndex === 0"
-            @click="nextTab"
-            class="violet-gradient"
-            :text="$t(`${tabBtnText}`)"
+              v-show="tabIndex === 0"
+              @click="nextTab"
+              :loading="saving"
+              class="violet-gradient"
+              :text="$t(`${tabBtnText}`)"
           >
             <template #right-icon>
-              <BaseArrowRightIcon fill="#fff" />
+              <BaseArrowRightIcon fill="#fff"/>
             </template>
           </base-button>
           <base-button
-            v-show="tabIndex === 1"
-            @click="validateContractForm"
-            :disabled="contractBtn"
-            class="violet-gradient"
-            :text="$t(`${tabBtnText}`)"
+              v-show="tabIndex === 1"
+              @click="validateContractForm"
+              :disabled="contractBtn"
+              class="violet-gradient"
+              :text="$t(`${tabBtnText}`)"
           >
           </base-button>
         </b-nav-item>
