@@ -1,7 +1,9 @@
 export default {
+    fio: "Ф.И.О",
     assignor:'Цедент',
     assignee: "Цессионарий",
-
+    transaction_price: "Цена сделки",
+    reissue_percentage: "Процент перевыпуска",
     percentage_of_recontract: "Процент переоформление",
     common: {
         apartment: "Квартира",
@@ -577,7 +579,6 @@ export default {
     type_payment: "Виды оплат",
     details: "Детали",
     other_details: "Другие детали",
-    fio: "Ф.И.О",
     phone: "Номер телефона",
     other_phone: "Дополнительный номер телефона",
     extra: "дополнительный",

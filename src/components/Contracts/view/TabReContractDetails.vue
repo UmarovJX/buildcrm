@@ -36,6 +36,11 @@ export default {
         purposeOfTransfer = this.order['reorder_type'].name[this.$i18n.locale]
       }
 
+      let reissuePercent = 0
+      if (hasOwnProperty(this.order, 'reorder_percent')) {
+        reissuePercent = this.order['reorder_percent'] * 100
+      }
+
       return [
         {
           label: this.$t("date_of_the_agreement"),
@@ -49,6 +54,14 @@ export default {
           label: this.$t("reason_for_reissuing"),
           value: purposeOfTransfer
         },
+        {
+          label: this.$t("transaction_price"),
+          value: this.order.transaction_price
+        },
+        {
+          label: this.$t("reissue_percentage"),
+          value: `${reissuePercent}%`
+        },
       ]
     },
     ownersDetails() {
@@ -60,11 +73,13 @@ export default {
       }
 
       const {
+        client_type: prevClientType,
         phones: prevPhones,
         attributes: prevAttrs
       } = this.assignor
 
       const {
+        client_type: currentClientType,
         phones: currentPhones,
         attributes: currentAttrs
       } = this.assignee
@@ -74,6 +89,14 @@ export default {
           {
             label: this.$t("fio"),
             value: this.fullName(currentAttrs)
+          },
+          {
+            label: this.$t("person_type"),
+            value: this.subjectType(currentAttrs.subject)
+          },
+          {
+            label: this.$t("client_type"),
+            value: prevClientType.name[this.$i18n.locale]
           },
           {
             label: this.$t("series"),
@@ -92,19 +115,35 @@ export default {
             value: currentAttrs.date_of_birth
           },
           {
+            label: this.$t("country"),
+            value: currentAttrs.country.name[this.$i18n.locale]
+          },
+          {
             label: `${this.$t("number")} ${this.$t("main_number")}`,
             value: currentPhones.length ? phonePrettier(currentPhones[0].phone) : ''
           },
           {
             label: `${this.$t("number")} ${this.$t("extra")}`,
             value: currentPhones.length > 1 ? phonePrettier(currentPhones[1].phone) : ''
-          }
+          },
+          {
+            label: this.$t("address"),
+            value: currentAttrs.address_line
+          },
         ],
 
         prev: [
           {
             label: this.$t("fio"),
             value: this.fullName(prevAttrs)
+          },
+          {
+            label: this.$t("person_type"),
+            value: this.subjectType(prevAttrs.subject)
+          },
+          {
+            label: this.$t("client_type"),
+            value: currentClientType.name[this.$i18n.locale]
           },
           {
             label: this.$t("series"),
@@ -123,13 +162,21 @@ export default {
             value: prevAttrs.date_of_birth
           },
           {
+            label: this.$t("country"),
+            value: prevAttrs.country.name[this.$i18n.locale]
+          },
+          {
             label: `${this.$t("number")} ${this.$t("main_number")}`,
             value: prevPhones.length ? phonePrettier(prevPhones[0].phone) : ''
           },
           {
             label: `${this.$t("number")} ${this.$t("extra")}`,
             value: prevPhones.length > 1 ? phonePrettier(prevPhones[1].phone) : ''
-          }
+          },
+          {
+            label: this.$t("address"),
+            value: prevAttrs.address_line
+          },
         ],
       }
     }
@@ -138,6 +185,9 @@ export default {
     await this.getDetails();
   },
   methods: {
+    subjectType(type) {
+      return type === 'legal' ? this.$t('legal_entity') : this.$t('physical_person')
+    },
     checkLocales(name) {
       if (localStorage.locale) return name[localStorage.locale];
       else return name["ru"];
@@ -148,15 +198,16 @@ export default {
     },
 
     fullName(value) {
-      if (value && value.first_name && value.last_name && value.second_name)
-        return (
-            value.last_name.lotin +
-            " " +
-            value.first_name.lotin +
-            " " +
-            value.second_name.lotin
-        );
-      return "";
+      if (!value) {
+        return ''
+      }
+
+      let key = 'lotin'
+      if (this.$i18n.locale === 'ru') {
+        key = 'kirill'
+      }
+
+      return `${value.last_name[key]} ${value.first_name[key]} ${value.middle_name[key]}`
     },
 
     setFormProperty(property, value) {

@@ -1,7 +1,9 @@
 export default {
+    fio: "FISH",
     assignor: 'Tayinlovchi',
     assignee: "Qabul qiluvchi",
-
+    transaction_price: "Tranzaksiya narxi",
+    reissue_percentage: "Qayta rasmiylashtirish foizi",
     percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
     common: {
         apartment: "Xonadon",
