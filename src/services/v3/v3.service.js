@@ -97,6 +97,15 @@ class V3Service extends Core {
     orders: (b) => this.post("clients/orders", b),
     telegramAccounts: (b) => this.post("clients/telegramAccounts", b),
   };
+  stats = {
+    getWidgets: (b) => this.post("statistics/total", b),
+    getSalesData: (b) => this.post("statistics/initial-payment/graph", b),
+    getObjectPie: (b) => this.post("statistics/objects", b),
+    getTariffsPie: (b) => this.post("statistics/tariffs", b),
+    getManagersPie: (b) => this.post("statistics/managers", b),
+    getOrdersData: (b) => this.post("statistics/orders", b),
+    getBranchesData: (b) => this.post("statistics/branches", b),
+  };
 }
 
 export const v3ServiceApi = new V3Service();
