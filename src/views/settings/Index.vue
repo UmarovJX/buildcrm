@@ -25,6 +25,9 @@ export default {
     const facilitiesViewPms =
       SettingsPermission.getPermission("facilities.view");
 
+    const reorderTypesViewPms =
+        SettingsPermission.getPermission("reorder_types.view");
+
     const tabs = [];
 
     if (clientTypesViewPms) {
@@ -68,14 +71,14 @@ export default {
     if (translationsViewPms) {
       tabs.push({
         counts: 0,
-        name: "translations",
+        name: "translation",
         value: "settings-translations",
       });
     }
     if (versionsViewPms) {
       tabs.push({
         counts: 0,
-        name: "versions",
+        name: "version",
         value: "settings-versions",
       });
     }
@@ -84,6 +87,13 @@ export default {
         counts: 0,
         name: "facilities",
         value: "settings-facilities",
+      });
+    }
+    if(reorderTypesViewPms){
+      tabs.push({
+        counts: 0,
+        name: "reissue.types",
+        value: "reissue-types",
       });
     }
 

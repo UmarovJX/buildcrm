@@ -1,6 +1,13 @@
 export default {
+    facilities: "Удобства",
+    version: 'Версия',
+    translation: "Перевод",
+    reissue: {
+        add: "Добавить тип переоформления",
+        types: "Типы переоформление"
+    },
     fio: "Ф.И.О",
-    assignor:'Цедент',
+    assignor: 'Цедент',
     assignee: "Цессионарий",
     transaction_price: "Цена сделки",
     reissue_percentage: "Процент перевыпуска",

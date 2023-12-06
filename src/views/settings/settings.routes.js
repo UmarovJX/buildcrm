@@ -76,6 +76,15 @@ export default [
           parent: "settings",
         },
       },
+      {
+        path: "reissue/types",
+        name: "reissue-types",
+        component: () => import("@/views/settings/views/SettingsReissueTypes.vue"),
+        meta: {
+          requiresAuth: "settings.reorder_types",
+          parent: "settings",
+        },
+      },
     ],
   },
 ];

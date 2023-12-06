@@ -97,6 +97,14 @@ class V3Service extends Core {
     orders: (b) => this.post("clients/orders", b),
     telegramAccounts: (b) => this.post("clients/telegramAccounts", b),
   };
+
+  reissueTypes = {
+    create: (b) => this.post("reorder/types/create", b),
+    update: (b) => this.post("reorder/types/update", b),
+    remove: (b) => this.post("reorder/types/remove", b),
+    findOne: (b) => this.post("reorder/types/show", b),
+    findAll: (b) => this.post("reorder/types/index", b),
+  }
 }
 
 export const v3ServiceApi = new V3Service();

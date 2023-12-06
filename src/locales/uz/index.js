@@ -1,4 +1,11 @@
 export default {
+    facilities: "Qulayliklar",
+    version: 'Versiya',
+    translation: "Tarjima",
+    reissue: {
+        add: "Qayta rasmiylashtirish turini qo'shing",
+        types: "Qayta rasmiylashtirish turlari"
+    },
     fio: "FISH",
     assignor: 'Tayinlovchi',
     assignee: "Qabul qiluvchi",
