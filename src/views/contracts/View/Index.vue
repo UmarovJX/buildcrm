@@ -300,13 +300,14 @@ export default {
         this.closePaymentDeletionModal();
         await api.contractV2
             .deleteContract(id, body)
-            .then(() => {
-              this.$router.go(-1);
+            .then( async () => {
+              // this.$router.go(-1);
               this.$swal({
                 title: this.$t("successfully"),
                 icon: "success",
                 button: this.$t("yes"),
               });
+              await this.fetchContractData();
             })
             .catch((error) => {
               this.toastedWithErrorCode(error);
