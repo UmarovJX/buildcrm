@@ -1,4 +1,7 @@
 export default {
+    plan: "Reja",
+    plan_type: "Reja turi",
+    plan_amount: "Reja summasi",
     facilities: "Qulayliklar",
     version: 'Versiya',
     translation: "Tarjima",

@@ -66,11 +66,11 @@ export default {
         <!--   Slot For Addition Actions     -->
         <slot name="header-right"></slot>
         <app-dropdown :position-right="true">
-          <template #header> Действия </template>
+          <template #header> {{ $t('actions')  }} </template>
 
-          <template>
-            <b-dropdown-item> Action </b-dropdown-item>
-          </template>
+          <!--          <template>-->
+          <!--            <b-dropdown-item> Action </b-dropdown-item>-->
+          <!--          </template>-->
         </app-dropdown>
         <app-notification-icon class="ml-1" />
         <app-question-icon class="ml-1" />

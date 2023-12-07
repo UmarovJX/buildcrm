@@ -1,5 +1,6 @@
 <script>
 import "vue2-datepicker/index.css";
+
 import BaseCalendarIcon from "@/components/icons/BaseCalendarIcon";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/locale/en";
@@ -126,6 +127,7 @@ export default {
       class="date-picker"
       :class="{ error: error, label: hasLabel }"
       :range="range"
+      :popup-style="{zIndex:9999}"
     >
       <template @click="togglePicker" class="calendar-icon" #icon-calendar>
         <base-calendar-icon

@@ -1,4 +1,7 @@
 export default {
+    plan: "План",
+    plan_type: "Тип плана",
+    plan_amount: "Сумма плана",
     facilities: "Удобства",
     version: 'Версия',
     translation: "Перевод",

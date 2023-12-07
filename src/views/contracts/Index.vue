@@ -25,7 +25,6 @@ import {
   isNotUndefinedNullEmptyZero,
   isNull,
   isObject,
-  isPrimitive,
   isUndefinedOrNullOrEmpty,
 } from "@/util/inspect";
 import {hasOwnProperty, keys} from "@/util/object";
