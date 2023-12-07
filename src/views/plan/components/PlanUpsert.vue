@@ -1,10 +1,10 @@
 <script>
-import {computed, getCurrentInstance, onMounted, ref} from "vue";
+import {computed, getCurrentInstance, ref} from "vue";
 import {makeProp} from "@/util/props";
 import {isEmptyObject} from "@/util/inspect";
 import {v3ServiceApi} from "@/services/v3/v3.service";
 import {useToastError} from "@/composables/useToastError";
-import {PROP_TYPE_ARRAY, PROP_TYPE_OBJECT, PROP_TYPE_STRING} from "@/constants/props";
+import {PROP_TYPE_OBJECT, PROP_TYPE_STRING} from "@/constants/props";
 import {XFormInput} from "@/components/ui-components/form-input";
 import {XModalCenter} from "@/components/ui-components/modal-center";
 import {XFormSelect} from "@/components/ui-components/form-select";
@@ -194,7 +194,7 @@ export default {
   >
     <template #header>
       <h3 class="x-font-size-36px font-craftworksans color-gray-600">
-        {{ $t("reissue.add") }}
+        {{ upsertType === 'create' ? $t("plan.add") : $t("plan.edit") }}
       </h3>
     </template>
 

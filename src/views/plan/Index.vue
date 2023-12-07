@@ -239,7 +239,7 @@ export default {
   <div class="app-settings-client-type">
     <app-header>
       <template #header-title>
-        {{ $t('plan') }}
+        {{ $t('plan.title') }}
       </template>
 
       <template #header-actions>

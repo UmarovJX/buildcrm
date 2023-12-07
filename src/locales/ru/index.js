@@ -1,5 +1,9 @@
 export default {
-    plan: "План",
+    plan: {
+        title: "План",
+        add: "Добавить план",
+        edit:"Редактировать план"
+    },
     plan_type: "Тип плана",
     plan_amount: "Сумма плана",
     facilities: "Удобства",

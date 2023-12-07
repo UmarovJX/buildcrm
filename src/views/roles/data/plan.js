@@ -8,7 +8,7 @@ const values = {
 function pms(name, uuid) {
     return {
         id: uuid,
-        title: "plan",
+        title: "plan.title",
         active: false,
         parent: "form",
         rows: [

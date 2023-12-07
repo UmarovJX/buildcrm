@@ -1,5 +1,9 @@
 export default {
-    plan: "Reja",
+    plan: {
+        title: "Reja",
+        add: "Reja qo'shing",
+        edit:"Rejani tahrirlash"
+    },
     plan_type: "Reja turi",
     plan_amount: "Reja summasi",
     facilities: "Qulayliklar",
