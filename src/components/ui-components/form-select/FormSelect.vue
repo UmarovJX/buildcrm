@@ -1,9 +1,9 @@
 <script>
-import { makeProp as p } from "@/util/props";
+import {makeProp as p} from "@/util/props";
 import clickOutside from "@/directives/click-outside";
 import BaseDownIcon from "@/components/icons/BaseDownIcon";
 import XFormSelectOption from "@/components/ui-components/form-select/FormSelectOption";
-import { KChipInputGroup } from "@/components/ui-components/chip-input-group";
+import {KChipInputGroup} from "@/components/ui-components/chip-input-group";
 import {
   PROP_TYPE_ARRAY,
   PROP_TYPE_STRING,
@@ -54,6 +54,7 @@ export default {
       return ["full", "text", "value"].includes(vGetter);
     }),
     multilingual: p(PROP_TYPE_BOOLEAN, false),
+    bottomToTop: p(PROP_TYPE_BOOLEAN,false)
   },
   data() {
     let selected = this.multiple ? [] : null;
@@ -89,7 +90,7 @@ export default {
       return !this.selected;
     },
     showLabel() {
-      const { multiple, selectList, selected } = this;
+      const {multiple, selectList, selected} = this;
       if (!this.label) return false;
       if (multiple) {
         return selectList.value.length;
@@ -98,7 +99,7 @@ export default {
       }
     },
     localePlaceholder() {
-      const { placeholder } = this;
+      const {placeholder} = this;
       if (placeholder) {
         return placeholder;
       } else {
@@ -125,7 +126,7 @@ export default {
           };
         }
       } else {
-        const { selected, textField } = this;
+        const {selected, textField} = this;
         if (selected) {
           return {
             show: true,
@@ -145,8 +146,8 @@ export default {
     },
     value(latestValue) {
       if (
-        !this.multiple &&
-        (!this.selected || this.selected.value !== latestValue)
+          !this.multiple &&
+          (!this.selected || this.selected.value !== latestValue)
       ) {
         this.lunch();
         this.findOutputPosition();
@@ -164,17 +165,17 @@ export default {
     findOutputPosition() {
       const windowHeight = window.innerHeight;
       const formSelectRect =
-        this.$refs["x-form-select"].getBoundingClientRect();
-      const { height: optionsTotalHeight } =
-        this.$refs["k-form-options-wrapper"].getBoundingClientRect();
+          this.$refs["x-form-select"].getBoundingClientRect();
+      const {height: optionsTotalHeight} =
+          this.$refs["k-form-options-wrapper"].getBoundingClientRect();
       const distanceCellBetweenBottom = windowHeight - formSelectRect.bottom;
-      this.showBottomToTop =
-        distanceCellBetweenBottom <
-        formSelectRect.height * this.options.length + 50;
+      this.showBottomToTop = this.bottomToTop ||
+          distanceCellBetweenBottom <
+          formSelectRect.height * this.options.length + 50;
       // distanceCellBetweenBottom < formSelectRect.height + optionsTotalHeight;
     },
     lunch() {
-      const { textField, valueField } = this;
+      const {textField, valueField} = this;
       const _dValue = this.$attrs.value ?? this.value;
       const typeArray = isArray(_dValue);
       const typeObject = isObject(_dValue);
@@ -227,7 +228,7 @@ export default {
       }
     },
     handleChange() {
-      const { multiple, selected, valueField: vField } = this;
+      const {multiple, selected, valueField: vField} = this;
       if (multiple) {
         if (!selected?.length) {
           this.$emit("change", null);
@@ -235,7 +236,7 @@ export default {
           switch (this.getter) {
             case "value": {
               const _cValue = selected.map(
-                (vSelect) => vSelect[this.valueField]
+                  (vSelect) => vSelect[this.valueField]
               );
               this.$emit("change", _cValue);
               break;
@@ -273,11 +274,11 @@ export default {
         }
       }
     },
-    selectHandler({ value, text, disabled }) {
+    selectHandler({value, text, disabled}) {
       if (disabled) {
         if (this.multiple) {
           this.selected = this.selected.filter(
-            (s) => s[this.valueField] !== value
+              (s) => s[this.valueField] !== value
           );
         } else {
           this.selected = null;
@@ -314,7 +315,7 @@ export default {
       this.inactiveAllOption(null);
     },
     optionSelected(chOption) {
-      const { textField, valueField } = this;
+      const {textField, valueField} = this;
       const hTextField = chOption.hasOwnProperty(textField);
       const hValueField = chOption.hasOwnProperty(valueField);
 
@@ -342,22 +343,22 @@ export default {
         this.toggleOptionList();
       }
 
-      this.selectHandler({ value, text, disabled: chOption.disabled });
+      this.selectHandler({value, text, disabled: chOption.disabled});
     },
     findOption(optionValue) {
-      const { valueField: vField } = this;
+      const {valueField: vField} = this;
       return this.$children.find((_ch) => {
         return (
-          _ch.$el.tagName.toLocaleLowerCase() === "li" &&
-          _ch.option[vField] === optionValue
+            _ch.$el.tagName.toLocaleLowerCase() === "li" &&
+            _ch.option[vField] === optionValue
         );
       });
     },
     getOptionIndex(_value) {
       return this.$children.findIndex((_ch) => {
         return (
-          _ch.$el.tagName.toLocaleLowerCase() === "li" &&
-          _ch.option.value === _value
+            _ch.$el.tagName.toLocaleLowerCase() === "li" &&
+            _ch.option.value === _value
         );
       });
     },
@@ -378,7 +379,7 @@ export default {
       });
     },
     removeSelectOption(removeOption) {
-      const { multiple, valueField: vField } = this;
+      const {multiple, valueField: vField} = this;
       if (!multiple) return;
       const hValueField = removeOption.hasOwnProperty(vField);
       let _value;
@@ -402,23 +403,23 @@ export default {
 
 <template>
   <div
-    ref="x-form-select"
-    class="x-form-select"
-    v-click-outside="closeOptionList"
+      ref="x-form-select"
+      class="x-form-select"
+      v-click-outside="closeOptionList"
   >
     <div
-      @click="toggleOptionList"
-      class="x-form-select-header"
-      :class="{ 'select-validation-failed': error }"
+        @click="toggleOptionList"
+        class="x-form-select-header"
+        :class="{ 'select-validation-failed': error }"
     >
       <div
-        class="x-form-select-header-content"
-        :class="{
+          class="x-form-select-header-content"
+          :class="{
           'k-content-flex': selectList,
         }"
       >
         <div :class="{ 'k-form-option-label': showLabel }" class="placeholder">
-          <slot name="placeholder" />
+          <slot name="placeholder"/>
           <span v-if="showPlaceholder" class="placeholder">
             {{ localePlaceholder }}
           </span>
@@ -426,52 +427,52 @@ export default {
         <div v-if="selectList.show">
           <div v-if="multiple" class="k-chip-input-group-wrapper">
             <k-chip-input-group
-              :chips="selectList.value"
-              :value-field="valueField"
-              :text-field="textField"
-              @delete="removeSelectOption"
+                :chips="selectList.value"
+                :value-field="valueField"
+                :text-field="textField"
+                @delete="removeSelectOption"
             />
           </div>
           <div v-else>
-            <slot name="output" />
+            <slot name="output"/>
             <template v-if="!hasOutputSlot">
-              <slot name="output-prefix" />
+              <slot name="output-prefix"/>
               <span v-if="bilingual">{{ $t(selectList.value) }}</span>
               <span v-else-if="multilingual">
                 {{ getValueByCurrentLang(selectList.value) }}
               </span>
               <span v-else>{{ selectList.value }}</span>
-              <slot name="output-suffix" />
+              <slot name="output-suffix"/>
             </template>
           </div>
         </div>
       </div>
       <span
-        class="x-form-select-icon"
-        :class="{ 'x-form-select-icon-open': open }"
+          class="x-form-select-icon"
+          :class="{ 'x-form-select-icon-open': open }"
       >
-        <base-down-icon />
+        <base-down-icon/>
       </span>
     </div>
     <div
-      ref="k-form-options-wrapper"
-      class="x-form-select-main"
-      :style="optionWrapperStyle"
-      :class="{ 'x-form-select-position-top': showBottomToTop }"
+        ref="k-form-options-wrapper"
+        class="x-form-select-main"
+        :style="optionWrapperStyle"
+        :class="{ 'x-form-select-position-top': showBottomToTop }"
     >
       <ul class="x-form-select-options">
         <x-form-select-option
-          v-for="(option, index) in options"
-          :key="`x-form-select-option-${index}`"
-          :option="option"
+            v-for="(option, index) in options"
+            :key="`x-form-select-option-${index}`"
+            :option="option"
         />
-        <slot name="default" />
+        <slot name="default"/>
       </ul>
     </div>
   </div>
 </template>
 
-<style lang="scss" src="./form-select.scss" scoped />
+<style lang="scss" src="./form-select.scss" scoped/>
 <style lang="scss" scoped>
 .placeholder {
   color: var(--gray-400);

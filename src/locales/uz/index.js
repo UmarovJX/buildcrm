@@ -1,4 +1,5 @@
 export default {
+    edit_reissue:"Qayta rasmiylashtirishni tahrirlash",
     plan: {
         title: "Reja",
         add: "Reja qo'shing",

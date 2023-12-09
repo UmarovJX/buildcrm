@@ -1,4 +1,5 @@
 export default {
+    edit_reissue:"Редактировать переоформление договора",
     plan: {
         title: "План",
         add: "Добавить план",

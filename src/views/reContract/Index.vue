@@ -94,13 +94,36 @@ export default {
       ],
       timeoutId: null,
       contractBtn: true,
+
+      reissueEditCtx: {}
     };
+  },
+  computed: {
+    clientTypeOptions() {
+      return this.clientTypesList.map(({name, id}) => ({
+        text: name[this.$i18n.locale],
+        value: id,
+      }));
+    },
+    isUpdateMode() {
+      return this.$route.query?.role === 'edit'
+    }
+  },
+
+  async created() {
+    await Promise.allSettled([
+      this.getCountriesList(),
+      this.getClientTypesList()
+    ])
+
+    if (this.isUpdateMode) {
+      await this.getEditDetails()
+    } else {
+      await this.fetchOldClient();
+    }
   },
 
   async mounted() {
-    await this.fetchOldClient();
-    await this.getCountriesList();
-    await this.getClientTypesList();
     if (this.$route.params?.type) {
       this.contract.reorder_type_id = this.$route.params.type;
     } else {
@@ -113,18 +136,46 @@ export default {
       this.contractBtn = false;
     }
   },
-  computed: {
-    clientTypeOptions() {
-      return this.clientTypesList.map(({name, id}) => ({
-        text: name[this.$i18n.locale],
-        value: id,
-      }));
-    },
-  },
 
   methods: {
     ...mapActions("notify", ["openNotify"]),
 
+    async getEditDetails() {
+      const {data: {result}} = await api.contractV2.getReissueEditDetails(this.$route.params.id)
+      this.oldClient = result.reissue.assignor
+      this.newClient = result.reissue.assignee
+
+      this.types = result['reorder_types'].map((item) => {
+        return {
+          value: item.id,
+          text: item.name[this.$i18n.locale],
+        };
+      });
+
+      this.contract.date = result.reissue.order.date
+      this.contract.agreement_number = result.reissue.order.contract_number
+      this.contract.percent = result.reissue.order['reorder_percent'] * 100
+      this.contract.client_uuid = result.reissue.assignee.id
+      this.contract.reorder_type_id = result.reissue.order['reorder_type'].id
+
+      this.order = result.order
+    },
+    async fetchOldClient() {
+      const id = this.$route.params.id;
+      await api.contractV2
+          .reOrderDetails(id)
+          .then((res) => {
+            this.oldClient = res.data.client;
+            this.order = res.data.order;
+            this.types = res.data.types.map((item) => {
+              return {
+                value: item.id,
+                text: item.name[localStorage.locale],
+              };
+            });
+          })
+          .catch((err) => err);
+    },
     async getClientTypesList() {
       try {
         const {data: clientTypesList} = await api.settingsV2.getClientTypes();
@@ -183,19 +234,25 @@ export default {
         }
       }
     },
-
     async validateContractForm() {
-      const isValid = await this.$refs["reContract-form"].validate();
-      if (this.contract.agreement_number !== null && isValid) {
-        this.confirmContract();
+      try {
+        this.saving = true
+        const isValid = await this.$refs["reContract-form"].validate();
+        if (this.contract.agreement_number !== null && isValid) {
+          if (this.isUpdateMode) {
+            await this.updateReissueData()
+          } else {
+            this.confirmContract();
+          }
+        }
+      } finally {
+        this.saving = false
       }
     },
-
     backTab() {
       this.tabIndex = 0;
       this.tabBtnText = "next";
     },
-
     async nextTab() {
       const isValid = await this.$refs["client-form"].validate();
       if (isValid) {
@@ -204,7 +261,6 @@ export default {
         this.contractBtn = false;
       }
     },
-
     async fetchClientSeries(field) {
       if (field && field.length === 9) {
         const {data} = await api.clientsV2.getClientBySearch({
@@ -257,18 +313,15 @@ export default {
         }
       }
     },
-
     nameDivide(value) {
       if (value && Object.keys(value).length)
         return value.kirill + " / " + value.lotin;
       return value;
     },
-
     checkLocales(name) {
       if (localStorage.locale) return name[localStorage.locale];
       else return name["ru"];
     },
-
     translateCyrillic(type, event) {
       if (this.timeoutId !== null) {
         clearTimeout(this.timeoutId);
@@ -296,7 +349,6 @@ export default {
         }
       }, 1000);
     },
-
     translateLatin(type, event) {
       if (this.timeoutId !== null) {
         clearTimeout(this.timeoutId);
@@ -324,7 +376,6 @@ export default {
         }
       }, 1000);
     },
-
     symbolCyrillicToLatin(word) {
       this.symbolIsCyrillic(word);
 
@@ -410,7 +461,6 @@ export default {
 
       return result;
     },
-
     symbolLatinToCyrillic(word) {
       word = this.symbolIsLatin(word);
 
@@ -519,38 +569,17 @@ export default {
       }
       return result;
     },
-
     symbolIsCyrillic(event) {
       return event
           .replace(/[^а-яё ҚқЎўҲҳҒғ]/i, "")
           .replace(/(\..*?)\..*/g, "$1");
     },
-
     symbolIsLatin(event) {
       return event.replace(/[^a-z. ']/i, "").replace(/(\..*?)\..*/g, "$1");
     },
-
     phone(value) {
       return phonePrettier(value);
     },
-
-    async fetchOldClient() {
-      const id = this.$route.params.id;
-      await api.contractV2
-          .reOrderDetails(id)
-          .then((res) => {
-            this.oldClient = res.data.client;
-            this.order = res.data.order;
-            this.types = res.data.types.map((item) => {
-              return {
-                value: item.id,
-                text: item.name[localStorage.locale],
-              };
-            });
-          })
-          .catch((err) => err);
-    },
-
     async confirmClient() {
       let other_phone = "";
       let phone = "";
@@ -579,8 +608,7 @@ export default {
 
       return await api.clientsV2.createClient(data)
     },
-
-    confirmContract() {
+    makeBody() {
       this.contract.client_uuid = this.client_id;
       const body = Object.assign({}, this.contract)
 
@@ -588,12 +616,32 @@ export default {
           (body.percent / 100).toFixed(2)
       )
 
+      return body
+    },
+    async updateReissueData() {
+      try {
+        await api.contractV2.updateReissue(this.order.uuid, this.makeBody())
+        await this.$router.replace({
+          name: "reissue-details",
+          params: {id: this.$route.params.id},
+        });
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+        if (e?.response?.status === 406) {
+          await this.$router.replace({
+            name: "reissue-details",
+            params: {id: this.$route.params.id},
+          });
+        }
+      }
+    },
+    confirmContract() {
       api.contractV2
-          .reOrderConfirm(this.order.uuid, body)
+          .reOrderConfirm(this.order.uuid, this.makeBody())
           .then(() => {
             this.client_id = "";
             this.$router.replace({
-              name: "contracts-view",
+              name: "reissue-details",
               params: {id: this.$route.params.id},
             });
           })
@@ -604,7 +652,7 @@ export default {
               });
               this.client_id = "";
               this.$router.replace({
-                name: "contracts-view",
+                name: "reissue-details",
                 params: {id: this.$route.params.id},
               });
             }
@@ -615,7 +663,6 @@ export default {
           .finally(() => {
           });
     },
-
     async tabActivated(newTabIndex, oldTabIndex) {
       if (newTabIndex === 1) {
         if (!this.client_id) {
@@ -642,7 +689,7 @@ export default {
   <div>
     <app-header>
       <template #header-title>
-        {{ $t("re_contract") }}
+        {{ isUpdateMode ? $t('edit_reissue') : $t("re_contract") }}
       </template>
     </app-header>
 
@@ -1239,7 +1286,7 @@ export default {
                       class="data-picker"
                       :range="false"
                       :default-value="contract.date"
-                      :placeholder="$t('create_date')"
+                      :placeholder="`${$t('create_date')}`"
                       v-model="contract.date"
                   />
                   <span class="error__provider" v-if="errors[0]">
@@ -1255,7 +1302,7 @@ export default {
                   <base-input
                       :label="true"
                       :disable="true"
-                      :placeholder="$t('payments.contract')"
+                      :placeholder="` ${ $t('payments.contract') } `"
                       v-model="order.contract"
                       :top-placeholder="true"
                       class="price-from"
@@ -1266,7 +1313,7 @@ export default {
                       :label="true"
                       style="border-radius: 0 2rem 2rem 0"
                       :currency="`${$t('ye')}`"
-                      :placeholder="$t('number_agree')"
+                      :placeholder="` ${ $t('number_agree') } `"
                       v-model="contract.agreement_number"
                       :top-placeholder="true"
                       :permission-change="true"
@@ -1328,7 +1375,7 @@ export default {
               v-show="tabIndex !== 0"
               type="div"
               @click="backTab"
-              :text="$t(`back`)"
+              :text="` ${ $t('back') } `"
               style="margin-right: 0.5rem"
           >
             <template #left-icon>
@@ -1349,6 +1396,7 @@ export default {
           </base-button>
           <base-button
               v-show="tabIndex === 1"
+              :loading="saving"
               @click="validateContractForm"
               :disabled="contractBtn"
               class="violet-gradient"
