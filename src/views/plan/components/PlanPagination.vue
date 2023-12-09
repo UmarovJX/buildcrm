@@ -39,7 +39,7 @@ export default {
     })
 
     function setPerPageOptions() {
-      for (let number = 10; number <= 50; number += 1) {
+      for (let number = 10; number <= 50; number += 10) {
         perPageOptions.value.push({
           value: number,
           text: number,
