@@ -9,7 +9,7 @@ import { formatToPrice, formatDateWithDot } from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading2.vue";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
-
+import Permission from "@/permission";
 export default {
   components: {
     DateRangePicker,
@@ -24,6 +24,10 @@ export default {
     s.setHours(0, 0, 0, 0);
 
     return {
+      mainPermission: Permission.getUserPermission("general.view_statistics"),
+      managerPermission: Permission.getUserPermission(
+        "general.view_manager_statistics"
+      ),
       widgetData: null,
       salesOptions: null,
       objectsPieOptions: null,
@@ -31,6 +35,12 @@ export default {
       managersPieOptions: null,
       ordersOptions: null,
       branchesOptions: null,
+
+      managerWidget: null,
+      managerSales: null,
+      managerSalesCount: null,
+      managerObjectsPie: null,
+      managerStatusPie: null,
 
       type: "daily",
       paymentType: "",
@@ -49,6 +59,37 @@ export default {
   },
 
   computed: {
+    ranges() {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
+      yesterday.setHours(0, 0, 0, 0);
+
+      let thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      let thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      let lastMonthStart = new Date(
+        today.getFullYear(),
+        today.getMonth() - 1,
+        1
+      );
+      let lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+
+      let quarterStart = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+      let halfStart = new Date(today.getFullYear(), today.getMonth() - 5, 1);
+
+      return {
+        Сегодня: [today, today],
+        // Вчера: [yesterday, yesterday],
+        "Этот месяц": [thisMonthStart, thisMonthEnd],
+        "Прошлый месяц": [lastMonthStart, lastMonthEnd],
+        Квартал: [quarterStart, today],
+        "6 месяцев": [halfStart, today],
+        Год: [new Date(today.getFullYear(), 0, 1), today],
+        "Весь период": [new Date(2019, 0, 1), today],
+      };
+    },
     ...mapGetters(["getHomeCounts", "getPermission"]),
     apartmentsViewPermission() {
       return ApartmentsPermission.getApartmentsPermission("view");
@@ -148,6 +189,12 @@ export default {
       this.fetchTariffsPieData();
       this.fetchOrders();
       this.fetchBranches();
+
+      this.fetchManagerWidgets();
+      this.fetchManagerSales();
+      this.fetchManagerObjectsPie();
+      this.fetchManagerSalesCount();
+      this.fetchManagerStatusPie();
     },
     ...mapActions(["fetchCounts"]),
     fetchWidgets() {
@@ -292,10 +339,120 @@ export default {
         };
       });
     },
+    fetchManagerWidgets() {
+      this.managerWidget = null;
+      api.managerStats
+        .getTotal(this.getQuery())
+        .then((res) => (this.managerWidget = res.data.result));
+    },
+    fetchManagerSales() {
+      this.managerSales = null;
+      api.managerStats
+        .getSales({ ...this.getQuery(), filter_type: "sum" })
+        .then((res) => {
+          const d = res.data.result;
+          this.managerSales = {
+            chart: {
+              type: "line",
+            },
+            stroke: {
+              curve: "smooth",
+            },
+            xaxis: {
+              categories: d.label,
+            },
+            series: d.data.map((el) => ({ name: el.label, data: el.data })),
+            yaxis: {
+              labels: {
+                formatter: function (v) {
+                  return formatToPrice(v, 2);
+                },
+              },
+            },
+            legend: {
+              show: false,
+            },
+          };
+        });
+    },
+    fetchManagerSalesCount() {
+      this.managerSalesCount = null;
+      api.managerStats
+        .getSales({ ...this.getQuery(), filter_type: "count" })
+        .then((res) => {
+          const d = res.data.result;
+          this.managerSalesCount = {
+            chart: {
+              type: "line",
+            },
+            stroke: {
+              curve: "smooth",
+            },
+            xaxis: {
+              categories: d.label,
+            },
+            series: d.data.map((el) => ({ name: el.label, data: el.data })),
+            yaxis: {
+              labels: {
+                minWidth: 60,
+              },
+            },
+            legend: {
+              show: false,
+            },
+          };
+        });
+    },
+    fetchManagerObjectsPie() {
+      this.managerObjectsPie = null;
+      api.managerStats
+        .getSalesPie({ ...this.getQuery(), filter_type: "sum" })
+        .then((res) => {
+          const d = res.data.result;
+          this.managerObjectsPie = {
+            chart: {
+              height: 300,
+
+              type: "pie",
+            },
+            dataLabels: {
+              formatter: function (val, opts) {
+                return opts.w.config.series[opts.seriesIndex];
+              },
+            },
+            labels: d.label,
+            series: d.data,
+            legend: { position: "bottom" },
+          };
+        });
+    },
+    fetchManagerStatusPie() {
+      this.managerStatusPie = null;
+      api.managerStats
+        .getStatusPie({ ...this.getQuery(), filter_type: "sum" })
+        .then((res) => {
+          const d = res.data.result;
+          this.managerStatusPie = {
+            chart: {
+              height: 300,
+
+              type: "pie",
+            },
+            dataLabels: {
+              formatter: function (val, opts) {
+                return opts.w.config.series[opts.seriesIndex];
+              },
+            },
+            labels: d.label,
+            series: d.data,
+            legend: { position: "bottom" },
+          };
+        });
+    },
 
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
     shortSum(n) {
-      const str = (~~n).toString();
+      const str = Math.floor(n).toString();
       switch (true) {
         case str.length > 6 && str.length < 10:
           return (str / 1_000_000).toFixed(2) + " млн";
@@ -303,6 +460,8 @@ export default {
           return (str / 1_000_000_000).toFixed(2) + " млрд";
         case str.length > 12 && str.length < 16:
           return (str / 1_000_000_000_000).toFixed(2) + " трлн";
+        case str.length > 15 && str.length < 19:
+          return (str / 1_000_000_000_000).toFixed(2) + " квадрлн";
         default:
           return formatToPrice(n, 2);
       }
@@ -392,7 +551,7 @@ export default {
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row" v-if="mainPermission || managerPermission">
       <div class="col-12">
         <div class="d-flex align-items-center justify-content-end mb-3">
           <date-range-picker
@@ -400,15 +559,16 @@ export default {
             placeholder="Select Dates"
             :locale-data="{ firstDay: 1, format: 'dd.mm.yyyy' }"
             v-model="dateRange"
-            :auto-apply="true"
+            auto-apply
+            show-dropdowns
+            :ranges="ranges"
           >
             <template #input="picker" style="min-width: 350px">
-              <div class="flex align-items-center">
+              <div class="d-flex align-items-center">
                 <x-icon
-                  v-if="picker.startDate == null"
                   name="date_range"
-                  :size="28"
-                  class="violet-600 mr-4"
+                  :size="24"
+                  class="violet-600 mr-2"
                   color="var(--violet-600)"
                 />
                 <span>{{
@@ -419,8 +579,8 @@ export default {
                     : "Выберите даты"
                 }}</span>
               </div>
-            </template></date-range-picker
-          >
+            </template>
+          </date-range-picker>
 
           <div class="d-flex ml-4">
             <div
@@ -437,149 +597,242 @@ export default {
         </div>
       </div>
     </div>
-
-    <!-- WIDGETS -->
-    <div class="row">
-      <!--  -->
-      <div class="col-sm-6 col-md-3 col-12">
-        <div class="">
-          <div class="card border-0 rounded pb-1 bg-primary shadow">
-            <div class="bg-white p-3" v-if="widgetData">
-              <div class="d-flex align-items-center mb-3">
-                <div
-                  class="d-flex mr-4 p-1 rounded"
-                  style="background-color: var(--violet-100)"
-                >
-                  <x-icon
-                    name="apartment"
-                    :size="28"
-                    class="violet-600"
-                    color="var(--violet-600)"
-                  />
-                </div>
-                <div>Заказы</div>
-              </div>
-              <div>{{ widgetData.orders_count }}</div>
-            </div>
-            <base-loading
-              v-else
-              :container-height="108"
-              class="bg-white"
-            ></base-loading>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-3 col-12">
-        <div class="">
-          <div class="card border-0 rounded pb-1 bg-info shadow">
-            <div class="bg-white p-3" v-if="widgetData">
-              <div class="d-flex align-items-center mb-3">
-                <div
-                  class="d-flex mr-4 p-1 rounded"
-                  style="background-color: var(--violet-100)"
-                >
-                  <x-icon
-                    name="add_shopping_cart"
-                    :size="28"
-                    class="violet-600"
-                    color="var(--violet-600)"
-                  />
-                </div>
-                <div>Продажи</div>
-              </div>
-              <div>{{ shortSum(widgetData.sales_sum, 2) }} {{ $t("ye") }}</div>
-            </div>
-            <base-loading
-              v-else
-              :container-height="108"
-              class="bg-white"
-            ></base-loading>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-3 col-12">
-        <div class="">
-          <div class="card border-0 rounded pb-1 bg-danger shadow">
-            <div class="bg-white p-3" v-if="widgetData">
-              <div class="d-flex align-items-center mb-3">
-                <div
-                  class="d-flex mr-4 p-1 rounded"
-                  style="background-color: var(--violet-100)"
-                >
-                  <x-icon
-                    name="crop_5_4"
-                    :size="28"
-                    class="violet-600"
-                    color="var(--violet-600)"
-                  />
-                </div>
-                <div>Проданная площадь</div>
-              </div>
-              <div>
-                {{ pricePrettier(widgetData.area_sum, 2) }} м<sup>2</sup>
-              </div>
-            </div>
-            <base-loading
-              v-else
-              :container-height="108"
-              class="bg-white"
-            ></base-loading>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-3 col-12">
-        <div class="">
-          <div class="card border-0 rounded pb-1 bg-warning shadow">
-            <div class="bg-white p-3" v-if="widgetData">
-              <div class="d-flex align-items-center mb-3">
-                <div
-                  class="d-flex mr-4 p-1 rounded"
-                  style="background-color: var(--violet-100)"
-                >
-                  <x-icon
-                    name="price_check"
-                    :size="28"
-                    class="violet-600"
-                    color="var(--violet-600)"
-                  />
-                </div>
-                <div>Поступления по продажам</div>
-              </div>
-              <div>{{ widgetData.paid_percentage.toFixed(2) }}%</div>
-            </div>
-            <base-loading
-              v-else
-              :container-height="108"
-              class="bg-white"
-            ></base-loading>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- SALES -->
-    <div class="d-flex justify-content-between mt-5 align-items-center">
-      <div class="">Отчеты по поступлениям</div>
-      <div class="d-flex">
-        <div
-          v-for="r in typeOptions"
-          :key="r.value"
-          class="border px-4 py-2"
-          :class="r.cls"
-          @click="type = r.value"
-          role="button"
-        >
-          {{ r.text }}
-        </div>
-      </div>
-    </div>
-    <div class="mt-2 mb-5">
+    <!-- Common stats -->
+    <div v-if="mainPermission">
+      <!-- WIDGETS -->
       <div class="row">
+        <!--  -->
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="">
+            <div class="card border-0 rounded pb-1 bg-primary shadow">
+              <div class="bg-white p-3" v-if="widgetData">
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="apartment"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Заказы</div>
+                </div>
+                <div>{{ widgetData.orders_count }}</div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="">
+            <div class="card border-0 rounded pb-1 bg-info shadow">
+              <div class="bg-white p-3" v-if="widgetData">
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="add_shopping_cart"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Продажи</div>
+                </div>
+                <div>
+                  {{ shortSum(widgetData.sales_sum, 2) }} {{ $t("ye") }}
+                </div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="">
+            <div class="card border-0 rounded pb-1 bg-danger shadow">
+              <div class="bg-white p-3" v-if="widgetData">
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="crop_5_4"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Проданная площадь</div>
+                </div>
+                <div>
+                  {{ pricePrettier(widgetData.area_sum, 2) }} м<sup>2</sup>
+                </div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="">
+            <div class="card border-0 rounded pb-1 bg-warning shadow">
+              <div class="bg-white p-3" v-if="widgetData">
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="price_check"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Поступления по продажам</div>
+                </div>
+                <div>{{ widgetData.paid_percentage.toFixed(2) }}%</div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- SALES -->
+      <div class="d-flex justify-content-between mt-5 align-items-center">
+        <div class="">Отчеты по поступлениям</div>
+        <div class="d-flex">
+          <div
+            v-for="r in typeOptions"
+            :key="r.value"
+            class="border px-4 py-2"
+            :class="r.cls"
+            @click="type = r.value"
+            role="button"
+          >
+            {{ r.text }}
+          </div>
+        </div>
+      </div>
+      <div class="mt-2 mb-5">
+        <div class="row">
+          <div class="col-12">
+            <apexchart
+              v-if="salesOptions"
+              type="line"
+              :options="salesOptions"
+              :series="salesOptions.series"
+              :height="300"
+            ></apexchart>
+            <base-loading
+              v-else
+              :container-height="315"
+              class="bg-white"
+            ></base-loading>
+          </div>
+        </div>
+      </div>
+      <!-- PIE CHARTS -->
+      <div class="row">
+        <div class="col-4 text-center">Продажи по обьектам</div>
+        <div class="col-4 text-center">Продажи по тарифам</div>
+        <div class="col-4 text-center">Продажи агентов</div>
+      </div>
+      <div class="row mt-2 mb-5">
+        <div class="col-4">
+          <div class="mr-3 shadow p-3">
+            <apexchart
+              v-if="objectsPieOptions"
+              :options="objectsPieOptions"
+              :series="objectsPieOptions.series"
+              :height="300"
+            ></apexchart>
+            <base-loading
+              v-else
+              :container-height="268"
+              class="bg-white"
+            ></base-loading>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="mr-3 shadow p-3">
+            <apexchart
+              v-if="tariffsPieOptions"
+              :options="tariffsPieOptions"
+              :series="tariffsPieOptions.series"
+              :height="300"
+            ></apexchart>
+            <base-loading
+              v-else
+              :container-height="268"
+              class="bg-white"
+            ></base-loading>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="mr-3 shadow p-3">
+            <apexchart
+              v-if="managersPieOptions"
+              :options="managersPieOptions"
+              :series="managersPieOptions.series"
+              :height="300"
+            ></apexchart>
+            <base-loading
+              v-else
+              :container-height="268"
+              class="bg-white"
+            ></base-loading>
+          </div>
+        </div>
+      </div>
+      <div class="mt-5">Отчеты по Договорам</div>
+      <!-- Orders -->
+      <div class="row mt-2 mb-5">
         <div class="col-12">
           <apexchart
-            v-if="salesOptions"
+            v-if="ordersOptions"
             type="line"
-            :options="salesOptions"
-            :series="salesOptions.series"
+            :options="ordersOptions"
+            :series="ordersOptions.series"
+            :height="300"
+          ></apexchart>
+          <base-loading
+            v-else
+            :container-height="315"
+            class="bg-white"
+          ></base-loading>
+        </div>
+      </div>
+      <div class="mt-5">Отчеты по Филиалам</div>
+      <!-- Orders -->
+      <div class="row mt-2 mb-5">
+        <div class="col-12">
+          <apexchart
+            v-if="branchesOptions"
+            type="line"
+            :options="branchesOptions"
+            :series="branchesOptions.series"
             :height="300"
           ></apexchart>
           <base-loading
@@ -590,93 +843,207 @@ export default {
         </div>
       </div>
     </div>
-    <!-- PIE CHARTS -->
-    <div class="row">
-      <div class="col-4 text-center">Продажи по обьектам</div>
-      <div class="col-4 text-center">Продажи по тарифам</div>
-      <div class="col-4 text-center">Продажи агентов</div>
-    </div>
-    <div class="row mt-2 mb-5">
-      <div class="col-4">
-        <div class="mr-3 shadow p-3">
+    <!-- MANAGER -->
+    <div v-if="managerPermission">
+      <!-- WIDGETS -->
+      <div class="row">
+        <!--  -->
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="h-100">
+            <div class="card border-0 rounded pb-1 bg-primary shadow h-100">
+              <div
+                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                v-if="managerWidget"
+              >
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="apartment"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Объекты</div>
+                </div>
+                <div>{{ managerWidget.objects_count }}</div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="h-100">
+            <div class="card border-0 rounded pb-1 bg-info shadow h-100">
+              <div
+                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                v-if="managerWidget"
+              >
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="description"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Договоры</div>
+                </div>
+                <div>
+                  {{ managerWidget.contracts_count }}
+                </div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="h-100">
+            <div class="card border-0 rounded pb-1 bg-danger shadow h-100">
+              <div
+                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                v-if="managerWidget"
+              >
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="price_check"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Поступления</div>
+                </div>
+                <div>
+                  {{ shortSum(managerWidget.sales_sum) }} {{ $t("ye") }}
+                </div>
+                <div>План:{{ managerWidget.plan_percentage.toFixed(2) }} %</div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-12">
+          <div class="h-100">
+            <div class="card border-0 rounded pb-1 bg-warning shadow h-100">
+              <div
+                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                v-if="managerWidget"
+              >
+                <div class="d-flex align-items-center mb-3">
+                  <div
+                    class="d-flex mr-4 p-1 rounded"
+                    style="background-color: var(--violet-100)"
+                  >
+                    <x-icon
+                      name="event_available"
+                      :size="28"
+                      class="violet-600"
+                      color="var(--violet-600)"
+                    />
+                  </div>
+                  <div>Свободные</div>
+                </div>
+                <div>
+                  Квартиры: {{ managerWidget.available_apartments_count }}
+                </div>
+                <div>Парковки: {{ managerWidget.available_parking_count }}</div>
+              </div>
+              <base-loading
+                v-else
+                :container-height="108"
+                class="bg-white"
+              ></base-loading>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-5">Отчеты по Поступлениям</div>
+      <div class="row">
+        <div class="col-9">
           <apexchart
-            v-if="objectsPieOptions"
-            :options="objectsPieOptions"
-            :series="objectsPieOptions.series"
+            v-if="managerSales"
+            type="line"
+            :options="managerSales"
+            :series="managerSales.series"
             :height="300"
           ></apexchart>
           <base-loading
             v-else
-            :container-height="268"
+            :container-height="315"
             class="bg-white"
           ></base-loading>
         </div>
+        <div class="col-3">
+          <div class="mr-3 shadow p-3">
+            <apexchart
+              v-if="managerObjectsPie"
+              :options="managerObjectsPie"
+              :series="managerObjectsPie.series"
+              :height="250"
+            ></apexchart>
+            <base-loading
+              v-else
+              :container-height="218"
+              class="bg-white"
+            ></base-loading>
+          </div>
+        </div>
       </div>
-      <div class="col-4">
-        <div class="mr-3 shadow p-3">
+      <div class="mt-5">Отчеты по Продажам</div>
+      <div class="row">
+        <div class="col-9">
           <apexchart
-            v-if="tariffsPieOptions"
-            :options="tariffsPieOptions"
-            :series="tariffsPieOptions.series"
+            v-if="managerSalesCount"
+            type="line"
+            :options="managerSalesCount"
+            :series="managerSalesCount.series"
             :height="300"
           ></apexchart>
           <base-loading
             v-else
-            :container-height="268"
+            :container-height="315"
             class="bg-white"
           ></base-loading>
         </div>
-      </div>
-      <div class="col-4">
-        <div class="mr-3 shadow p-3">
-          <apexchart
-            v-if="managersPieOptions"
-            :options="managersPieOptions"
-            :series="managersPieOptions.series"
-            :height="300"
-          ></apexchart>
-          <base-loading
-            v-else
-            :container-height="268"
-            class="bg-white"
-          ></base-loading>
+        <div class="col-3">
+          <div class="mr-3 shadow p-3">
+            <apexchart
+              v-if="managerStatusPie"
+              :options="managerStatusPie"
+              :series="managerStatusPie.series"
+              :height="250"
+            ></apexchart>
+            <base-loading
+              v-else
+              :container-height="218"
+              class="bg-white"
+            ></base-loading>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="mt-5">Отчеты по Договорам</div>
-    <!-- Orders -->
-    <div class="row mt-2 mb-5">
-      <div class="col-12">
-        <apexchart
-          v-if="ordersOptions"
-          type="line"
-          :options="ordersOptions"
-          :series="ordersOptions.series"
-          :height="300"
-        ></apexchart>
-        <base-loading
-          v-else
-          :container-height="315"
-          class="bg-white"
-        ></base-loading>
-      </div>
-    </div>
-    <div class="mt-5">Отчеты по Филиалам</div>
-    <!-- Orders -->
-    <div class="row mt-2 mb-5">
-      <div class="col-12">
-        <apexchart
-          v-if="branchesOptions"
-          type="line"
-          :options="branchesOptions"
-          :series="branchesOptions.series"
-          :height="300"
-        ></apexchart>
-        <base-loading
-          v-else
-          :container-height="315"
-          class="bg-white"
-        ></base-loading>
       </div>
     </div>
   </div>

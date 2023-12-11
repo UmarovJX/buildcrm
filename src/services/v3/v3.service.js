@@ -99,12 +99,18 @@ class V3Service extends Core {
   };
   stats = {
     getWidgets: (b) => this.post("statistics/total", b),
-    getSalesData: (b) => this.post("statistics/initial-payment/graph", b),
+    getSalesData: (b) => this.post("statistics/sales", b),
     getObjectPie: (b) => this.post("statistics/objects", b),
     getTariffsPie: (b) => this.post("statistics/tariffs", b),
     getManagersPie: (b) => this.post("statistics/managers", b),
     getOrdersData: (b) => this.post("statistics/orders", b),
     getBranchesData: (b) => this.post("statistics/branches", b),
+  };
+  managerStats = {
+    getTotal: (b) => this.post("statistics/manager/total", b),
+    getSales: (b) => this.post("statistics/manager/orders", b),
+    getSalesPie: (b) => this.post("statistics/manager/objects", b),
+    getStatusPie: (b) => this.post("statistics/manager/orders/pie", b),
   };
 }
 

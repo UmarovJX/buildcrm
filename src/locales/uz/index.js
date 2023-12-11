@@ -295,6 +295,8 @@ export default {
       profile_settings: "Profil sozlamalari",
       user_data: "Foydalanuvchi haqidagi ma'lumotlarni o'zgartirish huquqi",
       user_password: "Foydalanuvchi parolini o'zgartirish huquqi",
+      view_statistics: "Доступ к общей статистике",
+      view_manager_statistics: "Доступ к личной статистике менеджера",
     },
     objects: {
       watch_objects: "Obyektlar sahifasini ko'rish huquqi",

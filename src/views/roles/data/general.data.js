@@ -5,6 +5,8 @@ const values = {
   settings: false,
   profile_settings: false,
   password_settings: false,
+  view_statistics: false,
+  view_manager_statistics: false,
 };
 
 function pms(name, uuid) {
@@ -63,6 +65,16 @@ function pms(name, uuid) {
       {
         label: "roles_permission.general.user_password",
         refer: "password_settings",
+        parent: "general",
+      },
+      {
+        label: "roles_permission.general.view_statistics",
+        refer: "view_statistics",
+        parent: "general",
+      },
+      {
+        label: "roles_permission.general.view_manager_statistics",
+        refer: "view_manager_statistics",
         parent: "general",
       },
     ],

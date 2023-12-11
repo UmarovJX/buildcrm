@@ -305,6 +305,8 @@ export default {
       profile_settings: "Настройки полфиля",
       user_data: "Право изменть данные пользователя",
       user_password: "Право изменять пароль пользователя",
+      view_statistics: "Доступ к общей статистике",
+      view_manager_statistics: "Доступ к личной статистике менеджера",
     },
     objects: {
       watch_objects: "Право на просмотр страницу объектов",
