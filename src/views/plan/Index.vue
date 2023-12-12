@@ -212,30 +212,34 @@ export default {
           limit: 150
         })
 
-        const monthsInNumber = {
-          "Jan": 0,
-          "Feb": 1,
-          "Mar": 2,
-          "Apr": 3,
-          "May": 4,
-          "Jun": 5,
-          "Jul": 6,
-          "Aug": 7,
-          "Sep": 8,
-          "Oct": 9,
-          "Nov": 10,
-          "Dec": 11,
-        }
+        filterParamsList.value = result
 
-        filterParamsList.value = result.map((item) => {
-          return {
-            name: item.name,
-            result: item.result.map((month) => ({
-              text: monthsInNumber[month],
-              value: monthsInNumber[month]
-            }))
-          }
-        })
+        // const monthsInNumber = {
+        //   "Jan": 0,
+        //   "Feb": 1,
+        //   "Mar": 2,
+        //   "Apr": 3,
+        //   "May": 4,
+        //   "Jun": 5,
+        //   "Jul": 6,
+        //   "Aug": 7,
+        //   "Sep": 8,
+        //   "Oct": 9,
+        //   "Nov": 10,
+        //   "Dec": 11,
+        // }
+
+        // filterParamsList.value = result.map((item) => {
+        //   return {
+        //     name: item.name,
+        //     result: item.result.map((month) => ({
+        //       text: month,
+        //       value: month
+        //       // text: monthsInNumber[month],
+        //       // value: monthsInNumber[month]
+        //     }))
+        //   }
+        // })
       } catch (e) {
         toastError(e)
       }

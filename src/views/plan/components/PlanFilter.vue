@@ -36,10 +36,10 @@ export default {
       if (filter.value.year) {
         return props.paramsList
             .find(p => p.name.toString() === filter.value.year.toString())
-            .result.map(monthObj => {
+            .result.map(month => {
               return {
-                value: monthObj.value,
-                text: vm.$t(`common.month.${monthsNameList[monthObj.value]}`)
+                value: month,
+                text: vm.$t(`common.month.${monthsNameList[month]}`)
               }
             })
       }
@@ -70,7 +70,7 @@ export default {
     ], ([month, type]) => {
       updateTable({
         type,
-        month,
+        month: month + 1,
         year: filter.value.year
       })
     })
@@ -81,8 +81,6 @@ export default {
           !(isUndefinedOrNull(year) || isUndefinedOrNull(month))
       ) {
         const {
-          year,
-          month,
           dayOfMonth,
           lastDateOfMonth,
         } = dateProperties(`${year}-${month}-1`)
