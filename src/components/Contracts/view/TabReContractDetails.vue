@@ -38,7 +38,8 @@ export default {
 
       let reissuePercent = 0
       if (hasOwnProperty(this.order, 'reorder_percent')) {
-        reissuePercent = (this.order['reorder_percent'] * 100).toFixed(2)
+        reissuePercent = this.order['reorder_percent']
+        // reissuePercent = (this.order['reorder_percent'] * 100).toFixed(2)
       }
 
       return [
