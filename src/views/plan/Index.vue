@@ -1,5 +1,5 @@
 <script>
-import {computed, getCurrentInstance, ref, watch} from "vue";
+import {computed, getCurrentInstance, ref} from "vue";
 import {formatToPrice} from "@/util/reusable";
 import {v3ServiceApi} from "@/services/v3/v3.service";
 import {dateFormatWithDot} from "@/util/date/calendar.util";
@@ -13,6 +13,7 @@ import AppHeader from "@/components/Header/AppHeader.vue";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
 import PlanPagination from "@/views/plan/components/PlanPagination.vue";
 import PlanUpsert from "@/views/plan/components/PlanUpsert.vue";
+import PlanFilter from "@/views/plan/components/PlanFilter.vue";
 
 export default {
   name: "AppPlan",
@@ -24,6 +25,7 @@ export default {
     XCircularBackground,
     PlanUpsert,
     PlanPagination,
+    PlanFilter,
   },
   setup() {
     const vm = getCurrentInstance().proxy
@@ -50,6 +52,7 @@ export default {
       edit: SettingsPermission.getPermission("plan.edit"),
       delete: SettingsPermission.getPermission("plan.delete"),
     }
+    const filterParamsList = ref([])
 
     const tableFields = computed(() => {
       return [
@@ -100,10 +103,11 @@ export default {
       tableData.value.loading = false;
     }
 
-    async function findAll({page = null, perPage = null}) {
+    async function findAll({page = null, perPage = null, filter = {}}) {
       try {
         startLoading();
         const response = await v3ServiceApi.plan.findAll({
+          ...filter,
           page: page ?? pagination.value.current,
           limit: perPage ?? pagination.value.perPage
         });
@@ -201,8 +205,52 @@ export default {
       })
     }
 
+    async function fetchFilterParams() {
+      try {
+        const {data: {result}} = await v3ServiceApi.plan.filterParams({
+          page: 1,
+          limit: 150
+        })
+
+        const monthsInNumber = {
+          "Jan": 0,
+          "Feb": 1,
+          "Mar": 2,
+          "Apr": 3,
+          "May": 4,
+          "Jun": 5,
+          "Jul": 6,
+          "Aug": 7,
+          "Sep": 8,
+          "Oct": 9,
+          "Nov": 10,
+          "Dec": 11,
+        }
+
+        filterParamsList.value = result.map((item) => {
+          return {
+            name: item.name,
+            result: item.result.map((month) => ({
+              text: monthsInNumber[month],
+              value: monthsInNumber[month]
+            }))
+          }
+        })
+      } catch (e) {
+        toastError(e)
+      }
+    }
+
+    function filterTable(filterObj) {
+      findAll({
+        page: 1,
+        filter: filterObj,
+      })
+    }
+
     async function fetchItems() {
       await Promise.allSettled([
+        fetchFilterParams(),
         findAll({}),
         fetchPlanTypeList()
       ])
@@ -220,16 +268,18 @@ export default {
       pagination,
       showPagination,
       planTypes,
+      filterParamsList,
 
       findAll,
+      editTrigger,
+      deleteTrigger,
       setUpsertType,
+      paginationChange,
       createClientType,
       clientTypeCreated,
+      filterTable,
       openCreatingClientTypeModal,
       closeCreatingClientTypeModal,
-      deleteTrigger,
-      editTrigger,
-      paginationChange
     }
   },
 };
@@ -256,6 +306,12 @@ export default {
         </x-button>
       </template>
     </app-header>
+
+    <plan-filter
+        :plan-types="planTypes"
+        :params-list="filterParamsList"
+        @filter="filterTable"
+    />
 
     <b-table
         id="my-table"

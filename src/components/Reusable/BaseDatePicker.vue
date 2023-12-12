@@ -53,6 +53,10 @@ export default {
       type: Boolean,
       default: () => true,
     },
+    type: {
+      type: String,
+      default: 'date'
+    }
   },
   data() {
     return {
@@ -117,23 +121,23 @@ export default {
       </span>
     </div>
     <date-picker
-      ref="data-picker"
-      type="date"
-      :value-type="valueType"
-      :format="format"
-      lang="en"
-      :placeholder="placeholder"
-      v-model="dateValue"
-      class="date-picker"
-      :class="{ error: error, label: hasLabel }"
-      :range="range"
-      :popup-style="{zIndex:9999}"
+        ref="data-picker"
+        :type="type"
+        :value-type="valueType"
+        :format="format"
+        lang="en"
+        :placeholder="placeholder"
+        v-model="dateValue"
+        class="date-picker"
+        :class="{ error: error, label: hasLabel }"
+        :range="range"
+        :popup-style="{zIndex:9999}"
     >
       <template @click="togglePicker" class="calendar-icon" #icon-calendar>
         <base-calendar-icon
-          :fill="iconFill"
-          :width="iconSquareSize"
-          :height="iconSquareSize"
+            :fill="iconFill"
+            :width="iconSquareSize"
+            :height="iconSquareSize"
         />
       </template>
     </date-picker>

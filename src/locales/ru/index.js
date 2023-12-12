@@ -1,9 +1,10 @@
 export default {
-    edit_reissue:"Редактировать переоформление договора",
+    year: "Год",
+    edit_reissue: "Редактировать переоформление договора",
     plan: {
         title: "План",
         add: "Добавить план",
-        edit:"Редактировать план"
+        edit: "Редактировать план"
     },
     plan_type: "Тип плана",
     plan_amount: "Сумма плана",
@@ -21,6 +22,7 @@ export default {
     reissue_percentage: "Процент перевыпуска",
     percentage_of_recontract: "Процент переоформление",
     common: {
+        date: "Дата",
         apartment: "Квартира",
         phone: "Телефон:",
         month: {

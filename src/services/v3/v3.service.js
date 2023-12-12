@@ -112,7 +112,8 @@ class V3Service extends Core {
         remove: (b) => this.post("plan/remove", b),
         findOne: (b) => this.post("plan/show", b),
         findAll: (b) => this.post("plan/index", b),
-        types: (b) => this.post("plan/types", b)
+        types: (b) => this.post("plan/types", b),
+        filterParams: (b) => this.post("plan/filter-params", b),
     }
 }
 

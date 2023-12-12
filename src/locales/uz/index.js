@@ -1,9 +1,10 @@
 export default {
-    edit_reissue:"Qayta rasmiylashtirishni tahrirlash",
+    year: "Yil",
+    edit_reissue: "Qayta rasmiylashtirishni tahrirlash",
     plan: {
         title: "Reja",
         add: "Reja qo'shing",
-        edit:"Rejani tahrirlash"
+        edit: "Rejani tahrirlash"
     },
     plan_type: "Reja turi",
     plan_amount: "Reja summasi",
@@ -21,6 +22,7 @@ export default {
     reissue_percentage: "Qayta rasmiylashtirish foizi",
     percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
     common: {
+        date: "Sana",
         apartment: "Xonadon",
         phone: "Телефон:",
         month: {

@@ -9,6 +9,7 @@ import {XFormInput} from "@/components/ui-components/form-input";
 import {XModalCenter} from "@/components/ui-components/modal-center";
 import {XFormSelect} from "@/components/ui-components/form-select";
 import BaseDatePicker from "@/components/Reusable/BaseDatePicker.vue";
+import {addZero, dateProperties} from "@/util/date/calendar.util";
 
 export default {
   name: "PlanUpsert",
@@ -94,12 +95,16 @@ export default {
     }
 
     function makeBody() {
+      const {lastDateOfMonth, year, month} = dateProperties(formData.value.date.from)
       return {
         type: formData.value.type,
-        date: [
-          formData.value.date.from,
-          formData.value.date.to,
-        ],
+        date_from: formData.value.date.from,
+        date_to: `${year}-${addZero(month + 1)}-${lastDateOfMonth}`,
+        // date: [
+        //   formData.value.date.from,
+        //   `${year}-${addZero(month + 1)}-${lastDateOfMonth}`
+        // formData.value.date.to,
+        // ],
         amount: formData.value.amount,
       }
     }
@@ -221,25 +226,27 @@ export default {
           </span>
         </validation-provider>
 
-        <!--   ? FROM THAT DATE     -->
+        <!--   ? DATE     -->
         <validation-provider
-            ref="fromDateProvider"
-            name="fromDateProvider"
+            ref="dateProvider"
+            name="dateProvider"
             rules="required"
             v-slot="{ errors }"
         >
           <base-date-picker
+              type="month"
               class="w-100"
               :range="false"
-              :placeholder="`${$t('from_the_date_of')}`"
+              :placeholder="`${$t('common.date')}`"
               v-model="formData.date.from"
           />
           <span class="error__provider" v-if="errors[0]">
-            {{ errors[0].replace("fromDateProvider", $t("date")) }}
+            {{ errors[0].replace("dateProvider", $t("common.date")) }}
           </span>
         </validation-provider>
 
         <!--   ? TO DATE     -->
+        <!--
         <validation-provider
             ref="toDateProvider"
             name="toDateProvider"
@@ -256,6 +263,7 @@ export default {
             {{ errors[0].replace("toDateProvider", $t("date")) }}
           </span>
         </validation-provider>
+        -->
 
 
         <!--   ? AMOUNT     -->
