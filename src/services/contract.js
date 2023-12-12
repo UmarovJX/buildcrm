@@ -135,6 +135,10 @@ class ContractV2 extends Core {
         return this.get("contracts/" + id + "/reissue/update");
     }
 
+    cancelReissue(id) {
+        return this.delete("contracts/" + id + "/reorder");
+    }
+
     updateReissue(id, body) {
         // reorder_type_id,agreement_number,percent,client_uuid
         return this.put("contracts/" + id + "/reissue/update", body);

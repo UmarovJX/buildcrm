@@ -1,6 +1,7 @@
 export default {
     year: "Год",
     edit_reissue: "Редактировать переоформление договора",
+    cancel_reissue: "Отменить переоформление договора",
     plan: {
         title: "План",
         add: "Добавить план",
@@ -11,9 +12,11 @@ export default {
     facilities: "Удобства",
     version: 'Версия',
     translation: "Перевод",
+    reissued: "Переоформить",
     reissue: {
         add: "Добавить тип переоформления",
-        types: "Типы переоформление"
+        types: "Типы переоформление",
+        for_reissue_fees: "За комиссии переоформление"
     },
     fio: "Ф.И.О",
     assignor: 'Цедент',
@@ -22,6 +25,7 @@ export default {
     reissue_percentage: "Процент перевыпуска",
     percentage_of_recontract: "Процент переоформление",
     common: {
+        for_payment: "За оплату",
         date: "Дата",
         apartment: "Квартира",
         phone: "Телефон:",

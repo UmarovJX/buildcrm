@@ -1,5 +1,5 @@
 <script>
-import { formatToPrice, getDateProperty } from "@/util/reusable";
+import {formatToPrice, getDateProperty} from "@/util/reusable";
 import ModifyPaymentTransaction from "@/components/Contracts/view/ModifyPaymentTransaction";
 import ImportPaymentsModal from "@/components/Contracts/view/ImportPaymentsModal";
 import CurrencyChart from "@/components/Contracts/view/CurrencyChart";
@@ -14,9 +14,9 @@ import BaseLoading from "@/components/Reusable/BaseLoading";
 import BaseModal from "@/components/Reusable/BaseModal";
 import BaseButton from "@/components/Reusable/BaseButton";
 import BasePriceInput from "@/components/Reusable/BasePriceInput";
-import { XFormSelect } from "@/components/ui-components/form-select";
+import {XFormSelect} from "@/components/ui-components/form-select";
 import api from "@/services/api";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 import ContractsPermission from "@/permission/contract";
 // import list from "@/components/Dashboard/TypePlan/List";
 
@@ -162,8 +162,8 @@ export default {
 
       const monthlyPaymentCounts = this.order?.payments?.monthly_payments_count;
       if (
-        ContractsPermission.getContractsMonthlyCreatePermission() &&
-        monthlyPaymentCounts
+          ContractsPermission.getContractsMonthlyCreatePermission() &&
+          monthlyPaymentCounts
       ) {
         listOption.push({
           value: "monthly",
@@ -175,27 +175,27 @@ export default {
     },
     paymentTypeOptionsForCreate() {
       const remainedPriceInitialPayment =
-        this.order?.payments?.initial_payment_remained;
+          this.order?.payments?.initial_payment_remained;
       let options = this.paymentTypeOptionsPermission;
       if (!remainedPriceInitialPayment) {
         options = options.filter(
-          (paymentOption) => paymentOption.value !== "initial_payment"
+            (paymentOption) => paymentOption.value !== "initial_payment"
         );
       }
       return options;
     },
     uploadFilePermission() {
       return (
-        ContractsPermission.getContractsPaymentsCreatePermission() &&
-        (ContractsPermission.getContractsInitialCreatePermission() ||
-          ContractsPermission.getContractsMonthlyCreatePermission())
+          ContractsPermission.getContractsPaymentsCreatePermission() &&
+          (ContractsPermission.getContractsInitialCreatePermission() ||
+              ContractsPermission.getContractsMonthlyCreatePermission())
       );
     },
     firstChart() {
-      const { payments, currency } = this.order;
+      const {payments, currency, reissue} = this.order;
       const currencyPrettier = formatToPrice(currency.toFixed(0));
       const bottom = `${this.$t(
-        "payments.course"
+          "payments.course"
       )}: ${currencyPrettier} ${this.$t("payments.course_name")}`;
       return {
         index: 0,
@@ -203,6 +203,10 @@ export default {
         price: formatToPrice(payments.transaction_price?.toFixed(0), 2),
         bottom,
         progress: 0,
+        reissue: {
+          show: !reissue['re_order'] && reissue.view,
+          price: formatToPrice(reissue.transaction_price?.toFixed(0), 2)
+        }
       };
     },
     secondChart() {
@@ -216,10 +220,14 @@ export default {
         title: this.$t("payments.initial_fee"),
         price: formatToPrice(initial_payment, 2),
         bottom: `${this.$t("payments.balance")}: ${formatToPrice(
-          initial_payment_remained,
-          2
+            initial_payment_remained,
+            2
         )} ${this.$t("payments.course_name")}`,
         progress: initial_payment_percent,
+        reissue: {
+          show: false,
+          price: 0
+        }
       };
     },
     thirdChart() {
@@ -232,14 +240,18 @@ export default {
       return {
         index: 2,
         title: `${this.$t(
-          "payments.installment"
+            "payments.installment"
         )} (${monthly_payments_count} ${this.$t("payments.month")})`,
         price: formatToPrice(installment_price, 2),
         bottom: `${this.$t("payments.balance")} : ${formatToPrice(
-          installment_price_remained,
-          2
+            installment_price_remained,
+            2
         )} ${this.$t("payments.course_name")} `,
         progress: installment_price_remained_percent,
+        reissue: {
+          show: false,
+          price: 0
+        }
       };
     },
     currencyList() {
@@ -254,7 +266,7 @@ export default {
           key: "date_payment",
           label: this.$t("contracts.view.schedule"),
           formatter: (datePayment) => {
-            const { year, month, day } = getDateProperty(datePayment);
+            const {year, month, day} = getDateProperty(datePayment);
             /*const lastYear = year.toString().slice(-2)*/
             return `${day}.${month}.${year}`;
           },
@@ -273,7 +285,7 @@ export default {
           key: "balance",
           label: this.$t("contracts.view.paid"),
           formatter: (balance) =>
-            formatToPrice(balance, 2) + " " + this.$t("ye"),
+              formatToPrice(balance, 2) + " " + this.$t("ye"),
         },
         {
           key: "status",
@@ -287,7 +299,7 @@ export default {
           key: "date_paid",
           label: this.$t("payments.table.date"),
           formatter: (datePayment) => {
-            const { year, month, day } = getDateProperty(datePayment);
+            const {year, month, day} = getDateProperty(datePayment);
             /*const lastYear = year.toString().slice(-2)*/
             return `${day}.${month}.${year}`;
           },
@@ -315,6 +327,11 @@ export default {
           },
         },
         {
+          key: "category.name",
+          label: this.$t("common.for_payment"),
+          formatter: (name) => name[this.$i18n.locale]
+        },
+        {
           key: "comment",
           label: this.$t("payments.table.comment"),
         },
@@ -325,21 +342,21 @@ export default {
       ];
     },
     countOfScheduleItems() {
-      const { items, pagination } = this.paymentSchedule;
+      const {items, pagination} = this.paymentSchedule;
       return items.length && pagination["totalItems"] > 9;
     },
     countOfPaymentItems() {
-      const { items, pagination } = this.paymentHistory;
+      const {items, pagination} = this.paymentHistory;
       return items.length && pagination["totalItems"] > 9;
     },
     showSchedulePagination() {
-      const { paymentSchedule, appLoading, countOfScheduleItems } = this;
+      const {paymentSchedule, appLoading, countOfScheduleItems} = this;
       return (
-        countOfScheduleItems && !(appLoading || paymentSchedule.appLoading)
+          countOfScheduleItems && !(appLoading || paymentSchedule.appLoading)
       );
     },
     showPaymentsPagination() {
-      const { paymentHistory, appLoading, countOfPaymentItems } = this;
+      const {paymentHistory, appLoading, countOfPaymentItems} = this;
       return countOfPaymentItems && !(appLoading || paymentHistory.appLoading);
     },
   },
@@ -376,8 +393,8 @@ export default {
         return ContractsPermission.getContractsMonthlyEditPermission();
       else if (type === "all")
         return (
-          ContractsPermission.getContractsInitialEditPermission() &&
-          ContractsPermission.getContractsMonthlyEditPermission()
+            ContractsPermission.getContractsInitialEditPermission() &&
+            ContractsPermission.getContractsMonthlyEditPermission()
         );
     },
     userInteractionDelete(type) {
@@ -387,8 +404,8 @@ export default {
         return ContractsPermission.getContractsMonthlyDeletePermission();
       else if (type === "all")
         return (
-          ContractsPermission.getContractsInitialDeletePermission() &&
-          ContractsPermission.getContractsMonthlyDeletePermission()
+            ContractsPermission.getContractsInitialDeletePermission() &&
+            ContractsPermission.getContractsMonthlyDeletePermission()
         );
     },
     refreshDetails() {
@@ -413,41 +430,41 @@ export default {
     },
     async getPaymentSchedule() {
       this.paymentSchedule.appLoading = true;
-      const { id } = this.$route.params;
-      const { params: scheduleParams } = this.paymentSchedule;
+      const {id} = this.$route.params;
+      const {params: scheduleParams} = this.paymentSchedule;
       await api.contractV2
-        .fetchPaymentSchedule(id, scheduleParams)
-        .then((response) => {
-          this.paymentSchedule.items = response.data.items;
-          this.paymentSchedule.pagination = response.data.pagination;
-        })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        })
-        .finally(() => {
-          this.paymentSchedule.appLoading = false;
-        });
+          .fetchPaymentSchedule(id, scheduleParams)
+          .then((response) => {
+            this.paymentSchedule.items = response.data.items;
+            this.paymentSchedule.pagination = response.data.pagination;
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error);
+          })
+          .finally(() => {
+            this.paymentSchedule.appLoading = false;
+          });
     },
     async getPaymentHistory() {
       this.paymentHistory.appLoading = true;
-      const { id } = this.$route.params;
-      const { params: historyParams } = this.paymentHistory;
+      const {id} = this.$route.params;
+      const {params: historyParams} = this.paymentHistory;
       await api.contractV2
-        .fetchPayments(id, historyParams)
-        .then((response) => {
-          this.totalPayment = formatToPrice(
-            (response.data.total / 100).toFixed(2),
-            2
-          );
-          this.paymentHistory.items = response.data.items;
-          this.paymentHistory.pagination = response.data.pagination;
-        })
-        .catch((error) => {
-          this.toastedWithErrorCode(error);
-        })
-        .finally(() => {
-          this.paymentHistory.appLoading = false;
-        });
+          .fetchPayments(id, historyParams)
+          .then((response) => {
+            this.totalPayment = formatToPrice(
+                (response.data.total / 100).toFixed(2),
+                2
+            );
+            this.paymentHistory.items = response.data.items;
+            this.paymentHistory.pagination = response.data.pagination;
+          })
+          .catch((error) => {
+            this.toastedWithErrorCode(error);
+          })
+          .finally(() => {
+            this.paymentHistory.appLoading = false;
+          });
     },
     startLoading() {
       this.appLoading = true;
@@ -462,7 +479,7 @@ export default {
       this.getPaymentHistory();
     },
     changePaymentsShowingLimit() {
-      const { params, pagination } = this.paymentHistory;
+      const {params, pagination} = this.paymentHistory;
       if (params.limit !== pagination.perPage) {
         this.paymentHistory.params.page = 1;
         this.getPaymentHistory();
@@ -473,7 +490,7 @@ export default {
       this.getPaymentSchedule();
     },
     changeScheduleShowingLimit() {
-      const { params, pagination } = this.paymentSchedule;
+      const {params, pagination} = this.paymentSchedule;
       if (params.limit !== pagination.perPage) {
         this.paymentSchedule.params.page = 1;
         this.getPaymentSchedule();
@@ -495,70 +512,70 @@ export default {
       const paymentObserver = this.$refs["payment-observer"];
       const formCompleted = await paymentObserver.validate();
       if (formCompleted) {
-        const { id } = this.$route.params;
+        const {id} = this.$route.params;
         this.buttonLoading = true;
         const form = Object.assign({}, this.appendPayment);
         form.amount *= 100;
         await api.contractV2
-          .appendPayment(id, form)
-          .then(() => {
-            this.closePaymentAdditionModal();
-            this.$swal({
-              title: this.$t("successfully"),
-              text: this.$t("contracts.add_payment_successfully"),
-              icon: "success",
-            }).then(() => {
-              this.initAppendPayment();
-              this.refreshDetails();
-            });
-          })
-          .catch(async (error) => {
-            const { response } = error;
-            if (response.status === 402) {
-              const { available, available_amount } = response.data;
-              const initialForm = Object.assign({}, this.appendPayment);
-              const overbalance = initialForm.amount * 100 - available_amount;
-              this.increasedPrice = formatToPrice(
-                (initialForm.amount * 100 - available_amount) / 100,
-                2
-              );
-
-              if (!available) {
-                this.warningForPayInitialPayment.price = available_amount;
-                this.warningForPayInitialPayment.overbalance = overbalance;
-                this.increasedPrice = formatToPrice(
-                  (initialForm.amount * 100 - available_amount) / 100,
-                  2
-                );
-                this.$refs["initial-payment-warning"].openModal();
-              }
-            } else {
-              const { data } = error.response;
-              const index = Object.keys(data)[0];
-              const text = data[index];
-
+            .appendPayment(id, form)
+            .then(() => {
+              this.closePaymentAdditionModal();
               this.$swal({
-                text,
-                icon: "error",
-                title: this.$t("error"),
+                title: this.$t("successfully"),
+                text: this.$t("contracts.add_payment_successfully"),
+                icon: "success",
+              }).then(() => {
+                this.initAppendPayment();
+                this.refreshDetails();
               });
-            }
-          })
-          .finally(() => {
-            this.buttonLoading = false;
-          });
+            })
+            .catch(async (error) => {
+              const {response} = error;
+              if (response.status === 402) {
+                const {available, available_amount} = response.data;
+                const initialForm = Object.assign({}, this.appendPayment);
+                const overbalance = initialForm.amount * 100 - available_amount;
+                this.increasedPrice = formatToPrice(
+                    (initialForm.amount * 100 - available_amount) / 100,
+                    2
+                );
+
+                if (!available) {
+                  this.warningForPayInitialPayment.price = available_amount;
+                  this.warningForPayInitialPayment.overbalance = overbalance;
+                  this.increasedPrice = formatToPrice(
+                      (initialForm.amount * 100 - available_amount) / 100,
+                      2
+                  );
+                  this.$refs["initial-payment-warning"].openModal();
+                }
+              } else {
+                const {data} = error.response;
+                const index = Object.keys(data)[0];
+                const text = data[index];
+
+                this.$swal({
+                  text,
+                  icon: "error",
+                  title: this.$t("error"),
+                });
+              }
+            })
+            .finally(() => {
+              this.buttonLoading = false;
+            });
       } else {
         this.revalidateForm();
       }
     },
     revalidateForm() {
-      const { errors } = this.$refs["payment-observer"];
+      const {errors} = this.$refs["payment-observer"];
       const haveErrors = Object.keys(errors).length;
       if (haveErrors) {
         const warningProperties = Object.keys(this.validationWarnings);
         warningProperties.forEach((warningProperty) => {
           this.validationWarnings[warningProperty] =
-            errors[warningProperty].length > 0;
+              errors[warningProperty].length > 0;
         });
       }
     },
@@ -576,32 +593,32 @@ export default {
       this.$refs["warning-before-delete"].closeModal();
     },
     async deletePaymentTransaction(transactionId) {
-      const { id: contractId } = this.$route.params;
+      const {id: contractId} = this.$route.params;
       this.paymentHistory.appLoading = true;
       this.$refs["warning-before-delete"].closeModal();
       await api.contractV2
-        .removePaymentTransaction(contractId, transactionId)
-        .then(() => {
-          this.$swal({
-            title: this.$t("deleted"),
-            text: this.$t("contracts.deleted_payment_successfully"),
-            icon: "success",
+          .removePaymentTransaction(contractId, transactionId)
+          .then(() => {
+            this.$swal({
+              title: this.$t("deleted"),
+              text: this.$t("contracts.deleted_payment_successfully"),
+              icon: "success",
+            });
+            this.deletionPaymentId = null;
+            this.refreshDetails();
+          })
+          .catch((error) => {
+            const {data} = error.response;
+            const primaryKey = Object.keys(data)[0];
+            this.$bvToast.toast(data[primaryKey], {
+              title: `${this.$t("error")}`,
+              variant: "danger",
+              solid: true,
+            });
+          })
+          .finally(() => {
+            this.paymentHistory.appLoading = false;
           });
-          this.deletionPaymentId = null;
-          this.refreshDetails();
-        })
-        .catch((error) => {
-          const { data } = error.response;
-          const primaryKey = Object.keys(data)[0];
-          this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t("error")}`,
-            variant: "danger",
-            solid: true,
-          });
-        })
-        .finally(() => {
-          this.paymentHistory.appLoading = false;
-        });
     },
     editPaymentTransaction(item) {
       this.modifyTransactionProperties = item;
@@ -612,90 +629,90 @@ export default {
       this.toggleModifyTransaction = false;
     },
     async payOnlyInitialPayment() {
-      const { id } = this.$route.params;
-      const { price } = this.warningForPayInitialPayment;
+      const {id} = this.$route.params;
+      const {price} = this.warningForPayInitialPayment;
       const formInitial = Object.assign({}, this.appendPayment);
       formInitial.type = "initial_payment";
       formInitial.amount = price;
       this.initialPaymentLoading = true;
       await api.contractV2
-        .appendPayment(id, formInitial)
-        .then(() => {
-          this.closePaymentAdditionModal();
-          this.$swal({
-            title: this.$t("successfully"),
-            text: this.$t("contracts.add_payment_successfully"),
-            icon: "success",
-          }).then(() => {
-            this.initAppendPayment();
-            this.refreshDetails();
+          .appendPayment(id, formInitial)
+          .then(() => {
+            this.closePaymentAdditionModal();
+            this.$swal({
+              title: this.$t("successfully"),
+              text: this.$t("contracts.add_payment_successfully"),
+              icon: "success",
+            }).then(() => {
+              this.initAppendPayment();
+              this.refreshDetails();
+            });
+          })
+          .catch((error) => {
+            const {data} = error.response;
+            const primaryKey = Object.keys(data)[0];
+            this.$bvToast.toast(data[primaryKey], {
+              title: `${this.$t("error")}`,
+              variant: "danger",
+              solid: true,
+            });
+          })
+          .finally(() => {
+            this.$refs["initial-payment-warning"].closeModal();
+            this.initialPaymentLoading = false;
           });
-        })
-        .catch((error) => {
-          const { data } = error.response;
-          const primaryKey = Object.keys(data)[0];
-          this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t("error")}`,
-            variant: "danger",
-            solid: true,
-          });
-        })
-        .finally(() => {
-          this.$refs["initial-payment-warning"].closeModal();
-          this.initialPaymentLoading = false;
-        });
     },
     async exchangeToMonthlyPayment() {
-      const { id } = this.$route.params;
+      const {id} = this.$route.params;
       this.monthlyPaymentLoading = true;
-      const { price, overbalance } = this.warningForPayInitialPayment;
+      const {price, overbalance} = this.warningForPayInitialPayment;
 
       const formInitial = Object.assign({}, this.appendPayment);
       formInitial.type = "initial_payment";
       formInitial.amount = price;
       await api.contractV2
-        .appendPayment(id, formInitial)
-        .then(async () => {
-          this.closePaymentAdditionModal();
-        })
-        .catch((error) => {
-          const { data } = error.response;
-          const primaryKey = Object.keys(data)[0];
-          this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t("error")}`,
-            variant: "danger",
-            solid: true,
+          .appendPayment(id, formInitial)
+          .then(async () => {
+            this.closePaymentAdditionModal();
+          })
+          .catch((error) => {
+            const {data} = error.response;
+            const primaryKey = Object.keys(data)[0];
+            this.$bvToast.toast(data[primaryKey], {
+              title: `${this.$t("error")}`,
+              variant: "danger",
+              solid: true,
+            });
           });
-        });
 
       const formMonthly = Object.assign({}, this.appendPayment);
       formMonthly.type = "initial_monthly";
       formMonthly.amount = overbalance;
       await api.contractV2
-        .appendPayment(id, formMonthly)
-        .then(() => {
-          this.$swal({
-            title: this.$t("successfully"),
-            text: this.$t("contracts.add_payment_successfully"),
-            icon: "success",
-          }).then(() => {
-            this.initAppendPayment();
-            this.refreshDetails();
+          .appendPayment(id, formMonthly)
+          .then(() => {
+            this.$swal({
+              title: this.$t("successfully"),
+              text: this.$t("contracts.add_payment_successfully"),
+              icon: "success",
+            }).then(() => {
+              this.initAppendPayment();
+              this.refreshDetails();
+            });
+          })
+          .catch((error) => {
+            const {data} = error.response;
+            const primaryKey = Object.keys(data)[0];
+            this.$bvToast.toast(data[primaryKey], {
+              title: `${this.$t("error")}`,
+              variant: "danger",
+              solid: true,
+            });
+          })
+          .finally(() => {
+            this.$refs["initial-payment-warning"].closeModal();
+            this.monthlyPaymentLoading = false;
           });
-        })
-        .catch((error) => {
-          const { data } = error.response;
-          const primaryKey = Object.keys(data)[0];
-          this.$bvToast.toast(data[primaryKey], {
-            title: `${this.$t("error")}`,
-            variant: "danger",
-            solid: true,
-          });
-        })
-        .finally(() => {
-          this.$refs["initial-payment-warning"].closeModal();
-          this.monthlyPaymentLoading = false;
-        });
     },
   },
 };
@@ -705,10 +722,10 @@ export default {
     <!--  CURRENCY CHART  -->
     <div class="cards">
       <currency-chart
-        class="currency__chart"
-        v-for="context in currencyList"
-        :key="context.title"
-        :context="context"
+          class="currency__chart"
+          v-for="context in currencyList"
+          :key="context.title"
+          :context="context"
       ></currency-chart>
     </div>
 
@@ -725,26 +742,26 @@ export default {
         </h3>
         <div class="d-flex">
           <base-button
-            v-if="paidPermission"
-            @click="openPaymentsImportModal"
-            :text="$t('payments.payment_download')"
-            design="import__button"
+              v-if="paidPermission"
+              @click="openPaymentsImportModal"
+              :text="$t('payments.payment_download')"
+              design="import__button"
           >
             <template #left-icon>
               <span>
-                <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED" />
+                <base-arrow-down-icon :width="20" :height="20" fill="#7C3AED"/>
               </span>
             </template>
           </base-button>
           <base-button
-            v-if="uploadFilePermission"
-            @click="openPaymentAdditionModal"
-            :text="$t('payments.payment_add')"
-            design="violet-gradient"
+              v-if="uploadFilePermission"
+              @click="openPaymentAdditionModal"
+              :text="$t('payments.payment_add')"
+              design="violet-gradient"
           >
             <template #left-icon>
               <span>
-                <base-plus-icon :width="20" :height="20" fill="#ffffff" />
+                <base-plus-icon :width="20" :height="20" fill="#ffffff"/>
               </span>
             </template>
           </base-button>
@@ -758,8 +775,8 @@ export default {
           <span class="d-flex align-items-center">
             <span class="go__back" @click="closePaymentAdditionModal">
               <base-arrow-left-icon
-                :width="32"
-                :height="32"
+                  :width="32"
+                  :height="32"
               ></base-arrow-left-icon>
             </span>
             <!--    TITLE      -->
@@ -771,28 +788,28 @@ export default {
           <ValidationObserver ref="payment-observer" style="overflow-y: auto">
             <div class="payment-addition-fields">
               <ValidationProvider
-                name="payment_date"
-                rules="required"
-                class="content__form__select"
-                :class="{ warning__border: validationWarnings.payment_date }"
+                  name="payment_date"
+                  rules="required"
+                  class="content__form__select"
+                  :class="{ warning__border: validationWarnings.payment_date }"
               >
                 <input
-                  type="date"
-                  v-model="appendPayment.payment_date"
-                  class="w-100"
+                    type="date"
+                    v-model="appendPayment.payment_date"
+                    class="w-100"
                 />
               </ValidationProvider>
               <ValidationProvider
-                name="type"
-                rules="required"
-                class="content__form__select"
-                :class="{ warning__border: validationWarnings.type }"
+                  name="type"
+                  rules="required"
+                  class="content__form__select"
+                  :class="{ warning__border: validationWarnings.type }"
               >
                 <x-form-select
-                  class="w-100"
-                  v-model="appendPayment.type"
-                  :options="paymentTypeOptionsForCreate"
-                  :placeholder="$t('payments.table.type')"
+                    class="w-100"
+                    v-model="appendPayment.type"
+                    :options="paymentTypeOptionsForCreate"
+                    :placeholder="$t('payments.table.type')"
                 />
                 <!--                <b-form-select-->
                 <!--                    v-model="appendPayment.type"-->
@@ -812,18 +829,18 @@ export default {
                 <!--                </b-form-select>-->
               </ValidationProvider>
               <ValidationProvider
-                name="amount"
-                rules="required|min:2"
-                class="content__form__select"
-                :class="{ warning__border: validationWarnings.amount }"
+                  name="amount"
+                  rules="required|min:2"
+                  class="content__form__select"
+                  :class="{ warning__border: validationWarnings.amount }"
               >
                 <base-price-input
-                  :max="10"
-                  :value="appendPayment.amount"
-                  :placeholder="`${$t('payments.table.balance')}`"
-                  @input="appendPayment.amount = parseFloat($event)"
-                  class="w-100"
-                  style="border-radius: 2rem !important"
+                    :max="10"
+                    :value="appendPayment.amount"
+                    :placeholder="`${$t('payments.table.balance')}`"
+                    @input="appendPayment.amount = parseFloat($event)"
+                    class="w-100"
+                    style="border-radius: 2rem !important"
                 />
                 <!--
                                 <base-numeric-input
@@ -838,16 +855,16 @@ export default {
                                 -->
               </ValidationProvider>
               <ValidationProvider
-                name="payment_type"
-                rules="required"
-                class="content__form__select"
-                :class="{ warning__border: validationWarnings.payment_type }"
+                  name="payment_type"
+                  rules="required"
+                  class="content__form__select"
+                  :class="{ warning__border: validationWarnings.payment_type }"
               >
                 <x-form-select
-                  class="w-100"
-                  v-model="appendPayment.payment_type"
-                  :options="paymentMethodOptions"
-                  :placeholder="$t('payments.table.method')"
+                    class="w-100"
+                    v-model="appendPayment.payment_type"
+                    :options="paymentMethodOptions"
+                    :placeholder="$t('payments.table.method')"
                 />
                 <!--                <b-form-select-->
                 <!--                    v-model="appendPayment.payment_type"-->
@@ -868,28 +885,28 @@ export default {
               </ValidationProvider>
             </div>
             <input
-              type="text"
-              v-model="appendPayment.comment"
-              :placeholder="$t('payments.table.comment')"
-              class="w-100"
+                type="text"
+                v-model="appendPayment.comment"
+                :placeholder="$t('payments.table.comment')"
+                class="w-100"
             />
           </ValidationObserver>
         </template>
 
         <template #footer>
           <b-overlay
-            :show="buttonLoading"
-            rounded
-            opacity="0.6"
-            spinner-small
-            spinner-variant="primary"
-            class="d-inline-block w-100"
+              :show="buttonLoading"
+              rounded
+              opacity="0.6"
+              spinner-small
+              spinner-variant="primary"
+              class="d-inline-block w-100"
           >
             <base-button
-              :text="$t('add')"
-              @click="submitNewPayment"
-              :fixed="true"
-              design="violet-gradient"
+                :text="$t('add')"
+                @click="submitNewPayment"
+                :fixed="true"
+                design="violet-gradient"
             />
           </b-overlay>
         </template>
@@ -899,17 +916,17 @@ export default {
       <div class="main">
         <!--  TABLE PAYMENTS LIST -->
         <b-table
-          v-if="!paymentHistory.appLoading"
-          :items="paymentHistory.items"
-          :fields="paymentsField"
-          class="table__list"
-          :empty-text="$t('no_data')"
-          thead-tr-class="row__head__bottom-border"
-          tbody-tr-class="row__body__bottom-border"
-          show-empty
-          sticky-header
-          borderless
-          responsive
+            v-if="!paymentHistory.appLoading"
+            :items="paymentHistory.items"
+            :fields="paymentsField"
+            class="table__list"
+            :empty-text="$t('no_data')"
+            thead-tr-class="row__head__bottom-border"
+            tbody-tr-class="row__body__bottom-border"
+            show-empty
+            sticky-header
+            borderless
+            responsive
         >
           <!--    CELL OF COMMENT      -->
           <template #cell(comment)="{ item }">
@@ -922,19 +939,19 @@ export default {
             <span class="actions">
               <!--     EDIT PAYMENT       -->
               <span
-                v-if="userInteractionEdit(item.type)"
-                @click="editPaymentTransaction(item)"
-                class="edit__icon icon"
+                  v-if="userInteractionEdit(item.type)"
+                  @click="editPaymentTransaction(item)"
+                  class="edit__icon icon"
               >
-                <base-edit-icon :width="18" :height="18" fill="#ffff" />
+                <base-edit-icon :width="18" :height="18" fill="#ffff"/>
               </span>
               <!--      DELETE PAYMENT        -->
               <span
-                v-if="userInteractionDelete(item.type)"
-                class="delete__icon icon"
-                @click="warnBeforeDelete(item.id)"
+                  v-if="userInteractionDelete(item.type)"
+                  class="delete__icon icon"
+                  @click="warnBeforeDelete(item.id)"
               >
-                <base-delete-icon :width="18" :height="18" fill="#ffff" />
+                <base-delete-icon :width="18" :height="18" fill="#ffff"/>
               </span>
             </span>
           </template>
@@ -942,7 +959,7 @@ export default {
           <!--   CONTENT WHEN EMPTY SCOPE       -->
           <template #empty="scope" class="text-center">
             <div
-              class="d-flex justify-content-center align-items-center empty__scope"
+                class="d-flex justify-content-center align-items-center empty__scope"
             >
               {{ $t("no_data") }}
             </div>
@@ -953,26 +970,26 @@ export default {
         <div v-if="showPaymentsPagination" class="pagination__vue">
           <!--   Pagination   -->
           <vue-paginate
-            :page-count="paymentHistory.pagination.total"
-            :value="paymentHistory.pagination.current"
-            :container-class="'container'"
-            :page-class="'page-item'"
-            :page-link-class="'page-link'"
-            :next-class="'page-item'"
-            :prev-class="'page-item'"
-            :prev-link-class="'page-link'"
-            :next-link-class="'page-link'"
-            @change-page="swipePaymentsPage"
+              :page-count="paymentHistory.pagination.total"
+              :value="paymentHistory.pagination.current"
+              :container-class="'container'"
+              :page-class="'page-item'"
+              :page-link-class="'page-link'"
+              :next-class="'page-item'"
+              :prev-class="'page-item'"
+              :prev-link-class="'page-link'"
+              :next-link-class="'page-link'"
+              @change-page="swipePaymentsPage"
           >
             <template #next-content>
               <span class="d-flex align-items-center justify-content-center">
-                <base-arrow-right-icon />
+                <base-arrow-right-icon/>
               </span>
             </template>
 
             <template #prev-content>
               <span class="d-flex align-items-center justify-content-center">
-                <base-arrow-left-icon />
+                <base-arrow-left-icon/>
               </span>
             </template>
           </vue-paginate>
@@ -994,10 +1011,10 @@ export default {
 
           <div class="show-by">
             <x-form-select
-              :label="false"
-              :options="showByOptions"
-              v-model="paymentHistory.params.limit"
-              @change="changePaymentsShowingLimit"
+                :label="false"
+                :options="showByOptions"
+                v-model="paymentHistory.params.limit"
+                @change="changePaymentsShowingLimit"
             >
               <template #output-prefix>
                 <span class="show-by-description">
@@ -1009,7 +1026,7 @@ export default {
         </div>
 
         <!--  PAYMENTS LOADING    -->
-        <base-loading v-if="paymentHistory.appLoading" />
+        <base-loading v-if="paymentHistory.appLoading"/>
       </div>
 
       <!--  WARNING BEFORE DELETE PAYMENT    -->
@@ -1018,22 +1035,22 @@ export default {
           <span class="warning__before__delete-head">
             <span>
               <svg
-                width="56"
-                height="56"
-                viewBox="0 0 56 56"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+                  width="56"
+                  height="56"
+                  viewBox="0 0 56 56"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  opacity="0.4"
-                  d="M51.3346 27.9996C51.3346 40.8889 40.8883 51.3329 28.0013 51.3329C15.1143 51.3329 4.66797 40.8889 4.66797 27.9996C4.66797 15.1149 15.1143 4.66626 28.0013 4.66626C40.8883 4.66626 51.3346 15.1149 51.3346 27.9996"
-                  fill="#EF4444"
+                    opacity="0.4"
+                    d="M51.3346 27.9996C51.3346 40.8889 40.8883 51.3329 28.0013 51.3329C15.1143 51.3329 4.66797 40.8889 4.66797 27.9996C4.66797 15.1149 15.1143 4.66626 28.0013 4.66626C40.8883 4.66626 51.3346 15.1149 51.3346 27.9996"
+                    fill="#EF4444"
                 />
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M30.3081 29.5574C30.3081 30.7612 29.2661 31.7427 27.988 31.7427C26.71 31.7427 25.668 30.7612 25.668 29.5574V18.5185C25.668 17.3148 26.71 16.3333 27.988 16.3333C29.2661 16.3333 30.3081 17.3148 30.3081 18.5185V29.5574ZM25.6811 37.4814C25.6811 36.2776 26.7178 35.2961 27.9879 35.2961C29.2951 35.2961 30.3345 36.2776 30.3345 37.4814C30.3345 38.6852 29.2951 39.6667 28.0144 39.6667C26.7284 39.6667 25.6811 38.6852 25.6811 37.4814Z"
-                  fill="#EF4444"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M30.3081 29.5574C30.3081 30.7612 29.2661 31.7427 27.988 31.7427C26.71 31.7427 25.668 30.7612 25.668 29.5574V18.5185C25.668 17.3148 26.71 16.3333 27.988 16.3333C29.2661 16.3333 30.3081 17.3148 30.3081 18.5185V29.5574ZM25.6811 37.4814C25.6811 36.2776 26.7178 35.2961 27.9879 35.2961C29.2951 35.2961 30.3345 36.2776 30.3345 37.4814C30.3345 38.6852 29.2951 39.6667 28.0144 39.6667C26.7284 39.6667 25.6811 38.6852 25.6811 37.4814Z"
+                    fill="#EF4444"
                 />
               </svg>
             </span>
@@ -1050,16 +1067,16 @@ export default {
         <template #footer>
           <div class="warning__before__delete-footer">
             <base-button
-              @click="cancelRemovingPayment"
-              :fixed="true"
-              :text="`${$t('no_cancel')}`"
+                @click="cancelRemovingPayment"
+                :fixed="true"
+                :text="`${$t('no_cancel')}`"
             >
             </base-button>
             <base-button
-              @click="deletePaymentTransaction(deletionPaymentId)"
-              :text="`${$t('yes_delete')}`"
-              :fixed="true"
-              class="violet-gradient"
+                @click="deletePaymentTransaction(deletionPaymentId)"
+                :text="`${$t('yes_delete')}`"
+                :fixed="true"
+                class="violet-gradient"
             >
             </base-button>
           </div>
@@ -1078,37 +1095,37 @@ export default {
       </div>
       <!--   SCHEDULE TABLE   -->
       <b-table
-        :fields="scheduleFields"
-        :items="paymentSchedule.items"
-        :bordered="false"
-        :striped="false"
-        thead-class="payment__schedule__thead"
-        tbody-class="payment__schedule__tbody"
-        class="payment__schedule-table"
-        v-if="!paymentSchedule.appLoading"
+          :fields="scheduleFields"
+          :items="paymentSchedule.items"
+          :bordered="false"
+          :striped="false"
+          thead-class="payment__schedule__thead"
+          tbody-class="payment__schedule__tbody"
+          class="payment__schedule-table"
+          v-if="!paymentSchedule.appLoading"
       >
         <template #cell(status)="{ item }">
           <span
-            v-if="item.status === 'waiting'"
-            class="payment__schedule-waiting payment__schedule-status"
+              v-if="item.status === 'waiting'"
+              class="payment__schedule-waiting payment__schedule-status"
           >
             {{ $t("waiting_to_payment") }}
           </span>
           <span
-            v-else-if="item.status === 'paid'"
-            class="payment__schedule-paid payment__schedule-status"
+              v-else-if="item.status === 'paid'"
+              class="payment__schedule-paid payment__schedule-status"
           >
             {{ $t("paid") }}
           </span>
           <span
-            v-else-if="item.status === 'partially'"
-            class="payment__schedule-partially payment__schedule-status"
+              v-else-if="item.status === 'partially'"
+              class="payment__schedule-partially payment__schedule-status"
           >
             {{ $t("partially") }}
           </span>
           <span
-            v-else
-            class="payment__schedule-uncertain payment__schedule-status"
+              v-else
+              class="payment__schedule-uncertain payment__schedule-status"
           >
             {{ item.status }}
           </span>
@@ -1119,26 +1136,26 @@ export default {
       <div v-if="showSchedulePagination" class="pagination__vue">
         <!--   Pagination   -->
         <vue-paginate
-          :page-count="paymentSchedule.pagination.total"
-          :value="paymentSchedule.pagination.current"
-          :container-class="'container'"
-          :page-class="'page-item'"
-          :page-link-class="'page-link'"
-          :next-class="'page-item'"
-          :prev-class="'page-item'"
-          :prev-link-class="'page-link'"
-          :next-link-class="'page-link'"
-          @change-page="swipeSchedulePage"
+            :page-count="paymentSchedule.pagination.total"
+            :value="paymentSchedule.pagination.current"
+            :container-class="'container'"
+            :page-class="'page-item'"
+            :page-link-class="'page-link'"
+            :next-class="'page-item'"
+            :prev-class="'page-item'"
+            :prev-link-class="'page-link'"
+            :next-link-class="'page-link'"
+            @change-page="swipeSchedulePage"
         >
           <template #next-content>
             <span class="d-flex align-items-center justify-content-center">
-              <base-arrow-right-icon />
+              <base-arrow-right-icon/>
             </span>
           </template>
 
           <template #prev-content>
             <span class="d-flex align-items-center justify-content-center">
-              <base-arrow-left-icon />
+              <base-arrow-left-icon/>
             </span>
           </template>
         </vue-paginate>
@@ -1160,10 +1177,10 @@ export default {
 
         <div class="show-by">
           <x-form-select
-            :label="false"
-            :options="showByOptions"
-            v-model="paymentSchedule.params.limit"
-            @change="changeScheduleShowingLimit"
+              :label="false"
+              :options="showByOptions"
+              v-model="paymentSchedule.params.limit"
+              @change="changeScheduleShowingLimit"
           >
             <template #output-prefix>
               <span class="show-by-description">
@@ -1175,21 +1192,21 @@ export default {
       </div>
 
       <!--  PAYMENT SCHEDULE LOADING    -->
-      <base-loading v-if="paymentSchedule.appLoading" />
+      <base-loading v-if="paymentSchedule.appLoading"/>
     </div>
 
     <!--  IMPORT PAYMENTS MODAL  -->
-    <import-payments-modal ref="import-payments" :contract="order" />
+    <import-payments-modal ref="import-payments" :contract="order"/>
 
     <!--  MODIFY PAYMENT TRANSACTION  -->
     <modify-payment-transaction
-      ref="modify-payment-transaction"
-      :payment-method-options="paymentMethodOptions"
-      :payment-type-options="paymentTypeOptionsPermission"
-      :toggle-modal="toggleModifyTransaction"
-      :properties="modifyTransactionProperties"
-      @hide-modal="modifyTransactionModalHide"
-      @update-content="refreshDetails"
+        ref="modify-payment-transaction"
+        :payment-method-options="paymentMethodOptions"
+        :payment-type-options="paymentTypeOptionsPermission"
+        :toggle-modal="toggleModifyTransaction"
+        :properties="modifyTransactionProperties"
+        @hide-modal="modifyTransactionModalHide"
+        @update-content="refreshDetails"
     />
 
     <!-- WARNING MODAL -->
@@ -1197,22 +1214,22 @@ export default {
       <template #header>
         <span class="d-flex justify-content-center align-items-center">
           <svg
-            width="120"
-            height="120"
-            viewBox="0 0 120 120"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              opacity="0.4"
-              d="M110 59.9991C110 87.6191 87.615 109.999 60 109.999C32.385 109.999 10 87.6191 10 59.9991C10 32.3891 32.385 9.99908 60 9.99908C87.615 9.99908 110 32.3891 110 59.9991Z"
-              fill="#F87171"
+                opacity="0.4"
+                d="M110 59.9991C110 87.6191 87.615 109.999 60 109.999C32.385 109.999 10 87.6191 10 59.9991C10 32.3891 32.385 9.99908 60 9.99908C87.615 9.99908 110 32.3891 110 59.9991Z"
+                fill="#F87171"
             />
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M64.9432 63.3374C64.9432 65.917 62.7102 68.0202 59.9716 68.0202C57.233 68.0202 55 65.917 55 63.3374V39.6828C55 37.1032 57.233 35 59.9716 35C62.7102 35 64.9432 37.1032 64.9432 39.6828V63.3374ZM55.0281 80.3174C55.0281 77.7379 57.2497 75.6347 59.9713 75.6347C62.7724 75.6347 64.9997 77.7379 64.9997 80.3174C64.9997 82.897 62.7724 85.0002 60.0281 85.0002C57.2724 85.0002 55.0281 82.897 55.0281 80.3174Z"
-              fill="#F87171"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M64.9432 63.3374C64.9432 65.917 62.7102 68.0202 59.9716 68.0202C57.233 68.0202 55 65.917 55 63.3374V39.6828C55 37.1032 57.233 35 59.9716 35C62.7102 35 64.9432 37.1032 64.9432 39.6828V63.3374ZM55.0281 80.3174C55.0281 77.7379 57.2497 75.6347 59.9713 75.6347C62.7724 75.6347 64.9997 77.7379 64.9997 80.3174C64.9997 82.897 62.7724 85.0002 60.0281 85.0002C57.2724 85.0002 55.0281 82.897 55.0281 80.3174Z"
+                fill="#F87171"
             />
           </svg>
         </span>
@@ -1223,38 +1240,38 @@ export default {
           {{ $t("contracts.warning") }}
         </h3>
         <p>
-          {{ $t("contracts.warning_in_payment", { price: increasedPrice }) }}
+          {{ $t("contracts.warning_in_payment", {price: increasedPrice}) }}
         </p>
       </template>
 
       <template #footer>
         <div class="d-flex justify-content-end align-items-center">
           <b-overlay
-            :show="initialPaymentLoading"
-            rounded
-            opacity="0.2"
-            spinner-small
-            spinner-variant="primary"
-            class="d-inline-block w-100 mr-3"
+              :show="initialPaymentLoading"
+              rounded
+              opacity="0.2"
+              spinner-small
+              spinner-variant="primary"
+              class="d-inline-block w-100 mr-3"
           >
             <base-button
-              @click="payOnlyInitialPayment"
-              text="Отменить"
-              :fixed="true"
+                @click="payOnlyInitialPayment"
+                text="Отменить"
+                :fixed="true"
             />
           </b-overlay>
           <b-overlay
-            :show="monthlyPaymentLoading"
-            rounded
-            opacity="0.6"
-            spinner-small
-            spinner-variant="primary"
-            class="d-inline-block w-100"
+              :show="monthlyPaymentLoading"
+              rounded
+              opacity="0.6"
+              spinner-small
+              spinner-variant="primary"
+              class="d-inline-block w-100"
           >
             <base-button
-              @click="exchangeToMonthlyPayment"
-              text="ОК"
-              class="violet-gradient w-100"
+                @click="exchangeToMonthlyPayment"
+                text="ОК"
+                class="violet-gradient w-100"
             />
           </b-overlay>
         </div>

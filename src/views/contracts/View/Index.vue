@@ -160,6 +160,9 @@ export default {
     hasConstructorOrder() {
       return Object.keys(this.order).length > 0;
     },
+    cancelReissuePermission() {
+      return this.editReissuePm && this.order.reissue['re_order_cancel']
+    }
   },
   async created() {
     await this.fetchContractData();
@@ -390,6 +393,26 @@ export default {
           role: 'edit'
         }
       })
+    },
+    async cancelReissue() {
+      try {
+        this.showLoading = true
+        const {value} = await this.$swal({
+          title: this.$t("sweetAlert.title"),
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: this.$t("cancel"),
+          confirmButtonText: this.$t("sweetAlert.yes_agree"),
+        })
+        if (value) {
+          await api.contractV2.cancelReissue(this.$route.params.id)
+          await this.fetchContractData();
+        }
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      } finally {
+        this.showLoading = false
+      }
     }
   },
 };
@@ -539,6 +562,14 @@ export default {
                 {{ $t("edit_reissue") }}
               </b-dropdown-item>
 
+              <b-dropdown-item
+                  v-if="cancelReissuePermission"
+                  @click="cancelReissue"
+              >
+                <x-icon name="contract_delete" size="24"></x-icon>
+                {{ $t("cancel_reissue") }}
+              </b-dropdown-item>
+
               <template v-if="hasAdminRole && order.status !== 'cancelled'">
                 <!--?   UNARCHIVE   -->
                 <b-dropdown-item
@@ -565,33 +596,6 @@ export default {
         </div>
       </template>
     </AppHeader>
-
-    <!--  Header Navigation  -->
-    <!--        <div v-if="hasConstructorOrder" class="navigation__content justify-content-between">-->
-    <!--            <div class="d-flex align-items-center">-->
-    <!--                <span class="go__back" @click="backNavigation">-->
-    <!--                  <BaseArrowLeft :width="32" :height="32"></BaseArrowLeft>-->
-    <!--                </span>-->
-    <!--                <span class="breadcrumb__content">-->
-    <!--                <span>-->
-    <!--                  {{ $t('payments.payment_list') }}-->
-    <!--                  <BaseArrowRight :width="18" :height="18"/>-->
-    <!--                  <span>{{ order.contract }}</span>-->
-    <!--                </span>-->
-    <!--                <span class="head">-->
-    <!--                  {{ $t('payments.contract') }} <span class="contract__number">{{ order.contract }}</span>-->
-    <!--                </span>-->
-    <!--              </span>-->
-
-    <!--            </div>-->
-
-    <!--        </div>-->
-
-    <!--  Tabs  -->
-    <!--        <base-filter-tabs-content-->
-    <!--            :filter-tab-list="filterTabList"-->
-    <!--            @get-new-content="changeTabOrder"-->
-    <!--        />-->
 
     <template v-show="!showLoading">
       <b-tabs v-model="tabIndex" card class="custom-tab">

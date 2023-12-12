@@ -212,6 +212,11 @@ export default {
           formatter: (price) => formatToPrice(price) + " " + this.$t("ye"),
         },
         {
+          key: "payments.percentage_paid",
+          label: this.$t("paid"),
+          formatter: (price) => formatToPrice(price) + "%",
+        },
+        {
           key: "object",
           label: this.$t("contracts.table.object"),
           formatter: (object) => object?.name,
@@ -623,6 +628,17 @@ export default {
           <span>
             {{ data.item.contract }}
           </span>
+          <x-square-background
+              v-if="data.item['reissued']"
+              padding="0.4"
+              :id="`reissued_${data.item['reissued']}`"
+              class="ml-2 bg-yellow-200"
+          >
+            <x-icon name="update" class="color-yellow-600"></x-icon>
+          </x-square-background>
+            <b-tooltip :target="`reissued_${data.item['reissued']}`">
+                {{ $t('reissued') }}
+            </b-tooltip>
         </span>
         </router-link>
       </template>

@@ -1,6 +1,7 @@
 export default {
     year: "Yil",
     edit_reissue: "Qayta rasmiylashtirishni tahrirlash",
+    cancel_reissue: "Qayta rasmiylashtirishni bekor qilish",
     plan: {
         title: "Reja",
         add: "Reja qo'shing",
@@ -11,9 +12,11 @@ export default {
     facilities: "Qulayliklar",
     version: 'Versiya',
     translation: "Tarjima",
+    reissued: "Qayta rasmiylashtirilgan",
     reissue: {
         add: "Qayta rasmiylashtirish turini qo'shing",
-        types: "Qayta rasmiylashtirish turlari"
+        types: "Qayta rasmiylashtirish turlari",
+        for_reissue_fees: "Qayta rasmiylashtirish to'lovi"
     },
     fio: "FISH",
     assignor: 'Tayinlovchi',
@@ -22,6 +25,7 @@ export default {
     reissue_percentage: "Qayta rasmiylashtirish foizi",
     percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
     common: {
+        for_payment: "To'lov uchun",
         date: "Sana",
         apartment: "Xonadon",
         phone: "Телефон:",
