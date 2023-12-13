@@ -12,7 +12,7 @@ export default {
     facilities: "Удобства",
     version: 'Версия',
     translation: "Перевод",
-    reissued: "Переоформить",
+    reissued: "Переоформлен",
     reissue: {
         add: "Добавить тип переоформления",
         types: "Типы переоформление",

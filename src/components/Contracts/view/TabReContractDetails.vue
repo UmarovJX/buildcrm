@@ -1,7 +1,7 @@
 <script>
 import api from "@/services/api";
 import {hasOwnProperty} from "@/util/object";
-import {phonePrettier} from "@/util/reusable";
+import {formatToPrice, phonePrettier} from "@/util/reusable";
 
 import BaseButton from "@/components/Reusable/BaseButton";
 import BaseArrowDownIcon from "@/components/icons/BaseArrowDownIcon";
@@ -57,7 +57,7 @@ export default {
         },
         {
           label: this.$t("transaction_price"),
-          value: this.order.transaction_price
+          value: formatToPrice(this.order.transaction_price, 2)
         },
         {
           label: this.$t("reissue_percentage"),

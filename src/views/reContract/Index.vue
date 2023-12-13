@@ -154,7 +154,7 @@ export default {
 
       this.contract.date = result.reissue.order.date
       this.contract.agreement_number = result.reissue.order.contract_number
-      this.contract.percent = result.reissue.order['reorder_percent'] * 100
+      this.contract.percent = result.reissue.order['reorder_percent'] /* * 100*/
       this.contract.client_uuid = result.reissue.assignee.id
       this.contract.reorder_type_id = result.reissue.order['reorder_type'].id
 
@@ -610,13 +610,15 @@ export default {
     },
     makeBody() {
       this.contract.client_uuid = this.client_id;
-      const body = Object.assign({}, this.contract)
+      // const body = Object.assign({}, this.contract)
 
-      body.percent = parseFloat(
-          (body.percent / 100).toFixed(2)
-      )
+      // body.percent = parseFloat(
+      //     (body.percent / 100).toFixed(2)
+      // )
 
-      return body
+      // return body
+
+      return Object.assign({}, this.contract)
     },
     async updateReissueData() {
       try {
