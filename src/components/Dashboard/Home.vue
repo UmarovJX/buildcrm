@@ -164,14 +164,22 @@ export default {
 
   methods: {
     formatDateWithDot,
+    formatDate(d) {
+      const y = d.getFullYear();
+      let m = d.getMonth() + 1;
+      if (m < 10) m = "0" + m;
+      let day = d.getDate();
+      if (day < 10) day = "0" + day;
+      return y + "-" + m + "-" + day;
+    },
     getQuery() {
       const query = {
         type: this.type,
       };
 
       if (this.dateRange.startDate) {
-        query.date_from = this.dateRange.startDate.toISOString().split("T")[0];
-        query.date_to = this.dateRange.endDate.toISOString().split("T")[0];
+        query.date_from = this.formatDate(this.dateRange.startDate);
+        query.date_to = this.formatDate(this.dateRange.endDate);
       }
       if (this.paymentType) {
         query.payment_type = this.paymentType;
