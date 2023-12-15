@@ -11,7 +11,7 @@ export default class Permission {
       const { form } = joinRolesRows("");
       this.permission = {
         ...form,
-        ...user.role.permissions,
+        ...JSON.parse(user.role['permission_list']),
       };
     }
     return this.user;

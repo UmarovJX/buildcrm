@@ -11,6 +11,7 @@
   "main": "background.js",
   "dependencies": {
     "@fancyapps/ui": "^4.0.8",
+    "@riophae/vue-treeselect": "^0.4.0",
     "@sentry/tracing": "^6.13.3",
     "@sentry/vue": "^6.13.3",
     "accounting-js": "^1.1.1",

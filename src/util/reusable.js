@@ -152,3 +152,4 @@ export function isPrimitiveValue(value) {
   const type = typeof value;
   return primitiveTypes.includes(type);
 }
+

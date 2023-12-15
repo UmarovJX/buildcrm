@@ -1,4 +1,7 @@
 export default {
+    permission: {
+        group: "Ruxsat guruhi"
+    },
     year: "Yil",
     edit_reissue: "Qayta rasmiylashtirishni tahrirlash",
     cancel_reissue: "Qayta rasmiylashtirishni bekor qilish",
@@ -25,6 +28,15 @@ export default {
     reissue_percentage: "Qayta rasmiylashtirish foizi",
     percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
     common: {
+        update_role:"Rolni tahrirlash",
+        create_role: "Rol yaratish",
+        add_permission: "Ruxsat qo'shish",
+        edit_permission: "Ruxsatni tahrirlash",
+        father: "Ota",
+        add_group: "Guruh qo'shish",
+        edit_group: "Guruhni tahrirlash",
+        select_parent: "Otasini tanlang",
+
         for_payment: "To'lov uchun",
         date: "Sana",
         apartment: "Xonadon",
@@ -181,7 +193,7 @@ export default {
     add_type: "Tur qo'shish",
     normal_client: "Oddiy mijoz",
     actions: "Amallar",
-    title: "Nom",
+    title: "Sarlavha",
     client_types: "Mijoz turlari",
     return_all_apartments: "Barcha xonadonlarni qaytarish",
     cleaned_apartments: "O'chirilgan xonadonlar",

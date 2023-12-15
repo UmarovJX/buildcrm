@@ -16,9 +16,11 @@ class V3Service extends Core {
 
     base(endpoint = "") {
         return {
+            show: (b) => this.post(endpoint + "/show", b),
             create: (b) => this.post(endpoint + "/create", b),
             update: (b) => this.post(endpoint + "/update", b),
             remove: (b) => this.post(endpoint + "/remove", b),
+            index: (b) => this.post(endpoint + "/index", b),
             findOne: (b) => this.post(endpoint + "/findOne", b),
             findAll: (b) => this.post(endpoint + "/findAll", b),
         };
@@ -115,6 +117,13 @@ class V3Service extends Core {
         types: (b) => this.post("plan/types", b),
         filterParams: (b) => this.post("plan/filter-params", b),
     }
+
+    permission = {
+        ...this.base("permission"),
+        group: this.base("permission-group"),
+    }
+
+    role = this.base("role")
 }
 
 export const v3ServiceApi = new V3Service();

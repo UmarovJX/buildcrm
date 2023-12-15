@@ -11,9 +11,9 @@ import {XIcon} from "@/components/ui-components/material-icons";
 import {XCircularBackground} from "@/components/ui-components/circular-background";
 import AppHeader from "@/components/Header/AppHeader.vue";
 import BaseLoading from "@/components/Reusable/BaseLoading.vue";
-import PlanPagination from "@/views/plan/components/PlanPagination.vue";
 import PlanUpsert from "@/views/plan/components/PlanUpsert.vue";
 import PlanFilter from "@/views/plan/components/PlanFilter.vue";
+import XPagination from "@/components/ui-components/pagination/XPagination.vue";
 
 export default {
   name: "AppPlan",
@@ -24,8 +24,8 @@ export default {
     BaseLoading,
     XCircularBackground,
     PlanUpsert,
-    PlanPagination,
     PlanFilter,
+    XPagination
   },
   setup() {
     const vm = getCurrentInstance().proxy
@@ -368,7 +368,7 @@ export default {
       </template>
     </b-table>
 
-    <plan-pagination
+    <x-pagination
         v-if="showPagination"
         :current="pagination.current"
         :total="pagination.totalPage"

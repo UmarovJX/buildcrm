@@ -85,6 +85,15 @@ export default [
           parent: "settings",
         },
       },
+      {
+        path: "permission/group",
+        name: "permission-group",
+        component: () => import("@/views/settings/views/permission-group/Index.vue"),
+        meta: {
+          requiresAuth: "settings.permission_group",
+          parent: "settings",
+        },
+      },
     ],
   },
 ];

@@ -1,4 +1,8 @@
 export default {
+
+    permission: {
+        group: "Группа разрешений"
+    },
     year: "Год",
     edit_reissue: "Редактировать переоформление договора",
     cancel_reissue: "Отменить переоформление договора",
@@ -25,6 +29,14 @@ export default {
     reissue_percentage: "Процент перевыпуска",
     percentage_of_recontract: "Процент переоформление",
     common: {
+        update_role:"Редактировать роль",
+        create_role: "Создать роль",
+        add_permission: "Добавить разрешение",
+        edit_permission: "Редактировать разрешения",
+        father: "Отец",
+        add_group: "Добавить группу",
+        edit_group: "Редактировать группу",
+        select_parent: "Выберите родителя",
         for_payment: "За оплату",
         date: "Дата",
         apartment: "Квартира",

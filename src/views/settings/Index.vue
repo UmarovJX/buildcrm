@@ -13,22 +13,22 @@ export default {
     const holdersViewPms = SettingsPermission.getPermission("holders.view");
     const statusesViewPms = SettingsPermission.getPermission("statuses.view");
     const clientTypesViewPms =
-      SettingsPermission.getPermission("client_types.view");
+        SettingsPermission.getPermission("client_types.view");
     const countriesViewPms = SettingsPermission.getPermission(
-      "client_countries.view"
+        "client_countries.view"
     );
 
     const languagesViewPms = SettingsPermission.getPermission("languages.view");
     const translationsViewPms =
-      SettingsPermission.getPermission("translations.view");
+        SettingsPermission.getPermission("translations.view");
     const versionsViewPms = SettingsPermission.getPermission("versions.view");
     const facilitiesViewPms =
-      SettingsPermission.getPermission("facilities.view");
+        SettingsPermission.getPermission("facilities.view");
 
     const reorderTypesViewPms =
         SettingsPermission.getPermission("reorder_types.view");
 
-    const tabs = [];
+    const tabs = []
 
     if (clientTypesViewPms) {
       tabs.push({
@@ -89,13 +89,19 @@ export default {
         value: "settings-facilities",
       });
     }
-    if(reorderTypesViewPms){
+    if (reorderTypesViewPms) {
       tabs.push({
         counts: 0,
         name: "reissue.types",
         value: "reissue-types",
       });
     }
+
+    tabs.push({
+      counts: 0,
+      name: 'permission.group',
+      value: 'permission-group'
+    })
 
     return {
       tabs,
@@ -127,12 +133,12 @@ export default {
     </app-header>
 
     <settings-tab
-      @change="changeRouteView"
-      :tabs="tabs"
-      :current-tab="currentTab"
-      class="mb-4"
+        @change="changeRouteView"
+        :tabs="tabs"
+        :current-tab="currentTab"
+        class="mb-4"
     />
 
-    <router-view />
+    <router-view/>
   </div>
 </template>
