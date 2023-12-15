@@ -121,7 +121,7 @@ export default {
             duration: 4000,
           })
           await vm.$router.push({
-            name: 'role-v2'
+            name: 'roles'
           })
         } catch (e) {
           toastError(e)
