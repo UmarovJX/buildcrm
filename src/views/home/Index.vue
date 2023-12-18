@@ -590,16 +590,18 @@ export default {
       </div>
     </div>
 
-    <objects-income-by-period
-        :busy="objectsIncome.busy"
-        :data="objectsIncome.result"
-        class="home__table"
-    />
-    <object-payments
-        :busy="objectPayments.busy"
-        :data="objectPayments.result"
-        class="home__table"
-    />
+    <template v-if="mainPermission">
+      <objects-income-by-period
+          :busy="objectsIncome.busy"
+          :data="objectsIncome.result"
+          class="home__table"
+      />
+      <object-payments
+          :busy="objectPayments.busy"
+          :data="objectPayments.result"
+          class="home__table"
+      />
+    </template>
 
     <div class="row" v-if="mainPermission || managerPermission">
       <div class="col-12">
@@ -647,6 +649,7 @@ export default {
         </div>
       </div>
     </div>
+
     <!-- Common stats -->
     <div v-if="mainPermission">
       <!-- WIDGETS -->
