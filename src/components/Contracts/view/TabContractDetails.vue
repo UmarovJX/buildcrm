@@ -328,6 +328,45 @@ export default {
             />
           </div>
         </div>
+        <div class="d-flex" v-if="otherDetails.alias">
+          <div class="client__details_info_card mr-5" style="opacity: 0"></div>
+          <div class="client__details_info_card">
+            <label>{{ "Псевдоним" }}</label>
+            <b-form-input disabled :value="otherDetails.alias" id="firstname" />
+          </div>
+        </div>
+        <div class="d-flex" v-if="otherDetails.updated_by">
+          <div class="client__details_info_card mr-5" style="opacity: 0"></div>
+          <div class="client__details_info_card">
+            <label>{{ "Изменен" }}</label>
+            <b-form-input
+              disabled
+              :value="
+                `${otherDetails.updated_by.first_name} ${otherDetails.updated_by.last_name}` +
+                (otherDetails.updated_at
+                  ? ',' + datePrettier(otherDetails.updated_at)
+                  : '')
+              "
+              id="firstname"
+            />
+          </div>
+        </div>
+        <div class="d-flex" v-if="otherDetails.deleted_by">
+          <div class="client__details_info_card mr-5" style="opacity: 0"></div>
+          <div class="client__details_info_card">
+            <label>{{ "Удален" }}</label>
+            <b-form-input
+              disabled
+              :value="
+                `${otherDetails.deleted_by.first_name} ${otherDetails.deleted_by.last_name}` +
+                (otherDetails.deleted_at
+                  ? ',' + datePrettier(otherDetails.deleted_at)
+                  : '')
+              "
+              id="firstname"
+            />
+          </div>
+        </div>
       </b-form>
     </div>
 

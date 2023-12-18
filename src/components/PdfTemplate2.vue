@@ -114,8 +114,20 @@ export default {
       if (disc.prepay === 100) return this.apartment.price;
       else return disc.amount * this.apartment.plan?.area;
     },
+    monthlyPayment(disc) {
+      const forPay = (this.discountedPrice(disc) * (100 - disc.prepay)) / 100;
+      let degree = Math.floor(parseInt(forPay).toString().length / 3);
+      let adjustedMonthlyPayment =
+        Math.ceil(forPay / (Math.pow(10, degree) * this.printCalc.month)) *
+        Math.pow(10, degree);
+      return adjustedMonthlyPayment;
+    },
     firstPayment(disc) {
       return (this.discountedPrice(disc) * disc.prepay) / 100;
+    },
+    lastMonth(disc) {
+      const forPay = (this.discountedPrice(disc) * (100 - disc.prepay)) / 100;
+      return forPay - this.monthlyPayment(disc) * (this.printCalc.month - 1);
     },
     fullDiscount(disc) {
       if (disc.id === this.printCalc.discount.id) {
@@ -558,19 +570,21 @@ export default {
                   {{ $t("ye") }}
                 </div>
               </div>
-              <div class="row pt-1 pb-1">
+              <div class="row borderb pt-1 pb-1">
                 <div class="col-6 detail_row">
                   {{ $t("pdf.detail.monthly") }}
                 </div>
                 <div class="col-6 detail_row">
-                  {{
-                    pricePrettier(
-                      (discountedPrice(disc) * (100 - disc.prepay)) /
-                        100 /
-                        printCalc.month,
-                      2
-                    )
-                  }}
+                  {{ pricePrettier(monthlyPayment(disc), 2) }}
+                  {{ $t("ye") }}
+                </div>
+              </div>
+              <div class="row pt-1 pb-1">
+                <div class="col-6 detail_row">
+                  {{ $t("Последняя") }}
+                </div>
+                <div class="col-6 detail_row">
+                  {{ pricePrettier(lastMonth(disc), 2) }}
                   {{ $t("ye") }}
                 </div>
               </div>
