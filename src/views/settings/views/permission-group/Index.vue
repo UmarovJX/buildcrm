@@ -322,6 +322,7 @@ export default {
           <group-tree
               v-for="item in tableData.items"
               :item="item"
+              :key="item.id"
               @show="showGroupPermission"
           />
         </b-skeleton-wrapper>

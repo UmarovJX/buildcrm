@@ -286,13 +286,20 @@ export default {
         </validation-observer>
       </b-tab>
 
-      <b-tab v-if="isMounting" v-for="skeletonItem in skeletonLength">
-        <template #title>
-          <div style="width: 100px;margin-top:-0.45rem">
-            <b-skeleton type="input"/>
-          </div>
-        </template>
-      </b-tab>
+
+      <template v-if="isMounting">
+        <b-tab
+            v-for="skeletonItem in skeletonLength"
+            :key="skeletonItem"
+        >
+          <template #title>
+            <div style="width: 100px;margin-top:-0.45rem">
+              <b-skeleton type="input"/>
+            </div>
+          </template>
+        </b-tab>
+      </template>
+
 
       <b-tab v-for="groupItem in groups" :key="groupItem.id">
         <template #title>

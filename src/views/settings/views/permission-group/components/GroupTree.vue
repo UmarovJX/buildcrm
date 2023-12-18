@@ -108,6 +108,7 @@ export default {
     >
       <group-tree
           v-for="childItem in item.children"
+          :key="childItem.id"
           :item="childItem"
           class="ml-1 p-1"
           @show="$emit('show',$event)"
