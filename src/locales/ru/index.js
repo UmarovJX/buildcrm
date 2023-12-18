@@ -1,9 +1,16 @@
 export default {
-
+    statistics: {
+        object_payments: {
+            paid: "Поступление за все время",
+            unpaid: "На рассрочку",
+            not_sold: "Еще не продано"
+        }
+    },
     permission: {
         group: "Группа разрешений"
     },
     year: "Год",
+    daily: "Ежедневный",
     edit_reissue: "Редактировать переоформление договора",
     cancel_reissue: "Отменить переоформление договора",
     plan: {
@@ -29,7 +36,11 @@ export default {
     reissue_percentage: "Процент перевыпуска",
     percentage_of_recontract: "Процент переоформление",
     common: {
-        update_role:"Редактировать роль",
+        revenue_report: "Отчет по выручке",
+        object_report: "Отчет поступления по объектам",
+        unpaid: "Неоплаченный",
+        not_sold: "Не продано",
+        update_role: "Редактировать роль",
         create_role: "Создать роль",
         add_permission: "Добавить разрешение",
         edit_permission: "Редактировать разрешения",
@@ -671,6 +682,7 @@ export default {
     debt: "Долг",
     go_to_contract: "Перейти к договору",
     week: "Неделя",
+    weekly: "Еженедельно",
     today: "Сегодня",
     day: "День",
     refresh_password: "Обновить пароль",

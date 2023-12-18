@@ -1,9 +1,9 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
-import AppHeader from "@/components/Header/AppHeader";
+import AppHeader from "@/components/Header/AppHeader.vue";
 import ApartmentsPermission from "@/permission/apartments";
 // import home from '../../services/home'
-import {v3ServiceApi as api} from "@/services/v3/v3.service";
+import {v3ServiceApi, v3ServiceApi as api} from "@/services/v3/v3.service";
 import {XIcon} from "@/components/ui-components/material-icons";
 import {formatToPrice, formatDateWithDot} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading2.vue";
@@ -11,12 +11,18 @@ import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Permission from "@/permission";
 
+import ObjectsIncomeByPeriod from "@/views/home/components/ObjectsIncomeByPeriod.vue";
+import ObjectPayments from "@/views/home/components/ObjectPayments.vue";
+
 export default {
   components: {
     DateRangePicker,
     BaseLoading,
     AppHeader,
     XIcon,
+
+    ObjectsIncomeByPeriod,
+    ObjectPayments
   },
   data: () => {
     const e = new Date();
@@ -29,6 +35,15 @@ export default {
       managerPermission: Permission.getUserPermission(
           "general.view_manager_statistics"
       ),
+      objectsIncome: {
+        result: {},
+        busy: false
+      },
+      objectPayments: {
+        result: {},
+        busy: false
+      },
+
       widgetData: null,
       salesOptions: null,
       objectsPieOptions: null,
@@ -150,6 +165,7 @@ export default {
       }));
     },
   },
+
   watch: {
     type() {
       this.fetchStats();
@@ -206,8 +222,9 @@ export default {
         this.fetchManagerObjectsPie(),
         this.fetchManagerSalesCount(),
         this.fetchManagerStatusPie(),
+        this.fetchObjectsIncomeByPeriod(),
+        this.fetchObjectPayments()
       ])
-
     },
     ...mapActions(["fetchCounts"]),
     async fetchWidgets() {
@@ -450,6 +467,28 @@ export default {
         legend: {position: "bottom"},
       };
     },
+    async fetchObjectsIncomeByPeriod() {
+      try {
+        this.objectsIncome.busy = true
+        const {data: {result}} = await v3ServiceApi.stats.objectsByPeriod()
+        this.objectsIncome.result = result
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      } finally {
+        this.objectsIncome.busy = false
+      }
+    },
+    async fetchObjectPayments() {
+      try {
+        this.objectPayments.busy = true
+        const {data: {result}} = await v3ServiceApi.stats.objectPayments()
+        this.objectPayments.result = result
+      } catch (e) {
+        this.toastedWithErrorCode(e)
+      } finally {
+        this.objectPayments.busy = false
+      }
+    },
 
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
     shortSum(n) {
@@ -550,6 +589,18 @@ export default {
         </div>
       </div>
     </div>
+
+    <objects-income-by-period
+        :busy="objectsIncome.busy"
+        :data="objectsIncome.result"
+        class="home__table"
+    />
+    <object-payments
+        :busy="objectPayments.busy"
+        :data="objectPayments.result"
+        class="home__table"
+    />
+
     <div class="row" v-if="mainPermission || managerPermission">
       <div class="col-12">
         <div class="d-flex align-items-center justify-content-end mb-3">
@@ -1045,6 +1096,7 @@ export default {
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -1112,5 +1164,9 @@ export default {
   opacity: 0.5;
   display: block;
   font-size: 22px;
+}
+
+.home__table {
+  margin: 4rem 0;
 }
 </style>

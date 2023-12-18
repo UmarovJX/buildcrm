@@ -1,8 +1,16 @@
 export default {
+    statistics: {
+        object_payments: {
+            paid: "Barcha tushumlar",
+            unpaid: "Bo'lib-to'lash uchun",
+            not_sold: "Hali sotilmagan"
+        },
+    },
     permission: {
         group: "Ruxsat guruhi"
     },
     year: "Yil",
+    daily: "Ежедневный",
     edit_reissue: "Qayta rasmiylashtirishni tahrirlash",
     cancel_reissue: "Qayta rasmiylashtirishni bekor qilish",
     plan: {
@@ -28,7 +36,11 @@ export default {
     reissue_percentage: "Qayta rasmiylashtirish foizi",
     percentage_of_recontract: "Qayta ro'yxatdan o'tish foizi",
     common: {
-        update_role:"Rolni tahrirlash",
+        revenue_report: "Daromad hisoboti",
+        object_report: "Ob'ektlar bo'yicha daromadlar to'g'risidagi hisobot",
+        unpaid: "To'lanmagan",
+        not_sold: "Sotilmaydi",
+        update_role: "Rolni tahrirlash",
         create_role: "Rol yaratish",
         add_permission: "Ruxsat qo'shish",
         edit_permission: "Ruxsatni tahrirlash",
@@ -682,6 +694,7 @@ export default {
     debt: "Qarz",
     go_to_contract: "Shartnomaga o'tish",
     week: "Hafta",
+    weekly: "Haftalik",
     today: "Bugun",
     day: "Kun",
     refresh_password: "Parolni yangilash",

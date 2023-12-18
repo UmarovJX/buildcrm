@@ -13,7 +13,7 @@ Vue.use(VueRouter);
 import api from "@/services/api";
 import Auth from "./components/Auth/Login";
 import PageNotFound from "./components/PageNotFound";
-import Dashboard from "./components/Dashboard/Home";
+import Dashboard from "./views/home/Index.vue";
 import Objects from "./components/Dashboard/Objects/Index";
 import ObjStore from "./components/Dashboard/Objects/Store";
 import UnfinishedContracts from "./components/Dashboard/Apartment/UnfinishedContracts.vue";

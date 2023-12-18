@@ -92,6 +92,7 @@ class V3Service extends Core {
             ),
         statisticsTotal: () => this.post("orders/payment-history/statisticsTotal"),
     };
+
     clients = {
         getCount: () => this.post("clients/getCount"),
         findAll: (b) => this.post("clients", b),
@@ -108,7 +109,10 @@ class V3Service extends Core {
         getManagersPie: (b) => this.post("statistics/managers", b),
         getOrdersData: (b) => this.post("statistics/orders", b),
         getBranchesData: (b) => this.post("statistics/branches", b),
+        objectsByPeriod: (b) => this.post("statistics/objects-by-period", b),
+        objectPayments: (b) => this.post("statistics/object-payments", b),
     };
+
     managerStats = {
         getTotal: (b) => this.post("statistics/manager/total", b),
         getSales: (b) => this.post("statistics/manager/orders", b),
