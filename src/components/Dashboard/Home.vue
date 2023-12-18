@@ -491,7 +491,6 @@ export default {
           <div class="row">
             <div
               class="col-lg-3 col-md-6 mb-md-0 mb-3"
-              v-if="getPermission.objects && getPermission.objects.view"
             >
               <router-link :to="{ name: 'objects' }">
                 <div class="card-counter primary">
@@ -520,7 +519,6 @@ export default {
 
             <div
               class="col-lg-3 col-md-6 mb-md-0 mb-3"
-              v-if="getPermission.users && getPermission.users.view"
             >
               <router-link :to="{ name: 'users' }">
                 <div class="card-counter success">
