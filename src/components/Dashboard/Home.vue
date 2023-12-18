@@ -1,15 +1,16 @@
 <script>
-import { mapActions, mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import AppHeader from "@/components/Header/AppHeader";
 import ApartmentsPermission from "@/permission/apartments";
 // import home from '../../services/home'
-import { v3ServiceApi as api } from "@/services/v3/v3.service";
-import { XIcon } from "@/components/ui-components/material-icons";
-import { formatToPrice, formatDateWithDot } from "@/util/reusable";
+import {v3ServiceApi as api} from "@/services/v3/v3.service";
+import {XIcon} from "@/components/ui-components/material-icons";
+import {formatToPrice, formatDateWithDot} from "@/util/reusable";
 import BaseLoading from "@/components/Reusable/BaseLoading2.vue";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import Permission from "@/permission";
+
 export default {
   components: {
     DateRangePicker,
@@ -26,7 +27,7 @@ export default {
     return {
       mainPermission: Permission.getUserPermission("general.view_statistics"),
       managerPermission: Permission.getUserPermission(
-        "general.view_manager_statistics"
+          "general.view_manager_statistics"
       ),
       widgetData: null,
       salesOptions: null,
@@ -53,9 +54,11 @@ export default {
   },
 
   mounted() {
-    this.fetchStats();
-
     this.fetchCounts(this);
+  },
+
+  created() {
+    this.fetchStats();
   },
 
   computed: {
@@ -70,9 +73,9 @@ export default {
       let thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
       let thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       let lastMonthStart = new Date(
-        today.getFullYear(),
-        today.getMonth() - 1,
-        1
+          today.getFullYear(),
+          today.getMonth() - 1,
+          1
       );
       let lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
 
@@ -115,9 +118,9 @@ export default {
         ...el,
         variant: el.value === this.type ? "primary" : "info",
         cls:
-          el.value === this.type
-            ? el.cls + " background-violet-600"
-            : el.cls + " background-violet-100",
+            el.value === this.type
+                ? el.cls + " background-violet-600"
+                : el.cls + " background-violet-100",
       }));
     },
     paymentTypeOptions() {
@@ -141,9 +144,9 @@ export default {
         ...el,
         variant: el.value === this.type ? "primary" : "info",
         cls:
-          el.value === this.paymentType
-            ? el.cls + " background-violet-600"
-            : el.cls + " background-violet-100",
+            el.value === this.paymentType
+                ? el.cls + " background-violet-600"
+                : el.cls + " background-violet-100",
       }));
     },
   },
@@ -190,272 +193,262 @@ export default {
       this.$refs.picker.togglePicker(false);
     },
     fetchStats() {
-      this.fetchWidgets();
-      this.fetchSales();
-      this.fetchManagerPieData();
-      this.fetchObjectPieData();
-      this.fetchTariffsPieData();
-      this.fetchOrders();
-      this.fetchBranches();
+      Promise.allSettled([
+        this.fetchWidgets(),
+        this.fetchSales(),
+        this.fetchManagerPieData(),
+        this.fetchObjectPieData(),
+        this.fetchTariffsPieData(),
+        this.fetchOrders(),
+        this.fetchBranches(),
+        this.fetchManagerWidgets(),
+        this.fetchManagerSales(),
+        this.fetchManagerObjectsPie(),
+        this.fetchManagerSalesCount(),
+        this.fetchManagerStatusPie(),
+      ])
 
-      this.fetchManagerWidgets();
-      this.fetchManagerSales();
-      this.fetchManagerObjectsPie();
-      this.fetchManagerSalesCount();
-      this.fetchManagerStatusPie();
     },
     ...mapActions(["fetchCounts"]),
-    fetchWidgets() {
+    async fetchWidgets() {
       this.widgetData = null;
-      api.stats
-        .getWidgets(this.getQuery())
-        .then((res) => (this.widgetData = res.data.result));
+      const widgetsRsp = await api.stats.getWidgets(this.getQuery())
+      this.widgetData = widgetsRsp.data.result
     },
-    fetchSales() {
+    async fetchSales() {
       this.salesOptions = null;
-      api.stats.getSalesData(this.getQuery()).then((res) => {
-        const d = res.data.result;
-        this.salesOptions = {
-          chart: {
-            type: "line",
-          },
-          stroke: {
-            curve: "smooth",
-          },
-          xaxis: {
-            categories: d.label,
-          },
-          series: d.data.map((el) => ({ name: el.label, data: el.data })),
-          yaxis: {
-            labels: {
-              formatter: function (v) {
-                return formatToPrice(v, 2);
-              },
+      const salesRsp = await api.stats.getSalesData(this.getQuery())
+      const d = salesRsp.data.result;
+      this.salesOptions = {
+        chart: {
+          type: "line",
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        xaxis: {
+          categories: d.label,
+        },
+        series: d.data.map((el) => ({name: el.label, data: el.data})),
+        yaxis: {
+          labels: {
+            formatter: function (v) {
+              return formatToPrice(v, 2);
             },
           },
-          legend: {
-            show: false,
-          },
-        };
-      });
+        },
+        legend: {
+          show: false,
+        },
+      };
     },
-    fetchObjectPieData() {
+    async fetchObjectPieData() {
       this.objectsPieOptions = null;
-      api.stats.getObjectPie(this.getQuery()).then((res) => {
-        const d = res.data.result;
-        this.objectsPieOptions = {
-          chart: {
-            height: 300,
+      const objectPieRsp = await api.stats.getObjectPie(this.getQuery())
+      const d = objectPieRsp.data.result;
+      this.objectsPieOptions = {
+        chart: {
+          height: 300,
 
-            type: "pie",
+          type: "pie",
+        },
+        dataLabels: {
+          formatter: function (val, opts) {
+            return opts.w.config.series[opts.seriesIndex];
           },
-          dataLabels: {
-            formatter: function (val, opts) {
-              return opts.w.config.series[opts.seriesIndex];
-            },
-          },
-          labels: d.label,
-          series: d.data,
-          legend: { position: "bottom" },
-        };
-      });
+        },
+        labels: d.label,
+        series: d.data,
+        legend: {position: "bottom"},
+      };
     },
-    fetchManagerPieData() {
+    async fetchManagerPieData() {
       this.managersPieOptions = null;
-      api.stats.getManagersPie(this.getQuery()).then((res) => {
-        const d = res.data.result;
-        this.managersPieOptions = {
-          chart: {
-            height: 300,
-            type: "pie",
-          },
-          labels: d.label,
-          series: d.data,
-          legend: { position: "bottom" },
-        };
-      });
+      const managersPieRsp = await api.stats.getManagersPie(this.getQuery())
+      const d = managersPieRsp.data.result;
+      this.managersPieOptions = {
+        chart: {
+          height: 300,
+          type: "pie",
+        },
+        labels: d.label,
+        series: d.data,
+        legend: {position: "bottom"},
+      };
     },
-    fetchTariffsPieData() {
+    async fetchTariffsPieData() {
       this.tariffsPieOptions = null;
-      api.stats.getTariffsPie(this.getQuery()).then((res) => {
-        const d = res.data.result;
-        this.tariffsPieOptions = {
-          chart: {
-            height: 300,
+      const tariffsRsp = await api.stats.getTariffsPie(this.getQuery())
+      const d = tariffsRsp.data.result;
+      this.tariffsPieOptions = {
+        chart: {
+          height: 300,
 
-            type: "pie",
-          },
-          labels: d.label.map((el) => (el === null ? "Other" : el)),
-          series: d.data,
-          legend: { position: "bottom" },
-        };
-      });
+          type: "pie",
+        },
+        labels: d.label.map((el) => (el === null ? "Other" : el)),
+        series: d.data,
+        legend: {position: "bottom"},
+      };
     },
-    fetchOrders() {
+    async fetchOrders() {
       this.ordersOptions = null;
-      api.stats.getOrdersData(this.getQuery()).then((res) => {
-        const d = res.data.result;
-        this.ordersOptions = {
-          chart: {
-            type: "line",
-          },
-          stroke: {
-            curve: "smooth",
-          },
-          xaxis: {
-            categories: d.label,
-          },
-          series: d.data.map((el) => ({ name: el.label, data: el.data })),
-          yaxis: {
-            labels: {
-              formatter: function (v) {
-                return formatToPrice(v, 2);
-              },
+      const ordersRsp = await api.stats.getOrdersData(this.getQuery())
+      const d = ordersRsp.data.result;
+      this.ordersOptions = {
+        chart: {
+          type: "line",
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        xaxis: {
+          categories: d.label,
+        },
+        series: d.data.map((el) => ({name: el.label, data: el.data})),
+        yaxis: {
+          labels: {
+            formatter: function (v) {
+              return formatToPrice(v, 2);
             },
           },
-          legend: {
-            show: false,
-          },
-        };
-      });
+        },
+        legend: {
+          show: false,
+        },
+      };
     },
-    fetchBranches() {
+    async fetchBranches() {
       this.branchesOptions = null;
-      api.stats.getBranchesData(this.getQuery()).then((res) => {
-        const d = res.data.result;
-        this.branchesOptions = {
-          chart: {
-            type: "line",
-          },
-          stroke: {
-            curve: "smooth",
-          },
-          xaxis: {
-            categories: d.label,
-          },
-          series: d.data.map((el) => ({ name: el.label, data: el.data })),
-          yaxis: {
-            labels: {
-              formatter: function (v) {
-                return formatToPrice(v, 2);
-              },
+      const branchesRsp = await api.stats.getBranchesData(this.getQuery())
+      const d = branchesRsp.data.result;
+      this.branchesOptions = {
+        chart: {
+          type: "line",
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        xaxis: {
+          categories: d.label,
+        },
+        series: d.data.map((el) => ({name: el.label, data: el.data})),
+        yaxis: {
+          labels: {
+            formatter: function (v) {
+              return formatToPrice(v, 2);
             },
           },
-          legend: {
-            show: false,
-          },
-        };
-      });
+        },
+        legend: {
+          show: false,
+        },
+      };
     },
-    fetchManagerWidgets() {
+    async fetchManagerWidgets() {
       this.managerWidget = null;
-      api.managerStats
-        .getTotal(this.getQuery())
-        .then((res) => (this.managerWidget = res.data.result));
+      const managerWidgetRsp = await api.managerStats
+          .getTotal(this.getQuery())
+
+      this.managerWidget = managerWidgetRsp.data.result
     },
-    fetchManagerSales() {
+    async fetchManagerSales() {
       this.managerSales = null;
-      api.managerStats
-        .getSales({ ...this.getQuery(), filter_type: "sum" })
-        .then((res) => {
-          const d = res.data.result;
-          this.managerSales = {
-            chart: {
-              type: "line",
+      const salesRsp = await api.managerStats
+          .getSales({...this.getQuery(), filter_type: "sum"})
+      const d = salesRsp.data.result;
+      this.managerSales = {
+        chart: {
+          type: "line",
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        xaxis: {
+          categories: d.label,
+        },
+        series: d.data.map((el) => ({name: el.label, data: el.data})),
+        yaxis: {
+          labels: {
+            formatter: function (v) {
+              return formatToPrice(v, 2);
             },
-            stroke: {
-              curve: "smooth",
-            },
-            xaxis: {
-              categories: d.label,
-            },
-            series: d.data.map((el) => ({ name: el.label, data: el.data })),
-            yaxis: {
-              labels: {
-                formatter: function (v) {
-                  return formatToPrice(v, 2);
-                },
-              },
-            },
-            legend: {
-              show: false,
-            },
-          };
-        });
+          },
+        },
+        legend: {
+          show: false,
+        },
+      };
     },
-    fetchManagerSalesCount() {
+    async fetchManagerSalesCount() {
       this.managerSalesCount = null;
-      api.managerStats
-        .getSales({ ...this.getQuery(), filter_type: "count" })
-        .then((res) => {
-          const d = res.data.result;
-          this.managerSalesCount = {
-            chart: {
-              type: "line",
-            },
-            stroke: {
-              curve: "smooth",
-            },
-            xaxis: {
-              categories: d.label,
-            },
-            series: d.data.map((el) => ({ name: el.label, data: el.data })),
-            yaxis: {
-              labels: {
-                minWidth: 60,
-              },
-            },
-            legend: {
-              show: false,
-            },
-          };
-        });
+      const salesRsp = await api.managerStats
+          .getSales({...this.getQuery(), filter_type: "count"})
+
+      const d = salesRsp.data.result;
+      this.managerSalesCount = {
+        chart: {
+          type: "line",
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        xaxis: {
+          categories: d.label,
+        },
+        series: d.data.map((el) => ({name: el.label, data: el.data})),
+        yaxis: {
+          labels: {
+            minWidth: 60,
+          },
+        },
+        legend: {
+          show: false,
+        },
+      };
     },
-    fetchManagerObjectsPie() {
+    async fetchManagerObjectsPie() {
       this.managerObjectsPie = null;
-      api.managerStats
-        .getSalesPie({ ...this.getQuery(), filter_type: "sum" })
-        .then((res) => {
-          const d = res.data.result;
-          this.managerObjectsPie = {
-            chart: {
-              height: 300,
+      const salesPieRsp = await api.managerStats
+          .getSalesPie({...this.getQuery(), filter_type: "sum"})
 
-              type: "pie",
-            },
-            dataLabels: {
-              formatter: function (val, opts) {
-                return opts.w.config.series[opts.seriesIndex];
-              },
-            },
-            labels: d.label,
-            series: d.data,
-            legend: { position: "bottom" },
-          };
-        });
+      const d = salesPieRsp.data.result;
+      this.managerObjectsPie = {
+        chart: {
+          height: 300,
+
+          type: "pie",
+        },
+        dataLabels: {
+          formatter: function (val, opts) {
+            return opts.w.config.series[opts.seriesIndex];
+          },
+        },
+        labels: d.label,
+        series: d.data,
+        legend: {position: "bottom"},
+      };
     },
-    fetchManagerStatusPie() {
+    async fetchManagerStatusPie() {
       this.managerStatusPie = null;
-      api.managerStats
-        .getStatusPie({ ...this.getQuery(), filter_type: "sum" })
-        .then((res) => {
-          const d = res.data.result;
-          this.managerStatusPie = {
-            chart: {
-              height: 300,
+      const managerStatusRsp = await api.managerStats
+          .getStatusPie({...this.getQuery(), filter_type: "sum"})
+      const d = managerStatusRsp.data.result;
+      this.managerStatusPie = {
+        chart: {
+          height: 300,
 
-              type: "pie",
-            },
-            dataLabels: {
-              formatter: function (val, opts) {
-                return opts.w.config.series[opts.seriesIndex];
-              },
-            },
-            labels: d.label,
-            series: d.data,
-            legend: { position: "bottom" },
-          };
-        });
+          type: "pie",
+        },
+        dataLabels: {
+          formatter: function (val, opts) {
+            return opts.w.config.series[opts.seriesIndex];
+          },
+        },
+        labels: d.label,
+        series: d.data,
+        legend: {position: "bottom"},
+      };
     },
 
     pricePrettier: (price, decimalCount) => formatToPrice(price, decimalCount),
@@ -490,15 +483,15 @@ export default {
         <div class="col-md-12">
           <div class="row">
             <div
-              class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                class="col-lg-3 col-md-6 mb-md-0 mb-3"
             >
               <router-link :to="{ name: 'objects' }">
                 <div class="card-counter primary">
                   <i class="far fa-building"></i>
                   <span
-                    class="count-numbers"
-                    v-if="getHomeCounts.counts && getHomeCounts"
-                    >{{ getHomeCounts.counts.objects }}</span
+                      class="count-numbers"
+                      v-if="getHomeCounts.counts && getHomeCounts"
+                  >{{ getHomeCounts.counts.objects }}</span
                   >
                   <span class="count-name">{{ $t("objects.title") }}</span>
                 </div>
@@ -518,14 +511,14 @@ export default {
                   </div> -->
 
             <div
-              class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                class="col-lg-3 col-md-6 mb-md-0 mb-3"
             >
               <router-link :to="{ name: 'users' }">
                 <div class="card-counter success">
                   <i class="far fa-users"></i>
                   <span class="count-numbers" v-if="getHomeCounts.counts">{{
-                    getHomeCounts.counts.users
-                  }}</span>
+                      getHomeCounts.counts.users
+                    }}</span>
                   <span class="count-name">{{ $t("users.title") }}</span>
                 </div>
               </router-link>
@@ -540,15 +533,15 @@ export default {
             <!--                </div>-->
 
             <div
-              class="col-lg-3 col-md-6 mb-md-0 mb-3"
-              v-if="apartmentsViewPermission"
+                class="col-lg-3 col-md-6 mb-md-0 mb-3"
+                v-if="apartmentsViewPermission"
             >
               <router-link :to="{ name: 'objects-filter' }">
                 <div class="card-counter apartments">
                   <i class="far fa-home"></i>
                   <span class="count-numbers" v-if="getHomeCounts.counts">{{
-                    getHomeCounts.counts.apartments
-                  }}</span>
+                      getHomeCounts.counts.apartments
+                    }}</span>
                   <span class="count-name">{{ $t("objects.apartments") }}</span>
                 </div>
               </router-link>
@@ -561,41 +554,41 @@ export default {
       <div class="col-12">
         <div class="d-flex align-items-center justify-content-end mb-3">
           <date-range-picker
-            ref="picker"
-            placeholder="Select Dates"
-            :locale-data="{ firstDay: 1, format: 'dd.mm.yyyy' }"
-            v-model="dateRange"
-            auto-apply
-            show-dropdowns
-            :ranges="ranges"
+              ref="picker"
+              placeholder="Select Dates"
+              :locale-data="{ firstDay: 1, format: 'dd.mm.yyyy' }"
+              v-model="dateRange"
+              auto-apply
+              show-dropdowns
+              :ranges="ranges"
           >
             <template #input="picker" style="min-width: 350px">
               <div class="d-flex align-items-center">
                 <x-icon
-                  name="date_range"
-                  :size="24"
-                  class="violet-600 mr-2"
-                  color="var(--violet-600)"
+                    name="date_range"
+                    :size="24"
+                    class="violet-600 mr-2"
+                    color="var(--violet-600)"
                 />
                 <span>{{
-                  picker.startDate
-                    ? formatDateWithDot(picker.startDate) +
-                      " - " +
-                      formatDateWithDot(picker.endDate)
-                    : "Выберите даты"
-                }}</span>
+                    picker.startDate
+                        ? formatDateWithDot(picker.startDate) +
+                        " - " +
+                        formatDateWithDot(picker.endDate)
+                        : "Выберите даты"
+                  }}</span>
               </div>
             </template>
           </date-range-picker>
 
           <div class="d-flex ml-4">
             <div
-              v-for="r in paymentTypeOptions"
-              :key="r.value"
-              class="border px-4 py-2"
-              :class="r.cls"
-              @click="paymentType = r.value"
-              role="button"
+                v-for="r in paymentTypeOptions"
+                :key="r.value"
+                class="border px-4 py-2"
+                :class="r.cls"
+                @click="paymentType = r.value"
+                role="button"
             >
               {{ r.text }}
             </div>
@@ -614,14 +607,14 @@ export default {
               <div class="bg-white p-3" v-if="widgetData">
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="apartment"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="apartment"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Заказы</div>
@@ -629,9 +622,9 @@ export default {
                 <div>{{ widgetData.orders_count }}</div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -642,14 +635,14 @@ export default {
               <div class="bg-white p-3" v-if="widgetData">
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="add_shopping_cart"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="add_shopping_cart"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Продажи</div>
@@ -659,9 +652,9 @@ export default {
                 </div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -672,14 +665,14 @@ export default {
               <div class="bg-white p-3" v-if="widgetData">
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="crop_5_4"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="crop_5_4"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Проданная площадь</div>
@@ -689,9 +682,9 @@ export default {
                 </div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -702,14 +695,14 @@ export default {
               <div class="bg-white p-3" v-if="widgetData">
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="price_check"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="price_check"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Поступления по продажам</div>
@@ -717,9 +710,9 @@ export default {
                 <div>{{ widgetData.paid_percentage.toFixed(2) }}%</div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -730,12 +723,12 @@ export default {
         <div class="">Отчеты по поступлениям</div>
         <div class="d-flex">
           <div
-            v-for="r in typeOptions"
-            :key="r.value"
-            class="border px-4 py-2"
-            :class="r.cls"
-            @click="type = r.value"
-            role="button"
+              v-for="r in typeOptions"
+              :key="r.value"
+              class="border px-4 py-2"
+              :class="r.cls"
+              @click="type = r.value"
+              role="button"
           >
             {{ r.text }}
           </div>
@@ -745,16 +738,16 @@ export default {
         <div class="row">
           <div class="col-12">
             <apexchart
-              v-if="salesOptions"
-              type="line"
-              :options="salesOptions"
-              :series="salesOptions.series"
-              :height="300"
+                v-if="salesOptions"
+                type="line"
+                :options="salesOptions"
+                :series="salesOptions.series"
+                :height="300"
             ></apexchart>
             <base-loading
-              v-else
-              :container-height="315"
-              class="bg-white"
+                v-else
+                :container-height="315"
+                class="bg-white"
             ></base-loading>
           </div>
         </div>
@@ -769,45 +762,45 @@ export default {
         <div class="col-4">
           <div class="mr-3 shadow p-3">
             <apexchart
-              v-if="objectsPieOptions"
-              :options="objectsPieOptions"
-              :series="objectsPieOptions.series"
-              :height="300"
+                v-if="objectsPieOptions"
+                :options="objectsPieOptions"
+                :series="objectsPieOptions.series"
+                :height="300"
             ></apexchart>
             <base-loading
-              v-else
-              :container-height="268"
-              class="bg-white"
+                v-else
+                :container-height="268"
+                class="bg-white"
             ></base-loading>
           </div>
         </div>
         <div class="col-4">
           <div class="mr-3 shadow p-3">
             <apexchart
-              v-if="tariffsPieOptions"
-              :options="tariffsPieOptions"
-              :series="tariffsPieOptions.series"
-              :height="300"
+                v-if="tariffsPieOptions"
+                :options="tariffsPieOptions"
+                :series="tariffsPieOptions.series"
+                :height="300"
             ></apexchart>
             <base-loading
-              v-else
-              :container-height="268"
-              class="bg-white"
+                v-else
+                :container-height="268"
+                class="bg-white"
             ></base-loading>
           </div>
         </div>
         <div class="col-4">
           <div class="mr-3 shadow p-3">
             <apexchart
-              v-if="managersPieOptions"
-              :options="managersPieOptions"
-              :series="managersPieOptions.series"
-              :height="300"
+                v-if="managersPieOptions"
+                :options="managersPieOptions"
+                :series="managersPieOptions.series"
+                :height="300"
             ></apexchart>
             <base-loading
-              v-else
-              :container-height="268"
-              class="bg-white"
+                v-else
+                :container-height="268"
+                class="bg-white"
             ></base-loading>
           </div>
         </div>
@@ -817,16 +810,16 @@ export default {
       <div class="row mt-2 mb-5">
         <div class="col-12">
           <apexchart
-            v-if="ordersOptions"
-            type="line"
-            :options="ordersOptions"
-            :series="ordersOptions.series"
-            :height="300"
+              v-if="ordersOptions"
+              type="line"
+              :options="ordersOptions"
+              :series="ordersOptions.series"
+              :height="300"
           ></apexchart>
           <base-loading
-            v-else
-            :container-height="315"
-            class="bg-white"
+              v-else
+              :container-height="315"
+              class="bg-white"
           ></base-loading>
         </div>
       </div>
@@ -835,16 +828,16 @@ export default {
       <div class="row mt-2 mb-5">
         <div class="col-12">
           <apexchart
-            v-if="branchesOptions"
-            type="line"
-            :options="branchesOptions"
-            :series="branchesOptions.series"
-            :height="300"
+              v-if="branchesOptions"
+              type="line"
+              :options="branchesOptions"
+              :series="branchesOptions.series"
+              :height="300"
           ></apexchart>
           <base-loading
-            v-else
-            :container-height="315"
-            class="bg-white"
+              v-else
+              :container-height="315"
+              class="bg-white"
           ></base-loading>
         </div>
       </div>
@@ -858,19 +851,19 @@ export default {
           <div class="h-100">
             <div class="card border-0 rounded pb-1 bg-primary shadow h-100">
               <div
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-                v-if="managerWidget"
+                  class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                  v-if="managerWidget"
               >
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="apartment"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="apartment"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Объекты</div>
@@ -878,9 +871,9 @@ export default {
                 <div>{{ managerWidget.objects_count }}</div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -889,19 +882,19 @@ export default {
           <div class="h-100">
             <div class="card border-0 rounded pb-1 bg-info shadow h-100">
               <div
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-                v-if="managerWidget"
+                  class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                  v-if="managerWidget"
               >
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="description"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="description"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Договоры</div>
@@ -911,9 +904,9 @@ export default {
                 </div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -922,19 +915,19 @@ export default {
           <div class="h-100">
             <div class="card border-0 rounded pb-1 bg-danger shadow h-100">
               <div
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-                v-if="managerWidget"
+                  class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                  v-if="managerWidget"
               >
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="price_check"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="price_check"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Поступления</div>
@@ -945,9 +938,9 @@ export default {
                 <div>План:{{ managerWidget.plan_percentage.toFixed(2) }} %</div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -956,19 +949,19 @@ export default {
           <div class="h-100">
             <div class="card border-0 rounded pb-1 bg-warning shadow h-100">
               <div
-                class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
-                v-if="managerWidget"
+                  class="bg-white p-3 h-100 d-flex flex-column justify-content-between"
+                  v-if="managerWidget"
               >
                 <div class="d-flex align-items-center mb-3">
                   <div
-                    class="d-flex mr-4 p-1 rounded"
-                    style="background-color: var(--violet-100)"
+                      class="d-flex mr-4 p-1 rounded"
+                      style="background-color: var(--violet-100)"
                   >
                     <x-icon
-                      name="event_available"
-                      :size="28"
-                      class="violet-600"
-                      color="var(--violet-600)"
+                        name="event_available"
+                        :size="28"
+                        class="violet-600"
+                        color="var(--violet-600)"
                     />
                   </div>
                   <div>Свободные</div>
@@ -979,9 +972,9 @@ export default {
                 <div>Парковки: {{ managerWidget.available_parking_count }}</div>
               </div>
               <base-loading
-                v-else
-                :container-height="108"
-                class="bg-white"
+                  v-else
+                  :container-height="108"
+                  class="bg-white"
               ></base-loading>
             </div>
           </div>
@@ -991,30 +984,30 @@ export default {
       <div class="row">
         <div class="col-9">
           <apexchart
-            v-if="managerSales"
-            type="line"
-            :options="managerSales"
-            :series="managerSales.series"
-            :height="300"
+              v-if="managerSales"
+              type="line"
+              :options="managerSales"
+              :series="managerSales.series"
+              :height="300"
           ></apexchart>
           <base-loading
-            v-else
-            :container-height="315"
-            class="bg-white"
+              v-else
+              :container-height="315"
+              class="bg-white"
           ></base-loading>
         </div>
         <div class="col-3">
           <div class="mr-3 shadow p-3">
             <apexchart
-              v-if="managerObjectsPie"
-              :options="managerObjectsPie"
-              :series="managerObjectsPie.series"
-              :height="250"
+                v-if="managerObjectsPie"
+                :options="managerObjectsPie"
+                :series="managerObjectsPie.series"
+                :height="250"
             ></apexchart>
             <base-loading
-              v-else
-              :container-height="218"
-              class="bg-white"
+                v-else
+                :container-height="218"
+                class="bg-white"
             ></base-loading>
           </div>
         </div>
@@ -1023,30 +1016,30 @@ export default {
       <div class="row">
         <div class="col-9">
           <apexchart
-            v-if="managerSalesCount"
-            type="line"
-            :options="managerSalesCount"
-            :series="managerSalesCount.series"
-            :height="300"
+              v-if="managerSalesCount"
+              type="line"
+              :options="managerSalesCount"
+              :series="managerSalesCount.series"
+              :height="300"
           ></apexchart>
           <base-loading
-            v-else
-            :container-height="315"
-            class="bg-white"
+              v-else
+              :container-height="315"
+              class="bg-white"
           ></base-loading>
         </div>
         <div class="col-3">
           <div class="mr-3 shadow p-3">
             <apexchart
-              v-if="managerStatusPie"
-              :options="managerStatusPie"
-              :series="managerStatusPie.series"
-              :height="250"
+                v-if="managerStatusPie"
+                :options="managerStatusPie"
+                :series="managerStatusPie.series"
+                :height="250"
             ></apexchart>
             <base-loading
-              v-else
-              :container-height="218"
-              class="bg-white"
+                v-else
+                :container-height="218"
+                class="bg-white"
             ></base-loading>
           </div>
         </div>

@@ -13,6 +13,8 @@ export default class Permission {
         ...form,
         ...JSON.parse(user.role['permission_list']),
       };
+
+      console.log('permission',this.permission)
     }
     return this.user;
   }
